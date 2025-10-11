@@ -13,12 +13,14 @@
       "outputs": [
         ".next/**",
         "!.next/cache/**",
-        "dist/**"
+        "dist/**",
+        "*.tsbuildinfo"
       ]
     },
     "build:swc": {
       "dependsOn": [
-        "^build:swc"
+        "^build:swc",
+        "^build"
       ],
       "inputs": [
         "$TURBO_DEFAULT$",
@@ -30,27 +32,59 @@
     },
     "type-check": {
       "dependsOn": [
-        "^type-check"
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "tsconfig.json",
+        "tsconfig.*.json"
       ]
     },
     "check-types": {
       "dependsOn": [
-        "^check-types"
+        "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "tsconfig.json",
+        "tsconfig.*.json"
       ]
     },
     "lint": {
       "dependsOn": [
-        "^lint"
+        "^build"
       ]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "dependsOn": []
     },
     "test": {
       "dependsOn": [
         "^build"
+      ],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "jest.config.*"
       ]
+    },
+    "test:cov": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "coverage/**"
+      ]
+    },
+    "test:e2e": {
+      "dependsOn": [
+        "^build",
+        "build"
+      ]
+    },
+    "clean": {
+      "cache": false
     }
   }
 }
