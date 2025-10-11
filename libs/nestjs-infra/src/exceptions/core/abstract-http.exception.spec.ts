@@ -2,7 +2,7 @@
  * AbstractHttpException 单元测试
  */
 
-import { AbstractHttpException, ProblemDetails } from './abstract-http.exception';
+import { AbstractHttpException, ProblemDetails } from './abstract-http.exception.js';
 
 /**
  * 测试用异常类
@@ -33,7 +33,7 @@ describe('AbstractHttpException', () => {
       expect(exception.errorCode).toBe('TEST_ERROR');
       expect(exception.title).toBe('测试错误');
       expect(exception.detail).toBe('这是一个测试错误');
-      expect(exception.status).toBe(400);
+      expect(exception.httpStatus).toBe(400);
       expect(exception.name).toBe('TestException');
     });
 
@@ -62,7 +62,7 @@ describe('AbstractHttpException', () => {
       expect(exception.errorCode).toBe(errorCode);
       expect(exception.title).toBe(title);
       expect(exception.detail).toBe(detail);
-      expect(exception.status).toBe(status);
+      expect(exception.httpStatus).toBe(status);
       expect(exception.data).toBe(data);
       expect(exception.type).toBe(type);
       expect(exception.rootCause).toBe(rootCause);
@@ -241,7 +241,7 @@ describe('AbstractHttpException', () => {
 
       testCases.forEach((status) => {
         const exception = new TestException('ERROR', '错误', '详情', status);
-        expect(exception.status).toBe(status);
+        expect(exception.httpStatus).toBe(status);
         expect(exception.getStatus()).toBe(status);
       });
     });

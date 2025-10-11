@@ -2,7 +2,7 @@
  * DefaultMessageProvider 单元测试
  */
 
-import { DefaultMessageProvider } from './default-message.provider';
+import { DefaultMessageProvider } from './default-message.provider.js';
 
 describe('DefaultMessageProvider', () => {
   let provider: DefaultMessageProvider;

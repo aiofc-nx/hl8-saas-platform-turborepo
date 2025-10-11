@@ -2,8 +2,8 @@
  * GeneralBadRequestException 单元测试
  */
 
-import { GeneralBadRequestException } from './general-bad-request.exception';
-import { AbstractHttpException } from './abstract-http.exception';
+import { GeneralBadRequestException } from './general-bad-request.exception.js';
+import { AbstractHttpException } from './abstract-http.exception.js';
 
 describe('GeneralBadRequestException', () => {
   describe('构造函数', () => {
@@ -18,7 +18,7 @@ describe('GeneralBadRequestException', () => {
       expect(exception).toBeInstanceOf(GeneralBadRequestException);
       expect(exception).toBeInstanceOf(AbstractHttpException);
       expect(exception.errorCode).toBe('BAD_REQUEST');
-      expect(exception.status).toBe(400);
+      expect(exception.httpStatus).toBe(400);
     });
 
     it('应该正确设置标题和详情', () => {
@@ -87,7 +87,7 @@ describe('GeneralBadRequestException', () => {
       );
 
       // Assert
-      expect(exception.status).toBe(400);
+      expect(exception.httpStatus).toBe(400);
       expect(exception.data).toEqual({
         email,
         expectedFormat: 'user@example.com',

@@ -14,8 +14,8 @@
  */
 
 import { ModuleMetadata, Type } from '@nestjs/common';
-import { ExceptionMessageProvider } from '../providers/exception-message.provider';
-import { ILoggerService } from '../filters/http-exception.filter';
+import { ExceptionMessageProvider } from '../providers/exception-message.provider.js';
+import { ILoggerService } from '../filters/http-exception.filter.js';
 
 /**
  * 异常模块配置

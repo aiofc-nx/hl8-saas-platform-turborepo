@@ -8,10 +8,10 @@
 
 import { Module, DynamicModule, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ClsModule } from 'nestjs-cls';
-import { IsolationContextService } from './services/isolation-context.service';
-import { MultiLevelIsolationService } from './services/multi-level-isolation.service';
-import { IsolationExtractionMiddleware } from './middleware/isolation-extraction.middleware';
-import { IsolationGuard } from './guards/isolation.guard';
+import { IsolationContextService } from './services/isolation-context.service.js';
+import { MultiLevelIsolationService } from './services/multi-level-isolation.service.js';
+import { IsolationExtractionMiddleware } from './middleware/isolation-extraction.middleware.js';
+import { IsolationGuard } from './guards/isolation.guard.js';
 
 /**
  * 隔离模块选项

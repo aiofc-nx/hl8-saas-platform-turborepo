@@ -24,7 +24,7 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import { GeneralInternalServerException } from '../exceptions/core/general-internal-server.exception';
+import { GeneralInternalServerException } from '../exceptions/core/general-internal-server.exception.js';
 import type Redis from 'ioredis';
 
 /**

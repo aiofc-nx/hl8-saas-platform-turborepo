@@ -7,7 +7,7 @@
  */
 
 import { config } from 'dotenv';
-import { ConfigLoader } from '../typed-config.module';
+import { ConfigLoader } from '../typed-config.module.js';
 
 /**
  * Dotenv 加载器选项

@@ -2,10 +2,10 @@
  * HttpExceptionFilter 单元测试
  */
 
-import { HttpExceptionFilter, ILoggerService, IExceptionMessageProvider } from './http-exception.filter';
-import { GeneralNotFoundException } from '../core/general-not-found.exception';
-import { GeneralBadRequestException } from '../core/general-bad-request.exception';
-import { GeneralInternalServerException } from '../core/general-internal-server.exception';
+import { HttpExceptionFilter, ILoggerService, IExceptionMessageProvider } from './http-exception.filter.js';
+import { GeneralNotFoundException } from '../core/general-not-found.exception.js';
+import { GeneralBadRequestException } from '../core/general-bad-request.exception.js';
+import { GeneralInternalServerException } from '../core/general-internal-server.exception.js';
 import { ArgumentsHost } from '@nestjs/common';
 
 describe('HttpExceptionFilter', () => {

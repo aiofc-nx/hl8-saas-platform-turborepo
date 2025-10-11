@@ -167,17 +167,32 @@ export abstract class AbstractHttpException extends HttpException {
    * }
    * ```
    */
+  public readonly errorCode: string;
+  public readonly title: string;
+  public readonly detail: string;
+  public readonly httpStatus: number;
+  public readonly data?: any;
+  public readonly type?: string;
+  public readonly rootCause?: Error;
+
   constructor(
-    public readonly errorCode: string,
-    public readonly title: string,
-    public readonly detail: string,
-    public readonly status: number,
-    public readonly data?: any,
-    public readonly type?: string,
-    public readonly rootCause?: Error,
+    errorCode: string,
+    title: string,
+    detail: string,
+    status: number,
+    data?: any,
+    type?: string,
+    rootCause?: Error,
   ) {
     super({ errorCode, title, detail, status, data }, status);
     this.name = this.constructor.name;
+    this.errorCode = errorCode;
+    this.title = title;
+    this.detail = detail;
+    this.httpStatus = status;
+    this.data = data;
+    this.type = type;
+    this.rootCause = rootCause;
   }
 
   /**
@@ -214,7 +229,7 @@ export abstract class AbstractHttpException extends HttpException {
       type: this.type || `https://docs.hl8.com/errors#${this.errorCode}`,
       title: this.title,
       detail: this.detail,
-      status: this.status,
+      status: this.httpStatus,
       errorCode: this.errorCode,
       data: this.data,
     };

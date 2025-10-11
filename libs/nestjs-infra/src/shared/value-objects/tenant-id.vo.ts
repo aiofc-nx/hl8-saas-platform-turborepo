@@ -6,7 +6,7 @@
  * @since 0.2.0
  */
 
-import { EntityId } from './entity-id.vo';
+import { EntityId } from './entity-id.vo.js';
 
 /**
  * 租户 ID

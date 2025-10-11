@@ -8,7 +8,7 @@
 
 import { readFileSync } from 'fs';
 import { load as loadYaml } from 'js-yaml';
-import { ConfigLoader } from '../typed-config.module';
+import { ConfigLoader } from '../typed-config.module.js';
 
 /**
  * 文件加载器选项

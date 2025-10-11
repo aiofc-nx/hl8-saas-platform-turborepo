@@ -73,8 +73,8 @@ import {
   Optional,
   HttpException,
 } from '@nestjs/common';
-import { ProblemDetails } from '../core/abstract-http.exception';
-import { ILoggerService } from './http-exception.filter';
+import { ProblemDetails } from '../core/abstract-http.exception.js';
+import type { ILoggerService } from './http-exception.filter.js';
 
 /**
  * 全局异常过滤器

@@ -64,7 +64,7 @@ import {
   Injectable,
   Optional,
 } from '@nestjs/common';
-import { AbstractHttpException, ProblemDetails } from '../core/abstract-http.exception';
+import { AbstractHttpException, ProblemDetails } from '../core/abstract-http.exception.js';
 
 /**
  * 日志服务接口

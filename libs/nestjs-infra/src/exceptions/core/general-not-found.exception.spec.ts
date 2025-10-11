@@ -2,8 +2,8 @@
  * GeneralNotFoundException 单元测试
  */
 
-import { GeneralNotFoundException } from './general-not-found.exception';
-import { AbstractHttpException } from './abstract-http.exception';
+import { GeneralNotFoundException } from './general-not-found.exception.js';
+import { AbstractHttpException } from './abstract-http.exception.js';
 
 describe('GeneralNotFoundException', () => {
   describe('构造函数', () => {
@@ -18,7 +18,7 @@ describe('GeneralNotFoundException', () => {
       expect(exception).toBeInstanceOf(GeneralNotFoundException);
       expect(exception).toBeInstanceOf(AbstractHttpException);
       expect(exception.errorCode).toBe('NOT_FOUND');
-      expect(exception.status).toBe(404);
+      expect(exception.httpStatus).toBe(404);
     });
 
     it('应该正确设置标题和详情', () => {
@@ -95,7 +95,7 @@ describe('GeneralNotFoundException', () => {
       );
 
       // Assert
-      expect(exception.status).toBe(404);
+      expect(exception.httpStatus).toBe(404);
       expect(exception.data).toEqual({ userId });
     });
 

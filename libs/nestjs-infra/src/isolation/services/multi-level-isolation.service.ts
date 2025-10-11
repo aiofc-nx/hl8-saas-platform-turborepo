@@ -7,9 +7,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { IsolationContextService } from './isolation-context.service';
-import { DataSharingLevel } from '../../shared/enums/data-sharing-level.enum';
-import { IsolationLevel } from '../../shared/enums/isolation-level.enum';
+import { IsolationContextService } from './isolation-context.service.js';
+import { DataSharingLevel } from '../../shared/enums/data-sharing-level.enum.js';
+import { IsolationLevel } from '../../shared/enums/isolation-level.enum.js';
 
 /**
  * 数据访问上下文

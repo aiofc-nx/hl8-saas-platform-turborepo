@@ -7,8 +7,8 @@
  */
 
 import { Module, DynamicModule, Provider } from '@nestjs/common';
-import { CacheService } from './cache.service';
-import { RedisService, RedisOptions } from './redis.service';
+import { CacheService } from './cache.service.js';
+import { RedisService, RedisOptions } from './redis.service.js';
 
 /**
  * 缓存模块选项

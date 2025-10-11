@@ -7,7 +7,7 @@
  */
 
 import { Module, DynamicModule } from '@nestjs/common';
-import { LoggerService, LoggerOptions } from './logger.service';
+import { LoggerService, LoggerOptions } from './logger.service.js';
 
 /**
  * 日志模块

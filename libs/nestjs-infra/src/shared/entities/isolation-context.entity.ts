@@ -35,11 +35,11 @@
  * @since 0.2.0
  */
 
-import { IsolationLevel } from '../enums/isolation-level.enum';
-import { TenantId } from '../value-objects/tenant-id.vo';
-import { OrganizationId } from '../value-objects/organization-id.vo';
-import { DepartmentId } from '../value-objects/department-id.vo';
-import { UserId } from '../value-objects/user-id.vo';
+import { IsolationLevel } from '../enums/isolation-level.enum.js';
+import { TenantId } from '../value-objects/tenant-id.vo.js';
+import { OrganizationId } from '../value-objects/organization-id.vo.js';
+import { DepartmentId } from '../value-objects/department-id.vo.js';
+import { UserId } from '../value-objects/user-id.vo.js';
 
 /**
  * 隔离上下文实体

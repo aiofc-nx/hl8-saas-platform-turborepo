@@ -2,8 +2,8 @@
  * AnyExceptionFilter 单元测试
  */
 
-import { AnyExceptionFilter } from './any-exception.filter';
-import { ILoggerService } from './http-exception.filter';
+import { AnyExceptionFilter } from './any-exception.filter.js';
+import type { ILoggerService } from './http-exception.filter.js';
 import { ArgumentsHost, HttpException, BadRequestException } from '@nestjs/common';
 
 describe('AnyExceptionFilter', () => {
@@ -12,11 +12,7 @@ describe('AnyExceptionFilter', () => {
   let mockArgumentsHost: jest.Mocked<ArgumentsHost>;
   let mockResponse: any;
   let mockRequest: any;
-  let originalNodeEnv: string | undefined;
-
   beforeEach(() => {
-    // 保存原始 NODE_ENV
-    originalNodeEnv = process.env.NODE_ENV;
 
     // 创建 Mock 对象
     mockLogger = {
@@ -50,12 +46,7 @@ describe('AnyExceptionFilter', () => {
   });
 
   afterEach(() => {
-    // 恢复原始 NODE_ENV
-    if (originalNodeEnv !== undefined) {
-      process.env.NODE_ENV = originalNodeEnv;
-    } else {
-      delete process.env.NODE_ENV;
-    }
+    // 清理
   });
 
   describe('基本功能', () => {
@@ -75,12 +66,9 @@ describe('AnyExceptionFilter', () => {
       expect(filter).toBeDefined();
     });
 
-    it('应该根据 NODE_ENV 判断生产环境', () => {
-      // Arrange
-      process.env.NODE_ENV = 'production';
-
+    it('应该根据参数判断生产环境', () => {
       // Act
-      filter = new AnyExceptionFilter(mockLogger);
+      filter = new AnyExceptionFilter(mockLogger, true);
 
       // Assert
       expect(filter).toBeDefined();
@@ -97,7 +85,6 @@ describe('AnyExceptionFilter', () => {
 
   describe('catch() - Error 实例', () => {
     beforeEach(() => {
-      process.env.NODE_ENV = 'production';
       filter = new AnyExceptionFilter(mockLogger, true);
     });
 
@@ -280,7 +267,6 @@ describe('AnyExceptionFilter', () => {
   describe('生产环境 vs 开发环境', () => {
     it('生产环境不应暴露错误堆栈', () => {
       // Arrange
-      process.env.NODE_ENV = 'production';
       filter = new AnyExceptionFilter(mockLogger, true);
       const error = new Error('敏感错误');
 
@@ -297,7 +283,6 @@ describe('AnyExceptionFilter', () => {
 
     it('开发环境应包含详细错误信息', () => {
       // Arrange
-      process.env.NODE_ENV = 'development';
       filter = new AnyExceptionFilter(mockLogger, false);
       const error = new Error('开发错误');
 

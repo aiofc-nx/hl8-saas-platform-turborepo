@@ -32,7 +32,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { ExceptionMessageProvider } from './exception-message.provider';
+import { ExceptionMessageProvider } from './exception-message.provider.js';
 
 /**
  * 默认消息提供者

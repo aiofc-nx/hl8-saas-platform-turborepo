@@ -54,10 +54,10 @@ import {
   ExceptionOptionsFactory,
   EXCEPTION_MODULE_OPTIONS,
   DEFAULT_EXCEPTION_OPTIONS,
-} from './config/exception.config';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
-import { AnyExceptionFilter } from './filters/any-exception.filter';
-import { DefaultMessageProvider } from './providers/default-message.provider';
+} from './config/exception.config.js';
+import { HttpExceptionFilter } from './filters/http-exception.filter.js';
+import { AnyExceptionFilter } from './filters/any-exception.filter.js';
+import { DefaultMessageProvider } from './providers/default-message.provider.js';
 
 /**
  * 异常处理模块

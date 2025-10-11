@@ -86,7 +86,7 @@
  * @since 0.1.0
  */
 
-import { AbstractHttpException } from './abstract-http.exception';
+import { AbstractHttpException } from './abstract-http.exception.js';
 
 /**
  * 通用 500 内部服务器错误异常

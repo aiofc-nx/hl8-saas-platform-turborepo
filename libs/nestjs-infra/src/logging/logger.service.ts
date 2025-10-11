@@ -8,7 +8,7 @@
 
 import { Injectable, Optional } from '@nestjs/common';
 import * as pino from 'pino';
-import { IsolationContextService } from '../isolation/services/isolation-context.service';
+import { IsolationContextService } from '../isolation/services/isolation-context.service.js';
 
 /**
  * 日志级别

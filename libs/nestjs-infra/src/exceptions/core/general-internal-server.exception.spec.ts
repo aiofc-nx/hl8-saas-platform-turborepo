@@ -2,8 +2,8 @@
  * GeneralInternalServerException 单元测试
  */
 
-import { GeneralInternalServerException } from './general-internal-server.exception';
-import { AbstractHttpException } from './abstract-http.exception';
+import { GeneralInternalServerException } from './general-internal-server.exception.js';
+import { AbstractHttpException } from './abstract-http.exception.js';
 
 describe('GeneralInternalServerException', () => {
   describe('构造函数', () => {
@@ -18,7 +18,7 @@ describe('GeneralInternalServerException', () => {
       expect(exception).toBeInstanceOf(GeneralInternalServerException);
       expect(exception).toBeInstanceOf(AbstractHttpException);
       expect(exception.errorCode).toBe('INTERNAL_SERVER_ERROR');
-      expect(exception.status).toBe(500);
+      expect(exception.httpStatus).toBe(500);
     });
 
     it('应该正确设置标题和详情', () => {
@@ -121,7 +121,7 @@ describe('GeneralInternalServerException', () => {
       );
 
       // Assert
-      expect(exception.status).toBe(500);
+      expect(exception.httpStatus).toBe(500);
       expect(exception.rootCause).toBe(dbError);
       expect(exception.data).toEqual({ operation: 'transaction' });
     });

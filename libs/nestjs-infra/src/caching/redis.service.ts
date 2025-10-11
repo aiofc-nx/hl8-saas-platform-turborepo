@@ -8,7 +8,7 @@
 
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import Redis from 'ioredis';
-import { GeneralInternalServerException } from '../exceptions/core/general-internal-server.exception';
+import { GeneralInternalServerException } from '../exceptions/core/general-internal-server.exception.js';
 
 /**
  * Redis 连接选项

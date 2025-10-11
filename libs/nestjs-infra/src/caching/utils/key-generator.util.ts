@@ -13,7 +13,7 @@
  * @since 0.2.0
  */
 
-import { IsolationLevel } from '../../shared/enums/isolation-level.enum';
+import { IsolationLevel } from '../../shared/enums/isolation-level.enum.js';
 
 /**
  * 隔离上下文（简化版）

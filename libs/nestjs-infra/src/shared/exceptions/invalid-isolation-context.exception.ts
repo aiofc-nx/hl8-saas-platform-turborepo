@@ -4,7 +4,7 @@
  * @since 0.2.0
  */
 
-import { AbstractHttpException } from '../../exceptions/core/abstract-http.exception';
+import { AbstractHttpException } from '../../exceptions/core/abstract-http.exception.js';
 
 export class InvalidIsolationContextException extends AbstractHttpException {
   constructor(reason: string, data?: any) {

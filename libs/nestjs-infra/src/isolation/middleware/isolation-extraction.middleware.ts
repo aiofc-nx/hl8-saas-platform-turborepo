@@ -8,12 +8,12 @@
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { IsolationContextService } from '../services/isolation-context.service';
-import { IsolationContext } from '../../shared/entities/isolation-context.entity';
-import { TenantId } from '../../shared/value-objects/tenant-id.vo';
-import { OrganizationId } from '../../shared/value-objects/organization-id.vo';
-import { DepartmentId } from '../../shared/value-objects/department-id.vo';
-import { UserId } from '../../shared/value-objects/user-id.vo';
+import { IsolationContextService } from '../services/isolation-context.service.js';
+import { IsolationContext } from '../../shared/entities/isolation-context.entity.js';
+import { TenantId } from '../../shared/value-objects/tenant-id.vo.js';
+import { OrganizationId } from '../../shared/value-objects/organization-id.vo.js';
+import { DepartmentId } from '../../shared/value-objects/department-id.vo.js';
+import { UserId } from '../../shared/value-objects/user-id.vo.js';
 
 /**
  * 隔离上下文提取中间件

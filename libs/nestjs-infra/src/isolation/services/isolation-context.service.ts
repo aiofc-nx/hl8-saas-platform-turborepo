@@ -8,12 +8,12 @@
 
 import { Injectable } from '@nestjs/common';
 import { ClsService } from 'nestjs-cls';
-import { IsolationContext } from '../../shared/entities/isolation-context.entity';
-import { IsolationLevel } from '../../shared/enums/isolation-level.enum';
-import { TenantId } from '../../shared/value-objects/tenant-id.vo';
-import { OrganizationId } from '../../shared/value-objects/organization-id.vo';
-import { DepartmentId } from '../../shared/value-objects/department-id.vo';
-import { UserId } from '../../shared/value-objects/user-id.vo';
+import { IsolationContext } from '../../shared/entities/isolation-context.entity.js';
+import { IsolationLevel } from '../../shared/enums/isolation-level.enum.js';
+import { TenantId } from '../../shared/value-objects/tenant-id.vo.js';
+import { OrganizationId } from '../../shared/value-objects/organization-id.vo.js';
+import { DepartmentId } from '../../shared/value-objects/department-id.vo.js';
+import { UserId } from '../../shared/value-objects/user-id.vo.js';
 
 /**
  * 隔离上下文存储键
