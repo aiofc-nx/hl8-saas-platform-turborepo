@@ -108,8 +108,69 @@ export {
 export { Public, IS_PUBLIC_KEY } from './common/decorators/public.decorator';
 
 // ============================================================
+// Fastify 适配器模块（Phase 3.1）
+// ============================================================
+
+/**
+ * 企业级 Fastify 适配器
+ */
+export { EnterpriseFastifyAdapter } from './fastify/enterprise-fastify.adapter';
+export type { EnterpriseFastifyAdapterOptions } from './fastify/enterprise-fastify.adapter';
+
+/**
+ * Fastify 配置
+ */
+export {
+  DEFAULT_FASTIFY_CONFIG,
+  DEV_FASTIFY_CONFIG,
+  PROD_FASTIFY_CONFIG,
+} from './fastify/config/fastify.config';
+
+/**
+ * Fastify 监控服务
+ */
+export { HealthCheckService } from './fastify/monitoring/health-check.service';
+export type { HealthCheckResult, ComponentHealth } from './fastify/monitoring/health-check.service';
+export { PerformanceMonitorService } from './fastify/monitoring/performance-monitor.service';
+export type { PerformanceMetrics, RouteMetrics } from './fastify/monitoring/performance-monitor.service';
+
+// ============================================================
+// 缓存模块（Phase 3.1）
+// ============================================================
+
+/**
+ * 缓存模块
+ */
+export { CachingModule } from './caching/cache.module';
+export type { CachingModuleOptions, CachingModuleAsyncOptions } from './caching/cache.module';
+
+/**
+ * 缓存服务
+ */
+export { CacheService } from './caching/cache.service';
+export type { ICacheService } from './caching/cache.service';
+export { RedisService } from './caching/redis.service';
+export type { RedisOptions } from './caching/redis.service';
+
+/**
+ * 缓存工具
+ */
+export { KeyGenerator } from './caching/utils/key-generator.util';
+export { Serializer } from './caching/utils/serializer.util';
+
+/**
+ * 缓存装饰器
+ */
+export { Cacheable } from './caching/decorators/cacheable.decorator';
+export type { CacheableOptions } from './caching/decorators/cacheable.decorator';
+export { CacheEvict } from './caching/decorators/cache-evict.decorator';
+export type { CacheEvictOptions } from './caching/decorators/cache-evict.decorator';
+export { CachePut } from './caching/decorators/cache-put.decorator';
+export type { CachePutOptions } from './caching/decorators/cache-put.decorator';
+
+// ============================================================
 // 版本信息
 // ============================================================
 
-export const version = '0.1.0';
+export const version = '0.2.0';
 
