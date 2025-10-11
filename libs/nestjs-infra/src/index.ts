@@ -62,6 +62,22 @@ export {
  * 值对象
  */
 export { EntityId } from './shared/value-objects/entity-id.vo';
+export { TenantId } from './shared/value-objects/tenant-id.vo';
+export { OrganizationId } from './shared/value-objects/organization-id.vo';
+export { DepartmentId } from './shared/value-objects/department-id.vo';
+export { UserId } from './shared/value-objects/user-id.vo';
+
+/**
+ * 实体
+ */
+export { IsolationContext } from './shared/entities/isolation-context.entity';
+
+/**
+ * 业务异常
+ */
+export { TenantNotFoundException } from './shared/exceptions/tenant-not-found.exception';
+export { InvalidIsolationContextException } from './shared/exceptions/invalid-isolation-context.exception';
+export { UnauthorizedOrganizationException } from './shared/exceptions/unauthorized-organization.exception';
 
 /**
  * 类型定义
@@ -167,6 +183,38 @@ export { CacheEvict } from './caching/decorators/cache-evict.decorator';
 export type { CacheEvictOptions } from './caching/decorators/cache-evict.decorator';
 export { CachePut } from './caching/decorators/cache-put.decorator';
 export type { CachePutOptions } from './caching/decorators/cache-put.decorator';
+
+// ============================================================
+// 数据隔离模块（Phase 3.2）
+// ============================================================
+
+/**
+ * 隔离模块
+ */
+export { IsolationModule } from './isolation/isolation.module';
+export type { IsolationModuleOptions } from './isolation/isolation.module';
+
+/**
+ * 隔离服务
+ */
+export { IsolationContextService } from './isolation/services/isolation-context.service';
+export { MultiLevelIsolationService } from './isolation/services/multi-level-isolation.service';
+export type { DataAccessContext } from './isolation/services/multi-level-isolation.service';
+
+/**
+ * 隔离中间件
+ */
+export { IsolationExtractionMiddleware } from './isolation/middleware/isolation-extraction.middleware';
+
+/**
+ * 隔离装饰器
+ */
+export { CurrentIsolation } from './isolation/decorators/current-isolation.decorator';
+
+/**
+ * 隔离守卫
+ */
+export { IsolationGuard, REQUIRED_ISOLATION_LEVEL } from './isolation/guards/isolation.guard';
 
 // ============================================================
 // 版本信息
