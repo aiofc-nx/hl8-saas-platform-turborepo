@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { LoggerService } from '@hl8/nestjs-infra';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 /**
  * 初始化 NestJS 应用
@@ -18,7 +18,7 @@ import { LoggerService } from '@hl8/nestjs-infra';
  * - 配置文件上传支持
  *
  * ### 日志记录规则
- * - 使用 @hl8/nestjs-infra 的 LoggerService
+ * - 使用 @hl8/nestjs-fastify 的 FastifyLoggerService（全局统一日志）
  * - EnterpriseFastifyAdapter 自动记录请求和响应
  * - 支持隔离上下文追踪（租户、组织、部门、用户）
  * - 在非生产环境启用彩色输出
@@ -35,9 +35,8 @@ export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
   // 获取配置服务
   const configService = app.get(ConfigService);
   
-  // TODO: Phase 1 - 启用日志服务
-  // const logger = app.get(LoggerService);
-  // app.useLogger(logger);
+  // 全局日志服务已通过 FastifyLoggingModule 自动配置
+  // 所有模块自动使用 FastifyLoggerService（零开销 + 隔离上下文）
 
   // 全局验证管道 - 自动验证请求数据
   app.useGlobalPipes(

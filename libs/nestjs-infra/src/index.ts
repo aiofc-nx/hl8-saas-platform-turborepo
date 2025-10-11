@@ -188,24 +188,14 @@ export { CurrentIsolation } from './isolation/decorators/current-isolation.decor
 export { IsolationGuard, REQUIRED_ISOLATION_LEVEL } from './isolation/guards/isolation.guard.js';
 
 // ============================================================
-// 日志模块（Phase 3-4）
+// 日志模块（已移至 @hl8/nestjs-fastify）
 // ============================================================
-
-/**
- * 日志模块
- */
-export { LoggingModule } from './logging/logger.module.js';
-
-/**
- * 日志服务
- */
-export { LoggerService } from './logging/logger.service.js';
-export type { LoggerOptions, LogLevel } from './logging/logger.service.js';
-
-/**
- * 日志配置（使用 ConfigValidator）
- */
-export { LoggingModuleConfig } from './logging/config/logging.config.js';
+// 注意：日志功能现在由 @hl8/nestjs-fastify/FastifyLoggerService 提供
+// - 零开销（复用 Fastify Pino）
+// - 自动包含隔离上下文
+// - 全局统一服务
+//
+// 非 HTTP 场景请使用 @nestjs/common/Logger
 
 // ============================================================
 // 配置管理模块（Phase 5）
