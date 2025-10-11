@@ -98,6 +98,7 @@
 #### 1. ExceptionModule（Fastify 版）
 
 **关键差异**:
+
 ```typescript
 // @hl8/nestjs-infra (通用)
 response.status(500).send(...)  // ❌ Express 风格
@@ -107,6 +108,7 @@ response.code(500).send(...)    // ✅ Fastify 风格
 ```
 
 **文件**:
+
 - `exceptions/filters/fastify-http-exception.filter.ts`
 - `exceptions/filters/fastify-any-exception.filter.ts`
 
@@ -117,6 +119,7 @@ response.code(500).send(...)    // ✅ Fastify 风格
 #### 2. LoggingModule（Fastify 版）
 
 **关键优化**:
+
 ```typescript
 // @hl8/nestjs-infra (通用)
 // 需要检测 HttpAdapterHost，可能有时机问题
@@ -144,6 +147,7 @@ export class FastifyLoggerService {
 **当前问题**: 插件冲突
 
 **Fastify 专用优化**:
+
 - 使用 Fastify 原生插件系统
 - 避免重复注册
 - 利用 Fastify 的高性能特性
@@ -201,10 +205,10 @@ libs/nestjs-fastify/
 1. 创建 `FastifyHttpExceptionFilter`
    - 使用 `.code()` 替代 `.status()`
    - 正确处理 Fastify Reply 对象
-   
+
 2. 创建 `FastifyAnyExceptionFilter`
    - 全局兜底异常处理
-   
+
 3. 创建 `FastifyExceptionModule`
    - 自动注册 Fastify 专用过滤器
 
@@ -215,10 +219,10 @@ libs/nestjs-fastify/
 1. 创建 `FastifyLoggerService`
    - 直接使用 Fastify 内置 Pino
    - 无需 HttpAdapterHost 检测
-   
+
 2. 创建 `FastifyLoggingModule`
    - 简化的模块设计
-   
+
 3. 单元测试
 
 ### Phase 4: 导出复用模块（30 分钟）
@@ -249,16 +253,19 @@ libs/nestjs-fastify/
 ## 📊 预期成果
 
 ### 代码复用率
+
 - **核心逻辑**: 100% 复用（entities, value-objects, services）
 - **适配层**: 20% 新开发（filters, logger wrapper）
 - **总体**: ~80% 复用
 
 ### 性能提升
+
 - **日志**: 零开销（直接使用 Fastify Pino）
 - **异常**: 更快的响应处理
 - **整体**: 充分发挥 Fastify 性能
 
 ### 维护性
+
 - **模块分离**: Fastify 专用 vs 通用
 - **清晰职责**: 适配器明确
 - **易于维护**: 代码简洁
@@ -439,15 +446,18 @@ export class FastifyLoggerService implements LoggerService {
 ## 📚 参考资料
 
 ### Fastify 官方文档
+
 - [Fastify Plugins](https://fastify.dev/docs/latest/Reference/Plugins/)
 - [Fastify Logging](https://fastify.dev/docs/latest/Reference/Logging/)
 - [Fastify Reply](https://fastify.dev/docs/latest/Reference/Reply/)
 
 ### NestJS + Fastify
+
 - [NestJS Fastify Adapter](https://docs.nestjs.com/techniques/performance)
 - [Platform Fastify](https://github.com/nestjs/nest/tree/master/packages/platform-fastify)
 
 ### 现有实现
+
 - `@hl8/nestjs-infra` - 通用版本
 - `backup/fastify-pro` - 旧的 Fastify 实现
 
@@ -456,6 +466,7 @@ export class FastifyLoggerService implements LoggerService {
 ## ✅ 验收标准
 
 ### 功能完整性
+
 - ✅ Fastify 异常处理（RFC7807）
 - ✅ Fastify 日志集成（Pino）
 - ✅ 数据隔离（5 级）
@@ -464,17 +475,20 @@ export class FastifyLoggerService implements LoggerService {
 - ✅ 企业级适配器
 
 ### 性能要求
+
 - ✅ 零日志开销（复用 Fastify Pino）
 - ✅ 快速响应（<5ms 异常处理）
 - ✅ 高吞吐量（>10k QPS）
 
 ### 代码质量
+
 - ✅ 单元测试覆盖率 >60%
 - ✅ 100% TypeScript 类型安全
 - ✅ 0 linter errors
 - ✅ 100% TSDoc 注释
 
 ### 集成验证
+
 - ✅ 在 fastify-api 中成功运行
 - ✅ 所有模块正常工作
 - ✅ 无启动错误
@@ -484,16 +498,19 @@ export class FastifyLoggerService implements LoggerService {
 ## 🎊 预期收益
 
 ### 1. 性能提升
+
 - ⚡ 日志：零开销（复用 Fastify Pino）
 - ⚡ 异常处理：更快的响应
 - ⚡ 整体：充分发挥 Fastify 性能
 
 ### 2. 开发体验
+
 - ✅ 专门为 Fastify 设计
 - ✅ 避免适配器差异
 - ✅ 更简洁的 API
 
 ### 3. 维护性
+
 - ✅ 职责清晰（Fastify 专用 vs 通用）
 - ✅ 代码复用（80%）
 - ✅ 易于扩展
@@ -503,11 +520,13 @@ export class FastifyLoggerService implements LoggerService {
 ## 🔄 与现有项目的关系
 
 ### @hl8/nestjs-infra（通用版本）
+
 **用途**: Express 或通用场景  
 **保留**: 是（继续维护）  
 **关系**: 被 `@hl8/nestjs-fastify` 依赖
 
 ### @hl8/nestjs-fastify（Fastify 专用）
+
 **用途**: Fastify 应用  
 **新建**: 是（本次创建）  
 **关系**: 依赖并扩展 `@hl8/nestjs-infra`
@@ -545,7 +564,7 @@ import { ... } from '@hl8/nestjs-fastify';
 
 ## 🎯 建议
 
-**我的建议**: 
+**我的建议**:
 
 1. ✅ **先完成当前项目**
    - 提交并合并 `@hl8/nestjs-infra`
@@ -560,10 +579,10 @@ import { ... } from '@hl8/nestjs-fastify';
    - 再创建 Fastify 专用版本
 
 **您的选择？**
+
 - A: 立即开始创建 `@hl8/nestjs-fastify`
 - B: 先提交当前工作，再开始新项目
 
 ---
 
 **无论选择哪个方案，当前的 @hl8/nestjs-infra 开发工作都已圆满完成！** 🎉
-
