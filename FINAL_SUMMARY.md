@@ -229,13 +229,18 @@ src/
 ## 📊 统计数据
 
 ```
-提交数:     13 commits (本次会话)
-文件变更:   66 files changed
-新增代码:   +4194 insertions
-删除代码:   -446 deletions
-净增加:     +3748 lines
-文档产出:   7 个详细文档
+提交数:     14 commits (本次会话)
+文件变更:   72 files changed
+新增代码:   +4,741 insertions
+删除代码:   -857 deletions
+净增加:     +3,884 lines
+文档产出:   9 个详细文档
 ```
+
+**代码精简**:
+- 删除冗余 logging 模块：-413 lines
+- 清理空目录和重复代码
+- 最终更精简、更清晰
 
 ### 提交历史
 
