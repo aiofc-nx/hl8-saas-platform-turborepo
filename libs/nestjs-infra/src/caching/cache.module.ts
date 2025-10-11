@@ -9,6 +9,8 @@
 import { Module, DynamicModule, Provider } from '@nestjs/common';
 import { CacheService } from './cache.service.js';
 import { RedisService, RedisOptions } from './redis.service.js';
+import { ConfigValidator } from '../configuration/validators/config.validator.js';
+import { CachingModuleConfig } from './config/caching.config.js';
 
 /**
  * 缓存模块选项
@@ -41,9 +43,17 @@ export class CachingModule {
    *
    * @param options - 配置选项
    * @returns 动态模块
+   * @throws {GeneralBadRequestException} 配置验证失败
    */
   static forRoot(options: CachingModuleOptions): DynamicModule {
-    const redisService = new RedisService(options.redis);
+    // 验证配置
+    const validatedConfig = ConfigValidator.validate(CachingModuleConfig, {
+      redis: options.redis,
+      ttl: options.defaultTTL,
+      keyPrefix: options.keyPrefix,
+    });
+
+    const redisService = new RedisService(validatedConfig.redis);
 
     const providers: Provider[] = [
       {
@@ -58,8 +68,8 @@ export class CachingModule {
       {
         provide: 'CACHE_OPTIONS',
         useValue: {
-          defaultTTL: options.defaultTTL || 3600,
-          keyPrefix: options.keyPrefix || 'hl8:cache:',
+          defaultTTL: validatedConfig.ttl || 3600,
+          keyPrefix: validatedConfig.keyPrefix || 'hl8:cache:',
         },
       },
       CacheService,

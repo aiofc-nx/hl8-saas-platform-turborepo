@@ -185,6 +185,11 @@ export type { CacheEvictOptions } from './caching/decorators/cache-evict.decorat
 export { CachePut } from './caching/decorators/cache-put.decorator.js';
 export type { CachePutOptions } from './caching/decorators/cache-put.decorator.js';
 
+/**
+ * 缓存配置（使用 ConfigValidator）
+ */
+export { CachingModuleConfig, RedisConfig } from './caching/config/caching.config.js';
+
 // ============================================================
 // 数据隔离模块（Phase 3.2）
 // ============================================================
@@ -231,6 +236,11 @@ export { LoggingModule } from './logging/logger.module.js';
  */
 export { LoggerService } from './logging/logger.service.js';
 export type { LoggerOptions, LogLevel } from './logging/logger.service.js';
+
+/**
+ * 日志配置（使用 ConfigValidator）
+ */
+export { LoggingModuleConfig } from './logging/config/logging.config.js';
 
 // ============================================================
 // 配置管理模块（Phase 5）
