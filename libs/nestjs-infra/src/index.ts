@@ -249,10 +249,23 @@ export { FileLoader, fileLoader } from './configuration/loaders/file.loader.js';
 export type { FileLoaderOptions } from './configuration/loaders/file.loader.js';
 export { DotenvLoader, dotenvLoader } from './configuration/loaders/dotenv.loader.js';
 export type { DotenvLoaderOptions } from './configuration/loaders/dotenv.loader.js';
+export { RemoteLoader, remoteLoader } from './configuration/loaders/remote.loader.js';
+export type { RemoteLoaderOptions } from './configuration/loaders/remote.loader.js';
+
+/**
+ * 配置验证器
+ */
+export { ConfigValidator } from './configuration/validators/config.validator.js';
+export type { ValidateOptions } from './configuration/validators/config.validator.js';
+
+/**
+ * 配置缓存
+ */
+export { ConfigCacheService } from './configuration/cache/config-cache.service.js';
 
 // ============================================================
 // 版本信息
 // ============================================================
 
-export const version = '0.3.0.js';
+export const version = '0.3.0';
 
