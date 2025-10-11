@@ -10,7 +10,8 @@
     "target": "ESNext",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@hl8/nestjs-infra": ["../../libs/nestjs-infra/src/*"]
     }
   }
 }
