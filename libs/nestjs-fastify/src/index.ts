@@ -7,17 +7,49 @@
  * @packageDocumentation
  */
 
+// ============================================================
+// Fastify 适配器（企业级增强）
+// ============================================================
+
+/**
+ * 企业级 Fastify 适配器
+ */
+export { EnterpriseFastifyAdapter } from './fastify/enterprise-fastify.adapter.js';
+export type { EnterpriseFastifyAdapterOptions } from './fastify/enterprise-fastify.adapter.js';
+
+/**
+ * Fastify 配置
+ */
+export {
+  DEFAULT_FASTIFY_CONFIG,
+  DEV_FASTIFY_CONFIG,
+  PROD_FASTIFY_CONFIG,
+} from './fastify/config/fastify.config.js';
+
+// ============================================================
 // Fastify 专用模块
+// ============================================================
+
+/**
+ * 异常处理（Fastify 优化）
+ */
 export { FastifyExceptionModule } from './exceptions/exception.module.js';
 export { FastifyHttpExceptionFilter } from './exceptions/filters/fastify-http-exception.filter.js';
 export { FastifyAnyExceptionFilter } from './exceptions/filters/fastify-any-exception.filter.js';
 
+/**
+ * 日志（Fastify Pino 原生集成）
+ */
 export { FastifyLoggingModule } from './logging/logging.module.js';
 export { FastifyLoggerService } from './logging/fastify-logger.service.js';
 
+// ============================================================
 // 从 @hl8/nestjs-infra 复用的模块
+// ============================================================
 export * from './core/index.js';
 
+// ============================================================
 // 版本信息
+// ============================================================
 export const version = '0.1.0';
 

@@ -21,18 +21,21 @@ export { IsolationContext } from './shared/entities/isolation-context.entity.js'
 export { IsolationLevel } from './shared/enums/isolation-level.enum.js';
 export { DataSharingLevel } from './shared/enums/data-sharing-level.enum.js';
 
-// ===== 异常 (Exceptions) =====
-export { AbstractHttpException } from './shared/exceptions/abstract-http.exception.js';
-export { GeneralNotFoundException } from './shared/exceptions/general-not-found.exception.js';
-export { GeneralBadRequestException } from './shared/exceptions/general-bad-request.exception.js';
-export { GeneralInternalServerException } from './shared/exceptions/general-internal-server.exception.js';
-export { TenantNotFoundException } from './shared/exceptions/tenant-not-found.exception.js';
-export { InvalidIsolationContextException } from './shared/exceptions/invalid-isolation-context.exception.js';
-export { UnauthorizedOrganizationException } from './shared/exceptions/unauthorized-organization.exception.js';
-
 // ===== 类型 (Types) =====
-export type { DeepPartial, DeepReadonly, Nullable, Optional, Constructor, Class } from './shared/types/shared.types.js';
-export type { ProblemDetails } from './shared/exceptions/abstract-http.exception.js';
+export type {
+  DeepPartial,
+  DeepReadonly,
+  Nullable,
+  Optional,
+  Constructor,
+  AbstractConstructor,
+  AnyFunction,
+  AsyncFunction,
+  ValueOf,
+  Mutable,
+  RequiredKeys,
+  OptionalKeys,
+} from './shared/types/shared.types.js';
 
 // 版本信息
 export const version = '0.1.0';

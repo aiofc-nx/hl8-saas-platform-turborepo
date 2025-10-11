@@ -24,6 +24,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@fastify/cors": "^10.1.0",
     "@hl8/nestjs-infra": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
@@ -38,7 +39,7 @@
     "@repo/ts-config": "workspace:*",
     "@swc/core": "^1.13.5",
     "@swc/jest": "^0.2.37",
-    "@types/jest": "^30.2.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.16.0",
     "jest": "^30.2.0",
     "typescript": "^5.7.3"

@@ -7,7 +7,7 @@
  */
 
 import { Module, DynamicModule, Global } from '@nestjs/common';
-import { HTTP_ADAPTER_HOST } from '@nestjs/core';
+import { HttpAdapterHost } from '@nestjs/core';
 import { FastifyLoggerService } from './fastify-logger.service.js';
 
 @Global()
@@ -20,7 +20,7 @@ export class FastifyLoggingModule {
       providers: [
         {
           provide: FastifyLoggerService,
-          useFactory: (httpAdapterHost: any) => {
+          useFactory: (httpAdapterHost: HttpAdapterHost) => {
             // 获取 Fastify 实例
             const fastifyInstance = httpAdapterHost?.httpAdapter?.getInstance?.();
             
@@ -33,7 +33,7 @@ export class FastifyLoggingModule {
             const pino = require('pino');
             return new FastifyLoggerService(pino({ level: 'info' }));
           },
-          inject: [HTTP_ADAPTER_HOST],
+          inject: [HttpAdapterHost],
         },
       ],
       exports: [FastifyLoggerService],

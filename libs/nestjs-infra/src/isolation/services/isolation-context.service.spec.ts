@@ -5,9 +5,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClsService } from 'nestjs-cls';
 import { IsolationContextService } from './isolation-context.service.js';
-import { IsolationContext } from '../../shared/entities/isolation-context.entity.js';
-import { IsolationLevel } from '../../shared/enums/isolation-level.enum.js';
-import { TenantId } from '../../shared/value-objects/tenant-id.vo.js';
+import { IsolationContext } from '@hl8/platform';
+import { IsolationLevel } from '@hl8/platform';
+import { TenantId } from '@hl8/platform';
 
 describe('IsolationContextService', () => {
   let service: IsolationContextService;

@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",
+    "@hl8/platform": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "@nestjs/platform-fastify": "^11.1.6",

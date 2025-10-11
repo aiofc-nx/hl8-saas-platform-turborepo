@@ -5,12 +5,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MultiLevelIsolationService, DataAccessContext } from './multi-level-isolation.service.js';
 import { IsolationContextService } from './isolation-context.service.js';
-import { IsolationContext } from '../../shared/entities/isolation-context.entity.js';
-import { IsolationLevel } from '../../shared/enums/isolation-level.enum.js';
-import { DataSharingLevel } from '../../shared/enums/data-sharing-level.enum.js';
-import { TenantId } from '../../shared/value-objects/tenant-id.vo.js';
-import { OrganizationId } from '../../shared/value-objects/organization-id.vo.js';
-import { UserId } from '../../shared/value-objects/user-id.vo.js';
+import { IsolationContext } from '@hl8/platform';
+import { IsolationLevel } from '@hl8/platform';
+import { DataSharingLevel } from '@hl8/platform';
+import { TenantId } from '@hl8/platform';
+import { OrganizationId } from '@hl8/platform';
+import { UserId } from '@hl8/platform';
 
 describe('MultiLevelIsolationService', () => {
   let service: MultiLevelIsolationService;

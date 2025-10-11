@@ -9,8 +9,8 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IsolationContextService } from '../services/isolation-context.service.js';
-import { IsolationLevel } from '../../shared/enums/isolation-level.enum.js';
-import { InvalidIsolationContextException } from '../../shared/exceptions/invalid-isolation-context.exception.js';
+import { IsolationLevel } from '@hl8/platform';
+import { InvalidIsolationContextException } from '../../exceptions/core/invalid-isolation-context.exception.js';
 
 /**
  * 隔离守卫元数据键

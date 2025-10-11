@@ -7,7 +7,7 @@
  */
 
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { IsolationContext } from '../../shared/entities/isolation-context.entity.js';
+import { IsolationContext } from '@hl8/platform';
 
 /**
  * CurrentIsolation 装饰器

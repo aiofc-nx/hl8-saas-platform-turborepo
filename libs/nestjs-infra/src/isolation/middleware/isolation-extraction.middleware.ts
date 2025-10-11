@@ -8,11 +8,11 @@
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { IsolationContextService } from '../services/isolation-context.service.js';
-import { IsolationContext } from '../../shared/entities/isolation-context.entity.js';
-import { TenantId } from '../../shared/value-objects/tenant-id.vo.js';
-import { OrganizationId } from '../../shared/value-objects/organization-id.vo.js';
-import { DepartmentId } from '../../shared/value-objects/department-id.vo.js';
-import { UserId } from '../../shared/value-objects/user-id.vo.js';
+import { IsolationContext } from '@hl8/platform';
+import { TenantId } from '@hl8/platform';
+import { OrganizationId } from '@hl8/platform';
+import { DepartmentId } from '@hl8/platform';
+import { UserId } from '@hl8/platform';
 
 /**
  * 隔离上下文提取中间件

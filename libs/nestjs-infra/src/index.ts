@@ -56,29 +56,25 @@ export type {
 } from './exceptions/config/exception.config.js';
 
 // ============================================================
-// 共享模块（过渡性领域模型）
+// 从 @hl8/platform 重新导出核心模块
 // ============================================================
 
 /**
  * 值对象
  */
-export { EntityId } from './shared/value-objects/entity-id.vo.js';
-export { TenantId } from './shared/value-objects/tenant-id.vo.js';
-export { OrganizationId } from './shared/value-objects/organization-id.vo.js';
-export { DepartmentId } from './shared/value-objects/department-id.vo.js';
-export { UserId } from './shared/value-objects/user-id.vo.js';
+export { EntityId, TenantId, OrganizationId, DepartmentId, UserId } from '@hl8/platform';
 
 /**
  * 实体
  */
-export { IsolationContext } from './shared/entities/isolation-context.entity.js';
+export { IsolationContext } from '@hl8/platform';
 
 /**
  * 业务异常
  */
-export { TenantNotFoundException } from './shared/exceptions/tenant-not-found.exception.js';
-export { InvalidIsolationContextException } from './shared/exceptions/invalid-isolation-context.exception.js';
-export { UnauthorizedOrganizationException } from './shared/exceptions/unauthorized-organization.exception.js';
+export { TenantNotFoundException } from './exceptions/core/tenant-not-found.exception.js';
+export { InvalidIsolationContextException } from './exceptions/core/invalid-isolation-context.exception.js';
+export { UnauthorizedOrganizationException } from './exceptions/core/unauthorized-organization.exception.js';
 
 /**
  * 类型定义
@@ -96,24 +92,12 @@ export type {
   Mutable,
   RequiredKeys,
   OptionalKeys,
-} from './shared/types/shared.types.js';
+} from '@hl8/platform';
 
 /**
  * 枚举
  */
-export {
-  IsolationLevel,
-  getIsolationLevelName,
-  getIsolationLevelPriority,
-  isHigherOrEqualLevel,
-} from './shared/enums/isolation-level.enum.js';
-
-export {
-  DataSharingLevel,
-  getSharingLevelName,
-  getSharingLevelPriority,
-  isWiderOrEqualSharing,
-} from './shared/enums/data-sharing-level.enum.js';
+export { IsolationLevel, DataSharingLevel } from '@hl8/platform';
 
 // ============================================================
 // 通用技术组件
@@ -125,31 +109,12 @@ export {
 export { Public, IS_PUBLIC_KEY } from './common/decorators/public.decorator.js';
 
 // ============================================================
-// Fastify 适配器模块（Phase 3.1）
+// Fastify 适配器模块（已移至 @hl8/nestjs-fastify）
 // ============================================================
-
-/**
- * 企业级 Fastify 适配器
- */
-export { EnterpriseFastifyAdapter } from './fastify/enterprise-fastify.adapter.js';
-export type { EnterpriseFastifyAdapterOptions } from './fastify/enterprise-fastify.adapter.js';
-
-/**
- * Fastify 配置
- */
-export {
-  DEFAULT_FASTIFY_CONFIG,
-  DEV_FASTIFY_CONFIG,
-  PROD_FASTIFY_CONFIG,
-} from './fastify/config/fastify.config.js';
-
-/**
- * Fastify 监控服务
- */
-export { HealthCheckService } from './fastify/monitoring/health-check.service.js';
-export type { HealthCheckResult, ComponentHealth } from './fastify/monitoring/health-check.service.js';
-export { PerformanceMonitorService } from './fastify/monitoring/performance-monitor.service.js';
-export type { PerformanceMetrics, RouteMetrics } from './fastify/monitoring/performance-monitor.service.js';
+// 注意：Fastify 专用功能现在位于 @hl8/nestjs-fastify 包中
+// - EnterpriseFastifyAdapter
+// - Fastify 配置
+// - Fastify 监控服务
 
 // ============================================================
 // 缓存模块（Phase 3.1）

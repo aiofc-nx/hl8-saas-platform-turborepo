@@ -1,14 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import {
-  // ExceptionModule,  // TODO: Phase 2 - 需要修复 Fastify 兼容性
-  LoggingModule,
-  // CachingModule,  // TODO: Phase 4 - 需要 Redis 服务器
-  // IsolationModule,  // TODO: Phase 3
-  LoggingModuleConfig,
-  // CachingModuleConfig,
-  // RedisConfig,
-} from '@hl8/nestjs-infra';
+  FastifyExceptionModule,
+  FastifyLoggingModule,
+  CachingModule,
+  IsolationModule,
+  CachingModuleConfig,
+} from '@hl8/nestjs-fastify';
 import { plainToInstance } from 'class-transformer';
 import { AppController } from './app.controller.js';
 
@@ -59,38 +57,31 @@ import { AppController } from './app.controller.js';
       envFilePath: ['.env.local', '.env'],
     }),
 
-    // TODO: Phase 1 - 日志模块（先确保基础版本可用）
-    // LoggingModule.forRoot(
-    //   plainToInstance(LoggingModuleConfig, {
-    //     level: process.env.LOG_LEVEL || (process.env.NODE_ENV !== 'production' ? 'debug' : 'info'),
-    //     prettyPrint: process.env.NODE_ENV !== 'production',
+    // Fastify 专用异常处理模块（RFC7807 统一格式）
+    FastifyExceptionModule.forRoot({
+      isProduction: process.env.NODE_ENV === 'production',
+    }),
+
+    // Fastify 专用日志模块（零开销，复用 Fastify Pino）
+    FastifyLoggingModule.forRoot(),
+
+    // 数据隔离模块 - 5 级隔离（平台/租户/组织/部门/用户）
+    IsolationModule.forRoot(),
+
+    // 缓存模块 - Redis 分布式缓存（可选）
+    // 启用前需要确保 Redis 可用：docker run -d -p 6379:6379 redis:alpine
+    // CachingModule.forRoot(
+    //   plainToInstance(CachingModuleConfig, {
+    //     redis: {
+    //       host: process.env.REDIS_HOST || 'localhost',
+    //       port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    //       password: process.env.REDIS_PASSWORD,
+    //       db: parseInt(process.env.REDIS_DB || '0', 10),
+    //     },
+    //     ttl: parseInt(process.env.CACHE_TTL || '3600', 10),
+    //     keyPrefix: process.env.CACHE_KEY_PREFIX || 'hl8:cache:',
     //   }),
     // ),
-
-    // TODO: Phase 2 - 异常处理模块（需要修复 Fastify 兼容性）
-    // ExceptionModule.forRoot({
-    //   isProduction: process.env.NODE_ENV === 'production',
-    //   enableLogging: true,
-    // }),
-
-    // // 缓存模块 - Redis 分布式缓存（可选）
-    // // TODO: 启用缓存前需要启动 Redis 服务器
-    // // 启动 Redis: docker run -d -p 6379:6379 redis:alpine
-    // // CachingModule.forRoot(
-    // //   plainToInstance(CachingModuleConfig, {
-    // //     redis: {
-    // //       host: process.env.REDIS_HOST || 'localhost',
-    // //       port: parseInt(process.env.REDIS_PORT || '6379', 10),
-    // //       password: process.env.REDIS_PASSWORD,
-    // //       db: parseInt(process.env.REDIS_DB || '0', 10),
-    // //     },
-    // //     ttl: parseInt(process.env.CACHE_TTL || '3600', 10),
-    // //     keyPrefix: process.env.CACHE_KEY_PREFIX || 'hl8:cache:',
-    // //   }),
-    // // ),
-
-    // // 数据隔离模块 - 5 级隔离
-    // IsolationModule.forRoot(),
   ],
 })
 export class AppModule {}

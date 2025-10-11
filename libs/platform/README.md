@@ -11,17 +11,20 @@
 ## ⚡ 核心特性
 
 ### 1. 无框架依赖 🎯
+
 - ✅ 纯 TypeScript
 - ✅ 可用于任何环境（Node.js, Browser, Deno）
 - ✅ 可用于任何框架（NestJS, Express, Koa, Fastify）
 
 ### 2. 领域驱动设计 (DDD) 📐
+
 - ✅ 值对象 (Value Objects)
 - ✅ 实体 (Entities)
 - ✅ 领域异常 (Domain Exceptions)
 - ✅ 充血模型 (Rich Domain Model)
 
 ### 3. 高度可测试 ✨
+
 - ✅ 无外部依赖
 - ✅ 纯函数式
 - ✅ 易于 Mock
@@ -177,6 +180,7 @@ const context = IsolationContext.createTenant(tenantId);
 ```
 
 **特点**:
+
 - ⚡ 无任何框架依赖
 - ✅ 可在任何地方使用
 - ✅ 高度可测试
@@ -189,11 +193,13 @@ const context = IsolationContext.createTenant(tenantId);
 ### 1. 领域驱动设计 (DDD)
 
 **值对象 (Value Objects)**:
+
 - 不可变性
 - 相等性基于值
 - 自我验证
 
 **实体 (Entities)**:
+
 - 唯一标识
 - 生命周期
 - 业务规则封装
@@ -227,6 +233,7 @@ class IsolationContext {
 ```
 
 **好处**:
+
 - ✅ 可在任何环境运行
 - ✅ 测试极其简单
 - ✅ 永不过时
@@ -247,4 +254,3 @@ class IsolationContext {
 ---
 
 **纯粹的业务逻辑，可在任何地方使用！** ⚡
-
