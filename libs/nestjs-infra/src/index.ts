@@ -217,8 +217,41 @@ export { CurrentIsolation } from './isolation/decorators/current-isolation.decor
 export { IsolationGuard, REQUIRED_ISOLATION_LEVEL } from './isolation/guards/isolation.guard';
 
 // ============================================================
+// 日志模块（Phase 3-4）
+// ============================================================
+
+/**
+ * 日志模块
+ */
+export { LoggingModule } from './logging/logger.module';
+
+/**
+ * 日志服务
+ */
+export { LoggerService } from './logging/logger.service';
+export type { LoggerOptions, LogLevel } from './logging/logger.service';
+
+// ============================================================
+// 配置管理模块（Phase 5）
+// ============================================================
+
+/**
+ * 配置模块
+ */
+export { TypedConfigModule } from './configuration/typed-config.module';
+export type { TypedConfigModuleOptions, ConfigLoader } from './configuration/typed-config.module';
+
+/**
+ * 配置加载器
+ */
+export { FileLoader, fileLoader } from './configuration/loaders/file.loader';
+export type { FileLoaderOptions } from './configuration/loaders/file.loader';
+export { DotenvLoader, dotenvLoader } from './configuration/loaders/dotenv.loader';
+export type { DotenvLoaderOptions } from './configuration/loaders/dotenv.loader';
+
+// ============================================================
 // 版本信息
 // ============================================================
 
-export const version = '0.2.0';
+export const version = '0.3.0';
 

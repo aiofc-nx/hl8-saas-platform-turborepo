@@ -2,7 +2,7 @@
 
 > NestJS 基础设施模块 - 为 NestJS 应用提供企业级基础设施功能
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/hl8/nestjs-infra)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](https://github.com/hl8/nestjs-infra)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-green.svg)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/typescript-5.x-blue.svg)](https://www.typescriptlang.org)
 

@@ -1,6 +1,6 @@
 {
   "name": "@hl8/nestjs-infra",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "NestJS 基础设施模块 - 提供企业级基础设施功能",
   "type": "module",
   "main": "./dist/index.js",
