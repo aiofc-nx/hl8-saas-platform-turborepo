@@ -275,18 +275,17 @@ describe('HttpExceptionFilter', () => {
       );
     });
 
-    it('应该在没有日志服务时使用 console', () => {
+    it('没有日志服务时应该静默处理', () => {
       // Arrange
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       filter = new HttpExceptionFilter(); // 不注入日志服务
       const exception = new GeneralNotFoundException('未找到', '详情');
 
-      // Act
-      filter.catch(exception, mockArgumentsHost);
-
-      // Assert
-      expect(consoleSpy).toHaveBeenCalled();
-      consoleSpy.mockRestore();
+      // Act & Assert - 应该不抛出错误
+      expect(() => filter.catch(exception, mockArgumentsHost)).not.toThrow();
+      
+      // 验证响应正常发送
+      expect(mockResponse.status).toHaveBeenCalled();
+      expect(mockResponse.send).toHaveBeenCalled();
     });
   });
 

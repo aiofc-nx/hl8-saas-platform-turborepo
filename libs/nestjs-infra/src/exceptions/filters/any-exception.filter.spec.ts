@@ -169,6 +169,7 @@ describe('AnyExceptionFilter', () => {
 
     it('应该处理 HttpException 的对象响应', () => {
       // Arrange
+      filter = new AnyExceptionFilter(mockLogger, true); // 生产环境模式
       const exception = new HttpException(
         {
           error: 'Validation Error',
@@ -190,6 +191,7 @@ describe('AnyExceptionFilter', () => {
 
     it('应该处理 HttpException 的字符串响应', () => {
       // Arrange
+      filter = new AnyExceptionFilter(mockLogger, true); // 生产环境模式
       const exception = new HttpException('Simple error message', 400);
 
       // Act
@@ -359,23 +361,17 @@ describe('AnyExceptionFilter', () => {
       );
     });
 
-    it('应该在没有日志服务时使用 console', () => {
+    it('没有日志服务时应该静默处理', () => {
       // Arrange
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       filter = new AnyExceptionFilter(); // 不注入日志服务
       const error = new Error('测试错误');
 
-      // Act
-      filter.catch(error, mockArgumentsHost);
-
-      // Assert
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Unhandled Exception:',
-        expect.objectContaining({
-          message: '测试错误',
-        }),
-      );
-      consoleSpy.mockRestore();
+      // Act & Assert - 应该不抛出错误
+      expect(() => filter.catch(error, mockArgumentsHost)).not.toThrow();
+      
+      // 验证响应正常发送
+      expect(mockResponse.status).toHaveBeenCalledWith(500);
+      expect(mockResponse.send).toHaveBeenCalled();
     });
   });
 

@@ -255,6 +255,7 @@ constructor(
 #### 配置优先级
 
 1. **Fastify 场景**: Fastify 配置优先
+
    ```typescript
    new EnterpriseFastifyAdapter({
      fastifyOptions: {
@@ -267,6 +268,7 @@ constructor(
    ```
 
 2. **非 Fastify 场景**: LoggingModule 配置生效
+
    ```typescript
    LoggingModule.forRoot({
      level: 'debug',  // ← 此配置生效
