@@ -25,6 +25,10 @@ export default {
     '**/__tests__/**/*.[jt]s?(x)',
     '**/?(*.)+(spec|test).[jt]s?(x)',
   ],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '__tests__/exceptions/exception-integration.spec.ts', // 需要 HTTP 服务器，跳过
+  ],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.spec.ts',
