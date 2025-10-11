@@ -27,7 +27,7 @@ export interface RedisOptions {
  */
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
-  private client: Redis | null = null;
+  private client: InstanceType<typeof Redis> | null = null;
 
   constructor(private readonly options: RedisOptions) {}
 
@@ -67,7 +67,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
         console.log('Redis 连接成功');
       });
 
-      this.client.on('error', (error) => {
+      this.client.on('error', (error: Error) => {
         console.error('Redis 连接错误:', error);
       });
 
@@ -99,7 +99,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    * @returns Redis 客户端实例
    * @throws {GeneralInternalServerException} Redis 未连接
    */
-  getClient(): Redis {
+  getClient(): InstanceType<typeof Redis> {
     if (!this.client) {
       throw new GeneralInternalServerException(
         'Redis 未连接',

@@ -21,27 +21,27 @@
 /**
  * 异常处理模块
  */
-export { ExceptionModule } from './exceptions/exception.module';
+export { ExceptionModule } from './exceptions/exception.module.js';
 
 /**
  * 异常类
  */
-export { AbstractHttpException, ProblemDetails } from './exceptions/core/abstract-http.exception';
-export { GeneralNotFoundException } from './exceptions/core/general-not-found.exception';
-export { GeneralBadRequestException } from './exceptions/core/general-bad-request.exception';
-export { GeneralInternalServerException } from './exceptions/core/general-internal-server.exception';
+export { AbstractHttpException, ProblemDetails } from './exceptions/core/abstract-http.exception.js';
+export { GeneralNotFoundException } from './exceptions/core/general-not-found.exception.js';
+export { GeneralBadRequestException } from './exceptions/core/general-bad-request.exception.js';
+export { GeneralInternalServerException } from './exceptions/core/general-internal-server.exception.js';
 
 /**
  * 异常过滤器
  */
-export { HttpExceptionFilter, ILoggerService, IExceptionMessageProvider } from './exceptions/filters/http-exception.filter';
-export { AnyExceptionFilter } from './exceptions/filters/any-exception.filter';
+export { HttpExceptionFilter, ILoggerService, IExceptionMessageProvider } from './exceptions/filters/http-exception.filter.js';
+export { AnyExceptionFilter } from './exceptions/filters/any-exception.filter.js';
 
 /**
  * 消息提供者
  */
-export { ExceptionMessageProvider } from './exceptions/providers/exception-message.provider';
-export { DefaultMessageProvider } from './exceptions/providers/default-message.provider';
+export { ExceptionMessageProvider } from './exceptions/providers/exception-message.provider.js';
+export { DefaultMessageProvider } from './exceptions/providers/default-message.provider.js';
 
 /**
  * 异常配置
@@ -52,7 +52,7 @@ export {
   ExceptionOptionsFactory,
   EXCEPTION_MODULE_OPTIONS,
   DEFAULT_EXCEPTION_OPTIONS,
-} from './exceptions/config/exception.config';
+} from './exceptions/config/exception.config.js';
 
 // ============================================================
 // 共享模块（过渡性领域模型）
@@ -61,23 +61,23 @@ export {
 /**
  * 值对象
  */
-export { EntityId } from './shared/value-objects/entity-id.vo';
-export { TenantId } from './shared/value-objects/tenant-id.vo';
-export { OrganizationId } from './shared/value-objects/organization-id.vo';
-export { DepartmentId } from './shared/value-objects/department-id.vo';
-export { UserId } from './shared/value-objects/user-id.vo';
+export { EntityId } from './shared/value-objects/entity-id.vo.js';
+export { TenantId } from './shared/value-objects/tenant-id.vo.js';
+export { OrganizationId } from './shared/value-objects/organization-id.vo.js';
+export { DepartmentId } from './shared/value-objects/department-id.vo.js';
+export { UserId } from './shared/value-objects/user-id.vo.js';
 
 /**
  * 实体
  */
-export { IsolationContext } from './shared/entities/isolation-context.entity';
+export { IsolationContext } from './shared/entities/isolation-context.entity.js';
 
 /**
  * 业务异常
  */
-export { TenantNotFoundException } from './shared/exceptions/tenant-not-found.exception';
-export { InvalidIsolationContextException } from './shared/exceptions/invalid-isolation-context.exception';
-export { UnauthorizedOrganizationException } from './shared/exceptions/unauthorized-organization.exception';
+export { TenantNotFoundException } from './shared/exceptions/tenant-not-found.exception.js';
+export { InvalidIsolationContextException } from './shared/exceptions/invalid-isolation-context.exception.js';
+export { UnauthorizedOrganizationException } from './shared/exceptions/unauthorized-organization.exception.js';
 
 /**
  * 类型定义
@@ -95,7 +95,7 @@ export type {
   Mutable,
   RequiredKeys,
   OptionalKeys,
-} from './shared/types/shared.types';
+} from './shared/types/shared.types.js';
 
 /**
  * 枚举
@@ -105,14 +105,14 @@ export {
   getIsolationLevelName,
   getIsolationLevelPriority,
   isHigherOrEqualLevel,
-} from './shared/enums/isolation-level.enum';
+} from './shared/enums/isolation-level.enum.js';
 
 export {
   DataSharingLevel,
   getSharingLevelName,
   getSharingLevelPriority,
   isWiderOrEqualSharing,
-} from './shared/enums/data-sharing-level.enum';
+} from './shared/enums/data-sharing-level.enum.js';
 
 // ============================================================
 // 通用技术组件
@@ -121,7 +121,7 @@ export {
 /**
  * 装饰器
  */
-export { Public, IS_PUBLIC_KEY } from './common/decorators/public.decorator';
+export { Public, IS_PUBLIC_KEY } from './common/decorators/public.decorator.js';
 
 // ============================================================
 // Fastify 适配器模块（Phase 3.1）
@@ -130,8 +130,8 @@ export { Public, IS_PUBLIC_KEY } from './common/decorators/public.decorator';
 /**
  * 企业级 Fastify 适配器
  */
-export { EnterpriseFastifyAdapter } from './fastify/enterprise-fastify.adapter';
-export type { EnterpriseFastifyAdapterOptions } from './fastify/enterprise-fastify.adapter';
+export { EnterpriseFastifyAdapter } from './fastify/enterprise-fastify.adapter.js';
+export type { EnterpriseFastifyAdapterOptions } from './fastify/enterprise-fastify.adapter.js';
 
 /**
  * Fastify 配置
@@ -140,15 +140,15 @@ export {
   DEFAULT_FASTIFY_CONFIG,
   DEV_FASTIFY_CONFIG,
   PROD_FASTIFY_CONFIG,
-} from './fastify/config/fastify.config';
+} from './fastify/config/fastify.config.js';
 
 /**
  * Fastify 监控服务
  */
-export { HealthCheckService } from './fastify/monitoring/health-check.service';
-export type { HealthCheckResult, ComponentHealth } from './fastify/monitoring/health-check.service';
-export { PerformanceMonitorService } from './fastify/monitoring/performance-monitor.service';
-export type { PerformanceMetrics, RouteMetrics } from './fastify/monitoring/performance-monitor.service';
+export { HealthCheckService } from './fastify/monitoring/health-check.service.js';
+export type { HealthCheckResult, ComponentHealth } from './fastify/monitoring/health-check.service.js';
+export { PerformanceMonitorService } from './fastify/monitoring/performance-monitor.service.js';
+export type { PerformanceMetrics, RouteMetrics } from './fastify/monitoring/performance-monitor.service.js';
 
 // ============================================================
 // 缓存模块（Phase 3.1）
@@ -157,32 +157,32 @@ export type { PerformanceMetrics, RouteMetrics } from './fastify/monitoring/perf
 /**
  * 缓存模块
  */
-export { CachingModule } from './caching/cache.module';
-export type { CachingModuleOptions, CachingModuleAsyncOptions } from './caching/cache.module';
+export { CachingModule } from './caching/cache.module.js';
+export type { CachingModuleOptions, CachingModuleAsyncOptions } from './caching/cache.module.js';
 
 /**
  * 缓存服务
  */
-export { CacheService } from './caching/cache.service';
-export type { ICacheService } from './caching/cache.service';
-export { RedisService } from './caching/redis.service';
-export type { RedisOptions } from './caching/redis.service';
+export { CacheService } from './caching/cache.service.js';
+export type { ICacheService } from './caching/cache.service.js';
+export { RedisService } from './caching/redis.service.js';
+export type { RedisOptions } from './caching/redis.service.js';
 
 /**
  * 缓存工具
  */
-export { KeyGenerator } from './caching/utils/key-generator.util';
-export { Serializer } from './caching/utils/serializer.util';
+export { KeyGenerator } from './caching/utils/key-generator.util.js';
+export { Serializer } from './caching/utils/serializer.util.js';
 
 /**
  * 缓存装饰器
  */
-export { Cacheable } from './caching/decorators/cacheable.decorator';
-export type { CacheableOptions } from './caching/decorators/cacheable.decorator';
-export { CacheEvict } from './caching/decorators/cache-evict.decorator';
-export type { CacheEvictOptions } from './caching/decorators/cache-evict.decorator';
-export { CachePut } from './caching/decorators/cache-put.decorator';
-export type { CachePutOptions } from './caching/decorators/cache-put.decorator';
+export { Cacheable } from './caching/decorators/cacheable.decorator.js';
+export type { CacheableOptions } from './caching/decorators/cacheable.decorator.js';
+export { CacheEvict } from './caching/decorators/cache-evict.decorator.js';
+export type { CacheEvictOptions } from './caching/decorators/cache-evict.decorator.js';
+export { CachePut } from './caching/decorators/cache-put.decorator.js';
+export type { CachePutOptions } from './caching/decorators/cache-put.decorator.js';
 
 // ============================================================
 // 数据隔离模块（Phase 3.2）
@@ -191,30 +191,30 @@ export type { CachePutOptions } from './caching/decorators/cache-put.decorator';
 /**
  * 隔离模块
  */
-export { IsolationModule } from './isolation/isolation.module';
-export type { IsolationModuleOptions } from './isolation/isolation.module';
+export { IsolationModule } from './isolation/isolation.module.js';
+export type { IsolationModuleOptions } from './isolation/isolation.module.js';
 
 /**
  * 隔离服务
  */
-export { IsolationContextService } from './isolation/services/isolation-context.service';
-export { MultiLevelIsolationService } from './isolation/services/multi-level-isolation.service';
-export type { DataAccessContext } from './isolation/services/multi-level-isolation.service';
+export { IsolationContextService } from './isolation/services/isolation-context.service.js';
+export { MultiLevelIsolationService } from './isolation/services/multi-level-isolation.service.js';
+export type { DataAccessContext } from './isolation/services/multi-level-isolation.service.js';
 
 /**
  * 隔离中间件
  */
-export { IsolationExtractionMiddleware } from './isolation/middleware/isolation-extraction.middleware';
+export { IsolationExtractionMiddleware } from './isolation/middleware/isolation-extraction.middleware.js';
 
 /**
  * 隔离装饰器
  */
-export { CurrentIsolation } from './isolation/decorators/current-isolation.decorator';
+export { CurrentIsolation } from './isolation/decorators/current-isolation.decorator.js';
 
 /**
  * 隔离守卫
  */
-export { IsolationGuard, REQUIRED_ISOLATION_LEVEL } from './isolation/guards/isolation.guard';
+export { IsolationGuard, REQUIRED_ISOLATION_LEVEL } from './isolation/guards/isolation.guard.js';
 
 // ============================================================
 // 日志模块（Phase 3-4）
@@ -223,13 +223,13 @@ export { IsolationGuard, REQUIRED_ISOLATION_LEVEL } from './isolation/guards/iso
 /**
  * 日志模块
  */
-export { LoggingModule } from './logging/logger.module';
+export { LoggingModule } from './logging/logger.module.js';
 
 /**
  * 日志服务
  */
-export { LoggerService } from './logging/logger.service';
-export type { LoggerOptions, LogLevel } from './logging/logger.service';
+export { LoggerService } from './logging/logger.service.js';
+export type { LoggerOptions, LogLevel } from './logging/logger.service.js';
 
 // ============================================================
 // 配置管理模块（Phase 5）
@@ -238,20 +238,20 @@ export type { LoggerOptions, LogLevel } from './logging/logger.service';
 /**
  * 配置模块
  */
-export { TypedConfigModule } from './configuration/typed-config.module';
-export type { TypedConfigModuleOptions, ConfigLoader } from './configuration/typed-config.module';
+export { TypedConfigModule } from './configuration/typed-config.module.js';
+export type { TypedConfigModuleOptions, ConfigLoader } from './configuration/typed-config.module.js';
 
 /**
  * 配置加载器
  */
-export { FileLoader, fileLoader } from './configuration/loaders/file.loader';
-export type { FileLoaderOptions } from './configuration/loaders/file.loader';
-export { DotenvLoader, dotenvLoader } from './configuration/loaders/dotenv.loader';
-export type { DotenvLoaderOptions } from './configuration/loaders/dotenv.loader';
+export { FileLoader, fileLoader } from './configuration/loaders/file.loader.js';
+export type { FileLoaderOptions } from './configuration/loaders/file.loader.js';
+export { DotenvLoader, dotenvLoader } from './configuration/loaders/dotenv.loader.js';
+export type { DotenvLoaderOptions } from './configuration/loaders/dotenv.loader.js';
 
 // ============================================================
 // 版本信息
 // ============================================================
 
-export const version = '0.3.0';
+export const version = '0.3.0.js';
 

@@ -26,6 +26,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { GeneralInternalServerException } from '../exceptions/core/general-internal-server.exception.js';
 import type Redis from 'ioredis';
+type RedisClient = InstanceType<typeof Redis>;
 
 /**
  * 缓存服务接口
@@ -46,7 +47,7 @@ export interface ICacheService {
 @Injectable()
 export class CacheService implements ICacheService {
   constructor(
-    @Inject('REDIS_CLIENT') private readonly redis: Redis,
+    @Inject('REDIS_CLIENT') private readonly redis: RedisClient,
     @Inject('CACHE_OPTIONS') private readonly options: { defaultTTL: number; keyPrefix: string },
   ) {}
 

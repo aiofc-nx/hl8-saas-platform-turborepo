@@ -52,8 +52,8 @@
 
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import * as fastifyCors from '@fastify/cors';
-import * as fastifyHelmet from '@fastify/helmet';
+import fastifyCors from '@fastify/cors';
+import fastifyHelmet from '@fastify/helmet';
 
 /**
  * 企业级 Fastify 适配器选项
@@ -122,7 +122,7 @@ export interface EnterpriseFastifyAdapterOptions {
  * @description 整合 CORS、安全、监控、限流、熔断等企业级功能
  */
 export class EnterpriseFastifyAdapter extends FastifyAdapter {
-  private options: EnterpriseFastifyAdapterOptions;
+  private adapterOptions: EnterpriseFastifyAdapterOptions;
   private requestStats: Map<string, number> = new Map();
   private circuitBreakerState: Map<string, CircuitBreakerState> = new Map();
 
@@ -146,7 +146,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     super(options.fastifyOptions);
 
     // 设置默认值
-    this.options = {
+    this.adapterOptions = {
       enableCors: options.enableCors !== false,
       enableSecurity: options.enableSecurity !== false,
       enablePerformanceMonitoring: options.enablePerformanceMonitoring !== false,
@@ -167,32 +167,32 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     const instance = this.getInstance<FastifyInstance>();
 
     // 1. 注册 CORS
-    if (this.options.enableCors) {
+    if (this.adapterOptions.enableCors) {
       await this.registerCors(instance);
     }
 
     // 2. 注册安全功能
-    if (this.options.enableSecurity) {
+    if (this.adapterOptions.enableSecurity) {
       await this.registerSecurity(instance);
     }
 
     // 3. 注册性能监控
-    if (this.options.enablePerformanceMonitoring) {
+    if (this.adapterOptions.enablePerformanceMonitoring) {
       this.registerPerformanceMonitoring(instance);
     }
 
     // 4. 注册限流
-    if (this.options.enableRateLimit) {
+    if (this.adapterOptions.enableRateLimit) {
       this.registerRateLimit(instance);
     }
 
     // 5. 注册熔断器
-    if (this.options.enableCircuitBreaker) {
+    if (this.adapterOptions.enableCircuitBreaker) {
       this.registerCircuitBreaker(instance);
     }
 
     // 6. 注册健康检查
-    if (this.options.enableHealthCheck) {
+    if (this.adapterOptions.enableHealthCheck) {
       this.registerHealthCheck(instance);
     }
   }
@@ -222,7 +222,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
 
     await instance.register(fastifyCors, {
       ...defaultCorsOptions,
-      ...this.options.corsOptions,
+      ...this.adapterOptions.corsOptions,
     });
   }
 
@@ -233,7 +233,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
    * @private
    */
   private async registerSecurity(instance: FastifyInstance): Promise<void> {
-    const securityOptions = this.options.securityOptions || {};
+    const securityOptions = this.adapterOptions.securityOptions || {};
 
     // Helmet 安全头
     if (securityOptions.enableHelmet !== false) {
@@ -287,7 +287,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
    * @private
    */
   private registerRateLimit(instance: FastifyInstance): void {
-    const options = this.options.rateLimitOptions || {};
+    const options = this.adapterOptions.rateLimitOptions || {};
     const timeWindow = options.timeWindow || 60000; // 默认 1分钟
     const max = options.max || 100; // 默认 100 次请求
 
@@ -326,7 +326,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
    * @private
    */
   private registerCircuitBreaker(instance: FastifyInstance): void {
-    const options = this.options.circuitBreakerOptions || {};
+    const options = this.adapterOptions.circuitBreakerOptions || {};
     const threshold = options.threshold || 5; // 默认失败5次触发熔断
     const resetTimeout = options.resetTimeout || 60000; // 默认 1 分钟后重置
 
@@ -376,7 +376,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
    * @private
    */
   private registerHealthCheck(instance: FastifyInstance): void {
-    instance.get(this.options.healthCheckPath!, async () => {
+    instance.get(this.adapterOptions.healthCheckPath!, async () => {
       return {
         status: 'ok',
         timestamp: new Date().toISOString(),
