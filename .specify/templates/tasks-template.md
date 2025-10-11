@@ -7,6 +7,12 @@ description: 'Task list template for feature implementation'
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
+<!--
+  重要提示：在编写任务描述时，请使用 `docs/definition-of-terms.mdc` 中定义的统一术语，
+  确保任务描述、文件命名、代码实现使用相同的领域语言（Ubiquitous Language）。
+  核心术语包括：Platform（平台）、Tenant（租户）、Organization（组织）、Department（部门）、User（用户）等。
+-->
+
 **Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.

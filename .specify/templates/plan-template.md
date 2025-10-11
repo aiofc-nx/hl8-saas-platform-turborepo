@@ -74,6 +74,27 @@
 - [ ] 核心业务逻辑测试覆盖率 ≥ 80%
 - [ ] 所有公共 API 必须有对应的测试用例
 
+### 数据隔离与共享原则
+
+- [ ] 所有业务数据支持多层级隔离（平台、租户、组织、部门、用户）
+- [ ] 数据模型包含必需的隔离字段（tenantId、organizationId、departmentId、userId）
+- [ ] 为隔离字段创建数据库索引以优化查询性能
+- [ ] 数据明确分类为共享数据或非共享数据
+- [ ] 共享数据定义了明确的共享级别（平台/租户/组织/部门）
+- [ ] API请求携带完整的隔离标识（X-Tenant-Id、X-Organization-Id、X-Department-Id、X-User-Id）
+- [ ] 系统自动根据隔离上下文过滤数据，无需手动处理
+- [ ] 缓存键包含完整的隔离层级信息
+- [ ] 所有数据访问记录完整的隔离上下文到日志
+- [ ] 跨层级数据访问触发审计事件
+
+### 统一语言原则（Ubiquitous Language）
+
+- [ ] 所有文档和代码使用 `docs/definition-of-terms.mdc` 中定义的统一术语
+- [ ] 核心业务实体命名符合术语定义（Platform、Tenant、Organization、Department、User）
+- [ ] 接口和方法命名使用统一术语，确保业务语义清晰
+- [ ] 代码注释中使用统一术语描述业务逻辑
+- [ ] 技术实现能够追溯到业务术语和领域模型
+
 ## Project Structure
 
 ### Documentation (this feature)

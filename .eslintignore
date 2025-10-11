@@ -1,0 +1,45 @@
+# ESLint 忽略文件
+# 注意：主要的忽略配置在 eslint.config.mjs 中
+# 此文件作为备份，用于不支持 Flat Config 的工具
+
+# 依赖
+node_modules/
+**/node_modules/**
+
+# 构建输出
+dist/
+build/
+out/
+**/dist/**
+**/build/**
+**/out/**
+
+# 缓存
+.turbo/
+.next/
+**/.turbo/**
+**/.next/**
+
+# 测试覆盖率
+coverage/
+**/coverage/**
+
+# 配置文件（已编译）
+*.config.js
+*.config.mjs
+
+# 备份和第三方代码
+backup/
+forks/
+**/backup/**
+**/forks/**
+
+# 规范模板
+.specify/
+**/.specify/**
+
+# 临时文件
+*.tmp
+*.temp
+.DS_Store
+

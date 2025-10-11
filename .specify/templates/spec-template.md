@@ -5,6 +5,12 @@
 **Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
 
+<!--
+  重要提示：在编写需求规范时，请使用 `docs/definition-of-terms.mdc` 中定义的统一术语，
+  确保业务需求描述与技术实现使用相同的领域语言（Ubiquitous Language）。
+  核心术语包括：Platform（平台）、Tenant（租户）、Organization（组织）、Department（部门）、User（用户）等。
+-->
+
 ## User Scenarios & Testing _(mandatory)_
 
 <!--
