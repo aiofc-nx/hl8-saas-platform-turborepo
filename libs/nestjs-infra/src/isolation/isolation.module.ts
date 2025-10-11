@@ -28,15 +28,21 @@ export interface IsolationModuleOptions {
  */
 @Module({})
 export class IsolationModule implements NestModule {
+  private static moduleOptions: IsolationModuleOptions = {};
+
   static forRoot(options: IsolationModuleOptions = {}): DynamicModule {
+    this.moduleOptions = options;
+
     return {
       module: IsolationModule,
       global: options.global !== false,
       imports: [
         ClsModule.forRoot({
           global: true,
+          // 禁用 ClsModule 的自动中间件挂载
+          // 改为手动控制，避免与 Fastify 中间件引擎冲突
           middleware: {
-            mount: true,
+            mount: false,
           },
         }),
       ],
@@ -51,7 +57,10 @@ export class IsolationModule implements NestModule {
   }
 
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(IsolationExtractionMiddleware).forRoutes('*');
+    // 仅在显式启用时才注册中间件
+    if (IsolationModule.moduleOptions.autoRegisterMiddleware !== false) {
+      consumer.apply(IsolationExtractionMiddleware).forRoutes('*');
+    }
   }
 }
 

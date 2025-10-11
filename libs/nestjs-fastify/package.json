@@ -25,12 +25,16 @@
   },
   "dependencies": {
     "@fastify/cors": "^10.1.0",
+    "@hl8/config": "workspace:*",
     "@hl8/nestjs-infra": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "@nestjs/platform-fastify": "^11.1.6",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
     "fastify": "^5.6.1",
     "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {

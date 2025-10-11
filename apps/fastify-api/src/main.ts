@@ -3,6 +3,7 @@ import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
 import { AppModule } from './app.module.js';
 import { bootstrap } from './bootstrap.js';
+import { setupSwagger } from './swagger.js';
 
 /**
  * Main entry point to bootstrap the NestJS Fastify application.
@@ -17,7 +18,17 @@ const main = async (): Promise<void> => {
   const adapter = new EnterpriseFastifyAdapter({
     // Fastify 基础配置
     fastifyOptions: {
-      logger: false,  // 使用 FastifyLoggingModule 代替
+      logger: {
+        level: process.env.LOG_LEVEL || 'info',
+        transport: process.env.NODE_ENV === 'development' ? {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: 'SYS:standard',
+            ignore: 'pid,hostname',
+          },
+        } : undefined,
+      },
       trustProxy: true,
     },
     // CORS 配置（暂时禁用，避免冲突 - NestJS 可能已经注册）
@@ -50,6 +61,9 @@ const main = async (): Promise<void> => {
       bufferLogs: true,
     },
   );
+
+  // 设置 Swagger API 文档
+  await setupSwagger(app);
 
   await bootstrap(app);
 };

@@ -49,7 +49,14 @@ export { FastifyAnyExceptionFilter } from './exceptions/filters/fastify-any-exce
  * 日志（Fastify Pino 原生集成）
  */
 export { FastifyLoggingModule } from './logging/logging.module.js';
+export type { FastifyLoggingModuleOptions } from './logging/logging.module.js';
 export { FastifyLoggerService } from './logging/fastify-logger.service.js';
+
+/**
+ * 日志配置
+ */
+export { LoggingConfig } from './config/logging.config.js';
+export type { LogLevel } from './config/logging.config.js';
 
 // ============================================================
 // 版本信息

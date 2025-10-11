@@ -56,6 +56,18 @@ export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
 
   await app.listen(port, host);
   
-  console.log(`🚀 Application started at http://${host}:${port}`);
-  console.log(`✅ Ready to accept requests`);
+  // 输出启动信息
+  const displayHost = host === '0.0.0.0' ? 'localhost' : host;
+  
+  console.log('\n' + '='.repeat(70));
+  console.log('🚀 HL8 SAAS Platform - Application Started Successfully');
+  console.log('='.repeat(70));
+  console.log(`📍 Local:        http://${displayHost}:${port}`);
+  console.log(`🌐 Network:      http://${host}:${port}`);
+  console.log(`📚 API Docs:     http://${displayHost}:${port}/api-docs`);
+  console.log(`📄 OpenAPI JSON: http://${displayHost}:${port}/api-docs-json`);
+  console.log('='.repeat(70));
+  console.log(`✅ Environment:  ${process.env.NODE_ENV || 'development'}`);
+  console.log(`⚡ Powered by:   Fastify + NestJS`);
+  console.log('='.repeat(70) + '\n');
 };

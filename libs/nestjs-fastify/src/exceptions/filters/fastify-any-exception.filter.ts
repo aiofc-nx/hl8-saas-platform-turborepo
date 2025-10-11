@@ -89,18 +89,32 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
       this.logger.error(logMessage, exception instanceof Error ? exception.stack : undefined, logContext);
     }
 
-    // 使用 Fastify 的 .code() 方法（带类型检查）
-    const reply = response as any;
-    if (typeof reply.code === 'function') {
-      reply
+    // 使用 Fastify 的 .code() 方法
+    // 注意：在某些特殊情况下（如中间件错误），response 可能还未完全初始化
+    // 因此需要检查 code 方法是否存在
+    if (typeof response.code === 'function') {
+      response
         .code(status)
         .header('Content-Type', 'application/problem+json; charset=utf-8')
         .send(problemDetails);
     } else {
-      // 降级处理：使用标准 HTTP 方法
-      reply.status(status);
-      reply.header('Content-Type', 'application/problem+json; charset=utf-8');
-      reply.send(problemDetails);
+      // 如果 response 未完全初始化，记录错误并尝试写入响应
+      if (this.logger) {
+        this.logger.error('Response object is not a FastifyReply, unable to send error response');
+      }
+      // 尝试最基本的错误响应
+      try {
+        const res = response as any;
+        if (res.raw && typeof res.raw.writeHead === 'function') {
+          res.raw.writeHead(status, { 'Content-Type': 'application/problem+json; charset=utf-8' });
+          res.raw.end(JSON.stringify(problemDetails));
+        }
+      } catch (err) {
+        // 最后的降级：至少记录错误
+        if (this.logger) {
+          this.logger.error('Failed to send error response', err instanceof Error ? err.stack : undefined);
+        }
+      }
     }
   }
 

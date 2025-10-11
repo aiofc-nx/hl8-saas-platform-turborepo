@@ -65,7 +65,15 @@ import { AppController } from './app.controller.js';
     }),
 
     // Fastify 专用日志模块（零开销，复用 Fastify Pino）
-    FastifyLoggingModule.forRoot(),
+    FastifyLoggingModule.forRoot({
+      config: {
+        level: (process.env.LOG_LEVEL as any) || 'info',
+        prettyPrint: process.env.NODE_ENV === 'development',
+        includeIsolationContext: true,
+        timestamp: true,
+        enabled: true,
+      },
+    }),
 
     // 数据隔离模块 - 5 级隔离（平台/租户/组织/部门/用户）
     IsolationModule.forRoot(),

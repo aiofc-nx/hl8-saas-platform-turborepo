@@ -9,7 +9,7 @@
 import { Module, DynamicModule, Provider } from '@nestjs/common';
 import { CacheService } from './cache.service.js';
 import { RedisService, RedisOptions } from './redis.service.js';
-import { ConfigValidator } from '../configuration/validators/config.validator.js';
+import { ConfigValidator } from '@hl8/config';
 import { CachingModuleConfig } from './config/caching.config.js';
 
 /**

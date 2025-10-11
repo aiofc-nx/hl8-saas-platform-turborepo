@@ -198,35 +198,10 @@ export { IsolationGuard, REQUIRED_ISOLATION_LEVEL } from './isolation/guards/iso
 // 非 HTTP 场景请使用 @nestjs/common/Logger
 
 // ============================================================
-// 配置管理模块（Phase 5）
+// 配置管理模块（Phase 5）- 已迁移到 @hl8/config
 // ============================================================
-
-/**
- * 配置模块
- */
-export { TypedConfigModule } from './configuration/typed-config.module.js';
-export type { TypedConfigModuleOptions, ConfigLoader } from './configuration/typed-config.module.js';
-
-/**
- * 配置加载器
- */
-export { FileLoader, fileLoader } from './configuration/loaders/file.loader.js';
-export type { FileLoaderOptions } from './configuration/loaders/file.loader.js';
-export { DotenvLoader, dotenvLoader } from './configuration/loaders/dotenv.loader.js';
-export type { DotenvLoaderOptions } from './configuration/loaders/dotenv.loader.js';
-export { RemoteLoader, remoteLoader } from './configuration/loaders/remote.loader.js';
-export type { RemoteLoaderOptions } from './configuration/loaders/remote.loader.js';
-
-/**
- * 配置验证器
- */
-export { ConfigValidator } from './configuration/validators/config.validator.js';
-export type { ValidateOptions } from './configuration/validators/config.validator.js';
-
-/**
- * 配置缓存
- */
-export { ConfigCacheService } from './configuration/cache/config-cache.service.js';
+// 配置相关功能已拆分到独立的 @hl8/config 包
+// 请直接从 @hl8/config 导入配置模块相关内容
 
 // ============================================================
 // 版本信息
