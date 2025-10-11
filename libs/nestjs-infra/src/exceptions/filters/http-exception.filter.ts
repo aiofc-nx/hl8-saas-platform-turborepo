@@ -189,9 +189,9 @@ export class HttpExceptionFilter implements ExceptionFilter<AbstractHttpExceptio
     // 记录日志
     this.logException(exception, problemDetails, request);
 
-    // 设置响应头并发送响应
+    // 设置响应头并发送响应（Fastify 使用 .code() 方法）
     response
-      .status(problemDetails.status)
+      .code(problemDetails.status)
       .header('Content-Type', 'application/problem+json; charset=utf-8')
       .send(problemDetails);
   }

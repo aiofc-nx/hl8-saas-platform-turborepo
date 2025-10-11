@@ -148,9 +148,9 @@ export class AnyExceptionFilter implements ExceptionFilter {
     // 记录日志
     this.logException(exception, problemDetails, request);
 
-    // 发送响应
+    // 发送响应（Fastify 使用 .code() 方法）
     response
-      .status(status)
+      .code(status)
       .header('Content-Type', 'application/problem+json; charset=utf-8')
       .send(problemDetails);
   }

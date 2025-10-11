@@ -1,16 +1,6 @@
-import fastifyMultipart from '@fastify/multipart';
-import fastifyStatic from '@fastify/static';
-import { LoggerService } from '@hl8/nestjs-infra';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { swagger } from './swagger.js';
-
-// ESM 中获取 __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 /**
  * 初始化 NestJS 应用
@@ -41,14 +31,8 @@ const __dirname = dirname(__filename);
  * @returns Promise<void> 应用启动完成
  */
 export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
-  // 获取日志器实例 - 使用 @hl8/nestjs-infra
-  const logger = app.get(LoggerService);
-
   // 获取配置服务
   const configService = app.get(ConfigService);
-
-  // 设置应用日志器（NestJS 框架使用）
-  app.useLogger(logger);
 
   // 全局验证管道 - 自动验证请求数据
   app.useGlobalPipes(
@@ -66,8 +50,8 @@ export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
   const port = parseInt(configService.get('PORT') || '3000', 10);
   const host = configService.get('HOST') || '0.0.0.0';
 
-  await app.listen(port, host, () => {
-    logger.log(`🚀 Application started at http://${host}:${port}`);
-    logger.log(`✅ Ready to accept requests`);
-  });
+  await app.listen(port, host);
+  
+  console.log(`🚀 Application started at http://${host}:${port}`);
+  console.log(`✅ Ready to accept requests`);
 };

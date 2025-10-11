@@ -102,6 +102,7 @@ class CustomFastifyAdapter implements HttpServer {
 ```
 
 **维护成本**：
+
 - 🔴 需要跟随 NestJS 版本更新
 - 🔴 需要处理所有边界情况
 - 🔴 需要保持与 NestJS 生态的兼容性
@@ -132,6 +133,7 @@ class EnterpriseFastifyAdapter extends FastifyAdapter {
 ```
 
 **维护成本**：
+
 - ✅ 自动跟随 NestJS 更新（继承的功能）
 - ✅ 只需维护增强部分（~200 行）
 - ✅ 完全兼容 NestJS 生态
@@ -144,12 +146,14 @@ class EnterpriseFastifyAdapter extends FastifyAdapter {
 ### 汽车改装的例子
 
 #### 方案 A：从零造车（❌）
+
 ```
 重新设计引擎、底盘、变速箱、电子系统...
 → 成本极高，风险极大
 ```
 
 #### 方案 B：改装现有车（✅ 我们的方案）
+
 ```
 使用成熟的车型（FastifyAdapter）
 + 加装涡轮增压（性能监控）
@@ -163,6 +167,7 @@ class EnterpriseFastifyAdapter extends FastifyAdapter {
 ## 📊 代码量对比
 
 ### 完全自己实现
+
 ```typescript
 // ~1500+ 行代码
 class CustomFastifyAdapter implements HttpServer {
@@ -173,6 +178,7 @@ class CustomFastifyAdapter implements HttpServer {
 ```
 
 ### 基于官方增强
+
 ```typescript
 // ~200 行代码
 class EnterpriseFastifyAdapter extends FastifyAdapter {
@@ -232,6 +238,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
 ```
 
 **核心优势**：
+
 - ✅ `super.init()` 复用所有官方功能
 - ✅ 我们只写增强部分
 - ✅ 代码简洁、维护性好
@@ -253,6 +260,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
 ```
 
 **好处**：
+
 - ✅ 不修改原有组件
 - ✅ 动态添加新功能
 - ✅ 符合开闭原则（对扩展开放，对修改关闭）
@@ -264,6 +272,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
 ### 为什么需要 `@nestjs/platform-fastify`？
 
 #### 1. **基础适配器**
+
 ```typescript
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 
@@ -272,6 +281,7 @@ class EnterpriseFastifyAdapter extends FastifyAdapter
 ```
 
 #### 2. **类型定义**
+
 ```typescript
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 
@@ -280,6 +290,7 @@ const app: NestFastifyApplication = ...
 ```
 
 #### 3. **底层集成**
+
 - NestJS ↔ Fastify 桥接
 - 路由、中间件、异常处理
 - 这些都由官方包提供
@@ -295,6 +306,7 @@ const app: NestFastifyApplication = ...
 | **EnterpriseFastifyAdapter** | 我们 | 企业级增强 |
 
 **关系**：
+
 ```
 Fastify (底层) 
   → FastifyAdapter (官方集成) 
@@ -306,21 +318,25 @@ Fastify (底层)
 ## 🚀 设计优势
 
 ### 1. **站在巨人的肩膀上**
+
 - ✅ 复用 NestJS 官方的稳定实现
 - ✅ 享受官方的持续更新和 Bug 修复
 - ✅ 保持与 NestJS 生态的完美兼容
 
 ### 2. **降低维护成本**
+
 - ✅ 代码量少（~200 行 vs ~1500 行）
 - ✅ 只维护增强功能
 - ✅ 官方更新自动继承
 
 ### 3. **提高开发效率**
+
 - ✅ 无需实现基础功能
 - ✅ 专注于业务价值
 - ✅ 快速迭代
 
 ### 4. **保证质量**
+
 - ✅ 官方代码经过充分测试
 - ✅ 社区验证和支持
 - ✅ 安全性有保障
@@ -335,4 +351,3 @@ Fastify (底层)
 - ✅ **而是**：基于官方实现，添加企业级增强
 
 **这就是优秀的软件工程实践！** 👍
-

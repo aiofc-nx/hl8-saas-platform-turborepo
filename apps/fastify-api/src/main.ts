@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { EnterpriseFastifyAdapter } from '@hl8/nestjs-infra';
+import { NestFastifyApplication, FastifyAdapter } from '@nestjs/platform-fastify';
+// import { EnterpriseFastifyAdapter } from '@hl8/nestjs-infra';  // TODO: 暂时禁用，调试启动
 import { AppModule } from './app.module.js';
 import { bootstrap } from './bootstrap.js';
 
@@ -13,14 +13,17 @@ import { bootstrap } from './bootstrap.js';
  * @returns {Promise<void>} A promise that resolves when the application has started.
  */
 const main = async (): Promise<void> => {
-  // 使用企业级 Fastify 适配器（简化配置，避免冲突）
-  const adapter = new EnterpriseFastifyAdapter({
-    enableCors: false,  // 暂时禁用（避免冲突）
-    enablePerformanceMonitoring: true,
-    enableHealthCheck: false,  // 暂时禁用（避免路由冲突）
-    enableRateLimit: false,  // 暂时禁用
-    enableSecurity: false,  // 暂时禁用
-  });
+  // 暂时使用标准适配器调试启动问题
+  const adapter = new FastifyAdapter();
+  
+  // // 使用企业级 Fastify 适配器（简化配置，避免冲突）
+  // const adapter = new EnterpriseFastifyAdapter({
+  //   enableCors: false,  // 暂时禁用（避免冲突）
+  //   enablePerformanceMonitoring: true,
+  //   enableHealthCheck: false,  // 暂时禁用（避免路由冲突）
+  //   enableRateLimit: false,  // 暂时禁用
+  //   enableSecurity: false,  // 暂时禁用
+  // });
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
