@@ -1,16 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationMap": false,
-    "skipLibCheck": true,
-    "module": "commonjs",
-    "moduleResolution": "node"
-  },
-  "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "src/**/*.spec.ts", "src/example.ts", "**/*.spec.ts"]
 }
 

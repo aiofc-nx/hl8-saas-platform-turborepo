@@ -5,11 +5,9 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": false,
     "outDir": "./dist",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "ES2021",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "target": "ESNext",
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]

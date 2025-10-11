@@ -63,8 +63,16 @@
 
 - [ ] ESLint 配置继承根目录配置
 - [ ] TypeScript 配置继承 monorepo 根 tsconfig.json
-- [ ] 单元测试文件与被测试文件同级
 - [ ] 使用 MCP 工具进行代码检查
+
+### 测试架构原则
+
+- [ ] 单元测试文件与被测试文件在同一目录（.spec.ts）
+- [ ] 集成测试放置在 `__tests__/integration/` 目录
+- [ ] 端到端测试放置在 `__tests__/e2e/` 目录
+- [ ] 测试之间相互独立，不依赖执行顺序
+- [ ] 核心业务逻辑测试覆盖率 ≥ 80%
+- [ ] 所有公共 API 必须有对应的测试用例
 
 ## Project Structure
 
@@ -132,7 +140,7 @@ directories captured above
 
 **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
+| -------------------------- | ------------------ | ------------------------------------ |
+| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |
