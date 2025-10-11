@@ -1,0 +1,72 @@
+{
+  "name": "@hl8/nestjs-infra",
+  "version": "0.1.0",
+  "description": "NestJS 基础设施模块 - 提供企业级基础设施功能",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm run type-check && pnpm run build:swc && pnpm run build:types",
+    "build:swc": "swc src -d dist --strip-leading-paths",
+    "build:types": "tsc --emitDeclarationOnly --outDir dist",
+    "type-check": "tsc --noEmit",
+    "dev": "swc src -d dist --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/platform-fastify": "^11.1.6",
+    "nestjs-cls": "^5.0.0",
+    "ioredis": "^5.3.0",
+    "pino": "^9.12.0",
+    "pino-pretty": "^13.0.0",
+    "fastify": "^5.6.1",
+    "@fastify/cors": "^10.0.1",
+    "class-validator": "^0.14.2",
+    "class-transformer": "^0.5.1",
+    "dotenv": "^17.2.2",
+    "dotenv-expand": "^11.0.7",
+    "js-yaml": "^4.1.0",
+    "lodash.merge": "^4.6.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.5.0",
+    "@swc/core": "^1.9.3",
+    "@swc/jest": "^0.2.37",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.17.9",
+    "@types/uuid": "^9.0.8",
+    "@types/js-yaml": "^4.0.9",
+    "@types/lodash.merge": "^4.6.9",
+    "jest": "^29.7.0",
+    "typescript": "^5.7.2",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/ts-config": "workspace:*"
+  },
+  "keywords": [
+    "nestjs",
+    "infrastructure",
+    "multi-tenancy",
+    "caching",
+    "logging",
+    "fastify",
+    "saas",
+    "hl8"
+  ],
+  "author": "HL8 Team",
+  "license": "MIT"
+}
