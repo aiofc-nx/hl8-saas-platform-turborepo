@@ -23,10 +23,19 @@
 
 import { Injectable, LoggerService as NestLoggerService, Scope, Optional } from '@nestjs/common';
 import type { Logger as PinoLogger } from 'pino';
-import { IsolationContextService } from '@hl8/nestjs-infra';
+import { IsolationContextService, ILoggerService } from '@hl8/nestjs-infra';
 
+/**
+ * Fastify 日志服务
+ *
+ * @description 全局统一的日志服务，基于 Fastify 内置 Pino
+ * - 复用 Fastify Pino 实例（零开销）
+ * - 自动包含隔离上下文（租户/组织/部门/用户）
+ * - 实现 NestJS 和内部日志接口
+ * - 作为全局服务提供给所有模块
+ */
 @Injectable({ scope: Scope.TRANSIENT })
-export class FastifyLoggerService implements NestLoggerService {
+export class FastifyLoggerService implements NestLoggerService, ILoggerService {
   constructor(
     private readonly pinoLogger: PinoLogger,
     @Optional() private readonly isolationService?: IsolationContextService,

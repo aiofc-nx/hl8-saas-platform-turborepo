@@ -2,6 +2,7 @@
  * Fastify 全局异常过滤器
  *
  * @description 专门为 Fastify 适配器设计的全局异常过滤器，处理所有未捕获异常
+ * 使用全局 FastifyLoggerService 记录所有异常
  *
  * ## 业务规则
  *
@@ -15,6 +16,11 @@
  * - 使用 .code() 设置状态码
  * - 使用 FastifyReply 类型
  *
+ * ### 日志记录规则
+ * - 使用全局 FastifyLoggerService
+ * - 所有异常都记录为 error 级别
+ * - 自动包含隔离上下文
+ *
  * @since 0.1.0
  */
 
@@ -25,14 +31,18 @@ import {
   Injectable,
   HttpException,
   HttpStatus,
+  Optional,
 } from '@nestjs/common';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import type { ProblemDetails } from '@hl8/nestjs-infra';
+import type { ProblemDetails, ILoggerService } from '@hl8/nestjs-infra';
 
 @Catch()
 @Injectable()
 export class FastifyAnyExceptionFilter implements ExceptionFilter {
-  constructor(private readonly isProduction: boolean = process.env.NODE_ENV === 'production') {}
+  constructor(
+    @Optional() private readonly logger?: ILoggerService,
+    private readonly isProduction: boolean = process.env.NODE_ENV === 'production',
+  ) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
@@ -66,6 +76,18 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
       errorCode,
       instance: request.id || (request.headers['x-request-id'] as string),
     };
+
+    // 记录未捕获异常（自动包含隔离上下文）
+    if (this.logger) {
+      const logMessage = `Unhandled Exception: ${title}`;
+      const logContext = {
+        errorCode,
+        detail: this.getDetailedError(exception),
+        url: request.url,
+        method: request.method,
+      };
+      this.logger.error(logMessage, exception instanceof Error ? exception.stack : undefined, logContext);
+    }
 
     // 使用 Fastify 的 .code() 方法（带类型检查）
     const reply = response as any;

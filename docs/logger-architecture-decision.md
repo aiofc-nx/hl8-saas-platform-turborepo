@@ -46,6 +46,7 @@
 ### 增强 FastifyLoggerService
 
 **修改前**:
+
 ```typescript
 export class FastifyLoggerService {
   constructor(private readonly pinoLogger: PinoLogger) {}
@@ -57,6 +58,7 @@ export class FastifyLoggerService {
 ```
 
 **修改后**:
+
 ```typescript
 export class FastifyLoggerService {
   constructor(
@@ -85,6 +87,7 @@ export class FastifyLoggerService {
 ### 更新 FastifyLoggingModule
 
 **依赖注入配置**:
+
 ```typescript
 {
   provide: FastifyLoggerService,
@@ -373,4 +376,3 @@ export class MyService {
    - 性能优先
 
 **结论**: 这是正确的架构决策！🎉
-
