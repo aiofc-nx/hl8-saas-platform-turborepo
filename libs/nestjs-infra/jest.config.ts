@@ -41,8 +41,8 @@ export default {
     global: {
       branches: 50,
       functions: 55,
-      lines: 59,
-      statements: 59,
+      lines: 61,
+      statements: 61,
     },
   },
   moduleNameMapper: {

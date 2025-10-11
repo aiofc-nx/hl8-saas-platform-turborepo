@@ -97,6 +97,38 @@ describe('Serializer', () => {
       expect(result).toBeNull();
     });
 
+    it('应该反序列化 Date 对象', () => {
+      const date = new Date('2025-01-01');
+      const serialized = Serializer.serialize({ createdAt: date });
+      
+      const result = Serializer.deserialize(serialized);
+
+      expect(result.createdAt).toBeInstanceOf(Date);
+      expect(result.createdAt.toISOString()).toBe(date.toISOString());
+    });
+
+    it('应该反序列化 Map 对象', () => {
+      const map = new Map([['key1', 'value1'], ['key2', 'value2']]);
+      const serialized = Serializer.serialize({ data: map });
+      
+      const result = Serializer.deserialize(serialized);
+
+      expect(result.data).toBeInstanceOf(Map);
+      expect(result.data.get('key1')).toBe('value1');
+      expect(result.data.get('key2')).toBe('value2');
+    });
+
+    it('应该反序列化 Set 对象', () => {
+      const set = new Set([1, 2, 3, 4, 5]);
+      const serialized = Serializer.serialize({ data: set });
+      
+      const result = Serializer.deserialize(serialized);
+
+      expect(result.data).toBeInstanceOf(Set);
+      expect(result.data.has(1)).toBe(true);
+      expect(result.data.size).toBe(5);
+    });
+
     it('无效 JSON 应该抛出错误', () => {
       expect(() => {
         Serializer.deserialize('invalid json');
@@ -107,6 +139,27 @@ describe('Serializer', () => {
       expect(() => {
         Serializer.deserialize('');
       }).toThrow(SyntaxError);
+    });
+  });
+
+  describe('序列化和反序列化循环', () => {
+    it('应该正确处理复杂对象的完整循环', () => {
+      const original = {
+        name: 'test',
+        count: 42,
+        date: new Date('2025-01-01'),
+        tags: new Set(['tag1', 'tag2']),
+        metadata: new Map([['key', 'value']]),
+      };
+
+      const serialized = Serializer.serialize(original);
+      const deserialized = Serializer.deserialize(serialized);
+
+      expect(deserialized.name).toBe(original.name);
+      expect(deserialized.count).toBe(original.count);
+      expect(deserialized.date).toBeInstanceOf(Date);
+      expect(deserialized.tags).toBeInstanceOf(Set);
+      expect(deserialized.metadata).toBeInstanceOf(Map);
     });
   });
 });
