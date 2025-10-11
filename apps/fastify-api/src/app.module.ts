@@ -3,11 +3,11 @@ import { ConfigModule } from '@nestjs/config';
 import {
   ExceptionModule,
   LoggingModule,
-  CachingModule,
+  // CachingModule,  // TODO: 启用前需要 Redis 服务器
   IsolationModule,
   LoggingModuleConfig,
-  CachingModuleConfig,
-  RedisConfig,
+  // CachingModuleConfig,
+  // RedisConfig,
 } from '@hl8/nestjs-infra';
 import { plainToInstance } from 'class-transformer';
 import { AppController } from './app.controller.js';
@@ -73,19 +73,21 @@ import { AppController } from './app.controller.js';
       }),
     ),
 
-    // 缓存模块 - Redis 分布式缓存
-    CachingModule.forRoot(
-      plainToInstance(CachingModuleConfig, {
-        redis: {
-          host: process.env.REDIS_HOST || 'localhost',
-          port: parseInt(process.env.REDIS_PORT || '6379', 10),
-          password: process.env.REDIS_PASSWORD,
-          db: parseInt(process.env.REDIS_DB || '0', 10),
-        },
-        ttl: parseInt(process.env.CACHE_TTL || '3600', 10),
-        keyPrefix: process.env.CACHE_KEY_PREFIX || 'hl8:cache:',
-      }),
-    ),
+    // 缓存模块 - Redis 分布式缓存（可选）
+    // TODO: 启用缓存前需要启动 Redis 服务器
+    // 启动 Redis: docker run -d -p 6379:6379 redis:alpine
+    // CachingModule.forRoot(
+    //   plainToInstance(CachingModuleConfig, {
+    //     redis: {
+    //       host: process.env.REDIS_HOST || 'localhost',
+    //       port: parseInt(process.env.REDIS_PORT || '6379', 10),
+    //       password: process.env.REDIS_PASSWORD,
+    //       db: parseInt(process.env.REDIS_DB || '0', 10),
+    //     },
+    //     ttl: parseInt(process.env.CACHE_TTL || '3600', 10),
+    //     keyPrefix: process.env.CACHE_KEY_PREFIX || 'hl8:cache:',
+    //   }),
+    // ),
 
     // 数据隔离模块 - 5 级隔离
     IsolationModule.forRoot(),

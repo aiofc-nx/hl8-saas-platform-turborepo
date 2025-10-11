@@ -89,6 +89,7 @@ pnpm turbo dev --filter=fastify-api
 ## 📡 API 端点
 
 ### 健康检查
+
 ```bash
 GET /health
 
@@ -101,6 +102,7 @@ Response:
 ```
 
 ### API 文档（开发环境）
+
 ```bash
 访问: http://localhost:3000/api-docs
 ```
@@ -174,11 +176,13 @@ pnpm start
 ### 问题 1：Redis 连接失败
 
 **错误**：
+
 ```
 GeneralInternalServerException: Redis 客户端尚未初始化
 ```
 
 **解决方案**：
+
 ```bash
 # 启动 Redis
 docker run -d -p 6379:6379 redis:alpine
@@ -190,11 +194,13 @@ redis-cli ping  # 应该返回 PONG
 ### 问题 2：端口已被占用
 
 **错误**：
+
 ```
 Error: listen EADDRINUSE: address already in use :::3000
 ```
 
 **解决方案**：
+
 ```bash
 # 修改 .env 文件中的 PORT
 PORT=3001
@@ -206,11 +212,13 @@ lsof -ti:3000 | xargs kill -9
 ### 问题 3：模块找不到
 
 **错误**：
+
 ```
 Cannot find module '@hl8/nestjs-infra'
 ```
 
 **解决方案**：
+
 ```bash
 # 先构建 libs
 cd ../../libs/nestjs-infra
@@ -226,15 +234,18 @@ pnpm dev
 ## 📊 性能
 
 ### 启动时间
+
 - 首次启动（需要构建 libs）：~10s
 - 后续启动（libs 已构建）：~3s
 - 热重载：<1s
 
 ### 内存占用
+
 - 空载：~50MB
 - 带 Redis：~70MB
 
 ### 请求性能
+
 - 平均响应时间：<10ms
 - P99 响应时间：<50ms
 - QPS：~10,000

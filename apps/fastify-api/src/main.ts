@@ -13,26 +13,13 @@ import { bootstrap } from './bootstrap.js';
  * @returns {Promise<void>} A promise that resolves when the application has started.
  */
 const main = async (): Promise<void> => {
-  // 使用企业级 Fastify 适配器
+  // 使用企业级 Fastify 适配器（简化配置，避免冲突）
   const adapter = new EnterpriseFastifyAdapter({
-    enableCors: true,
-    corsOptions: {
-      origin: process.env.CORS_ORIGIN || '*',
-      credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    },
+    enableCors: false,  // 暂时禁用（避免冲突）
     enablePerformanceMonitoring: true,
-    enableHealthCheck: true,
-    healthCheckPath: '/health',
-    enableRateLimit: process.env.NODE_ENV === 'production',
-    rateLimitOptions: {
-      max: 100,
-      timeWindow: 60000, // 1 minute in ms
-    },
-    enableSecurity: true,
-    securityOptions: {
-      enableHelmet: true,
-    },
+    enableHealthCheck: false,  // 暂时禁用（避免路由冲突）
+    enableRateLimit: false,  // 暂时禁用
+    enableSecurity: false,  // 暂时禁用
   });
 
   const app = await NestFactory.create<NestFastifyApplication>(

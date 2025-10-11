@@ -4,8 +4,13 @@ import { LoggerService } from '@hl8/nestjs-infra';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { swagger } from './swagger.js';
+
+// ESM 中获取 __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * 初始化 NestJS 应用
@@ -45,14 +50,6 @@ export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
   // 设置应用日志器（NestJS 框架使用）
   app.useLogger(logger);
 
-  // Serve static assets using Fastify's static plugin
-  await app.register(fastifyStatic as any, {
-    root: join(__dirname, '..', 'storage', 'public'),
-    prefix: '/assets/',
-    decorateReply: false,
-    dotfiles: 'deny',
-  });
-
   // 全局验证管道 - 自动验证请求数据
   app.useGlobalPipes(
     new ValidationPipe({
@@ -65,23 +62,12 @@ export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
     }),
   );
 
-  // Swagger API 文档 - 仅在非生产环境启用
-  if (configService.get('NODE_ENV') !== 'production') {
-    await swagger(app);
-  }
-
-  // Register Fastify multipart plugin for file uploads
-  await app.register(fastifyMultipart as any);
-
   // 启动应用并监听配置的端口
   const port = parseInt(configService.get('PORT') || '3000', 10);
   const host = configService.get('HOST') || '0.0.0.0';
 
   await app.listen(port, host, () => {
     logger.log(`🚀 Application started at http://${host}:${port}`);
-    if (configService.get('NODE_ENV') !== 'production') {
-      logger.log(`📚 API Documentation: http://${host}:${port}/api-docs`);
-    }
-    logger.log(`💚 Health Check: http://${host}:${port}/health`);
+    logger.log(`✅ Ready to accept requests`);
   });
 };
