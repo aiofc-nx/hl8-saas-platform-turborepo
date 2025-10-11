@@ -3,10 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import {
   FastifyExceptionModule,
   FastifyLoggingModule,
+} from '@hl8/nestjs-fastify';
+import {
   CachingModule,
   IsolationModule,
   CachingModuleConfig,
-} from '@hl8/nestjs-fastify';
+} from '@hl8/nestjs-infra';
 import { plainToInstance } from 'class-transformer';
 import { AppController } from './app.controller.js';
 

@@ -52,12 +52,13 @@ export { FastifyLoggingModule } from './logging/logging.module.js';
 export { FastifyLoggerService } from './logging/fastify-logger.service.js';
 
 // ============================================================
-// 从 @hl8/nestjs-infra 复用的模块
-// ============================================================
-export * from './core/index.js';
-
-// ============================================================
 // 版本信息
 // ============================================================
 export const version = '0.1.0';
+
+// ============================================================
+// 注意
+// ============================================================
+// 通用模块（如 CachingModule, IsolationModule）应该从 @hl8/nestjs-infra 导入
+// 本包只包含 Fastify 专用的功能
 
