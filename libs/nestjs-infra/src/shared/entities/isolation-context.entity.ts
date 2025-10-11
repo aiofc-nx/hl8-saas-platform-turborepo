@@ -26,10 +26,8 @@
  * const tenantContext = IsolationContext.createTenant(tenantId);
  * console.log(tenantContext.getIsolationLevel()); // IsolationLevel.TENANT
  *
- * // 验证
- * if (!context.validate()) {
- *   throw new Error('Invalid isolation context');
- * }
+ * // 验证（会在构造时自动验证）
+ * // 如果无效会抛出运行时错误
  * ```
  *
  * @since 0.2.0
@@ -65,7 +63,7 @@ export class IsolationContext {
     this._userId = params.userId;
     this._createdAt = new Date();
 
-    // 创建时验证
+    // 创建时验证（值对象内部错误，不抛出 HTTP 异常）
     if (!this.validate()) {
       throw new Error('Invalid isolation context: 层级关系不一致');
     }

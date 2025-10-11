@@ -7,6 +7,7 @@
  */
 
 import { ConfigLoader } from '../typed-config.module.js';
+import { GeneralInternalServerException } from '../../exceptions/core/general-internal-server.exception.js';
 
 /**
  * 远程加载器选项
@@ -41,13 +42,23 @@ export class RemoteLoader implements ConfigLoader {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        throw new GeneralInternalServerException(
+          '远程配置请求失败',
+          `HTTP ${response.status}: ${response.statusText}`,
+          { url: this.options.url, status: response.status },
+        );
       }
 
       return await response.json();
     } catch (error) {
-      throw new Error(
-        `远程配置加载失败: ${error instanceof Error ? error.message : String(error)}`,
+      if (error instanceof GeneralInternalServerException) {
+        throw error;
+      }
+      throw new GeneralInternalServerException(
+        '远程配置加载失败',
+        `无法从远程服务器加载配置`,
+        { url: this.options.url },
+        error instanceof Error ? error : undefined,
       );
     }
   }

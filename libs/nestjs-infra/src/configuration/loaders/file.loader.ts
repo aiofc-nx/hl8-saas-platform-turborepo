@@ -9,6 +9,7 @@
 import { readFileSync } from 'fs';
 import { load as loadYaml } from 'js-yaml';
 import { ConfigLoader } from '../typed-config.module.js';
+import { GeneralBadRequestException } from '../../exceptions/core/general-bad-request.exception.js';
 
 /**
  * 文件加载器选项
@@ -40,7 +41,11 @@ export class FileLoader implements ConfigLoader {
       return JSON.parse(content);
     }
     
-    throw new Error(`Unsupported file type: ${this.options.path}`);
+    throw new GeneralBadRequestException(
+      '不支持的文件类型',
+      `配置文件格式不支持: ${this.options.path}`,
+      { path: this.options.path, supportedFormats: ['.yml', '.yaml', '.json'] },
+    );
   }
 }
 

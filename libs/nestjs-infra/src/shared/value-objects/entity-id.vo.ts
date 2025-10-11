@@ -43,6 +43,7 @@ export class EntityId {
 
   protected constructor(value: string) {
     if (!EntityId.isValid(value)) {
+      // 值对象验证失败，抛出运行时错误（不是 HTTP 异常）
       throw new Error(`无效的实体 ID: ${value}`);
     }
     this._value = value.toLowerCase();
