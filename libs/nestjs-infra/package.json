@@ -15,11 +15,11 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "pnpm run type-check && pnpm run build:swc && pnpm run build:types",
-    "build:swc": "swc src -d dist --strip-leading-paths",
+    "build": "tsc -p tsconfig.build.json",
+    "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist",
     "build:types": "tsc --emitDeclarationOnly --outDir dist",
     "type-check": "tsc --noEmit",
-    "dev": "swc src -d dist --watch",
+    "dev": "tsc -p tsconfig.build.json --watch",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",

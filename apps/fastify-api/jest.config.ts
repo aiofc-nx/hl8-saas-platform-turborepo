@@ -21,8 +21,6 @@ export default {
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
-    '^@hl8/nestjs-infra$': '<rootDir>/../../libs/nestjs-infra/src/index.ts',
-    '^@hl8/nestjs-infra/(.*)$': '<rootDir>/../../libs/nestjs-infra/src/$1',
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
 };
