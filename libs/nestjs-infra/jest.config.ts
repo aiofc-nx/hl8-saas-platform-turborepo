@@ -39,10 +39,10 @@ export default {
   coverageReporters: ['text', 'lcov', 'html'],
   coverageThreshold: {
     global: {
-      branches: 40,
-      functions: 45,
-      lines: 45,
-      statements: 45,
+      branches: 50,
+      functions: 55,
+      lines: 59,
+      statements: 59,
     },
   },
   moduleNameMapper: {
