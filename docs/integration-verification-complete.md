@@ -65,6 +65,7 @@ apps/fastify-api
 **问题**: 异常类错误地移到了 `@hl8/platform`，但它们依赖 `@nestjs/common`
 
 **解决方案**:
+
 ```bash
 # 将异常类移回 nestjs-infra
 git mv libs/platform/src/shared/exceptions/*.ts libs/nestjs-infra/src/exceptions/core/
@@ -77,6 +78,7 @@ git mv libs/platform/src/shared/exceptions/*.ts libs/nestjs-infra/src/exceptions
 **问题**: `@hl8/nestjs-infra` 中的文件仍然使用相对路径导入 shared 模块
 
 **解决方案**:
+
 ```bash
 # 批量替换导入路径
 sed -i "s|from '\.\./\.\./shared/|from '@hl8/platform'|g" src/**/*.ts
@@ -89,6 +91,7 @@ sed -i "s|from '\.\./\.\./shared/|from '@hl8/platform'|g" src/**/*.ts
 **问题**: Fastify 专用适配器在 `@hl8/nestjs-infra` 中
 
 **解决方案**:
+
 ```bash
 # 移动适配器到正确位置
 git mv libs/nestjs-infra/src/fastify/enterprise-fastify.adapter.ts \
@@ -100,6 +103,7 @@ git mv libs/nestjs-infra/src/fastify/enterprise-fastify.adapter.ts \
 ### 4. 依赖关系配置
 
 **添加的依赖**:
+
 - `@hl8/nestjs-infra` ← `@hl8/platform`
 - `@hl8/nestjs-fastify` ← `@hl8/nestjs-infra`
 - `apps/fastify-api` ← `@hl8/nestjs-fastify`
@@ -107,12 +111,14 @@ git mv libs/nestjs-infra/src/fastify/enterprise-fastify.adapter.ts \
 ### 5. Fastify 兼容性修复
 
 **问题 A**: CORS 装饰器冲突
+
 ```typescript
 // 解决方案：禁用 EnterpriseFastifyAdapter 的 CORS
 enableCors: false,
 ```
 
 **问题 B**: 健康检查路由冲突
+
 ```typescript
 // 解决方案：禁用 EnterpriseFastifyAdapter 的健康检查
 enableHealthCheck: false,
@@ -220,43 +226,52 @@ libs/platform/src/shared/exceptions/*.ts
 ### 1. 三层架构的关键原则
 
 ✅ **核心业务层 (@hl8/platform) 必须无框架依赖**
+
 - 所有依赖框架的代码（如继承 `HttpException`）必须在上层
 
 ✅ **导入方向严格向下**
+
 - 应用层 → Fastify 专用层 → NestJS 通用层 → 核心层
 - 绝不能反向依赖
 
 ✅ **使用 `git mv` 保留历史**
+
 - 移动文件时使用 `git mv` 而不是 `mv`
 - 保留完整的提交历史
 
 ### 2. Fastify 适配注意事项
 
 ⚠️ **装饰器冲突**
+
 - NestJS 可能已经注册某些 Fastify 装饰器
 - 解决方案：提供禁用选项
 
 ⚠️ **路由冲突**
+
 - 确保健康检查等路由不重复
 - 解决方案：可配置的路由路径
 
 ✅ **API 差异**
+
 - Fastify 使用 `.code()` 而不是 `.status()`
 - 在异常过滤器中正确使用
 
 ### 3. Monorepo 依赖管理
 
 ✅ **workspace 依赖优先**
+
 ```json
 "@hl8/platform": "workspace:*"
 ```
 
 ✅ **按依赖顺序构建**
+
 ```bash
 platform → nestjs-infra → nestjs-fastify → apps
 ```
 
 ✅ **TypeScript 路径别名**
+
 - 构建时通过 `package.json` 的 workspace 依赖解析
 - 不需要在每个项目的 `tsconfig.json` 中配置别名
 
@@ -267,12 +282,14 @@ platform → nestjs-infra → nestjs-fastify → apps
 ### 立即可做
 
 1. ✅ **提交当前工作**
+
    ```bash
    git add .
    git commit -m "feat: 完成三层架构集成验证"
    ```
 
 2. ✅ **测试 API 端点**
+
    ```bash
    curl http://localhost:3001/
    curl http://localhost:3001/info
@@ -285,9 +302,11 @@ platform → nestjs-infra → nestjs-fastify → apps
    - 提供更好的冲突检测和处理
 
 2. **启用 Redis 缓存**
+
    ```bash
    docker run -d -p 6379:6379 redis:alpine
    ```
+
    - 取消注释 `CachingModule`
    - 测试缓存功能
 
@@ -306,15 +325,18 @@ platform → nestjs-infra → nestjs-fastify → apps
 ### 技术成果
 
 ✅ **三层架构清晰分离**
+
 - 核心业务逻辑无框架依赖
 - NestJS 通用模块可复用
 - Fastify 专用模块完全优化
 
 ✅ **依赖关系正确**
+
 - 所有包构建成功
 - 依赖方向单向向下
 
 ✅ **实际验证通过**
+
 - 应用成功启动
 - 所有模块正常加载
 - API 端点可访问
@@ -322,18 +344,22 @@ platform → nestjs-infra → nestjs-fastify → apps
 ### 架构优势
 
 🎯 **可维护性**
+
 - 清晰的代码组织
 - 明确的职责边界
 
 🎯 **可测试性**
+
 - 核心逻辑独立测试
 - 框架层单独测试
 
 🎯 **可扩展性**
+
 - 易于添加新的适配器（Express, Koa等）
 - 易于切换框架实现
 
 🎯 **可复用性**
+
 - 核心模块可在任何项目使用
 - NestJS 模块可在所有 NestJS 项目使用
 
@@ -354,4 +380,3 @@ platform → nestjs-infra → nestjs-fastify → apps
 ---
 
 **总结**: 集成验证**全部成功**！三层架构从设计到实现的完整转换已完成，为后续开发打下了坚实的基础。
-

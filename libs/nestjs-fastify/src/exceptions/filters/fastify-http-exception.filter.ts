@@ -33,11 +33,19 @@ export class FastifyHttpExceptionFilter implements ExceptionFilter {
     const problemDetails = exception.toRFC7807();
     problemDetails.instance = request.id || (request.headers['x-request-id'] as string);
 
-    // Fastify 使用 .code() 方法设置状态码
-    response
-      .code(problemDetails.status)
-      .header('Content-Type', 'application/problem+json; charset=utf-8')
-      .send(problemDetails);
+    // 使用 Fastify 的 .code() 方法（带类型检查）
+    const reply = response as any;
+    if (typeof reply.code === 'function') {
+      reply
+        .code(problemDetails.status)
+        .header('Content-Type', 'application/problem+json; charset=utf-8')
+        .send(problemDetails);
+    } else {
+      // 降级处理：使用标准 HTTP 方法
+      reply.status(problemDetails.status);
+      reply.header('Content-Type', 'application/problem+json; charset=utf-8');
+      reply.send(problemDetails);
+    }
   }
 }
 
