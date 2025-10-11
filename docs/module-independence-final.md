@@ -27,6 +27,7 @@ export {
 ```
 
 然后在主入口：
+
 ```typescript
 // libs/nestjs-fastify/src/index.ts
 export * from './core/index.js';  // ❌ 混淆了职责边界
@@ -35,12 +36,14 @@ export * from './core/index.js';  // ❌ 混淆了职责边界
 ### 问题分析
 
 **架构问题** ❌:
+
 1. **职责不清晰** - 混淆了"Fastify 专用"和"通用模块"的界限
 2. **违反单一职责** - `@hl8/nestjs-fastify` 应该只包含 Fastify 专用功能
 3. **不必要的耦合** - 用户不知道模块的真实来源
 4. **维护复杂** - `@hl8/nestjs-infra` 更新时需要同步更新 `@hl8/nestjs-fastify`
 
 **导入混乱** ⚠️:
+
 ```typescript
 // 用户不知道这些模块的真实来源
 import { 
@@ -57,6 +60,7 @@ import {
 ### 删除重新导出
 
 **删除的内容**:
+
 ```bash
 libs/nestjs-fastify/src/core/index.ts  # 删除整个文件
 libs/nestjs-fastify/src/core/          # 删除目录
@@ -65,6 +69,7 @@ libs/nestjs-fastify/src/core/          # 删除目录
 ### 更新主入口
 
 **libs/nestjs-fastify/src/index.ts**:
+
 ```typescript
 // ✅ 只导出 Fastify 专用内容
 export { EnterpriseFastifyAdapter } from './fastify/enterprise-fastify.adapter.js';
@@ -82,6 +87,7 @@ export const version = '0.1.0';
 ### 更新应用导入
 
 **apps/fastify-api/src/app.module.ts**:
+
 ```typescript
 // ✅ 明确的分离导入
 import {
@@ -103,6 +109,7 @@ import {
 ### 架构清晰度 ✅
 
 **之前**:
+
 ```
 apps/fastify-api
   ↓ 导入所有模块
@@ -112,6 +119,7 @@ apps/fastify-api
 ```
 
 **现在**:
+
 ```
 apps/fastify-api
   ↓ 分离导入
@@ -133,6 +141,7 @@ apps/fastify-api
 ### 导入路径清晰 ✅
 
 **用户现在明确知道**：
+
 ```typescript
 // ✅ 清晰：这是 Fastify 专用的
 import { FastifyExceptionModule } from '@hl8/nestjs-fastify';
@@ -147,6 +156,7 @@ import { EntityId } from '@hl8/platform';
 ### 维护简化 ✅
 
 **好处**:
+
 1. ✅ `@hl8/nestjs-infra` 更新不影响 `@hl8/nestjs-fastify` 的导出
 2. ✅ 版本管理独立
 3. ✅ 减少不必要的依赖传递
@@ -186,6 +196,7 @@ libs/platform/src/
 ```
 
 **特点**:
+
 - ✅ 无框架依赖
 - ✅ 纯 TypeScript
 - ✅ 可在任何环境使用
@@ -203,6 +214,7 @@ libs/nestjs-infra/src/
 ```
 
 **特点**:
+
 - ✅ NestJS 通用模块
 - ✅ 适用于 Express 或 Fastify
 - ✅ 从 `@hl8/platform` 重新导出核心模块
@@ -222,6 +234,7 @@ libs/nestjs-fastify/src/
 ```
 
 **特点**:
+
 - ✅ **只包含 Fastify 专用功能**
 - ✅ 使用 Fastify 原生 API
 - ✅ 零开销优化
@@ -289,18 +302,22 @@ import { EnterpriseFastifyAdapter } from '@hl8/nestjs-infra';
 ### 架构优势
 
 ✅ **清晰的职责分离**
+
 - 每个包职责单一且明确
 - 用户知道每个模块来自哪里
 
 ✅ **独立的包管理**
+
 - 版本管理独立
 - 更新互不影响
 
 ✅ **更好的可维护性**
+
 - 代码组织清晰
 - 易于理解和扩展
 
 ✅ **更小的包体积**
+
 - 避免不必要的依赖传递
 - 用户可以按需导入
 
@@ -327,4 +344,3 @@ ff21f2a fix: 修复异常过滤器运行时类型检查
 **总结**: 通过删除不必要的重新导出，确保了三层架构的完整性和清晰度。现在每个包都有明确的职责边界，用户可以更容易地理解和使用这些模块。
 
 **✅ 三层架构优化完全完成！**
-
