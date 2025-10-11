@@ -1,7 +1,7 @@
 {
-  "name": "@hl8/nestjs-fastify",
+  "name": "@hl8/platform",
   "version": "0.1.0",
-  "description": "Fastify 专用的企业级基础设施模块 - 基于 @hl8/nestjs-infra 优化",
+  "description": "HL8 平台核心业务逻辑 - 领域模型、值对象、实体（无框架依赖）",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,17 +23,8 @@
     "test:cov": "jest --coverage",
     "lint": "eslint ."
   },
-  "dependencies": {
-    "@hl8/nestjs-infra": "workspace:*",
-    "@nestjs/common": "^11.1.6",
-    "@nestjs/core": "^11.1.6",
-    "@nestjs/platform-fastify": "^11.1.6",
-    "fastify": "^5.6.1",
-    "pino": "^9.6.0",
-    "reflect-metadata": "^0.2.2"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@nestjs/testing": "^11.1.6",
     "@repo/eslint-config": "workspace:*",
     "@repo/ts-config": "workspace:*",
     "@swc/core": "^1.13.5",
@@ -44,13 +35,13 @@
     "typescript": "^5.7.3"
   },
   "keywords": [
-    "nestjs",
-    "fastify",
-    "enterprise",
-    "infrastructure",
-    "logging",
-    "caching",
-    "exception-handling",
-    "multi-tenancy"
+    "hl8",
+    "platform",
+    "core",
+    "domain",
+    "ddd",
+    "value-object",
+    "entity"
   ]
 }
+
