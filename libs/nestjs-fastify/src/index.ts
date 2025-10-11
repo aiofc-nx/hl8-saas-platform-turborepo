@@ -26,6 +26,14 @@ export {
   PROD_FASTIFY_CONFIG,
 } from './fastify/config/fastify.config.js';
 
+/**
+ * Fastify 监控服务
+ */
+export { HealthCheckService } from './fastify/monitoring/health-check.service.js';
+export type { HealthCheckResult, ComponentHealth } from './fastify/monitoring/health-check.service.js';
+export { PerformanceMonitorService } from './fastify/monitoring/performance-monitor.service.js';
+export type { PerformanceMetrics, RouteMetrics } from './fastify/monitoring/performance-monitor.service.js';
+
 // ============================================================
 // Fastify 专用模块
 // ============================================================
