@@ -6,9 +6,10 @@
  * @since 0.2.0
  */
 
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy, Optional } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { GeneralInternalServerException } from '../exceptions/core/general-internal-server.exception.js';
+import type { ILoggerService } from '../exceptions/filters/http-exception.filter.js';
 
 /**
  * Redis 连接选项
@@ -29,7 +30,10 @@ export interface RedisOptions {
 export class RedisService implements OnModuleInit, OnModuleDestroy {
   private client: Redis | null = null;
 
-  constructor(private readonly options: RedisOptions) {}
+  constructor(
+    private readonly options: RedisOptions,
+    @Optional() private readonly logger?: ILoggerService,
+  ) {}
 
   /**
    * 模块初始化时连接 Redis
@@ -64,11 +68,23 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
       // 监听连接事件
       this.client!.on('connect', () => {
-        console.log('Redis 连接成功');
+        if (this.logger) {
+          this.logger.log('Redis 连接成功', {
+            host: this.options.host,
+            port: this.options.port,
+            db: this.options.db || 0,
+          });
+        }
       });
 
       this.client!.on('error', (error: Error) => {
-        console.error('Redis 连接错误:', error);
+        if (this.logger) {
+          this.logger.error('Redis 连接错误', error.stack, {
+            host: this.options.host,
+            port: this.options.port,
+            error: error.message,
+          });
+        }
       });
 
       // 等待连接建立

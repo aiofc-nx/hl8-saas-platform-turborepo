@@ -73,6 +73,14 @@ import { AbstractHttpException, ProblemDetails } from '../core/abstract-http.exc
  */
 export interface ILoggerService {
   /**
+   * 记录信息日志
+   *
+   * @param message - 日志消息
+   * @param context - 日志上下文（可选）
+   */
+  log(message: string, context?: any): void;
+
+  /**
    * 记录错误日志
    *
    * @param message - 日志消息
@@ -202,21 +210,6 @@ export class HttpExceptionFilter implements ExceptionFilter<AbstractHttpExceptio
     problemDetails: ProblemDetails,
     request: any,
   ): void {
-    if (!this.logger) {
-      // 如果没有注入日志服务，使用 console
-      console.error('HTTP Exception:', {
-        exception: problemDetails,
-        request: {
-          id: request.id,
-          method: request.method,
-          url: request.url,
-          headers: request.headers,
-        },
-        stack: exception.stack,
-      });
-      return;
-    }
-
     const logContext = {
       exception: problemDetails,
       request: {
@@ -230,18 +223,21 @@ export class HttpExceptionFilter implements ExceptionFilter<AbstractHttpExceptio
     };
 
     // 根据状态码选择日志级别
-    if (problemDetails.status >= 500) {
-      this.logger.error(
-        `HTTP ${problemDetails.status}: ${problemDetails.title}`,
-        exception.stack,
-        logContext,
-      );
-    } else {
-      this.logger.warn(
-        `HTTP ${problemDetails.status}: ${problemDetails.title}`,
-        logContext,
-      );
+    if (this.logger) {
+      if (problemDetails.status >= 500) {
+        this.logger.error(
+          `HTTP ${problemDetails.status}: ${problemDetails.title}`,
+          exception.stack,
+          logContext,
+        );
+      } else {
+        this.logger.warn(
+          `HTTP ${problemDetails.status}: ${problemDetails.title}`,
+          logContext,
+        );
+      }
     }
+    // 如果没有注入日志服务，静默处理（避免 console 污染）
   }
 }
 

@@ -215,14 +215,8 @@ export class AnyExceptionFilter implements ExceptionFilter {
         errorStack,
         logContext,
       );
-    } else {
-      // 如果没有注入日志服务，使用 console
-      console.error('Unhandled Exception:', {
-        message: errorMessage,
-        stack: errorStack,
-        context: logContext,
-      });
     }
+    // 如果没有注入日志服务，静默处理（避免 console 污染）
   }
 }
 

@@ -16,6 +16,7 @@ describe('AnyExceptionFilter', () => {
 
     // 创建 Mock 对象
     mockLogger = {
+      log: jest.fn(),
       error: jest.fn(),
       warn: jest.fn(),
     };
