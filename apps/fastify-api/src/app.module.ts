@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import {
-  // ExceptionModule,  // TODO: 暂时禁用，调试启动问题
-  // LoggingModule,
-  // CachingModule,  // TODO: 启用前需要 Redis 服务器
-  // IsolationModule,
-  // LoggingModuleConfig,
+  // ExceptionModule,  // TODO: Phase 2 - 需要修复 Fastify 兼容性
+  LoggingModule,
+  // CachingModule,  // TODO: Phase 4 - 需要 Redis 服务器
+  // IsolationModule,  // TODO: Phase 3
+  LoggingModuleConfig,
   // CachingModuleConfig,
   // RedisConfig,
 } from '@hl8/nestjs-infra';
-// import { plainToInstance } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { AppController } from './app.controller.js';
 
 /**
@@ -59,21 +59,19 @@ import { AppController } from './app.controller.js';
       envFilePath: ['.env.local', '.env'],
     }),
 
-    // TODO: 暂时禁用所有 nestjs-infra 模块，逐步启用调试
-    
-    // // 异常处理模块 - P0 CRITICAL
-    // ExceptionModule.forRoot({
-    //   isProduction: process.env.NODE_ENV === 'production',
-    //   enableLogging: true,
-    // }),
-
-    // // 日志模块 - 自动复用 Fastify Pino
+    // TODO: Phase 1 - 日志模块（先确保基础版本可用）
     // LoggingModule.forRoot(
     //   plainToInstance(LoggingModuleConfig, {
     //     level: process.env.LOG_LEVEL || (process.env.NODE_ENV !== 'production' ? 'debug' : 'info'),
     //     prettyPrint: process.env.NODE_ENV !== 'production',
     //   }),
     // ),
+
+    // TODO: Phase 2 - 异常处理模块（需要修复 Fastify 兼容性）
+    // ExceptionModule.forRoot({
+    //   isProduction: process.env.NODE_ENV === 'production',
+    //   enableLogging: true,
+    // }),
 
     // // 缓存模块 - Redis 分布式缓存（可选）
     // // TODO: 启用缓存前需要启动 Redis 服务器

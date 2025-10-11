@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { LoggerService } from '@hl8/nestjs-infra';
 
 /**
  * 初始化 NestJS 应用
@@ -33,6 +34,10 @@ import { NestFastifyApplication } from '@nestjs/platform-fastify';
 export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
   // 获取配置服务
   const configService = app.get(ConfigService);
+  
+  // TODO: Phase 1 - 启用日志服务
+  // const logger = app.get(LoggerService);
+  // app.useLogger(logger);
 
   // 全局验证管道 - 自动验证请求数据
   app.useGlobalPipes(
