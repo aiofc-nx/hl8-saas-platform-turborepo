@@ -26,7 +26,8 @@ export { ExceptionModule } from './exceptions/exception.module.js';
 /**
  * 异常类
  */
-export { AbstractHttpException, ProblemDetails } from './exceptions/core/abstract-http.exception.js';
+export { AbstractHttpException } from './exceptions/core/abstract-http.exception.js';
+export type { ProblemDetails } from './exceptions/core/abstract-http.exception.js';
 export { GeneralNotFoundException } from './exceptions/core/general-not-found.exception.js';
 export { GeneralBadRequestException } from './exceptions/core/general-bad-request.exception.js';
 export { GeneralInternalServerException } from './exceptions/core/general-internal-server.exception.js';
@@ -34,24 +35,24 @@ export { GeneralInternalServerException } from './exceptions/core/general-intern
 /**
  * 异常过滤器
  */
-export { HttpExceptionFilter, ILoggerService, IExceptionMessageProvider } from './exceptions/filters/http-exception.filter.js';
+export { HttpExceptionFilter } from './exceptions/filters/http-exception.filter.js';
+export type { ILoggerService, IExceptionMessageProvider } from './exceptions/filters/http-exception.filter.js';
 export { AnyExceptionFilter } from './exceptions/filters/any-exception.filter.js';
 
 /**
  * 消息提供者
  */
-export { ExceptionMessageProvider } from './exceptions/providers/exception-message.provider.js';
+export type { ExceptionMessageProvider } from './exceptions/providers/exception-message.provider.js';
 export { DefaultMessageProvider } from './exceptions/providers/default-message.provider.js';
 
 /**
  * 异常配置
  */
-export {
+export { EXCEPTION_MODULE_OPTIONS, DEFAULT_EXCEPTION_OPTIONS } from './exceptions/config/exception.config.js';
+export type {
   ExceptionModuleOptions,
   ExceptionModuleAsyncOptions,
   ExceptionOptionsFactory,
-  EXCEPTION_MODULE_OPTIONS,
-  DEFAULT_EXCEPTION_OPTIONS,
 } from './exceptions/config/exception.config.js';
 
 // ============================================================

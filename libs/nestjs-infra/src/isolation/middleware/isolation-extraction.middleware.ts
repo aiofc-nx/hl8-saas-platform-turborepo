@@ -7,7 +7,6 @@
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
 import { IsolationContextService } from '../services/isolation-context.service.js';
 import { IsolationContext } from '../../shared/entities/isolation-context.entity.js';
 import { TenantId } from '../../shared/value-objects/tenant-id.vo.js';
@@ -22,7 +21,7 @@ import { UserId } from '../../shared/value-objects/user-id.vo.js';
 export class IsolationExtractionMiddleware implements NestMiddleware {
   constructor(private readonly contextService: IsolationContextService) {}
 
-  use(req: Request, res: Response, next: NextFunction): void {
+  use(req: any, res: any, next: () => void): void {
     try {
       // 从请求头提取标识
       const tenantId = req.headers['x-tenant-id'] as string | undefined;
@@ -62,7 +61,8 @@ export class IsolationExtractionMiddleware implements NestMiddleware {
       this.contextService.setIsolationContext(context);
       next();
     } catch (error) {
-      next(error);
+      // 错误处理
+      throw error;
     }
   }
 }

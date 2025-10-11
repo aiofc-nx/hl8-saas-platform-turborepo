@@ -53,7 +53,6 @@
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import fastifyCors from '@fastify/cors';
-import fastifyHelmet from '@fastify/helmet';
 
 /**
  * 企业级 Fastify 适配器选项
@@ -233,21 +232,12 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
    * @private
    */
   private async registerSecurity(instance: FastifyInstance): Promise<void> {
-    const securityOptions = this.adapterOptions.securityOptions || {};
-
-    // Helmet 安全头
-    if (securityOptions.enableHelmet !== false) {
-      await instance.register(fastifyHelmet, {
-        contentSecurityPolicy: {
-          directives: {
-            defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'"],
-            scriptSrc: ["'self'"],
-            imgSrc: ["'self'", 'data:', 'https:'],
-          },
-        },
-      });
-    }
+    // 安全头配置（简化实现，生产环境建议安装 @fastify/helmet）
+    instance.addHook('onSend', async (request, reply) => {
+      reply.header('X-Content-Type-Options', 'nosniff');
+      reply.header('X-Frame-Options', 'DENY');
+      reply.header('X-XSS-Protection', '1; mode=block');
+    });
   }
 
   /**

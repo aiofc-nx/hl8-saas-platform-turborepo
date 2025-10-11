@@ -7,8 +7,8 @@
  */
 
 import { Injectable, Optional } from '@nestjs/common';
-import * as pino from 'pino';
-import { IsolationContextService } from '../isolation/services/isolation-context.service.js';
+import pino from 'pino';
+import type { IsolationContextService } from '../isolation/services/isolation-context.service.js';
 
 /**
  * 日志级别
@@ -39,7 +39,7 @@ export class LoggerService {
     this.logger = pino({
       level: options?.level || 'info',
       formatters: {
-        level: (label) => ({ level: label }),
+        level: (label: string) => ({ level: label }),
       },
       timestamp: pino.stdTimeFunctions.isoTime,
       ...(options?.prettyPrint && {

@@ -12,11 +12,8 @@ import { EntityId } from './entity-id.vo.js';
  * 租户 ID
  */
 export class TenantId extends EntityId {
-  private constructor(value: string) {
-    super();
-    // 使用父类的 create 方法进行验证
-    const validated = EntityId.create(value);
-    Object.assign(this, validated);
+  protected constructor(value: string) {
+    super(value);
   }
 
   /**

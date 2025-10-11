@@ -7,7 +7,7 @@
  */
 
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import { GeneralInternalServerException } from '../exceptions/core/general-internal-server.exception.js';
 
 /**
@@ -27,7 +27,7 @@ export interface RedisOptions {
  */
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
-  private client: InstanceType<typeof Redis> | null = null;
+  private client: Redis | null = null;
 
   constructor(private readonly options: RedisOptions) {}
 
@@ -63,16 +63,16 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       });
 
       // 监听连接事件
-      this.client.on('connect', () => {
+      this.client!.on('connect', () => {
         console.log('Redis 连接成功');
       });
 
-      this.client.on('error', (error: Error) => {
+      this.client!.on('error', (error: Error) => {
         console.error('Redis 连接错误:', error);
       });
 
       // 等待连接建立
-      await this.client.ping();
+      await this.client!.ping();
     } catch (error) {
       throw new GeneralInternalServerException(
         'Redis 连接失败',
@@ -99,7 +99,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    * @returns Redis 客户端实例
    * @throws {GeneralInternalServerException} Redis 未连接
    */
-  getClient(): InstanceType<typeof Redis> {
+  getClient(): Redis {
     if (!this.client) {
       throw new GeneralInternalServerException(
         'Redis 未连接',

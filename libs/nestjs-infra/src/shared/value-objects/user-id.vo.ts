@@ -12,10 +12,8 @@ import { EntityId } from './entity-id.vo.js';
  * 用户 ID
  */
 export class UserId extends EntityId {
-  private constructor(value: string) {
-    super();
-    const validated = EntityId.create(value);
-    Object.assign(this, validated);
+  protected constructor(value: string) {
+    super(value);
   }
 
   static override create(value: string): UserId {

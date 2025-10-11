@@ -12,10 +12,8 @@ import { EntityId } from './entity-id.vo.js';
  * 组织 ID
  */
 export class OrganizationId extends EntityId {
-  private constructor(value: string) {
-    super();
-    const validated = EntityId.create(value);
-    Object.assign(this, validated);
+  protected constructor(value: string) {
+    super(value);
   }
 
   static override create(value: string): OrganizationId {

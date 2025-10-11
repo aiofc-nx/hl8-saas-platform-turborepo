@@ -41,7 +41,7 @@ import { randomUUID } from 'crypto';
 export class EntityId {
   private readonly _value: string;
 
-  private constructor(value: string) {
+  protected constructor(value: string) {
     if (!EntityId.isValid(value)) {
       throw new Error(`无效的实体 ID: ${value}`);
     }
