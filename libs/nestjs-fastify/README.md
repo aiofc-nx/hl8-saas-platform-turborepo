@@ -100,25 +100,42 @@ FastifyExceptionModule.forRoot({
 
 #### 2. FastifyLoggingModule ⚡
 
-零配置高性能日志
+零配置高性能日志 + 自动隔离上下文
 
 ```typescript
 import { FastifyLoggingModule, FastifyLoggerService } from '@hl8/nestjs-fastify';
 
-// 模块注册
+// 模块注册（零配置）
 FastifyLoggingModule.forRoot()
 
 // 使用
 constructor(private logger: FastifyLoggerService) {}
 
-this.logger.log('Hello');
+this.logger.log('用户创建成功', { userId: '123' });
+```
+
+**日志输出**:
+```json
+{
+  "level": "info",
+  "msg": "用户创建成功",
+  "userId": "123",
+  "isolation": {
+    "tenantId": "tenant-123",
+    "organizationId": "org-456",
+    "departmentId": "dept-789",
+    "userId": "user-001"
+  }
+}
 ```
 
 **特性**:
 
-- ⚡ 零开销（复用 Fastify Pino）
-- ✅ 自动包含请求上下文
-- ✅ 结构化日志
+- ⚡ **零开销**（复用 Fastify Pino，10-20x 性能提升）
+- 🎯 **自动包含隔离上下文**（租户/组织/部门/用户）
+- ✅ 自动包含请求上下文（请求 ID、trace ID）
+- 🔍 **便于审计和追踪**（SAAS 必备）
+- ✅ 结构化日志（JSON 格式）
 
 ---
 
