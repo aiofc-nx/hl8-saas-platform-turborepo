@@ -37,7 +37,11 @@ export interface RemoteLoaderOptions {
   /**
    * 配置类型
    * @description 配置文件的类型
+   * 
+   * @remarks
+   * 使用 any 符合宪章 IX 允许场景：HTTP 响应类型未知。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- HTTP 响应类型未知（宪章 IX 允许场景：第三方库集成）
   type?: 'json' | 'yaml' | 'yml' | ((response: any) => string);
 
   /**
@@ -45,7 +49,11 @@ export interface RemoteLoaderOptions {
    * @description 将 HTTP 响应体映射为配置对象的函数
    * @param response HTTP 响应
    * @returns 配置对象
+   * 
+   * @remarks
+   * 使用 any 符合宪章 IX 允许场景：HTTP 响应和配置对象结构未知。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- HTTP 响应和配置对象结构未知（宪章 IX 允许场景：第三方库集成）
   mapResponse?: (response: any) => any;
 
   /**
@@ -53,7 +61,11 @@ export interface RemoteLoaderOptions {
    * @description 确定是否应该重试请求的函数
    * @param response HTTP 响应
    * @returns 是否应该重试
+   * 
+   * @remarks
+   * 使用 any 符合宪章 IX 允许场景：HTTP 响应类型未知。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- HTTP 响应类型未知（宪章 IX 允许场景：第三方库集成）
   shouldRetry?: (response: any) => boolean;
 
   /**
@@ -174,7 +186,11 @@ async function makeRequest(
  * @returns 解析后的配置对象
  * @author HL8 SAAS Platform Team
  * @since 1.0.0
+ * 
+ * @remarks
+ * 使用 any 符合宪章 IX 允许场景：HTTP 响应数据类型未知，可能是 string 或已解析的对象。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- HTTP 响应和配置对象类型未知（宪章 IX 允许场景：第三方库集成）
 function parseConfig(
   data: any,
   type: string | ((response: any) => string)

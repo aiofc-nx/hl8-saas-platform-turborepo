@@ -450,7 +450,11 @@ export class TypedConfigModule {
    * @returns 提供者数组
    * @author HL8 SAAS Platform Team
    * @since 1.0.0
+   * 
+   * @remarks
+   * 使用 any 符合宪章 IX 允许场景：配置对象和配置类类型动态。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 配置对象和配置类类型动态（宪章 IX 允许场景：泛型约束）
   private static getProviders(
     config: any,
     Config: ClassConstructor<any>,
@@ -471,6 +475,7 @@ export class TypedConfigModule {
       });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 配置值类型未知（宪章 IX 允许场景）
     forEachDeep(config, (value: any) => {
       if (
         value &&

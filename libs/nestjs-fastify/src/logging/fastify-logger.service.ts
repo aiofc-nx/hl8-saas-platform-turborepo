@@ -41,26 +41,31 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
     @Optional() private readonly isolationService?: IsolationContextService,
   ) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
   log(message: any, ...optionalParams: any[]): void {
     const context = this.enrichContext(optionalParams[0]);
     this.pinoLogger.info(context, message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
   error(message: any, ...optionalParams: any[]): void {
     const context = this.enrichContext(optionalParams[0]);
     this.pinoLogger.error(context, message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
   warn(message: any, ...optionalParams: any[]): void {
     const context = this.enrichContext(optionalParams[0]);
     this.pinoLogger.warn(context, message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
   debug(message: any, ...optionalParams: any[]): void {
     const context = this.enrichContext(optionalParams[0]);
     this.pinoLogger.debug(context, message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
   verbose(message: any, ...optionalParams: any[]): void {
     const context = this.enrichContext(optionalParams[0]);
     this.pinoLogger.trace(context, message);
@@ -80,7 +85,11 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
    * @param context - 原始上下文
    * @returns 丰富后的上下文
    * @private
+   * 
+   * @remarks
+   * 使用 any 符合宪章 IX 允许场景：日志上下文可以是任意类型。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志上下文可以是任意类型（宪章 IX 允许场景）
   private enrichContext(context?: any): any {
     // 如果没有注入 IsolationContextService，直接返回原上下文
     if (!this.isolationService) {

@@ -12,13 +12,13 @@
 ### 核心原则（宪章 IX）
 
 - ❌ **禁止模式**: 懒惰使用（仅为避免类型错误）
-- ✅ **允许场景**: 
+- ✅ **允许场景**:
   1. 泛型约束中的函数类型
   2. 高阶函数和装饰器
   3. 条件类型和类型推断
   4. 第三方库集成
 - 📊 **度量目标**: < 1% 使用比例
-- ✅ **安全规则**: 
+- ✅ **安全规则**:
   - 必须添加注释说明原因
   - 局部限定，最小范围
   - 测试覆盖率 ≥ 90%
@@ -62,6 +62,7 @@
 **状态**: ✅ 完美！零 any 类型
 
 **说明**:
+
 - 零依赖领域模型库
 - 所有类型都严格定义
 - 无需任何 any 类型
@@ -76,6 +77,7 @@
 **状态**: ✅ 完美！已移除所有 any
 
 **修复内容**:
+
 - 将 `req: any` 替换为 `req: RequestWithHeaders`
 - 新增 `RequestWithHeaders` 接口定义
 
@@ -91,52 +93,64 @@
 **分类明细**:
 
 #### 1. 装饰器回调（12处）✅ 符合宪章
+
 ```typescript
 // 宪章允许场景：高阶函数和装饰器
 keyGenerator?: (...args: any[]) => string
 condition?: (...args: any[]) => boolean
 ```
+
 **位置**: decorators/*.ts, interceptors/cache.interceptor.ts  
 **理由**: 装饰器必须支持任意方法签名
 
 #### 2. 拦截器参数（5处）✅ 符合宪章
+
 ```typescript
 // 宪章允许场景：泛型约束中的函数类型
 args: any[]
 result: any
 ```
+
 **位置**: interceptors/cache.interceptor.ts  
 **理由**: 处理任意方法的参数和返回值
 
 #### 3. NestJS 依赖注入（2处）✅ 符合宪章
+
 ```typescript
 // 宪章允许场景：第三方库集成
 inject?: any[]
 useFactory?: (...args: any[]) => ...
 ```
+
 **位置**: types/cache-options.interface.ts  
 **理由**: NestJS 官方依赖注入模式
 
 #### 4. 序列化函数（5处）✅ 符合宪章
+
 ```typescript
 // 宪章允许场景：泛型约束
 serialize(value: any): string
 deserialize<T = any>(value: string): T
 ```
+
 **位置**: utils/serializer.util.ts  
 **理由**: 通用序列化必须支持任意类型
 
 #### 5. 日志接口（2处）✅ 符合宪章
+
 ```typescript
 warn(message: string, context?: any)
 ```
+
 **位置**: domain/value-objects/cache-entry.vo.ts  
 **理由**: 日志上下文可以是任意类型
 
 #### 6. 测试 Mock（5处）✅ 允许
+
 ```typescript
 mockService: any
 ```
+
 **位置**: *.spec.ts  
 **理由**: 测试文件允许使用 any
 
@@ -149,6 +163,7 @@ mockService: any
 **状态**: 🟡 需要逐一审查并修复/注释
 
 **待审查文件**:
+
 1. `lib/typed-config.module.ts` (2处)
 2. `lib/utils/for-each-deep.util.ts` (3处)
 3. `lib/errors/error-handler.ts` (2处)
@@ -228,6 +243,7 @@ mockService: any
 **理由**: 基础平台库，影响面广
 
 **建议**:
+
 1. 检查每处 any 使用
 2. 使用 unknown 替代（配合类型保护）
 3. 或添加宪章要求的注释
@@ -239,6 +255,7 @@ mockService: any
 **理由**: 通用配置库，需要高质量
 
 **建议**:
+
 1. ConfigRecord 类型可能可以使用泛型约束
 2. forEachDeep 可以使用 unknown
 3. 事件监听器可以定义具体的事件类型
@@ -251,6 +268,7 @@ mockService: any
 **理由**: 非核心库
 
 **建议**:
+
 1. 定义 Fastify 相关类型
 2. 或添加宪章要求的注释
 
@@ -289,6 +307,7 @@ mockService: any
 ### 符合宪章的 any 使用（nestjs-caching 示例）
 
 #### ✅ 装饰器模式
+
 ```typescript
 // 宪章允许：高阶函数和装饰器
 interface CacheableOptions {
@@ -298,6 +317,7 @@ interface CacheableOptions {
 ```
 
 #### ✅ 泛型约束
+
 ```typescript
 // 宪章允许：泛型约束中的函数类型
 type ReturnType<T extends (...args: any[]) => any> = 
@@ -305,6 +325,7 @@ type ReturnType<T extends (...args: any[]) => any> =
 ```
 
 #### ✅ 序列化工具
+
 ```typescript
 // 宪章允许：处理任意类型数据
 function serialize(value: any): string {
@@ -333,6 +354,7 @@ function process(
 ### 选项 A：修复 platform 库（推荐）⭐⭐⭐
 
 **内容**:
+
 - 检查 4 处 any 使用
 - 使用 unknown 或具体类型替代
 - 添加宪章要求的注释
@@ -342,6 +364,7 @@ function process(
 ### 选项 B：为 nestjs-caching 添加注释 ⭐⭐
 
 **内容**:
+
 - 为 27 处 any 添加宪章要求的注释
 - 说明符合哪个允许场景
 
@@ -350,6 +373,7 @@ function process(
 ### 选项 C：修复 config 库 ⭐
 
 **内容**:
+
 - 审查 23 处 any
 - 尽可能使用 unknown 替代
 - 添加注释
@@ -397,4 +421,3 @@ function process(
 **更新日期**: 2025-10-12  
 **审计人**: AI Assistant  
 **下次审查**: 建议每月一次
-

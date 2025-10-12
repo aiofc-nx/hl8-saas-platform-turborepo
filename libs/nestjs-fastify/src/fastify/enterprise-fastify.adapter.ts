@@ -248,11 +248,13 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
    */
   private registerPerformanceMonitoring(instance: FastifyInstance): void {
     // 请求开始时记录时间
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fastify request 对象需要扩展属性（宪章 IX 允许场景：第三方库集成）
     instance.addHook('onRequest', async (request: any) => {
       request.startTime = Date.now();
     });
 
     // 响应结束时计算耗时
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fastify request 对象需要扩展属性（宪章 IX 允许场景：第三方库集成）
     instance.addHook('onResponse', async (request: any, reply: FastifyReply) => {
       const duration = Date.now() - (request.startTime || Date.now());
 

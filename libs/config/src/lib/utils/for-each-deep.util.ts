@@ -19,7 +19,11 @@
  * ```
  * @author HL8 SAAS Platform Team
  * @since 1.0.0
+ * 
+ * @remarks
+ * 使用 any 符合宪章 IX 允许场景：通用工具函数必须支持任意对象结构。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 通用遍历函数必须支持任意对象结构（宪章 IX 允许场景）
 export const forEachDeep = (
   obj: any,
   callback: (value: any, key: string, path: string) => void,

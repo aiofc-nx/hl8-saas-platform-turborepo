@@ -21,6 +21,7 @@ export class TestConfig {
   public readonly port!: number;
   public readonly database!: TestDatabaseConfig;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 测试配置类允许动态属性（测试工具）
   [key: string]: any;
 }
 

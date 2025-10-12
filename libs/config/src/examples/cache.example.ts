@@ -98,10 +98,12 @@ export async function cacheManagerExample() {
   });
 
   // 添加事件监听器
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 事件对象类型未明确定义（示例代码）
   cacheManager.on('hit', (event: any) => {
     console.log(`Cache hit: ${event.key}`);
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 事件对象类型未明确定义（示例代码）
   cacheManager.on('miss', (event: any) => {
     console.log(`Cache miss: ${event.key}`);
   });
@@ -181,6 +183,7 @@ export async function cacheMonitoringExample() {
   ] as const;
 
   for (const eventType of eventTypes) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 事件对象类型未明确定义（示例代码）
     cacheManager.on(eventType, (event: any) => {
       console.log(
         `[${event.timestamp.toISOString()}] ${event.type.toUpperCase()}: ${
