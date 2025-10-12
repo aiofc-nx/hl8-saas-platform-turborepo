@@ -3,6 +3,7 @@
 ## Phase 1: 项目初始化（1 小时）
 
 ### T001: 创建项目结构
+
 - [ ] 创建 `libs/nestjs-exceptions` 目录
 - [ ] 创建 `src` 目录
 - [ ] 创建 `src/core` 目录
@@ -14,6 +15,7 @@
 **预计时间**: 5 分钟
 
 ### T002: 配置 package.json
+
 - [ ] 创建 `package.json`
 - [ ] 设置包名 `@hl8/nestjs-exceptions`
 - [ ] 设置版本 `0.1.0`
@@ -25,6 +27,7 @@
 **预计时间**: 15 分钟
 
 ### T003: 配置 tsconfig.json
+
 - [ ] 创建 `tsconfig.json`
 - [ ] 继承 monorepo 根配置
 - [ ] 配置编译选项
@@ -34,6 +37,7 @@
 **预计时间**: 10 分钟
 
 ### T004: 配置 jest.config.ts
+
 - [ ] 创建 `jest.config.ts`
 - [ ] 配置 ES Module 支持
 - [ ] 配置覆盖率目标（≥ 90%）
@@ -43,6 +47,7 @@
 **预计时间**: 15 分钟
 
 ### T005: 配置 .swcrc
+
 - [ ] 创建 `.swcrc`
 - [ ] 配置编译选项
 - [ ] 配置模块系统（ES2022）
@@ -55,18 +60,21 @@
 ## Phase 2: 核心异常类迁移（1.5 小时）
 
 ### T006: 迁移 AbstractHttpException
+
 - [ ] 复制 `abstract-http.exception.ts`
 - [ ] 复制 `abstract-http.exception.spec.ts`
 - [ ] 更新导入路径（移除 `@hl8/nestjs-infra` 引用）
 - [ ] 验证测试通过
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-exceptions/src/core/abstract-http.exception.ts`
 - `libs/nestjs-exceptions/src/core/abstract-http.exception.spec.ts`
 
 **预计时间**: 20 分钟
 
 ### T007: 迁移标准异常类
+
 - [ ] 复制 `general-bad-request.exception.ts`
 - [ ] 复制 `general-bad-request.exception.spec.ts`
 - [ ] 复制 `general-not-found.exception.ts`
@@ -76,13 +84,15 @@
 - [ ] 更新导入路径
 - [ ] 验证测试通过
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-exceptions/src/core/general-*.exception.ts`
 - `libs/nestjs-exceptions/src/core/general-*.exception.spec.ts`
 
 **预计时间**: 30 分钟
 
 ### T008: 迁移业务异常类
+
 - [ ] 复制 `invalid-isolation-context.exception.ts`
 - [ ] 复制 `invalid-isolation-context.exception.spec.ts`
 - [ ] 复制 `tenant-not-found.exception.ts`
@@ -92,7 +102,8 @@
 - [ ] 更新导入路径
 - [ ] 验证测试通过
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-exceptions/src/core/invalid-isolation-context.exception.ts`
 - `libs/nestjs-exceptions/src/core/tenant-not-found.exception.ts`
 - `libs/nestjs-exceptions/src/core/unauthorized-organization.exception.ts`
@@ -100,6 +111,7 @@
 **预计时间**: 30 分钟
 
 ### T009: 创建 core/index.ts
+
 - [ ] 创建 `core/index.ts`
 - [ ] 导出 AbstractHttpException
 - [ ] 导出所有标准异常类
@@ -113,30 +125,35 @@
 ## Phase 3: 过滤器迁移（1 小时）
 
 ### T010: 迁移 HttpExceptionFilter
+
 - [ ] 复制 `http-exception.filter.ts`
 - [ ] 复制 `http-exception.filter.spec.ts`
 - [ ] 更新导入路径
 - [ ] 验证测试通过
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-exceptions/src/filters/http-exception.filter.ts`
 - `libs/nestjs-exceptions/src/filters/http-exception.filter.spec.ts`
 
 **预计时间**: 25 分钟
 
 ### T011: 迁移 AnyExceptionFilter
+
 - [ ] 复制 `any-exception.filter.ts`
 - [ ] 复制 `any-exception.filter.spec.ts`
 - [ ] 更新导入路径
 - [ ] 验证测试通过
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-exceptions/src/filters/any-exception.filter.ts`
 - `libs/nestjs-exceptions/src/filters/any-exception.filter.spec.ts`
 
 **预计时间**: 25 分钟
 
 ### T012: 创建 filters/index.ts
+
 - [ ] 创建 `filters/index.ts`
 - [ ] 导出 HttpExceptionFilter
 - [ ] 导出 AnyExceptionFilter
@@ -150,13 +167,15 @@
 ## Phase 4: 消息提供器迁移（0.5 小时）
 
 ### T013: 迁移消息提供器
+
 - [ ] 复制 `exception-message.provider.ts`
 - [ ] 复制 `default-message.provider.ts`
 - [ ] 复制 `default-message.provider.spec.ts`
 - [ ] 更新导入路径
 - [ ] 验证测试通过
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-exceptions/src/providers/exception-message.provider.ts`
 - `libs/nestjs-exceptions/src/providers/default-message.provider.ts`
 - `libs/nestjs-exceptions/src/providers/default-message.provider.spec.ts`
@@ -164,6 +183,7 @@
 **预计时间**: 20 分钟
 
 ### T014: 创建 providers/index.ts
+
 - [ ] 创建 `providers/index.ts`
 - [ ] 导出 ExceptionMessageProvider
 - [ ] 导出 DefaultMessageProvider
@@ -176,17 +196,20 @@
 ## Phase 5: 配置和模块迁移（0.5 小时）
 
 ### T015: 迁移配置
+
 - [ ] 复制 `exception.config.ts`
 - [ ] 创建 `config/index.ts`
 - [ ] 导出所有配置类型和常量
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-exceptions/src/config/exception.config.ts`
 - `libs/nestjs-exceptions/src/config/index.ts`
 
 **预计时间**: 15 分钟
 
 ### T016: 迁移 ExceptionModule
+
 - [ ] 复制 `exception.module.ts`
 - [ ] 更新导入路径
 - [ ] 验证模块配置正确
@@ -195,6 +218,7 @@
 **预计时间**: 10 分钟
 
 ### T017: 创建主导出文件
+
 - [ ] 创建 `src/index.ts`
 - [ ] 导出核心异常类
 - [ ] 导出过滤器
@@ -210,6 +234,7 @@
 ## Phase 6: 测试和验证（1.5 小时）
 
 ### T018: 运行单元测试
+
 - [ ] 执行 `pnpm install` 安装依赖
 - [ ] 执行 `pnpm test` 运行测试
 - [ ] 验证所有测试通过
@@ -220,6 +245,7 @@
 **预计时间**: 40 分钟
 
 ### T019: 执行构建
+
 - [ ] 执行 `pnpm build`
 - [ ] 验证编译无错误
 - [ ] 检查生成的 `dist/` 目录
@@ -229,6 +255,7 @@
 **预计时间**: 20 分钟
 
 ### T020: 类型检查
+
 - [ ] 执行 `pnpm typecheck`
 - [ ] 修复类型错误
 - [ ] 验证无类型警告
@@ -241,6 +268,7 @@
 ## Phase 7: 文档（1 小时）
 
 ### T021: 编写 README.md
+
 - [ ] 创建 README.md
 - [ ] 添加模块介绍
 - [ ] 添加安装说明
@@ -253,6 +281,7 @@
 **预计时间**: 45 分钟
 
 ### T022: 编写 CHANGELOG.md
+
 - [ ] 创建 CHANGELOG.md
 - [ ] 添加 v0.1.0 版本说明
 - [ ] 列出初始功能
@@ -265,6 +294,7 @@
 ## Phase 8: 集成验证（1.5 小时）
 
 ### T023: 更新 pnpm-workspace.yaml
+
 - [ ] 打开 `pnpm-workspace.yaml`
 - [ ] 添加 `libs/nestjs-exceptions` 到 packages 列表
 - [ ] 执行 `pnpm install` 刷新工作区
@@ -273,12 +303,14 @@
 **预计时间**: 10 分钟
 
 ### T024: 更新依赖项目
+
 - [ ] 更新 `libs/nestjs-infra/package.json`，添加 `@hl8/nestjs-exceptions` 依赖
 - [ ] 更新 `apps/fastify-api/package.json`，添加 `@hl8/nestjs-exceptions` 依赖
 - [ ] 更新导入路径（从 `@hl8/nestjs-infra` 到 `@hl8/nestjs-exceptions`）
 - [ ] 执行 `pnpm install`
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-infra/package.json`
 - `apps/fastify-api/package.json`
 - 相关源代码文件
@@ -286,6 +318,7 @@
 **预计时间**: 30 分钟
 
 ### T025: 集成测试
+
 - [ ] 在 `apps/fastify-api` 中启动应用
 - [ ] 测试正常端点（GET /）
 - [ ] 测试异常端点（触发 404, 500 等）
@@ -300,17 +333,20 @@
 ## Phase 9: 清理和提交（1 小时）
 
 ### T026: 删除旧代码
+
 - [ ] 删除 `libs/nestjs-infra/src/exceptions` 目录
 - [ ] 更新 `libs/nestjs-infra/src/index.ts`（移除 exceptions 导出）
 - [ ] 验证 `libs/nestjs-infra` 编译无错误
 
-**文件**: 
+**文件**:
+
 - `libs/nestjs-infra/src/exceptions/`（删除）
 - `libs/nestjs-infra/src/index.ts`
 
 **预计时间**: 15 分钟
 
 ### T027: 全局测试
+
 - [ ] 在 monorepo 根目录执行 `pnpm test`
 - [ ] 验证所有项目测试通过
 - [ ] 修复破坏性更改
@@ -319,11 +355,13 @@
 **预计时间**: 30 分钟
 
 ### T028: 提交代码
+
 - [ ] 执行 `git add .`
 - [ ] 提交：`feat(nestjs-exceptions): 拆分 Exceptions 模块为独立库`
 - [ ] 推送到远程：`git push origin 003-exceptions-split`
 
-**命令**: 
+**命令**:
+
 ```bash
 git add .
 git commit -m "feat(nestjs-exceptions): 拆分 Exceptions 模块为独立库
@@ -363,24 +401,27 @@ git push origin 003-exceptions-split
 ## 验收标准
 
 ### 功能完整性
+
 - [ ] 所有异常类正常工作
 - [ ] 所有过滤器正常工作
 - [ ] 消息提供器正常工作
 - [ ] 模块配置正确
 
 ### 测试完整性
+
 - [ ] 单元测试覆盖率 ≥ 90%
 - [ ] 所有测试通过
 - [ ] 集成测试通过
 
 ### 文档完整性
+
 - [ ] README.md 完整
 - [ ] CHANGELOG.md 完整
 - [ ] TSDoc 注释完整
 
 ### 质量标准
+
 - [ ] 编译无错误
 - [ ] ESLint 无警告
 - [ ] 类型定义完整
 - [ ] 宪章 100% 合规
-

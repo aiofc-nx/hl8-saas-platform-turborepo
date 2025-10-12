@@ -6,11 +6,8 @@ import {
   CompressionModule,
   MetricsModule,
 } from '@hl8/nestjs-fastify';
+import { CachingModule, CachingModuleConfig } from '@hl8/caching';
 import { IsolationModule } from '@hl8/nestjs-isolation';
-import {
-  CachingModule,
-  CachingModuleConfig,
-} from '@hl8/nestjs-infra';
 import { plainToInstance } from 'class-transformer';
 import { AppController } from './app.controller.js';
 
