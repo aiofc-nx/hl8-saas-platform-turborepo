@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { TypedConfigModule, dotenvLoader } from '@hl8/config';
 import {
   FastifyExceptionModule,
   FastifyLoggingModule,
   CompressionModule,
   MetricsModule,
 } from '@hl8/nestjs-fastify';
-import { CachingModule, CachingModuleConfig } from '@hl8/caching';
+import { CachingModule } from '@hl8/caching';
 import { IsolationModule } from '@hl8/nestjs-isolation';
-import { plainToInstance } from 'class-transformer';
 import { AppController } from './app.controller.js';
+import { AppConfig } from './config/app.config.js';
 
 /**
  * HL8 SAAS 平台应用根模块
@@ -20,9 +20,11 @@ import { AppController } from './app.controller.js';
  * ## 业务规则
  *
  * ### 配置管理规则
- * - 使用 ConfigModule 管理环境变量配置
+ * - 使用 TypedConfigModule (@hl8/config) 提供类型安全的配置管理
  * - 配置模块全局可用，无需重复导入
  * - 支持多环境配置文件 (.env.local, .env)
+ * - 支持嵌套配置（使用 __ 分隔符）和变量扩展
+ * - 完整的 TypeScript 类型支持和运行时验证
  *
  * ### 异常处理规则
  * - 统一异常响应格式（RFC7807）
@@ -67,22 +69,32 @@ import { AppController } from './app.controller.js';
   controllers: [AppController],
   providers: [],
   imports: [
-    // 配置模块 - 全局可用
-    ConfigModule.forRoot({
+    // 配置模块 - 类型安全的配置管理
+    TypedConfigModule.forRoot({
+      schema: AppConfig,
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
+      load: [
+        dotenvLoader({
+          separator: '__', // 支持嵌套配置：REDIS__HOST
+          envFilePath: '.env', // 使用单个文件路径
+          enableExpandVariables: true, // 支持 ${VAR} 语法
+        }),
+      ],
     }),
 
     // Fastify 专用异常处理模块（RFC7807 统一格式）
+    // 注意：配置通过 AppConfig 类管理，在服务中可注入 AppConfig
     FastifyExceptionModule.forRoot({
       isProduction: process.env.NODE_ENV === 'production',
     }),
 
     // Fastify 专用日志模块（零开销，复用 Fastify Pino）
+    // 注意：详细配置在 AppConfig.logging 中定义，可通过环境变量覆盖
+    // 环境变量格式：LOGGING__LEVEL=info, LOGGING__PRETTY_PRINT=true
     FastifyLoggingModule.forRoot({
       config: {
-        level: (process.env.LOG_LEVEL as any) || 'info',
-        prettyPrint: process.env.NODE_ENV === 'development',
+        level: (process.env.LOGGING__LEVEL as any) || 'info',
+        prettyPrint: process.env.NODE_ENV === 'development' || process.env.LOGGING__PRETTY_PRINT === 'true',
         includeIsolationContext: true,
         timestamp: true,
         enabled: true,
@@ -103,30 +115,25 @@ import { AppController } from './app.controller.js';
     }),
 
     // Prometheus Metrics 模块 - 性能监控
+    // 注意：详细配置在 AppConfig.metrics 中定义，可通过环境变量覆盖
+    // 环境变量格式：METRICS__PATH=/metrics, METRICS__INCLUDE_TENANT_METRICS=true
     MetricsModule.forRoot({
       defaultLabels: {
         app: 'fastify-api',
         environment: process.env.NODE_ENV || 'development',
       },
       includeTenantMetrics: true,
-      path: '/metrics',
+      path: process.env.METRICS__PATH || '/metrics',
       enableDefaultMetrics: true,
     }),
 
-    // 缓存模块 - Redis 分布式缓存（可选）
+    // 缓存模块 - Redis 分布式缓存（使用类型安全配置）
     // 启用前需要确保 Redis 可用：docker run -d -p 6379:6379 redis:alpine
-    // CachingModule.forRoot(
-    //   plainToInstance(CachingModuleConfig, {
-    //     redis: {
-    //       host: process.env.REDIS_HOST || 'localhost',
-    //       port: parseInt(process.env.REDIS_PORT || '6379', 10),
-    //       password: process.env.REDIS_PASSWORD,
-    //       db: parseInt(process.env.REDIS_DB || '0', 10),
-    //     },
-    //     ttl: parseInt(process.env.CACHE_TTL || '3600', 10),
-    //     keyPrefix: process.env.CACHE_KEY_PREFIX || 'hl8:cache:',
-    //   }),
-    // ),
+    // 配置通过 AppConfig.caching (CachingModuleConfig) 进行类型验证
+    CachingModule.forRootAsync({
+      inject: [AppConfig],
+      useFactory: (config: AppConfig) => config.caching,
+    }),
   ],
 })
 export class AppModule {}

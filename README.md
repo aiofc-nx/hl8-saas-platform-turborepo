@@ -1,6 +1,6 @@
-# Turborepo starter
+# HL8 SAAS 平台
 
-This Turborepo starter is maintained by the Turborepo core team.
+> 基于 Turborepo 的企业级 SAAS 平台 - 采用 Clean Architecture + CQRS + 事件溯源 + 事件驱动架构
 
 ## Using this example
 
@@ -122,6 +122,23 @@ npx turbo link
 yarn exec turbo link
 pnpm exec turbo link
 ```
+
+## 📚 文档
+
+### 配置管理
+
+**配置文档目录**：📁 [docs/guides/config/](./docs/guides/config/)
+
+**必读文档**：
+
+- 📖 [配置文档索引 (docs/guides/config/README.md)](./docs/guides/config/README.md) - 所有配置文档的导航
+- ⚡ [配置快速入门 (docs/guides/config/CONFIG_GETTING_STARTED.md)](./docs/guides/config/CONFIG_GETTING_STARTED.md) - 5分钟快速上手
+- 📘 [配置使用指南 (docs/guides/config/CONFIGURATION_GUIDE.md)](./docs/guides/config/CONFIGURATION_GUIDE.md) - 完整的使用手册
+
+**⚠️ 重要说明**：
+
+- 🚨 [重要澄清：两种独立的缓存](./docs/guides/config/IMPORTANT_CACHE_CLARIFICATION.md) - **必读！**
+- 🔒 [配置安全性分析](./docs/guides/config/CONFIG_SECURITY_ANALYSIS.md) - 安全最佳实践
 
 ## Useful Links
 

@@ -1,7 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { AppConfig } from './config/app.config.js';
 
 /**
  * 初始化 NestJS 应用
@@ -32,8 +31,8 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
  * @returns Promise<void> 应用启动完成
  */
 export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
-  // 获取配置服务
-  const configService = app.get(ConfigService);
+  // 获取配置（使用自定义的 AppConfig）
+  const appConfig = app.get(AppConfig);
   
   // 全局日志服务已通过 FastifyLoggingModule 自动配置
   // 所有模块自动使用 FastifyLoggerService（零开销 + 隔离上下文）
@@ -51,8 +50,8 @@ export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
   );
 
   // 启动应用并监听配置的端口
-  const port = parseInt(configService.get('PORT') || '3000', 10);
-  const host = configService.get('HOST') || '0.0.0.0';
+  const port = appConfig.PORT;
+  const host = process.env.HOST || '0.0.0.0';
 
   await app.listen(port, host);
   

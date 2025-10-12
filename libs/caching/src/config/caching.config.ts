@@ -28,7 +28,7 @@ export class RedisConfig {
    * Redis 主机地址
    */
   @IsString()
-  host!: string;
+  host: string = 'localhost';
   
   /**
    * Redis 端口
@@ -36,7 +36,7 @@ export class RedisConfig {
   @IsNumber()
   @Min(1)
   @Max(65535)
-  port!: number;
+  port: number = 6379;
   
   /**
    * Redis 密码（可选）
@@ -86,7 +86,7 @@ export class CachingModuleConfig {
    */
   @ValidateNested()
   @Type(() => RedisConfig)
-  redis!: RedisConfig;
+  redis: RedisConfig = new RedisConfig();
   
   /**
    * 默认 TTL（秒）
