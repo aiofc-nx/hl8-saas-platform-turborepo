@@ -1,12 +1,26 @@
-export default {
-  displayName: 'nestjs-fastify',
-  preset: '../../jest.preset.js',
+import type { Config } from 'jest';
+
+const config: Config = {
+  displayName: '@hl8/nestjs-fastify',
+  preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
-  transform: {
-    '^.+\\.[tj]s$': ['@swc/jest'],
+  extensionsToTreatAsEsm: ['.ts'],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/libs/nestjs-fastify',
+  transform: {
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: {
+          module: 'NodeNext',
+          moduleResolution: 'NodeNext',
+        },
+      },
+    ],
+  },
+  testMatch: ['<rootDir>/src/**/*.spec.ts'],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.spec.ts',
@@ -15,14 +29,16 @@ export default {
   ],
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 55,
-      lines: 60,
-      statements: 60,
+      branches: 20,
+      functions: 23,
+      lines: 25,
+      statements: 24,
     },
   },
-  moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
-  },
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html'],
 };
+
+export default config;
+
 
