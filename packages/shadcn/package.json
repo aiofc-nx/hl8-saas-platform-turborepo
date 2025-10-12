@@ -46,7 +46,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "frimousse": "^0.2.0",
+    "frimousse": "^0.3.0",
     "input-otp": "^1.4.2",
     "media-chrome": "^4.11.1",
     "react": "^19.0.0",
