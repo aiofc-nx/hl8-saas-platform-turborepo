@@ -6,7 +6,7 @@
  * @since 0.2.0
  */
 
-import type { EnterpriseFastifyAdapterOptions } from '../enterprise-fastify.adapter.js';
+import type { EnterpriseFastifyAdapterOptions } from '../fastify/enterprise-fastify.adapter.js';
 
 /**
  * 默认 Fastify 配置

@@ -29,6 +29,7 @@
     "@hl8/config": "workspace:*",
     "@hl8/nestjs-fastify": "workspace:*",
     "@hl8/nestjs-infra": "workspace:*",
+    "@hl8/nestjs-isolation": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "@nestjs/platform-fastify": "^11.1.6",

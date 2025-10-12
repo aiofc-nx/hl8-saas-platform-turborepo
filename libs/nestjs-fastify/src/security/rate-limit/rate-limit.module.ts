@@ -305,6 +305,10 @@ export class RateLimitModule {
    * ```
    */
   static forRootAsync(options: RateLimitModuleAsyncOptions): DynamicModule {
+    if (!options.useFactory) {
+      throw new Error('RateLimitModule.forRootAsync() 必须提供 useFactory');
+    }
+
     return {
       module: RateLimitModule,
       global: true,
