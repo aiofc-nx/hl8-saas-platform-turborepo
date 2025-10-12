@@ -3,12 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import {
   FastifyExceptionModule,
   FastifyLoggingModule,
-  RateLimitModule,
-  SecurityModule,
-  CorsModule,
   CompressionModule,
   MetricsModule,
-  DEFAULT_FASTIFY_MODULES_CONFIG,
 } from '@hl8/nestjs-fastify';
 import {
   CachingModule,
@@ -49,23 +45,20 @@ import { AppController } from './app.controller.js';
  * - 从请求头自动提取隔离标识
  * - 支持数据共享控制（isShared, sharingLevel）
  *
- * ### 速率限制规则
- * - 租户级别限流（每个租户独立计数）
- * - 默认限制：1000 次/分钟
- * - 超限返回 429 Too Many Requests
- * - 响应头包含限流信息
- *
- * ### 安全增强规则
- * - Helmet 安全头（CSP、HSTS、X-Frame-Options）
- * - CORS 跨域配置（支持凭证）
- * - 响应压缩（br、gzip、deflate）
- * - 防止 XSS、点击劫持等攻击
+ * ### 响应压缩规则
+ * - 支持 br、gzip、deflate 编码
+ * - 压缩阈值：1KB
+ * - 自动检测内容类型
  *
  * ### 性能监控规则
  * - Prometheus Metrics 收集
  * - HTTP 请求计数、响应时间、错误率
  * - 租户级别指标
  * - /metrics 端点暴露指标
+ *
+ * ### 注意事项
+ * - 速率限制、Helmet、CORS 已在 EnterpriseFastifyAdapter 中配置（详见 src/main.ts）
+ * - 本模块仅注册压缩和 Metrics 模块，避免重复配置
  *
  * ### 缓存管理规则
  * - 使用 Redis 作为分布式缓存（可选）
@@ -102,39 +95,25 @@ import { AppController } from './app.controller.js';
     // 数据隔离模块 - 5 级隔离（平台/租户/组织/部门/用户）
     IsolationModule.forRoot(),
 
-    // 速率限制模块 - 防止 API 滥用
-    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.rateLimit
-    RateLimitModule.forRoot({
-      max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
-      timeWindow: parseInt(process.env.RATE_LIMIT_WINDOW || '60000', 10), // 1 分钟
-      strategy: 'tenant', // 租户级别限流
-      skipOnError: true, // Redis 错误时降级
-    }),
+    // 注意：速率限制、Helmet、CORS 已在 EnterpriseFastifyAdapter 中配置
+    // 详见 src/main.ts
 
-    // 安全头模块 - Helmet
-    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.helmet
-    SecurityModule.forRoot(),
+    // 压缩模块和 Metrics 模块暂时禁用，待调试完成后启用
+    // CompressionModule.forRoot({
+    //   global: true,
+    //   threshold: 1024, // 1KB
+    //   encodings: ['br', 'gzip', 'deflate'],
+    // }),
 
-    // CORS 模块
-    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.cors
-    CorsModule.forRoot({
-      origin: true, // 允许所有 origin（开发环境）
-      credentials: true,
-    }),
-
-    // 压缩模块
-    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.compression
-    CompressionModule.forRoot(),
-
-    // Prometheus Metrics 模块
-    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.metrics
-    MetricsModule.forRoot({
-      defaultLabels: {
-        app: 'fastify-api',
-        environment: process.env.NODE_ENV || 'development',
-      },
-      includeTenantMetrics: true,
-    }),
+    // MetricsModule.forRoot({
+    //   defaultLabels: {
+    //     app: 'fastify-api',
+    //     environment: process.env.NODE_ENV || 'development',
+    //   },
+    //   includeTenantMetrics: true,
+    //   path: '/metrics',
+    //   enableDefaultMetrics: true,
+    // }),
 
     // 缓存模块 - Redis 分布式缓存（可选）
     // 启用前需要确保 Redis 可用：docker run -d -p 6379:6379 redis:alpine
