@@ -48,7 +48,12 @@
  * const serialized = serialize(obj);
  * await redis.set('user:123', serialized);
  * ```
+ * 
+ * @remarks
+ * 使用 any 符合宪章 IX 允许场景：通用工具函数必须支持任意类型。
+ * 这是序列化函数的标准模式，类似于 JSON.stringify。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 序列化函数必须支持任意类型（宪章 IX 允许场景）
 export function serialize(value: any): string {
   if (value === undefined) {
     return 'undefined';
@@ -169,7 +174,11 @@ export function deserialize<T = any>(value: string): T {
  *   await cacheService.set('user', 'john', obj);
  * }
  * ```
+ * 
+ * @remarks
+ * 使用 any 符合宪章 IX 允许场景：通用工具函数必须支持任意类型。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 检查函数必须支持任意类型（宪章 IX 允许场景）
 export function isSerializable(value: any): boolean {
   if (value === undefined || value === null) {
     return true;

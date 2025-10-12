@@ -50,7 +50,11 @@ import { CacheInterceptor, CACHE_PUT_KEY, CachePutMetadata } from '../intercepto
 export interface CachePutOptions {
   /**
    * 缓存键生成函数
+   * 
+   * @remarks
+   * 使用 any[] 符合宪章 IX 允许场景：高阶函数和装饰器。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器必须支持任意方法签名（宪章 IX 允许场景）
   keyGenerator?: (...args: any[]) => string;
   
   /**
@@ -64,7 +68,11 @@ export interface CachePutOptions {
    * 条件函数
    * 
    * @description 返回 false 时不更新缓存
+   * 
+   * @remarks
+   * 使用 any[] 符合宪章 IX 允许场景：高阶函数和装饰器。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器必须支持任意方法签名（宪章 IX 允许场景）
   condition?: (...args: any[]) => boolean;
 }
 

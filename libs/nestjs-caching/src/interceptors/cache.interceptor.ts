@@ -24,6 +24,7 @@ export const CACHEABLE_KEY = 'cacheable';
 export const CACHE_EVICT_KEY = 'cache_evict';
 export const CACHE_PUT_KEY = 'cache_put';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器元数据必须支持任意方法签名（宪章 IX 允许场景：高阶函数和装饰器）
 export interface CacheableMetadata {
   namespace: string;
   keyGenerator?: (...args: any[]) => string;
@@ -32,6 +33,7 @@ export interface CacheableMetadata {
   cacheNull?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器元数据必须支持任意方法签名（宪章 IX 允许场景：高阶函数和装饰器）
 export interface CacheEvictMetadata {
   namespace: string;
   keyGenerator?: (...args: any[]) => string;
@@ -40,6 +42,7 @@ export interface CacheEvictMetadata {
   condition?: (...args: any[]) => boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器元数据必须支持任意方法签名（宪章 IX 允许场景：高阶函数和装饰器）
 export interface CachePutMetadata {
   namespace: string;
   keyGenerator?: (...args: any[]) => string;
@@ -112,7 +115,11 @@ export class CacheInterceptor implements NestInterceptor {
   
   /**
    * 处理 @Cacheable 逻辑
+   * 
+   * @remarks
+   * 使用 any[] 和 any 符合宪章 IX 允许场景：处理任意方法的参数和返回值。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 处理任意方法的参数和返回值（宪章 IX 允许场景）
   private async handleCacheable(
     metadata: CacheableMetadata,
     args: any[],
@@ -155,7 +162,11 @@ export class CacheInterceptor implements NestInterceptor {
   
   /**
    * 处理 @CacheEvict 逻辑
+   * 
+   * @remarks
+   * 使用 any[] 符合宪章 IX 允许场景：处理任意方法的参数。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 处理任意方法的参数（宪章 IX 允许场景）
   private async handleCacheEvict(
     metadata: CacheEvictMetadata,
     args: any[],
@@ -182,7 +193,11 @@ export class CacheInterceptor implements NestInterceptor {
   
   /**
    * 处理 @CachePut 逻辑
+   * 
+   * @remarks
+   * 使用 any[] 和 any 符合宪章 IX 允许场景：处理任意方法的参数和返回值。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 处理任意方法的参数和返回值（宪章 IX 允许场景）
   private async handleCachePut(
     metadata: CachePutMetadata,
     args: any[],
@@ -213,7 +228,11 @@ export class CacheInterceptor implements NestInterceptor {
    * 生成默认缓存键
    * 
    * @private
+   * 
+   * @remarks
+   * 使用 any[] 符合宪章 IX 允许场景：处理任意方法的参数。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 处理任意方法的参数（宪章 IX 允许场景）
   private generateDefaultKey(args: any[]): string {
     if (args.length === 0) {
       return 'default';

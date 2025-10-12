@@ -46,12 +46,20 @@ export interface CachingModuleOptions {
 export interface CachingModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
   /**
    * 注入依赖
+   * 
+   * @remarks
+   * 使用 any[] 符合宪章 IX 允许场景：第三方库集成（NestJS 依赖注入模式）。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- NestJS 依赖注入模式必须支持任意依赖（宪章 IX 允许场景）
   inject?: any[];
   
   /**
    * 工厂函数
+   * 
+   * @remarks
+   * 使用 any[] 符合宪章 IX 允许场景：第三方库集成（NestJS 依赖注入模式）。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- NestJS 依赖注入模式必须支持任意依赖（宪章 IX 允许场景）
   useFactory?: (...args: any[]) => Promise<CachingModuleOptions> | CachingModuleOptions;
   
   /**

@@ -104,6 +104,7 @@ export class CachingModule {
       providers: [
         {
           provide: REDIS_OPTIONS,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- NestJS useFactory 模式必须支持任意依赖（宪章 IX 允许场景）
           useFactory: async (...args: any[]) => {
             if (options.useFactory) {
               const config = await options.useFactory(...args);
@@ -115,6 +116,7 @@ export class CachingModule {
         },
         {
           provide: CACHE_OPTIONS,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- NestJS useFactory 模式必须支持任意依赖（宪章 IX 允许场景）
           useFactory: async (...args: any[]) => {
             if (options.useFactory) {
               const config = await options.useFactory(...args);

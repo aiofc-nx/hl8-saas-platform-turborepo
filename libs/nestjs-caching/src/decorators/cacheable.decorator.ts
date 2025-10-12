@@ -47,7 +47,12 @@ export interface CacheableOptions {
    * 
    * @param args - 方法参数
    * @returns 缓存键
+   * 
+   * @remarks
+   * 使用 any[] 符合宪章 IX 允许场景：高阶函数和装饰器。
+   * 装饰器必须支持任意方法签名，因此参数类型必须使用 any[]。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器必须支持任意方法签名（宪章 IX 允许场景）
   keyGenerator?: (...args: any[]) => string;
   
   /**
@@ -63,7 +68,11 @@ export interface CacheableOptions {
    * @description 返回 false 时不缓存
    * @param args - 方法参数
    * @returns true 表示缓存，false 表示不缓存
+   * 
+   * @remarks
+   * 使用 any[] 符合宪章 IX 允许场景：高阶函数和装饰器。
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器必须支持任意方法签名（宪章 IX 允许场景）
   condition?: (...args: any[]) => boolean;
   
   /**

@@ -46,7 +46,11 @@ import type { CacheKey } from './cache-key.vo.js';
 
 /**
  * 日志服务接口（临时定义，后续会从 nestjs-infra 导入）
+ * 
+ * @remarks
+ * context 参数使用 any 符合宪章 IX 允许场景：日志上下文可以是任意类型。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志上下文可以是任意类型（宪章 IX 允许场景）
 interface ILoggerService {
   warn(message: string, context?: any): void;
   error(message: string, stack?: string, context?: any): void;

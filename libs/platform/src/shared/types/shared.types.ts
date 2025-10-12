@@ -104,28 +104,48 @@ export type Optional<T> = T | undefined;
  *   return new ctor();
  * }
  * ```
+ * 
+ * @remarks
+ * 使用 any 符合宪章 IX 允许场景：泛型约束中的函数类型。
+ * 这使得 Constructor 可以适配任意构造函数签名。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 泛型约束必须支持任意构造函数签名（宪章 IX 允许场景）
 export type Constructor<T = any> = new (...args: any[]) => T;
 
 /**
  * AbstractConstructor 类型
  *
  * @description 表示一个抽象类类型
+ * 
+ * @remarks
+ * 使用 any 符合宪章 IX 允许场景：泛型约束中的函数类型。
+ * 这使得 AbstractConstructor 可以适配任意抽象类签名。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 泛型约束必须支持任意抽象类签名（宪章 IX 允许场景）
 export type AbstractConstructor<T = any> = abstract new (...args: any[]) => T;
 
 /**
  * AnyFunction 类型
  *
  * @description 表示任意函数类型
+ * 
+ * @remarks
+ * 使用 any 符合宪章 IX 允许场景：泛型约束中的函数类型。
+ * 这是标准的 TypeScript 工具类型模式，类似于 ReturnType<T> 的约束。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 工具类型必须支持任意函数签名（宪章 IX 允许场景）
 export type AnyFunction = (...args: any[]) => any;
 
 /**
  * AsyncFunction 类型
  *
  * @description 表示异步函数类型
+ * 
+ * @remarks
+ * 使用 any 符合宪章 IX 允许场景：泛型约束中的函数类型。
+ * 这使得 AsyncFunction 可以适配任意异步函数签名。
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 泛型约束必须支持任意异步函数签名（宪章 IX 允许场景）
 export type AsyncFunction<T = any> = (...args: any[]) => Promise<T>;
 
 /**
