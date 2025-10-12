@@ -8,6 +8,7 @@ import {
   CorsModule,
   CompressionModule,
   MetricsModule,
+  DEFAULT_FASTIFY_MODULES_CONFIG,
 } from '@hl8/nestjs-fastify';
 import {
   CachingModule,
@@ -102,6 +103,7 @@ import { AppController } from './app.controller.js';
     IsolationModule.forRoot(),
 
     // 速率限制模块 - 防止 API 滥用
+    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.rateLimit
     RateLimitModule.forRoot({
       max: parseInt(process.env.RATE_LIMIT_MAX || '1000', 10),
       timeWindow: parseInt(process.env.RATE_LIMIT_WINDOW || '60000', 10), // 1 分钟
@@ -110,18 +112,22 @@ import { AppController } from './app.controller.js';
     }),
 
     // 安全头模块 - Helmet
+    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.helmet
     SecurityModule.forRoot(),
 
     // CORS 模块
+    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.cors
     CorsModule.forRoot({
       origin: true, // 允许所有 origin（开发环境）
       credentials: true,
     }),
 
     // 压缩模块
+    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.compression
     CompressionModule.forRoot(),
 
     // Prometheus Metrics 模块
+    // 使用统一配置: DEFAULT_FASTIFY_MODULES_CONFIG.metrics
     MetricsModule.forRoot({
       defaultLabels: {
         app: 'fastify-api',

@@ -3,4 +3,6 @@
  */
 
 export * from './logging.config.js';
+export * from './fastify.config.js';
+export * from './fastify-modules.config.js';
 
