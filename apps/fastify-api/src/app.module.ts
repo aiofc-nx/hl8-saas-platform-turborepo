@@ -6,9 +6,9 @@ import {
   CompressionModule,
   MetricsModule,
 } from '@hl8/nestjs-fastify';
+import { IsolationModule } from '@hl8/nestjs-isolation';
 import {
   CachingModule,
-  IsolationModule,
   CachingModuleConfig,
 } from '@hl8/nestjs-infra';
 import { plainToInstance } from 'class-transformer';
@@ -98,22 +98,23 @@ import { AppController } from './app.controller.js';
     // 注意：速率限制、Helmet、CORS 已在 EnterpriseFastifyAdapter 中配置
     // 详见 src/main.ts
 
-    // 压缩模块和 Metrics 模块暂时禁用，待调试完成后启用
-    // CompressionModule.forRoot({
-    //   global: true,
-    //   threshold: 1024, // 1KB
-    //   encodings: ['br', 'gzip', 'deflate'],
-    // }),
+    // 压缩模块 - 响应压缩
+    CompressionModule.forRoot({
+      global: true,
+      threshold: 1024, // 1KB
+      encodings: ['br', 'gzip', 'deflate'],
+    }),
 
-    // MetricsModule.forRoot({
-    //   defaultLabels: {
-    //     app: 'fastify-api',
-    //     environment: process.env.NODE_ENV || 'development',
-    //   },
-    //   includeTenantMetrics: true,
-    //   path: '/metrics',
-    //   enableDefaultMetrics: true,
-    // }),
+    // Prometheus Metrics 模块 - 性能监控
+    MetricsModule.forRoot({
+      defaultLabels: {
+        app: 'fastify-api',
+        environment: process.env.NODE_ENV || 'development',
+      },
+      includeTenantMetrics: true,
+      path: '/metrics',
+      enableDefaultMetrics: true,
+    }),
 
     // 缓存模块 - Redis 分布式缓存（可选）
     // 启用前需要确保 Redis 可用：docker run -d -p 6379:6379 redis:alpine
