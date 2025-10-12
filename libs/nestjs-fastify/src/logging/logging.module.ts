@@ -16,7 +16,7 @@
 import { Module, DynamicModule, Global } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { FastifyLoggerService } from './fastify-logger.service.js';
-import { IsolationContextService } from '@hl8/nestjs-infra';
+import { IsolationContextService } from '@hl8/nestjs-isolation';
 import { LoggingConfig } from '../config/logging.config.js';
 import { ConfigValidator } from '@hl8/config';
 import pino from 'pino';

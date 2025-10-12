@@ -6,7 +6,7 @@
 
 import { Module } from '@nestjs/common';
 import { IsolationModule } from '@hl8/nestjs-isolation';
-import { CachingModule } from '@hl8/nestjs-caching';
+import { CachingModule } from '@hl8/caching';
 import { UsersModule } from './users/users.module.js';
 import { MonitoringModule } from './monitoring/monitoring.module.js';
 

@@ -26,8 +26,8 @@ import {
   Injectable,
   Optional,
 } from '@nestjs/common';
-import { AbstractHttpException } from '@hl8/nestjs-infra';
-import type { ILoggerService } from '@hl8/nestjs-infra';
+import { AbstractHttpException } from '@hl8/exceptions';
+import type { ILoggerService } from '@hl8/exceptions';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
 @Catch(AbstractHttpException)

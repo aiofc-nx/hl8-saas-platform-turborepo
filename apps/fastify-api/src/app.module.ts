@@ -4,11 +4,8 @@ import {
   FastifyExceptionModule,
   FastifyLoggingModule,
 } from '@hl8/nestjs-fastify';
-import {
-  CachingModule,
-  IsolationModule,
-  CachingModuleConfig,
-} from '@hl8/nestjs-infra';
+import { CachingModule, CachingModuleConfig } from '@hl8/caching';
+import { IsolationModule } from '@hl8/nestjs-isolation';
 import { plainToInstance } from 'class-transformer';
 import { AppController } from './app.controller.js';
 

@@ -34,7 +34,7 @@ import {
   Optional,
 } from '@nestjs/common';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import type { ProblemDetails, ILoggerService } from '@hl8/nestjs-infra';
+import type { ProblemDetails, ILoggerService } from '@hl8/exceptions';
 
 @Catch()
 @Injectable()

@@ -23,7 +23,8 @@
 
 import { Injectable, LoggerService as NestLoggerService, Scope, Optional } from '@nestjs/common';
 import type { Logger as PinoLogger } from 'pino';
-import { IsolationContextService, ILoggerService } from '@hl8/nestjs-infra';
+import { IsolationContextService } from '@hl8/nestjs-isolation';
+import type { ILoggerService } from '@hl8/exceptions';
 
 /**
  * Fastify 日志服务
@@ -102,7 +103,13 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
     // 合并隔离信息到日志上下文
     return {
       ...context,
-      isolation: isolationContext?.toPlainObject(),
+      isolation: isolationContext ? {
+        level: isolationContext.getLevel(),
+        tenantId: isolationContext.tenantId?.getValue(),
+        organizationId: isolationContext.organizationId?.getValue(),
+        departmentId: isolationContext.departmentId?.getValue(),
+        userId: isolationContext.userId?.getValue(),
+      } : undefined,
     };
   }
 }

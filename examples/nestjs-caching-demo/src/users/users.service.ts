@@ -5,7 +5,7 @@
  */
 
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Cacheable, CacheEvict, CachePut } from '@hl8/nestjs-caching';
+import { Cacheable, CacheEvict, CachePut } from '@hl8/caching';
 import type { User, CreateUserDto, UpdateUserDto } from './user.entity.js';
 
 @Injectable()

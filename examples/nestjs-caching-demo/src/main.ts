@@ -1,7 +1,7 @@
 /**
  * 示例应用入口
  * 
- * @description 演示 @hl8/nestjs-isolation 和 @hl8/nestjs-caching 的集成使用
+ * @description 演示 @hl8/nestjs-isolation 和 @hl8/caching 的集成使用
  */
 
 import { NestFactory } from '@nestjs/core';

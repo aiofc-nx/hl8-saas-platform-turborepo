@@ -5,7 +5,7 @@
  */
 
 import { Controller, Get } from '@nestjs/common';
-import { CacheMetricsService } from '@hl8/nestjs-caching';
+import { CacheMetricsService } from '@hl8/caching';
 
 @Controller()
 export class MetricsController {
