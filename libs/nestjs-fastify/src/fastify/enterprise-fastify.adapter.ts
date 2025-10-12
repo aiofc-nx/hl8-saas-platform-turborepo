@@ -60,6 +60,7 @@ import fastifyCors from '@fastify/cors';
 export interface EnterpriseFastifyAdapterOptions {
   /** Fastify 实例选项 */
   fastifyOptions?: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fastify logger 配置可以是布尔值或 Pino 配置对象（宪章 IX 允许场景：第三方库集成）
     logger?: boolean | any;
     trustProxy?: boolean;
     bodyLimit?: number;

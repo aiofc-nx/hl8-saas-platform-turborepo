@@ -60,6 +60,7 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
       const exceptionResponse = exception.getResponse();
       
       if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- NestJS 异常响应格式动态，宪章 IX 允许场景：第三方库集成
         const resp = exceptionResponse as any;
         title = resp.error || resp.message || title;
         detail = resp.message || detail;
@@ -104,6 +105,7 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
       }
       // 尝试最基本的错误响应
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 降级错误处理需要访问 raw HTTP 对象（宪章 IX 允许场景：第三方库集成）
         const res = response as any;
         if (res.raw && typeof res.raw.writeHead === 'function') {
           res.raw.writeHead(status, { 'Content-Type': 'application/problem+json; charset=utf-8' });
