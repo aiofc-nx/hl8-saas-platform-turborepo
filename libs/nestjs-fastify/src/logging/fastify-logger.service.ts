@@ -104,7 +104,7 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
     return {
       ...context,
       isolation: isolationContext ? {
-        level: isolationContext.getLevel(),
+        level: isolationContext.getIsolationLevel(),
         tenantId: isolationContext.tenantId?.getValue(),
         organizationId: isolationContext.organizationId?.getValue(),
         departmentId: isolationContext.departmentId?.getValue(),

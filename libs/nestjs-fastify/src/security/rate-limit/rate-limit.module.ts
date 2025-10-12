@@ -313,7 +313,7 @@ export class RateLimitModule {
         // 异步配置 provider
         {
           provide: 'RATE_LIMIT_OPTIONS',
-          useFactory: options.useFactory,
+          useFactory: options.useFactory || (() => ({})),
           inject: options.inject || [],
         },
         // 服务 provider

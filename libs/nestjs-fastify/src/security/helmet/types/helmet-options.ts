@@ -103,10 +103,10 @@ export const DEFAULT_HELMET_OPTIONS: HelmetOptions = {
     includeSubDomains: true,
     preload: true,
   },
-  xContentTypeOptions: 'nosniff',
+  xContentTypeOptions: false,  // false = 启用 nosniff
   xDnsPrefetchControl: { allow: false },
-  xDownloadOptions: 'noopen',
-  xFrameOptions: 'DENY',
-  xPermittedCrossDomainPolicies: 'none',
+  xDownloadOptions: false,  // false = 启用 noopen
+  xFrameOptions: { action: 'deny' },
+  xPermittedCrossDomainPolicies: { permittedPolicies: 'none' },
 };
 

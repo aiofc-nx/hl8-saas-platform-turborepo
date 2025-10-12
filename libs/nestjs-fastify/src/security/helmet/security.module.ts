@@ -100,17 +100,18 @@ export class SecurityModule {
    */
   static forRoot(options?: HelmetOptions): DynamicModule {
     // 合并用户配置和默认配置
-    const mergedOptions: HelmetOptions = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- @fastify/helmet 类型定义复杂，宪章 IX 允许（第三方集成）
+    const mergedOptions: any = {
       ...DEFAULT_HELMET_OPTIONS,
       ...options,
       // CSP 需要深度合并
       contentSecurityPolicy: options?.contentSecurityPolicy
         ? {
-            ...DEFAULT_HELMET_OPTIONS.contentSecurityPolicy,
-            ...options.contentSecurityPolicy,
+            ...(DEFAULT_HELMET_OPTIONS.contentSecurityPolicy as any),
+            ...(options.contentSecurityPolicy as any),
             directives: {
-              ...(DEFAULT_HELMET_OPTIONS.contentSecurityPolicy as any)?.directives, // eslint-disable-line @typescript-eslint/no-explicit-any -- @fastify/helmet 类型定义复杂，宪章 IX 允许（第三方集成）
-              ...(options.contentSecurityPolicy as any)?.directives, // eslint-disable-line @typescript-eslint/no-explicit-any -- @fastify/helmet 类型定义复杂，宪章 IX 允许（第三方集成）
+              ...(DEFAULT_HELMET_OPTIONS.contentSecurityPolicy as any)?.directives,
+              ...(options.contentSecurityPolicy as any)?.directives,
             },
           }
         : DEFAULT_HELMET_OPTIONS.contentSecurityPolicy,
