@@ -40,6 +40,15 @@ import { IsolationGuard } from './guards/isolation.guard.js';
 
 const ISOLATION_CONTEXT_KEY = 'ISOLATION_CONTEXT';
 
+/**
+ * 请求对象接口（简化版）
+ * 
+ * @description 用于类型安全地访问请求头
+ */
+interface RequestWithHeaders {
+  headers: Record<string, string | string[] | undefined>;
+}
+
 @Global()
 @Module({})
 export class IsolationModule {
@@ -67,11 +76,11 @@ export class IsolationModule {
           middleware: {
             mount: true,
             generateId: true,
-            idGenerator: (req: any) => 
-              req.headers?.['x-request-id'] ?? 
+            idGenerator: (req: RequestWithHeaders) => 
+              req.headers?.['x-request-id'] as string ?? 
               `req-${Date.now()}-${Math.random().toString(36).substring(7)}`,
             // 在 CLS 上下文设置后，立即提取隔离上下文
-            setup: (cls, req: any) => {
+            setup: (cls, req: RequestWithHeaders) => {
               try {
                 // 提取请求头
                 const extractHeader = (name: string) => {
