@@ -1,106 +1,48 @@
 /**
  * @hl8/nestjs-infra - NestJS 基础设施模块
  *
- * @description 为 NestJS 应用提供企业级基础设施功能，包括：
- * - 统一异常处理（RFC7807标准）
- * - 5层级数据隔离（平台/租户/组织/部门/用户）
- * - Redis 缓存与装饰器
- * - 企业级 Fastify 适配器
- * - 类型安全配置管理
- * - 结构化日志（Pino）
+ * @description 此包已被拆分为多个独立的库，请根据需要安装对应的包：
+ *
+ * ## 已拆分的模块
+ *
+ * ### 异常处理
+ * - **包名**: `@hl8/nestjs-exceptions`
+ * - **功能**: 统一异常处理、RFC7807 标准、异常过滤器
+ * - **安装**: `pnpm add @hl8/nestjs-exceptions`
+ *
+ * ### 缓存模块
+ * - **包名**: `@hl8/nestjs-caching`
+ * - **功能**: Redis 缓存、缓存装饰器、缓存策略
+ * - **安装**: `pnpm add @hl8/nestjs-caching`
+ *
+ * ### 数据隔离
+ * - **包名**: `@hl8/nestjs-isolation`
+ * - **功能**: 5 层级数据隔离、隔离上下文、隔离守卫
+ * - **安装**: `pnpm add @hl8/nestjs-isolation`
+ *
+ * ### 隔离模型
+ * - **包名**: `@hl8/isolation-model`
+ * - **功能**: 纯领域模型、值对象、实体
+ * - **安装**: `pnpm add @hl8/isolation-model`
+ *
+ * ### Fastify 适配器
+ * - **包名**: `@hl8/nestjs-fastify`
+ * - **功能**: 企业级 Fastify 适配器、日志、监控
+ * - **安装**: `pnpm add @hl8/nestjs-fastify`
+ *
+ * ### 配置管理
+ * - **包名**: `@hl8/config`
+ * - **功能**: 类型安全的配置管理
+ * - **安装**: `pnpm add @hl8/config`
  *
  * @packageDocumentation
  * @author HL8 Team
  * @since 0.1.0
+ * @deprecated 此包已拆分，请使用上述独立包
  */
 
 // ============================================================
-// 异常处理模块（P0 - CRITICAL）
-// ============================================================
-
-/**
- * 异常处理模块
- */
-export { ExceptionModule } from './exceptions/exception.module.js';
-
-/**
- * 异常类
- */
-export { AbstractHttpException } from './exceptions/core/abstract-http.exception.js';
-export type { ProblemDetails } from './exceptions/core/abstract-http.exception.js';
-export { GeneralNotFoundException } from './exceptions/core/general-not-found.exception.js';
-export { GeneralBadRequestException } from './exceptions/core/general-bad-request.exception.js';
-export { GeneralInternalServerException } from './exceptions/core/general-internal-server.exception.js';
-
-/**
- * 异常过滤器
- */
-export { HttpExceptionFilter } from './exceptions/filters/http-exception.filter.js';
-export type { ILoggerService, IExceptionMessageProvider } from './exceptions/filters/http-exception.filter.js';
-export { AnyExceptionFilter } from './exceptions/filters/any-exception.filter.js';
-
-/**
- * 消息提供者
- */
-export type { ExceptionMessageProvider } from './exceptions/providers/exception-message.provider.js';
-export { DefaultMessageProvider } from './exceptions/providers/default-message.provider.js';
-
-/**
- * 异常配置
- */
-export { EXCEPTION_MODULE_OPTIONS, DEFAULT_EXCEPTION_OPTIONS } from './exceptions/config/exception.config.js';
-export type {
-  ExceptionModuleOptions,
-  ExceptionModuleAsyncOptions,
-  ExceptionOptionsFactory,
-} from './exceptions/config/exception.config.js';
-
-// ============================================================
-// 从 @hl8/platform 重新导出核心模块
-// ============================================================
-
-/**
- * 值对象
- */
-export { EntityId, TenantId, OrganizationId, DepartmentId, UserId } from '@hl8/platform';
-
-/**
- * 实体
- */
-export { IsolationContext } from '@hl8/platform';
-
-/**
- * 业务异常
- */
-export { TenantNotFoundException } from './exceptions/core/tenant-not-found.exception.js';
-export { InvalidIsolationContextException } from './exceptions/core/invalid-isolation-context.exception.js';
-export { UnauthorizedOrganizationException } from './exceptions/core/unauthorized-organization.exception.js';
-
-/**
- * 类型定义
- */
-export type {
-  DeepPartial,
-  DeepReadonly,
-  Nullable,
-  Optional,
-  Constructor,
-  AbstractConstructor,
-  AnyFunction,
-  AsyncFunction,
-  ValueOf,
-  Mutable,
-  RequiredKeys,
-  OptionalKeys,
-} from '@hl8/platform';
-
-/**
- * 枚举
- */
-export { IsolationLevel, DataSharingLevel } from '@hl8/platform';
-
-// ============================================================
-// 通用技术组件
+// 通用技术组件（保留）
 // ============================================================
 
 /**
@@ -109,103 +51,68 @@ export { IsolationLevel, DataSharingLevel } from '@hl8/platform';
 export { Public, IS_PUBLIC_KEY } from './common/decorators/public.decorator.js';
 
 // ============================================================
-// Fastify 适配器模块（已移至 @hl8/nestjs-fastify）
-// ============================================================
-// 注意：Fastify 专用功能现在位于 @hl8/nestjs-fastify 包中
-// - EnterpriseFastifyAdapter
-// - Fastify 配置
-// - Fastify 监控服务
-
-// ============================================================
-// 缓存模块（Phase 3.1）
+// 迁移指南
 // ============================================================
 
 /**
- * 缓存模块
+ * @deprecated 请使用 @hl8/nestjs-exceptions
+ *
+ * @example
+ * ```typescript
+ * // 旧的导入方式
+ * import { ExceptionModule } from '@hl8/nestjs-infra';
+ *
+ * // 新的导入方式
+ * import { ExceptionModule } from '@hl8/nestjs-exceptions';
+ * ```
  */
-export { CachingModule } from './caching/cache.module.js';
-export type { CachingModuleOptions, CachingModuleAsyncOptions } from './caching/cache.module.js';
 
 /**
- * 缓存服务
+ * @deprecated 请使用 @hl8/nestjs-caching
+ *
+ * @example
+ * ```typescript
+ * // 旧的导入方式
+ * import { CachingModule, Cacheable } from '@hl8/nestjs-infra';
+ *
+ * // 新的导入方式
+ * import { CachingModule, Cacheable } from '@hl8/nestjs-caching';
+ * ```
  */
-export { CacheService } from './caching/cache.service.js';
-export type { ICacheService } from './caching/cache.service.js';
-export { RedisService } from './caching/redis.service.js';
-export type { RedisOptions } from './caching/redis.service.js';
 
 /**
- * 缓存工具
+ * @deprecated 请使用 @hl8/nestjs-isolation
+ *
+ * @example
+ * ```typescript
+ * // 旧的导入方式
+ * import { IsolationModule, IsolationGuard } from '@hl8/nestjs-infra';
+ *
+ * // 新的导入方式
+ * import { IsolationModule, IsolationGuard } from '@hl8/nestjs-isolation';
+ * ```
  */
-export { KeyGenerator } from './caching/utils/key-generator.util.js';
-export { Serializer } from './caching/utils/serializer.util.js';
 
 /**
- * 缓存装饰器
+ * @deprecated 请使用 @hl8/isolation-model
+ *
+ * @example
+ * ```typescript
+ * // 旧的导入方式
+ * import { IsolationContext, TenantId } from '@hl8/nestjs-infra';
+ *
+ * // 新的导入方式
+ * import { IsolationContext, TenantId } from '@hl8/isolation-model';
+ * ```
  */
-export { Cacheable } from './caching/decorators/cacheable.decorator.js';
-export type { CacheableOptions } from './caching/decorators/cacheable.decorator.js';
-export { CacheEvict } from './caching/decorators/cache-evict.decorator.js';
-export type { CacheEvictOptions } from './caching/decorators/cache-evict.decorator.js';
-export { CachePut } from './caching/decorators/cache-put.decorator.js';
-export type { CachePutOptions } from './caching/decorators/cache-put.decorator.js';
-
-/**
- * 缓存配置（使用 ConfigValidator）
- */
-export { CachingModuleConfig, RedisConfig } from './caching/config/caching.config.js';
-
-// ============================================================
-// 数据隔离模块（Phase 3.2）
-// ============================================================
-
-/**
- * 隔离模块
- */
-export { IsolationModule } from './isolation/isolation.module.js';
-export type { IsolationModuleOptions } from './isolation/isolation.module.js';
-
-/**
- * 隔离服务
- */
-export { IsolationContextService } from './isolation/services/isolation-context.service.js';
-export { MultiLevelIsolationService } from './isolation/services/multi-level-isolation.service.js';
-export type { DataAccessContext } from './isolation/services/multi-level-isolation.service.js';
-
-/**
- * 隔离中间件
- */
-export { IsolationExtractionMiddleware } from './isolation/middleware/isolation-extraction.middleware.js';
-
-/**
- * 隔离装饰器
- */
-export { CurrentIsolation } from './isolation/decorators/current-isolation.decorator.js';
-
-/**
- * 隔离守卫
- */
-export { IsolationGuard, REQUIRED_ISOLATION_LEVEL } from './isolation/guards/isolation.guard.js';
-
-// ============================================================
-// 日志模块（已移至 @hl8/nestjs-fastify）
-// ============================================================
-// 注意：日志功能现在由 @hl8/nestjs-fastify/FastifyLoggerService 提供
-// - 零开销（复用 Fastify Pino）
-// - 自动包含隔离上下文
-// - 全局统一服务
-//
-// 非 HTTP 场景请使用 @nestjs/common/Logger
-
-// ============================================================
-// 配置管理模块（Phase 5）- 已迁移到 @hl8/config
-// ============================================================
-// 配置相关功能已拆分到独立的 @hl8/config 包
-// 请直接从 @hl8/config 导入配置模块相关内容
 
 // ============================================================
 // 版本信息
 // ============================================================
 
-export const version = '0.3.0';
-
+/**
+ * 库版本
+ *
+ * @deprecated 此包已被拆分，请使用独立的包
+ */
+export const version = '0.4.0-deprecated';
