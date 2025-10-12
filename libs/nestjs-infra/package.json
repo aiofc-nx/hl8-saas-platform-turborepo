@@ -1,0 +1,77 @@
+{
+  "name": "@hl8/nestjs-infra",
+  "version": "0.3.0",
+  "description": "NestJS 基础设施模块 - 提供企业级基础设施功能",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist",
+    "build:types": "tsc --emitDeclarationOnly --outDir dist",
+    "type-check": "tsc --noEmit",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.1",
+    "@hl8/config": "workspace:*",
+    "@hl8/platform": "workspace:*",
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/platform-fastify": "^11.1.6",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "dotenv": "^17.2.2",
+    "dotenv-expand": "^11.0.7",
+    "fastify": "^5.6.1",
+    "ioredis": "^5.4.2",
+    "js-yaml": "^4.1.0",
+    "lodash.merge": "^4.6.2",
+    "nestjs-cls": "^6.0.1",
+    "pino": "^9.12.0",
+    "pino-pretty": "^13.0.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.1.6",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/ts-config": "workspace:*",
+    "@swc/cli": "^0.7.0",
+    "@swc/core": "^1.10.14",
+    "@swc/jest": "^0.2.37",
+    "@types/jest": "^30.0.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/node": "^22.15.3",
+    "@types/supertest": "^6.0.2",
+    "@types/uuid": "^9.0.8",
+    "jest": "^30.2.0",
+    "supertest": "^7.0.0",
+    "typescript": "5.9.2"
+  },
+  "keywords": [
+    "nestjs",
+    "infrastructure",
+    "multi-tenancy",
+    "caching",
+    "logging",
+    "fastify",
+    "saas",
+    "hl8"
+  ],
+  "author": "HL8 Team",
+  "license": "MIT"
+}

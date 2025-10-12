@@ -1,0 +1,391 @@
+# nestjs-infra 架构设计
+
+## 模块依赖层级
+
+### 核心原则
+
+**严格的单向依赖，避免循环依赖**
+
+```
+┌─────────────────────────────────────────────┐
+│ Level 4: 业务模块                            │
+│ isolation/, fastify/                        │
+│ 依赖: 下面所有层级                           │
+└────────────────┬────────────────────────────┘
+                 │
+┌────────────────▼────────────────────────────┐
+│ Level 3: caching/                           │
+│ 依赖: configuration + logging + exceptions  │
+└────────────────┬────────────────────────────┘
+                 │
+┌────────────────▼────────────────────────────┐
+│ Level 2: logging/                           │
+│ 依赖: configuration + exceptions            │
+└────────────────┬────────────────────────────┘
+                 │
+┌────────────────▼────────────────────────────┐
+│ Level 1: configuration/                     │
+│ 依赖: exceptions (最纯粹的模块)              │
+└────────────────┬────────────────────────────┘
+                 │
+┌────────────────▼────────────────────────────┐
+│ Level 0: exceptions/                        │
+│ 依赖: NestJS (无其他依赖)                    │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+## 依赖规则详解
+
+### Level 0: exceptions/ - 基础层
+
+**职责**: 统一异常处理，RFC7807 标准
+
+**依赖**:
+
+- ✅ NestJS 框架
+- ❌ 无其他依赖
+
+**设计原因**:
+
+- 异常处理是最基础的功能
+- 来自 NestJS，可被所有模块使用
+- 不应依赖任何业务模块
+
+---
+
+### Level 1: configuration/ - 配置层
+
+**职责**: 类型安全的配置管理
+
+**依赖**:
+
+- ✅ exceptions/ (统一异常)
+- ❌ 不依赖其他模块
+
+**设计原因**:
+
+- **配置功能应该最纯粹**
+- 配置是所有模块的基础
+- 必须避免循环依赖
+- 可以被任何模块安全调用
+
+**禁止依赖**:
+
+- ❌ logging/ (配置不应依赖日志)
+- ❌ caching/ (配置不应依赖缓存)
+- ❌ 任何业务模块
+
+**使用示例**:
+
+```typescript
+// ✅ 正确：配置模块只依赖异常
+import { GeneralBadRequestException } from '../exceptions/...';
+
+// ❌ 错误：配置模块不应依赖缓存
+import { CacheService } from '../caching/...'; // 违反原则！
+```
+
+---
+
+### Level 2: logging/ - 日志层
+
+**职责**: 结构化日志记录
+
+**依赖**:
+
+- ✅ configuration/ (日志配置)
+- ✅ exceptions/ (统一异常)
+- ❌ 不依赖其他模块
+
+**设计原因**:
+
+- 日志需要配置（日志级别、格式等）
+- 日志是监控和调试的基础
+- 不应依赖缓存等业务功能
+
+**禁止依赖**:
+
+- ❌ caching/ (日志不应依赖缓存)
+- ❌ isolation/ (日志不应依赖隔离)
+- ❌ 任何业务模块
+
+---
+
+### Level 3: caching/ - 缓存层
+
+**职责**: Redis 缓存服务
+
+**依赖**:
+
+- ✅ configuration/ (Redis 配置)
+- ✅ logging/ (缓存日志)
+- ✅ exceptions/ (统一异常)
+- ❌ 不依赖更高层级模块
+
+**设计原因**:
+
+- 缓存需要配置（Redis 连接信息）
+- 缓存需要日志（连接状态、错误等）
+- 缓存是业务功能，不应反向依赖配置
+
+**禁止依赖**:
+
+- ❌ isolation/ (缓存不应依赖隔离)
+- ❌ fastify/ (缓存不应依赖适配器)
+
+---
+
+### Level 4: 业务模块
+
+**职责**: 具体业务功能
+
+**依赖**:
+
+- ✅ 可依赖下面所有层级
+- ❌ 同级模块间避免依赖
+
+**包含模块**:
+
+- isolation/ (数据隔离)
+- fastify/ (HTTP 适配器)
+- 未来的业务模块
+
+---
+
+## "吃自己的狗粮" 实践状态
+
+### ✅ 已完成的集成
+
+| 模块 | 使用位置 | 依赖层级 | 状态 |
+|------|---------|---------|------|
+| **exceptions/** | 所有模块 | Level 0 | ✅ 正确 |
+| **logging/** | filters, redis | Level 2 → Level 3 | ✅ 正确 |
+| **configuration/** | caching, logging | Level 1 → Level 2,3 | ✅ 正确 |
+
+### ❌ 已撤销的集成
+
+| 模块 | 使用位置 | 问题 | 状态 |
+|------|---------|------|------|
+| **caching/** | RemoteLoader | Level 3 → Level 1 (反向依赖) | ❌ 已撤销 |
+
+**撤销原因**:
+
+- RemoteLoader 属于 configuration/ (Level 1)
+- CacheService 属于 caching/ (Level 3)
+- Level 1 不应依赖 Level 3
+- 违反"配置功能应该最纯粹"原则
+
+---
+
+## 日志系统设计
+
+### Fastify + Pino 集成策略
+
+#### 核心原则
+
+**避免重复实例，统一日志输出**
+
+```
+Fastify 应用:
+┌─────────────────┐
+│  Fastify 实例    │
+│  ├─ Pino Logger │ ← 内置的 Pino
+│  └─ HTTP Server │
+└────────┬────────┘
+         │
+         │ 复用
+         ▼
+┌─────────────────┐
+│ LoggerService   │
+│ └─ Pino Logger  │ ← 使用 Fastify 的 Pino
+└─────────────────┘
+
+非 Fastify 应用:
+┌─────────────────┐
+│ LoggerService   │
+│ └─ Pino Logger  │ ← 创建新的 Pino 实例
+└─────────────────┘
+```
+
+#### 实现细节
+
+**LoggingModule 自动检测**:
+
+```typescript
+static forRoot(options: LoggerOptions = {}): DynamicModule {
+  return {
+    providers: [
+      {
+        provide: LoggerService,
+        useFactory: (httpAdapterHost?: HttpAdapterHost) => {
+          // 1. 尝试获取 Fastify 的 Pino
+          const fastifyInstance = httpAdapterHost?.httpAdapter?.getInstance?.();
+          if (fastifyInstance?.log) {
+            return new LoggerService(undefined, fastifyInstance.log); // 复用
+          }
+          
+          // 2. 创建新的 Pino 实例
+          return new LoggerService(undefined, options);
+        },
+        inject: [{ token: HttpAdapterHost, optional: true }],
+      },
+    ],
+  };
+}
+```
+
+**LoggerService 支持外部实例**:
+
+```typescript
+constructor(
+  isolationService?: IsolationContextService,
+  optionsOrLogger?: LoggerOptions | pino.Logger,
+) {
+  // 检查是否是 Pino 实例
+  if (optionsOrLogger && typeof optionsOrLogger.info === 'function') {
+    this.logger = optionsOrLogger; // 复用
+  } else {
+    this.logger = pino(optionsOrLogger || {}); // 创建
+  }
+}
+```
+
+#### 配置优先级
+
+1. **Fastify 场景**: Fastify 配置优先
+
+   ```typescript
+   new EnterpriseFastifyAdapter({
+     fastifyOptions: {
+       logger: {
+         level: 'info',     // ← 此配置生效
+         prettyPrint: true,
+       }
+     }
+   })
+   ```
+
+2. **非 Fastify 场景**: LoggingModule 配置生效
+
+   ```typescript
+   LoggingModule.forRoot({
+     level: 'debug',  // ← 此配置生效
+   })
+   ```
+
+#### 收益
+
+- ✅ **避免重复实例**: 只有一个 Pino Logger
+- ✅ **统一输出**: HTTP 请求日志和应用日志格式一致
+- ✅ **性能优化**: 减少内存占用和 CPU 开销
+- ✅ **配置简化**: 只需配置一次
+- ✅ **灵活兼容**: 支持 Fastify 和非 Fastify 场景
+
+---
+
+## 未来扩展指南
+
+### 如何添加新模块
+
+1. **确定模块层级**
+   - 分析模块需要依赖哪些现有模块
+   - 确定模块在依赖层级中的位置
+   - 遵循单向依赖原则
+
+2. **检查依赖合法性**
+   - 只能依赖更低层级的模块
+   - 避免同级模块间的依赖
+   - 绝对禁止循环依赖
+
+3. **示例：添加新的 "metrics/" 模块**
+
+   ```
+   metrics/ 需要：
+   - configuration (配置监控参数)
+   - logging (记录指标日志)
+   - caching (缓存指标数据)
+   
+   → 应该放在 Level 4（业务层）
+   ```
+
+---
+
+## 依赖检查清单
+
+在添加新依赖前，请确认：
+
+- [ ] 依赖的模块层级低于当前模块
+- [ ] 不会创建循环依赖
+- [ ] 符合模块职责定义
+- [ ] 有明确的业务需求
+- [ ] 无法通过其他方式实现
+
+---
+
+## 常见问题
+
+### Q1: 为什么配置模块不能依赖缓存？
+
+**A**: 配置是所有模块的基础，必须保持纯粹。如果配置依赖缓存，而缓存又需要配置，就会形成循环依赖的风险。
+
+### Q2: 如何在配置中使用缓存？
+
+**A**: 不应该！如果需要缓存配置，应该在更高层级的业务代码中：
+
+```typescript
+// ✅ 正确：在业务层使用
+class AppService {
+  constructor(
+    private configService: ConfigService,
+    private cacheService: CacheService,
+  ) {}
+  
+  async getConfig() {
+    // 业务层决定是否缓存配置
+    return await this.cacheService.remember(
+      'config',
+      () => this.configService.get()
+    );
+  }
+}
+```
+
+### Q3: 日志模块可以依赖缓存吗？
+
+**A**: 不可以！日志是监控和调试的基础，必须保持简单可靠，不应依赖缓存这种可能失败的外部服务。
+
+### Q4: 如何展示缓存的"吃自己的狗粮"？
+
+**A**: 在更高层级的业务模块中使用，或在 examples/ 中展示综合应用：
+
+```typescript
+// examples/complete-app/
+@Module({
+  imports: [
+    ConfigurationModule,
+    CachingModule,
+    // 在应用层组合使用
+  ]
+})
+```
+
+---
+
+## 总结
+
+**核心原则**:
+
+1. ✅ 配置最纯粹，无依赖（除了 exceptions）
+2. ✅ 日志依赖配置，不依赖缓存
+3. ✅ 缓存依赖配置+日志，不依赖业务
+4. ✅ 异常来自 NestJS，服务于所有
+
+**禁止**:
+
+- ❌ 配置依赖缓存
+- ❌ 日志依赖缓存  
+- ❌ 任何形式的循环依赖
+
+**保持架构清晰，避免依赖混乱！**

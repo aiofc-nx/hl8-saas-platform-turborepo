@@ -1,850 +1,775 @@
-# Data Model: NestJS 基础设施模块
+# Data Model: Caching 模块数据模型
 
-**Feature**: 001-hl8-nestjs-enhance  
-**Package Name**: `@hl8/nestjs-infra`  
-**Phase**: 1 - Design & Contracts  
-**Date**: 2025-10-11
+**Date**: 2025-10-12  
+**Feature**: 将 libs/nestjs-infra/src/caching 拆分为独立的 libs/nestjs-caching 库项目  
+**Spec**: [spec.md](./spec.md) | **Plan**: [plan.md](./plan.md) | **Research**: [research.md](./research.md)
 
 ## 概述
 
-本文档定义 `@hl8/nestjs-infra` 包中 `shared/` 目录的领域模型（实体、值对象、事件、类型、异常）。
+本文档定义 Caching 模块的核心数据模型，包括值对象（Value Objects）、领域事件（Domain Events）、配置类型（Configuration Types）和接口定义（Interfaces）。
 
-**重要说明**：
+根据 DDD 充血模型原则，所有业务规则和验证逻辑都封装在领域对象内部，而非散落在服务层。
 
-- `shared/` 目录是过渡性设计，便于后续迁移到业务模块或 shared-kernel
-- 其他功能模块（caching、configuration、logging 等）采用功能导向设计，无领域模型
-- 仅 multi-tenancy 模块涉及领域概念
+---
 
-## 1. 实体 (Entities)
+## 核心概念
 
-### 1.1 IsolationContext（隔离上下文）
+### 数据模型分层
 
-**描述**：表示请求的多层级隔离上下文，贯穿整个请求生命周期
-
-**属性**：
-
-| 属性名 | 类型 | 必需 | 描述 | 验证规则 |
-|-------|------|-----|------|---------|
-| tenantId | TenantId | 否 | 租户标识符 | 有效的 TenantId 值对象 |
-| organizationId | OrganizationId | 否 | 组织标识符 | 有效的 OrganizationId 值对象 |
-| departmentId | DepartmentId | 否 | 部门标识符 | 有效的 DepartmentId 值对象 |
-| userId | UserId | 否 | 用户标识符 | 有效的 UserId 值对象 |
-| createdAt | Date | 是 | 创建时间 | ISO 8601 时间戳 |
-
-**业务规则**：
-
-1. **层级规则**：
-   - **平台级**：所有标识符均为空（tenantId、organizationId、departmentId、userId 都为 undefined）
-   - **租户级**：有 tenantId，organizationId 和 departmentId 为空
-   - **组织级**：有 organizationId 必须有 tenantId
-   - **部门级**：有 departmentId 必须有 organizationId 和 tenantId
-   - **用户级**：userId 可以独立存在或与其他层级组合
-
-2. **验证规则**：
-   - **允许空上下文**：平台级数据的隔离上下文所有标识符均为空
-   - **层级一致性**：有子级必须有父级（部门→组织→租户）
-   - **标识符有效性**：所有非空标识符必须是有效的值对象
-
-3. **生命周期**：
-   - 在请求开始时创建
-   - 在请求结束时销毁
-   - 不可变（创建后不可修改）
-
-4. **平台级数据特殊说明**：
-   - 平台级数据的 IsolationContext 所有标识符为 undefined
-   - 用于平台管理后台访问平台数据（如推广数据、运营数据、系统配置）
-   - 只有平台管理员可以创建平台级上下文
-   - 缓存键中不包含租户信息（`hl8:cache:platform:xxx`）
-
-**方法**：
-
-- `validate(): boolean` - 验证上下文有效性
-- `getIsolationLevel(): IsolationLevel` - 获取隔离级别
-- `isValid(): boolean` - 检查是否有效
-- `toJSON(): object` - 序列化为 JSON
-
-**示例**：
-
-```typescript
-/**
- * 隔离上下文实体
- *
- * @description 表示请求的多层级隔离上下文
- *
- * ## 业务规则
- *
- * ### 层级规则
- * - 平台级：所有标识符均为空
- * - 租户级：有 tenantId，其他为空
- * - 组织级：有 organizationId 必须有 tenantId
- * - 部门级：有 departmentId 必须有 organizationId 和 tenantId
- * - 用户级：userId 可以独立存在或与其他层级组合
- *
- * ### 不可变性
- * - 创建后不可修改
- * - 使用值对象保证不可变性
- *
- * @example
- * ```typescript
- * // 平台级隔离（平台管理后台）
- * const platformContext = new IsolationContext({
- *   // 所有标识符为空，表示平台级数据
- * });
- * console.log(platformContext.getIsolationLevel()); // IsolationLevel.PLATFORM
- *
- * // 租户级隔离
- * const tenantContext = new IsolationContext({
- *   tenantId: new TenantId('tenant-123'),
- * });
- * console.log(tenantContext.getIsolationLevel()); // IsolationLevel.TENANT
- *
- * // 组织级隔离
- * const orgContext = new IsolationContext({
- *   tenantId: new TenantId('tenant-123'),
- *   organizationId: new OrganizationId('org-456'),
- * });
- * console.log(orgContext.getIsolationLevel()); // IsolationLevel.ORGANIZATION
- *
- * // 部门级隔离
- * const deptContext = new IsolationContext({
- *   tenantId: new TenantId('tenant-123'),
- *   organizationId: new OrganizationId('org-456'),
- *   departmentId: new DepartmentId('dept-789'),
- * });
- * console.log(deptContext.getIsolationLevel()); // IsolationLevel.DEPARTMENT
- *
- * // 验证
- * if (!context.validate()) {
- *   throw new InvalidIsolationContextException();
- * }
- * ```
- */
-export class IsolationContext {
-  // 实现
-}
+```text
+┌─────────────────────────────────────────────────┐
+│  Domain Layer（领域层）                          │
+│  - Value Objects（值对象）                       │
+│  - Domain Events（领域事件）                     │
+│  - Business Rules（业务规则）                    │
+└─────────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────┐
+│  Application Layer（应用层）                     │
+│  - Services（服务）                              │
+│  - Interfaces（接口）                            │
+│  - DTOs（数据传输对象）                          │
+└─────────────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────────────┐
+│  Infrastructure Layer（基础设施层）               │
+│  - Redis Client（Redis 客户端）                  │
+│  - Serialization（序列化）                       │
+│  - Monitoring（监控）                            │
+└─────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. 值对象 (Value Objects)
+## 值对象（Value Objects）
 
-### 2.1 TenantId（租户标识符）
+### CacheKey (缓存键值对象)
 
-**描述**：租户的唯一标识符
+**职责**: 封装缓存键的生成逻辑和验证规则
 
-**属性**：
+#### 属性
 
-| 属性名 | 类型 | 描述 | 格式 |
-|-------|------|------|-----|
-| value | string | 租户 ID 值 | UUID v4 或自定义格式 |
+| 属性 | 类型 | 描述 | 必需 |
+|------|------|------|------|
+| `fullKey` | `string` | 完整的缓存键（只读） | ✅ |
+| `prefix` | `string` | 键前缀（如 `hl8:cache:`） | ✅ |
+| `level` | `CacheLevel` | 缓存层级（枚举） | ✅ |
+| `namespace` | `string` | 命名空间（业务模块名） | ✅ |
+| `key` | `string` | 原始键名 | ✅ |
+| `isolationContext` | `IsolationContext?` | 隔离上下文（可选） | ❌ |
 
-**验证规则**：
+#### 业务规则
 
-- 非空字符串
-- 长度 ≤ 100 字符
-- 符合 ID 格式规范（UUID 或自定义）
+**键格式规则**:
 
-**方法**：
+- 格式: `{prefix}:{level}:{identifiers}:{namespace}:{key}`
+- 示例:
+  - 平台级: `hl8:cache:platform:user-settings:theme`
+  - 租户级: `hl8:cache:tenant:t123:config:feature-flags`
+  - 组织级: `hl8:cache:tenant:t123:org:o456:members:list`
+  - 部门级: `hl8:cache:tenant:t123:org:o456:dept:d789:tasks:active`
+  - 用户级: `hl8:cache:user:u999:preferences:language`
 
-- `equals(other: TenantId): boolean` - 相等性比较
-- `toString(): string` - 转换为字符串
-- `isValid(): boolean` - 验证有效性
+**长度限制**:
 
-### 2.2 OrganizationId（组织标识符）
+- 最大长度: 256 字符
+- 原因: Redis 键长度限制和性能考虑
 
-**描述**：组织的唯一标识符
+**字符限制**:
 
-**属性**：
+- 允许: 字母、数字、冒号（:）、下划线（_）、连字符（-）
+- 禁止: 空格、特殊字符（!@#$%^&*等）
+- 原因: 避免键冲突和编码问题
 
-| 属性名 | 类型 | 描述 | 格式 |
-|-------|------|------|-----|
-| value | string | 组织 ID 值 | UUID v4 或自定义格式 |
+**层级验证**:
 
-**验证规则**：
+- 平台级: 无需隔离上下文
+- 租户级: 必需 `tenantId`
+- 组织级: 必需 `tenantId` + `organizationId`
+- 部门级: 必需 `tenantId` + `organizationId` + `departmentId`
+- 用户级: 必需 `userId`
 
-- 非空字符串
-- 长度 ≤ 100 字符
-- 符合 ID 格式规范
-
-### 2.3 DepartmentId（部门标识符）
-
-**描述**：部门的唯一标识符
-
-**属性**：
-
-| 属性名 | 类型 | 描述 | 格式 |
-|-------|------|------|-----|
-| value | string | 部门 ID 值 | UUID v4 或自定义格式 |
-
-**验证规则**：
-
-- 非空字符串
-- 长度 ≤ 100 字符
-- 符合 ID 格式规范
-
-### 2.4 UserId（用户标识符）
-
-**描述**：用户的唯一标识符
-
-**属性**：
-
-| 属性名 | 类型 | 描述 | 格式 |
-|-------|------|------|-----|
-| value | string | 用户 ID 值 | UUID v4 或自定义格式 |
-
-**验证规则**：
-
-- 非空字符串
-- 长度 ≤ 100 字符
-- 符合 ID 格式规范
-
-**通用值对象模式**：
+#### 静态工厂方法
 
 ```typescript
-/**
- * 标识符值对象基类
- *
- * @description 所有标识符值对象的基类
- *
- * ## 业务规则
- *
- * ### 不可变性
- * - 值对象创建后不可修改
- * - 通过 readonly 属性保证不可变性
- *
- * ### 相等性
- * - 基于值相等，而非引用相等
- * - 两个值对象值相同即相等
- *
- * @example
- * ```typescript
- * const id1 = new TenantId('tenant-123');
- * const id2 = new TenantId('tenant-123');
- * console.log(id1.equals(id2)); // true
- * ```
- */
-export abstract class IdentifierValueObject {
-  constructor(public readonly value: string) {
-    this.validate();
-  }
+// 平台级缓存键
+CacheKey.forPlatform(namespace: string, key: string, prefix: string): CacheKey
 
-  abstract validate(): void;
+// 租户级缓存键
+CacheKey.forTenant(
+  namespace: string, 
+  key: string, 
+  prefix: string, 
+  context: IsolationContext
+): CacheKey
 
-  equals(other: IdentifierValueObject): boolean {
-    return this.value === other.value;
-  }
+// 组织级缓存键
+CacheKey.forOrganization(
+  namespace: string, 
+  key: string, 
+  prefix: string, 
+  context: IsolationContext
+): CacheKey
 
-  toString(): string {
-    return this.value;
-  }
-}
+// 部门级缓存键
+CacheKey.forDepartment(
+  namespace: string, 
+  key: string, 
+  prefix: string, 
+  context: IsolationContext
+): CacheKey
+
+// 用户级缓存键
+CacheKey.forUser(
+  namespace: string, 
+  key: string, 
+  prefix: string, 
+  context: IsolationContext
+): CacheKey
+
+// 自动判断层级（推荐）
+CacheKey.fromContext(
+  namespace: string, 
+  key: string, 
+  prefix: string, 
+  context: IsolationContext
+): CacheKey
+```
+
+#### 实例方法
+
+```typescript
+// 获取完整键
+toString(): string
+
+// 获取缓存层级
+getLevel(): CacheLevel
+
+// 生成匹配模式（用于批量删除）
+toPattern(): string
+
+// 值对象相等性比较
+equals(other: CacheKey): boolean
+```
+
+#### 使用示例
+
+```typescript
+// 示例 1: 平台级缓存键
+const platformKey = CacheKey.forPlatform('system', 'version', 'hl8:cache:');
+console.log(platformKey.toString()); 
+// 输出: hl8:cache:platform:system:version
+
+// 示例 2: 租户级缓存键
+const context = { tenantId: 't123' };
+const tenantKey = CacheKey.forTenant('config', 'feature-flags', 'hl8:cache:', context);
+console.log(tenantKey.toString()); 
+// 输出: hl8:cache:tenant:t123:config:feature-flags
+
+// 示例 3: 自动判断层级
+const autoKey = CacheKey.fromContext('user-list', 'active', 'hl8:cache:', {
+  tenantId: 't123',
+  organizationId: 'o456',
+  departmentId: 'd789',
+});
+console.log(autoKey.toString()); 
+// 输出: hl8:cache:tenant:t123:org:o456:dept:d789:user-list:active
 ```
 
 ---
 
-## 3. 领域事件 (Domain Events)
+### CacheEntry (缓存条目值对象)
 
-### 3.1 IsolationContextCreatedEvent
+**职责**: 封装缓存条目的验证、序列化和反序列化逻辑
 
-**描述**：隔离上下文创建事件
+#### 属性
 
-**属性**：
+| 属性 | 类型 | 描述 | 必需 |
+|------|------|------|------|
+| `key` | `CacheKey` | 缓存键（值对象） | ✅ |
+| `value` | `T` | 缓存值（泛型） | ✅ |
+| `ttl` | `number` | 过期时间（秒） | ✅ |
+| `createdAt` | `Date` | 创建时间 | ✅ |
+| `serializedValue` | `string` | 序列化后的值（只读） | ✅ |
+| `size` | `number` | 值大小（字节，只读） | ✅ |
 
-| 属性名 | 类型 | 必需 | 描述 |
-|-------|------|-----|------|
-| eventId | string | 是 | 事件唯一标识符 |
-| occurredOn | Date | 是 | 事件发生时间 |
-| isolationContext | IsolationContext | 是 | 创建的隔离上下文 |
-| requestId | string | 否 | 关联的请求 ID |
+#### 业务规则
 
-**触发时机**：
+**TTL 规则**:
 
-- 请求开始时创建隔离上下文
+- 最小值: 1 秒
+- 最大值: 2,592,000 秒（30 天）
+- 0 表示永不过期（慎用）
+- 负数无效，抛出异常
+- 原因: 避免缓存无限增长，确保数据时效性
 
-**用途**：
+**值大小规则**:
 
-- 审计日志记录
-- 监控统计
-- 事件溯源
+- 推荐最大: 1MB（1,048,576 字节）
+- 警告阈值: 512KB（524,288 字节）
+- 超过警告阈值会记录日志
+- 超过最大值会抛出异常
+- 原因: Redis 内存优化，避免大值影响性能
 
-### 3.2 IsolationContextSwitchedEvent
+**序列化规则**:
 
-**描述**：隔离上下文切换事件
+- 格式: JSON
+- 特殊类型处理:
+  - `Date` → `{ __type: 'Date', value: ISOString }`
+  - `Set` → `{ __type: 'Set', value: Array }`
+  - `Map` → `{ __type: 'Map', value: Array<[key, value]> }`
+  - `Buffer` → `{ __type: 'Buffer', value: base64 }`
+- 循环引用处理: 替换为 `"[Circular]"`
+- 原因: 支持复杂对象，确保序列化可逆
 
-**属性**：
+#### 静态工厂方法
 
-| 属性名 | 类型 | 必需 | 描述 |
-|-------|------|-----|------|
-| eventId | string | 是 | 事件唯一标识符 |
-| occurredOn | Date | 是 | 事件发生时间 |
-| oldContext | IsolationContext | 是 | 旧的隔离上下文 |
-| newContext | IsolationContext | 是 | 新的隔离上下文 |
-| reason | string | 否 | 切换原因 |
+```typescript
+// 创建缓存条目
+CacheEntry.create<T>(
+  key: CacheKey,
+  value: T,
+  ttl: number = 3600,
+  logger?: ILoggerService,
+): CacheEntry<T>
+```
 
-**触发时机**：
+#### 实例方法
 
-- 系统内部切换隔离上下文时（如内部服务调用）
+```typescript
+// 获取序列化后的值
+getSerializedValue(): string
 
-**用途**：
+// 获取原始值
+getValue(): T
 
-- 审计追踪
-- 安全监控
-- 异常检测
+// 获取 TTL
+getTTL(): number
 
-### 3.3 CacheInvalidatedEvent
+// 获取缓存键
+getKey(): CacheKey
 
-**描述**：缓存失效事件
+// 获取值大小（字节）
+getSize(): number
 
-**属性**：
+// 获取创建时间
+getCreatedAt(): Date
 
-| 属性名 | 类型 | 必需 | 描述 |
-|-------|------|-----|------|
-| eventId | string | 是 | 事件唯一标识符 |
-| occurredOn | Date | 是 | 事件发生时间 |
-| namespace | string | 是 | 缓存命名空间 |
-| keys | string[] | 否 | 失效的缓存键（为空表示全部） |
-| isolationContext | IsolationContext | 否 | 关联的隔离上下文 |
+// 检查是否即将过期（剩余时间 < 10%）
+isExpiringSoon(currentTime?: Date): boolean
 
-**触发时机**：
+// 检查是否已过期
+isExpired(currentTime?: Date): boolean
+```
 
-- 手动调用 CacheEvict
-- 数据更新导致缓存失效
-- 批量清除缓存
+#### 使用示例
 
-**用途**：
+```typescript
+// 示例 1: 创建缓存条目
+const key = CacheKey.forTenant('user', 'profile', 'hl8:cache:', { tenantId: 't123' });
+const value = { id: 'u999', name: '张三', email: 'zhangsan@example.com' };
+const entry = CacheEntry.create(key, value, 3600, logger);
 
-- 分布式缓存同步
-- 监控统计
-- 审计追踪
+console.log(entry.getSize()); // 输出: 值的字节大小
+console.log(entry.getTTL()); // 输出: 3600
+
+// 示例 2: 序列化和反序列化
+const serialized = entry.getSerializedValue();
+// serialized: '{"id":"u999","name":"张三","email":"zhangsan@example.com"}'
+
+// 示例 3: 检查过期状态
+if (entry.isExpiringSoon()) {
+  console.log('缓存即将过期，考虑刷新');
+}
+
+if (entry.isExpired()) {
+  console.log('缓存已过期，需要删除');
+}
+
+// 示例 4: 处理特殊类型
+const complexValue = {
+  date: new Date('2025-10-12'),
+  tags: new Set(['tag1', 'tag2']),
+  metadata: new Map([['key1', 'value1'], ['key2', 'value2']]),
+};
+const complexEntry = CacheEntry.create(key, complexValue, 1800);
+// 序列化后自动处理 Date、Set、Map 类型
+```
 
 ---
 
-## 4. 类型定义 (Types)
+## 枚举类型
 
-### 4.1 IsolationLevel（隔离级别）
+### CacheLevel (缓存层级)
 
-**描述**：定义隔离级别枚举
+**描述**: 定义缓存的 5 个隔离层级
 
 ```typescript
 /**
- * 隔离级别枚举
- *
- * @description 定义系统支持的隔离级别
- *
- * ## 业务规则
- *
- * ### 平台级数据
- * - 无任何隔离标识（tenantId、organizationId 等均为空）
- * - 属于平台自身的数据，跨租户共享
- * - 例如：平台推广数据、运营数据、系统配置、全局统计等
- * - 只有平台管理员可以访问和修改
- *
- * ### 租户级数据
- * - 只有 tenantId，无 organizationId、departmentId
- * - 属于整个租户，租户内所有用户可见
- * - 例如：租户配置、租户统计、租户级资源
- *
- * ### 组织级数据
- * - 有 tenantId + organizationId
- * - 属于租户内的特定组织
- * - 例如：组织配置、组织成员、组织资源
- *
- * ### 部门级数据
- * - 有 tenantId + organizationId + departmentId
- * - 属于组织内的特定部门
- * - 例如：部门文档、部门任务、部门成员
- *
- * ### 用户级数据
- * - 有 userId（可选 tenantId、organizationId、departmentId）
- * - 属于特定用户的私有数据
- * - 例如：用户偏好、用户草稿、个人笔记
+ * 缓存层级枚举
+ * 
+ * @description 定义缓存的 5 个隔离层级
+ * 
+ * ## 层级说明
+ * 
+ * - PLATFORM: 平台级缓存，跨租户共享
+ * - TENANT: 租户级缓存，租户内共享
+ * - ORGANIZATION: 组织级缓存，组织内共享
+ * - DEPARTMENT: 部门级缓存，部门内共享
+ * - USER: 用户级缓存，用户私有
+ * 
+ * @since 1.0.0
  */
-export enum IsolationLevel {
-  /** 平台级（无隔离标识）- 平台自身数据，跨租户共享 */
+export enum CacheLevel {
+  /** 平台级缓存 */
   PLATFORM = 'platform',
   
-  /** 租户级（tenantId）- 租户数据，租户内共享 */
+  /** 租户级缓存 */
   TENANT = 'tenant',
   
-  /** 组织级（tenantId + organizationId）- 组织数据 */
+  /** 组织级缓存 */
   ORGANIZATION = 'organization',
   
-  /** 部门级（tenantId + organizationId + departmentId）- 部门数据 */
+  /** 部门级缓存 */
   DEPARTMENT = 'department',
   
-  /** 用户级（userId，可选其他层级）- 用户私有数据 */
+  /** 用户级缓存 */
   USER = 'user',
 }
 ```
 
-### 4.2 TenantType（租户类型）
-
-**描述**：定义租户类型枚举
+#### 使用示例
 
 ```typescript
-/**
- * 租户类型枚举
- *
- * @description 定义系统支持的租户类型
- */
-export enum TenantType {
-  /** 企业租户 */
-  ENTERPRISE = 'enterprise',
-  
-  /** 社群租户 */
-  COMMUNITY = 'community',
-  
-  /** 团队租户 */
-  TEAM = 'team',
-  
-  /** 个人租户 */
-  PERSONAL = 'personal',
+// 判断缓存层级
+if (key.getLevel() === CacheLevel.TENANT) {
+  console.log('这是租户级缓存');
 }
-```
 
-### 4.3 DataSharingLevel（数据共享级别）
-
-**描述**：定义数据共享级别
-
-```typescript
-/**
- * 数据共享级别枚举
- *
- * @description 定义数据的共享范围
- *
- * ## 业务规则
- *
- * ### 共享级别说明
- * - 数据的隔离级别（IsolationLevel）定义数据的归属
- * - 数据的共享级别（DataSharingLevel）定义数据的可见范围
- * - 共享级别可以等于或高于隔离级别
- * - 通过 isShared 字段控制是否启用共享
- *
- * ### 典型场景
- * - 租户级数据（IsolationLevel.TENANT）+ 平台级共享（DataSharingLevel.PLATFORM）
- *   = 租户创建的数据，但平台管理员可见（如租户提交的工单）
- * - 部门级数据（IsolationLevel.DEPARTMENT）+ 组织级共享（DataSharingLevel.ORGANIZATION）
- *   = 部门创建的数据，但整个组织可见（如部门公告）
- *
- * @example
- * ```typescript
- * // 租户工单：属于租户，但平台可见
- * const ticket = {
- *   isolationLevel: IsolationLevel.TENANT,
- *   tenantId: 'tenant-123',
- *   isShared: true,
- *   sharingLevel: DataSharingLevel.PLATFORM,
- * };
- *
- * // 部门公告：属于部门，但组织可见
- * const announcement = {
- *   isolationLevel: IsolationLevel.DEPARTMENT,
- *   tenantId: 'tenant-123',
- *   organizationId: 'org-456',
- *   departmentId: 'dept-789',
- *   isShared: true,
- *   sharingLevel: DataSharingLevel.ORGANIZATION,
- * };
- * ```
- */
-export enum DataSharingLevel {
-  /** 平台级共享（所有租户可见）- 最高共享级别 */
-  PLATFORM = 'platform',
-  
-  /** 租户级共享（租户内可见） */
-  TENANT = 'tenant',
-  
-  /** 组织级共享（组织内可见） */
-  ORGANIZATION = 'organization',
-  
-  /** 部门级共享（部门内可见） */
-  DEPARTMENT = 'department',
-  
-  /** 私有（仅所有者可见）- 不共享 */
-  PRIVATE = 'private',
-}
-```
-
-### 4.4 数据共享字段设计
-
-**描述**：每条数据都应该包含共享控制字段
-
-**推荐的数据模型字段**：
-
-```typescript
-/**
- * 基础数据模型接口（所有业务实体应该实现）
- *
- * @description 定义所有业务数据的基础字段
- *
- * ## 业务规则
- *
- * ### 隔离字段（定义数据归属）
- * - tenantId: 数据归属的租户（可为空表示平台级）
- * - organizationId: 数据归属的组织（可为空）
- * - departmentId: 数据归属的部门（可为空）
- * - userId: 数据创建者/所有者（可为空）
- *
- * ### 共享控制字段（定义可见范围）⭐
- * - isShared: 是否共享（布尔值，默认 false）
- * - sharingLevel: 共享级别（仅当 isShared=true 时有效）
- * - sharedWith: 明确共享给哪些对象（可选，用于更精细的控制）
- *
- * ### 设计原因
- * - 虽然看似冗余，但提供了极大的灵活性
- * - 同一层级的数据可以有不同的共享策略
- * - 支持动态调整共享状态
- * - 为未来扩展预留空间（如时间范围共享、条件共享）
- *
- * @example
- * ```typescript
- * // 示例1：部门文档，仅部门内可见（不共享）
- * const privateDeptDoc = {
- *   id: 'doc-1',
- *   tenantId: 'tenant-123',
- *   organizationId: 'org-456',
- *   departmentId: 'dept-789',
- *   userId: 'user-001',
- *   isShared: false,              // 不共享
- *   sharingLevel: null,
- * };
- *
- * // 示例2：部门公告，组织内可见（向上共享）
- * const deptAnnouncement = {
- *   id: 'announcement-1',
- *   tenantId: 'tenant-123',
- *   organizationId: 'org-456',
- *   departmentId: 'dept-789',
- *   userId: 'user-001',
- *   isShared: true,               // 共享
- *   sharingLevel: DataSharingLevel.ORGANIZATION, // 组织内可见
- * };
- *
- * // 示例3：优秀案例，全租户共享（向上共享到租户）
- * const bestPractice = {
- *   id: 'practice-1',
- *   tenantId: 'tenant-123',
- *   organizationId: 'org-456',
- *   departmentId: 'dept-789',
- *   userId: 'user-001',
- *   isShared: true,               // 共享
- *   sharingLevel: DataSharingLevel.TENANT, // 整个租户可见
- * };
- *
- * // 示例4：租户工单，平台可见（向上共享到平台）
- * const supportTicket = {
- *   id: 'ticket-1',
- *   tenantId: 'tenant-123',
- *   userId: 'user-001',
- *   isShared: true,               // 共享
- *   sharingLevel: DataSharingLevel.PLATFORM, // 平台管理员可见
- * };
- * ```
- */
-export interface BaseDataModel {
-  /** 数据唯一标识 */
-  id: string;
-  
-  // === 隔离字段（定义数据归属）===
-  /** 租户ID（可为空表示平台级数据） */
-  tenantId?: string;
-  
-  /** 组织ID */
-  organizationId?: string;
-  
-  /** 部门ID */
-  departmentId?: string;
-  
-  /** 用户ID（创建者/所有者） */
-  userId?: string;
-  
-  // === 共享控制字段 ⭐ ===
-  /** 是否共享（默认 false） */
-  isShared: boolean;
-  
-  /** 共享级别（仅当 isShared=true 时有效） */
-  sharingLevel?: DataSharingLevel;
-  
-  /** 明确共享给哪些对象（可选，用于更精细控制） */
-  sharedWith?: string[]; // 用户ID、组织ID、部门ID 列表
-  
-  // === 时间戳 ===
-  /** 创建时间 */
-  createdAt: Date;
-  
-  /** 更新时间 */
-  updatedAt: Date;
-}
-```
-
-**共享控制的优势**：
-
-1. ✅ **灵活性**：同一层级的数据可以有不同的共享策略
-2. ✅ **动态调整**：可以在运行时改变共享状态
-3. ✅ **精细控制**：通过 sharedWith 字段实现精确共享
-4. ✅ **未来扩展**：可以增加时间范围共享、条件共享等高级功能
-5. ✅ **业务场景**：满足复杂的业务需求（如工单上报、最佳实践分享）
-
-**共享规则验证**：
-
-| 隔离级别 | 允许的共享级别 | 说明 |
-|---------|---------------|------|
-| PLATFORM | PLATFORM（自己） | 平台数据只能平台级共享 |
-| TENANT | PLATFORM, TENANT | 租户数据可共享到平台或租户内 |
-| ORGANIZATION | PLATFORM, TENANT, ORGANIZATION | 组织数据可向上共享 |
-| DEPARTMENT | PLATFORM, TENANT, ORGANIZATION, DEPARTMENT | 部门数据可向上共享 |
-| USER | 所有级别 | 用户数据可共享到任何级别 |
-
-### 4.5 IsolationContext接口
-
-**描述**：隔离上下文的接口定义
-
-```typescript
-/**
- * 隔离上下文接口
- */
-export interface IIsolationContext {
-  tenantId?: TenantId;
-  organizationId?: OrganizationId;
-  departmentId?: DepartmentId;
-  userId?: UserId;
-  createdAt: Date;
+// 根据层级生成键
+switch (level) {
+  case CacheLevel.PLATFORM:
+    return CacheKey.forPlatform(namespace, key, prefix);
+  case CacheLevel.TENANT:
+    return CacheKey.forTenant(namespace, key, prefix, context);
+  // ... 其他层级
 }
 ```
 
 ---
 
-## 5. 异常 (Exceptions)
+## 接口定义
 
-### 5.1 TenantNotFoundException
+### ICacheService (缓存服务接口)
 
-**描述**：租户未找到异常
-
-**属性**：
-
-- message: "租户未找到"
-- tenantId: string
-- statusCode: 404
-
-**触发条件**：
-
-- 请求中的租户 ID 不存在
-- 租户已被删除或禁用
-
-### 5.2 InvalidIsolationContextException
-
-**描述**：无效的隔离上下文异常
-
-**属性**：
-
-- message: "无效的隔离上下文"
-- context: IsolationContext
-- reason: string
-- statusCode: 400
-
-**触发条件**：
-
-- 隔离上下文验证失败
-- 层级关系不正确（如有 departmentId 但无 organizationId）
-
-### 5.3 OrganizationNotFoundException
-
-**描述**：组织未找到异常
-
-**属性**：
-
-- message: "组织未找到"
-- organizationId: string
-- statusCode: 404
-
-### 5.4 UnauthorizedOrganizationException
-
-**描述**：未授权的组织访问异常
-
-**属性**：
-
-- message: "无权访问该组织"
-- organizationId: string
-- userId: string
-- statusCode: 403
-
-**异常基类**：
+**描述**: 定义缓存服务的核心操作
 
 ```typescript
 /**
- * 隔离异常基类
- *
- * @description 所有隔离相关异常的基类
+ * 缓存服务接口
+ * 
+ * @description 定义缓存的基本 CRUD 操作
+ * 
+ * @since 1.0.0
  */
-export abstract class IsolationException extends Error {
+export interface ICacheService {
+  /**
+   * 获取缓存值
+   * 
+   * @param namespace - 命名空间
+   * @param key - 缓存键
+   * @returns 缓存值，不存在返回 null
+   */
+  get<T>(namespace: string, key: string): Promise<T | null>;
+  
+  /**
+   * 设置缓存值
+   * 
+   * @param namespace - 命名空间
+   * @param key - 缓存键
+   * @param value - 缓存值
+   * @param ttl - 过期时间（秒），可选
+   */
+  set<T>(namespace: string, key: string, value: T, ttl?: number): Promise<void>;
+  
+  /**
+   * 删除缓存
+   * 
+   * @param namespace - 命名空间
+   * @param key - 缓存键
+   */
+  del(namespace: string, key: string): Promise<void>;
+  
+  /**
+   * 检查缓存是否存在
+   * 
+   * @param namespace - 命名空间
+   * @param key - 缓存键
+   * @returns 存在返回 true，否则返回 false
+   */
+  exists(namespace: string, key: string): Promise<boolean>;
+  
+  /**
+   * 清空缓存
+   * 
+   * @param pattern - 匹配模式（可选），默认清空所有
+   */
+  clear(pattern?: string): Promise<void>;
+}
+```
+
+---
+
+### IRedisService (Redis 服务接口)
+
+**描述**: 定义 Redis 连接管理接口
+
+```typescript
+/**
+ * Redis 服务接口
+ * 
+ * @description 管理 Redis 连接和基础操作
+ * 
+ * @since 1.0.0
+ */
+export interface IRedisService {
+  /**
+   * 连接 Redis
+   */
+  connect(): Promise<void>;
+  
+  /**
+   * 断开 Redis 连接
+   */
+  disconnect(): Promise<void>;
+  
+  /**
+   * 获取 Redis 客户端
+   * 
+   * @returns Redis 客户端实例
+   * @throws {GeneralInternalServerException} Redis 未连接
+   */
+  getClient(): Redis;
+  
+  /**
+   * 健康检查
+   * 
+   * @returns 连接状态
+   */
+  healthCheck(): Promise<boolean>;
+}
+```
+
+---
+
+## 配置类型
+
+### CachingModuleOptions (模块配置)
+
+**描述**: 缓存模块的配置选项
+
+```typescript
+/**
+ * 缓存模块配置选项
+ * 
+ * @since 1.0.0
+ */
+export interface CachingModuleOptions {
+  /** Redis 连接配置 */
+  redis: RedisOptions;
+  
+  /** 默认 TTL（秒），默认 3600 */
+  defaultTTL?: number;
+  
+  /** 缓存键前缀，默认 'hl8:cache:' */
+  keyPrefix?: string;
+  
+  /** 是否启用指标监控，默认 true */
+  enableMetrics?: boolean;
+}
+```
+
+---
+
+### RedisOptions (Redis 连接配置)
+
+**描述**: Redis 连接的配置选项
+
+```typescript
+/**
+ * Redis 连接配置
+ * 
+ * @since 1.0.0
+ */
+export interface RedisOptions {
+  /** Redis 主机地址 */
+  host: string;
+  
+  /** Redis 端口，默认 6379 */
+  port: number;
+  
+  /** Redis 密码（可选） */
+  password?: string;
+  
+  /** Redis 数据库索引，默认 0 */
+  db?: number;
+  
+  /** 连接超时（毫秒），默认 10000 */
+  connectTimeout?: number;
+  
+  /** 重试策略（可选） */
+  retryStrategy?: (times: number) => number | void;
+}
+```
+
+---
+
+## 领域事件
+
+### CacheInvalidatedEvent (缓存失效事件)
+
+**描述**: 当缓存被删除或过期时触发
+
+```typescript
+/**
+ * 缓存失效事件
+ * 
+ * @description 记录单个缓存键的失效
+ * 
+ * @since 1.0.0
+ */
+export class CacheInvalidatedEvent {
   constructor(
-    message: string,
-    public readonly statusCode: number,
-    public readonly context?: any
-  ) {
-    super(message);
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
-  }
-
-  toJSON() {
-    return {
-      name: this.name,
-      message: this.message,
-      statusCode: this.statusCode,
-      context: this.context,
-    };
-  }
+    /** 缓存键 */
+    public readonly key: string,
+    
+    /** 缓存层级 */
+    public readonly level: CacheLevel,
+    
+    /** 失效原因 */
+    public readonly reason: 'expired' | 'deleted' | 'evicted',
+    
+    /** 发生时间 */
+    public readonly occurredAt: Date = new Date(),
+  ) {}
 }
 ```
 
----
+#### 使用场景
 
-## 6. 关系图
-
-### 6.1 实体与值对象关系
-
-```
-IsolationContext (实体)
-├── tenantId: TenantId (值对象)
-├── organizationId: OrganizationId (值对象)
-├── departmentId: DepartmentId (值对象)
-└── userId: UserId (值对象)
-```
-
-### 6.2 事件触发流程
-
-```
-请求到达
-  ↓
-提取租户信息
-  ↓
-创建 IsolationContext
-  ↓
-触发 IsolationContextCreatedEvent
-  ↓
-请求处理
-  ↓
-（可选）切换上下文
-  ↓
-触发 IsolationContextSwitchedEvent
-  ↓
-（可选）缓存失效
-  ↓
-触发 CacheInvalidatedEvent
-```
-
-### 6.3 异常层次
-
-```
-IsolationException (基类)
-├── TenantNotFoundException
-├── InvalidIsolationContextException
-├── OrganizationNotFoundException
-├── DepartmentNotFoundException
-└── UnauthorizedOrganizationException
-```
+- 监控缓存失效率
+- 调试缓存问题
+- 触发缓存预热
 
 ---
 
-## 7. 验证规则总结
+### CacheLevelInvalidatedEvent (缓存层级失效事件)
 
-| 实体/值对象 | 验证规则 |
-|-----------|---------|
-| IsolationContext | **允许所有标识符为空**（平台级）；层级关系正确；所有非空标识符有效 |
-| TenantId | 非空；长度 ≤ 100；符合 ID 格式 |
-| OrganizationId | 非空；长度 ≤ 100；符合 ID 格式 |
-| DepartmentId | 非空；长度 ≤ 100；符合 ID 格式 |
-| UserId | 非空；长度 ≤ 100；符合 ID 格式 |
+**描述**: 当整个层级的缓存被批量清除时触发
 
-**层级关系验证规则**：
+```typescript
+/**
+ * 缓存层级失效事件
+ * 
+ * @description 记录整个层级的缓存失效
+ * 
+ * @since 1.0.0
+ */
+export class CacheLevelInvalidatedEvent {
+  constructor(
+    /** 失效的层级类型 */
+    public readonly level: CacheLevel,
+    
+    /** 层级标识符（如 tenantId、orgId） */
+    public readonly identifier: string,
+    
+    /** 删除的键数量 */
+    public readonly deletedCount: number,
+    
+    /** 发生时间 */
+    public readonly occurredAt: Date = new Date(),
+  ) {}
+}
+```
 
-| 场景 | tenantId | organizationId | departmentId | userId | 验证结果 |
-|------|----------|---------------|-------------|--------|---------|
-| 平台级 | ❌ 空 | ❌ 空 | ❌ 空 | ❌ 空 | ✅ 有效 |
-| 租户级 | ✅ 有值 | ❌ 空 | ❌ 空 | ❌ 空 | ✅ 有效 |
-| 组织级 | ✅ 有值 | ✅ 有值 | ❌ 空 | ❌ 空 | ✅ 有效 |
-| 部门级 | ✅ 有值 | ✅ 有值 | ✅ 有值 | ❌ 空 | ✅ 有效 |
-| 用户级 | ❌ 空 | ❌ 空 | ❌ 空 | ✅ 有值 | ✅ 有效 |
-| 错误情况1 | ❌ 空 | ✅ 有值 | ❌ 空 | ❌ 空 | ❌ 无效（有组织但无租户） |
-| 错误情况2 | ✅ 有值 | ❌ 空 | ✅ 有值 | ❌ 空 | ❌ 无效（有部门但无组织） |
+#### 使用场景
 
----
-
-## 8. 状态转换
-
-**IsolationContext 状态**：
-
-- **创建**：从请求头提取信息创建
-- **验证**：验证有效性
-- **使用**：在请求生命周期中使用
-- **销毁**：请求结束时销毁
-
-**不可变性**：IsolationContext 创建后不可修改，任何变更都需要创建新实例
-
----
-
-## 9. 持久化说明
-
-**重要**：`shared/` 目录中的领域模型**不需要持久化**
-
-- IsolationContext：存储在请求作用域（AsyncLocalStorage），请求结束自动销毁
-- 值对象：作为 IsolationContext 的一部分，不单独存储
-- 事件：可选择持久化到事件存储（由业务应用决定）
+- 监控批量缓存清除
+- 性能分析
+- 审计追踪
 
 ---
 
-## 10. 迁移计划
+## 性能指标
 
-### 10.1 当前状态（Phase 1-2）
+### CacheMetrics (缓存指标)
+
+**描述**: 缓存性能指标数据
+
+```typescript
+/**
+ * 缓存指标
+ * 
+ * @since 1.0.0
+ */
+export interface CacheMetrics {
+  /** 缓存命中次数 */
+  hits: number;
+  
+  /** 缓存未命中次数 */
+  misses: number;
+  
+  /** 错误次数 */
+  errors: number;
+  
+  /** 缓存命中率（0-1） */
+  hitRate: number;
+  
+  /** 平均延迟（毫秒） */
+  averageLatency: number;
+  
+  /** 总操作次数 */
+  totalOperations: number;
+}
+```
+
+#### 使用示例
+
+```typescript
+// 获取缓存指标
+const metrics = await cacheMetricsService.getMetrics();
+
+console.log(`命中率: ${(metrics.hitRate * 100).toFixed(2)}%`);
+console.log(`平均延迟: ${metrics.averageLatency.toFixed(2)}ms`);
+console.log(`总操作: ${metrics.totalOperations}`);
+```
+
+---
+
+## 数据模型关系图
 
 ```text
-libs/nestjs-infra/
-└── src/
-    └── shared/          # 临时存放
-        ├── entities/
-        ├── value-objects/
-        ├── events/
-        ├── types/
-        └── exceptions/
-```
-
-### 10.2 目标状态（Phase 3+）
-
-**方案 A：迁移到 Shared Kernel**
-
-```text
-libs/shared-kernel/      # 新建共享内核
-├── entities/
-├── value-objects/
-├── events/
-└── types/
-
-libs/nestjs-infra/
-└── src/
-    ├── caching/         # 依赖 shared-kernel
-    ├── multi-tenancy/   # 依赖 shared-kernel
-    └── ...
-```
-
-**方案 B：迁移到业务模块**
-
-```text
-libs/tenant-management/  # 租户管理业务模块
-└── domain/
-    ├── entities/
-    ├── value-objects/
-    └── events/
-
-libs/nestjs-infra/
-└── src/
-    ├── caching/         # 依赖 tenant-management
-    ├── multi-tenancy/   # 依赖 tenant-management
-    └── ...
+┌─────────────────┐
+│  IsolationContext│ (来自 @hl8/platform)
+└────────┬────────┘
+         │
+         │ 1:N
+         ↓
+┌─────────────────┐         ┌──────────────┐
+│    CacheKey     │────────>│  CacheLevel  │ (枚举)
+│  (值对象)        │         └──────────────┘
+└────────┬────────┘
+         │
+         │ 1:1
+         ↓
+┌─────────────────┐
+│   CacheEntry    │
+│  (值对象)        │
+└────────┬────────┘
+         │
+         │ 发布
+         ↓
+┌─────────────────────────┐
+│  CacheInvalidatedEvent  │ (领域事件)
+│  CacheLevelInvalidated  │
+└─────────────────────────┘
 ```
 
 ---
 
-**数据模型完成日期**：2025-10-11  
-**审核状态**：✅ 通过  
-**下一步**：创建 contracts/ 和 quickstart.md
+## 数据验证规则汇总
+
+| 数据类型 | 验证规则 | 错误类型 |
+|---------|---------|---------|
+| CacheKey | 长度 ≤ 256 字符 | GeneralBadRequestException |
+| CacheKey | 仅允许字母、数字、:、_、- | GeneralBadRequestException |
+| CacheKey | 层级标识符必需 | GeneralBadRequestException |
+| CacheEntry | TTL ≥ 0 | GeneralBadRequestException |
+| CacheEntry | TTL ≤ 2,592,000 秒 | GeneralBadRequestException |
+| CacheEntry | 值大小 ≤ 1MB | GeneralBadRequestException |
+| Redis配置 | host 必需 | ConfigValidationException |
+| Redis配置 | port 在 1-65535 范围内 | ConfigValidationException |
+
+---
+
+## 类型导出结构
+
+```typescript
+// src/types/index.ts
+
+// 值对象
+export { CacheKey } from '../domain/value-objects/cache-key.vo.js';
+export { CacheEntry } from '../domain/value-objects/cache-entry.vo.js';
+
+// 枚举
+export { CacheLevel } from './cache-level.enum.js';
+
+// 接口
+export type { ICacheService } from './cache-service.interface.js';
+export type { IRedisService } from './redis-service.interface.js';
+
+// 配置
+export type { 
+  CachingModuleOptions, 
+  CachingModuleAsyncOptions 
+} from './cache-options.interface.js';
+export type { RedisOptions } from './redis-options.interface.js';
+
+// 领域事件
+export { CacheInvalidatedEvent } from '../domain/events/cache-invalidated.event.js';
+export { CacheLevelInvalidatedEvent } from '../domain/events/cache-level-invalidated.event.js';
+
+// 指标
+export type { CacheMetrics } from './cache-metrics.interface.js';
+```
+
+---
+
+## 数据模型设计原则
+
+### 1. 不可变性（Immutability）
+
+所有值对象（CacheKey、CacheEntry）创建后不可修改：
+
+- 所有属性为 `readonly`
+- 无 setter 方法
+- 修改需要创建新实例
+
+### 2. 业务规则封装
+
+所有验证和业务逻辑封装在值对象内部：
+
+- 构造函数私有，通过静态工厂方法创建
+- 验证失败立即抛出异常
+- 不允许创建无效对象
+
+### 3. 类型安全
+
+使用 TypeScript 类型系统确保安全：
+
+- 泛型支持任意缓存值类型
+- 接口定义清晰的契约
+- 枚举限制有效选项
+
+### 4. 可测试性
+
+设计便于单元测试：
+
+- 值对象无外部依赖
+- 静态工厂方法易于 mock
+- 领域事件可独立验证
+
+### 5. 扩展性
+
+预留扩展点：
+
+- 接口定义核心操作
+- 实现类可替换
+- 配置可热更新
+
+---
+
+**文档版本**: 1.0.0  
+**最后更新**: 2025-10-12  
+**审阅者**: AI Assistant  
+**状态**: ✅ 数据模型设计完成

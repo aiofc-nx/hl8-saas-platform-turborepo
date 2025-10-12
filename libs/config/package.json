@@ -1,0 +1,60 @@
+{
+  "name": "@hl8/config",
+  "version": "0.1.0",
+  "description": "类型安全的配置管理模块 - 支持多种加载器和验证",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "type-check": "tsc --noEmit",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "chalk": "^4.1.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "debug": "^4.3.7",
+    "dotenv": "^17.2.2",
+    "dotenv-expand": "^11.0.7",
+    "js-yaml": "^4.1.0",
+    "lodash.merge": "^4.6.2"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/ts-config": "workspace:*",
+    "@swc/core": "^1.13.5",
+    "@swc/jest": "^0.2.37",
+    "@types/debug": "^4.1.12",
+    "@types/jest": "^30.0.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/node": "^22.16.0",
+    "jest": "^30.2.0",
+    "typescript": "^5.7.3"
+  },
+  "keywords": [
+    "nestjs",
+    "configuration",
+    "type-safe",
+    "config-loader",
+    "dotenv",
+    "yaml",
+    "validation"
+  ]
+}

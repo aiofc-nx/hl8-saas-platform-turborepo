@@ -1,0 +1,61 @@
+{
+  "name": "@hl8/nestjs-fastify",
+  "version": "0.1.0",
+  "description": "Fastify 专用的企业级基础设施模块 - 基于 @hl8/nestjs-infra 优化",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "type-check": "tsc --noEmit",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.1.0",
+    "@hl8/config": "workspace:*",
+    "@hl8/nestjs-infra": "workspace:*",
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/platform-fastify": "^11.1.6",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "fastify": "^5.6.1",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.1.6",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/ts-config": "workspace:*",
+    "@swc/core": "^1.13.5",
+    "@swc/jest": "^0.2.37",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.16.0",
+    "jest": "^30.2.0",
+    "typescript": "^5.7.3"
+  },
+  "keywords": [
+    "nestjs",
+    "fastify",
+    "enterprise",
+    "infrastructure",
+    "logging",
+    "caching",
+    "exception-handling",
+    "multi-tenancy"
+  ]
+}
