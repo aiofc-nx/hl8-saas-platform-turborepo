@@ -468,4 +468,3 @@ DATABASE__ACQUIRE_TIMEOUT_MILLIS=30000
 5. ✅ 监控数据库健康和性能
 
 更多信息请参考 [@hl8/database 模块文档](../../libs/database/README.md)。
-
