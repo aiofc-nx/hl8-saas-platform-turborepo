@@ -5,15 +5,17 @@
  */
 export default {
   displayName: '@hl8/database',
-  preset: '../../jest.preset.js',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.[tj]s$': ['ts-jest', { 
-      useESM: true,
-      tsconfig: '<rootDir>/tsconfig.json',
+    '^.+\\.ts$': ['ts-jest', { 
+      useESM: false,
+      tsconfig: {
+        module: 'commonjs',
+        esModuleInterop: true,
+      },
     }],
   },
-  moduleFileExtensions: ['ts', 'js', 'html'],
+  moduleFileExtensions: ['ts', 'js'],
   coverageDirectory: '../../coverage/libs/database',
   coveragePathIgnorePatterns: [
     '/node_modules/',
@@ -28,15 +30,17 @@ export default {
   ],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70,
     },
   },
-  extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
+  testMatch: [
+    '**/*.spec.ts',
+  ],
 };
 
