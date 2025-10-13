@@ -51,3 +51,6 @@ export type { CacheMetrics } from './types/cache-metrics.interface.js';
 export { serialize, deserialize, isSerializable } from './utils/serializer.util.js';
 export { generateKey, sanitizeKey, isValidKey, generatePattern } from './utils/key-generator.util.js';
 
+// 异常类
+export { RedisConnectionException, CacheSerializationException } from './exceptions/index.js';
+

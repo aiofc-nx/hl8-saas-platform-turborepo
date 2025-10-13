@@ -23,7 +23,13 @@
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "lint": "eslint .",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "migration:create": "mikro-orm migration:create",
+    "migration:up": "mikro-orm migration:up",
+    "migration:down": "mikro-orm migration:down",
+    "migration:pending": "mikro-orm migration:pending",
+    "schema:drop": "mikro-orm schema:drop --run",
+    "schema:fresh": "mikro-orm schema:fresh --run"
   },
   "peerDependencies": {
     "@nestjs/common": "^11.0.0",

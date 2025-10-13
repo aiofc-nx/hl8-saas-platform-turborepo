@@ -135,6 +135,9 @@ export { ConfigValidator } from './lib/utils/config-validator.util.js';
 // 错误处理导出
 export * from './lib/errors/index.js';
 
+// 日志服务导出
+export { ConfigLogger } from './lib/services/config-logger.service.js';
+
 // 类型定义导出
 export type * from './lib/types/index.js';
 

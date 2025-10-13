@@ -37,6 +37,7 @@ import { RedisService, REDIS_OPTIONS } from './services/redis.service.js';
 import { CacheService, CACHE_OPTIONS } from './services/cache.service.js';
 import { CacheInterceptor } from './interceptors/cache.interceptor.js';
 import { CacheMetricsService } from './monitoring/cache-metrics.service.js';
+import { CacheSerializationException } from './exceptions/cache-serialization.exception.js';
 
 @Global()
 @Module({})
@@ -110,7 +111,7 @@ export class CachingModule {
               const config = await options.useFactory(...args);
               return config.redis;
             }
-            throw new Error('useFactory is required for async configuration');
+            throw new CacheSerializationException('useFactory is required for async configuration');
           },
           inject: options.inject || [],
         },
@@ -125,7 +126,7 @@ export class CachingModule {
                 keyPrefix: config.keyPrefix,
               };
             }
-            throw new Error('useFactory is required for async configuration');
+            throw new CacheSerializationException('useFactory is required for async configuration');
           },
           inject: options.inject || [],
         },

@@ -120,11 +120,19 @@ export class TransactionService {
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.error('事务执行失败，已回滚', (error as Error).stack, { 
+      
+      // 记录技术错误日志用于监控和调试
+      this.logger.error('事务执行失败，已回滚', undefined, {
         transactionId, 
-        duration 
+        duration,
+        err: error instanceof Error ? {
+          type: error.constructor.name,
+          message: error.message,
+          stack: error.stack,
+        } : undefined,
       });
 
+      // 抛出业务异常
       throw new DatabaseTransactionException(
         '事务执行失败，所有操作已回滚',
         { transactionId, duration }

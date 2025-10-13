@@ -54,7 +54,14 @@ export class FastifyHttpExceptionFilter implements ExceptionFilter {
       };
 
       if (problemDetails.status >= 500) {
-        this.logger.error(logMessage, exception.stack, logContext);
+        this.logger.error(logMessage, undefined, {
+          ...logContext,
+          err: {
+            type: exception.constructor.name,
+            message: exception.message,
+            stack: exception.stack,
+          },
+        });
       } else {
         this.logger.warn(logMessage, logContext);
       }
@@ -83,7 +90,13 @@ export class FastifyHttpExceptionFilter implements ExceptionFilter {
       } catch (err) {
         // 最后的降级：至少记录错误
         if (this.logger) {
-          this.logger.error('Failed to send error response', err instanceof Error ? err.stack : undefined);
+          this.logger.error('Failed to send error response', undefined, {
+            err: err instanceof Error ? {
+              type: err.constructor.name,
+              message: err.message,
+              stack: err.stack,
+            } : undefined,
+          });
         }
       }
     }

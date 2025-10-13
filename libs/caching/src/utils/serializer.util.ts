@@ -29,6 +29,8 @@
  * @since 1.0.0
  */
 
+import { CacheSerializationException } from '../exceptions/cache-serialization.exception.js';
+
 /**
  * 序列化值为字符串
  * 
@@ -156,7 +158,10 @@ export function deserialize<T = any>(value: string): T {
       return val;
     });
   } catch (error) {
-    throw new Error(`反序列化失败: ${error instanceof Error ? error.message : String(error)}`);
+    throw new CacheSerializationException(
+      `反序列化失败: ${error instanceof Error ? error.message : String(error)}`,
+      error instanceof Error ? error : undefined
+    );
   }
 }
 

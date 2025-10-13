@@ -150,6 +150,8 @@ import { User } from './entities/user.entity.js';
         entities: [User],
         // 开发环境启用调试
         debug: config.isDevelopment,
+        // 显式指定 driver 选项
+        driver: 'PostgreSqlDriver',
       }),
     }),
 

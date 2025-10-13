@@ -18,6 +18,7 @@ import {
   CacheEventListener,
   FileCacheOptions,
 } from '../types/cache.types.js';
+import { ConfigLogger } from '../services/config-logger.service.js';
 import { ConfigRecord } from '../types/config.types.js';
 import { CacheEventType } from '../constants.js';
 
@@ -491,7 +492,12 @@ export class FileCacheProvider implements CacheProvider {
         try {
           listener(event);
         } catch (error) {
-          console.error(`Error in cache event listener:`, error);
+          const logger = ConfigLogger.getInstance();
+          logger.error('缓存事件监听器错误', { 
+            event: event.type, 
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined
+          });
         }
       }
     }

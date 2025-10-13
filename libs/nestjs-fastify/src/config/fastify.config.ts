@@ -7,6 +7,7 @@
  */
 
 import type { EnterpriseFastifyAdapterOptions } from '../fastify/enterprise-fastify.adapter.js';
+import { createFastifyLoggerConfig } from '../logging/pino-config.factory.js';
 
 /**
  * 默认 Fastify 配置
@@ -58,10 +59,13 @@ export const DEV_FASTIFY_CONFIG: EnterpriseFastifyAdapterOptions = {
   ...DEFAULT_FASTIFY_CONFIG,
   fastifyOptions: {
     ...DEFAULT_FASTIFY_CONFIG.fastifyOptions,
-    logger: {
+    logger: createFastifyLoggerConfig({
       level: 'debug',
       prettyPrint: true,
-    },
+      colorize: true,
+      translateTime: 'SYS:standard',
+      ignore: 'pid,hostname',
+    }),
   },
 };
 
@@ -70,6 +74,12 @@ export const DEV_FASTIFY_CONFIG: EnterpriseFastifyAdapterOptions = {
  */
 export const PROD_FASTIFY_CONFIG: EnterpriseFastifyAdapterOptions = {
   ...DEFAULT_FASTIFY_CONFIG,
+  fastifyOptions: {
+    ...DEFAULT_FASTIFY_CONFIG.fastifyOptions,
+    logger: createFastifyLoggerConfig({
+      level: 'info',
+    }),
+  },
   enableRateLimit: true,
   rateLimitOptions: {
     timeWindow: 60000, // 1分钟

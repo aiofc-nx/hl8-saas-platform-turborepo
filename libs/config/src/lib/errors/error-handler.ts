@@ -8,6 +8,7 @@
 
 import { ConfigError, ConfigErrorType } from './config-error.js';
 import { ErrorContext } from '../types/index.js';
+import { ConfigLogger } from '../services/config-logger.service.js';
 
 /**
  * 错误处理选项接口
@@ -326,7 +327,14 @@ export class ErrorHandler {
         );
 
         if (opts.logErrors) {
-          console.error('Config Error:', configError.getDetailedMessage());
+          const logger = ConfigLogger.getInstance();
+          logger.error('配置错误', {
+            type: configError.type,
+            code: configError.code,
+            message: configError.message,
+            context: configError.context,
+            originalError: configError.originalError?.message
+          });
         }
 
         return configError;

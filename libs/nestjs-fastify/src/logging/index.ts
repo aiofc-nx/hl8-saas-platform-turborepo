@@ -4,3 +4,4 @@
 
 export * from './logging.module.js';
 export * from './fastify-logger.service.js';
+export * from './pino-config.factory.js';

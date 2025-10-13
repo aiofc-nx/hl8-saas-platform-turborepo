@@ -82,7 +82,10 @@ export class CacheService {
       // 反序列化
       return JSON.parse(value) as T;
     } catch (error) {
-      this.logger.error(`获取缓存失败: ${namespace}:${key}`, error);
+      this.logger.error(`获取缓存失败: ${namespace}:${key}`, undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       return undefined;
     }
   }
@@ -124,7 +127,10 @@ export class CacheService {
       }
       
     } catch (error) {
-      this.logger.error(`设置缓存失败: ${namespace}:${key}`, error);
+      this.logger.error(`设置缓存失败: ${namespace}:${key}`, undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       throw error;
     }
   }
@@ -144,7 +150,10 @@ export class CacheService {
       const result = await redis.del(cacheKey.toString());
       return result > 0;
     } catch (error) {
-      this.logger.error(`删除缓存失败: ${namespace}:${key}`, error);
+      this.logger.error(`删除缓存失败: ${namespace}:${key}`, undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       return false;
     }
   }
@@ -164,7 +173,10 @@ export class CacheService {
       const result = await redis.exists(cacheKey.toString());
       return result === 1;
     } catch (error) {
-      this.logger.error(`检查缓存存在性失败: ${namespace}:${key}`, error);
+      this.logger.error(`检查缓存存在性失败: ${namespace}:${key}`, undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       return false;
     }
   }
@@ -182,7 +194,10 @@ export class CacheService {
       const pattern = `${this.keyPrefix}*`;
       return await this.clearByPattern(pattern);
     } catch (error) {
-      this.logger.error('清空所有缓存失败', error);
+      this.logger.error('清空所有缓存失败', undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       return 0;
     }
   }
@@ -198,7 +213,10 @@ export class CacheService {
       const pattern = `${this.keyPrefix}tenant:${tenantId}:*`;
       return await this.clearByPattern(pattern);
     } catch (error) {
-      this.logger.error(`清除租户缓存失败: ${tenantId}`, error);
+      this.logger.error(`清除租户缓存失败: ${tenantId}`, undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       return 0;
     }
   }
@@ -215,7 +233,10 @@ export class CacheService {
       const pattern = `${this.keyPrefix}tenant:${tenantId}:org:${organizationId}:*`;
       return await this.clearByPattern(pattern);
     } catch (error) {
-      this.logger.error(`清除组织缓存失败: ${tenantId}/${organizationId}`, error);
+      this.logger.error(`清除组织缓存失败: ${tenantId}/${organizationId}`, undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       return 0;
     }
   }
@@ -237,7 +258,10 @@ export class CacheService {
       const pattern = `${this.keyPrefix}tenant:${tenantId}:org:${organizationId}:dept:${departmentId}:*`;
       return await this.clearByPattern(pattern);
     } catch (error) {
-      this.logger.error(`清除部门缓存失败: ${tenantId}/${organizationId}/${departmentId}`, error);
+      this.logger.error(`清除部门缓存失败: ${tenantId}/${organizationId}/${departmentId}`, undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       return 0;
     }
   }

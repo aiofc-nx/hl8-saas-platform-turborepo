@@ -27,6 +27,29 @@ import { IsolationContextService } from '@hl8/nestjs-isolation';
 import type { ILoggerService } from '@hl8/exceptions';
 
 /**
+ * 日志上下文类型
+ */
+export interface LogContext {
+  [key: string]: unknown;
+}
+
+/**
+ * 错误对象类型
+ */
+export interface ErrorObject {
+  type: string;
+  message: string;
+  stack?: string;
+}
+
+/**
+ * 增强的日志上下文（包含错误对象）
+ */
+export interface EnrichedLogContext extends LogContext {
+  err?: ErrorObject;
+}
+
+/**
  * Fastify 日志服务
  *
  * @description 全局统一的日志服务，基于 Fastify 内置 Pino
@@ -42,34 +65,149 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
     @Optional() private readonly isolationService?: IsolationContextService,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
-  log(message: any, ...optionalParams: any[]): void {
-    const context = this.enrichContext(optionalParams[0]);
-    this.pinoLogger.info(context, message);
+  /**
+   * 记录信息日志
+   * 
+   * @param message - 日志消息
+   * @param context - 日志上下文（可选）
+   */
+  log(message: string, context?: LogContext): void;
+  log(message: Error, context?: LogContext): void;
+  log(message: string | Error, context?: LogContext): void {
+    const enrichedContext = this.enrichContext(context);
+    
+    // 处理 Error 对象的序列化问题
+    if (message instanceof Error) {
+      this.pinoLogger.info({
+        ...enrichedContext,
+        err: {
+          type: message.constructor.name,
+          message: message.message,
+          stack: message.stack,
+        }
+      }, message.message);
+    } else {
+      this.pinoLogger.info(enrichedContext, message);
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
-  error(message: any, ...optionalParams: any[]): void {
-    const context = this.enrichContext(optionalParams[0]);
-    this.pinoLogger.error(context, message);
+  /**
+   * 记录错误日志
+   * 
+   * @param message - 日志消息
+   * @param stack - 错误堆栈（可选）
+   * @param context - 日志上下文（可选）
+   */
+  error(message: string, stack?: string, context?: LogContext): void;
+  error(message: Error, context?: LogContext): void;
+  error(message: string | Error, stackOrContext?: string | LogContext, context?: LogContext): void {
+    if (message instanceof Error) {
+      // Error 对象的情况
+      const enrichedContext = this.enrichContext(stackOrContext as LogContext);
+      this.pinoLogger.error({
+        ...enrichedContext,
+        err: {
+          type: message.constructor.name,
+          message: message.message,
+          stack: message.stack,
+        }
+      }, message.message);
+    } else {
+      // 字符串消息的情况
+      const enrichedContext = this.enrichContext(context);
+      if (typeof stackOrContext === 'string') {
+        // 有 stack 参数
+        this.pinoLogger.error({
+          ...enrichedContext,
+          err: {
+            type: 'Error',
+            message: message,
+            stack: stackOrContext,
+          }
+        }, message);
+      } else {
+        // 没有 stack 参数，stackOrContext 是 context
+        this.pinoLogger.error(enrichedContext, message);
+      }
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
-  warn(message: any, ...optionalParams: any[]): void {
-    const context = this.enrichContext(optionalParams[0]);
-    this.pinoLogger.warn(context, message);
+  /**
+   * 记录警告日志
+   * 
+   * @param message - 日志消息
+   * @param context - 日志上下文（可选）
+   */
+  warn(message: string, context?: LogContext): void;
+  warn(message: Error, context?: LogContext): void;
+  warn(message: string | Error, context?: LogContext): void {
+    const enrichedContext = this.enrichContext(context);
+    
+    // 处理 Error 对象的序列化问题
+    if (message instanceof Error) {
+      this.pinoLogger.warn({
+        ...enrichedContext,
+        err: {
+          type: message.constructor.name,
+          message: message.message,
+          stack: message.stack,
+        }
+      }, message.message);
+    } else {
+      this.pinoLogger.warn(enrichedContext, message);
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
-  debug(message: any, ...optionalParams: any[]): void {
-    const context = this.enrichContext(optionalParams[0]);
-    this.pinoLogger.debug(context, message);
+  /**
+   * 记录调试日志
+   * 
+   * @param message - 日志消息
+   * @param context - 日志上下文（可选）
+   */
+  debug(message: string, context?: LogContext): void;
+  debug(message: Error, context?: LogContext): void;
+  debug(message: string | Error, context?: LogContext): void {
+    const enrichedContext = this.enrichContext(context);
+    
+    // 处理 Error 对象的序列化问题
+    if (message instanceof Error) {
+      this.pinoLogger.debug({
+        ...enrichedContext,
+        err: {
+          type: message.constructor.name,
+          message: message.message,
+          stack: message.stack,
+        }
+      }, message.message);
+    } else {
+      this.pinoLogger.debug(enrichedContext, message);
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志消息和参数可以是任意类型（宪章 IX 允许场景：日志接口）
-  verbose(message: any, ...optionalParams: any[]): void {
-    const context = this.enrichContext(optionalParams[0]);
-    this.pinoLogger.trace(context, message);
+  /**
+   * 记录详细日志
+   * 
+   * @param message - 日志消息
+   * @param context - 日志上下文（可选）
+   */
+  verbose(message: string, context?: LogContext): void;
+  verbose(message: Error, context?: LogContext): void;
+  verbose(message: string | Error, context?: LogContext): void {
+    const enrichedContext = this.enrichContext(context);
+    
+    // 处理 Error 对象的序列化问题
+    if (message instanceof Error) {
+      this.pinoLogger.trace({
+        ...enrichedContext,
+        err: {
+          type: message.constructor.name,
+          message: message.message,
+          stack: message.stack,
+        }
+      }, message.message);
+    } else {
+      this.pinoLogger.trace(enrichedContext, message);
+    }
   }
 
   /**
@@ -86,12 +224,8 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
    * @param context - 原始上下文
    * @returns 丰富后的上下文
    * @private
-   * 
-   * @remarks
-   * 使用 any 符合宪章 IX 允许场景：日志上下文可以是任意类型。
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 日志上下文可以是任意类型（宪章 IX 允许场景）
-  private enrichContext(context?: any): any {
+  private enrichContext(context?: LogContext): EnrichedLogContext {
     // 如果没有注入 IsolationContextService，直接返回原上下文
     if (!this.isolationService) {
       return context || {};

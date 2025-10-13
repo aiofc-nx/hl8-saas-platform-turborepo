@@ -37,6 +37,7 @@
 import { Injectable } from '@nestjs/common';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { ConnectionManager } from '../connection/connection.manager.js';
+import { HealthCheckException } from '../exceptions/health-check.exception.js';
 import type { HealthCheckResult } from '../types/monitoring.types.js';
 import type { PoolStats } from '../types/connection.types.js';
 
@@ -87,9 +88,17 @@ export class HealthCheckService {
       };
 
       if (status !== 'healthy') {
-        this.logger.warn('数据库健康检查异常', result);
+        // 记录监控日志
+        this.logger.warn('数据库健康检查异常', result as any);
+        // 抛出业务异常
+        throw new HealthCheckException(
+          `数据库健康检查失败: ${status}`,
+          status,
+          result,
+        );
       } else {
-        this.logger.debug('数据库健康检查通过', result);
+        // 记录成功日志用于监控
+        this.logger.debug('数据库健康检查通过', result as any);
       }
 
       return result;

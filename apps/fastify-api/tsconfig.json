@@ -1,16 +1,16 @@
 {
   "extends": "@repo/ts-config/nestjs.json",
   "compilerOptions": {
-    "strict": true,
-    "strictNullChecks": true,
     "strictPropertyInitialization": false,
     "outDir": "./dist",
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
-    "target": "ESNext",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/controllers/*": ["./src/controllers/*"],
+      "@/entities/*": ["./src/entities/*"],
+      "@/modules/*": ["./src/modules/*"],
+      "@/services/*": ["./src/services/*"]
     }
   }
 }

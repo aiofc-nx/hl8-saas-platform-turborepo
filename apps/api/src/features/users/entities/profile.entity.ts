@@ -30,7 +30,7 @@ export class Profile extends Base {
    * The user associated with this profile.
    * @type {Relation<User>}
    */
-  @OneToOne(() => User, (user) => user.sessions, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: Relation<User>;
 

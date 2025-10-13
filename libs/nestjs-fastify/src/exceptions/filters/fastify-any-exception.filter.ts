@@ -86,8 +86,13 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
         detail: this.getDetailedError(exception),
         url: request.url,
         method: request.method,
+        err: exception instanceof Error ? {
+          type: exception.constructor.name,
+          message: exception.message,
+          stack: exception.stack,
+        } : undefined,
       };
-      this.logger.error(logMessage, exception instanceof Error ? exception.stack : undefined, logContext);
+      this.logger.error(logMessage, undefined, logContext);
     }
 
     // 使用 Fastify 的 .code() 方法
