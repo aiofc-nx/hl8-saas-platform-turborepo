@@ -100,13 +100,109 @@ export class UserService {
 - [API 文档](../../specs/004-database/contracts/)
 - [架构说明](../../specs/004-database/architecture-notes.md)
 
+## ✨ 核心功能
+
+### 1. 数据库连接管理
+
+- 自动建立和维护数据库连接
+- 连接健康检查和自动重连
+- 连接池统计和监控
+- 优雅关闭连接
+
+### 2. 事务管理
+
+**声明式事务**：
+```typescript
+@Injectable()
+export class UserService {
+  constructor(
+    private readonly transactionService: TransactionService,
+  ) {}
+
+  @Transactional()
+  async createUser(data: CreateUserDto): Promise<User> {
+    // 自动事务管理
+    const user = new User(data);
+    await this.em.persistAndFlush(user);
+    return user;
+  }
+}
+```
+
+**编程式事务**：
+```typescript
+const result = await this.transactionService.runInTransaction(async (em) => {
+  const user = new User(data);
+  await em.persistAndFlush(user);
+  return user;
+});
+```
+
+### 3. 多租户数据隔离
+
+```typescript
+@Injectable()
+export class UserRepository {
+  constructor(
+    private readonly isolationService: DatabaseIsolationService,
+  ) {}
+
+  @IsolationAware(IsolationLevel.TENANT)
+  async findAll(): Promise<User[]> {
+    // 自动应用租户隔离
+    const filter = this.isolationService.buildIsolationFilter(IsolationLevel.TENANT);
+    return this.em.find(User, filter);
+  }
+}
+```
+
+### 4. 健康检查和监控
+
+```typescript
+@Injectable()
+export class MonitoringController {
+  constructor(
+    private readonly healthCheck: HealthCheckService,
+    private readonly metrics: MetricsService,
+  ) {}
+
+  async checkHealth() {
+    const result = await this.healthCheck.check();
+    return result; // { status: 'healthy', pool: {...}, responseTime: 45 }
+  }
+
+  async getSlowQueries() {
+    return this.metrics.getSlowQueries(10); // 最近 10 条慢查询
+  }
+}
+```
+
+## 🏗️ 架构特性
+
+- ✅ **ES Module**: 现代化的模块系统
+- ✅ **类型安全**: 完整的 TypeScript 类型定义
+- ✅ **零缓存**: 不依赖 @hl8/caching，职责单一
+- ✅ **无迁移**: 迁移由独立项目负责
+- ✅ **全局日志**: 使用 FastifyLoggerService，自动包含隔离上下文
+- ✅ **RFC7807**: 标准异常格式
+
 ## 🔗 依赖
 
 - @hl8/nestjs-fastify - 日志服务
 - @hl8/config - 配置管理
 - @hl8/exceptions - 异常处理
 - @hl8/nestjs-isolation - 数据隔离
+- @hl8/isolation-model - 隔离领域模型
 - @mikro-orm/core - ORM 核心
+- nestjs-cls - 上下文管理
+
+## 📊 代码统计
+
+- 源代码：~2000 行
+- 核心服务：5 个
+- 装饰器：2 个
+- 异常类：4 个
+- 完整的中文 TSDoc 注释
 
 ## 📄 许可证
 
