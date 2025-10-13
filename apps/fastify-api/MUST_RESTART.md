@@ -61,9 +61,10 @@ Successfully compiled: 12 files with swc
 ```
 
 **关键标志**:
+
 - ✅ 没有 "ERR_MODULE_NOT_FOUND" 错误
 - ✅ 看到 "数据库连接成功" 日志
-- ✅ 看到 "Application is running on: http://localhost:3001"
+- ✅ 看到 "Application is running on: <http://localhost:3001>"
 
 ---
 
@@ -91,4 +92,3 @@ curl http://localhost:3001/users/db/health
 ---
 
 **重启后一切应该正常工作！** 🚀
-
