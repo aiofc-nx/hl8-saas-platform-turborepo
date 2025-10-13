@@ -1053,8 +1053,8 @@ importers:
         specifier: ^0.511.0
         version: 0.511.0(react@19.1.0)
       marked:
-        specifier: ^15.0.11
-        version: 15.0.12
+        specifier: ^16.0.0
+        version: 16.4.0
       motion:
         specifier: ^12.16.0
         version: 12.23.24(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -7792,9 +7792,9 @@ packages:
     resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
 
-  marked@15.0.12:
-    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
-    engines: {node: '>= 18'}
+  marked@16.4.0:
+    resolution: {integrity: sha512-CTPAcRBq57cn3R8n3hwc2REddc28hjR7RzDXQ+lXLmMJYqn20BaI2cGw6QjgZGIgVfp2Wdfw4aMzgNteQ6qJgQ==}
+    engines: {node: '>= 20'}
     hasBin: true
 
   math-intrinsics@1.1.0:
@@ -18884,7 +18884,7 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
-  marked@15.0.12: {}
+  marked@16.4.0: {}
 
   math-intrinsics@1.1.0: {}
 
