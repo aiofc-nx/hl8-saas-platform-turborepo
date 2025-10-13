@@ -14,7 +14,7 @@ export const getRandomInt = (min: number, max: number) => {
 
 export function extractName(email: string): string {
   const username = email.split('@')[0];
-  return username.replace(/\d+$/, '');
+  return username?.replace(/\d+$/, '') || '';
 }
 
 export const generateRefreshTime = async (day = 3): Promise<string> => {

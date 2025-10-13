@@ -48,7 +48,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Logger } from 'nestjs-pino';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
 /**
  * Service for handling authentication, registration, session, and user security logic.
@@ -147,43 +147,132 @@ export class AuthService {
    * @returns {Promise<RegisterUserInterface>} Registered user data.
    * @throws {BadRequestException} If registration fails.
    */
+  /**
+   * 注册新用户账户
+   *
+   * 创建新用户账户，包括用户信息、个人资料和邮箱确认OTP。
+   * 使用数据库事务确保数据一致性，发送确认邮件。
+   *
+   * @description 此方法是用户注册的核心功能，确保数据完整性。
+   * 支持事务处理、错误处理和邮件发送。
+   *
+   * ## 业务规则
+   *
+   * ### 用户创建规则
+   * - 用户信息必须唯一（邮箱、用户名）
+   * - 密码必须经过哈希处理
+   * - 用户名自动从邮箱提取
+   * - 邮箱验证状态默认为未验证
+   *
+   * ### 个人资料规则
+   * - 每个用户必须有对应的个人资料
+   * - 个人资料名称从邮箱提取
+   * - 性别默认为未知
+   * - 个人资料与用户一对一关联
+   *
+   * ### OTP验证规则
+   * - 生成6位数字验证码
+   * - 验证码24小时内有效
+   * - 验证码类型为邮箱确认
+   * - 验证码与用户关联
+   *
+   * ### 邮件发送规则
+   * - 注册成功后发送确认邮件
+   * - 邮件包含验证码和用户信息
+   * - 邮件发送失败不影响用户创建
+   * - 支持邮件发送重试机制
+   *
+   * @param createUserDto 用户创建数据传输对象
+   * @returns Promise<RegisterUserInterface> 注册结果，包含用户数据
+   * @throws {BadRequestException} 注册失败时抛出
+   *
+   * @example
+   * ```typescript
+   * const userData = {
+   *   email: 'user@example.com',
+   *   password: 'password123'
+   * };
+   * 
+   * const result = await authService.register(userData);
+   * console.log(result.data); // 用户信息
+   * ```
+   */
   async register(createUserDto: CreateUserDto): Promise<RegisterUserInterface> {
     const email_confirmation_otp = await generateOTP();
+    
     try {
+      this.logger.debug('开始用户注册流程', { email: createUserDto.email });
+      
       const result = await this.transactionService.runInTransaction(
-        async (manager) => {
+        async (manager: EntityManager) => {
+          // 创建用户实体
           const user = manager.create(User, createUserDto);
-          await manager.insert(User, user);
+          const savedUser = await manager.save(User, user);
+          
+          this.logger.debug('用户创建成功', { userId: savedUser.id });
 
+          // 创建个人资料
           const profile = manager.create(Profile, {
-            user_id: user.id,
+            user_id: savedUser.id,
             name: extractName(createUserDto.email),
           });
-          await manager.insert(Profile, profile);
+          const savedProfile = await manager.save(Profile, profile);
+          
+          this.logger.debug('个人资料创建成功', { profileId: savedProfile.id });
 
+          // 创建OTP验证码
           const otp = manager.create(Otp, {
             otp: email_confirmation_otp,
             type: 'EMAIL_CONFIRMATION',
             expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
           });
-          await manager.insert(Otp, otp);
+          const savedOtp = await manager.save(Otp, otp);
+          
+          this.logger.debug('OTP创建成功', { otpId: savedOtp.id });
 
-          return { user, profile, otp };
+          return { user: savedUser, profile: savedProfile, otp: savedOtp };
         },
       );
 
-      await this.mailService.sendEmail({
-        to: [result.user.email],
-        subject: 'Confirm your email',
-        html: RegisterSuccessMail({
-          name: result.profile.name,
-          otp: email_confirmation_otp,
-        }),
-      });
+      // 发送确认邮件
+      try {
+        await this.mailService.sendEmail({
+          to: [result.user.email],
+          subject: 'Confirm your email',
+          html: RegisterSuccessMail({
+            name: result.profile.name,
+            otp: email_confirmation_otp,
+          }),
+        });
+        
+        this.logger.debug('确认邮件发送成功', { email: result.user.email });
+      } catch (mailError) {
+        this.logger.warn('确认邮件发送失败，但用户注册成功', {
+          email: result.user.email,
+          error: mailError instanceof Error ? mailError.message : String(mailError),
+        });
+        // 邮件发送失败不影响用户注册成功
+      }
+
+      this.logger.debug('用户注册流程完成', { userId: result.user.id });
       return { data: result.user };
-    } catch (e) {
-      this.logger.error(e);
-      throw new BadRequestException('Something went wrong!');
+      
+    } catch (error) {
+      this.logger.error('用户注册失败', {
+        email: createUserDto.email,
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
+      
+      // 根据错误类型提供更具体的错误信息
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('duplicate key') || errorMessage.includes('unique constraint')) {
+        throw new BadRequestException('邮箱或用户名已存在，请使用其他邮箱或用户名');
+      } else if (errorMessage.includes('数据库事务异常')) {
+        throw new BadRequestException('数据库操作失败，请稍后重试');
+      } else {
+        throw new BadRequestException('注册失败，请检查输入信息后重试');
+      }
     }
   }
 

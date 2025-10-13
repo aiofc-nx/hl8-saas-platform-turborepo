@@ -68,6 +68,9 @@ import {
   CachingModuleConfig,
 } from '@hl8/caching';
 
+// 从 @hl8/database 导入配置类（单一配置源）
+import { DatabaseConfig } from '@hl8/database';
+
 /**
  * 应用配置
  *
@@ -134,6 +137,16 @@ export class AppConfig {
   @Type(() => RateLimitModuleConfig)
   @IsOptional()
   public readonly rateLimit?: RateLimitModuleConfig;
+
+  /**
+   * 数据库配置
+   *
+   * @description 直接使用 @hl8/database 的 DatabaseConfig
+   */
+  @ValidateNested()
+  @Type(() => DatabaseConfig)
+  @IsOptional()
+  public readonly database: DatabaseConfig = new DatabaseConfig();
 
   /**
    * 是否为生产环境

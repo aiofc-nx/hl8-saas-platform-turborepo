@@ -8,8 +8,11 @@ import {
 } from '@hl8/nestjs-fastify';
 import { CachingModule } from '@hl8/caching';
 import { IsolationModule } from '@hl8/nestjs-isolation';
+import { DatabaseModule } from '@hl8/database';
 import { AppController } from './app.controller.js';
 import { AppConfig } from './config/app.config.js';
+import { UserModule } from './modules/user.module.js';
+import { User } from './entities/user.entity.js';
 
 /**
  * HL8 SAAS 平台应用根模块
@@ -134,6 +137,26 @@ import { AppConfig } from './config/app.config.js';
       inject: [AppConfig],
       useFactory: (config: AppConfig) => config.caching,
     }),
+
+    // 数据库模块 - MikroORM 数据库连接管理（使用类型安全配置）
+    // 启用前需要确保 PostgreSQL 可用：docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=postgres postgres:alpine
+    // 配置通过 AppConfig.database (DatabaseConfig) 进行类型验证
+    DatabaseModule.forRootAsync({
+      inject: [AppConfig],
+      useFactory: (config: AppConfig) => ({
+        connection: config.database.getConnectionConfig(),
+        pool: config.database.getPoolConfig(),
+        // 注册实体
+        entities: [User],
+        // 开发环境启用调试
+        debug: config.isDevelopment,
+        // 显式指定 driver 选项
+        driver: 'PostgreSqlDriver',
+      }),
+    }),
+
+    // 用户模块 - 演示 database 模块的使用
+    UserModule,
   ],
 })
 export class AppModule {}

@@ -84,8 +84,8 @@ export class User extends Base {
    */
   @BeforeInsert()
   async generateUserInfo(): Promise<void> {
-    if (!this.username) {
-      this.username = this.email.split('@')[0];
+    if (!this.username && this.email) {
+      this.username = this.email.split('@')[0] || '';
     }
     if (this.password) {
       this.password = await hashString(this.password);

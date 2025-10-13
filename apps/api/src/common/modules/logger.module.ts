@@ -16,16 +16,29 @@ import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
         pinoHttp: {
           name: APP_NAME,
           autoLogging: true,
+          serializers: {
+            req: (req) => ({
+              method: req.method,
+              url: req.url,
+              headers: req.headers,
+            }),
+            res: (res) => ({
+              statusCode: res.statusCode,
+            }),
+            err: (err) => ({
+              type: err.constructor.name,
+              message: err.message,
+              stack: err.stack,
+            }),
+          },
           transport: {
             targets: [
               {
-                target: 'pino-pretty', // Console pretty-print
-              },
-              {
-                target: 'pino-pretty', // File pretty-print
+                target: 'pino-pretty',
                 options: {
-                  destination: `./storage/logs/${new Date().toISOString().split('T')[0]}.log`,
-                  mkdir: true,
+                  colorize: true,
+                  translateTime: 'SYS:standard',
+                  ignore: 'pid,hostname',
                 },
               },
             ],

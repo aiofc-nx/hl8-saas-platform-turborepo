@@ -16,10 +16,14 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist -p tsconfig.build.json",
     "type-check": "tsc --noEmit",
+    "dev": "tsc -p tsconfig.build.json --watch",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "lint": "eslint .",
+    "clean": "rm -rf dist"
   },
   "peerDependencies": {
     "@nestjs/common": "^11.0.0",

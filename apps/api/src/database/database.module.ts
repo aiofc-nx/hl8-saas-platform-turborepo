@@ -20,12 +20,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       useFactory: (config: ConfigService<Env>) => ({
         type: 'postgres',
         host: config.get('DB_HOST'),
-        port: config.get('DB_PORT'),
+        port: parseInt(config.get('DB_PORT') || '5432', 10),
         username: config.get('DB_USERNAME'),
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_NAME'),
+        ssl: config.get('DB_SSL') ? { rejectUnauthorized: false } : false,
         autoLoadEntities: true,
-        synchronize: config.get('NODE_ENV') !== 'production',
+        synchronize: true, // 临时启用同步模式来创建表
+        logging: config.get('NODE_ENV') === 'development',
       }),
     }),
   ],

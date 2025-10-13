@@ -24,6 +24,7 @@
 import { Injectable, OnModuleInit, OnModuleDestroy, Logger, Inject } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import type { RedisOptions } from '../types/redis-options.interface.js';
+import { RedisConnectionException } from '../exceptions/redis-connection.exception.js';
 
 export const REDIS_OPTIONS = 'REDIS_OPTIONS';
 
@@ -94,7 +95,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       await this.client.ping();
       
     } catch (error) {
-      this.logger.error('Redis 连接失败', error);
+      this.logger.error('Redis 连接失败', undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       throw error;
     }
   }
@@ -113,7 +117,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       this.isConnected = false;
       this.logger.log('Redis 连接已断开');
     } catch (error) {
-      this.logger.error('Redis 断开连接失败', error);
+      this.logger.error('Redis 断开连接失败', undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       // 强制关闭
       if (this.client) {
         this.client.disconnect();
@@ -127,11 +134,15 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    * 获取 Redis 客户端
    * 
    * @returns Redis 客户端实例
-   * @throws 如果未连接
+   * @throws RedisConnectionException 如果未连接
    */
   getClient(): Redis {
     if (!this.client) {
-      throw new Error('Redis 未连接，请确保模块已正确初始化');
+      this.logger.error('Redis 未连接，尝试获取客户端', undefined, { 
+        connectionState: this.isConnected,
+        clientExists: !!this.client 
+      });
+      throw new RedisConnectionException('Redis 未连接，请确保模块已正确初始化');
     }
     
     return this.client;
@@ -151,7 +162,10 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       const result = await this.client.ping();
       return result === 'PONG';
     } catch (error) {
-      this.logger.error('Redis 健康检查失败', error);
+      this.logger.error('Redis 健康检查失败', undefined, { 
+        error: error instanceof Error ? error.message : String(error), 
+        stack: error instanceof Error ? error.stack : undefined 
+      });
       return false;
     }
   }
