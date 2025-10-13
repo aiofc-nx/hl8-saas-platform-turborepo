@@ -108,6 +108,7 @@ curl http://localhost:3000/users/db/health
 ```
 
 **预期响应**:
+
 ```json
 {
   "status": "healthy",
@@ -237,6 +238,7 @@ docker exec -it aiofix-postgres psql -U aiofix_user -d aiofix_platform -c "\dt"
 **解决方案**:
 
 修改 `.env` 文件中的端口：
+
 ```env
 PORT=3001
 ```
@@ -328,6 +330,7 @@ nc -zv localhost 5432
 @hl8/database 模块已成功集成到 fastify-api 应用中！
 
 **已实现**:
+
 - ✅ 数据库连接管理
 - ✅ 多租户数据隔离
 - ✅ 声明式事务
@@ -340,4 +343,3 @@ nc -zv localhost 5432
 ---
 
 最后更新: 2025-10-13
-

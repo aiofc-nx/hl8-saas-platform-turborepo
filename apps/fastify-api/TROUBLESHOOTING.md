@@ -77,11 +77,13 @@ DatabaseConnectionException: 无法连接到数据库服务器
 ### 检查清单
 
 1. **Docker 容器是否运行**:
+
    ```bash
    docker ps | grep aiofix-postgres
    ```
 
 2. **端口是否可访问**:
+
    ```bash
    nc -zv localhost 5432
    # 或
@@ -89,11 +91,13 @@ DatabaseConnectionException: 无法连接到数据库服务器
    ```
 
 3. **数据库配置是否正确**:
+
    ```bash
    docker exec aiofix-postgres pg_isready -U aiofix_user
    ```
 
 4. **测试数据库连接**:
+
    ```bash
    docker exec -it aiofix-postgres psql -U aiofix_user -d aiofix_platform -c "SELECT version();"
    ```
@@ -136,12 +140,14 @@ docker exec -it aiofix-postgres psql -U aiofix_user -d aiofix_platform -c "\dt"
 ### 解决方案
 
 1. **使用 localhost**:
+
    ```env
    DATABASE__HOST=localhost
    REDIS__HOST=localhost
    ```
 
 2. **或使用 Windows IP**:
+
    ```bash
    # 获取 Windows IP
    ip route | grep default | awk '{print $3}'
@@ -151,6 +157,7 @@ docker exec -it aiofix-postgres psql -U aiofix_user -d aiofix_platform -c "\dt"
    ```
 
 3. **验证端口转发**:
+
    ```bash
    netstat -tuln | grep 5432
    ```
@@ -284,4 +291,3 @@ curl http://localhost:3001/users/db/metrics
 ---
 
 最后更新: 2025-10-13
-
