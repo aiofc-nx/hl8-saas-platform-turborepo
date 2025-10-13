@@ -42,6 +42,7 @@
  */
 
 import { IsString, IsNumber, IsOptional, Min, Max, IsBoolean } from 'class-validator';
+import { Type } from 'class-transformer';
 import { POOL_DEFAULTS, CONNECTION_DEFAULTS, MONITORING_DEFAULTS } from '../constants/defaults.js';
 
 /**
@@ -75,6 +76,7 @@ export class DatabaseConfig {
    * @envVar DB_PORT
    */
   @IsNumber()
+  @Type(() => Number)
   @Min(1)
   @Max(65535)
   port: number = 5432;
@@ -110,6 +112,7 @@ export class DatabaseConfig {
    * @envVar DB_POOL_MIN
    */
   @IsNumber()
+  @Type(() => Number)
   @Min(0)
   @IsOptional()
   poolMin: number = POOL_DEFAULTS.MIN;
@@ -121,6 +124,7 @@ export class DatabaseConfig {
    * @envVar DB_POOL_MAX
    */
   @IsNumber()
+  @Type(() => Number)
   @Min(1)
   @IsOptional()
   poolMax: number = POOL_DEFAULTS.MAX;
@@ -132,6 +136,7 @@ export class DatabaseConfig {
    * @envVar DB_IDLE_TIMEOUT
    */
   @IsNumber()
+  @Type(() => Number)
   @Min(1000)
   @IsOptional()
   idleTimeoutMillis: number = POOL_DEFAULTS.IDLE_TIMEOUT;
@@ -143,6 +148,7 @@ export class DatabaseConfig {
    * @envVar DB_ACQUIRE_TIMEOUT
    */
   @IsNumber()
+  @Type(() => Number)
   @Min(1000)
   @IsOptional()
   acquireTimeoutMillis: number = POOL_DEFAULTS.ACQUIRE_TIMEOUT;
@@ -154,6 +160,7 @@ export class DatabaseConfig {
    * @envVar DB_SLOW_QUERY_THRESHOLD
    */
   @IsNumber()
+  @Type(() => Number)
   @Min(100)
   @IsOptional()
   slowQueryThreshold: number = MONITORING_DEFAULTS.SLOW_QUERY_THRESHOLD;
@@ -165,6 +172,7 @@ export class DatabaseConfig {
    * @envVar DB_DEBUG
    */
   @IsBoolean()
+  @Type(() => Boolean)
   @IsOptional()
   debug: boolean = false;
 

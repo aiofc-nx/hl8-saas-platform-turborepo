@@ -76,7 +76,6 @@ import { User } from './entities/user.entity.js';
     TypedConfigModule.forRoot({
       schema: AppConfig,
       isGlobal: true,
-      enableImplicitConversion: true, // 启用隐式类型转换
       load: [
         dotenvLoader({
           separator: '__', // 支持嵌套配置：REDIS__HOST
