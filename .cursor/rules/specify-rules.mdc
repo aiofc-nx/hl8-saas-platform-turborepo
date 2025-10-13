@@ -1,0 +1,55 @@
+# HL8 SAAS Platform Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-10-13
+
+## Constitution Reference
+
+本项目遵循项目宪章规范，详见 `.specify/memory/constitution.md`
+
+### 核心原则概览
+
+1. **中文优先原则 (NON-NEGOTIABLE)** - 所有注释、文档、错误消息使用中文
+2. **代码即文档原则** - 完整的 TSDoc 注释包含业务规则和逻辑
+3. **架构原则** - Clean Architecture + CQRS + ES + EDA
+4. **Monorepo 组织原则** - Turborepo + pnpm 管理
+5. **质量保证原则** - ESLint + TypeScript + MCP 工具
+
+## Active Technologies
+
+- TypeScript 5.9.2, Node.js >= 20 + @mikro-orm/core ^6.0+, @nestjs/common ^11.0+, nestjs-cls ^6.0+, @hl8/config, @hl8/exceptions, @hl8/nestjs-isolation (004-database)
+
+## Project Structure
+
+```text
+src/
+tests/
+```
+
+## Commands
+
+npm test [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] npm run lint
+
+## Code Style
+
+### 注释规范（中文优先）
+
+- 使用 TSDoc 规范
+- 必须包含：@description、@param、@returns、@throws、@example
+- 详细描述业务规则和逻辑
+- 参考：`.cursor/constitutions/code-comment-standards.md`
+
+### 架构规范
+
+- Clean Architecture 分层
+- CQRS 命令查询分离
+- 事件溯源和事件驱动
+- 详见项目宪章
+
+TypeScript 5.9.2, Node.js >= 20: Follow standard conventions
+
+## Recent Changes
+
+- 004-database: Added TypeScript 5.9.2, Node.js >= 20 + @mikro-orm/core ^6.0+, @nestjs/common ^11.0+, nestjs-cls ^6.0+, @hl8/config, @hl8/exceptions, @hl8/nestjs-isolation
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->
