@@ -23,6 +23,15 @@ export * from './exceptions/index.js';
 // 连接管理导出
 export * from './connection/index.js';
 
+// 事务管理导出
+export * from './transaction/index.js';
+
+// 数据隔离导出
+export * from './isolation/index.js';
+
+// 监控服务导出
+export * from './monitoring/index.js';
+
 // 模块导出
 export * from './database.module.js';
 

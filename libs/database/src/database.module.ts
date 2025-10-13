@@ -64,6 +64,10 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { DI_TOKENS } from './constants/tokens.js';
 import { POOL_DEFAULTS } from './constants/defaults.js';
 import { ConnectionManager } from './connection/connection.manager.js';
+import { TransactionService } from './transaction/transaction.service.js';
+import { DatabaseIsolationService } from './isolation/isolation.service.js';
+import { HealthCheckService } from './monitoring/health-check.service.js';
+import { MetricsService } from './monitoring/metrics.service.js';
 import type { DatabaseModuleOptions, DatabaseModuleAsyncOptions } from './types/module.types.js';
 
 /**
@@ -89,6 +93,10 @@ export class DatabaseModule {
         useValue: options,
       },
       ConnectionManager,
+      TransactionService,
+      DatabaseIsolationService,
+      HealthCheckService,
+      MetricsService,
     ];
 
     return {
@@ -126,6 +134,10 @@ export class DatabaseModule {
       exports: [
         DI_TOKENS.MODULE_OPTIONS,
         ConnectionManager,
+        TransactionService,
+        DatabaseIsolationService,
+        HealthCheckService,
+        MetricsService,
       ],
     };
   }
@@ -146,6 +158,10 @@ export class DatabaseModule {
         inject: options.inject || [],
       },
       ConnectionManager,
+      TransactionService,
+      DatabaseIsolationService,
+      HealthCheckService,
+      MetricsService,
     ];
 
     return {
@@ -190,6 +206,10 @@ export class DatabaseModule {
       exports: [
         DI_TOKENS.MODULE_OPTIONS,
         ConnectionManager,
+        TransactionService,
+        DatabaseIsolationService,
+        HealthCheckService,
+        MetricsService,
       ],
     };
   }
