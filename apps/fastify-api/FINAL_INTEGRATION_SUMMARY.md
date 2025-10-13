@@ -18,6 +18,7 @@
 **原因**: 环境变量键名不匹配
 
 **修复**: 使用小写字段名匹配 TypeScript 类属性
+
 ```env
 database__database=aiofix_platform  # ✅ 正确
 DATABASE__DATABASE=aiofix_platform  # ❌ 错误
@@ -28,6 +29,7 @@ DATABASE__DATABASE=aiofix_platform  # ❌ 错误
 **错误**: `port: '5432'` (string) 应该是 `5432` (number)
 
 **修复 1**: 在 `DatabaseConfig` 中添加 `@Type()` 装饰器
+
 ```typescript
 @IsNumber()
 @Type(() => Number)  // ✅ 新增
@@ -35,6 +37,7 @@ port: number = 5432;
 ```
 
 **修复 2**: 在 `TypedConfigModule` 中启用隐式转换
+
 ```typescript
 const config = plainToClass(Config, rawConfig, {
   enableImplicitConversion: true,  // ✅ 新增
@@ -47,6 +50,7 @@ const config = plainToClass(Config, rawConfig, {
 **错误**: `The 'type' option has been removed in v6`
 
 **修复**: 使用 `driver` 替代 `type`
+
 ```typescript
 MikroOrmModule.forRoot({
   driver: PostgreSqlDriver,  // ✅ v6 新语法
@@ -61,6 +65,7 @@ MikroOrmModule.forRoot({
 **错误**: "@Transactional 装饰器要求类注入 TransactionService"
 
 **修复**: 在 `UserService` 中注入 `TransactionService`
+
 ```typescript
 constructor(
   private readonly em: EntityManager,
@@ -168,6 +173,7 @@ curl http://localhost:3001/users/db/health
 ```
 
 **预期响应**:
+
 ```json
 {
   "status": "healthy",
@@ -349,16 +355,19 @@ curl http://localhost:3001/users/db/health
 如果重启后仍有问题：
 
 1. **检查 .env 文件是否存在**
+
    ```bash
    cat apps/fastify-api/.env | grep database
    ```
 
 2. **检查 PostgreSQL 是否运行**
+
    ```bash
    docker ps | grep aiofix-postgres
    ```
 
 3. **检查数据库表是否存在**
+
    ```bash
    docker exec -it aiofix-postgres psql -U aiofix_user -d aiofix_platform -c "\dt"
    ```
@@ -406,7 +415,7 @@ curl http://localhost:3001/users/db/health
 
 ---
 
-## 🎉 @hl8/database 模块完全就绪！
+## 🎉 @hl8/database 模块完全就绪
 
 **所有代码已完成，所有问题已修复！**
 
@@ -416,4 +425,3 @@ curl http://localhost:3001/users/db/health
 
 最后更新: 2025-10-13  
 最后提交: df82706
-
