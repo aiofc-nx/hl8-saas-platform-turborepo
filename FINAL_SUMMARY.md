@@ -46,12 +46,14 @@
 ### 快速启动（2个终端）
 
 **终端 1** - Watch 所有库:
+
 ```bash
 cd /home/arligle/hl8/hl8-saas-platform-turborepo
 pnpm turbo dev --filter='@hl8/*'
 ```
 
 **终端 2** - 运行应用:
+
 ```bash
 cd /home/arligle/hl8/hl8-saas-platform-turborepo
 pnpm --filter fastify-api dev
@@ -59,7 +61,7 @@ pnpm --filter fastify-api dev
 
 ### 测试 API
 
-应用启动后（http://localhost:3001）：
+应用启动后（<http://localhost:3001）：>
 
 ```bash
 # 健康检查
@@ -144,7 +146,7 @@ curl http://localhost:3001/users/db/metrics
 
 ---
 
-## 🎉 项目完成！
+## 🎉 项目完成
 
 **@hl8/database 模块已完全就绪，可以开始业务开发！** 🚀
 
@@ -152,4 +154,3 @@ curl http://localhost:3001/users/db/metrics
 
 最后更新: 2025-10-13  
 Commit: be02cfa
-
