@@ -112,6 +112,7 @@ export class UserService {
 ### 2. 事务管理
 
 **声明式事务**：
+
 ```typescript
 @Injectable()
 export class UserService {
@@ -130,6 +131,7 @@ export class UserService {
 ```
 
 **编程式事务**：
+
 ```typescript
 const result = await this.transactionService.runInTransaction(async (em) => {
   const user = new User(data);
