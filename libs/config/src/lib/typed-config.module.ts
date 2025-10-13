@@ -507,6 +507,7 @@ export class TypedConfigModule {
     options?: Partial<ValidatorOptions>
   ) {
     const config = plainToClass(Config, rawConfig, {
+      enableImplicitConversion: true,
       exposeDefaultValues: true,
     });
 
