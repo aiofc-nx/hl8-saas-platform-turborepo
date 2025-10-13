@@ -53,6 +53,8 @@
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import fastifyCors from '@fastify/cors';
+import { requestIdPlugin } from '../plugins/request-id.plugin.js';
+import { RequestIdStrategy } from '../utils/request-id.generator.js';
 
 /**
  * 企业级 Fastify 适配器选项
@@ -114,6 +116,18 @@ export interface EnterpriseFastifyAdapterOptions {
   enableHealthCheck?: boolean;
   /** 健康检查路径 */
   healthCheckPath?: string;
+
+  /** 是否启用请求 ID（默认启用） */
+  enableRequestId?: boolean;
+  /** 请求 ID 选项 */
+  requestIdOptions?: {
+    strategy?: RequestIdStrategy;
+    headerName?: string;
+    generateOnMissing?: boolean;
+    includeInResponse?: boolean;
+    includeInLogs?: boolean;
+    prefix?: string;
+  };
 }
 
 /**
@@ -152,6 +166,15 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
       enablePerformanceMonitoring: options.enablePerformanceMonitoring !== false,
       enableHealthCheck: options.enableHealthCheck !== false,
       healthCheckPath: options.healthCheckPath || '/health',
+      enableRequestId: options.enableRequestId !== false,
+      requestIdOptions: {
+        strategy: RequestIdStrategy.UUID,
+        headerName: 'X-Request-Id',
+        generateOnMissing: true,
+        includeInResponse: true,
+        includeInLogs: true,
+        ...options.requestIdOptions,
+      },
       ...options,
     };
   }
@@ -166,7 +189,12 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
 
     const instance = this.getInstance<FastifyInstance>();
 
-    // 1. 注册 CORS
+    // 1. 注册请求 ID 插件
+    if (this.adapterOptions.enableRequestId) {
+      await this.registerRequestId(instance);
+    }
+
+    // 2. 注册 CORS
     if (this.adapterOptions.enableCors) {
       await this.registerCors(instance);
     }
@@ -360,6 +388,17 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
         });
       }
     });
+  }
+
+  /**
+   * 注册请求 ID 插件
+   *
+   * @param instance - Fastify 实例
+   * @private
+   */
+  private async registerRequestId(instance: FastifyInstance): Promise<void> {
+    const options = this.adapterOptions.requestIdOptions || {};
+    await instance.register(requestIdPlugin, options);
   }
 
   /**

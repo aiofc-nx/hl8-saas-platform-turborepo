@@ -31,3 +31,7 @@ export * from './fastify/index.js';
 
 // 配置（已有）
 export * from './config/index.js';
+
+// 请求 ID 工具
+export * from './utils/request-id.generator.js';
+export * from './plugins/request-id.plugin.js';

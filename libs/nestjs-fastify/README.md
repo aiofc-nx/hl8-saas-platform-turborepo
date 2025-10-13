@@ -1164,6 +1164,7 @@ this.metrics.httpRequestCounter.inc({
 ### 项目文档
 
 - [日志配置文档](./docs/LOGGING_CONFIG.md)
+- [请求 ID 配置和使用指南](./docs/request-id-guide.md)
 - [配置指南](../../docs/guides/config/CONFIGURATION_GUIDE.md)
 - [模块选项 vs 应用配置](../../docs/guides/config/MODULE_OPTIONS_VS_APP_CONFIG.md)
 
