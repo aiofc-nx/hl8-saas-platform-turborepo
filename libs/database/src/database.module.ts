@@ -61,6 +61,7 @@
 import { Module, DynamicModule, Global, Provider } from '@nestjs/common';
 import { ClsModule } from 'nestjs-cls';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { DI_TOKENS } from './constants/tokens.js';
 import { POOL_DEFAULTS } from './constants/defaults.js';
 import { ConnectionManager } from './connection/connection.manager.js';
@@ -110,9 +111,9 @@ export class DatabaseModule {
             generateId: true,
           },
         }),
-        // 集成 MikroORM
+        // 集成 MikroORM (v6 使用 driver 替代 type)
         MikroOrmModule.forRoot({
-          type: options.connection.type,
+          driver: PostgreSqlDriver,
           host: options.connection.host,
           port: options.connection.port,
           dbName: options.connection.database,
@@ -175,13 +176,13 @@ export class DatabaseModule {
             generateId: true,
           },
         }),
-        // MikroORM 异步配置
+        // MikroORM 异步配置 (v6 使用 driver 替代 type)
         MikroOrmModule.forRootAsync({
           useFactory: async (...args: any[]) => {
             const config = await options.useFactory(...args);
             
             return {
-              type: config.connection.type,
+              driver: PostgreSqlDriver,
               host: config.connection.host,
               port: config.connection.port,
               dbName: config.connection.database,
