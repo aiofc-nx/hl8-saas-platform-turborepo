@@ -47,6 +47,7 @@ import { Injectable } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/core';
 import {
   Transactional,
+  TransactionService,
   IsolationAware,
   DatabaseIsolationService,
   IsolationLevel,
@@ -80,6 +81,7 @@ export interface UpdateUserDto {
 export class UserService {
   constructor(
     private readonly em: EntityManager,
+    private readonly transactionService: TransactionService,
     private readonly isolationService: DatabaseIsolationService,
     private readonly logger: FastifyLoggerService,
   ) {}
