@@ -243,12 +243,24 @@ importers:
       '@hl8/config':
         specifier: workspace:*
         version: link:../../libs/config
+      '@hl8/database':
+        specifier: workspace:*
+        version: link:../../libs/database
       '@hl8/nestjs-fastify':
         specifier: workspace:*
         version: link:../../libs/nestjs-fastify
       '@hl8/nestjs-isolation':
         specifier: workspace:*
         version: link:../../libs/nestjs-isolation
+      '@mikro-orm/core':
+        specifier: ^6.3.0
+        version: 6.5.7
+      '@mikro-orm/nestjs':
+        specifier: ^6.0.2
+        version: 6.1.1(@mikro-orm/core@6.5.7)(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)
+      '@mikro-orm/postgresql':
+        specifier: ^6.3.0
+        version: 6.5.7(@mikro-orm/core@6.5.7)
       '@nestjs/common':
         specifier: ^11.1.6
         version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -273,12 +285,18 @@ importers:
       nestjs-cls:
         specifier: ^6.0.1
         version: 6.0.1(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      pg:
+        specifier: ^8.13.1
+        version: 8.16.3
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+      uuid:
+        specifier: ^11.0.3
+        version: 11.1.0
     devDependencies:
       '@nestjs/cli':
         specifier: ^11.0.0
