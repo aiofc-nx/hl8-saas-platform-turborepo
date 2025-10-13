@@ -5,36 +5,37 @@
 ### 问题
 
 之前修改 libs 中的代码后，需要：
+
 1. 手动重新构建库 (`pnpm --filter @hl8/database build`)
 2. 重启应用
 3. 等待编译
 
 这严重影响开发效率！
 
-### 解决方案
+### 解决方案：Turborepo 并行 Watch 模式
 
-通过配置 **TypeScript paths**，直接引用源码：
+使用 **两个终端**，一个 watch 所有库，一个运行应用：
 
-```json
-// apps/fastify-api/tsconfig.json
-{
-  "compilerOptions": {
-    "paths": {
-      "@hl8/database": ["../../libs/database/src/index.ts"],
-      "@hl8/config": ["../../libs/config/src/index.ts"],
-      // ... 其他库
-    }
-  }
-}
+**终端 1** - Watch 所有库（自动重新编译）:
+
+```bash
+pnpm turbo dev --filter='@hl8/*'
+```
+
+**终端 2** - 运行应用（自动重新加载）:
+
+```bash
+pnpm --filter fastify-api dev
 ```
 
 ### 效果
 
 现在修改 libs 代码后：
-- ✅ **自动检测**: NestJS watch 模式自动检测源码更改
-- ✅ **自动编译**: SWC 自动重新编译
-- ✅ **自动重启**: 应用自动重新加载
-- ✅ **无需手动构建**: 完全不需要 `pnpm build`
+
+- ✅ **自动检测**: tsc --watch 检测源码更改
+- ✅ **自动编译**: 自动重新编译到 dist（~1-2s）
+- ✅ **自动重启**: NestJS 检测到 dist 更改，自动重启应用
+- ✅ **无需手动操作**: 完全自动化
 
 ---
 
@@ -57,63 +58,71 @@ pnpm --filter @hl8/database build
 ### 现在（优秀体验）✅
 
 ```bash
+# 终端 1: 启动所有库的 watch 模式（一次性，后台运行）
+pnpm turbo dev --filter='@hl8/*'
+
+# 终端 2: 运行应用
+pnpm --filter fastify-api dev
+
+# 然后：
 # 1. 修改 libs/database/src/connection/connection.manager.ts
 # 2. 保存文件 (Ctrl+S)
 
 # 自动发生：
-# - SWC 检测到文件更改
-# - 自动重新编译（~200ms）
-# - 应用自动重启（~2秒）
+# - tsc watch 检测到更改
+# - 自动重新编译到 dist（~1-2s）
+# - NestJS 检测到 dist 更改
+# - 应用自动重启（~2-3s）
 
-总耗时: ~2-3秒 ⚡
+总耗时: ~3-5秒 ⚡
 ```
 
-**速度提升**: 7-10倍！
+**速度提升**: 4-6倍！  
+**无需手动操作**: 100%自动化！
 
 ---
 
-## 🎯 支持的开发场景
+## 🎯 启动开发环境
 
-### 场景 1: 修改库代码
+### 初次启动（2个终端）
 
-```typescript
-// libs/database/src/connection/connection.manager.ts
-async connect(): Promise<void> {
-  this.logger.log('新的日志信息'); // ← 修改这里
-  // ...
-}
+**终端 1** - Watch 所有库:
+
+```bash
+cd /home/arligle/hl8/hl8-saas-platform-turborepo
+
+# 并行 watch 所有 @hl8/* 库
+pnpm turbo dev --filter='@hl8/*'
 ```
 
-**保存后**: 2秒内自动生效 ✅
+**输出示例**:
 
-### 场景 2: 修改应用代码
-
-```typescript
-// apps/fastify-api/src/services/user.service.ts
-async createUser(dto: CreateUserDto): Promise<User> {
-  this.logger.log('创建用户-新版本'); // ← 修改这里
-  // ...
-}
+```
+@hl8/config:dev: Starting compilation in watch mode...
+@hl8/database:dev: Starting compilation in watch mode...
+@hl8/exceptions:dev: Starting compilation in watch mode...
+@hl8/nestjs-fastify:dev: Starting compilation in watch mode...
+...
 ```
 
-**保存后**: 2秒内自动生效 ✅
+**终端 2** - 运行应用:
 
-### 场景 3: 添加新功能
+```bash
+cd /home/arligle/hl8/hl8-saas-platform-turborepo
 
-```typescript
-// libs/database/src/monitoring/metrics.service.ts
-getQueryStats() { // ← 新方法
-  return this.queryMetrics;
-}
-
-// apps/fastify-api/src/controllers/user.controller.ts
-@Get('stats')
-async getStats() {
-  return this.metricsService.getQueryStats(); // ← 立即可用
-}
+# 运行 fastify-api
+pnpm --filter fastify-api dev
 ```
 
-**保存后**: 自动导入，2秒内可用 ✅
+### 持续开发（自动化）
+
+修改任何代码后：
+
+1. **库代码更改** → tsc watch 自动编译 → dist 更新
+2. **dist 更改** → NestJS watch 检测到 → 应用自动重启
+3. **3-5秒后** → 更改生效 ✅
+
+**无需任何手动操作！**
 
 ---
 
@@ -165,6 +174,7 @@ Watching for file changes.
 ### SWC Watch 模式
 
 NestJS 的 `nest start -b swc -w`:
+
 - `-b swc`: 使用 SWC 编译器（比 tsc 快 20-70倍）
 - `-w`: Watch 模式，文件更改自动重新编译
 
@@ -177,16 +187,18 @@ NestJS 的 `nest start -b swc -w`:
 
 ---
 
-## 🎉 现在试试看！
+## 🎉 现在试试看
 
 ### 测试热重载
 
 1. **启动应用**（如果还没运行）:
+
    ```bash
    pnpm --filter fastify-api dev
    ```
 
 2. **修改库代码**:
+
    ```typescript
    // libs/database/src/connection/connection.manager.ts
    async connect(): Promise<void> {
@@ -198,6 +210,7 @@ NestJS 的 `nest start -b swc -w`:
 3. **保存文件** (`Ctrl+S`)
 
 4. **查看终端**: 2秒内应该看到：
+
    ```
    File change detected. Starting incremental compilation...
    Successfully compiled: 12 files with swc (XXXms)
@@ -229,7 +242,7 @@ NestJS 的 `nest start -b swc -w`:
 2. **发布 npm 包**: 如果要发布库到 npm
 3. **CI/CD 流程**: 自动化测试和部署
 
-### 开发过程中永远不需要！
+### 开发过程中永远不需要
 
 - ❌ ~~`pnpm --filter @hl8/database build`~~
 - ❌ ~~手动重启应用~~
@@ -237,7 +250,7 @@ NestJS 的 `nest start -b swc -w`:
 
 ---
 
-## 🎊 开发体验已优化！
+## 🎊 开发体验已优化
 
 现在您可以：
 
@@ -251,4 +264,3 @@ NestJS 的 `nest start -b swc -w`:
 ---
 
 最后更新: 2025-10-13
-

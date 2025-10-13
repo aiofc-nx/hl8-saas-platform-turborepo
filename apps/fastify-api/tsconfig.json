@@ -10,21 +10,7 @@
     "target": "ESNext",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"],
-      "@hl8/config": ["../../libs/config/src/index.ts"],
-      "@hl8/config/*": ["../../libs/config/src/*"],
-      "@hl8/exceptions": ["../../libs/exceptions/src/index.ts"],
-      "@hl8/exceptions/*": ["../../libs/exceptions/src/*"],
-      "@hl8/database": ["../../libs/database/src/index.ts"],
-      "@hl8/database/*": ["../../libs/database/src/*"],
-      "@hl8/caching": ["../../libs/caching/src/index.ts"],
-      "@hl8/caching/*": ["../../libs/caching/src/*"],
-      "@hl8/nestjs-fastify": ["../../libs/nestjs-fastify/src/index.ts"],
-      "@hl8/nestjs-fastify/*": ["../../libs/nestjs-fastify/src/*"],
-      "@hl8/nestjs-isolation": ["../../libs/nestjs-isolation/src/index.ts"],
-      "@hl8/nestjs-isolation/*": ["../../libs/nestjs-isolation/src/*"],
-      "@hl8/isolation-model": ["../../libs/isolation-model/src/index.ts"],
-      "@hl8/isolation-model/*": ["../../libs/isolation-model/src/*"]
+      "@/*": ["./src/*"]
     }
   }
 }
