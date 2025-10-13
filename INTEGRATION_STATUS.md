@@ -63,6 +63,7 @@
 ### 问题描述
 
 使用 `tsc -p tsconfig.build.json` 构建 `@hl8/exceptions` 时：
+
 - ✅ 编译成功（0 errors）
 - ❌ 未生成 dist 目录
 - ❌ 下游包无法找到编译输出
@@ -101,4 +102,4 @@ pnpm --filter fastify-api dev
 4. ✅ MikroORM 连接成功
 5. ✅ 所有服务注册成功
 
-### 
+###
