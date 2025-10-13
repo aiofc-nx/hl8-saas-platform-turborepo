@@ -1,0 +1,68 @@
+{
+  "name": "@hl8/database",
+  "version": "1.0.0",
+  "description": "数据库连接管理模块 - 提供数据库连接、事务管理、多租户隔离等功能",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist -p tsconfig.build.json",
+    "type-check": "tsc --noEmit",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "lint": "eslint .",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0"
+  },
+  "dependencies": {
+    "@mikro-orm/core": "^6.3.0",
+    "@mikro-orm/nestjs": "^6.0.2",
+    "@mikro-orm/postgresql": "^6.3.0",
+    "@hl8/nestjs-fastify": "workspace:*",
+    "@hl8/config": "workspace:*",
+    "@hl8/exceptions": "workspace:*",
+    "@hl8/nestjs-isolation": "workspace:*",
+    "@hl8/isolation-model": "workspace:*",
+    "nestjs-cls": "^6.0.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.1.6",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/ts-config": "workspace:*",
+    "@swc/cli": "^0.7.0",
+    "@swc/core": "^1.10.14",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.15.3",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.2.5",
+    "typescript": "5.9.2"
+  },
+  "keywords": [
+    "nestjs",
+    "database",
+    "mikroorm",
+    "postgresql",
+    "multi-tenancy",
+    "transaction",
+    "connection-pool"
+  ],
+  "author": "HL8 Team",
+  "license": "MIT"
+}
