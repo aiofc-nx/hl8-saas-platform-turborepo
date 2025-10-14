@@ -30,7 +30,7 @@
  *
  * @example
  * ```typescript
- * import { INFRASTRUCTURE_CONSTANTS } from './constants';
+ * import { INFRASTRUCTURE_CONSTANTS } from './constants.js';
  *
  * // 使用缓存常量
  * const cacheKey = INFRASTRUCTURE_CONSTANTS.CACHE.DEFAULT_TTL;

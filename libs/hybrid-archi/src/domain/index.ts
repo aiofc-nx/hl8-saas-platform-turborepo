@@ -7,31 +7,31 @@
  */
 
 // 值对象系统（基础组件，被其他组件引用）
-export * from './value-objects';
+export * from './value-objects.js';
 
 // 实体系统
-export * from './entities';
+export * from './entities.js';
 
 // 聚合根系统（基础组件和装饰器）
-export * from './aggregates';
+export * from './aggregates.js';
 
 // 领域服务系统
-export * from './services';
+export * from './services.js';
 
 // 领域事件系统
-export * from './events';
+export * from './events.js';
 
 // 仓储接口系统
-export * from './repositories';
+export * from './repositories.js';
 
 // 领域异常系统
-export * from './exceptions';
+export * from './exceptions.js';
 
 // 验证系统（通用功能组件）
-export * from './validation';
+export * from './validation.js';
 
 // 安全系统（通用功能组件）
-export * from './security';
+export * from './security.js';
 
 // 业务规则系统（通用功能组件）
-export * from './rules';
+export * from './rules.js';

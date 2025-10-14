@@ -7,19 +7,19 @@
  */
 
 // 基础控制器
-export * from './base-controller';
+export * from './base-controller.js';
 
 // 控制器装饰器
-export * from './decorators';
+export * from './decorators.js';
 
 // 控制器守卫
-export * from './guards';
+export * from './guards.js';
 
 // 控制器管道
-export * from './pipes';
+export * from './pipes.js';
 
 // 控制器拦截器
-export * from './interceptors';
+export * from './interceptors.js';
 
 // 控制器异常过滤器
-export * from './filters';
+export * from './filters.js';

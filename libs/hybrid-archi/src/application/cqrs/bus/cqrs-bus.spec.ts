@@ -5,10 +5,10 @@
  * @since 1.0.0
  */
 import { Test, TestingModule } from '@nestjs/testing';
-import { CQRSBus } from './cqrs-bus';
-import { CommandBus } from './command-bus';
-import { QueryBus } from './query-bus';
-import { EventBus } from './event-bus';
+import { CQRSBus } from './cqrs-bus.js';
+import { CommandBus } from './command-bus.js';
+import { QueryBus } from './query-bus.js';
+import { EventBus } from './event-bus.js';
 import { BaseCommand } from '../commands/base/base-command';
 import { BaseQuery, IQueryResult } from '../queries/base/base-query';
 import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';

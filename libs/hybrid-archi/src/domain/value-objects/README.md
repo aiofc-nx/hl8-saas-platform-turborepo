@@ -284,17 +284,20 @@ protected override validate(value: any): void {
 |------|--------|------|
 | **抽象基类** | Code, Domain, Level, Name, Description | 业务值对象继承 |
 | **身份** | Email, Username, PhoneNumber, Password | 用户身份验证 |
-| **状态** | UserStatus | 通用用户状态 |
+| **状态** | UserStatus | 通用用户状态 (domain/enums/common) |
 | **安全** | PasswordPolicy, MfaType, MfaStatus | 安全策略 |
 | **审计** | AuditEventType | 审计日志 |
-| **权限** | PermissionDefinitions | 权限定义 |
 
-### 业务值对象（业务模块实现）
+### 业务值对象（已移除）
 
-**不再包含在 hybrid-archi 中** (OPT-004):
+**已从 hybrid-archi 中移除** (重构 v1.1.0):
 
 - ❌ ~~TenantStatus~~ → 已移至 saas-core
 - ❌ ~~OrganizationStatus~~ → 已移至 saas-core
+- ❌ ~~TenantType~~ → 已移至 saas-core
+- ❌ ~~UserRole~~ → 已移至 saas-core
+- ❌ ~~PermissionDefinitions~~ → 已移至 saas-core
+- ❌ ~~UserStatus~~ → 已移至通用枚举 (domain/enums/common/user-status.enum.ts)
 
 **原因**: hybrid-archi 是架构基础库，不应包含业务特定概念
 

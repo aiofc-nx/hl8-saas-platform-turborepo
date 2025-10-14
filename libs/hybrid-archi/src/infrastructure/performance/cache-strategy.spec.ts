@@ -8,8 +8,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CacheStrategy } from './cache-strategy';
-import { CacheStrategyConfig } from './cache-strategy';
+import { CacheStrategy } from './cache-strategy.js';
+import { CacheStrategyConfig } from './cache-strategy.js';
 import { PinoLogger } from '@hl8/logger';
 import { CacheService } from '@hl8/cache';
 

@@ -6,7 +6,7 @@
  */
 
 // 基础领域事件类
-export { BaseDomainEvent } from './base-domain-event';
+export { BaseDomainEvent } from './base-domain-event.js';
 
 // 领域事件接口
 export {

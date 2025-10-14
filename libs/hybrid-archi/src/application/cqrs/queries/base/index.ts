@@ -6,10 +6,10 @@
  */
 
 // 基础查询类
-export { BaseQuery } from './base-query';
+export { BaseQuery } from './base-query.js';
 
 // 基础查询结果类
-export { BaseQueryResult } from './base-query-result';
+export { BaseQueryResult } from './base-query-result.js';
 
 // 查询接口
 export type {

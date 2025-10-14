@@ -51,7 +51,7 @@ import {
   IWebSocketClient,
   IWebSocketContext,
 } from '../../shared/interfaces';
-import { BaseGateway } from './base-gateway';
+import { BaseGateway } from './base-gateway.js';
 import {
   SubscribeMessage,
   RequireRoles,

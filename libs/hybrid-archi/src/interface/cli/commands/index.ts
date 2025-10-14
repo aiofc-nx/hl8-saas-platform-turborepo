@@ -6,7 +6,7 @@
  */
 
 // 基础命令处理器
-export * from './base-command';
+export * from './base-command.js';
 
 // 用户管理命令
 export * from './user.command';

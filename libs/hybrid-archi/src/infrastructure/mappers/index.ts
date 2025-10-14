@@ -6,13 +6,13 @@
  */
 
 // 基础映射器
-export * from './base';
+export * from './base.js';
 
 // 映射器装饰器
-export * from './decorators';
+export * from './decorators.js';
 
 // 映射器注册表
-export * from './registry';
+export * from './registry.js';
 
 // 映射器工具
-export * from './utils';
+export * from './utils.js';

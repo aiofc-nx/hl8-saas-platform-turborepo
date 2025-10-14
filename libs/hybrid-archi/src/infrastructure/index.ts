@@ -30,34 +30,34 @@ export {
 export { FastifyProModule } from '@hl8/fastify-pro';
 
 // 通用基础设施功能组件
-export * from './common';
+export * from './common.js';
 
 // 基础设施层常量
-export * from './constants';
+export * from './constants.js';
 
 // 端口适配器（应用层端口适配器）
-export * from './adapters/ports';
+export * from './adapters/ports.js';
 
 // 仓储适配器（领域层仓储适配器）
-export * from './adapters/repositories';
+export * from './adapters/repositories.js';
 
 // 领域服务适配器（领域层服务适配器）
-export * from './adapters/services';
+export * from './adapters/services.js';
 
 // 事件存储适配器（事件溯源适配器）
-export * from './adapters/event-store';
+export * from './adapters/event-store.js';
 
 // 消息队列适配器（消息发布订阅适配器）
-export * from './adapters/message-queue';
+export * from './adapters/message-queue.js';
 
 // 缓存适配器（多级缓存适配器）
-export * from './adapters/cache';
+export * from './adapters/cache.js';
 
 // 数据库适配器（多数据库适配器）
-export * from './adapters/database';
+export * from './adapters/database.js';
 
 // 基础设施工厂（基础设施服务管理）
-export * from './factories';
+export * from './factories.js';
 
 // 映射器基础设施（通用功能组件）
-export * from './mappers';
+export * from './mappers.js';

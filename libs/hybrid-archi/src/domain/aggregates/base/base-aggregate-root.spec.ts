@@ -8,7 +8,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseAggregateRoot } from './base-aggregate-root';
+import { BaseAggregateRoot } from './base-aggregate-root.js';
 import { EntityId } from '../../value-objects/entity-id';
 import { BaseDomainEvent } from '../../events/base/base-domain-event';
 import { PinoLogger } from '@hl8/logger';

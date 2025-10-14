@@ -7,13 +7,13 @@
  */
 
 // CLI命令处理器
-export * from './commands';
+export * from './commands.js';
 
 // CLI参数解析
-export * from './parsers';
+export * from './parsers.js';
 
 // CLI输出格式化
-export * from './formatters';
+export * from './formatters.js';
 
 // CLI工具
-export * from './utils';
+export * from './utils.js';

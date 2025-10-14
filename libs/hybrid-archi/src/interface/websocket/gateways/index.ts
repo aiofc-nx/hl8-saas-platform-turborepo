@@ -6,7 +6,7 @@
  */
 
 // 基础网关
-export * from './base-gateway';
+export * from './base-gateway.js';
 
 // 用户网关
 export * from './user.gateway';

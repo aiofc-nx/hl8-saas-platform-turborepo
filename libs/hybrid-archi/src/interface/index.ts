@@ -7,28 +7,28 @@
  */
 
 // Web控制器系统
-export * from './controllers';
+export * from './controllers.js';
 
 // API接口系统
-export * from './api';
+export * from './api.js';
 
 // GraphQL解析器系统
-export * from './graphql';
+export * from './graphql.js';
 
 // WebSocket处理器系统
-export * from './websocket';
+export * from './websocket.js';
 
 // CLI命令系统
-export * from './cli';
+export * from './cli.js';
 
 // 中间件系统（排除WebSocket中间件以避免冲突）
-export * from './middleware';
+export * from './middleware.js';
 
 // 装饰器系统（接口层专用）
-export * from './decorators';
+export * from './decorators.js';
 
 // 验证器系统
-export * from './validators';
+export * from './validators.js';
 
 // 转换器系统
-export * from './transformers';
+export * from './transformers.js';

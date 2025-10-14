@@ -53,7 +53,7 @@
  *
  * @since 1.0.0
  */
-import { IPaginationInfo, IQueryResult } from './base-query';
+import { IPaginationInfo, IQueryResult } from './base-query.js';
 
 export abstract class BaseQueryResult<TData = unknown> implements IQueryResult {
   private readonly _data: TData[];

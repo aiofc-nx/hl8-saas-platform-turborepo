@@ -6,7 +6,7 @@
  */
 
 // 基础命令类
-export { BaseCommand } from './base-command';
+export { BaseCommand } from './base-command.js';
 
 // 命令接口
 export type {

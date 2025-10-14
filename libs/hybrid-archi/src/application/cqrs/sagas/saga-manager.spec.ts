@@ -6,7 +6,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { SagaManager } from './saga-manager';
+import { SagaManager } from './saga-manager.js';
 import { TestSaga } from './base-saga.spec';
 import { SagaStatus } from './saga.interface';
 

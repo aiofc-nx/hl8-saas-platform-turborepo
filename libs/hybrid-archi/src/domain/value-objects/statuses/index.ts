@@ -8,6 +8,7 @@
  * 已移除的业务特定组件：
  * - TenantStatus → 已移至 @hl8/saas-core
  * - OrganizationStatus → 已移至 @hl8/saas-core
+ * - UserStatus → 已移至通用枚举 (domain/enums/common/user-status.enum.ts)
  */
 
-export * from './user-status.vo';
+// 业务特定状态已移除，通用状态值对象保留在通用枚举中

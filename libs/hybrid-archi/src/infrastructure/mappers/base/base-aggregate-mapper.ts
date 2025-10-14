@@ -72,7 +72,7 @@
  */
 
 import type { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import { BaseDomainMapper, MappingError } from './base-domain-mapper';
+import { BaseDomainMapper, MappingError } from './base-domain-mapper.js';
 import type { IAggregateMapper } from './mapper.interface';
 
 /**

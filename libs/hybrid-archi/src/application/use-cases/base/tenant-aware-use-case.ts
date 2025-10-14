@@ -54,7 +54,7 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase } from './base-use-case';
+import { BaseUseCase } from './base-use-case.js';
 import { IUseCaseContext } from './use-case.interface';
 import { TenantContextService, ITenantContext } from '@hl8/multi-tenancy';
 import { PinoLogger } from '@hl8/logger';

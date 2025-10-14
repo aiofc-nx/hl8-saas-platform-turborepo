@@ -5,7 +5,7 @@
  * @since 1.1.0
  */
 
-import { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root';
+import { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root.js';
 import { EntityId } from '../../value-objects/entity-id';
 import { IPartialAuditInfo } from '../../entities/base/audit-info';
 import { BaseDomainEvent } from '../../events/base/base-domain-event';

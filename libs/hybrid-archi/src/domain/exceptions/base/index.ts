@@ -14,10 +14,10 @@ export {
   DomainValidationException,
   DomainStateException,
   DomainPermissionException,
-} from './base-domain-exception';
+} from './base-domain-exception.js';
 
 // 事件相关异常类
 export {
   EventBusException,
   EventHandlingException,
-} from './event-exceptions';
+} from './event-exceptions.js';

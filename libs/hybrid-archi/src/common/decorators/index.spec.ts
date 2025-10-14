@@ -4,7 +4,7 @@
  * @description 测试装饰器模块的导出功能
  * @since 1.0.0
  */
-import * as DecoratorsModule from './index';
+import * as DecoratorsModule from './index.js';
 
 describe('装饰器模块导出', () => {
   describe('元数据系统导出', () => {

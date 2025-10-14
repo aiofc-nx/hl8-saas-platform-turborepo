@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 import { Test, TestingModule } from '@nestjs/testing';
-import { QueryBus } from './query-bus';
+import { QueryBus } from './query-bus.js';
 import {
   BaseQuery,
   IQueryResult,

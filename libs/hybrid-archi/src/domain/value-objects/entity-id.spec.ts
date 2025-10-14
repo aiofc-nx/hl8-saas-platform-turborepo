@@ -13,7 +13,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from './entity-id';
+import { EntityId } from './entity-id.js';
 
 describe('EntityId', () => {
   describe('生成标识符', () => {

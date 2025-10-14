@@ -64,7 +64,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainMapper, MappingError } from './base-domain-mapper';
+import { BaseDomainMapper, MappingError } from './base-domain-mapper.js';
 import type { IDtoMapper } from './mapper.interface';
 
 /**

@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase } from './base-use-case';
+import { BaseUseCase } from './base-use-case.js';
 import { IUseCaseContext } from './use-case.interface';
 import { PinoLogger } from '@hl8/logger';
 

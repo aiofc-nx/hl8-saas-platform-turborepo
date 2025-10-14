@@ -70,7 +70,7 @@
  * @since 1.0.0
  */
 import { EntityId } from '../../value-objects/entity-id';
-import { IAuditInfo, IPartialAuditInfo } from './audit-info';
+import { IAuditInfo, IPartialAuditInfo } from './audit-info.js';
 import { IEntity } from './entity.interface';
 import { TenantContextService, ITenantContext } from '@hl8/multi-tenancy';
 import { PinoLogger } from '@hl8/logger';

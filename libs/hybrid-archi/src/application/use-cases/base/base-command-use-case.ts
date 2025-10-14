@@ -73,7 +73,7 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase, IUseCaseExecutionResult } from './base-use-case';
+import { BaseUseCase, IUseCaseExecutionResult } from './base-use-case.js';
 import { IUseCaseContext } from './use-case.interface';
 
 /**

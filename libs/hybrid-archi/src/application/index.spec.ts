@@ -4,7 +4,7 @@
  * @description 测试应用层模块的导出
  * @since 1.0.0
  */
-import * as ApplicationModule from './index';
+import * as ApplicationModule from './index.js';
 
 describe('应用层模块导出', () => {
   describe('模块导出验证', () => {

@@ -4,7 +4,7 @@
  * @description 测试 BaseCommand 基础命令类的功能
  * @since 1.0.0
  */
-import { BaseCommand } from './base-command';
+import { BaseCommand } from './base-command.js';
 import { EntityId } from '../../../../domain/value-objects/entity-id';
 
 // 测试用的命令类

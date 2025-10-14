@@ -8,7 +8,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommandBus } from './command-bus';
+import { CommandBus } from './command-bus.js';
 import { BaseCommand } from '../commands/base/base-command';
 import { ICommandHandler } from '../commands/base/command-handler.interface';
 import { PinoLogger } from '@hl8/logger';

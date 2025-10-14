@@ -25,23 +25,23 @@ export {
 // 错误处理机制 - 已删除，使用 @hl8/common 标准异常处理
 
 // 装饰器系统 - 已从shared层合并到此处
-export * from './decorators';
+export * from './decorators.js';
 
 // 测试工具 - 已删除，使用标准 Jest 和 NestJS 测试工具
 
 // 通用工具函数 - 已删除，使用标准工具库
 
 // 多租户技术基础设施 - 已迁移到 @hl8/multi-tenancy
-// export * from './multi-tenant';
+// export * from './multi-tenant.js';
 
 // 接口已迁移到相应的模块中
 // 性能监控已移动到infrastructure层
-// export * from './monitoring';
+// export * from './monitoring.js';
 // 测试工具已移动到shared层
-// export * from './testing';
+// export * from './testing.js';
 // 实体系统已移动到domain层
-// export * from './entities';
+// export * from './entities.js';
 // CQRS系统已移动到application层
-// export * from './cqrs';
+// export * from './cqrs.js';
 // 消息队列已移动到infrastructure层
-// export * from './message-queue';
+// export * from './message-queue.js';

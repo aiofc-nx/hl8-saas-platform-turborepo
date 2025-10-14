@@ -4,7 +4,7 @@
  * @description 测试 BaseDomainEvent 基础领域事件类的功能
  * @since 1.0.0
  */
-import { BaseDomainEvent } from './base-domain-event';
+import { BaseDomainEvent } from './base-domain-event.js';
 import { EntityId } from '../../value-objects/entity-id';
 
 // 测试用的具体事件类

@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventBus } from './event-bus';
+import { EventBus } from './event-bus.js';
 import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
 import { IEventHandler } from '../events/base/event-handler.interface';
 import { IMiddleware, IMessageContext } from './cqrs-bus.interface';

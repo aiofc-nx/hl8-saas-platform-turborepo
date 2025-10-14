@@ -121,7 +121,7 @@
 import { EntityId } from '../../value-objects/entity-id';
 import { IPartialAuditInfo } from '../../entities/base/audit-info';
 import { PinoLogger } from '@hl8/logger';
-import { BaseAggregateRoot } from './base-aggregate-root';
+import { BaseAggregateRoot } from './base-aggregate-root.js';
 import { BaseDomainEvent } from '../../events/base/base-domain-event';
 import {
   GeneralBadRequestException,

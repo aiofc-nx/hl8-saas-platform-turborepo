@@ -17,4 +17,4 @@ export type {
 } from './command-handler.interface';
 
 // 基础命令处理器
-export { BaseCommandHandler } from './base-command-handler';
+export { BaseCommandHandler } from './base-command-handler.js';

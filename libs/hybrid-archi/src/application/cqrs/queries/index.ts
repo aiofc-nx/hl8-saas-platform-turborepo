@@ -6,10 +6,10 @@
  */
 
 // 基础设施
-export * from './base';
+export * from './base.js';
 
 // 处理器
-// export * from './handlers'; // 避免重复导出
+// export * from './handlers.js'; // 避免重复导出
 
 // 装饰器
-export * from './decorators';
+export * from './decorators.js';

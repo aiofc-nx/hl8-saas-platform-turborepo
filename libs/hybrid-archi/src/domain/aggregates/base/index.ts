@@ -6,10 +6,10 @@
  */
 
 // 基础聚合根类
-export { BaseAggregateRoot } from './base-aggregate-root';
+export { BaseAggregateRoot } from './base-aggregate-root.js';
 
 // 租户感知聚合根类
-export { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root';
+export { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root.js';
 
 // 聚合根接口
 export type {
