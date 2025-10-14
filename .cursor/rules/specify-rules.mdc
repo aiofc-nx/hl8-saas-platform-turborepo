@@ -15,6 +15,8 @@ Auto-generated from all feature plans. Last updated: 2025-10-13
 5. **质量保证原则** - ESLint + TypeScript + MCP 工具
 
 ## Active Technologies
+- TypeScript 5.9.2, Node.js >= 20 + NestJS, Turborepo, pnpm 10.11.0, ESLint, Prettier (005-specify-memory-constitution)
+- PostgreSQL (via MikroORM), Redis (caching), Event Store (事件溯源) (005-specify-memory-constitution)
 
 - TypeScript 5.9.2, Node.js >= 20 + @mikro-orm/core ^6.0+, @nestjs/common ^11.0+, nestjs-cls ^6.0+, @hl8/config, @hl8/exceptions, @hl8/nestjs-isolation (004-database)
 
@@ -48,6 +50,7 @@ npm test [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNO
 TypeScript 5.9.2, Node.js >= 20: Follow standard conventions
 
 ## Recent Changes
+- 005-specify-memory-constitution: Added TypeScript 5.9.2, Node.js >= 20 + NestJS, Turborepo, pnpm 10.11.0, ESLint, Prettier
 
 - 004-database: Added TypeScript 5.9.2, Node.js >= 20 + @mikro-orm/core ^6.0+, @nestjs/common ^11.0+, nestjs-cls ^6.0+, @hl8/config, @hl8/exceptions, @hl8/nestjs-isolation
 
