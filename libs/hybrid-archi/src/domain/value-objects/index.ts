@@ -12,7 +12,7 @@ export * from './base-value-object';
 export * from './common';
 
 // 其他值对象
-export * from './entity-id';
+// entity-id 已移动到 isolation-model，通过 ids 重新导出
 export * from './identities';
 export * from './ids';
 export * from './statuses';

@@ -34,6 +34,7 @@
     "@hl8/nestjs-fastify": "workspace:*",
     "@hl8/nestjs-isolation": "workspace:*",
     "@hl8/exceptions": "workspace:*",
+    "@hl8/isolation-model": "workspace:*",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "@nestjs/jwt": "^11.0.0",
