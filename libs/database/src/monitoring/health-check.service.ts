@@ -34,12 +34,12 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from '@nestjs/common';
 import { ConnectionManager } from '../connection/connection.manager.js';
 import { HealthCheckException } from '../exceptions/health-check.exception.js';
-import type { HealthCheckResult } from '../types/monitoring.types.js';
 import type { PoolStats } from '../types/connection.types.js';
+import type { HealthCheckResult } from '../types/monitoring.types.js';
 
 @Injectable()
 export class HealthCheckService {
@@ -138,4 +138,3 @@ export class HealthCheckService {
     return this.connectionManager.getPoolStats();
   }
 }
-

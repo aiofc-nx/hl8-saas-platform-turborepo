@@ -89,7 +89,7 @@ export class ConfigError extends Error {
     type: ConfigErrorType,
     message: string,
     context: Record<string, any> = {},
-    originalError?: Error
+    originalError?: Error,
   ) {
     super(message);
     this.name = 'ConfigError';

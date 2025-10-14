@@ -1,4 +1,3 @@
-import nestConfig from '@repo/eslint-config/nest';
+import nest from '@repo/eslint-config/eslint-nest.config.mjs';
 
-export default [...nestConfig];
-
+export default [...nest];

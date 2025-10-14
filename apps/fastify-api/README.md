@@ -74,15 +74,15 @@ pnpm turbo dev --filter=fastify-api
 
 ## 🏗️ 集成的模块
 
-| 模块 | 功能 | 端点 |
-|------|------|------|
-| **EnterpriseFastifyAdapter** | 企业级 Fastify 适配器 | - |
-| **ExceptionModule** | RFC7807 统一异常处理 | - |
-| **LoggingModule** | Pino 高性能日志 | - |
-| **CachingModule** | Redis 分布式缓存 | - |
-| **IsolationModule** | 5 级数据隔离 | - |
-| **HealthCheck** | 健康检查 | `/health` |
-| **Swagger** | API 文档（开发环境）| `/api-docs` |
+| 模块                         | 功能                  | 端点        |
+| ---------------------------- | --------------------- | ----------- |
+| **EnterpriseFastifyAdapter** | 企业级 Fastify 适配器 | -           |
+| **ExceptionModule**          | RFC7807 统一异常处理  | -           |
+| **LoggingModule**            | Pino 高性能日志       | -           |
+| **CachingModule**            | Redis 分布式缓存      | -           |
+| **IsolationModule**          | 5 级数据隔离          | -           |
+| **HealthCheck**              | 健康检查              | `/health`   |
+| **Swagger**                  | API 文档（开发环境）  | `/api-docs` |
 
 ---
 
@@ -258,26 +258,26 @@ pnpm dev
 
 ```typescript
 new EnterpriseFastifyAdapter({
-  enableCors: true,             // 启用 CORS
-  enableSecurity: true,          // 启用安全头
-  enablePerformanceMonitoring: true,  // 性能监控
-  enableHealthCheck: true,       // 健康检查
-  healthCheckPath: '/health',    // 健康检查路径
-  enableRateLimit: true,         // 速率限制（生产环境）
+  enableCors: true, // 启用 CORS
+  enableSecurity: true, // 启用安全头
+  enablePerformanceMonitoring: true, // 性能监控
+  enableHealthCheck: true, // 健康检查
+  healthCheckPath: '/health', // 健康检查路径
+  enableRateLimit: true, // 速率限制（生产环境）
   rateLimitOptions: {
-    max: 100,                    // 每分钟最多 100 个请求
-    timeWindow: 60000,           // 1 分钟
+    max: 100, // 每分钟最多 100 个请求
+    timeWindow: 60000, // 1 分钟
   },
-})
+});
 ```
 
 ### LoggingModule
 
 ```typescript
 LoggingModule.forRoot({
-  level: 'debug',      // debug | info | warn | error
-  prettyPrint: true,   // 开发环境美化输出
-})
+  level: 'debug', // debug | info | warn | error
+  prettyPrint: true, // 开发环境美化输出
+});
 ```
 
 ### CachingModule
@@ -290,9 +290,9 @@ CachingModule.forRoot({
     password: undefined,
     db: 0,
   },
-  ttl: 3600,           // 默认 TTL（秒）
+  ttl: 3600, // 默认 TTL（秒）
   keyPrefix: 'hl8:cache:',
-})
+});
 ```
 
 ---

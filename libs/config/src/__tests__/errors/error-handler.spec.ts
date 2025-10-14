@@ -6,9 +6,8 @@
  * @since 1.0.0
  */
 
-import { ErrorHandler } from '../../lib/errors/error-handler';
 import { ConfigError, ConfigErrorType } from '../../lib/errors/config-error';
-import { testAssertions } from '../test-utils';
+import { ErrorHandler } from '../../lib/errors/error-handler';
 
 describe('ErrorHandler', () => {
   describe('文件加载错误处理', () => {
@@ -20,13 +19,13 @@ describe('ErrorHandler', () => {
       const configError = ErrorHandler.handleFileLoadError(
         error,
         filePath,
-        context
+        context,
       );
 
       expect(configError).toBeInstanceOf(ConfigError);
       expect(configError.type).toBe(ConfigErrorType.FILE_LOAD_ERROR);
       expect(configError.message).toContain(
-        'Failed to load configuration file'
+        'Failed to load configuration file',
       );
       expect(configError.message).toContain(filePath);
       expect(configError.context.filePath).toBe(filePath);
@@ -44,7 +43,7 @@ describe('ErrorHandler', () => {
         error,
         filePath,
         expectedFormat,
-        context
+        context,
       );
 
       expect(configError).toBeInstanceOf(ConfigError);
@@ -63,7 +62,7 @@ describe('ErrorHandler', () => {
 
       const configError = ErrorHandler.handleFileNotFoundError(
         filePath,
-        context
+        context,
       );
 
       expect(configError).toBeInstanceOf(ConfigError);
@@ -80,13 +79,13 @@ describe('ErrorHandler', () => {
 
       const configError = ErrorHandler.handleDirectoryNotFoundError(
         directoryPath,
-        context
+        context,
       );
 
       expect(configError).toBeInstanceOf(ConfigError);
       expect(configError.type).toBe(ConfigErrorType.DIRECTORY_NOT_FOUND);
       expect(configError.message).toContain(
-        'Configuration directory not found'
+        'Configuration directory not found',
       );
       expect(configError.message).toContain(directoryPath);
       expect(configError.context.directoryPath).toBe(directoryPath);
@@ -105,7 +104,7 @@ describe('ErrorHandler', () => {
       expect(configError).toBeInstanceOf(ConfigError);
       expect(configError.type).toBe(ConfigErrorType.NETWORK_ERROR);
       expect(configError.message).toContain(
-        'Failed to load configuration from remote URL'
+        'Failed to load configuration from remote URL',
       );
       expect(configError.message).toContain(url);
       expect(configError.context.url).toBe(url);
@@ -138,7 +137,7 @@ describe('ErrorHandler', () => {
 
       const configError = ErrorHandler.handleValidationError(
         validationErrors,
-        context
+        context,
       );
 
       expect(configError).toBeInstanceOf(ConfigError);
@@ -160,7 +159,7 @@ describe('ErrorHandler', () => {
       expect(configError).toBeInstanceOf(ConfigError);
       expect(configError.type).toBe(ConfigErrorType.ENV_VAR_ERROR);
       expect(configError.message).toContain(
-        'Required environment variable is not defined'
+        'Required environment variable is not defined',
       );
       expect(configError.message).toContain(variableName);
       expect(configError.context.variableName).toBe(variableName);
@@ -178,7 +177,7 @@ describe('ErrorHandler', () => {
       const configError = ErrorHandler.handleVariableExpansionError(
         error,
         variableName,
-        context
+        context,
       );
 
       expect(configError).toBeInstanceOf(ConfigError);
@@ -201,13 +200,13 @@ describe('ErrorHandler', () => {
       const configError = ErrorHandler.handleParseError(
         error,
         content,
-        context
+        context,
       );
 
       expect(configError).toBeInstanceOf(ConfigError);
       expect(configError.type).toBe(ConfigErrorType.PARSE_ERROR);
       expect(configError.message).toContain(
-        'Failed to parse configuration content'
+        'Failed to parse configuration content',
       );
       expect(configError.context.content).toContain('{ invalid json }');
       expect(configError.context.format).toBe('json');
@@ -239,7 +238,7 @@ describe('ErrorHandler', () => {
       const result = await ErrorHandler.safeExecute(
         successFn,
         ConfigErrorType.UNKNOWN_ERROR,
-        { operation: 'test' }
+        { operation: 'test' },
       );
 
       expect(result).toBe('success');
@@ -253,7 +252,7 @@ describe('ErrorHandler', () => {
       const result = await ErrorHandler.safeExecute(
         errorFn,
         ConfigErrorType.UNKNOWN_ERROR,
-        { operation: 'test' }
+        { operation: 'test' },
       );
 
       expect(result).toBeInstanceOf(ConfigError);
@@ -276,7 +275,7 @@ describe('ErrorHandler', () => {
         failingFn,
         ConfigErrorType.UNKNOWN_ERROR,
         { operation: 'test' },
-        { retryCount: 3, retryInterval: 10 }
+        { retryCount: 3, retryInterval: 10 },
       );
 
       expect(result).toBe('success');
@@ -292,7 +291,7 @@ describe('ErrorHandler', () => {
         failingFn,
         ConfigErrorType.UNKNOWN_ERROR,
         { operation: 'test' },
-        { retryCount: 2, retryInterval: 10 }
+        { retryCount: 2, retryInterval: 10 },
       );
 
       expect(result).toBeInstanceOf(ConfigError);
@@ -309,12 +308,12 @@ describe('ErrorHandler', () => {
         failingFn,
         ConfigErrorType.UNKNOWN_ERROR,
         { operation: 'test' },
-        { logErrors: true }
+        { logErrors: true },
       );
 
       expect(consoleSpy).toHaveBeenCalledWith(
         'Config Error:',
-        expect.stringContaining('Test error')
+        expect.stringContaining('Test error'),
       );
 
       consoleSpy.mockRestore();
@@ -328,7 +327,7 @@ describe('ErrorHandler', () => {
         failingFn,
         ConfigErrorType.UNKNOWN_ERROR,
         { operation: 'test' },
-        { logErrors: false }
+        { logErrors: false },
       );
 
       expect(consoleSpy).not.toHaveBeenCalled();
@@ -346,7 +345,7 @@ describe('ErrorHandler', () => {
       const configError = ErrorHandler.handleFileLoadError(
         error,
         filePath,
-        context
+        context,
       );
       const detailedMessage = configError.getDetailedMessage();
 
@@ -366,7 +365,7 @@ describe('ErrorHandler', () => {
       const configError = ErrorHandler.handleFileLoadError(
         error,
         filePath,
-        context
+        context,
       );
       const json = configError.toJSON();
 
@@ -402,7 +401,7 @@ describe('ErrorHandler', () => {
           errorType,
           'Test message',
           {},
-          error
+          error,
         );
 
         expect(configError.type).toBe(errorType);

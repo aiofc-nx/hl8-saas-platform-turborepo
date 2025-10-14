@@ -47,7 +47,7 @@ describe('RateLimitService', () => {
 
     it('应该允许未超限的请求', async () => {
       const status = await service.check(mockRequest as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-      
+
       expect(status.allowed).toBe(true);
       expect(status.remaining).toBe(4);
       expect(status.total).toBe(5);
@@ -202,7 +202,7 @@ describe('RateLimitService', () => {
 
     it('应该返回新请求的初始状态', async () => {
       const status = await service.getStatus(mockRequest as any); // eslint-disable-line @typescript-eslint/no-explicit-any
-      
+
       expect(status.allowed).toBe(true);
       expect(status.remaining).toBe(10);
       expect(status.total).toBe(10);
@@ -251,4 +251,3 @@ describe('RateLimitService', () => {
     });
   });
 });
-

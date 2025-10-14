@@ -36,13 +36,13 @@
 
 ### 任务分布
 
-| 阶段 | 任务数 | 预计时间 | 描述 |
-|------|-------|---------|------|
-| Phase 1: 领域模型库初始化 | 4 | 0.5 天 | 创建 isolation-model 项目骨架 |
-| Phase 2: 领域模型核心实现 | 10 | 4 天 | 值对象、实体、枚举、接口 |
-| Phase 3: 实现库初始化 | 4 | 0.5 天 | 创建 nestjs-isolation 项目骨架 |
-| Phase 4: 实现库核心功能 | 7 | 4 天 | 服务、中间件、守卫、装饰器 |
-| Phase 5: 依赖更新和兼容层 | 3 | 1 天 | 更新 caching、infra 依赖 |
+| 阶段                      | 任务数 | 预计时间 | 描述                           |
+| ------------------------- | ------ | -------- | ------------------------------ |
+| Phase 1: 领域模型库初始化 | 4      | 0.5 天   | 创建 isolation-model 项目骨架  |
+| Phase 2: 领域模型核心实现 | 10     | 4 天     | 值对象、实体、枚举、接口       |
+| Phase 3: 实现库初始化     | 4      | 0.5 天   | 创建 nestjs-isolation 项目骨架 |
+| Phase 4: 实现库核心功能   | 7      | 4 天     | 服务、中间件、守卫、装饰器     |
+| Phase 5: 依赖更新和兼容层 | 3      | 1 天     | 更新 caching、infra 依赖       |
 
 ---
 
@@ -126,7 +126,7 @@ libs/isolation-model/
   "dependencies": {},
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "@repo/ts-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.15.3",
     "jest": "^30.2.0",
@@ -161,7 +161,7 @@ libs/isolation-model/
 
 ```json
 {
-  "extends": "@repo/ts-config/base.json",
+  "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",
@@ -229,18 +229,18 @@ export default [
 ```typescript
 /**
  * 隔离验证异常
- * 
+ *
  * @description 当隔离上下文或 ID 验证失败时抛出
- * 
+ *
  * ## 错误代码
- * 
+ *
  * - INVALID_TENANT_ID: 租户 ID 无效
  * - INVALID_ORGANIZATION_ID: 组织 ID 无效
  * - INVALID_DEPARTMENT_ID: 部门 ID 无效
  * - INVALID_USER_ID: 用户 ID 无效
  * - INVALID_ORGANIZATION_CONTEXT: 组织上下文缺少租户
  * - INVALID_DEPARTMENT_CONTEXT: 部门上下文缺少租户或组织
- * 
+ *
  * @since 1.0.0
  */
 export class IsolationValidationError extends Error {
@@ -253,7 +253,7 @@ export class IsolationValidationError extends Error {
   ) {
     super(message);
     this.name = 'IsolationValidationError';
-    
+
     // 设置原型链（TypeScript 继承 Error 的必需操作）
     Object.setPrototypeOf(this, IsolationValidationError.prototype);
   }
@@ -283,9 +283,9 @@ export class IsolationValidationError extends Error {
 ```typescript
 /**
  * 隔离级别枚举
- * 
+ *
  * @description 定义 5 个数据隔离层级
- * 
+ *
  * @since 1.0.0
  */
 export enum IsolationLevel {
@@ -302,9 +302,9 @@ export enum IsolationLevel {
 ```typescript
 /**
  * 共享级别枚举
- * 
+ *
  * @description 定义数据的共享范围
- * 
+ *
  * @since 1.0.0
  */
 export enum SharingLevel {
@@ -361,11 +361,11 @@ export enum SharingLevel {
 ```typescript
 export class TenantId {
   private static cache = new Map<string, TenantId>(); // Flyweight 模式
-  
+
   private constructor(private readonly value: string) {
     this.validate();
   }
-  
+
   static create(value: string): TenantId {
     let instance = this.cache.get(value);
     if (!instance) {
@@ -374,33 +374,39 @@ export class TenantId {
     }
     return instance;
   }
-  
+
   private validate(): void {
     if (!this.value || typeof this.value !== 'string') {
-      throw new IsolationValidationError('租户 ID 必须是非空字符串', 'INVALID_TENANT_ID');
+      throw new IsolationValidationError(
+        '租户 ID 必须是非空字符串',
+        'INVALID_TENANT_ID',
+      );
     }
-    
+
     if (this.value.length > 50) {
-      throw new IsolationValidationError('租户 ID 长度不能超过 50 字符', 'TENANT_ID_TOO_LONG');
+      throw new IsolationValidationError(
+        '租户 ID 长度不能超过 50 字符',
+        'TENANT_ID_TOO_LONG',
+      );
     }
-    
+
     if (!/^[a-zA-Z0-9_-]+$/.test(this.value)) {
       throw new IsolationValidationError(
         '租户 ID 只能包含字母、数字、下划线和连字符',
-        'INVALID_TENANT_ID_FORMAT'
+        'INVALID_TENANT_ID_FORMAT',
       );
     }
   }
-  
+
   getValue(): string {
     return this.value;
   }
-  
+
   equals(other?: TenantId): boolean {
     if (!other) return false;
     return this.value === other.value;
   }
-  
+
   toString(): string {
     return this.value;
   }
@@ -508,32 +514,32 @@ export class TenantId {
 ```typescript
 /**
  * 隔离上下文实体
- * 
+ *
  * @description 封装多层级数据隔离的核心业务逻辑
- * 
+ *
  * ## 业务规则（充血模型）
- * 
+ *
  * ### 层级判断规则
  * - 有 departmentId → DEPARTMENT 级
- * - 有 organizationId → ORGANIZATION 级  
+ * - 有 organizationId → ORGANIZATION 级
  * - 有 tenantId → TENANT 级
  * - 有 userId（无租户）→ USER 级
  * - 默认 → PLATFORM 级
- * 
+ *
  * ### 验证规则
  * - 组织级必须有租户
  * - 部门级必须有租户和组织
- * 
+ *
  * ### 访问权限规则
  * - 平台级可访问所有数据
  * - 非共享数据必须完全匹配
  * - 共享数据检查共享级别
- * 
+ *
  * @since 1.0.0
  */
 export class IsolationContext {
   private _level?: IsolationLevel; // 延迟计算缓存
-  
+
   private constructor(
     public readonly tenantId?: TenantId,
     public readonly organizationId?: OrganizationId,
@@ -542,22 +548,22 @@ export class IsolationContext {
   ) {
     this.validate();
   }
-  
+
   static platform(): IsolationContext {
     return new IsolationContext();
   }
-  
+
   static tenant(tenantId: TenantId): IsolationContext {
     return new IsolationContext(tenantId);
   }
-  
+
   static organization(
-    tenantId: TenantId, 
-    organizationId: OrganizationId
+    tenantId: TenantId,
+    organizationId: OrganizationId,
   ): IsolationContext {
     return new IsolationContext(tenantId, organizationId);
   }
-  
+
   static department(
     tenantId: TenantId,
     organizationId: OrganizationId,
@@ -565,27 +571,27 @@ export class IsolationContext {
   ): IsolationContext {
     return new IsolationContext(tenantId, organizationId, departmentId);
   }
-  
+
   static user(userId: UserId, tenantId?: TenantId): IsolationContext {
     return new IsolationContext(tenantId, undefined, undefined, userId);
   }
-  
+
   private validate(): void {
     if (this.organizationId && !this.tenantId) {
       throw new IsolationValidationError(
         '组织级上下文必须包含租户 ID',
-        'INVALID_ORGANIZATION_CONTEXT'
+        'INVALID_ORGANIZATION_CONTEXT',
       );
     }
-    
+
     if (this.departmentId && (!this.tenantId || !this.organizationId)) {
       throw new IsolationValidationError(
         '部门级上下文必须包含租户 ID 和组织 ID',
-        'INVALID_DEPARTMENT_CONTEXT'
+        'INVALID_DEPARTMENT_CONTEXT',
       );
     }
   }
-  
+
   getIsolationLevel(): IsolationLevel {
     if (this._level === undefined) {
       if (this.departmentId) this._level = IsolationLevel.DEPARTMENT;
@@ -596,23 +602,28 @@ export class IsolationContext {
     }
     return this._level;
   }
-  
+
   isEmpty(): boolean {
-    return !this.tenantId && !this.organizationId && !this.departmentId && !this.userId;
+    return (
+      !this.tenantId &&
+      !this.organizationId &&
+      !this.departmentId &&
+      !this.userId
+    );
   }
-  
+
   buildCacheKey(namespace: string, key: string): string {
     // 参考 isolation-research.md 中的实现
   }
-  
+
   buildLogContext(): Record<string, string> {
     // 参考 isolation-research.md 中的实现
   }
-  
+
   buildWhereClause(): Record<string, string> {
     // 根据隔离级别生成数据库查询条件
   }
-  
+
   canAccess(
     dataContext: IsolationContext,
     isShared: boolean,
@@ -745,14 +756,14 @@ export class IsolationContext {
 ```typescript
 /**
  * @hl8/isolation-model
- * 
+ *
  * 纯领域模型库 - 多层级数据隔离
- * 
+ *
  * 特性：
  * - 零依赖，框架无关
  * - DDD 充血模型设计
  * - 可在任何 TypeScript 环境使用
- * 
+ *
  * @module @hl8/isolation-model
  * @since 1.0.0
  */
@@ -884,7 +895,7 @@ libs/nestjs-isolation/
   "devDependencies": {
     "@nestjs/testing": "^11.1.6",
     "@repo/eslint-config": "workspace:*",
-    "@repo/ts-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.15.3",
     "jest": "^30.2.0",
@@ -923,7 +934,7 @@ libs/nestjs-isolation/
 
 **内容**:
 
-```markdown
+````markdown
 # @hl8/nestjs-isolation
 
 NestJS 数据隔离实现库 - 基于 `@hl8/isolation-model` 领域模型。
@@ -940,6 +951,7 @@ NestJS 数据隔离实现库 - 基于 `@hl8/isolation-model` 领域模型。
 ```bash
 pnpm add @hl8/nestjs-isolation
 ```
+````
 
 ## 使用
 
@@ -951,7 +963,7 @@ pnpm add @hl8/nestjs-isolation
 - NestJS >= 11.0
 - nestjs-cls >= 6.0
 
-```
+````
 
 **验收标准**:
 - 说明清晰
@@ -967,7 +979,7 @@ pnpm add @hl8/nestjs-isolation
 
 **目标**: 实现 NestJS 特定的服务、中间件、守卫、装饰器
 
-**预计时间**: 4 天  
+**预计时间**: 4 天
 **并行机会**: 中 - 部分任务可并行
 
 ### T021: 实现 IsolationContextService
@@ -992,22 +1004,22 @@ const ISOLATION_CONTEXT_KEY = 'ISOLATION_CONTEXT';
 @Injectable()
 export class IsolationContextService implements IIsolationContextProvider {
   constructor(private readonly cls: ClsService) {}
-  
+
   getIsolationContext(): IsolationContext | undefined {
     return this.cls.get(ISOLATION_CONTEXT_KEY);
   }
-  
+
   setIsolationContext(context: IsolationContext): void {
     this.cls.set(ISOLATION_CONTEXT_KEY, context);
   }
-  
+
   getTenantId(): TenantId | undefined {
     return this.getIsolationContext()?.tenantId;
   }
-  
+
   // ... 其他便捷方法
 }
-```
+````
 
 **验收标准**:
 
@@ -1052,32 +1064,38 @@ export class IsolationContextService implements IIsolationContextProvider {
 ```typescript
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { IsolationContextService } from '../services/isolation-context.service.js';
-import { IsolationContext, TenantId, OrganizationId, DepartmentId, UserId } from '@hl8/isolation-model';
+import {
+  IsolationContext,
+  TenantId,
+  OrganizationId,
+  DepartmentId,
+  UserId,
+} from '@hl8/isolation-model';
 
 @Injectable()
 export class IsolationExtractionMiddleware implements NestMiddleware {
   constructor(private readonly contextService: IsolationContextService) {}
-  
+
   use(req: any, res: any, next: () => void) {
     // 提取标识符
     const tenantId = req.headers['x-tenant-id'];
     const orgId = req.headers['x-organization-id'];
     const deptId = req.headers['x-department-id'];
     const userId = req.headers['x-user-id'];
-    
+
     // 创建隔离上下文
     let context: IsolationContext;
-    
+
     if (deptId && orgId && tenantId) {
       context = IsolationContext.department(
         TenantId.create(tenantId),
         OrganizationId.create(orgId),
-        DepartmentId.create(deptId)
+        DepartmentId.create(deptId),
       );
     } else if (orgId && tenantId) {
       context = IsolationContext.organization(
         TenantId.create(tenantId),
-        OrganizationId.create(orgId)
+        OrganizationId.create(orgId),
       );
     } else if (tenantId) {
       context = IsolationContext.tenant(TenantId.create(tenantId));
@@ -1086,10 +1104,10 @@ export class IsolationExtractionMiddleware implements NestMiddleware {
     } else {
       context = IsolationContext.platform();
     }
-    
+
     // 存储上下文
     this.contextService.setIsolationContext(context);
-    
+
     next();
   }
 }
@@ -1123,7 +1141,8 @@ import { IsolationLevel } from '@hl8/isolation-model';
 
 export const REQUIRED_ISOLATION_LEVEL_KEY = 'requiredIsolationLevel';
 
-export const RequireTenant = () => SetMetadata(REQUIRED_ISOLATION_LEVEL_KEY, IsolationLevel.TENANT);
+export const RequireTenant = () =>
+  SetMetadata(REQUIRED_ISOLATION_LEVEL_KEY, IsolationLevel.TENANT);
 ```
 
 **@CurrentContext 示例**:
@@ -1268,18 +1287,18 @@ export const CurrentContext = createParamDecorator(
 
 **代码**:
 
-```typescript
+````typescript
 /**
  * 数据隔离模块兼容层
- * 
+ *
  * @deprecated 请直接使用 @hl8/nestjs-isolation 模块
  * 本兼容层将在 v2.0.0 移除
- * 
+ *
  * @example
  * ```typescript
  * // 旧方式（将被弃用）
  * import { IsolationModule } from '@hl8/nestjs-infra';
- * 
+ *
  * // 新方式（推荐）
  * import { IsolationModule } from '@hl8/nestjs-isolation';
  * import { IsolationContext } from '@hl8/isolation-model';
@@ -1293,11 +1312,11 @@ export * from '@hl8/nestjs-isolation';
 if (process.env.NODE_ENV !== 'production') {
   console.warn(
     '[DEPRECATION WARNING] 您正在使用 @hl8/nestjs-infra 的隔离模块兼容层。' +
-    '请迁移到 @hl8/nestjs-isolation 和 @hl8/isolation-model。' +
-    '兼容层将在 v2.0.0 移除。'
+      '请迁移到 @hl8/nestjs-isolation 和 @hl8/isolation-model。' +
+      '兼容层将在 v2.0.0 移除。',
   );
 }
-```
+````
 
 **验收标准**:
 
@@ -1319,7 +1338,7 @@ graph TD
     P2 --> P3[Phase 3: 实现库初始化]
     P3 --> P4[Phase 4: 实现库核心功能]
     P4 --> P5[Phase 5: 依赖更新和兼容层]
-    
+
     P2 -.-> Caching[Caching 模块可开始开发]
     P2 -.-> Logging[Logging 模块可开始开发]
 ```
@@ -1438,11 +1457,11 @@ T017 (串行) → [T018, T019, T020] (并行)
 
 ## 关键里程碑
 
-| 里程碑 | 完成标志 | 后续影响 |
-|--------|---------|---------|
-| **M1: 领域模型库完成** | Phase 2 完成，测试通过 | Caching、Logging 模块可以开始开发 |
-| **M2: 实现库完成** | Phase 4 完成，集成测试通过 | NestJS 应用可以使用完整功能 |
-| **M3: 兼容层完成** | Phase 5 完成 | 现有代码无需修改 |
+| 里程碑                 | 完成标志                   | 后续影响                          |
+| ---------------------- | -------------------------- | --------------------------------- |
+| **M1: 领域模型库完成** | Phase 2 完成，测试通过     | Caching、Logging 模块可以开始开发 |
+| **M2: 实现库完成**     | Phase 4 完成，集成测试通过 | NestJS 应用可以使用完整功能       |
+| **M3: 兼容层完成**     | Phase 5 完成               | 现有代码无需修改                  |
 
 ---
 

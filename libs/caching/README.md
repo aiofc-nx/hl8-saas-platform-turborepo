@@ -24,10 +24,10 @@
 
 ### 与 @hl8/config 的区别
 
-| 模块 | 用途 | 缓存对象 | 使用方式 | 依赖 |
-|------|------|---------|---------|------|
-| **@hl8/config** | 配置管理 | 配置实例 | 自动、透明 | 无外部依赖 |
-| **@hl8/caching** | 业务数据缓存 | 业务数据 | 手动调用 | 需要 Redis |
+| 模块             | 用途         | 缓存对象 | 使用方式   | 依赖       |
+| ---------------- | ------------ | -------- | ---------- | ---------- |
+| **@hl8/config**  | 配置管理     | 配置实例 | 自动、透明 | 无外部依赖 |
+| **@hl8/caching** | 业务数据缓存 | 业务数据 | 手动调用   | 需要 Redis |
 
 **两者完全独立，互不依赖，分别用于不同的场景！**
 
@@ -71,7 +71,7 @@ import { IsolationModule } from '@hl8/nestjs-isolation';
   imports: [
     // 配置隔离模块（必须）
     IsolationModule.forRoot(),
-    
+
     // 配置缓存模块
     CachingModule.forRoot({
       redis: {
@@ -99,13 +99,13 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // 更新后刷新缓存
   @CachePut('user')
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
-  
+
   // 删除后清除缓存
   @CacheEvict('user')
   async deleteUser(id: string): Promise<void> {
@@ -219,10 +219,10 @@ import { CacheMetricsService } from '@hl8/caching';
 @Injectable()
 export class CacheMonitorService {
   constructor(private readonly metrics: CacheMetricsService) {}
-  
+
   getDashboard() {
     const metrics = this.metrics.getMetrics();
-    
+
     return {
       hitRate: `${(metrics.hitRate * 100).toFixed(2)}%`,
       avgLatency: `${metrics.averageLatency.toFixed(2)}ms`,
@@ -252,7 +252,7 @@ CachingModule.forRootAsync({
     },
     ttl: config.get('CACHE_TTL'),
   }),
-})
+});
 ```
 
 ### 直接使用 CacheService
@@ -261,19 +261,19 @@ CachingModule.forRootAsync({
 @Injectable()
 export class MyService {
   constructor(private readonly cache: CacheService) {}
-  
+
   async getData(key: string) {
     // 尝试从缓存获取
     let data = await this.cache.get<MyData>('mydata', key);
-    
+
     if (!data) {
       // 从数据源获取
       data = await this.fetchFromSource(key);
-      
+
       // 存入缓存
       await this.cache.set('mydata', key, data, 1800);
     }
-    
+
     return data;
   }
 }

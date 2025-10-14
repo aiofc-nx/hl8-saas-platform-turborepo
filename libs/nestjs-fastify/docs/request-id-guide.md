@@ -35,9 +35,9 @@ async function bootstrap() {
   // 使用默认配置，自动启用请求 ID
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new EnterpriseFastifyAdapter()
+    new EnterpriseFastifyAdapter(),
   );
-  
+
   await app.listen(3000);
 }
 bootstrap();
@@ -48,7 +48,10 @@ bootstrap();
 ```typescript
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { EnterpriseFastifyAdapter, RequestIdStrategy } from '@hl8/nestjs-fastify';
+import {
+  EnterpriseFastifyAdapter,
+  RequestIdStrategy,
+} from '@hl8/nestjs-fastify';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -64,11 +67,11 @@ async function bootstrap() {
         generateOnMissing: true,
         includeInResponse: true,
         includeInLogs: true,
-        prefix: 'api'
-      }
-    })
+        prefix: 'api',
+      },
+    }),
   );
-  
+
   await app.listen(3000);
 }
 bootstrap();
@@ -78,21 +81,21 @@ bootstrap();
 
 ### EnterpriseFastifyAdapterOptions
 
-| 选项 | 类型 | 默认值 | 描述 |
-|------|------|--------|------|
-| `enableRequestId` | `boolean` | `true` | 是否启用请求 ID 功能 |
-| `requestIdOptions` | `RequestIdOptions` | 见下表 | 请求 ID 详细配置 |
+| 选项               | 类型               | 默认值 | 描述                 |
+| ------------------ | ------------------ | ------ | -------------------- |
+| `enableRequestId`  | `boolean`          | `true` | 是否启用请求 ID 功能 |
+| `requestIdOptions` | `RequestIdOptions` | 见下表 | 请求 ID 详细配置     |
 
 ### RequestIdOptions
 
-| 选项 | 类型 | 默认值 | 描述 |
-|------|------|--------|------|
-| `strategy` | `RequestIdStrategy` | `RequestIdStrategy.UUID` | 生成策略 |
-| `headerName` | `string` | `'X-Request-Id'` | 请求头名称 |
-| `generateOnMissing` | `boolean` | `true` | 缺失时是否自动生成 |
-| `includeInResponse` | `boolean` | `true` | 是否在响应头中包含 |
-| `includeInLogs` | `boolean` | `true` | 是否在日志中包含 |
-| `prefix` | `string` | `''` | 自定义前缀 |
+| 选项                | 类型                | 默认值                   | 描述               |
+| ------------------- | ------------------- | ------------------------ | ------------------ |
+| `strategy`          | `RequestIdStrategy` | `RequestIdStrategy.UUID` | 生成策略           |
+| `headerName`        | `string`            | `'X-Request-Id'`         | 请求头名称         |
+| `generateOnMissing` | `boolean`           | `true`                   | 缺失时是否自动生成 |
+| `includeInResponse` | `boolean`           | `true`                   | 是否在响应头中包含 |
+| `includeInLogs`     | `boolean`           | `true`                   | 是否在日志中包含   |
+| `prefix`            | `string`            | `''`                     | 自定义前缀         |
 
 ### RequestIdStrategy 枚举
 
@@ -116,7 +119,7 @@ enum RequestIdStrategy {
 ```typescript
 // 配置
 requestIdOptions: {
-  strategy: RequestIdStrategy.UUID
+  strategy: RequestIdStrategy.UUID;
 }
 
 // 生成示例
@@ -134,7 +137,7 @@ requestIdOptions: {
 ```typescript
 // 配置
 requestIdOptions: {
-  strategy: RequestIdStrategy.ULID
+  strategy: RequestIdStrategy.ULID;
 }
 
 // 生成示例
@@ -206,7 +209,7 @@ const prefixedId = RequestIdGenerator.withPrefix('user');
 const customId = RequestIdGenerator.generate({
   strategy: RequestIdStrategy.TIMESTAMP,
   prefix: 'order',
-  includeTimestamp: true
+  includeTimestamp: true,
 });
 ```
 
@@ -216,11 +219,13 @@ const customId = RequestIdGenerator.generate({
 import { RequestIdGenerator } from '@hl8/nestjs-fastify';
 
 // 验证 ID 格式
-const isValid = RequestIdGenerator.isValid('550e8400-e29b-41d4-a716-446655440000');
+const isValid = RequestIdGenerator.isValid(
+  '550e8400-e29b-41d4-a716-446655440000',
+);
 
 // 从请求头中提取和验证
 const requestId = RequestIdGenerator.extractFromHeaders({
-  'x-request-id': '550e8400-e29b-41d4-a716-446655440000'
+  'x-request-id': '550e8400-e29b-41d4-a716-446655440000',
 });
 ```
 
@@ -235,10 +240,10 @@ export class UserService {
   async getUser(request: FastifyRequest, userId: string) {
     // 获取请求 ID
     const requestId = request.requestId;
-    
+
     // 在日志中使用请求 ID
     console.log(`[${requestId}] 获取用户信息: ${userId}`);
-    
+
     // 业务逻辑...
     return { id: userId, name: 'John Doe' };
   }
@@ -275,7 +280,7 @@ export class OrderService {
     this.logger.info('创建订单', {
       requestId,
       orderId: orderData.id,
-      amount: orderData.amount
+      amount: orderData.amount,
     });
   }
 }
@@ -294,12 +299,16 @@ export class ExternalApiService {
   constructor(private readonly httpService: HttpService) {}
 
   async callExternalApi(requestId: string, data: any) {
-    const response = await this.httpService.post('https://api.example.com/endpoint', data, {
-      headers: {
-        'X-Request-Id': requestId
-      }
-    });
-    
+    const response = await this.httpService.post(
+      'https://api.example.com/endpoint',
+      data,
+      {
+        headers: {
+          'X-Request-Id': requestId,
+        },
+      },
+    );
+
     return response.data;
   }
 }
@@ -316,10 +325,10 @@ export class WebhookController {
   @Get()
   async handleWebhook(@Req() request: FastifyRequest) {
     const requestId = request.requestId;
-    
+
     // 使用请求 ID 进行日志记录
     console.log(`[${requestId}] 处理 Webhook 请求`);
-    
+
     return { success: true };
   }
 }
@@ -339,9 +348,9 @@ const app = await NestFactory.create<NestFastifyApplication>(
       headerName: 'X-Request-Id',
       generateOnMissing: true,
       includeInResponse: true,
-      includeInLogs: true
-    }
-  })
+      includeInLogs: true,
+    },
+  }),
 );
 ```
 
@@ -358,9 +367,9 @@ const app = await NestFactory.create<NestFastifyApplication>(
       headerName: 'X-Request-Id',
       generateOnMissing: true,
       includeInResponse: true,
-      includeInLogs: true
-    }
-  })
+      includeInLogs: true,
+    },
+  }),
 );
 ```
 
@@ -377,9 +386,9 @@ const app = await NestFactory.create<NestFastifyApplication>(
       headerName: 'X-Request-Id',
       generateOnMissing: true,
       includeInResponse: false, // 测试环境可能不需要响应头
-      includeInLogs: true
-    }
-  })
+      includeInLogs: true,
+    },
+  }),
 );
 ```
 
@@ -398,9 +407,9 @@ const app = await NestFactory.create<NestFastifyApplication>(
 new EnterpriseFastifyAdapter({
   enableRequestId: true, // 确保为 true
   requestIdOptions: {
-    generateOnMissing: true // 确保为 true
-  }
-})
+    generateOnMissing: true, // 确保为 true
+  },
+});
 ```
 
 #### 2. 日志中缺少请求 ID
@@ -412,7 +421,7 @@ new EnterpriseFastifyAdapter({
 ```typescript
 // 确保启用了日志集成
 requestIdOptions: {
-  includeInLogs: true // 确保为 true
+  includeInLogs: true; // 确保为 true
 }
 ```
 
@@ -425,7 +434,7 @@ requestIdOptions: {
 ```typescript
 // 确保启用了响应头注入
 requestIdOptions: {
-  includeInResponse: true // 确保为 true
+  includeInResponse: true; // 确保为 true
 }
 ```
 
@@ -435,19 +444,25 @@ requestIdOptions: {
 
 ```typescript
 // 在应用启动后验证配置
-app.getHttpAdapter().getInstance().addHook('onRequest', (request, reply) => {
-  console.log('Request ID:', request.requestId);
-  console.log('Headers:', request.headers);
-});
+app
+  .getHttpAdapter()
+  .getInstance()
+  .addHook('onRequest', (request, reply) => {
+    console.log('Request ID:', request.requestId);
+    console.log('Headers:', request.headers);
+  });
 ```
 
 #### 2. 检查日志格式
 
 ```typescript
 // 检查日志是否包含请求 ID
-app.getHttpAdapter().getInstance().addHook('onRequest', (request, reply) => {
-  request.log.info('请求开始', { requestId: request.requestId });
-});
+app
+  .getHttpAdapter()
+  .getInstance()
+  .addHook('onRequest', (request, reply) => {
+    request.log.info('请求开始', { requestId: request.requestId });
+  });
 ```
 
 ## 性能考虑
@@ -473,11 +488,11 @@ app.getHttpAdapter().getInstance().addHook('onRequest', (request, reply) => {
 
 ## 版本兼容性
 
-| 版本 | 功能支持 |
-|------|----------|
+| 版本      | 功能支持         |
+| --------- | ---------------- |
 | `>=0.1.0` | 基础请求 ID 功能 |
 | `>=0.2.0` | 企业级适配器集成 |
-| `>=1.0.0` | 完整功能支持 |
+| `>=1.0.0` | 完整功能支持     |
 
 ## 相关资源
 

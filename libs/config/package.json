@@ -2,28 +2,38 @@
   "name": "@hl8/config",
   "version": "0.1.0",
   "description": "类型安全的配置管理模块 - 支持多种加载器和验证",
+  "keywords": [
+    "nestjs",
+    "configuration",
+    "type-safe",
+    "config-loader",
+    "dotenv",
+    "yaml",
+    "validation"
+  ],
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./index.js": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
-  "engines": {
-    "node": ">=20"
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist -p tsconfig.build.json",
-    "type-check": "tsc --noEmit",
+    "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist",
+    "build:types": "tsc --emitDeclarationOnly --outDir dist",
     "dev": "tsc -p tsconfig.build.json --watch",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "lint": "eslint .",
-    "clean": "rm -rf dist"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.6",
@@ -39,7 +49,8 @@
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "@repo/ts-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@swc/cli": "^0.7.0",
     "@swc/core": "^1.13.5",
     "@swc/jest": "^0.2.37",
     "@types/debug": "^4.1.12",
@@ -50,13 +61,7 @@
     "jest": "^30.2.0",
     "typescript": "^5.7.3"
   },
-  "keywords": [
-    "nestjs",
-    "configuration",
-    "type-safe",
-    "config-loader",
-    "dotenv",
-    "yaml",
-    "validation"
-  ]
+  "engines": {
+    "node": ">=20"
+  }
 }

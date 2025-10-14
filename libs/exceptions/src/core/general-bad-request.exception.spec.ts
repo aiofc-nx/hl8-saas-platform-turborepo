@@ -2,8 +2,8 @@
  * GeneralBadRequestException 单元测试
  */
 
-import { GeneralBadRequestException } from './general-bad-request.exception.js';
 import { AbstractHttpException } from './abstract-http.exception.js';
+import { GeneralBadRequestException } from './general-bad-request.exception.js';
 
 describe('GeneralBadRequestException', () => {
   describe('构造函数', () => {
@@ -183,4 +183,3 @@ describe('GeneralBadRequestException', () => {
     });
   });
 });
-

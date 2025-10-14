@@ -2,9 +2,13 @@
  * AnyExceptionFilter 单元测试
  */
 
+import {
+  ArgumentsHost,
+  BadRequestException,
+  HttpException,
+} from '@nestjs/common';
 import { AnyExceptionFilter } from './any-exception.filter.js';
 import type { ILoggerService } from './http-exception.filter.js';
-import { ArgumentsHost, HttpException, BadRequestException } from '@nestjs/common';
 
 describe('AnyExceptionFilter', () => {
   let filter: AnyExceptionFilter;
@@ -13,7 +17,6 @@ describe('AnyExceptionFilter', () => {
   let mockResponse: any;
   let mockRequest: any;
   beforeEach(() => {
-
     // 创建 Mock 对象
     mockLogger = {
       log: () => {},
@@ -23,9 +26,15 @@ describe('AnyExceptionFilter', () => {
 
     // 创建支持链式调用的 mock response（Fastify风格）
     mockResponse = {
-      status: function() { return this; },
-      code: function() { return this; },  // Fastify使用code而不是status
-      header: function() { return this; },
+      status: function () {
+        return this;
+      },
+      code: function () {
+        return this;
+      }, // Fastify使用code而不是status
+      header: function () {
+        return this;
+      },
       send: () => {},
     } as any;
 
@@ -371,7 +380,7 @@ describe('AnyExceptionFilter', () => {
 
       // Act & Assert - 应该不抛出错误
       expect(() => filter.catch(error, mockArgumentsHost)).not.toThrow();
-      
+
       // 验证响应正常发送
       expect(mockResponse.status).toHaveBeenCalledWith(500);
       expect(mockResponse.send).toHaveBeenCalled();
@@ -412,4 +421,3 @@ describe('AnyExceptionFilter', () => {
     });
   });
 });
-

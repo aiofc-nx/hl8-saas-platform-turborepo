@@ -8,8 +8,7 @@
 
 import { MemoryCacheProvider } from '../../lib/cache/memory-cache.provider';
 import { CacheStrategy, MemoryCacheOptions } from '../../lib/types/cache.types';
-import { ConfigRecord } from '../../lib/types/config.types';
-import { createTestConfig, wait, testAssertions } from '../test-utils';
+import { createTestConfig, wait } from '../test-utils';
 
 describe('MemoryCacheProvider', () => {
   let cacheProvider: MemoryCacheProvider;

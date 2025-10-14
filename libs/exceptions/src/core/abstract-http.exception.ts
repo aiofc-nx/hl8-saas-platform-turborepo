@@ -235,4 +235,3 @@ export abstract class AbstractHttpException extends HttpException {
     };
   }
 }
-

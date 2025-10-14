@@ -43,14 +43,14 @@ GeneralInternalServerException (现在在 @hl8/nestjs-fastify)
 
 ```typescript
 // @hl8/nestjs-infra/cache.service.ts
-import { GeneralInternalServerException } from '@hl8/nestjs-fastify';  // ❌ 上层包！
+import { GeneralInternalServerException } from '@hl8/nestjs-fastify'; // ❌ 上层包！
 
 export class CacheService {
   async get(key: string) {
     try {
       // ...
     } catch (error) {
-      throw new GeneralInternalServerException('缓存读取失败');  // ❌ 依赖上层
+      throw new GeneralInternalServerException('缓存读取失败'); // ❌ 依赖上层
     }
   }
 }
@@ -72,9 +72,11 @@ export class CacheService {
 ### 异常类的本质
 
 **错误理解**：
+
 > HTTP 异常发生在 Fastify，所以应该在 @hl8/nestjs-fastify
 
 **正确理解**：
+
 > HTTP 异常类是**框架无关的业务抽象**，只有异常**过滤器**是框架相关的
 
 ### 分层原则
@@ -296,9 +298,9 @@ HTTP 异常类定义在 nestjs-infra      ← 代码位置
 
 ## 📊 对比总结
 
-| 方案 | 异常类位置 | 过滤器位置 | 依赖关系 | 结果 |
-|------|-----------|-----------|----------|------|
-| **方案 A** | nestjs-infra | nestjs-fastify | infra ← fastify | ✅ 单向 |
+| 方案       | 异常类位置     | 过滤器位置     | 依赖关系         | 结果    |
+| ---------- | -------------- | -------------- | ---------------- | ------- |
+| **方案 A** | nestjs-infra   | nestjs-fastify | infra ← fastify  | ✅ 单向 |
 | **方案 B** | nestjs-fastify | nestjs-fastify | infra ↔ fastify | ❌ 循环 |
 
 **结论**: 方案 A 是唯一正确的选择

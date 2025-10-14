@@ -45,7 +45,7 @@ afterEach(() => {
     const path = require('path');
     return path.join(
       os.tmpdir(),
-      `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     );
   },
 

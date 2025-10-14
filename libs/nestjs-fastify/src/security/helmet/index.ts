@@ -3,6 +3,5 @@
  */
 
 export { SecurityModule } from './security.module.js';
-export type { HelmetOptions } from './types/helmet-options.js';
 export { DEFAULT_HELMET_OPTIONS } from './types/helmet-options.js';
-
+export type { HelmetOptions } from './types/helmet-options.js';

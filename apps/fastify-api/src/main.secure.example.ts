@@ -22,17 +22,17 @@
  * ```
  */
 
+import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { ValidationPipe } from '@nestjs/common';
-import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
 import { AppModule } from './app.module.js';
 import { AppConfig } from './config/app.config.js';
 import {
-  deepFreeze,
   cleanupSensitiveEnvVars,
-  isFrozen,
+  deepFreeze,
   getSafeConfigCopy,
+  isFrozen,
 } from './config/config-security.util.js';
 import { setupSwagger } from './swagger.js';
 
@@ -45,10 +45,10 @@ async function bootstrap(): Promise<void> {
   // 创建企业级 Fastify 适配器
   const adapter = new EnterpriseFastifyAdapter({
     fastifyOptions: {
-      logger: true,  // 日志由 FastifyLoggingModule 统一管理
+      logger: true, // 日志由 FastifyLoggingModule 统一管理
       trustProxy: true,
     },
-    enableCors: false,  // 避免重复配置
+    enableCors: false, // 避免重复配置
     enablePerformanceMonitoring: true,
     enableHealthCheck: false,
     enableSecurity: true,
@@ -68,7 +68,7 @@ async function bootstrap(): Promise<void> {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   // 🔒 安全措施：获取配置并应用保护
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  
+
   const config = app.get(AppConfig);
 
   // 1. 深度冻结配置对象（防止运行时修改）
@@ -83,7 +83,10 @@ async function bootstrap(): Promise<void> {
   // 3. 记录安全的配置副本（用于调试）
   if (config.isDevelopment) {
     const safeConfig = getSafeConfigCopy(config);
-    console.log('[Config] Loaded configuration:', JSON.stringify(safeConfig, null, 2));
+    console.log(
+      '[Config] Loaded configuration:',
+      JSON.stringify(safeConfig, null, 2),
+    );
   }
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -128,21 +131,21 @@ async function bootstrap(): Promise<void> {
   console.log('='.repeat(70));
   console.log(`📍 Local:        http://${displayHost}:${port}`);
   console.log(`🌐 Network:      http://${host}:${port}`);
-  
+
   if (!config.isProduction) {
     console.log(`📚 API Docs:     http://${displayHost}:${port}/api-docs`);
     console.log(`📄 OpenAPI JSON: http://${displayHost}:${port}/api-docs-json`);
   }
-  
+
   console.log('='.repeat(70));
-  console.log(`✅ Environment:  ${config.NODE_ENV}`);  // 使用配置而不是 process.env
+  console.log(`✅ Environment:  ${config.NODE_ENV}`); // 使用配置而不是 process.env
   console.log(`⚡ Powered by:   Fastify + NestJS`);
   console.log(`🔒 Security:     Enhanced (config frozen)`);
-  
+
   if (config.isProduction) {
     console.log(`🔐 Protection:   Sensitive env vars cleaned`);
   }
-  
+
   console.log('='.repeat(70) + '\n');
 }
 
@@ -153,4 +156,3 @@ bootstrap().catch((error) => {
   console.error('❌ Failed to start application:', error);
   process.exit(1);
 });
-

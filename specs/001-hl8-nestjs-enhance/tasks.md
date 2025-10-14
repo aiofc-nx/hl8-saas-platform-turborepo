@@ -26,15 +26,15 @@
 
 ### 任务分布
 
-| 阶段 | 任务数 | 预计时间 | 描述 |
-|------|-------|---------|------|
-| Phase 1: 项目初始化 | 5 | 1 天 | 创建项目骨架和配置 |
-| Phase 2: 领域层实现 | 8 | 1 周 | DDD 值对象和领域事件 |
-| Phase 3: 核心服务实现 | 8 | 1 周 | 缓存服务和 Redis 服务 |
-| Phase 4: 装饰器实现 | 5 | 3 天 | 缓存装饰器 |
-| Phase 5: 监控和工具 | 6 | 3 天 | 性能监控和工具函数 |
-| Phase 6: 兼容层和迁移 | 4 | 2 天 | nestjs-infra 兼容层 |
-| Phase 7: 文档和发布 | 2 | 1 天 | 文档完善和发布准备 |
+| 阶段                  | 任务数 | 预计时间 | 描述                  |
+| --------------------- | ------ | -------- | --------------------- |
+| Phase 1: 项目初始化   | 5      | 1 天     | 创建项目骨架和配置    |
+| Phase 2: 领域层实现   | 8      | 1 周     | DDD 值对象和领域事件  |
+| Phase 3: 核心服务实现 | 8      | 1 周     | 缓存服务和 Redis 服务 |
+| Phase 4: 装饰器实现   | 5      | 3 天     | 缓存装饰器            |
+| Phase 5: 监控和工具   | 6      | 3 天     | 性能监控和工具函数    |
+| Phase 6: 兼容层和迁移 | 4      | 2 天     | nestjs-infra 兼容层   |
+| Phase 7: 文档和发布   | 2      | 1 天     | 文档完善和发布准备    |
 
 ---
 
@@ -142,7 +142,7 @@ libs/nestjs-caching/
   "devDependencies": {
     "@nestjs/testing": "^11.1.6",
     "@repo/eslint-config": "workspace:*",
-    "@repo/ts-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@swc/cli": "^0.7.0",
     "@swc/core": "^1.10.14",
     "@swc/jest": "^0.2.37",
@@ -151,14 +151,7 @@ libs/nestjs-caching/
     "jest": "^30.2.0",
     "typescript": "5.9.2"
   },
-  "keywords": [
-    "nestjs",
-    "cache",
-    "redis",
-    "multi-tenancy",
-    "ddd",
-    "saas"
-  ]
+  "keywords": ["nestjs", "cache", "redis", "multi-tenancy", "ddd", "saas"]
 }
 ```
 
@@ -178,14 +171,14 @@ libs/nestjs-caching/
 
 1. 创建 tsconfig.json 继承 monorepo 根配置
 2. 创建 tsconfig.build.json 用于生产构建
-3. 配置路径别名（@/*→ ./src/*）
+3. 配置路径别名（@/_→ ./src/_）
 4. 配置输出目录（dist）
 
 **tsconfig.json**:
 
 ```json
 {
-  "extends": "@repo/ts-config/nestjs.json",
+  "extends": "@repo/typescript-config/nestjs.json",
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",
@@ -209,7 +202,7 @@ libs/nestjs-caching/
 
 **验收标准**:
 
-- 继承 @repo/ts-config/nestjs.json
+- 继承 @repo/typescript-config/nestjs.json
 - module: NodeNext、moduleResolution: NodeNext
 - strict: true
 
@@ -289,7 +282,7 @@ export default config;
 
 **内容**:
 
-```markdown
+````markdown
 # @hl8/nestjs-caching
 
 企业级 NestJS Redis 缓存模块，支持多层级数据隔离。
@@ -305,9 +298,10 @@ export default config;
 
 ## 安装
 
-   ```bash
+```bash
 pnpm add @hl8/nestjs-caching
 ```
+````
 
 ## 快速开始
 
@@ -323,7 +317,7 @@ pnpm add @hl8/nestjs-caching
 
 MIT
 
-```
+````
 
 **验收标准**:
 - README 包含核心特性和快速开始链接
@@ -339,7 +333,7 @@ MIT
 
 **目标**: 实现 DDD 充血模型的核心值对象和领域事件
 
-**预计时间**: 1 周  
+**预计时间**: 1 周
 **并行机会**: T006-T009 可并行，T010-T013 可并行
 
 ### T006: 实现 CacheLevel 枚举 [P]
@@ -356,36 +350,36 @@ MIT
 ```typescript
 /**
  * 缓存层级枚举
- * 
+ *
  * @description 定义缓存的 5 个隔离层级
- * 
+ *
  * ## 层级说明
- * 
+ *
  * - PLATFORM: 平台级缓存，跨租户共享
  * - TENANT: 租户级缓存，租户内共享
  * - ORGANIZATION: 组织级缓存，组织内共享
  * - DEPARTMENT: 部门级缓存，部门内共享
  * - USER: 用户级缓存，用户私有
- * 
+ *
  * @since 1.0.0
  */
 export enum CacheLevel {
   /** 平台级缓存 */
   PLATFORM = 'platform',
-  
+
   /** 租户级缓存 */
   TENANT = 'tenant',
-  
+
   /** 组织级缓存 */
   ORGANIZATION = 'organization',
-  
+
   /** 部门级缓存 */
   DEPARTMENT = 'department',
-  
+
   /** 用户级缓存 */
   USER = 'user',
 }
-```
+````
 
 **验收标准**:
 
@@ -409,9 +403,9 @@ export enum CacheLevel {
 ```typescript
 /**
  * 隔离上下文类型
- * 
+ *
  * @description 从 @hl8/platform 导入的隔离上下文定义
- * 
+ *
  * @since 1.0.0
  */
 export type { IsolationContext } from '@hl8/platform';
@@ -575,28 +569,28 @@ export type { IsolationContext } from '@hl8/platform';
 ```typescript
 /**
  * 缓存失效事件
- * 
+ *
  * @description 记录单个缓存键的失效
- * 
+ *
  * ## 使用场景
- * 
+ *
  * - 监控缓存失效率
  * - 调试缓存问题
  * - 触发缓存预热
- * 
+ *
  * @since 1.0.0
  */
 export class CacheInvalidatedEvent {
   constructor(
     /** 缓存键 */
     public readonly key: string,
-    
+
     /** 缓存层级 */
     public readonly level: CacheLevel,
-    
+
     /** 失效原因 */
     public readonly reason: 'expired' | 'deleted' | 'evicted',
-    
+
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
   ) {}
@@ -626,28 +620,28 @@ export class CacheInvalidatedEvent {
 ```typescript
 /**
  * 缓存层级失效事件
- * 
+ *
  * @description 记录整个层级的缓存失效
- * 
+ *
  * ## 使用场景
- * 
+ *
  * - 监控批量缓存清除
  * - 性能分析
  * - 审计追踪
- * 
+ *
  * @since 1.0.0
  */
 export class CacheLevelInvalidatedEvent {
   constructor(
     /** 失效的层级类型 */
     public readonly level: CacheLevel,
-    
+
     /** 层级标识符（如 tenantId、orgId） */
     public readonly identifier: string,
-    
+
     /** 删除的键数量 */
     public readonly deletedCount: number,
-    
+
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
   ) {}
@@ -707,7 +701,14 @@ export class CacheLevelInvalidatedEvent {
 **代码**:
 
 ```typescript
-import { IsString, IsNumber, IsOptional, Min, Max, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsOptional,
+  Min,
+  Max,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 /**
@@ -716,21 +717,21 @@ import { Type } from 'class-transformer';
 export class RedisConfig {
   @IsString()
   host!: string;
-  
+
   @IsNumber()
   @Min(1)
   @Max(65535)
   port!: number;
-  
+
   @IsOptional()
   @IsString()
   password?: string;
-  
+
   @IsOptional()
   @IsNumber()
   @Min(0)
   db?: number;
-  
+
   @IsOptional()
   @IsNumber()
   connectTimeout?: number;
@@ -743,12 +744,12 @@ export class CachingModuleConfig {
   @ValidateNested()
   @Type(() => RedisConfig)
   redis!: RedisConfig;
-  
+
   @IsOptional()
   @IsNumber()
   @Min(0)
   ttl?: number;
-  
+
   @IsOptional()
   @IsString()
   keyPrefix?: string;
@@ -1336,18 +1337,18 @@ interface CachePutOptions {
 
 **代码**:
 
-```typescript
+````typescript
 /**
  * 缓存模块兼容层
- * 
+ *
  * @deprecated 请直接使用 @hl8/nestjs-caching 模块
  * 本兼容层将在 v2.0.0 移除
- * 
+ *
  * @example
  * ```typescript
  * // 旧方式（将被弃用）
  * import { CacheService } from '@hl8/nestjs-infra';
- * 
+ *
  * // 新方式（推荐）
  * import { CacheService } from '@hl8/nestjs-caching';
  * ```
@@ -1360,11 +1361,11 @@ export * from '@hl8/nestjs-caching';
 if (process.env.NODE_ENV !== 'production') {
   console.warn(
     '[DEPRECATION WARNING] 您正在使用 @hl8/nestjs-infra 的缓存模块兼容层。' +
-    '请迁移到 @hl8/nestjs-caching。' +
-    '兼容层将在 v2.0.0 移除。'
+      '请迁移到 @hl8/nestjs-caching。' +
+      '兼容层将在 v2.0.0 移除。',
   );
 }
-```
+````
 
 **验收标准**:
 
@@ -1600,12 +1601,12 @@ T001 (串行) → [T002, T003, T004] (并行) → T005 (串行)
 
 ## 风险管理
 
-| 风险 | 影响 | 缓解措施 |
-|------|------|---------|
-| 兼容性问题 | 高 | 充分测试兼容层，提供完整迁移指南 |
-| 性能不达标 | 中 | 性能基准测试，持续监控 |
-| 测试覆盖率不足 | 中 | 每个 Phase 检查覆盖率，及时补充测试 |
-| 文档不完整 | 低 | Phase 7 集中完善文档 |
+| 风险           | 影响 | 缓解措施                            |
+| -------------- | ---- | ----------------------------------- |
+| 兼容性问题     | 高   | 充分测试兼容层，提供完整迁移指南    |
+| 性能不达标     | 中   | 性能基准测试，持续监控              |
+| 测试覆盖率不足 | 中   | 每个 Phase 检查覆盖率，及时补充测试 |
+| 文档不完整     | 低   | Phase 7 集中完善文档                |
 
 ---
 

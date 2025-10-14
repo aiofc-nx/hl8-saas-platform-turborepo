@@ -613,12 +613,12 @@ import { MultiTenancyModule } from '@hl8/multi-tenancy';
 import { FastifyProModule } from '@hl8/fastify-pro';
 
 // 整合后：统一导入
-import { 
-  CachingModule, 
-  ConfigurationModule, 
-  LoggingModule, 
+import {
+  CachingModule,
+  ConfigurationModule,
+  LoggingModule,
   MultiTenancyModule,
-  EnterpriseFastifyAdapter 
+  EnterpriseFastifyAdapter,
 } from '@hl8/nestjs-infra';
 ```
 
@@ -639,48 +639,48 @@ import {
 
 ### 核心功能模块
 
-| 功能模块 | 来源包 | 整合后位置 | 优先级 |
-|---------|-------|-----------|--------|
-| **统一异常处理** ⭐ | **common** | **exceptions/** | **P0** |
-| RFC7807 标准响应 | common | exceptions/core/ | P0 |
-| 异常过滤器 | common | exceptions/filters/ | P0 |
-| 消息提供者 | common | exceptions/providers/ | P0 |
-| Fastify 企业级适配器 | fastify-pro | fastify/ | P1 |
+| 功能模块             | 来源包            | 整合后位置               | 优先级 |
+| -------------------- | ----------------- | ------------------------ | ------ |
+| **统一异常处理** ⭐  | **common**        | **exceptions/**          | **P0** |
+| RFC7807 标准响应     | common            | exceptions/core/         | P0     |
+| 异常过滤器           | common            | exceptions/filters/      | P0     |
+| 消息提供者           | common            | exceptions/providers/    | P0     |
+| Fastify 企业级适配器 | fastify-pro       | fastify/                 | P1     |
 | **5层级数据隔离** ⭐ | **multi-tenancy** | **isolation/**（重命名） | **P1** |
-| 隔离上下文管理 | multi-tenancy | isolation/services/ | P1 |
-| 平台级数据支持 | multi-tenancy | isolation/services/ | P1 |
-| 缓存服务 | cache | caching/ | P1 |
-| Redis 集成 | cache | caching/ | P1 |
-| 缓存装饰器 | cache | caching/decorators/ | P1 |
-| 配置管理 | config | configuration/ | P1 |
-| 类型安全配置 | config | configuration/ | P1 |
-| 配置验证 | config | configuration/ | P1 |
-| 日志服务 | logger | logging/ | P1 |
-| Pino 集成 | logger | logging/ | P1 |
-| 值对象（EntityId） | common | shared/value-objects/ | P1 |
-| 装饰器（@Public） | common | common/decorators/ | P2 |
-| 通用类型定义 | common | shared/types/ | P1 |
-| 枚举 | common | shared/enums/ | P1 |
+| 隔离上下文管理       | multi-tenancy     | isolation/services/      | P1     |
+| 平台级数据支持       | multi-tenancy     | isolation/services/      | P1     |
+| 缓存服务             | cache             | caching/                 | P1     |
+| Redis 集成           | cache             | caching/                 | P1     |
+| 缓存装饰器           | cache             | caching/decorators/      | P1     |
+| 配置管理             | config            | configuration/           | P1     |
+| 类型安全配置         | config            | configuration/           | P1     |
+| 配置验证             | config            | configuration/           | P1     |
+| 日志服务             | logger            | logging/                 | P1     |
+| Pino 集成            | logger            | logging/                 | P1     |
+| 值对象（EntityId）   | common            | shared/value-objects/    | P1     |
+| 装饰器（@Public）    | common            | common/decorators/       | P2     |
+| 通用类型定义         | common            | shared/types/            | P1     |
+| 枚举                 | common            | shared/enums/            | P1     |
 
 ### 中间件和插件
 
-| 功能 | 来源 | 整合后位置 | 优先级 |
-|------|-----|-----------|--------|
-| 隔离上下文提取中间件 | multi-tenancy | isolation/middleware/ | P1 |
-| 限流中间件 | fastify-pro | fastify/middleware/ | P2 |
-| 熔断器中间件 | fastify-pro | fastify/middleware/ | P2 |
-| 安全中间件 | fastify-pro | fastify/middleware/ | P2 |
-| CORS 支持 | fastify-pro | fastify/（集成到适配器） | P1 |
+| 功能                 | 来源          | 整合后位置               | 优先级 |
+| -------------------- | ------------- | ------------------------ | ------ |
+| 隔离上下文提取中间件 | multi-tenancy | isolation/middleware/    | P1     |
+| 限流中间件           | fastify-pro   | fastify/middleware/      | P2     |
+| 熔断器中间件         | fastify-pro   | fastify/middleware/      | P2     |
+| 安全中间件           | fastify-pro   | fastify/middleware/      | P2     |
+| CORS 支持            | fastify-pro   | fastify/（集成到适配器） | P1     |
 
 ### 监控和健康检查
 
-| 功能 | 来源 | 整合后位置 | 优先级 |
-|------|-----|-----------|--------|
-| 缓存监控 | cache | caching/monitoring/ | P2 |
-| 缓存统计 | cache | caching/monitoring/ | P2 |
-| 缓存健康检查 | cache | caching/monitoring/ | P2 |
-| Fastify 健康检查 | fastify-pro | fastify/（集成到适配器） | P1 |
-| 性能监控 | fastify-pro | fastify/（集成到适配器） | P1 |
+| 功能             | 来源        | 整合后位置               | 优先级 |
+| ---------------- | ----------- | ------------------------ | ------ |
+| 缓存监控         | cache       | caching/monitoring/      | P2     |
+| 缓存统计         | cache       | caching/monitoring/      | P2     |
+| 缓存健康检查     | cache       | caching/monitoring/      | P2     |
+| Fastify 健康检查 | fastify-pro | fastify/（集成到适配器） | P1     |
+| 性能监控         | fastify-pro | fastify/（集成到适配器） | P1     |
 
 ## 技术迁移要求
 
@@ -719,7 +719,7 @@ class TenantContextService {
 class IsolationContext {
   private readonly tenantId: TenantId;
   private readonly organizationIds: OrganizationId[];
-  
+
   // 业务行为：验证隔离上下文
   validate(): boolean {
     // 业务规则在对象内部
@@ -728,7 +728,7 @@ class IsolationContext {
     }
     return true;
   }
-  
+
   // 业务行为：切换组织
   switchOrganization(orgId: OrganizationId): void {
     // 业务规则检查
@@ -893,18 +893,18 @@ class IsolationContext {
 
 ## 估算的工作量
 
-| 模块 | 代码行数（估算） | 迁移难度 | 工作量（人天） |
-|------|---------------|---------|--------------|
-| **common（异常处理）** ⭐ | **~500 行** | **中** | **2-4 天** |
-| multi-tenancy | ~800 行 | 中 | 3-5 天 |
-| cache | ~600 行 | 中 | 2-4 天 |
-| fastify-pro | ~500 行 | 低 | 2-3 天 |
-| config | ~700 行 | 中 | 3-5 天 |
-| logger | ~300 行 | 低 | 1-2 天（已有新版） |
-| 架构重构 | - | 高 | 3-5 天 |
-| 测试补充 | - | 中 | 4-6 天 |
-| 文档编写 | - | 低 | 2-3 天 |
-| **总计** | **~3400 行** | - | **22-37 天** |
+| 模块                      | 代码行数（估算） | 迁移难度 | 工作量（人天）     |
+| ------------------------- | ---------------- | -------- | ------------------ |
+| **common（异常处理）** ⭐ | **~500 行**      | **中**   | **2-4 天**         |
+| multi-tenancy             | ~800 行          | 中       | 3-5 天             |
+| cache                     | ~600 行          | 中       | 2-4 天             |
+| fastify-pro               | ~500 行          | 低       | 2-3 天             |
+| config                    | ~700 行          | 中       | 3-5 天             |
+| logger                    | ~300 行          | 低       | 1-2 天（已有新版） |
+| 架构重构                  | -                | 高       | 3-5 天             |
+| 测试补充                  | -                | 中       | 4-6 天             |
+| 文档编写                  | -                | 低       | 2-3 天             |
+| **总计**                  | **~3400 行**     | -        | **22-37 天**       |
 
 **注意**：common 模块标记为 **CRITICAL（P0）**，必须优先整合，因为其他模块依赖其异常处理能力
 

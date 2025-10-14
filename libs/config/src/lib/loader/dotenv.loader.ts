@@ -7,10 +7,10 @@
 
 import * as dotenv from 'dotenv';
 import * as dotenvExpand from 'dotenv-expand';
-import { ConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
-import { ErrorHandler, ConfigError } from '../errors/index.js';
-import { ConfigRecord, KeyTransformer } from '../types/index.js';
 import { CONFIG_DEFAULTS } from '../constants.js';
+import { ConfigError, ErrorHandler } from '../errors/index.js';
+import { ConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
+import { ConfigRecord, KeyTransformer } from '../types/index.js';
 
 /**
  * 环境变量加载器选项接口
@@ -38,7 +38,7 @@ import { DotenvLoaderOptions } from '../types/loader.types.js';
  * @since 1.0.0
  */
 export const dotenvLoader = (
-  options: DotenvLoaderOptions = {}
+  options: DotenvLoaderOptions = {},
 ): ConfigLoader => {
   const {
     envFilePath = CONFIG_DEFAULTS.DEFAULT_ENV_FILE,
@@ -60,7 +60,7 @@ export const dotenvLoader = (
           throw ErrorHandler.handleFileLoadError(
             result.error,
             Array.isArray(envFilePath) ? envFilePath.join(', ') : envFilePath,
-            { ignoreEnvFile, ignoreEnvVars }
+            { ignoreEnvFile, ignoreEnvVars },
           );
         }
         config = { ...config, ...result.parsed };
@@ -71,7 +71,7 @@ export const dotenvLoader = (
         throw ErrorHandler.handleFileLoadError(
           error as Error,
           Array.isArray(envFilePath) ? envFilePath.join(', ') : envFilePath,
-          { ignoreEnvFile, ignoreEnvVars }
+          { ignoreEnvFile, ignoreEnvVars },
         );
       }
     }
@@ -89,7 +89,7 @@ export const dotenvLoader = (
         throw ErrorHandler.handleVariableExpansionError(
           error as Error,
           'expandVariables',
-          { enableExpandVariables, configKeys: Object.keys(config) }
+          { enableExpandVariables, configKeys: Object.keys(config) },
         );
       }
     }
@@ -134,7 +134,7 @@ function expandVariables(config: ConfigRecord): ConfigRecord {
  */
 function transformKeys(
   config: ConfigRecord,
-  transformer: KeyTransformer
+  transformer: KeyTransformer,
 ): ConfigRecord {
   const result: ConfigRecord = {};
   for (const [key, value] of Object.entries(config)) {
@@ -155,7 +155,7 @@ function transformKeys(
  */
 function parseWithSeparator(
   config: ConfigRecord,
-  separator: string
+  separator: string,
 ): ConfigRecord {
   const result: ConfigRecord = {};
 

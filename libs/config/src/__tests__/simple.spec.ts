@@ -6,8 +6,8 @@
  * @since 1.0.0
  */
 
+import { dotenvLoader, fileLoader } from '../lib/loader';
 import { TypedConfigModule } from '../lib/typed-config.module';
-import { fileLoader, dotenvLoader } from '../lib/loader';
 import { TestConfig, createTestConfig } from './test-utils';
 
 describe('配置模块简单测试', () => {

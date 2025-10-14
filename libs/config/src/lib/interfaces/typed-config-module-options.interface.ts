@@ -37,21 +37,21 @@
 
 import type { ClassConstructor } from 'class-transformer';
 import type { ValidatorOptions } from 'class-validator';
+import { CacheOptions } from '../types/cache.types.js';
 import {
-  ConfigLoader,
   AsyncConfigLoader,
-  ConfigRecord,
+  ConfigLoader,
   ConfigNormalizer,
+  ConfigRecord,
   ConfigValidator,
 } from '../types/index.js';
-import { CacheOptions } from '../types/cache.types.js';
 
 // 重新导出类型以保持向后兼容
 export type {
-  ConfigLoader,
   AsyncConfigLoader,
-  ConfigRecord,
+  ConfigLoader,
   ConfigNormalizer,
+  ConfigRecord,
   ConfigValidator,
 } from '../types/index.js';
 

@@ -9,4 +9,3 @@ export default {
   coverageDirectory: '../../coverage/libs/config',
   testMatch: ['**/__tests__/**/*.spec.ts', '**/*.spec.ts'],
 };
-

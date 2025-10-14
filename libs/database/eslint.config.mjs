@@ -1,19 +1,3 @@
-import baseConfig from '@repo/eslint-config/nest.js';
+import nest from '@repo/eslint-config/eslint-nest.config.mjs';
 
-/**
- * ESLint 配置 - Database 模块
- *
- * @description 继承根目录的 NestJS ESLint 配置
- */
-export default [
-  ...baseConfig,
-  {
-    languageOptions: {
-      parserOptions: {
-        project: './tsconfig.json',
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-  },
-];
-
+export default [...nest];

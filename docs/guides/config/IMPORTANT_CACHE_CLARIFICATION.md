@@ -109,7 +109,7 @@
   "dependencies": {
     "@nestjs/common": "^11.1.6",
     "class-validator": "^0.14.2",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.2"
     // ...
     // ❌ 没有 @hl8/caching
     // ❌ 没有 ioredis
@@ -125,7 +125,7 @@
 {
   "dependencies": {
     "ioredis": "^5.4.2",
-    "@hl8/isolation-model": "workspace:*",
+    "@hl8/isolation-model": "workspace:*"
     // ...
     // ❌ 没有 @hl8/config
   }

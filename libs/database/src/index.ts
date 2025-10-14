@@ -45,29 +45,28 @@ export * from './database.module.js';
 export {
   EntityManager,
   EntityRepository,
+  wrap,
   type EntityData,
   type FilterQuery,
-  type QueryOrderMap,
   type FindOptions,
-  wrap,
+  type QueryOrderMap,
 } from '@mikro-orm/core';
 
 // 实体装饰器
 export {
+  Embedded,
   Entity,
+  Enum,
+  Formula,
+  Index,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryKey,
   Property,
   Unique,
-  Index,
-  OneToOne,
-  OneToMany,
-  ManyToOne,
-  ManyToMany,
-  Embedded,
-  Enum,
-  Formula,
 } from '@mikro-orm/core';
 
 // NestJS 集成
 export { InjectEntityManager, InjectRepository } from '@mikro-orm/nestjs';
-

@@ -80,12 +80,12 @@ docs/
 
 ### 文档位置
 
-| 文档 | 之前 | 现在 |
-|------|------|------|
-| 配置索引 | `docs/CONFIG_INDEX.md` | `docs/guides/config/README.md` |
+| 文档     | 之前                             | 现在                                           |
+| -------- | -------------------------------- | ---------------------------------------------- |
+| 配置索引 | `docs/CONFIG_INDEX.md`           | `docs/guides/config/README.md`                 |
 | 快速入门 | `docs/CONFIG_GETTING_STARTED.md` | `docs/guides/config/CONFIG_GETTING_STARTED.md` |
-| 使用指南 | `docs/CONFIGURATION_GUIDE.md` | `docs/guides/config/CONFIGURATION_GUIDE.md` |
-| 其他文档 | `docs/CONFIG_*.md` | `docs/guides/config/CONFIG_*.md` |
+| 使用指南 | `docs/CONFIGURATION_GUIDE.md`    | `docs/guides/config/CONFIGURATION_GUIDE.md`    |
+| 其他文档 | `docs/CONFIG_*.md`               | `docs/guides/config/CONFIG_*.md`               |
 
 ### 访问路径
 
@@ -119,6 +119,7 @@ docs/
 **配置文档目录**：📁 [docs/guides/config/](./docs/guides/config/)
 
 **必读文档**：
+
 - 📖 [配置文档索引](./docs/guides/config/README.md)
 - ⚡ [配置快速入门](./docs/guides/config/CONFIG_GETTING_STARTED.md)
 - 📘 [配置使用指南](./docs/guides/config/CONFIGURATION_GUIDE.md)
@@ -188,22 +189,22 @@ hl8-saas-platform-turborepo/
 
 ### 核心文档目录（docs/guides/config/）
 
-| 序号 | 文档 | 类型 |
-|------|------|------|
-| 0 | README.md | 索引 |
-| 1 | CONFIG_GETTING_STARTED.md | 入门 |
-| 2 | CONFIGURATION_GUIDE.md | 使用 |
-| 3 | CONFIG_ARCHITECTURE.md | 架构 |
-| 4 | CONFIG_QUICK_REFERENCE.md | 参考 |
-| 5 | CONFIG_VISUAL_GUIDE.md | 可视化 |
-| 6 | CONFIG_CACHE_EXPLAINED.md | 缓存 |
-| 7 | CONFIG_TWO_CACHES.md | 缓存 |
-| 8 | IMPORTANT_CACHE_CLARIFICATION.md | 缓存 |
-| 9 | CONFIG_SECURITY_ANALYSIS.md | 安全 |
-| 10 | CONFIG_ENV_VS_FILE.md | 安全 |
-| 11 | CONFIG_DOCS_SUMMARY.md | 总结 |
-| 12 | CONFIG_SECURITY_UPDATES.md | 更新 |
-| 13 | CACHE_CLARIFICATION_UPDATES.md | 更新 |
+| 序号 | 文档                             | 类型   |
+| ---- | -------------------------------- | ------ |
+| 0    | README.md                        | 索引   |
+| 1    | CONFIG_GETTING_STARTED.md        | 入门   |
+| 2    | CONFIGURATION_GUIDE.md           | 使用   |
+| 3    | CONFIG_ARCHITECTURE.md           | 架构   |
+| 4    | CONFIG_QUICK_REFERENCE.md        | 参考   |
+| 5    | CONFIG_VISUAL_GUIDE.md           | 可视化 |
+| 6    | CONFIG_CACHE_EXPLAINED.md        | 缓存   |
+| 7    | CONFIG_TWO_CACHES.md             | 缓存   |
+| 8    | IMPORTANT_CACHE_CLARIFICATION.md | 缓存   |
+| 9    | CONFIG_SECURITY_ANALYSIS.md      | 安全   |
+| 10   | CONFIG_ENV_VS_FILE.md            | 安全   |
+| 11   | CONFIG_DOCS_SUMMARY.md           | 总结   |
+| 12   | CONFIG_SECURITY_UPDATES.md       | 更新   |
+| 13   | CACHE_CLARIFICATION_UPDATES.md   | 更新   |
 
 **总计**：14 份文档（含索引）
 

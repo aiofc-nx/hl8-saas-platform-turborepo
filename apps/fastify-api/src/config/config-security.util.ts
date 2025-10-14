@@ -22,16 +22,16 @@
  *
  * async function bootstrap() {
  *   const app = await NestFactory.create(AppModule);
- *   
+ *
  *   // 冻结配置对象
  *   const config = app.get(AppConfig);
  *   deepFreeze(config);
- *   
+ *
  *   // 清理敏感环境变量
  *   if (config.NODE_ENV === 'production') {
  *     cleanupSensitiveEnvVars();
  *   }
- *   
+ *
  *   await app.listen(config.PORT);
  * }
  * ```
@@ -75,11 +75,7 @@ export function deepFreeze<T>(obj: T): T {
     const value = (obj as any)[prop];
 
     // 如果属性是对象且未冻结，递归冻结
-    if (
-      value &&
-      typeof value === 'object' &&
-      !Object.isFrozen(value)
-    ) {
+    if (value && typeof value === 'object' && !Object.isFrozen(value)) {
       deepFreeze(value);
     }
   });
@@ -138,15 +134,15 @@ const SENSITIVE_ENV_VARS = [
  * // main.ts
  * async function bootstrap() {
  *   const app = await NestFactory.create(AppModule);
- *   
+ *
  *   // 配置已加载
  *   const config = app.get(AppConfig);
- *   
+ *
  *   // 生产环境清理敏感环境变量
  *   if (config.NODE_ENV === 'production') {
  *     cleanupSensitiveEnvVars();
  *   }
- *   
+ *
  *   await app.listen(config.PORT);
  * }
  * ```
@@ -163,7 +159,9 @@ export function cleanupSensitiveEnvVars(): void {
 
   // 可选：记录清理数量（不记录具体的键名）
   if (cleanedCount > 0) {
-    console.log(`[Security] Cleaned up ${cleanedCount} sensitive environment variables`);
+    console.log(
+      `[Security] Cleaned up ${cleanedCount} sensitive environment variables`,
+    );
   }
 }
 
@@ -242,14 +240,14 @@ export function isFrozen(obj: any, deep: boolean = true): boolean {
  */
 export function getSafeConfigCopy(
   obj: any,
-  sensitiveKeys: string[] = ['password', 'secret', 'key', 'token']
+  sensitiveKeys: string[] = ['password', 'secret', 'key', 'token'],
 ): any {
   if (!obj || typeof obj !== 'object') {
     return obj;
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(item => getSafeConfigCopy(item, sensitiveKeys));
+    return obj.map((item) => getSafeConfigCopy(item, sensitiveKeys));
   }
 
   const copy: any = {};
@@ -257,8 +255,8 @@ export function getSafeConfigCopy(
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
       // 检查是否是敏感字段
-      const isSensitive = sensitiveKeys.some(
-        sensitive => key.toLowerCase().includes(sensitive.toLowerCase())
+      const isSensitive = sensitiveKeys.some((sensitive) =>
+        key.toLowerCase().includes(sensitive.toLowerCase()),
       );
 
       if (isSensitive && typeof obj[key] === 'string') {
@@ -273,4 +271,3 @@ export function getSafeConfigCopy(
 
   return copy;
 }
-

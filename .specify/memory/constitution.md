@@ -611,8 +611,11 @@ TypeScript 的 `any` 类型具有两面性：它禁用类型检查带来潜在�
 
 ```typescript
 // 声明对函数参数类型不关心的泛型约束
-type ReturnType<T extends (...args: any[]) => any> = 
-  T extends (...args: any[]) => infer R ? R : never;
+type ReturnType<T extends (...args: any[]) => any> = T extends (
+  ...args: any[]
+) => infer R
+  ? R
+  : never;
 ```
 
 **✅ 推荐模式 - 配合测试**：
@@ -718,7 +721,7 @@ function process(data: any): any {
     this.logger.error('用户不存在');
     return null; // 调用方需要检查null
   }
-  
+
   // ✅ 正确做法
   if (userNotFound) {
     this.logger.warn('用户查找失败', { userId });
@@ -731,7 +734,7 @@ function process(data: any): any {
   ```typescript
   // ❌ 错误做法
   throw new DatabaseException('连接失败'); // 没有日志记录
-  
+
   // ✅ 正确做法
   this.logger.error('数据库连接失败', undefined, { host, port });
   throw new DatabaseException('连接失败');
@@ -747,7 +750,7 @@ function process(data: any): any {
     this.logger.error('操作失败', undefined, { error: error.message });
     // 没有重新抛出异常，调用方不知道操作失败
   }
-  
+
   // ✅ 正确做法
   try {
     await riskyOperation();
@@ -876,7 +879,7 @@ function process(data: any): any {
 
 #### 配置继承要求
 
-- 所有服务端项目的 `tsconfig.json` 必须继承共享配置（如 `@repo/ts-config/nestjs.json`）
+- 所有服务端项目的 `tsconfig.json` 必须继承共享配置（如 `@repo/typescript-config/nestjs.json`）
 - 仅在必要时添加项目特定配置（如 `paths`、`outDir`）
 - 禁止覆盖核心配置项（module、moduleResolution、strict）
 
@@ -887,8 +890,8 @@ function process(data: any): any {
 ```json
 {
   "compilerOptions": {
-    "module": "CommonJS",        // ❌ 禁止
-    "moduleResolution": "node"   // ❌ 禁止
+    "module": "CommonJS", // ❌ 禁止
+    "moduleResolution": "node" // ❌ 禁止
   }
 }
 ```
@@ -969,13 +972,13 @@ function process(data: any): any {
 # 示例 GitHub Actions workflow
 - name: Type Check
   run: pnpm type-check
-  
+
 - name: Build
   run: pnpm build:swc
-  
+
 - name: Lint
   run: pnpm lint
-  
+
 - name: Test
   run: pnpm test
 ```
@@ -998,7 +1001,7 @@ function process(data: any): any {
     "target": "ES2022",
     "strict": true,
     // ... 其他宪章要求的配置
-    "noEmit": false  // tsc 用于生成类型声明
+    "noEmit": false // tsc 用于生成类型声明
   }
 }
 ```
@@ -1009,7 +1012,7 @@ function process(data: any): any {
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noEmit": true  // 仅类型检查，不生成文件
+    "noEmit": true // 仅类型检查，不生成文件
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts", "__tests__"]
 }

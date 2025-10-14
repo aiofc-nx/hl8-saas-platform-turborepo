@@ -94,4 +94,3 @@ export class GeneralBadRequestException extends AbstractHttpException {
     super('BAD_REQUEST', title, detail, 400, data);
   }
 }
-

@@ -1,9 +1,3 @@
-import baseConfig from '@repo/eslint-config/library.js';
+import nest from '@repo/eslint-config/eslint-nest.config.mjs';
 
-export default [
-  ...baseConfig,
-  {
-    ignores: ['dist/**', 'node_modules/**'],
-  },
-];
-
+export default [...nest];

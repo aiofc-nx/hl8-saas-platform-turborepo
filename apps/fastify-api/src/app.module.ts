@@ -1,18 +1,18 @@
-import { Module } from '@nestjs/common';
-import { TypedConfigModule, dotenvLoader } from '@hl8/config';
+import { CachingModule } from '@hl8/caching/index.js';
+import { TypedConfigModule, dotenvLoader } from '@hl8/config/index.js';
+import { DatabaseModule, DatabaseConfig } from '@hl8/database/index.js';
 import {
+  CompressionModule,
   FastifyExceptionModule,
   FastifyLoggingModule,
-  CompressionModule,
   MetricsModule,
-} from '@hl8/nestjs-fastify';
-import { CachingModule } from '@hl8/caching';
+} from '@hl8/nestjs-fastify/index.js';
 import { IsolationModule } from '@hl8/nestjs-isolation';
-import { DatabaseModule } from '@hl8/database';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppConfig } from './config/app.config.js';
-import { UserModule } from './modules/user.module.js';
 import { User } from './entities/user.entity.js';
+import { UserModule } from './modules/user.module.js';
 
 /**
  * HL8 SAAS 平台应用根模块
@@ -97,7 +97,9 @@ import { User } from './entities/user.entity.js';
     FastifyLoggingModule.forRoot({
       config: {
         level: (process.env.LOGGING__LEVEL as any) || 'info',
-        prettyPrint: process.env.NODE_ENV === 'development' || process.env.LOGGING__PRETTY_PRINT === 'true',
+        prettyPrint:
+          process.env.NODE_ENV === 'development' ||
+          process.env.LOGGING__PRETTY_PRINT === 'true',
         includeIsolationContext: true,
         timestamp: true,
         enabled: true,
@@ -143,16 +145,27 @@ import { User } from './entities/user.entity.js';
     // 配置通过 AppConfig.database (DatabaseConfig) 进行类型验证
     DatabaseModule.forRootAsync({
       inject: [AppConfig],
-      useFactory: (config: AppConfig) => ({
-        connection: config.database.getConnectionConfig(),
-        pool: config.database.getPoolConfig(),
-        // 注册实体
-        entities: [User],
-        // 开发环境启用调试
-        debug: config.isDevelopment,
-        // 显式指定 driver 选项
-        driver: 'PostgreSqlDriver',
-      }),
+      useFactory: (config: AppConfig) => {
+        // 如果数据库配置不存在，创建默认配置
+        let dbConfig = config.database;
+        if (!dbConfig) {
+          dbConfig = new DatabaseConfig();
+          dbConfig.database = process.env.DB_DATABASE || 'aiofix_platform';
+          dbConfig.username = process.env.DB_USERNAME || 'aiofix_user';
+          dbConfig.password = process.env.DB_PASSWORD || 'aiofix_password';
+        }
+        
+        return {
+          connection: dbConfig.getConnectionConfig(),
+          pool: dbConfig.getPoolConfig(),
+          // 注册实体
+          entities: [User],
+          // 开发环境启用调试
+          debug: config.isDevelopment,
+          // 显式指定 driver 选项
+          driver: 'PostgreSqlDriver',
+        };
+      },
     }),
 
     // 用户模块 - 演示 database 模块的使用

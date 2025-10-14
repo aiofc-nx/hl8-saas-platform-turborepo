@@ -23,10 +23,10 @@
 
 ### 与 @hl8/caching 的区别
 
-| 模块 | 用途 | 缓存对象 | 使用方式 |
-|------|------|---------|---------|
-| **@hl8/config** | 配置管理 | AppConfig 实例 | 自动、透明 |
-| **@hl8/caching** | 业务数据缓存 | 用户数据、查询结果等 | 手动调用 |
+| 模块             | 用途         | 缓存对象             | 使用方式   |
+| ---------------- | ------------ | -------------------- | ---------- |
+| **@hl8/config**  | 配置管理     | AppConfig 实例       | 自动、透明 |
+| **@hl8/caching** | 业务数据缓存 | 用户数据、查询结果等 | 手动调用   |
 
 **两者完全独立，互不依赖，职责不同！**
 
@@ -113,9 +113,9 @@ export class AppConfig {
       schema: AppConfig,
       load: [
         fileLoader({ path: './config/app.yml' }),
-        dotenvLoader({ separator: '__' })
-      ]
-    })
+        dotenvLoader({ separator: '__' }),
+      ],
+    }),
   ],
 })
 export class AppModule {}
@@ -155,9 +155,9 @@ TypedConfigModule.forRoot({
 
 ```typescript
 fileLoader({
-  path: './config/app.yml',      // 文件路径
-  encoding: 'utf8',              // 编码
-})
+  path: './config/app.yml', // 文件路径
+  encoding: 'utf8', // 编码
+});
 ```
 
 支持格式：`.json`, `.yml`, `.yaml`
@@ -166,10 +166,10 @@ fileLoader({
 
 ```typescript
 dotenvLoader({
-  path: '.env',                  // .env 文件路径
-  separator: '__',               // 嵌套分隔符
-  expandVariables: true,         // 变量扩展
-})
+  path: '.env', // .env 文件路径
+  separator: '__', // 嵌套分隔符
+  expandVariables: true, // 变量扩展
+});
 ```
 
 变量扩展示例：
@@ -184,9 +184,9 @@ DB_PORT=${PORT}                # 环境变量
 ```typescript
 remoteLoader({
   url: 'https://config-server.com/api/config',
-  headers: { 'Authorization': 'Bearer token' },
+  headers: { Authorization: 'Bearer token' },
   timeout: 5000,
-})
+});
 ```
 
 #### directoryLoader - 目录批量加载器
@@ -195,7 +195,7 @@ remoteLoader({
 directoryLoader({
   path: './config',
   pattern: '**/*.yml',
-})
+});
 ```
 
 ---
@@ -239,9 +239,9 @@ DB_PORT=5432
 **结果**:
 
 ```typescript
-config.database.host  // → 'prod-server'
-config.database.port  // → 5432
-config.database.url   // → 'postgres://prod-server:5432/mydb'
+config.database.host; // → 'prod-server'
+config.database.port; // → 5432
+config.database.url; // → 'postgres://prod-server:5432/mydb'
 ```
 
 ### 配置缓存
@@ -251,9 +251,9 @@ TypedConfigModule.forRoot({
   schema: AppConfig,
   cache: {
     enabled: true,
-    ttl: 3600,                // 1小时
+    ttl: 3600, // 1小时
   },
-})
+});
 ```
 
 ---
@@ -270,13 +270,13 @@ TypedConfigModule.forRoot({
 
 ### 🎯 核心优势
 
-| 特性 | 传统方式 | @hl8/config |
-|------|---------|------------|
-| 类型安全 | ❌ any | ✅ 完全类型 |
-| 验证 | ❌ 手动 | ✅ class-validator |
-| 环境变量 | ⚠️ process.env | ✅ 类型安全注入 |
-| 多格式 | ❌ 手动解析 | ✅ 自动支持 |
-| 变量扩展 | ❌ 不支持 | ✅ ${VAR} 语法 |
+| 特性     | 传统方式       | @hl8/config        |
+| -------- | -------------- | ------------------ |
+| 类型安全 | ❌ any         | ✅ 完全类型        |
+| 验证     | ❌ 手动        | ✅ class-validator |
+| 环境变量 | ⚠️ process.env | ✅ 类型安全注入    |
+| 多格式   | ❌ 手动解析    | ✅ 自动支持        |
+| 变量扩展 | ❌ 不支持      | ✅ ${VAR} 语法     |
 
 ---
 

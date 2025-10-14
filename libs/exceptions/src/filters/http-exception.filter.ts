@@ -58,13 +58,16 @@
  */
 
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   Injectable,
   Optional,
 } from '@nestjs/common';
-import { AbstractHttpException, ProblemDetails } from '../core/abstract-http.exception.js';
+import {
+  AbstractHttpException,
+  ProblemDetails,
+} from '../core/abstract-http.exception.js';
 
 /**
  * 日志服务接口
@@ -135,7 +138,9 @@ export interface IExceptionMessageProvider {
  */
 @Injectable()
 @Catch(AbstractHttpException)
-export class HttpExceptionFilter implements ExceptionFilter<AbstractHttpException> {
+export class HttpExceptionFilter
+  implements ExceptionFilter<AbstractHttpException>
+{
   /**
    * 创建 HTTP 异常过滤器
    *
@@ -240,4 +245,3 @@ export class HttpExceptionFilter implements ExceptionFilter<AbstractHttpExceptio
     // 如果没有注入日志服务，静默处理（避免 console 污染）
   }
 }
-

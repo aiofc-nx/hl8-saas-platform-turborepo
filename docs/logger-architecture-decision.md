@@ -31,11 +31,11 @@
 
 ### 方案对比
 
-| 方案 | 描述 | 优点 | 缺点 |
-|------|------|------|------|
-| **NestJS 内置 Logger** | `@nestjs/common/Logger` | 官方支持 | 无隔离上下文、性能一般 |
-| **通用 LoggerService** | `@hl8/nestjs-infra` | 有隔离上下文 | 需创建新 Pino 实例 |
-| **FastifyLoggerService** | `@hl8/nestjs-fastify` | 零开销、有隔离上下文 | 仅适用 Fastify |
+| 方案                     | 描述                    | 优点                 | 缺点                   |
+| ------------------------ | ----------------------- | -------------------- | ---------------------- |
+| **NestJS 内置 Logger**   | `@nestjs/common/Logger` | 官方支持             | 无隔离上下文、性能一般 |
+| **通用 LoggerService**   | `@hl8/nestjs-infra`     | 有隔离上下文         | 需创建新 Pino 实例     |
+| **FastifyLoggerService** | `@hl8/nestjs-fastify`   | 零开销、有隔离上下文 | 仅适用 Fastify         |
 
 **最终选择**: **增强的 FastifyLoggerService** ✅
 
@@ -50,7 +50,7 @@
 ```typescript
 export class FastifyLoggerService {
   constructor(private readonly pinoLogger: PinoLogger) {}
-  
+
   log(message: any, ...optionalParams: any[]): void {
     this.pinoLogger.info(optionalParams[0] || {}, message);
   }
@@ -63,14 +63,14 @@ export class FastifyLoggerService {
 export class FastifyLoggerService {
   constructor(
     private readonly pinoLogger: PinoLogger,
-    @Optional() private readonly isolationService?: IsolationContextService,  // ← 新增
+    @Optional() private readonly isolationService?: IsolationContextService, // ← 新增
   ) {}
-  
+
   log(message: any, ...optionalParams: any[]): void {
-    const context = this.enrichContext(optionalParams[0]);  // ← 增强
+    const context = this.enrichContext(optionalParams[0]); // ← 增强
     this.pinoLogger.info(context, message);
   }
-  
+
   private enrichContext(context?: any): any {
     if (!this.isolationService) {
       return context || {};
@@ -78,7 +78,7 @@ export class FastifyLoggerService {
     const isolationContext = this.isolationService.getIsolationContext();
     return {
       ...context,
-      isolation: isolationContext?.toPlainObject(),  // ← 自动添加
+      isolation: isolationContext?.toPlainObject(), // ← 自动添加
     };
   }
 }
@@ -98,13 +98,13 @@ export class FastifyLoggerService {
     const fastifyInstance = httpAdapterHost?.httpAdapter?.getInstance?.();
     if (fastifyInstance?.log) {
       return new FastifyLoggerService(
-        fastifyInstance.log, 
+        fastifyInstance.log,
         isolationService  // ← 传递
       );
     }
     const pino = require('pino');
     return new FastifyLoggerService(
-      pino({ level: 'info' }), 
+      pino({ level: 'info' }),
       isolationService  // ← 传递
     );
   },
@@ -140,7 +140,8 @@ FastifyLogger: 复用 Pino  → ~0.1μs/log
   "reqId": "req-abc-123",
   "msg": "订单创建成功",
   "orderId": "order-456",
-  "isolation": {              // ← 自动添加！
+  "isolation": {
+    // ← 自动添加！
     "tenantId": "tenant-789",
     "organizationId": "org-101",
     "departmentId": "dept-202",
@@ -182,12 +183,12 @@ IsolationContextService
 ```typescript
 /**
  * @deprecated 使用 @hl8/nestjs-fastify/FastifyLoggerService 代替
- * 
+ *
  * 对于 Fastify 应用，推荐使用 FastifyLoggerService，它提供：
  * - 零开销（复用 Fastify Pino）
  * - 自动包含隔离上下文
  * - 更好的性能
- * 
+ *
  * 本 LoggerService 仅保留用于 Express 应用或特殊场景
  */
 export class LoggerService {
@@ -217,8 +218,8 @@ export class LoggerService {
 
 ```typescript
 // ❌ 用户困惑：该用哪个？
-import { LoggerService } from '@hl8/nestjs-infra';           // 通用，有隔离上下文
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';  // Fastify，无隔离上下文
+import { LoggerService } from '@hl8/nestjs-infra'; // 通用，有隔离上下文
+import { FastifyLoggerService } from '@hl8/nestjs-fastify'; // Fastify，无隔离上下文
 
 // 性能好 vs 功能完整？选哪个？
 ```
@@ -246,8 +247,8 @@ import { IsolationModule } from '@hl8/nestjs-infra';
 
 @Module({
   imports: [
-    FastifyLoggingModule.forRoot(),  // ← Fastify 专用
-    IsolationModule.forRoot(),       // ← 提供隔离上下文
+    FastifyLoggingModule.forRoot(), // ← Fastify 专用
+    IsolationModule.forRoot(), // ← 提供隔离上下文
   ],
 })
 export class AppModule {}
@@ -261,7 +262,8 @@ import { IsolationModule } from '@hl8/nestjs-infra';
 
 @Module({
   imports: [
-    LoggingModule.forRoot({           // ← 通用 Logger
+    LoggingModule.forRoot({
+      // ← 通用 Logger
       level: 'info',
       prettyPrint: false,
     }),
@@ -279,7 +281,7 @@ import { Logger } from '@nestjs/common';
 
 export class MyService {
   private readonly logger = new Logger(MyService.name);
-  
+
   doSomething() {
     this.logger.log('Task completed');
   }

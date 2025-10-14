@@ -2,8 +2,8 @@
  * GeneralNotFoundException 单元测试
  */
 
-import { GeneralNotFoundException } from './general-not-found.exception.js';
 import { AbstractHttpException } from './abstract-http.exception.js';
+import { GeneralNotFoundException } from './general-not-found.exception.js';
 
 describe('GeneralNotFoundException', () => {
   describe('构造函数', () => {
@@ -163,4 +163,3 @@ describe('GeneralNotFoundException', () => {
     });
   });
 });
-

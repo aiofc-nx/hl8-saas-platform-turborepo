@@ -8,12 +8,11 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as os from 'os';
 import { fileLoader } from '../../lib/loader/file.loader';
 import {
-  createTestFileContent,
-  createTempDir,
   cleanupTempFiles,
+  createTempDir,
+  createTestFileContent,
   testAssertions,
 } from '../test-utils';
 
@@ -259,7 +258,7 @@ describe('fileLoader', () => {
           .fill(0)
           .map((_, i) => ({ id: i, value: `item_${i}` })),
         largeObject: Object.fromEntries(
-          new Array(1000).fill(0).map((_, i) => [`key_${i}`, `value_${i}`])
+          new Array(1000).fill(0).map((_, i) => [`key_${i}`, `value_${i}`]),
         ),
       };
 
@@ -289,7 +288,7 @@ describe('fileLoader', () => {
       const loader = fileLoader({ path: filePath });
 
       const promises = Array.from({ length: 10 }, () =>
-        Promise.resolve(loader())
+        Promise.resolve(loader()),
       );
 
       const results = await Promise.all(promises);

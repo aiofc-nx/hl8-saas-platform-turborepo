@@ -45,17 +45,23 @@ ERROR: Unhandled Exception: 服务器内部错误
 
 ```ts
 // 将以前的：
-this.logger.error('事务执行失败，已回滚', (error as Error).stack, { transactionId, duration });
+this.logger.error('事务执行失败，已回滚', (error as Error).stack, {
+  transactionId,
+  duration,
+});
 
 // 改为：
 this.logger.error('事务执行失败，已回滚', {
   transactionId,
   duration,
-  err: error instanceof Error ? {
-    type: error.constructor.name,
-    message: error.message,
-    stack: error.stack,
-  } : undefined,
+  err:
+    error instanceof Error
+      ? {
+          type: error.constructor.name,
+          message: error.message,
+          stack: error.stack,
+        }
+      : undefined,
 });
 ```
 
@@ -83,13 +89,24 @@ this.logger.error(logMessage, undefined, {
   detail: this.getDetailedError(exception),
   url: request.url,
   method: request.method,
-  err: exception instanceof Error ? { type: exception.constructor.name, message: exception.message, stack: exception.stack } : undefined,
+  err:
+    exception instanceof Error
+      ? {
+          type: exception.constructor.name,
+          message: exception.message,
+          stack: exception.stack,
+        }
+      : undefined,
 });
 
 // libs/nestjs-fastify/src/exceptions/filters/fastify-http-exception.filter.ts（节选）
 this.logger.error(logMessage, undefined, {
   ...logContext,
-  err: { type: exception.constructor.name, message: exception.message, stack: exception.stack },
+  err: {
+    type: exception.constructor.name,
+    message: exception.message,
+    stack: exception.stack,
+  },
 });
 ```
 

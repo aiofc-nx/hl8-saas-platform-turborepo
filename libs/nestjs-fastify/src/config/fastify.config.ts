@@ -93,4 +93,3 @@ export const PROD_FASTIFY_CONFIG: EnterpriseFastifyAdapterOptions = {
     resetTimeout: 60000,
   },
 };
-

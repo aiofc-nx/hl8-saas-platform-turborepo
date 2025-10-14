@@ -7,12 +7,11 @@
  */
 
 import {
+  ConfigParser,
   ConfigRecord,
   KeyTransformer,
   ResponseMapper,
   RetryCondition,
-  ConfigParser,
-  EnvSubstitutor,
 } from './config.types.js';
 
 /**

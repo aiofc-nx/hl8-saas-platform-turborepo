@@ -2,8 +2,8 @@
  * GeneralInternalServerException 单元测试
  */
 
-import { GeneralInternalServerException } from './general-internal-server.exception.js';
 import { AbstractHttpException } from './abstract-http.exception.js';
+import { GeneralInternalServerException } from './general-internal-server.exception.js';
 
 describe('GeneralInternalServerException', () => {
   describe('构造函数', () => {
@@ -232,4 +232,3 @@ describe('GeneralInternalServerException', () => {
     });
   });
 });
-

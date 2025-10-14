@@ -7,8 +7,8 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
 import * as yaml from 'js-yaml';
+import * as path from 'path';
 import { ConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
 
 /**
@@ -65,7 +65,7 @@ export interface DirectoryLoaderOptions {
  * @since 1.0.0
  */
 export const directoryLoader = (
-  options: DirectoryLoaderOptions
+  options: DirectoryLoaderOptions,
 ): ConfigLoader => {
   const {
     directory,
@@ -107,7 +107,7 @@ export const directoryLoader = (
         if (!ignoreEnvironmentVariableSubstitution) {
           fileConfig = substituteEnvironmentVariables(
             fileConfig,
-            disallowUndefinedEnvironmentVariables
+            disallowUndefinedEnvironmentVariables,
           );
         }
 
@@ -128,14 +128,14 @@ export const directoryLoader = (
  * @returns 替换后的配置对象
  * @author HL8 SAAS Platform Team
  * @since 1.0.0
- * 
+ *
  * @remarks
  * 使用 any 符合宪章 IX 允许场景：配置对象结构未知，可以是任意类型。
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 配置对象结构未知（宪章 IX 允许场景：通用工具）
 function substituteEnvironmentVariables(
   config: any,
-  disallowUndefined: boolean = true
+  disallowUndefined: boolean = true,
 ): any {
   if (typeof config === 'string') {
     return config.replace(/\$\{([^}]+)\}/g, (match, key) => {
@@ -149,7 +149,7 @@ function substituteEnvironmentVariables(
 
   if (Array.isArray(config)) {
     return config.map((item) =>
-      substituteEnvironmentVariables(item, disallowUndefined)
+      substituteEnvironmentVariables(item, disallowUndefined),
     );
   }
 

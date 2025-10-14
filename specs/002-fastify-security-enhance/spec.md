@@ -21,7 +21,7 @@
 ✅ **FastifyLoggingModule**: 零开销日志（复用 Fastify Pino）  
 ✅ **EnterpriseFastifyAdapter**: 企业级适配器  
 ✅ **HealthCheckService**: 健康检查服务  
-✅ **PerformanceMonitorService**: 性能监控服务  
+✅ **PerformanceMonitorService**: 性能监控服务
 
 ### 缺失功能
 
@@ -57,10 +57,10 @@
 ```typescript
 // 全局速率限制
 RateLimitModule.forRoot({
-  max: 100,              // 最大请求数
-  timeWindow: 60000,     // 时间窗口（毫秒）
-  redis: redisClient,    // 可选：Redis 存储
-})
+  max: 100, // 最大请求数
+  timeWindow: 60000, // 时间窗口（毫秒）
+  redis: redisClient, // 可选：Redis 存储
+});
 
 // 装饰器用法
 @Controller('users')
@@ -68,7 +68,7 @@ RateLimitModule.forRoot({
 export class UserController {
   @Get()
   @RateLimit({ max: 100, timeWindow: 60000 })
-  list() { }
+  list() {}
 }
 ```
 
@@ -99,7 +99,7 @@ SecurityModule.forRoot({
       },
     },
   },
-})
+});
 ```
 
 ---
@@ -123,7 +123,7 @@ CorsModule.forRoot({
   origin: ['https://app.example.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-})
+});
 ```
 
 ---
@@ -144,10 +144,10 @@ CorsModule.forRoot({
 
 ```typescript
 CompressionModule.forRoot({
-  threshold: 1024,       // 1KB 以上才压缩
-  level: 6,              // 压缩级别
+  threshold: 1024, // 1KB 以上才压缩
+  level: 6, // 压缩级别
   encodings: ['br', 'gzip', 'deflate'],
-})
+});
 ```
 
 ---
@@ -173,7 +173,7 @@ MetricsModule.forRoot({
     app: 'hl8-saas',
   },
   includeTenantMetrics: true,
-})
+});
 ```
 
 ---

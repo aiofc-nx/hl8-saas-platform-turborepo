@@ -6,9 +6,9 @@
  * @since 1.0.0
  */
 
-import { ConfigError, ConfigErrorType } from './config-error.js';
-import { ErrorContext } from '../types/index.js';
 import { ConfigLogger } from '../services/config-logger.service.js';
+import { ErrorContext } from '../types/index.js';
+import { ConfigError, ConfigErrorType } from './config-error.js';
 
 /**
  * 错误处理选项接口
@@ -83,13 +83,13 @@ export class ErrorHandler {
   public static handleFileLoadError(
     error: Error,
     filePath: string,
-    context: ErrorContext = {}
+    context: ErrorContext = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.FILE_LOAD_ERROR,
       `Failed to load configuration file: ${filePath}`,
       { filePath, ...context },
-      error
+      error,
     );
   }
 
@@ -108,13 +108,13 @@ export class ErrorHandler {
     error: Error,
     filePath: string,
     expectedFormat: string,
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.FILE_FORMAT_ERROR,
       `Unsupported file format in ${filePath}. Expected: ${expectedFormat}`,
       { filePath, expectedFormat, ...context },
-      error
+      error,
     );
   }
 
@@ -129,12 +129,12 @@ export class ErrorHandler {
    */
   public static handleFileNotFoundError(
     filePath: string,
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.FILE_NOT_FOUND,
       `Configuration file not found: ${filePath}`,
-      { filePath, ...context }
+      { filePath, ...context },
     );
   }
 
@@ -149,12 +149,12 @@ export class ErrorHandler {
    */
   public static handleDirectoryNotFoundError(
     directoryPath: string,
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.DIRECTORY_NOT_FOUND,
       `Configuration directory not found: ${directoryPath}`,
-      { directoryPath, ...context }
+      { directoryPath, ...context },
     );
   }
 
@@ -171,13 +171,13 @@ export class ErrorHandler {
   public static handleNetworkError(
     error: Error,
     url: string,
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.NETWORK_ERROR,
       `Failed to load configuration from remote URL: ${url}`,
       { url, ...context },
-      error
+      error,
     );
   }
 
@@ -192,12 +192,12 @@ export class ErrorHandler {
    */
   public static handleValidationError(
     validationErrors: any[],
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.VALIDATION_ERROR,
       `Configuration validation failed with ${validationErrors.length} errors`,
-      { validationErrors, ...context }
+      { validationErrors, ...context },
     );
   }
 
@@ -212,12 +212,12 @@ export class ErrorHandler {
    */
   public static handleEnvVarError(
     variableName: string,
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.ENV_VAR_ERROR,
       `Required environment variable is not defined: ${variableName}`,
-      { variableName, ...context }
+      { variableName, ...context },
     );
   }
 
@@ -234,13 +234,13 @@ export class ErrorHandler {
   public static handleVariableExpansionError(
     error: Error,
     variableName: string,
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.VARIABLE_EXPANSION_ERROR,
       `Failed to expand variable: ${variableName}`,
       { variableName, ...context },
-      error
+      error,
     );
   }
 
@@ -257,13 +257,13 @@ export class ErrorHandler {
   public static handleParseError(
     error: Error,
     content: string,
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.PARSE_ERROR,
       `Failed to parse configuration content`,
       { content: content.substring(0, 100) + '...', ...context },
-      error
+      error,
     );
   }
 
@@ -278,13 +278,13 @@ export class ErrorHandler {
    */
   public static handleUnknownError(
     error: Error,
-    context: Record<string, any> = {}
+    context: Record<string, any> = {},
   ): ConfigError {
     return new ConfigError(
       ConfigErrorType.UNKNOWN_ERROR,
       `An unknown error occurred`,
       context,
-      error
+      error,
     );
   }
 
@@ -303,7 +303,7 @@ export class ErrorHandler {
     fn: () => Promise<T> | T,
     errorType: ConfigErrorType,
     context: Record<string, any> = {},
-    options: Partial<ErrorHandlerOptions> = {}
+    options: Partial<ErrorHandlerOptions> = {},
   ): Promise<T | ConfigError> {
     const opts = { ...this.defaultOptions, ...options };
     let lastError: Error | null = null;
@@ -323,7 +323,7 @@ export class ErrorHandler {
           errorType,
           lastError.message,
           context,
-          lastError
+          lastError,
         );
 
         if (opts.logErrors) {
@@ -333,7 +333,7 @@ export class ErrorHandler {
             code: configError.code,
             message: configError.message,
             context: configError.context,
-            originalError: configError.originalError?.message
+            originalError: configError.originalError?.message,
           });
         }
 
@@ -344,7 +344,7 @@ export class ErrorHandler {
     return new ConfigError(
       ConfigErrorType.UNKNOWN_ERROR,
       'Unexpected error in safe execution',
-      context
+      context,
     );
   }
 

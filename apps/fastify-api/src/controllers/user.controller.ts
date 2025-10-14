@@ -28,21 +28,21 @@
  * ```
  */
 
+import { HealthCheckService, MetricsService } from '@hl8/database/index.js';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify/index.js';
 import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
   Body,
-  Param,
+  Controller,
+  Delete,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
-import { HealthCheckService, MetricsService } from '@hl8/database';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { UserService } from '../services/user.service.js';
 import type { CreateUserDto, UpdateUserDto } from '../services/user.service.js';
+import { UserService } from '../services/user.service.js';
 
 @Controller('users')
 export class UserController {
@@ -152,4 +152,3 @@ export class UserController {
     };
   }
 }
-

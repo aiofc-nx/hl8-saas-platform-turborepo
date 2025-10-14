@@ -6,9 +6,9 @@
  * @since 1.0.0
  */
 
-import { TypedConfigModule } from '../lib/typed-config.module.js';
 import { CacheManager, CacheStrategy } from '../lib/cache/index.js';
-import { fileLoader, dotenvLoader } from '../lib/loader/index.js';
+import { dotenvLoader, fileLoader } from '../lib/loader/index.js';
+import { TypedConfigModule } from '../lib/typed-config.module.js';
 
 /**
  * 数据库配置类
@@ -188,7 +188,7 @@ export async function cacheMonitoringExample() {
       console.log(
         `[${event.timestamp.toISOString()}] ${event.type.toUpperCase()}: ${
           event.key
-        }`
+        }`,
       );
       if (event.data) {
         console.log('Event data:', event.data);

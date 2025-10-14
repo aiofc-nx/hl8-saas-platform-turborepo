@@ -143,4 +143,3 @@ export const MONITORING_DEFAULTS = {
    */
   HEALTH_CHECK_TIMEOUT: 3_000,
 } as const;
-

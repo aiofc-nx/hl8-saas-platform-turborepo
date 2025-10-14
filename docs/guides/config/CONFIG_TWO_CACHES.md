@@ -79,7 +79,7 @@ class TypedConfigModule {
   static forRoot(options) {
     const cacheManager = new CacheManager({
       strategy: 'memory',
-      enabled: true,  // 默认启用
+      enabled: true, // 默认启用
     });
 
     return {
@@ -89,14 +89,14 @@ class TypedConfigModule {
           useFactory: async () => {
             // 检查缓存
             const cached = await cacheManager.get('config');
-            if (cached) return cached;  // 缓存命中
+            if (cached) return cached; // 缓存命中
 
             // 缓存未命中，加载配置
             const config = await loadAndValidateConfig();
-            
+
             // 存入缓存
             await cacheManager.set('config', config);
-            
+
             return config;
           },
         },
@@ -116,7 +116,7 @@ export class MyService {
   constructor(private readonly config: AppConfig) {}
   // ↑ 配置自动从缓存获取（如果有）
   // 使用者完全感知不到缓存的存在
-  
+
   someMethod() {
     const port = this.config.PORT;
     // 不需要调用任何缓存方法
@@ -133,15 +133,15 @@ export class MyService {
 TypedConfigModule.forRoot({
   schema: AppConfig,
   load: [dotenvLoader()],
-  
+
   // 可选：自定义缓存配置
   cache: {
-    enabled: true,          // 是否启用（默认：true）
-    strategy: 'memory',     // 缓存策略（默认：memory）
-    ttl: 3600000,          // 过期时间/毫秒（默认：1小时）
-    keyPrefix: 'config',   // 缓存键前缀
+    enabled: true, // 是否启用（默认：true）
+    strategy: 'memory', // 缓存策略（默认：memory）
+    ttl: 3600000, // 过期时间/毫秒（默认：1小时）
+    keyPrefix: 'config', // 缓存键前缀
   },
-})
+});
 ```
 
 ### 特点总结
@@ -190,7 +190,7 @@ export class UserService {
     // 1. 手动检查缓存
     const cached = await this.cacheService.get(`user:${id}`);
     if (cached) {
-      return cached;  // 缓存命中
+      return cached; // 缓存命中
     }
 
     // 2. 缓存未命中，从数据库加载
@@ -229,7 +229,7 @@ CachingModule.forRootAsync({
     ttl: config.caching.ttl,
     keyPrefix: config.caching.keyPrefix,
   }),
-})
+});
 ```
 
 ### 特点总结
@@ -244,19 +244,19 @@ CachingModule.forRootAsync({
 
 ## 🔀 对比表格
 
-| 特性 | 配置缓存 | 业务数据缓存 |
-|------|---------|------------|
-| **提供者** | `libs/config` | `libs/caching` |
-| **缓存对象** | `AppConfig` 实例 | 用户数据、商品等 |
-| **缓存位置** | 内存/文件 | Redis |
-| **使用方式** | 自动、透明 | 手动、显式 |
-| **由谁管理** | 框架自动 | 应用代码 |
-| **何时使用** | 应用启动时自动 | 业务代码中手动 |
-| **对使用者** | 完全透明 | 需要调用 API |
-| **缓存策略** | 框架决定 | 应用决定 |
-| **TTL** | 通常较长（小时级） | 业务决定（秒到小时） |
-| **失效策略** | 应用重启时清除 | 可主动清除 |
-| **依赖** | 无外部依赖 | 需要 Redis |
+| 特性         | 配置缓存           | 业务数据缓存         |
+| ------------ | ------------------ | -------------------- |
+| **提供者**   | `libs/config`      | `libs/caching`       |
+| **缓存对象** | `AppConfig` 实例   | 用户数据、商品等     |
+| **缓存位置** | 内存/文件          | Redis                |
+| **使用方式** | 自动、透明         | 手动、显式           |
+| **由谁管理** | 框架自动           | 应用代码             |
+| **何时使用** | 应用启动时自动     | 业务代码中手动       |
+| **对使用者** | 完全透明           | 需要调用 API         |
+| **缓存策略** | 框架决定           | 应用决定             |
+| **TTL**      | 通常较长（小时级） | 业务决定（秒到小时） |
+| **失效策略** | 应用重启时清除     | 可主动清除           |
+| **依赖**     | 无外部依赖         | 需要 Redis           |
 
 ---
 

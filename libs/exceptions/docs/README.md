@@ -165,7 +165,7 @@ libs/exceptions/
 ```
 1. 阅读培训文档 (90分钟)
    └─ EXCEPTION_HANDLING_TRAINING.md
-   
+
 2. 完成实践练习 (30分钟)
    └─ 培训文档中的练习题
 ```
@@ -175,7 +175,7 @@ libs/exceptions/
 ```
 1. 查找 API 和配置
    └─ ../README.md
-   
+
 2. 遇到问题
    └─ ../README.md → 常见问题
 ```
@@ -185,10 +185,10 @@ libs/exceptions/
 ```
 1. 查看培训指南
    └─ TRAINING_DOC_SUMMARY.md
-   
+
 2. 使用培训教材
    └─ EXCEPTION_HANDLING_TRAINING.md
-   
+
 3. 安排实践练习
    └─ 培训文档中的练习
 ```
@@ -197,14 +197,14 @@ libs/exceptions/
 
 ## 📊 文档统计
 
-| 文档 | 大小 | 行数 | 类型 |
-|------|------|------|------|
-| README.md | 6KB | 280 | 导航索引 |
-| EXCEPTION_HANDLING_TRAINING.md | 33KB | 1,355 | 培训教材 |
-| DOCUMENTATION_ENHANCEMENTS.md | 6.6KB | 220 | 说明文档 |
-| TRAINING_DOC_SUMMARY.md | 5.6KB | 200 | 使用指南 |
-| FINAL_DOCUMENTATION_SUMMARY.md | 11KB | 529 | 总结报告 |
-| DOCS_MIGRATION.md | 8KB | 380 | 迁移说明 |
+| 文档                           | 大小  | 行数  | 类型     |
+| ------------------------------ | ----- | ----- | -------- |
+| README.md                      | 6KB   | 280   | 导航索引 |
+| EXCEPTION_HANDLING_TRAINING.md | 33KB  | 1,355 | 培训教材 |
+| DOCUMENTATION_ENHANCEMENTS.md  | 6.6KB | 220   | 说明文档 |
+| TRAINING_DOC_SUMMARY.md        | 5.6KB | 200   | 使用指南 |
+| FINAL_DOCUMENTATION_SUMMARY.md | 11KB  | 529   | 总结报告 |
+| DOCS_MIGRATION.md              | 8KB   | 380   | 迁移说明 |
 
 **总计**：约 70KB，2,960+ 行
 

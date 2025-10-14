@@ -10,12 +10,12 @@
 
 ### 已完成任务（T022-T024）
 
-| 任务 | 组件 | 代码行数 | 状态 |
-|------|------|---------|------|
-| T022 | @Cacheable 装饰器 | ~95 行 | ✅ |
-| T023 | @CacheEvict 装饰器 | ~100 行 | ✅ |
-| T024 | @CachePut 装饰器 | ~90 行 | ✅ |
-| 核心 | CacheInterceptor | ~235 行 | ✅ |
+| 任务 | 组件               | 代码行数 | 状态 |
+| ---- | ------------------ | -------- | ---- |
+| T022 | @Cacheable 装饰器  | ~95 行   | ✅   |
+| T023 | @CacheEvict 装饰器 | ~100 行  | ✅   |
+| T024 | @CachePut 装饰器   | ~90 行   | ✅   |
+| 核心 | CacheInterceptor   | ~235 行  | ✅   |
 
 **总计新增代码**: ~520 行
 
@@ -48,7 +48,7 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // 高级用法
   @Cacheable('user', {
     keyGenerator: (id: string) => `profile:${id}`,
@@ -86,7 +86,7 @@ export class UserService {
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
-  
+
   // 删除前清除缓存
   @CacheEvict('user', {
     keyGenerator: (id: string) => id,
@@ -95,7 +95,7 @@ export class UserService {
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete(id);
   }
-  
+
   // 清除所有用户缓存
   @CacheEvict('user', {
     allEntries: true,
@@ -128,7 +128,7 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // 更新数据并刷新缓存
   @CachePut('user')
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
@@ -136,7 +136,7 @@ export class UserService {
     // 缓存自动更新，getUserById 将获取到最新数据
     return user;
   }
-  
+
   // 定时刷新缓存
   @CachePut('user', {
     keyGenerator: (id: string) => id,
@@ -188,7 +188,7 @@ export class UserService {
 async getUserById(id: string): Promise<User> {
   const cached = await this.cacheService.get('user', id);
   if (cached) return cached;
-  
+
   const user = await this.repository.findOne(id);
   await this.cacheService.set('user', id, user, 3600);
   return user;
@@ -233,13 +233,13 @@ async getOrder(dto: { id: string; ... }) { }
 
 ### 整体进度
 
-| Phase | 任务数 | 完成数 | 进度 | 状态 |
-|-------|-------|-------|------|------|
-| Phase 1 | 5 | 5 | 100% | ✅ 完成 |
-| Phase 2 | 8 | 8 | 100% | ✅ 完成 |
-| Phase 3 | 8 | 7 | 87.5% | ✅ 完成 |
-| Phase 4 | 5 | 3 | 60% | 🟡 代码完成，测试待补充 |
-| Phase 5-7 | 12 | 0 | 0% | ⚪ 待开发 |
+| Phase     | 任务数 | 完成数 | 进度  | 状态                    |
+| --------- | ------ | ------ | ----- | ----------------------- |
+| Phase 1   | 5      | 5      | 100%  | ✅ 完成                 |
+| Phase 2   | 8      | 8      | 100%  | ✅ 完成                 |
+| Phase 3   | 8      | 7      | 87.5% | ✅ 完成                 |
+| Phase 4   | 5      | 3      | 60%   | 🟡 代码完成，测试待补充 |
+| Phase 5-7 | 12     | 0      | 0%    | ⚪ 待开发               |
 
 **总计**: 23/38 任务完成（60.5%）
 
@@ -284,25 +284,25 @@ export class UserService {
     private readonly repository: UserRepository,
     private readonly cacheService: CacheService,
   ) {}
-  
+
   // 读操作：自动缓存
   @Cacheable('user')
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // 写操作：更新数据并刷新缓存
   @CachePut('user')
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
-  
+
   // 删除操作：清除缓存
   @CacheEvict('user')
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete(id);
   }
-  
+
   // 批量操作：清除所有用户缓存
   @CacheEvict('user', { allEntries: true })
   async importUsers(users: User[]): Promise<void> {
@@ -380,16 +380,16 @@ libs/nestjs-caching/
 
 ### Phase 1-4 完成统计
 
-| Phase | 任务数 | 完成数 | 完成率 | 状态 |
-|-------|-------|--------|--------|------|
-| **Phase 1** | 5 | 5 | 100% | ✅ 完成 |
-| **Phase 2** | 8 | 8 | 100% | ✅ 完成 |
-| **Phase 3** | 8 | 7 | 87.5% | ✅ 完成 |
-| **Phase 4** | 5 | 3 | 60% | ✅ 代码完成 |
-| **Phase 5** | 6 | 0 | 0% | ⚪ 待开发 |
-| **Phase 6** | 4 | 0 | 不适用 | - |
-| **Phase 7** | 2 | 0 | 0% | ⚪ 待开发 |
-| **总计** | **38** | **23** | **60.5%** | 🟢 核心完成 |
+| Phase       | 任务数 | 完成数 | 完成率    | 状态        |
+| ----------- | ------ | ------ | --------- | ----------- |
+| **Phase 1** | 5      | 5      | 100%      | ✅ 完成     |
+| **Phase 2** | 8      | 8      | 100%      | ✅ 完成     |
+| **Phase 3** | 8      | 7      | 87.5%     | ✅ 完成     |
+| **Phase 4** | 5      | 3      | 60%       | ✅ 代码完成 |
+| **Phase 5** | 6      | 0      | 0%        | ⚪ 待开发   |
+| **Phase 6** | 4      | 0      | 不适用    | -           |
+| **Phase 7** | 2      | 0      | 0%        | ⚪ 待开发   |
+| **总计**    | **38** | **23** | **60.5%** | 🟢 核心完成 |
 
 ### 核心功能完成度
 
@@ -424,11 +424,11 @@ Coverage:    46.06% (装饰器代码待测试)
 
 ### 三个装饰器的区别
 
-| 装饰器 | 检查缓存 | 执行方法 | 更新缓存 | 使用场景 |
-|--------|---------|---------|---------|---------|
-| **@Cacheable** | ✅ | 未命中时 | 未命中时 | 读操作（GET） |
-| **@CachePut** | ❌ | 始终 | 始终 | 写操作（UPDATE） |
-| **@CacheEvict** | ❌ | 始终 | ❌ 删除 | 删除/失效操作 |
+| 装饰器          | 检查缓存 | 执行方法 | 更新缓存 | 使用场景         |
+| --------------- | -------- | -------- | -------- | ---------------- |
+| **@Cacheable**  | ✅       | 未命中时 | 未命中时 | 读操作（GET）    |
+| **@CachePut**   | ❌       | 始终     | 始终     | 写操作（UPDATE） |
+| **@CacheEvict** | ❌       | 始终     | ❌ 删除  | 删除/失效操作    |
 
 ### 使用组合
 
@@ -440,13 +440,13 @@ export class UserService {
   async getUser(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // UPDATE: 更新缓存
   @CachePut('user')
   async updateUser(id: string, data: any): Promise<User> {
     return this.repository.update(id, data);
   }
-  
+
   // DELETE: 清除缓存
   @CacheEvict('user')
   async deleteUser(id: string): Promise<void> {

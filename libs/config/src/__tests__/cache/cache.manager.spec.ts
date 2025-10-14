@@ -7,9 +7,8 @@
  */
 
 import { CacheManager } from '../../lib/cache/cache.manager';
-import { CacheStrategy, CacheOptions } from '../../lib/types/cache.types';
-import { ConfigRecord } from '../../lib/types/config.types';
-import { createTestConfig, wait, testAssertions } from '../test-utils';
+import { CacheOptions, CacheStrategy } from '../../lib/types/cache.types';
+import { createTestConfig, wait } from '../test-utils';
 
 describe('CacheManager', () => {
   let cacheManager: CacheManager;

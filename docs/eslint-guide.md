@@ -56,8 +56,11 @@ pnpm lint --fix
 1. **泛型约束中的函数类型**：
 
 ```typescript
-type ReturnType<T extends (...args: any[]) => any> = 
-  T extends (...args: any[]) => infer R ? R : never;
+type ReturnType<T extends (...args: any[]) => any> = T extends (
+  ...args: any[]
+) => infer R
+  ? R
+  : never;
 ```
 
 2. **需要配合单元测试验证行为**：
@@ -77,7 +80,8 @@ function parseJSON<T = unknown>(json: string): T {
 
 ```typescript
 // 仅为避免类型错误而使用 any
-function process(data: any): any {  // ❌ 应该使用 unknown 或具体类型
+function process(data: any): any {
+  // ❌ 应该使用 unknown 或具体类型
   return data.value;
 }
 ```
@@ -86,7 +90,7 @@ function process(data: any): any {  // ❌ 应该使用 unknown 或具体类型
 
 所有公共 API、类、方法、接口必须添加 TSDoc 注释：
 
-```typescript
+````typescript
 /**
  * 用户服务
  *
@@ -114,7 +118,7 @@ export class UserService {
     // ...
   }
 }
-```
+````
 
 ### 3. 代码质量规则
 
@@ -149,7 +153,7 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   // 继承根配置
   ...rootConfig,
-  
+
   // 子项目特定配置
   {
     languageOptions: {
@@ -160,7 +164,7 @@ export default tseslint.config(
     rules: {
       // 子项目特定规则（如果需要）
     },
-  }
+  },
 );
 ```
 

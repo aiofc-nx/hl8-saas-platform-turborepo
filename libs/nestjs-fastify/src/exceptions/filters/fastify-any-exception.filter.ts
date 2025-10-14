@@ -1,3 +1,4 @@
+// prettier-ignore-file
 /**
  * Fastify 全局异常过滤器
  *
@@ -24,24 +25,25 @@
  * @since 0.1.0
  */
 
+import type { ILoggerService, ProblemDetails } from "@hl8/exceptions/index.js";
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
-  Injectable,
+  Catch,
+  ExceptionFilter,
   HttpException,
   HttpStatus,
+  Injectable,
   Optional,
-} from '@nestjs/common';
-import type { FastifyRequest, FastifyReply } from 'fastify';
-import type { ProblemDetails, ILoggerService } from '@hl8/exceptions';
+} from "@nestjs/common";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 @Catch()
 @Injectable()
 export class FastifyAnyExceptionFilter implements ExceptionFilter {
   constructor(
     @Optional() private readonly logger?: ILoggerService,
-    private readonly isProduction: boolean = process.env.NODE_ENV === 'production',
+    private readonly isProduction: boolean = process.env.NODE_ENV ===
+      "production",
   ) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
@@ -50,17 +52,16 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<FastifyReply>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let errorCode = 'INTERNAL_SERVER_ERROR';
-    let title = '服务器内部错误';
-    let detail = '服务器处理请求时发生了错误';
+    const errorCode = "INTERNAL_SERVER_ERROR";
+    let title = "服务器内部错误";
+    let detail = "服务器处理请求时发生了错误";
 
     // 如果是 HttpException
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
-      if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- NestJS 异常响应格式动态，宪章 IX 允许场景：第三方库集成
+
+      if (typeof exceptionResponse === "object" && exceptionResponse !== null) {
         const resp = exceptionResponse as any;
         title = resp.error || resp.message || title;
         detail = resp.message || detail;
@@ -75,7 +76,7 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
       detail: this.isProduction ? detail : this.getDetailedError(exception),
       status,
       errorCode,
-      instance: request.id || (request.headers['x-request-id'] as string),
+      instance: request.id || (request.headers["x-request-id"] as string),
     };
 
     // 记录未捕获异常（自动包含隔离上下文）
@@ -86,11 +87,15 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
         detail: this.getDetailedError(exception),
         url: request.url,
         method: request.method,
-        err: exception instanceof Error ? {
-          type: exception.constructor.name,
-          message: exception.message,
-          stack: exception.stack,
-        } : undefined,
+        // prettier-ignore
+        err:
+          exception instanceof Error
+            ? {
+              type: exception.constructor.name,
+              message: exception.message,
+              stack: exception.stack,
+            }
+            : undefined,
       };
       this.logger.error(logMessage, undefined, logContext);
     }
@@ -98,28 +103,34 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
     // 使用 Fastify 的 .code() 方法
     // 注意：在某些特殊情况下（如中间件错误），response 可能还未完全初始化
     // 因此需要检查 code 方法是否存在
-    if (typeof response.code === 'function') {
+    if (typeof response.code === "function") {
       response
         .code(status)
-        .header('Content-Type', 'application/problem+json; charset=utf-8')
+        .header("Content-Type", "application/problem+json; charset=utf-8")
         .send(problemDetails);
     } else {
       // 如果 response 未完全初始化，记录错误并尝试写入响应
       if (this.logger) {
-        this.logger.error('Response object is not a FastifyReply, unable to send error response');
+        this.logger.error(
+          "Response object is not a FastifyReply, unable to send error response",
+        );
       }
       // 尝试最基本的错误响应
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 降级错误处理需要访问 raw HTTP 对象（宪章 IX 允许场景：第三方库集成）
         const res = response as any;
-        if (res.raw && typeof res.raw.writeHead === 'function') {
-          res.raw.writeHead(status, { 'Content-Type': 'application/problem+json; charset=utf-8' });
+        if (res.raw && typeof res.raw.writeHead === "function") {
+          res.raw.writeHead(status, {
+            "Content-Type": "application/problem+json; charset=utf-8",
+          });
           res.raw.end(JSON.stringify(problemDetails));
         }
       } catch (err) {
         // 最后的降级：至少记录错误
         if (this.logger) {
-          this.logger.error('Failed to send error response', err instanceof Error ? err.stack : undefined);
+          this.logger.error(
+            "Failed to send error response",
+            err instanceof Error ? err.stack : undefined,
+          );
         }
       }
     }
@@ -132,4 +143,3 @@ export class FastifyAnyExceptionFilter implements ExceptionFilter {
     return String(exception);
   }
 }
-

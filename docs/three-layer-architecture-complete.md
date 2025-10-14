@@ -9,6 +9,7 @@
 ## 📋 执行摘要
 
 成功完成了从单体 `@hl8/nestjs-infra` 到清晰三层架构的完整重构，实现了：
+
 - ✅ 架构清晰分离
 - ✅ 模块完全独立
 - ✅ 所有功能正常运行
@@ -64,16 +65,17 @@
 
 ### 1. 三层架构完整实施 ✅
 
-| 层级 | 包名 | 职责 | 依赖 |
-|------|------|------|------|
-| **核心业务层** | `@hl8/platform` | 纯业务逻辑 | 无 |
-| **NestJS 通用层** | `@hl8/nestjs-infra` | 通用 NestJS 模块 | `@hl8/platform` |
-| **Fastify 专用层** | `@hl8/nestjs-fastify` | Fastify 优化 | `@hl8/nestjs-infra` |
-| **应用层** | `apps/fastify-api` | 应用 | 两个框架层 |
+| 层级               | 包名                  | 职责             | 依赖                |
+| ------------------ | --------------------- | ---------------- | ------------------- |
+| **核心业务层**     | `@hl8/platform`       | 纯业务逻辑       | 无                  |
+| **NestJS 通用层**  | `@hl8/nestjs-infra`   | 通用 NestJS 模块 | `@hl8/platform`     |
+| **Fastify 专用层** | `@hl8/nestjs-fastify` | Fastify 优化     | `@hl8/nestjs-infra` |
+| **应用层**         | `apps/fastify-api`    | 应用             | 两个框架层          |
 
 ### 2. Fastify 专用模块完整 ✅
 
 **@hl8/nestjs-fastify 包含**:
+
 ```
 libs/nestjs-fastify/src/
 ├── fastify/
@@ -92,6 +94,7 @@ libs/nestjs-fastify/src/
 ```
 
 **特点**:
+
 - ⚡ 100% Fastify 优化
 - 🎯 自动包含隔离上下文
 - 🚀 零额外开销
@@ -100,30 +103,28 @@ libs/nestjs-fastify/src/
 ### 3. 模块完全独立 ✅
 
 **清晰的导入路径**:
+
 ```typescript
 // ✅ Fastify 专用
-import { 
+import {
   EnterpriseFastifyAdapter,
   FastifyExceptionModule,
-  FastifyLoggingModule 
+  FastifyLoggingModule,
 } from '@hl8/nestjs-fastify';
 
 // ✅ NestJS 通用
-import { 
+import {
   CachingModule,
   IsolationModule,
-  TypedConfigModule 
+  TypedConfigModule,
 } from '@hl8/nestjs-infra';
 
 // ✅ 核心业务
-import { 
-  EntityId, 
-  IsolationContext,
-  IsolationLevel 
-} from '@hl8/platform';
+import { EntityId, IsolationContext, IsolationLevel } from '@hl8/platform';
 ```
 
 **无重新导出**:
+
 - ❌ 删除了 `core/index.ts`
 - ✅ 每个包只导出自己的内容
 - ✅ 用户明确知道模块来源
@@ -131,6 +132,7 @@ import {
 ### 4. 企业级日志功能 ✅
 
 **FastifyLoggerService 特性**:
+
 ```json
 // 自动包含的信息
 {
@@ -138,10 +140,11 @@ import {
   "time": 1697000000000,
   "pid": 12345,
   "hostname": "server-01",
-  "reqId": "req-abc-123",        // ← Fastify 自动添加
+  "reqId": "req-abc-123", // ← Fastify 自动添加
   "msg": "订单创建成功",
   "orderId": "order-456",
-  "isolation": {                  // ← 我们自动添加
+  "isolation": {
+    // ← 我们自动添加
     "tenantId": "tenant-789",
     "organizationId": "org-101",
     "departmentId": "dept-202",
@@ -151,6 +154,7 @@ import {
 ```
 
 **性能优势**:
+
 - ⚡ 零开销（复用 Fastify Pino）
 - 🚀 10-20x 性能提升
 - 💾 零额外内存占用
@@ -186,13 +190,16 @@ ff21f2a fix: 修复异常过滤器运行时类型检查
 ### 主要变更
 
 **新建包**:
+
 - ✅ `@hl8/platform` - 核心业务层
 - ✅ `@hl8/nestjs-fastify` - Fastify 专用层
 
 **重构包**:
+
 - ✅ `@hl8/nestjs-infra` - 精简为纯 NestJS 通用模块
 
 **文件移动**（使用 `git mv` 保留历史）:
+
 - ✅ 21 个核心文件 → `@hl8/platform`
 - ✅ EnterpriseFastifyAdapter → `@hl8/nestjs-fastify`
 - ✅ Fastify 配置 → `@hl8/nestjs-fastify`
@@ -200,6 +207,7 @@ ff21f2a fix: 修复异常过滤器运行时类型检查
 - ✅ 异常类 → `@hl8/nestjs-infra`（回退）
 
 **新增文档**:
+
 - ✅ `docs/refactoring-plan-three-layers.md` - 三层架构规划
 - ✅ `docs/integration-verification-complete.md` - 集成验证报告
 - ✅ `docs/module-independence-final.md` - 模块独立性优化
@@ -214,6 +222,7 @@ ff21f2a fix: 修复异常过滤器运行时类型检查
 **问题**: 核心业务代码依赖 NestJS 框架
 
 **解决**:
+
 ```bash
 # 移除框架依赖
 git mv libs/platform/src/shared/exceptions/*.ts libs/nestjs-infra/src/exceptions/core/
@@ -229,13 +238,14 @@ sed -i "s|from '\.\./\.\./shared/|from '@hl8/platform'|g" src/**/*.ts
 **问题**: 异常过滤器调用 `response.code()` 失败
 
 **解决**:
+
 ```typescript
 // 添加运行时类型检查
 const reply = response as any;
 if (typeof reply.code === 'function') {
-  reply.code(status);  // Fastify
+  reply.code(status); // Fastify
 } else {
-  reply.status(status);  // 降级
+  reply.status(status); // 降级
 }
 ```
 
@@ -246,11 +256,12 @@ if (typeof reply.code === 'function') {
 **问题**: 装饰器和路由重复注册
 
 **解决**:
+
 ```typescript
 new EnterpriseFastifyAdapter({
-  enableCors: false,         // 避免冲突
-  enableHealthCheck: false,  // 避免路由冲突
-})
+  enableCors: false, // 避免冲突
+  enableHealthCheck: false, // 避免路由冲突
+});
 ```
 
 **结果**: 应用正常启动
@@ -260,14 +271,15 @@ new EnterpriseFastifyAdapter({
 **问题**: 多个 Logger 实现，性能和功能不可兼得
 
 **解决**:
+
 ```typescript
 // 增强 FastifyLoggerService
 export class FastifyLoggerService {
   constructor(
-    private pinoLogger: PinoLogger,          // 复用 Fastify
-    @Optional() private isolationService,    // 可选隔离上下文
+    private pinoLogger: PinoLogger, // 复用 Fastify
+    @Optional() private isolationService, // 可选隔离上下文
   ) {}
-  
+
   private enrichContext(context) {
     return {
       ...context,
@@ -297,6 +309,7 @@ libs/nestjs-infra (单体模块)
 ```
 
 **问题**:
+
 - ❌ 职责不清晰
 - ❌ Fastify 和通用代码混在一起
 - ❌ 领域模型依赖框架
@@ -321,6 +334,7 @@ libs/nestjs-infra (单体模块)
 ```
 
 **优势**:
+
 - ✅ 职责单一清晰
 - ✅ 完全独立可维护
 - ✅ 性能极致优化
@@ -332,6 +346,7 @@ libs/nestjs-infra (单体模块)
 ### 1. EnterpriseFastifyAdapter 🚀
 
 **功能**:
+
 - ✅ CORS 支持（可配置）
 - ✅ 安全头（Helmet）
 - ✅ 性能监控
@@ -340,6 +355,7 @@ libs/nestjs-infra (单体模块)
 - ✅ 熔断器（自动故障保护）
 
 **使用**:
+
 ```typescript
 const adapter = new EnterpriseFastifyAdapter({
   enablePerformanceMonitoring: true,
@@ -351,11 +367,13 @@ const adapter = new EnterpriseFastifyAdapter({
 ### 2. FastifyLoggingModule ⚡🎯
 
 **核心特性**:
+
 - ⚡ **零开销** - 复用 Fastify Pino（10-20x 性能提升）
 - 🎯 **自动隔离上下文** - 自动包含租户/组织/部门/用户
 - 🔍 **便于审计** - SAAS 多租户必备
 
 **日志输出**:
+
 ```json
 {
   "level": "info",
@@ -371,11 +389,13 @@ const adapter = new EnterpriseFastifyAdapter({
 ### 3. 数据隔离 (IsolationModule) 🔒
 
 **5 级隔离**:
+
 ```
 平台级 → 租户级 → 组织级 → 部门级 → 用户级
 ```
 
 **自动注入**:
+
 - ✅ 日志自动包含隔离信息
 - ✅ 缓存键自动包含隔离层级
 - ✅ 中间件自动提取请求头
@@ -387,11 +407,11 @@ const adapter = new EnterpriseFastifyAdapter({
 
 ### 日志性能
 
-| Logger | 每次日志耗时 | 内存开销 | 隔离上下文 |
-|--------|------------|----------|-----------|
-| @nestjs/common/Logger | ~2-3μs | ~50KB | ❌ |
-| @hl8/nestjs-infra/Logger | ~1-2μs | ~100KB | ✅ |
-| **@hl8/nestjs-fastify/Logger** | **~0.1μs** | **0KB** | **✅** |
+| Logger                         | 每次日志耗时 | 内存开销 | 隔离上下文 |
+| ------------------------------ | ------------ | -------- | ---------- |
+| @nestjs/common/Logger          | ~2-3μs       | ~50KB    | ❌         |
+| @hl8/nestjs-infra/Logger       | ~1-2μs       | ~100KB   | ✅         |
+| **@hl8/nestjs-fastify/Logger** | **~0.1μs**   | **0KB**  | **✅**     |
 
 **提升**: **10-20x** ⚡
 
@@ -415,6 +435,7 @@ apps/fastify-api     → 构建时间: ~4s
 **问题**: 异常类应该放在哪一层？
 
 **决策**: 放在 `@hl8/nestjs-infra`
+
 - `AbstractHttpException` 继承 `HttpException` (NestJS)
 - 核心层不应依赖框架
 - 通用层可以提供框架相关的抽象
@@ -424,6 +445,7 @@ apps/fastify-api     → 构建时间: ~4s
 **问题**: `@hl8/nestjs-fastify` 是否应该重新导出通用模块？
 
 **决策**: **不应该**，删除 `core/index.ts`
+
 - 保持模块独立性
 - 清晰的导入路径
 - 避免维护复杂性
@@ -433,6 +455,7 @@ apps/fastify-api     → 构建时间: ~4s
 **问题**: 是否需要多个 Logger 实现？
 
 **决策**: **增强 FastifyLoggerService**，避免重复
+
 - 复用 Fastify Pino（零开销）
 - 自动包含隔离上下文（企业级）
 - 符合"避免重复造轮子"原则
@@ -442,6 +465,7 @@ apps/fastify-api     → 构建时间: ~4s
 **问题**: 如何注入 IsolationContextService？
 
 **决策**: **可选注入** (`@Optional()`)
+
 - 无 IsolationModule 时仍可用
 - 有 IsolationModule 时自动增强
 - 最大灵活性
@@ -451,15 +475,18 @@ apps/fastify-api     → 构建时间: ~4s
 ## 📝 文档产出
 
 ### 规划文档
+
 - ✅ `docs/refactoring-plan-three-layers.md` - 三层架构详细规划
 
 ### 实施文档
+
 - ✅ `docs/integration-verification-complete.md` - 集成验证报告
 - ✅ `docs/module-independence-final.md` - 模块独立性优化
 - ✅ `docs/logger-architecture-decision.md` - Logger 架构决策
 - ✅ `docs/three-layer-architecture-complete.md` - 本文档
 
 ### 包文档
+
 - ✅ `libs/platform/README.md`
 - ✅ `libs/nestjs-fastify/README.md`
 - ✅ `libs/nestjs-infra/README.md`（已存在）
@@ -468,18 +495,18 @@ apps/fastify-api     → 构建时间: ~4s
 
 ## ✅ 验收标准 - 全部通过
 
-| 标准 | 状态 | 说明 |
-|------|------|------|
-| 三层架构实施 | ✅ | platform → infra → fastify |
-| 核心层无框架依赖 | ✅ | @hl8/platform 纯 TypeScript |
-| Fastify 专用完整 | ✅ | 适配器、异常、日志、监控全部迁移 |
-| 模块完全独立 | ✅ | 无重新导出，清晰导入 |
-| 所有包构建成功 | ✅ | TypeScript 零错误 |
-| 应用正常启动 | ✅ | 端口 3001 |
-| 异常处理正常 | ✅ | RFC7807 格式 |
-| 日志功能完整 | ✅ | 零开销 + 隔离上下文 |
-| 数据隔离工作 | ✅ | 5 级隔离正常 |
-| 文档完整 | ✅ | 4 个详细文档 |
+| 标准             | 状态 | 说明                             |
+| ---------------- | ---- | -------------------------------- |
+| 三层架构实施     | ✅   | platform → infra → fastify       |
+| 核心层无框架依赖 | ✅   | @hl8/platform 纯 TypeScript      |
+| Fastify 专用完整 | ✅   | 适配器、异常、日志、监控全部迁移 |
+| 模块完全独立     | ✅   | 无重新导出，清晰导入             |
+| 所有包构建成功   | ✅   | TypeScript 零错误                |
+| 应用正常启动     | ✅   | 端口 3001                        |
+| 异常处理正常     | ✅   | RFC7807 格式                     |
+| 日志功能完整     | ✅   | 零开销 + 隔离上下文              |
+| 数据隔离工作     | ✅   | 5 级隔离正常                     |
+| 文档完整         | ✅   | 4 个详细文档                     |
 
 ---
 
@@ -536,19 +563,22 @@ apps/fastify-api     → 构建时间: ~4s
 ### 立即可做
 
 1. **测试隔离上下文日志**
+
    ```bash
    # 发送带隔离头的请求
    curl -H "X-Tenant-Id: tenant-123" \
         -H "X-Organization-Id: org-456" \
         http://localhost:3001/info
-   
+
    # 查看日志输出，验证隔离信息自动包含
    ```
 
 2. **启用 Redis 缓存**
+
    ```bash
    docker run -d -p 6379:6379 redis:alpine
    ```
+
    - 取消注释 `CachingModule`
    - 测试缓存功能
 
@@ -632,9 +662,9 @@ apps/fastify-api     → 构建时间: ~4s
 **🎉 三层架构重构完全成功！**
 
 **提交统计**:
+
 - 📦 3 个包：platform, nestjs-infra, nestjs-fastify
 - 📝 4 个详细文档
 - 🔧 10 个功能提交
 - ✅ 56 个总提交
 - 📊 2401 行新增代码
-

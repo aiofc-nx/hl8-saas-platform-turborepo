@@ -21,10 +21,15 @@
  * @since 0.1.0
  */
 
-import { Injectable, LoggerService as NestLoggerService, Scope, Optional } from '@nestjs/common';
+import type { ILoggerService } from '@hl8/exceptions/index.js';
+import { IsolationContextService } from '@hl8/nestjs-isolation/index.js';
+import {
+  Injectable,
+  LoggerService as NestLoggerService,
+  Optional,
+  Scope,
+} from '@nestjs/common';
 import type { Logger as PinoLogger } from 'pino';
-import { IsolationContextService } from '@hl8/nestjs-isolation';
-import type { ILoggerService } from '@hl8/exceptions';
 
 /**
  * 日志上下文类型
@@ -67,7 +72,7 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
 
   /**
    * 记录信息日志
-   * 
+   *
    * @param message - 日志消息
    * @param context - 日志上下文（可选）
    */
@@ -75,17 +80,20 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
   log(message: Error, context?: LogContext): void;
   log(message: string | Error, context?: LogContext): void {
     const enrichedContext = this.enrichContext(context);
-    
+
     // 处理 Error 对象的序列化问题
     if (message instanceof Error) {
-      this.pinoLogger.info({
-        ...enrichedContext,
-        err: {
-          type: message.constructor.name,
-          message: message.message,
-          stack: message.stack,
-        }
-      }, message.message);
+      this.pinoLogger.info(
+        {
+          ...enrichedContext,
+          err: {
+            type: message.constructor.name,
+            message: message.message,
+            stack: message.stack,
+          },
+        },
+        message.message,
+      );
     } else {
       this.pinoLogger.info(enrichedContext, message);
     }
@@ -93,38 +101,48 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
 
   /**
    * 记录错误日志
-   * 
+   *
    * @param message - 日志消息
    * @param stack - 错误堆栈（可选）
    * @param context - 日志上下文（可选）
    */
   error(message: string, stack?: string, context?: LogContext): void;
   error(message: Error, context?: LogContext): void;
-  error(message: string | Error, stackOrContext?: string | LogContext, context?: LogContext): void {
+  error(
+    message: string | Error,
+    stackOrContext?: string | LogContext,
+    context?: LogContext,
+  ): void {
     if (message instanceof Error) {
       // Error 对象的情况
       const enrichedContext = this.enrichContext(stackOrContext as LogContext);
-      this.pinoLogger.error({
-        ...enrichedContext,
-        err: {
-          type: message.constructor.name,
-          message: message.message,
-          stack: message.stack,
-        }
-      }, message.message);
+      this.pinoLogger.error(
+        {
+          ...enrichedContext,
+          err: {
+            type: message.constructor.name,
+            message: message.message,
+            stack: message.stack,
+          },
+        },
+        message.message,
+      );
     } else {
       // 字符串消息的情况
       const enrichedContext = this.enrichContext(context);
       if (typeof stackOrContext === 'string') {
         // 有 stack 参数
-        this.pinoLogger.error({
-          ...enrichedContext,
-          err: {
-            type: 'Error',
-            message: message,
-            stack: stackOrContext,
-          }
-        }, message);
+        this.pinoLogger.error(
+          {
+            ...enrichedContext,
+            err: {
+              type: 'Error',
+              message: message,
+              stack: stackOrContext,
+            },
+          },
+          message,
+        );
       } else {
         // 没有 stack 参数，stackOrContext 是 context
         this.pinoLogger.error(enrichedContext, message);
@@ -134,7 +152,7 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
 
   /**
    * 记录警告日志
-   * 
+   *
    * @param message - 日志消息
    * @param context - 日志上下文（可选）
    */
@@ -142,17 +160,20 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
   warn(message: Error, context?: LogContext): void;
   warn(message: string | Error, context?: LogContext): void {
     const enrichedContext = this.enrichContext(context);
-    
+
     // 处理 Error 对象的序列化问题
     if (message instanceof Error) {
-      this.pinoLogger.warn({
-        ...enrichedContext,
-        err: {
-          type: message.constructor.name,
-          message: message.message,
-          stack: message.stack,
-        }
-      }, message.message);
+      this.pinoLogger.warn(
+        {
+          ...enrichedContext,
+          err: {
+            type: message.constructor.name,
+            message: message.message,
+            stack: message.stack,
+          },
+        },
+        message.message,
+      );
     } else {
       this.pinoLogger.warn(enrichedContext, message);
     }
@@ -160,7 +181,7 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
 
   /**
    * 记录调试日志
-   * 
+   *
    * @param message - 日志消息
    * @param context - 日志上下文（可选）
    */
@@ -168,17 +189,20 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
   debug(message: Error, context?: LogContext): void;
   debug(message: string | Error, context?: LogContext): void {
     const enrichedContext = this.enrichContext(context);
-    
+
     // 处理 Error 对象的序列化问题
     if (message instanceof Error) {
-      this.pinoLogger.debug({
-        ...enrichedContext,
-        err: {
-          type: message.constructor.name,
-          message: message.message,
-          stack: message.stack,
-        }
-      }, message.message);
+      this.pinoLogger.debug(
+        {
+          ...enrichedContext,
+          err: {
+            type: message.constructor.name,
+            message: message.message,
+            stack: message.stack,
+          },
+        },
+        message.message,
+      );
     } else {
       this.pinoLogger.debug(enrichedContext, message);
     }
@@ -186,7 +210,7 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
 
   /**
    * 记录详细日志
-   * 
+   *
    * @param message - 日志消息
    * @param context - 日志上下文（可选）
    */
@@ -194,17 +218,20 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
   verbose(message: Error, context?: LogContext): void;
   verbose(message: string | Error, context?: LogContext): void {
     const enrichedContext = this.enrichContext(context);
-    
+
     // 处理 Error 对象的序列化问题
     if (message instanceof Error) {
-      this.pinoLogger.trace({
-        ...enrichedContext,
-        err: {
-          type: message.constructor.name,
-          message: message.message,
-          stack: message.stack,
-        }
-      }, message.message);
+      this.pinoLogger.trace(
+        {
+          ...enrichedContext,
+          err: {
+            type: message.constructor.name,
+            message: message.message,
+            stack: message.stack,
+          },
+        },
+        message.message,
+      );
     } else {
       this.pinoLogger.trace(enrichedContext, message);
     }
@@ -233,18 +260,19 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
 
     // 获取当前隔离上下文
     const isolationContext = this.isolationService.getIsolationContext();
-    
+
     // 合并隔离信息到日志上下文
     return {
       ...context,
-      isolation: isolationContext ? {
-        level: isolationContext.getIsolationLevel(),
-        tenantId: isolationContext.tenantId?.getValue(),
-        organizationId: isolationContext.organizationId?.getValue(),
-        departmentId: isolationContext.departmentId?.getValue(),
-        userId: isolationContext.userId?.getValue(),
-      } : undefined,
+      isolation: isolationContext
+        ? {
+            level: isolationContext.getIsolationLevel(),
+            tenantId: isolationContext.tenantId?.getValue(),
+            organizationId: isolationContext.organizationId?.getValue(),
+            departmentId: isolationContext.departmentId?.getValue(),
+            userId: isolationContext.userId?.getValue(),
+          }
+        : undefined,
     };
   }
 }
-

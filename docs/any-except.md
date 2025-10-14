@@ -22,12 +22,12 @@ function dangerousAdd(a: any, b: any): any {
 }
 
 // 编译时不会报错，但运行时可能出错
-const result1 = dangerousAdd(1, "2"); // "12" 而不是 3
+const result1 = dangerousAdd(1, '2'); // "12" 而不是 3
 const result2 = dangerousAdd(null, undefined); // NaN
 const result3 = dangerousAdd({}, 2); // "[object Object]2"
 
 // 失去自动补全和类型检查
-const processed = dangerousAdd("hello", 5);
+const processed = dangerousAdd('hello', 5);
 processed.toUpperCase(); // 运行时可能出错，但编译时不报错
 ```
 
@@ -37,19 +37,29 @@ processed.toUpperCase(); // 运行时可能出错，但编译时不报错
 
 ```typescript
 // ✅ 安全使用：泛型约束中的 any[]
-type SafeReturnType<T extends (...args: any[]) => any> = 
-  T extends (...args: any[]) => infer R ? R : never;
+type SafeReturnType<T extends (...args: any[]) => any> = T extends (
+  ...args: any[]
+) => infer R
+  ? R
+  : never;
 
 // 对任意函数类型都有效
-function foo(x: number, y: string): boolean { return true; }
-function bar(a: string[]): number { return 42; }
+function foo(x: number, y: string): boolean {
+  return true;
+}
+function bar(a: string[]): number {
+  return 42;
+}
 
 type FooReturn = SafeReturnType<typeof foo>; // boolean
 type BarReturn = SafeReturnType<typeof bar>; // number
 
 // 对比：使用 unknown[] 的局限性
-type LimitedReturnType<T extends (...args: unknown[]) => unknown> = 
-  T extends (...args: unknown[]) => infer R ? R : never;
+type LimitedReturnType<T extends (...args: unknown[]) => unknown> = T extends (
+  ...args: unknown[]
+) => infer R
+  ? R
+  : never;
 
 // 这会导致某些函数类型不兼容
 declare function legacyFunc(x: any): void;
@@ -62,7 +72,7 @@ type Test = SafeReturnType<typeof legacyFunc>; // 正常
 ```typescript
 // ✅ 安全使用：声明对参数类型不关心
 function withLogging<T extends (...args: any[]) => any>(
-  fn: T
+  fn: T,
 ): (...args: Parameters<T>) => ReturnType<T> {
   return (...args: Parameters<T>): ReturnType<T> => {
     console.log(`Calling function with args:`, args);
@@ -81,17 +91,15 @@ const loggedNumberFn = withLogging((x: number, y: number) => x + y);
 
 ```typescript
 // ✅ 处理条件类型中的复杂推断
-type ExtractPromiseType<T> = 
-  T extends Promise<infer U> ? U : T;
+type ExtractPromiseType<T> = T extends Promise<infer U> ? U : T;
 
-type AsyncDataTransformer<T> = 
-  T extends (...args: any[]) => Promise<infer R> 
-    ? (data: R) => void 
-    : never;
+type AsyncDataTransformer<T> = T extends (...args: any[]) => Promise<infer R>
+  ? (data: R) => void
+  : never;
 
 // 实际应用
 declare function fetchUser(): Promise<{ name: string; age: number }>;
-type UserHandler = AsyncDataTransformer<typeof fetchUser>; 
+type UserHandler = AsyncDataTransformer<typeof fetchUser>;
 // 类型为: (data: { name: string; age: number }) => void
 ```
 
@@ -119,7 +127,7 @@ function safeTransform<T>(value: T): TransformResult<T> {
 }
 
 // 使用示例
-const resultA = safeTransform("hello"); // number
+const resultA = safeTransform('hello'); // number
 const resultB = safeTransform(42); // number
 const resultC = safeTransform({ data: true }); // { data: boolean }
 ```
@@ -181,18 +189,19 @@ interface Entity {
 
 function mergeEntities<T extends Entity>(
   entities: T[],
-  updates: Partial<T>[]
+  updates: Partial<T>[],
 ): T[] {
-  return entities.map(entity => {
-    const update = updates.find(u => u.id === entity.id);
+  return entities.map((entity) => {
+    const update = updates.find((u) => u.id === entity.id);
     return update ? { ...entity, ...update } : entity;
   });
 }
 
 // 类型保护函数
 function isEntityArray<T extends Entity>(data: unknown): data is T[] {
-  return Array.isArray(data) && data.every(item => 
-    item && typeof item === 'object' && 'id' in item
+  return (
+    Array.isArray(data) &&
+    data.every((item) => item && typeof item === 'object' && 'id' in item)
   );
 }
 ```

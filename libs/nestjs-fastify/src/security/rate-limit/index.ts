@@ -1,9 +1,9 @@
 /**
  * @fileoverview 速率限制模块导出
- * 
+ *
  * @description
  * 统一导出速率限制模块的所有公共 API
- * 
+ *
  * @module security/rate-limit
  */
 
@@ -26,11 +26,13 @@ export {
 
 // 类型
 export type {
-  RateLimitOptions,
-  RateLimitStrategy,
-  RateLimitStatus,
   KeyGenerator,
+  RateLimitOptions,
+  RateLimitStatus,
+  RateLimitStrategy,
 } from './types/rate-limit-options.js';
 
-export { RateLimitConfig, RATE_LIMIT_METADATA_KEY } from './types/rate-limit-options.js';
-
+export {
+  RATE_LIMIT_METADATA_KEY,
+  RateLimitConfig,
+} from './types/rate-limit-options.js';

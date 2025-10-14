@@ -7,19 +7,18 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { TypedConfigModule } from '../../lib/typed-config.module';
-import { fileLoader, dotenvLoader } from '../../lib/loader';
-import { CacheManager, CacheStrategy } from '../../lib/cache';
-import {
-  TestConfig,
-  createTestConfig,
-  createTestEnvVars,
-  createTestFileContent,
-  createTempDir,
-  cleanupTempFiles,
-} from '../test-utils';
 import * as fs from 'fs';
 import * as path from 'path';
+import { CacheManager, CacheStrategy } from '../../lib/cache';
+import { dotenvLoader, fileLoader } from '../../lib/loader';
+import { TypedConfigModule } from '../../lib/typed-config.module';
+import {
+  TestConfig,
+  cleanupTempFiles,
+  createTempDir,
+  createTestConfig,
+  createTestEnvVars,
+} from '../test-utils';
 
 describe('配置模块集成测试', () => {
   let module: TestingModule;
@@ -193,7 +192,7 @@ describe('配置模块集成测试', () => {
               load: fileLoader({ path: nonexistentFile }),
             }),
           ],
-        }).compile()
+        }).compile(),
       ).rejects.toThrow();
     });
 
@@ -211,7 +210,7 @@ describe('配置模块集成测试', () => {
               load: fileLoader({ path: configFile }),
             }),
           ],
-        }).compile()
+        }).compile(),
       ).rejects.toThrow();
     });
 
@@ -230,7 +229,7 @@ describe('配置模块集成测试', () => {
               load: fileLoader({ path: configFile }),
             }),
           ],
-        }).compile()
+        }).compile(),
       ).rejects.toThrow();
     });
   });
@@ -276,7 +275,7 @@ describe('配置模块集成测试', () => {
               load: asyncLoader,
             }),
           ],
-        }).compile()
+        }).compile(),
       ).rejects.toThrow('Async load failed');
     });
   });
@@ -350,7 +349,7 @@ describe('配置模块集成测试', () => {
               validate: customValidator,
             }),
           ],
-        }).compile()
+        }).compile(),
       ).rejects.toThrow('Port must be at least 1000');
 
       expect(customValidator).toHaveBeenCalled();
@@ -365,7 +364,7 @@ describe('配置模块集成测试', () => {
           .fill(0)
           .map((_, i) => ({ id: i, value: `item_${i}` })),
         largeObject: Object.fromEntries(
-          new Array(1000).fill(0).map((_, i) => [`key_${i}`, `value_${i}`])
+          new Array(1000).fill(0).map((_, i) => [`key_${i}`, `value_${i}`]),
         ),
       };
 

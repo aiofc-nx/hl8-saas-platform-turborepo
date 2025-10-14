@@ -66,12 +66,12 @@
  */
 
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
   Injectable,
   Optional,
-  HttpException,
 } from '@nestjs/common';
 import { ProblemDetails } from '../core/abstract-http.exception.js';
 import type { ILoggerService } from './http-exception.filter.js';
@@ -123,11 +123,11 @@ export class AnyExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
+
       if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
         const resp = exceptionResponse as any;
         title = resp.error || resp.message || title;
-        detail = Array.isArray(resp.message) 
+        detail = Array.isArray(resp.message)
           ? resp.message.join(', ')
           : resp.message || detail;
       } else if (typeof exceptionResponse === 'string') {
@@ -167,7 +167,7 @@ export class AnyExceptionFilter implements ExceptionFilter {
     if (exception instanceof Error) {
       return `${exception.message}\n\n堆栈追踪:\n${exception.stack}`;
     }
-    
+
     if (typeof exception === 'string') {
       return exception;
     }
@@ -202,11 +202,15 @@ export class AnyExceptionFilter implements ExceptionFilter {
         ip: request.ip,
         userAgent: request.headers?.['user-agent'],
       },
-      exceptionType: exception instanceof Error ? exception.constructor.name : typeof exception,
+      exceptionType:
+        exception instanceof Error
+          ? exception.constructor.name
+          : typeof exception,
       timestamp: new Date().toISOString(),
     };
 
-    const errorMessage = exception instanceof Error ? exception.message : String(exception);
+    const errorMessage =
+      exception instanceof Error ? exception.message : String(exception);
     const errorStack = exception instanceof Error ? exception.stack : undefined;
 
     if (this.logger) {
@@ -219,4 +223,3 @@ export class AnyExceptionFilter implements ExceptionFilter {
     // 如果没有注入日志服务，静默处理（避免 console 污染）
   }
 }
-

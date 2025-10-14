@@ -119,18 +119,18 @@ export * from './lib/loader/index.js';
 
 // 重新导出类型以避免冲突
 export type {
-  FileLoaderOptions,
-  DotenvLoaderOptions,
-  RemoteLoaderOptions,
   DirectoryLoaderOptions,
+  DotenvLoaderOptions,
+  FileLoaderOptions,
+  RemoteLoaderOptions,
 } from './lib/types/loader.types.js';
 
 // 工具函数导出
-export * from './lib/utils/imports.util.js';
-export * from './lib/utils/identity.util.js';
+export { ConfigValidator } from './lib/utils/config-validator.util.js';
 export * from './lib/utils/debug.util.js';
 export * from './lib/utils/for-each-deep.util.js';
-export { ConfigValidator } from './lib/utils/config-validator.util.js';
+export * from './lib/utils/identity.util.js';
+export * from './lib/utils/imports.util.js';
 
 // 错误处理导出
 export * from './lib/errors/index.js';

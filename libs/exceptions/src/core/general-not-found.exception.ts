@@ -81,4 +81,3 @@ export class GeneralNotFoundException extends AbstractHttpException {
     super('NOT_FOUND', title, detail, 404, data);
   }
 }
-

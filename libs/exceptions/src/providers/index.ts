@@ -6,6 +6,5 @@
  * @packageDocumentation
  */
 
-export * from './exception-message.provider.js';
 export * from './default-message.provider.js';
-
+export * from './exception-message.provider.js';

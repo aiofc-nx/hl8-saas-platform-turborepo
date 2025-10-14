@@ -32,12 +32,12 @@
 
 #### 新增组件（4个文件，~520行）
 
-| 组件 | 文件 | 行数 | 功能 |
-|------|------|------|------|
-| CacheInterceptor | cache.interceptor.ts | ~235 | 拦截器核心逻辑 |
-| @Cacheable | cacheable.decorator.ts | ~95 | 读缓存装饰器 |
-| @CacheEvict | cache-evict.decorator.ts | ~100 | 清缓存装饰器 |
-| @CachePut | cache-put.decorator.ts | ~90 | 更新缓存装饰器 |
+| 组件             | 文件                     | 行数 | 功能           |
+| ---------------- | ------------------------ | ---- | -------------- |
+| CacheInterceptor | cache.interceptor.ts     | ~235 | 拦截器核心逻辑 |
+| @Cacheable       | cacheable.decorator.ts   | ~95  | 读缓存装饰器   |
+| @CacheEvict      | cache-evict.decorator.ts | ~100 | 清缓存装饰器   |
+| @CachePut        | cache-put.decorator.ts   | ~90  | 更新缓存装饰器 |
 
 #### 核心特性
 
@@ -113,15 +113,15 @@
 
 ### Caching 模块进度
 
-| Phase | 任务数 | 完成数 | 完成率 | 状态 |
-|-------|-------|--------|--------|------|
-| Phase 1 | 5 | 5 | 100% | ✅ 完成 |
-| Phase 2 | 8 | 8 | 100% | ✅ 完成 |
-| Phase 3 | 8 | 7 | 87.5% | ✅ 完成 |
-| **Phase 4** | 5 | 3 | 60% | ✅ 代码完成 |
-| Phase 5 | 6 | 0 | 0% | ⚪ 待开发 |
-| Phase 7 | 2 | 0 | 0% | ⚪ 待开发 |
-| **总计** | **34** | **23** | **67.6%** | 🟢 核心完成 |
+| Phase       | 任务数 | 完成数 | 完成率    | 状态        |
+| ----------- | ------ | ------ | --------- | ----------- |
+| Phase 1     | 5      | 5      | 100%      | ✅ 完成     |
+| Phase 2     | 8      | 8      | 100%      | ✅ 完成     |
+| Phase 3     | 8      | 7      | 87.5%     | ✅ 完成     |
+| **Phase 4** | 5      | 3      | 60%       | ✅ 代码完成 |
+| Phase 5     | 6      | 0      | 0%        | ⚪ 待开发   |
+| Phase 7     | 2      | 0      | 0%        | ⚪ 待开发   |
+| **总计**    | **34** | **23** | **67.6%** | 🟢 核心完成 |
 
 **说明**: Phase 6（兼容层）不适用，nestjs-infra 将被移除
 
@@ -138,7 +138,7 @@
 async getUserById(id: string): Promise<User> {
   const cached = await this.cacheService.get('user', id);
   if (cached) return cached;
-  
+
   const user = await this.repository.findOne(id);
   await this.cacheService.set('user', id, user, 3600);
   return user;
@@ -187,16 +187,14 @@ if (metadata) {
 ```typescript
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly repository: UserRepository,
-  ) {}
-  
+  constructor(private readonly repository: UserRepository) {}
+
   // 读操作：自动缓存
   @Cacheable('user')
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // 列表查询：自定义键和 TTL
   @Cacheable('user', {
     keyGenerator: (filters) => `list:${JSON.stringify(filters)}`,
@@ -205,27 +203,27 @@ export class UserService {
   async getUsers(filters: UserFilters): Promise<User[]> {
     return this.repository.findAll(filters);
   }
-  
+
   // 更新操作：更新数据并刷新缓存
   @CachePut('user')
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
-  
+
   // 删除操作：清除缓存
   @CacheEvict('user')
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete(id);
   }
-  
+
   // 批量操作：清除所有用户缓存
   @CacheEvict('user', { allEntries: true })
   async importUsers(users: User[]): Promise<void> {
     await this.repository.bulkInsert(users);
   }
-  
+
   // 定时刷新：强制更新缓存
-  @CachePut('user', { 
+  @CachePut('user', {
     keyGenerator: (id) => id,
     ttl: 3600,
   })
@@ -322,13 +320,13 @@ specs/001-hl8-nestjs-enhance/
 
 ### 测试质量
 
-| 指标 | 值 | 目标 | 状态 |
-|------|---|------|------|
-| 总测试用例 | 168 | - | ⭐⭐⭐ |
-| 通过率 | 100% | 100% | ✅ |
-| 领域层覆盖 | 78-98% | 90% | ✅ 优秀 |
-| 服务层覆盖 | 40-52% | 50% | ✅ 合格 |
-| 装饰器覆盖 | 0% | - | 🟡 代码完成，测试可选 |
+| 指标       | 值     | 目标 | 状态                  |
+| ---------- | ------ | ---- | --------------------- |
+| 总测试用例 | 168    | -    | ⭐⭐⭐                |
+| 通过率     | 100%   | 100% | ✅                    |
+| 领域层覆盖 | 78-98% | 90%  | ✅ 优秀               |
+| 服务层覆盖 | 40-52% | 50%  | ✅ 合格               |
+| 装饰器覆盖 | 0%     | -    | 🟡 代码完成，测试可选 |
 
 ### 架构质量
 
@@ -461,11 +459,11 @@ async getUser(id: string) {
 
 ### 3. 三个装饰器分工明确
 
-| 装饰器 | 检查缓存 | 执行方法 | 更新缓存 | 场景 |
-|--------|---------|---------|---------|------|
-| @Cacheable | ✅ | 未命中时 | 未命中时 | GET |
-| @CachePut | ❌ | 始终 | 始终 | UPDATE |
-| @CacheEvict | ❌ | 始终 | ❌ 删除 | DELETE |
+| 装饰器      | 检查缓存 | 执行方法 | 更新缓存 | 场景   |
+| ----------- | -------- | -------- | -------- | ------ |
+| @Cacheable  | ✅       | 未命中时 | 未命中时 | GET    |
+| @CachePut   | ❌       | 始终     | 始终     | UPDATE |
+| @CacheEvict | ❌       | 始终     | ❌ 删除  | DELETE |
 
 ---
 

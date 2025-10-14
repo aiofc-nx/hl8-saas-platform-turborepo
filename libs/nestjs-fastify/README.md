@@ -25,13 +25,13 @@ Fastify 专用的企业级基础设施模块 - 为 NestJS + Fastify 应用提供
 RateLimitModule.forRoot({
   max: 100,
   timeWindow: 60000,
-})
+});
 
 // 方式2：从 AppConfig 获取（推荐）
 RateLimitModule.forRootAsync({
   inject: [AppConfig],
   useFactory: (config: AppConfig) => config.rateLimit,
-})
+});
 ```
 
 详见：[模块选项 vs 应用配置](../../docs/guides/config/MODULE_OPTIONS_VS_APP_CONFIG.md)
@@ -190,16 +190,16 @@ pnpm add @hl8/nestjs-fastify
 
 本包提供以下独立模块：
 
-| 模块 | 功能 | 必需 |
-|------|------|------|
-| **FastifyExceptionModule** | 异常处理 | ✅ 推荐 |
-| **FastifyLoggingModule** | 日志 | ✅ 推荐 |
-| **CompressionModule** | 响应压缩 | ⭐ 推荐 |
-| **MetricsModule** | Prometheus 指标 | ⭐ 推荐 |
-| **SecurityModule** | 安全头（Helmet） | ✅ 推荐 |
-| **RateLimitModule** | 速率限制 | ⭐ 按需 |
-| **CorsModule** | 跨域配置 | ⭐ 按需 |
-| **EnterpriseFastifyAdapter** | Fastify 适配器 | ✅ 必需 |
+| 模块                         | 功能             | 必需    |
+| ---------------------------- | ---------------- | ------- |
+| **FastifyExceptionModule**   | 异常处理         | ✅ 推荐 |
+| **FastifyLoggingModule**     | 日志             | ✅ 推荐 |
+| **CompressionModule**        | 响应压缩         | ⭐ 推荐 |
+| **MetricsModule**            | Prometheus 指标  | ⭐ 推荐 |
+| **SecurityModule**           | 安全头（Helmet） | ✅ 推荐 |
+| **RateLimitModule**          | 速率限制         | ⭐ 按需 |
+| **CorsModule**               | 跨域配置         | ⭐ 按需 |
+| **EnterpriseFastifyAdapter** | Fastify 适配器   | ✅ 必需 |
 
 ---
 
@@ -217,7 +217,7 @@ async function bootstrap() {
   // 使用 EnterpriseFastifyAdapter
   const app = await NestFactory.create(
     AppModule,
-    new EnterpriseFastifyAdapter()
+    new EnterpriseFastifyAdapter(),
   );
 
   await app.listen(3000, '0.0.0.0');
@@ -245,7 +245,7 @@ import {
     FastifyExceptionModule.forRoot({
       isProduction: process.env.NODE_ENV === 'production',
     }),
-    
+
     // 日志（推荐）
     FastifyLoggingModule.forRoot({
       config: {
@@ -253,13 +253,13 @@ import {
         prettyPrint: process.env.NODE_ENV === 'development',
       },
     }),
-    
+
     // 压缩（可选）
     CompressionModule.forRoot({
       global: true,
       threshold: 1024,
     }),
-    
+
     // Metrics（可选）
     MetricsModule.forRoot({
       defaultLabels: {
@@ -331,10 +331,10 @@ import { FastifyLoggingModule } from '@hl8/nestjs-fastify';
   imports: [
     FastifyLoggingModule.forRoot({
       config: {
-        level: 'info',                    // 日志级别
-        prettyPrint: true,                // 美化输出（开发环境）
-        includeIsolationContext: true,    // 包含隔离上下文
-        timestamp: true,                  // 时间戳
+        level: 'info', // 日志级别
+        prettyPrint: true, // 美化输出（开发环境）
+        includeIsolationContext: true, // 包含隔离上下文
+        timestamp: true, // 时间戳
       },
     }),
   ],
@@ -349,13 +349,11 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly logger: FastifyLoggerService,
-  ) {}
+  constructor(private readonly logger: FastifyLoggerService) {}
 
   async createUser(data: CreateUserDto) {
     this.logger.info('Creating user', { email: data.email });
-    
+
     try {
       const user = await this.userRepo.save(data);
       this.logger.info('User created', { userId: user.id });
@@ -401,9 +399,9 @@ import { CompressionModule } from '@hl8/nestjs-fastify';
 @Module({
   imports: [
     CompressionModule.forRoot({
-      global: true,                           // 全局启用
-      threshold: 1024,                        // 大于 1KB 才压缩
-      encodings: ['br', 'gzip', 'deflate'],  // 支持的编码
+      global: true, // 全局启用
+      threshold: 1024, // 大于 1KB 才压缩
+      encodings: ['br', 'gzip', 'deflate'], // 支持的编码
     }),
   ],
 })
@@ -412,11 +410,11 @@ export class AppModule {}
 
 **配置选项**：
 
-| 选项 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `global` | `boolean` | `false` | 是否全局启用 |
-| `threshold` | `number` | `1024` | 压缩阈值（字节） |
-| `encodings` | `string[]` | `['br', 'gzip', 'deflate']` | 支持的编码 |
+| 选项        | 类型       | 默认值                      | 说明             |
+| ----------- | ---------- | --------------------------- | ---------------- |
+| `global`    | `boolean`  | `false`                     | 是否全局启用     |
+| `threshold` | `number`   | `1024`                      | 压缩阈值（字节） |
+| `encodings` | `string[]` | `['br', 'gzip', 'deflate']` | 支持的编码       |
 
 **效果**：
 
@@ -438,13 +436,14 @@ import { MetricsModule } from '@hl8/nestjs-fastify';
 @Module({
   imports: [
     MetricsModule.forRoot({
-      path: '/metrics',                  // Metrics 端点
-      defaultLabels: {                   // 默认标签
+      path: '/metrics', // Metrics 端点
+      defaultLabels: {
+        // 默认标签
         app: 'my-app',
         environment: 'production',
       },
-      includeTenantMetrics: true,        // 包含租户级指标
-      enableDefaultMetrics: true,        // 启用默认指标
+      includeTenantMetrics: true, // 包含租户级指标
+      enableDefaultMetrics: true, // 启用默认指标
     }),
   ],
 })
@@ -479,9 +478,7 @@ import { MetricsService } from '@hl8/nestjs-fastify';
 
 @Injectable()
 export class OrderService {
-  constructor(
-    private readonly metrics: MetricsService,
-  ) {
+  constructor(private readonly metrics: MetricsService) {
     // 创建自定义指标
     this.orderCounter = this.metrics.createCounter({
       name: 'orders_created_total',
@@ -492,10 +489,10 @@ export class OrderService {
 
   async createOrder(data: CreateOrderDto) {
     const order = await this.orderRepo.save(data);
-    
+
     // 增加计数
     this.orderCounter.inc({ status: order.status });
-    
+
     return order;
   }
 }
@@ -533,7 +530,7 @@ import { SecurityModule } from '@hl8/nestjs-fastify';
         },
       },
       hsts: {
-        maxAge: 31536000,                   // 1 年
+        maxAge: 31536000, // 1 年
         includeSubDomains: true,
       },
     }),
@@ -566,10 +563,10 @@ import { RateLimitModule } from '@hl8/nestjs-fastify';
 @Module({
   imports: [
     RateLimitModule.forRoot({
-      max: 100,                        // 最大请求数
-      timeWindow: 60000,               // 时间窗口（毫秒）
-      strategy: 'ip',                  // 限制策略：ip/tenant/user/custom
-      redis: redisClient,              // Redis 客户端（可选）
+      max: 100, // 最大请求数
+      timeWindow: 60000, // 时间窗口（毫秒）
+      strategy: 'ip', // 限制策略：ip/tenant/user/custom
+      redis: redisClient, // Redis 客户端（可选）
     }),
   ],
 })
@@ -583,18 +580,18 @@ import { RateLimit } from '@hl8/nestjs-fastify';
 
 // 控制器级别限制
 @Controller('users')
-@RateLimit({ max: 1000, timeWindow: 60000 })  // 1000 次/分钟
+@RateLimit({ max: 1000, timeWindow: 60000 }) // 1000 次/分钟
 export class UserController {
   // 方法级别限制（更严格）
   @Post()
-  @RateLimit({ max: 10, timeWindow: 60000 })  // 10 次/分钟
+  @RateLimit({ max: 10, timeWindow: 60000 }) // 10 次/分钟
   create(@Body() data: CreateUserDto) {
     return this.userService.create(data);
   }
-  
+
   // 查询可以更宽松
   @Get()
-  @RateLimit({ max: 100, timeWindow: 60000 })  // 100 次/分钟
+  @RateLimit({ max: 100, timeWindow: 60000 }) // 100 次/分钟
   findAll() {
     return this.userService.findAll();
   }
@@ -607,7 +604,7 @@ export class UserController {
 import { RateLimitByTenant } from '@hl8/nestjs-fastify';
 
 @Controller('api')
-@RateLimitByTenant({ max: 10000, timeWindow: 3600000 })  // 10000 次/小时/租户
+@RateLimitByTenant({ max: 10000, timeWindow: 3600000 }) // 10000 次/小时/租户
 export class ApiController {
   // ...
 }
@@ -637,11 +634,11 @@ import { CorsModule } from '@hl8/nestjs-fastify';
   imports: [
     CorsModule.forRoot({
       origin: ['https://app.example.com', 'https://admin.example.com'],
-      credentials: true,                           // 允许凭证
+      credentials: true, // 允许凭证
       allowedHeaders: ['Content-Type', 'Authorization'],
       exposedHeaders: ['X-Total-Count'],
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
-      maxAge: 3600,                                // 预检缓存时间
+      maxAge: 3600, // 预检缓存时间
     }),
   ],
 })
@@ -661,7 +658,7 @@ CorsModule.forRoot({
     }
   },
   credentials: true,
-})
+});
 ```
 
 ---
@@ -698,15 +695,15 @@ import { AppConfig } from './config/app.config.js';
         }),
       ],
     }),
-    
+
     // 2. 数据隔离（推荐）
     IsolationModule.forRoot(),
-    
+
     // 3. 异常处理（必需）
     FastifyExceptionModule.forRoot({
       isProduction: process.env.NODE_ENV === 'production',
     }),
-    
+
     // 4. 日志（必需）
     FastifyLoggingModule.forRoot({
       config: {
@@ -715,7 +712,7 @@ import { AppConfig } from './config/app.config.js';
         includeIsolationContext: true,
       },
     }),
-    
+
     // 5. 安全头（推荐）
     SecurityModule.forRoot({
       contentSecurityPolicy: {
@@ -726,20 +723,20 @@ import { AppConfig } from './config/app.config.js';
         },
       },
     }),
-    
+
     // 6. CORS（按需）
     CorsModule.forRoot({
       origin: process.env.CORS_ORIGIN?.split(',') || [],
       credentials: true,
     }),
-    
+
     // 7. 压缩（推荐）
     CompressionModule.forRoot({
       global: true,
       threshold: 1024,
       encodings: ['br', 'gzip', 'deflate'],
     }),
-    
+
     // 8. Metrics（推荐）
     MetricsModule.forRoot({
       path: '/metrics',
@@ -749,7 +746,7 @@ import { AppConfig } from './config/app.config.js';
       },
       includeTenantMetrics: true,
     }),
-    
+
     // 9. 速率限制（推荐）
     RateLimitModule.forRoot({
       max: 1000,
@@ -775,7 +772,7 @@ export class AppModule {}
       isGlobal: true,
       load: [dotenvLoader()],
     }),
-    
+
     // 从 AppConfig 获取配置
     FastifyExceptionModule.forRootAsync({
       inject: [AppConfig],
@@ -783,19 +780,19 @@ export class AppModule {}
         isProduction: config.isProduction,
       }),
     }),
-    
+
     FastifyLoggingModule.forRootAsync({
       inject: [AppConfig],
       useFactory: (config: AppConfig) => ({
         config: config.logging,
       }),
     }),
-    
+
     MetricsModule.forRootAsync({
       inject: [AppConfig],
       useFactory: (config: AppConfig) => config.metrics,
     }),
-    
+
     RateLimitModule.forRootAsync({
       inject: [AppConfig],
       useFactory: (config: AppConfig) => config.rateLimit,
@@ -864,11 +861,11 @@ import { FastifyLoggingModule } from '@hl8/nestjs-fastify';
   imports: [
     // 隔离模块
     IsolationModule.forRoot(),
-    
+
     // 日志模块（自动包含隔离上下文）
     FastifyLoggingModule.forRoot({
       config: {
-        includeIsolationContext: true,  // ← 自动包含租户/组织信息
+        includeIsolationContext: true, // ← 自动包含租户/组织信息
       },
     }),
   ],
@@ -885,7 +882,7 @@ import { MetricsModule } from '@hl8/nestjs-fastify';
 @Module({
   imports: [
     CachingModule.forRoot({ ... }),
-    
+
     // Metrics 可以监控缓存命中率
     MetricsModule.forRoot({
       includeTenantMetrics: true,
@@ -910,13 +907,13 @@ export class AppModule {}
 
 ```typescript
 // AppConfig 从 .env 读取
-TypedConfigModule.forRoot({ schema: AppConfig })
+TypedConfigModule.forRoot({ schema: AppConfig });
 
 // 模块从 AppConfig 获取配置值
 RateLimitModule.forRootAsync({
   inject: [AppConfig],
   useFactory: (config: AppConfig) => config.rateLimit,
-})
+});
 ```
 
 详见：[模块选项 vs 应用配置](../../docs/guides/config/MODULE_OPTIONS_VS_APP_CONFIG.md)
@@ -927,14 +924,14 @@ RateLimitModule.forRootAsync({
 
 **A**: EnterpriseF astifyAdapter 是增强版本：
 
-| 特性 | FastifyAdapter | EnterpriseFastifyAdapter |
-|------|---------------|--------------------------|
-| 基本功能 | ✅ | ✅ |
-| 性能监控 | ❌ | ✅ |
-| 健康检查 | ❌ | ✅ `/health` |
-| 优雅关闭 | 基础 | ✅ 增强 |
-| 请求跟踪 | ❌ | ✅ |
-| 指标收集 | ❌ | ✅ |
+| 特性     | FastifyAdapter | EnterpriseFastifyAdapter |
+| -------- | -------------- | ------------------------ |
+| 基本功能 | ✅             | ✅                       |
+| 性能监控 | ❌             | ✅                       |
+| 健康检查 | ❌             | ✅ `/health`             |
+| 优雅关闭 | 基础           | ✅ 增强                  |
+| 请求跟踪 | ❌             | ✅                       |
+| 指标收集 | ❌             | ✅                       |
 
 ---
 
@@ -956,7 +953,7 @@ RateLimitModule.forRootAsync({
 ```typescript
 MetricsModule.forRoot({
   excludeRoutes: ['/health', '/metrics', '/internal/*'],
-})
+});
 ```
 
 ---
@@ -968,9 +965,9 @@ MetricsModule.forRoot({
 ```typescript
 FastifyLoggingModule.forRoot({
   config: {
-    level: 'warn',  // 只记录 warn 和 error
+    level: 'warn', // 只记录 warn 和 error
   },
-})
+});
 ```
 
 日志级别：`trace` < `debug` < `info` < `warn` < `error` < `fatal`
@@ -983,11 +980,12 @@ FastifyLoggingModule.forRoot({
 
 ```typescript
 CorsModule.forRoot({
-  origin: process.env.NODE_ENV === 'development' 
-    ? true  // 开发：允许所有
-    : ['https://app.example.com'],  // 生产：指定域名
+  origin:
+    process.env.NODE_ENV === 'development'
+      ? true // 开发：允许所有
+      : ['https://app.example.com'], // 生产：指定域名
   credentials: true,
-})
+});
 ```
 
 ---
@@ -1001,21 +999,21 @@ CorsModule.forRoot({
   imports: [
     // 1️⃣ 配置模块（最先）
     TypedConfigModule.forRoot({ ... }),
-    
+
     // 2️⃣ 基础设施模块
     IsolationModule.forRoot(),
     FastifyExceptionModule.forRoot({ ... }),
     FastifyLoggingModule.forRoot({ ... }),
-    
+
     // 3️⃣ 安全模块
     SecurityModule.forRoot({ ... }),
     CorsModule.forRoot({ ... }),
     RateLimitModule.forRoot({ ... }),
-    
+
     // 4️⃣ 性能模块
     CompressionModule.forRoot({ ... }),
     MetricsModule.forRoot({ ... }),
-    
+
     // 5️⃣ 业务模块（最后）
     UserModule,
     OrderModule,
@@ -1037,9 +1035,9 @@ CorsModule.forRoot({
         prettyPrint: process.env.NODE_ENV === 'development',
       },
     }),
-    
+
     SecurityModule.forRoot({
-      contentSecurityPolicy: process.env.NODE_ENV === 'production' 
+      contentSecurityPolicy: process.env.NODE_ENV === 'production'
         ? { directives: { defaultSrc: ["'self'"] } }
         : false,  // 开发环境禁用 CSP
     }),
@@ -1056,13 +1054,13 @@ CorsModule.forRoot({
 RateLimitModule.forRootAsync({
   inject: [AppConfig],
   useFactory: (config: AppConfig) => config.rateLimit,
-})
+});
 
 // ❌ 避免：硬编码配置
 RateLimitModule.forRoot({
   max: 100,
   timeWindow: 60000,
-})
+});
 ```
 
 ---
@@ -1081,10 +1079,9 @@ RateLimitModule.forRoot({
     }),
   ],
 })
-
 // 在控制器中可以覆盖
 @Controller('premium-api')
-@RateLimitByTenant({ max: 10000, timeWindow: 60000 })  // 按租户限制
+@RateLimitByTenant({ max: 10000, timeWindow: 60000 }) // 按租户限制
 export class PremiumApiController {
   // 高级客户有更高的限额
 }
@@ -1105,7 +1102,7 @@ this.metrics.httpRequestCounter.inc({
 
 // ❌ 避免：高基数标签
 this.metrics.httpRequestCounter.inc({
-  userId: user.id,  // ❌ 每个用户一个标签，基数太高
+  userId: user.id, // ❌ 每个用户一个标签，基数太高
 });
 ```
 

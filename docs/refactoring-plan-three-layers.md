@@ -89,7 +89,7 @@
 ```json
 {
   "dependencies": {
-    "@hl8/platform": "workspace:*",  // ← 依赖核心层
+    "@hl8/platform": "workspace:*", // ← 依赖核心层
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
     "nestjs-cls": "^6.0.1",
@@ -122,8 +122,8 @@
 ```json
 {
   "dependencies": {
-    "@hl8/platform": "workspace:*",       // ← 核心业务逻辑
-    "@hl8/nestjs-infra": "workspace:*",   // ← 复用通用模块
+    "@hl8/platform": "workspace:*", // ← 核心业务逻辑
+    "@hl8/nestjs-infra": "workspace:*", // ← 复用通用模块
     "@nestjs/platform-fastify": "^11.1.6",
     "fastify": "^5.6.1"
   }
@@ -191,8 +191,8 @@ mv libs/nestjs-infra/src/shared/exceptions/* libs/platform/src/shared/exceptions
 ```json
 {
   "dependencies": {
-    "@hl8/platform": "workspace:*",  // ← 新增依赖
-    "@nestjs/common": "^11.1.6",
+    "@hl8/platform": "workspace:*", // ← 新增依赖
+    "@nestjs/common": "^11.1.6"
     // ...
   }
 }
@@ -218,9 +218,9 @@ import {
 ```json
 {
   "dependencies": {
-    "@hl8/platform": "workspace:*",       // ← 核心依赖
-    "@hl8/nestjs-infra": "workspace:*",   // ← 复用通用模块
-    "@nestjs/platform-fastify": "^11.1.6",
+    "@hl8/platform": "workspace:*", // ← 核心依赖
+    "@hl8/nestjs-infra": "workspace:*", // ← 复用通用模块
+    "@nestjs/platform-fastify": "^11.1.6"
     // ...
   }
 }
@@ -267,10 +267,10 @@ import {
 
 ### 1. 清晰的职责分离 ✨
 
-| 层级 | 职责 | 依赖 | 可复用性 |
-|------|------|------|---------|
-| **@hl8/platform** | 业务逻辑 | 无框架 | 100% |
-| **@hl8/nestjs-infra** | NestJS 通用 | platform + NestJS | 80% |
+| 层级                    | 职责         | 依赖                       | 可复用性     |
+| ----------------------- | ------------ | -------------------------- | ------------ |
+| **@hl8/platform**       | 业务逻辑     | 无框架                     | 100%         |
+| **@hl8/nestjs-infra**   | NestJS 通用  | platform + NestJS          | 80%          |
 | **@hl8/nestjs-fastify** | Fastify 专用 | platform + infra + Fastify | Fastify 应用 |
 
 ### 2. 更好的代码复用 ♻️
@@ -302,7 +302,7 @@ import {
   platform (纯业务逻辑)
      ↑ 单向依赖
   nestjs-infra / nestjs-fastify (框架适配)
-  
+
   低耦合，易测试，易扩展
 ```
 
@@ -447,8 +447,8 @@ pnpm test
 ```json
 {
   "dependencies": {
-    "@hl8/platform": "workspace:*",  // ← 新增
-    "@nestjs/common": "^11.1.6",
+    "@hl8/platform": "workspace:*", // ← 新增
+    "@nestjs/common": "^11.1.6"
     // ...
   }
 }
@@ -500,9 +500,9 @@ pnpm test
 ```json
 {
   "dependencies": {
-    "@hl8/platform": "workspace:*",       // ← 核心依赖
-    "@hl8/nestjs-infra": "workspace:*",   // ← 复用通用模块
-    "@nestjs/platform-fastify": "^11.1.6",
+    "@hl8/platform": "workspace:*", // ← 核心依赖
+    "@hl8/nestjs-infra": "workspace:*", // ← 复用通用模块
+    "@nestjs/platform-fastify": "^11.1.6"
     // ...
   }
 }
@@ -512,16 +512,10 @@ pnpm test
 
 ```typescript
 // 从 platform 导入核心
-import {
-  AbstractHttpException,
-  EntityId,
-} from '@hl8/platform';
+import { AbstractHttpException, EntityId } from '@hl8/platform';
 
 // 从 nestjs-infra 复用
-import {
-  CachingModule,
-  IsolationModule,
-} from '@hl8/nestjs-infra';
+import { CachingModule, IsolationModule } from '@hl8/nestjs-infra';
 ```
 
 ---
@@ -533,7 +527,7 @@ import {
 ```json
 {
   "dependencies": {
-    "@hl8/nestjs-fastify": "workspace:*",  // ← 使用 Fastify 专用
+    "@hl8/nestjs-fastify": "workspace:*" // ← 使用 Fastify 专用
     // 移除 @hl8/nestjs-infra
   }
 }
@@ -628,14 +622,14 @@ libs/nestjs-fastify/ (~200 lines)
 
 ## ⏱️ 时间估算
 
-| Phase | 任务 | 时间 |
-|-------|------|------|
-| Phase 1 | 创建 @hl8/platform | 2-3h |
-| Phase 2 | 重构 @hl8/nestjs-infra | 1-2h |
-| Phase 3 | 重构 @hl8/nestjs-fastify | 0.5h |
-| Phase 4 | 更新 fastify-api | 0.25h |
-| Phase 5 | 测试验证 | 1h |
-| **总计** | | **5-7 小时** |
+| Phase    | 任务                     | 时间         |
+| -------- | ------------------------ | ------------ |
+| Phase 1  | 创建 @hl8/platform       | 2-3h         |
+| Phase 2  | 重构 @hl8/nestjs-infra   | 1-2h         |
+| Phase 3  | 重构 @hl8/nestjs-fastify | 0.5h         |
+| Phase 4  | 更新 fastify-api         | 0.25h        |
+| Phase 5  | 测试验证                 | 1h           |
+| **总计** |                          | **5-7 小时** |
 
 ---
 

@@ -24,23 +24,23 @@
 
 #### 核心组件
 
-| 类型 | 组件 | 说明 |
-|------|------|------|
-| **值对象** | EntityId | 基类，统一 UUID v4 验证 |
-| | TenantId | 租户 ID |
-| | OrganizationId | 组织 ID |
-| | DepartmentId | 部门 ID |
-| | UserId | 用户 ID |
-| **实体** | IsolationContext | 核心实体，封装所有业务逻辑 |
-| **枚举** | IsolationLevel | 5 个隔离层级 |
-| | SharingLevel | 共享级别 |
-| **接口** | IIsolationContextProvider | 上下文提供者接口 |
-| | IIsolationValidator | 验证器接口 |
-| | DataAccessContext | 数据访问上下文 |
-| **事件** | IsolationContextCreatedEvent | 上下文创建事件 |
-| | IsolationContextSwitchedEvent | 上下文切换事件 |
-| | DataAccessDeniedEvent | 访问拒绝事件 |
-| **错误** | IsolationValidationError | 验证异常 |
+| 类型       | 组件                          | 说明                       |
+| ---------- | ----------------------------- | -------------------------- |
+| **值对象** | EntityId                      | 基类，统一 UUID v4 验证    |
+|            | TenantId                      | 租户 ID                    |
+|            | OrganizationId                | 组织 ID                    |
+|            | DepartmentId                  | 部门 ID                    |
+|            | UserId                        | 用户 ID                    |
+| **实体**   | IsolationContext              | 核心实体，封装所有业务逻辑 |
+| **枚举**   | IsolationLevel                | 5 个隔离层级               |
+|            | SharingLevel                  | 共享级别                   |
+| **接口**   | IIsolationContextProvider     | 上下文提供者接口           |
+|            | IIsolationValidator           | 验证器接口                 |
+|            | DataAccessContext             | 数据访问上下文             |
+| **事件**   | IsolationContextCreatedEvent  | 上下文创建事件             |
+|            | IsolationContextSwitchedEvent | 上下文切换事件             |
+|            | DataAccessDeniedEvent         | 访问拒绝事件               |
+| **错误**   | IsolationValidationError      | 验证异常                   |
 
 #### 测试覆盖率
 
@@ -73,17 +73,17 @@ Coverage:
 
 #### 核心组件
 
-| 类型 | 组件 | 说明 |
-|------|------|------|
-| **模块** | IsolationModule | 主模块，集成 ClsModule |
-| **服务** | IsolationContextService | 上下文管理（CLS）|
-| | MultiLevelIsolationService | 权限验证服务 |
-| **中间件** | IsolationExtractionMiddleware | 提取上下文（已集成到 ClsModule）|
-| **装饰器** | @RequireTenant | 要求租户级上下文 |
-| | @RequireOrganization | 要求组织级上下文 |
-| | @RequireDepartment | 要求部门级上下文 |
-| | @CurrentContext | 注入当前上下文 |
-| **守卫** | IsolationGuard | 验证隔离级别 |
+| 类型       | 组件                          | 说明                             |
+| ---------- | ----------------------------- | -------------------------------- |
+| **模块**   | IsolationModule               | 主模块，集成 ClsModule           |
+| **服务**   | IsolationContextService       | 上下文管理（CLS）                |
+|            | MultiLevelIsolationService    | 权限验证服务                     |
+| **中间件** | IsolationExtractionMiddleware | 提取上下文（已集成到 ClsModule） |
+| **装饰器** | @RequireTenant                | 要求租户级上下文                 |
+|            | @RequireOrganization          | 要求组织级上下文                 |
+|            | @RequireDepartment            | 要求部门级上下文                 |
+|            | @CurrentContext               | 注入当前上下文                   |
+| **守卫**   | IsolationGuard                | 验证隔离级别                     |
 
 #### 集成测试覆盖率
 
@@ -139,13 +139,13 @@ Coverage:
 
 ### 设计模式应用
 
-| 模式 | 应用 | 效果 |
-|------|------|------|
-| **DDD 充血模型** | IsolationContext | 业务逻辑集中管理 |
-| **Flyweight** | 所有 ID 值对象 | 优化内存使用 |
-| **依赖倒置** | 领域模型 vs 实现库 | 框架无关，易测试 |
-| **工厂方法** | IsolationContext 静态方法 | 创建逻辑封装 |
-| **策略模式** | 隔离级别判断 | 灵活的层级处理 |
+| 模式             | 应用                      | 效果             |
+| ---------------- | ------------------------- | ---------------- |
+| **DDD 充血模型** | IsolationContext          | 业务逻辑集中管理 |
+| **Flyweight**    | 所有 ID 值对象            | 优化内存使用     |
+| **依赖倒置**     | 领域模型 vs 实现库        | 框架无关，易测试 |
+| **工厂方法**     | IsolationContext 静态方法 | 创建逻辑封装     |
+| **策略模式**     | 隔离级别判断              | 灵活的层级处理   |
 
 ### 技术亮点
 
@@ -195,14 +195,14 @@ Coverage:
 
 ## 📊 任务完成统计
 
-| Phase | 任务 ID | 任务数 | 状态 |
-|-------|---------|--------|------|
-| Phase 1 | T001-T004 | 4 | ✅ 完成 |
-| Phase 2 | T005-T016 | 12 | ✅ 完成（含 EntityId 重构）|
-| Phase 3 | T017-T020 | 4 | ✅ 完成 |
-| Phase 4 | T021-T027 | 7 | ✅ 完成 |
-| Phase 5 | T028 | 1 | ✅ 完成（Caching 集成）|
-| Phase 5 | T029-T030 | 2 | ⚪ 不适用（nestjs-infra 移除）|
+| Phase   | 任务 ID   | 任务数 | 状态                           |
+| ------- | --------- | ------ | ------------------------------ |
+| Phase 1 | T001-T004 | 4      | ✅ 完成                        |
+| Phase 2 | T005-T016 | 12     | ✅ 完成（含 EntityId 重构）    |
+| Phase 3 | T017-T020 | 4      | ✅ 完成                        |
+| Phase 4 | T021-T027 | 7      | ✅ 完成                        |
+| Phase 5 | T028      | 1      | ✅ 完成（Caching 集成）        |
+| Phase 5 | T029-T030 | 2      | ⚪ 不适用（nestjs-infra 移除） |
 
 **总计**: 28/30 任务完成（93%），2 个任务不适用
 
@@ -229,16 +229,14 @@ import { IsolationContext } from '@hl8/isolation-model';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly contextService: IsolationContextService,
-  ) {}
-  
+  constructor(private readonly contextService: IsolationContextService) {}
+
   @Get()
   @RequireTenant()
   async getUsers() {
     const context = this.contextService.getIsolationContext();
     const cacheKey = context.buildCacheKey('users', 'list');
-    
+
     return this.userService.findByContext(context);
   }
 }
@@ -267,15 +265,15 @@ curl -H "X-Tenant-Id: 550e8400-e29b-41d4-a716-446655440000" \
 
 ## 📈 性能与质量指标
 
-| 指标 | isolation-model | nestjs-isolation |
-|------|----------------|------------------|
-| **构建时间** | <1s | <1s |
-| **包大小** | ~15KB | ~20KB |
-| **测试通过率** | 102/102 (100%) | 14/14 (100%) |
-| **代码覆盖率** | 98.18% | 30.88% (集成) |
-| **外部依赖数** | 0 | 2 (isolation-model, nestjs-cls) |
-| **TypeScript 版本** | 5.9.2 | 5.9.2 |
-| **Node.js 要求** | >=20 | >=20 |
+| 指标                | isolation-model | nestjs-isolation                |
+| ------------------- | --------------- | ------------------------------- |
+| **构建时间**        | <1s             | <1s                             |
+| **包大小**          | ~15KB           | ~20KB                           |
+| **测试通过率**      | 102/102 (100%)  | 14/14 (100%)                    |
+| **代码覆盖率**      | 98.18%          | 30.88% (集成)                   |
+| **外部依赖数**      | 0               | 2 (isolation-model, nestjs-cls) |
+| **TypeScript 版本** | 5.9.2           | 5.9.2                           |
+| **Node.js 要求**    | >=20            | >=20                            |
 
 ---
 

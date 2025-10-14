@@ -8,8 +8,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import { dotenvLoader, fileLoader } from '../../lib/loader';
 import { TypedConfigModule } from '../../lib/typed-config.module';
-import { fileLoader, dotenvLoader } from '../../lib/loader';
+import { cleanupTempFiles, createTempDir } from '../test-utils';
 // 创建一个简单的测试配置类
 class TestAppConfig {
   app!: {
@@ -40,7 +41,6 @@ class TestAppConfig {
     type: string;
   };
 }
-import { createTempDir, cleanupTempFiles } from '../test-utils';
 
 describe('配置加载集成测试', () => {
   let tempDir: string;
@@ -393,7 +393,7 @@ database:
                 array: Array.from({ length: 10 }, (_, j) => `item_${i}_${j}`),
               },
             },
-          ])
+          ]),
         ),
       };
 

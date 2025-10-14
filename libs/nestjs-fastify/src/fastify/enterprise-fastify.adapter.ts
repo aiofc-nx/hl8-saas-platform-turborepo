@@ -50,9 +50,9 @@
  * @since 0.2.0
  */
 
-import { FastifyAdapter } from '@nestjs/platform-fastify';
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import fastifyCors from '@fastify/cors';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { requestIdPlugin } from '../plugins/request-id.plugin.js';
 import { RequestIdStrategy } from '../utils/request-id.generator.js';
 
@@ -163,7 +163,8 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     this.adapterOptions = {
       enableCors: options.enableCors !== false,
       enableSecurity: options.enableSecurity !== false,
-      enablePerformanceMonitoring: options.enablePerformanceMonitoring !== false,
+      enablePerformanceMonitoring:
+        options.enablePerformanceMonitoring !== false,
       enableHealthCheck: options.enableHealthCheck !== false,
       healthCheckPath: options.healthCheckPath || '/health',
       enableRequestId: options.enableRequestId !== false,
@@ -284,21 +285,24 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
 
     // 响应结束时计算耗时
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fastify request 对象需要扩展属性（宪章 IX 允许场景：第三方库集成）
-    instance.addHook('onResponse', async (request: any, reply: FastifyReply) => {
-      const duration = Date.now() - (request.startTime || Date.now());
+    instance.addHook(
+      'onResponse',
+      async (request: any, reply: FastifyReply) => {
+        const duration = Date.now() - (request.startTime || Date.now());
 
-      // 记录性能指标
-      if (instance.log) {
-        instance.log.info({
-          type: 'performance',
-          method: request.method,
-          url: request.url,
-          statusCode: reply.statusCode,
-          duration,
-          timestamp: new Date().toISOString(),
-        });
-      }
-    });
+        // 记录性能指标
+        if (instance.log) {
+          instance.log.info({
+            type: 'performance',
+            method: request.method,
+            url: request.url,
+            statusCode: reply.statusCode,
+            duration,
+            timestamp: new Date().toISOString(),
+          });
+        }
+      },
+    );
   }
 
   /**
@@ -312,32 +316,35 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     const timeWindow = options.timeWindow || 60000; // 默认 1分钟
     const max = options.max || 100; // 默认 100 次请求
 
-    instance.addHook('onRequest', async (request: FastifyRequest, reply: FastifyReply) => {
-      const key = options.perTenant
-        ? `${request.headers['x-tenant-id'] || 'unknown'}`
-        : `${request.ip}`;
+    instance.addHook(
+      'onRequest',
+      async (request: FastifyRequest, reply: FastifyReply) => {
+        const key = options.perTenant
+          ? `${request.headers['x-tenant-id'] || 'unknown'}`
+          : `${request.ip}`;
 
-      const now = Date.now();
-      const windowKey = `${key}:${Math.floor(now / timeWindow)}`;
+        const now = Date.now();
+        const windowKey = `${key}:${Math.floor(now / timeWindow)}`;
 
-      const count = this.requestStats.get(windowKey) || 0;
+        const count = this.requestStats.get(windowKey) || 0;
 
-      if (count >= max) {
-        reply.code(429).send({
-          statusCode: 429,
-          error: 'Too Many Requests',
-          message: '请求过于频繁，请稍后再试',
-        });
-        return;
-      }
+        if (count >= max) {
+          reply.code(429).send({
+            statusCode: 429,
+            error: 'Too Many Requests',
+            message: '请求过于频繁，请稍后再试',
+          });
+          return;
+        }
 
-      this.requestStats.set(windowKey, count + 1);
+        this.requestStats.set(windowKey, count + 1);
 
-      // 清理过期的统计数据
-      setTimeout(() => {
-        this.requestStats.delete(windowKey);
-      }, timeWindow * 2);
-    });
+        // 清理过期的统计数据
+        setTimeout(() => {
+          this.requestStats.delete(windowKey);
+        }, timeWindow * 2);
+      },
+    );
   }
 
   /**
@@ -351,43 +358,49 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     const threshold = options.threshold || 5; // 默认失败5次触发熔断
     const resetTimeout = options.resetTimeout || 60000; // 默认 1 分钟后重置
 
-    instance.addHook('onError', async (request: FastifyRequest, reply: FastifyReply, error: Error) => {
-      const route = `${request.method}:${request.url}`;
-      let state = this.circuitBreakerState.get(route);
+    instance.addHook(
+      'onError',
+      async (request: FastifyRequest, reply: FastifyReply, error: Error) => {
+        const route = `${request.method}:${request.url}`;
+        let state = this.circuitBreakerState.get(route);
 
-      if (!state) {
-        state = { failures: 0, state: 'CLOSED', lastFailure: Date.now() };
-        this.circuitBreakerState.set(route, state);
-      }
+        if (!state) {
+          state = { failures: 0, state: 'CLOSED', lastFailure: Date.now() };
+          this.circuitBreakerState.set(route, state);
+        }
 
-      state.failures += 1;
-      state.lastFailure = Date.now();
+        state.failures += 1;
+        state.lastFailure = Date.now();
 
-      if (state.failures >= threshold && state.state === 'CLOSED') {
-        state.state = 'OPEN';
-        instance.log?.warn(`熔断器打开: ${route}`);
+        if (state.failures >= threshold && state.state === 'CLOSED') {
+          state.state = 'OPEN';
+          instance.log?.warn(`熔断器打开: ${route}`);
 
-        // 自动重置熔断器
-        setTimeout(() => {
-          state!.state = 'HALF_OPEN';
-          state!.failures = 0;
-          instance.log?.info(`熔断器进入半开状态: ${route}`);
-        }, resetTimeout);
-      }
-    });
+          // 自动重置熔断器
+          setTimeout(() => {
+            state!.state = 'HALF_OPEN';
+            state!.failures = 0;
+            instance.log?.info(`熔断器进入半开状态: ${route}`);
+          }, resetTimeout);
+        }
+      },
+    );
 
-    instance.addHook('onRequest', async (request: FastifyRequest, reply: FastifyReply) => {
-      const route = `${request.method}:${request.url}`;
-      const state = this.circuitBreakerState.get(route);
+    instance.addHook(
+      'onRequest',
+      async (request: FastifyRequest, reply: FastifyReply) => {
+        const route = `${request.method}:${request.url}`;
+        const state = this.circuitBreakerState.get(route);
 
-      if (state && state.state === 'OPEN') {
-        reply.code(503).send({
-          statusCode: 503,
-          error: 'Service Unavailable',
-          message: '服务暂时不可用，请稍后再试',
-        });
-      }
-    });
+        if (state && state.state === 'OPEN') {
+          reply.code(503).send({
+            statusCode: 503,
+            error: 'Service Unavailable',
+            message: '服务暂时不可用，请稍后再试',
+          });
+        }
+      },
+    );
   }
 
   /**
@@ -429,4 +442,3 @@ interface CircuitBreakerState {
   state: 'CLOSED' | 'OPEN' | 'HALF_OPEN';
   lastFailure: number;
 }
-

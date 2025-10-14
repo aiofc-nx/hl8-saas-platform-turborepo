@@ -45,7 +45,6 @@
   - 捕获所有 HttpException
   - 转换为 RFC7807 格式
   - 支持日志记录
-  
 - **AnyExceptionFilter**: 通用异常过滤器
   - 捕获所有未处理的异常
   - 自动转换为 500 错误
@@ -64,11 +63,11 @@
 
 ```typescript
 interface ExceptionModuleOptions {
-  enableLogging?: boolean;           // 是否启用日志
-  logger?: ILoggerService;           // 自定义日志服务
-  messageProvider?: ExceptionMessageProvider;  // 自定义消息提供器
-  isProduction?: boolean;            // 生产环境标志
-  registerGlobalFilters?: boolean;   // 是否注册全局过滤器
+  enableLogging?: boolean; // 是否启用日志
+  logger?: ILoggerService; // 自定义日志服务
+  messageProvider?: ExceptionMessageProvider; // 自定义消息提供器
+  isProduction?: boolean; // 生产环境标志
+  registerGlobalFilters?: boolean; // 是否注册全局过滤器
 }
 ```
 

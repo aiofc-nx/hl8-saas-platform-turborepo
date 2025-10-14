@@ -32,7 +32,7 @@
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.9.2 + Node.js >= 20  
+**Language/Version**: TypeScript 5.9.2 + Node.js >= 20
 
 **Primary Dependencies (isolation-model - 领域模型库)**:
 
@@ -42,7 +42,7 @@
 
 **Primary Dependencies (nestjs-isolation - 实现库)**:
 
-- @hl8/isolation-model workspace:* (领域模型，核心依赖)
+- @hl8/isolation-model workspace:\* (领域模型，核心依赖)
 - NestJS 11.1.6 (后端框架)
 - nestjs-cls 6.0.1 (请求级上下文存储)
 - class-validator 0.14.2 + class-transformer 0.5.1 (验证)
@@ -67,7 +67,7 @@
 **Build Tools**:
 
 - 领域模型库：TypeScript (tsc) 仅类型检查和编译
-- 实现库：TypeScript (tsc) + SWC (快速编译)  
+- 实现库：TypeScript (tsc) + SWC (快速编译)
 
 **Performance Goals**:
 

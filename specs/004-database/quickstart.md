@@ -183,7 +183,7 @@ export class UserRepository {
   constructor(
     @InjectEntityManager()
     private readonly em: EntityManager,
-    private readonly logger: FastifyLoggerService,  // 注入日志服务
+    private readonly logger: FastifyLoggerService, // 注入日志服务
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -223,12 +223,14 @@ import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepository: UserRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   @Transactional()
-  async createUser(name: string, email: string, tenantId: string): Promise<User> {
+  async createUser(
+    name: string,
+    email: string,
+    tenantId: string,
+  ): Promise<User> {
     const user = new User(name, email, tenantId);
     await this.userRepository.save(user);
     // 如果这里抛出异常，上面的操作会自动回滚
@@ -246,11 +248,13 @@ import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly transactionService: TransactionService,
-  ) {}
+  constructor(private readonly transactionService: TransactionService) {}
 
-  async createUser(name: string, email: string, tenantId: string): Promise<User> {
+  async createUser(
+    name: string,
+    email: string,
+    tenantId: string,
+  ): Promise<User> {
     return this.transactionService.runInTransaction(async (em) => {
       const user = new User(name, email, tenantId);
       await em.persistAndFlush(user);
@@ -331,11 +335,11 @@ import { MigrationService } from '@hl8/database';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // 运行迁移
   const migrationService = app.get(MigrationService);
   await migrationService.runMigrations();
-  
+
   await app.listen(3000);
 }
 bootstrap();
@@ -363,9 +367,7 @@ import { HealthCheckService } from '@hl8/database';
 
 @Controller('health')
 export class HealthController {
-  constructor(
-    private readonly healthCheckService: HealthCheckService,
-  ) {}
+  constructor(private readonly healthCheckService: HealthCheckService) {}
 
   @Get('database')
   async checkDatabase() {
@@ -393,9 +395,7 @@ import { MetricsService } from '@hl8/database';
 
 @Controller('monitoring')
 export class MonitoringController {
-  constructor(
-    private readonly metricsService: MetricsService,
-  ) {}
+  constructor(private readonly metricsService: MetricsService) {}
 
   @Get('slow-queries')
   async getSlowQueries() {

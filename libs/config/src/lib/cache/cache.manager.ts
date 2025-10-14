@@ -5,21 +5,19 @@
  * @since 1.0.0
  */
 
+import { CACHE_KEYS, CacheEventType, CONFIG_DEFAULTS } from '../constants.js';
 import {
-  CacheProvider,
-  CacheOptions,
-  MemoryCacheOptions,
-  FileCacheOptions,
-  RedisCacheOptions,
-  CacheStrategy,
-  CacheStats,
-  CacheEvent,
   CacheEventListener,
+  CacheOptions,
+  CacheProvider,
+  CacheStats,
+  CacheStrategy,
+  FileCacheOptions,
+  MemoryCacheOptions,
 } from '../types/cache.types.js';
 import { ConfigRecord } from '../types/config.types.js';
-import { MemoryCacheProvider } from './memory-cache.provider.js';
 import { FileCacheProvider } from './file-cache.provider.js';
-import { CONFIG_DEFAULTS, CACHE_KEYS, CacheEventType } from '../constants.js';
+import { MemoryCacheProvider } from './memory-cache.provider.js';
 
 /**
  * 缓存管理器类
@@ -75,7 +73,7 @@ export class CacheManager {
   public async set(
     key: string,
     value: ConfigRecord,
-    ttl?: number
+    ttl?: number,
   ): Promise<void> {
     if (!this.options.enabled || !this.provider) {
       return;
@@ -277,7 +275,7 @@ export class CacheManager {
     switch (this.options.strategy) {
       case CacheStrategy.MEMORY:
         this.provider = new MemoryCacheProvider(
-          this.options as MemoryCacheOptions
+          this.options as MemoryCacheOptions,
         );
         break;
       case CacheStrategy.FILE:

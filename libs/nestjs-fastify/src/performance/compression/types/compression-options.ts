@@ -11,4 +11,3 @@ export const DEFAULT_COMPRESSION_OPTIONS: CompressionOptions = {
   threshold: 1024, // 1KB
   encodings: ['br', 'gzip', 'deflate'],
 };
-

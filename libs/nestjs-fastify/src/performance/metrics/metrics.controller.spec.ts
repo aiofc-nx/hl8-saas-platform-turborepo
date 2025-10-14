@@ -11,7 +11,7 @@ describe('MetricsController', () => {
 
   beforeEach(() => {
     const getMetricsCalls: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
-    
+
     metricsService = {
       getMetrics: async () => {
         getMetricsCalls.push(true);
@@ -34,4 +34,3 @@ describe('MetricsController', () => {
     });
   });
 });
-

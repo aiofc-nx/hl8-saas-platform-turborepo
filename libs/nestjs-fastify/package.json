@@ -2,28 +2,41 @@
   "name": "@hl8/nestjs-fastify",
   "version": "0.1.0",
   "description": "Fastify 专用的企业级基础设施模块 - 基于 @hl8/nestjs-infra 优化",
+  "keywords": [
+    "nestjs",
+    "fastify",
+    "enterprise",
+    "infrastructure",
+    "logging",
+    "caching",
+    "exception-handling",
+    "multi-tenancy"
+  ],
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./index.js": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
-  "engines": {
-    "node": ">=20"
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist -p tsconfig.build.json",
-    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
     "dev": "tsc -p tsconfig.build.json --watch",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "lint": "eslint .",
-    "clean": "rm -rf dist"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@fastify/compress": "^8.0.1",
@@ -49,7 +62,7 @@
   "devDependencies": {
     "@nestjs/testing": "^11.1.6",
     "@repo/eslint-config": "workspace:*",
-    "@repo/ts-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@swc/core": "^1.13.5",
     "@swc/jest": "^0.2.37",
     "@types/jest": "^30.0.0",
@@ -58,14 +71,7 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.7.3"
   },
-  "keywords": [
-    "nestjs",
-    "fastify",
-    "enterprise",
-    "infrastructure",
-    "logging",
-    "caching",
-    "exception-handling",
-    "multi-tenancy"
-  ]
+  "engines": {
+    "node": ">=20"
+  }
 }

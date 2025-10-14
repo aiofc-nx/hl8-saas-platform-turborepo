@@ -210,4 +210,3 @@ export class LoggingConfig {
   @IsOptional()
   enabled: boolean = true;
 }
-

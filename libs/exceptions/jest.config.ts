@@ -9,7 +9,7 @@ import type { Config } from 'jest';
 const config: Config = {
   displayName: 'nestjs-exceptions',
   testEnvironment: 'node',
-  
+
   // ES Module 支持
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
@@ -37,8 +37,8 @@ const config: Config = {
     '!src/**/*.spec.ts',
     '!src/**/*.test.ts',
     '!src/**/index.ts',
-    '!src/exception.module.ts',  // 模块配置，主要是依赖注入逻辑
-    '!src/config/**/*.ts',        // 配置文件，主要是类型定义
+    '!src/exception.module.ts', // 模块配置，主要是依赖注入逻辑
+    '!src/config/**/*.ts', // 配置文件，主要是类型定义
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
@@ -58,4 +58,3 @@ const config: Config = {
 };
 
 export default config;
-

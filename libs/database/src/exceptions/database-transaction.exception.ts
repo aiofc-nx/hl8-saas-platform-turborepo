@@ -44,12 +44,11 @@ export class DatabaseTransactionException extends AbstractHttpException {
    */
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_TRANSACTION_ERROR',  // errorCode
-      '数据库事务错误',              // title
-      detail,                        // detail
-      500,                           // status
-      data                           // data
+      'DATABASE_TRANSACTION_ERROR', // errorCode
+      '数据库事务错误', // title
+      detail, // detail
+      500, // status
+      data, // data
     );
   }
 }
-

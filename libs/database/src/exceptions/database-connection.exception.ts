@@ -42,12 +42,11 @@ export class DatabaseConnectionException extends AbstractHttpException {
    */
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_CONNECTION_ERROR',  // errorCode
-      '数据库连接错误',              // title
-      detail,                       // detail
-      503,                          // status
-      data                          // data
+      'DATABASE_CONNECTION_ERROR', // errorCode
+      '数据库连接错误', // title
+      detail, // detail
+      503, // status
+      data, // data
     );
   }
 }
-

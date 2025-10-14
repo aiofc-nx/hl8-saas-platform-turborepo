@@ -73,25 +73,25 @@ libs/exceptions/
 
 ### 已移动的文档
 
-| 文档 | 原位置 | 新位置 | 类型 |
-|------|--------|--------|------|
+| 文档                           | 原位置             | 新位置                  | 类型     |
+| ------------------------------ | ------------------ | ----------------------- | -------- |
 | EXCEPTION_HANDLING_TRAINING.md | `libs/exceptions/` | `libs/exceptions/docs/` | 培训文档 |
-| DOCUMENTATION_ENHANCEMENTS.md | `libs/exceptions/` | `libs/exceptions/docs/` | 说明文档 |
-| TRAINING_DOC_SUMMARY.md | `libs/exceptions/` | `libs/exceptions/docs/` | 使用指南 |
+| DOCUMENTATION_ENHANCEMENTS.md  | `libs/exceptions/` | `libs/exceptions/docs/` | 说明文档 |
+| TRAINING_DOC_SUMMARY.md        | `libs/exceptions/` | `libs/exceptions/docs/` | 使用指南 |
 | FINAL_DOCUMENTATION_SUMMARY.md | `libs/exceptions/` | `libs/exceptions/docs/` | 总结报告 |
 
 ### 新建的文档
 
-| 文档 | 位置 | 说明 |
-|------|------|------|
-| docs/README.md | `libs/exceptions/docs/` | 文档导航索引 |
-| docs/DOCS_MIGRATION.md | `libs/exceptions/docs/` | 本迁移说明 |
+| 文档                   | 位置                    | 说明         |
+| ---------------------- | ----------------------- | ------------ |
+| docs/README.md         | `libs/exceptions/docs/` | 文档导航索引 |
+| docs/DOCS_MIGRATION.md | `libs/exceptions/docs/` | 本迁移说明   |
 
 ### 保留的文档
 
-| 文档 | 位置 | 说明 |
-|------|------|------|
-| README.md | `libs/exceptions/` | 主文档，必须在根目录 |
+| 文档         | 位置               | 说明                   |
+| ------------ | ------------------ | ---------------------- |
+| README.md    | `libs/exceptions/` | 主文档，必须在根目录   |
 | CHANGELOG.md | `libs/exceptions/` | 变更日志，保持标准位置 |
 
 ---
@@ -321,10 +321,12 @@ libs/exceptions/docs/[其他文档]
 
 ```markdown
 # 访问 docs 目录
+
 [文档中心](./docs/)
 [培训文档](./docs/EXCEPTION_HANDLING_TRAINING.md)
 
 # 访问项目文档
+
 [配置指南](../../../docs/guides/config/CONFIGURATION_GUIDE.md)
 ```
 
@@ -332,12 +334,15 @@ libs/exceptions/docs/[其他文档]
 
 ```markdown
 # 返回根目录
+
 [README](../README.md)
 
 # 访问同目录文档
+
 [培训文档](./EXCEPTION_HANDLING_TRAINING.md)
 
 # 访问项目文档
+
 [配置指南](../../../docs/guides/config/CONFIGURATION_GUIDE.md)
 ```
 

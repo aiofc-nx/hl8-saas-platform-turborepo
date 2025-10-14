@@ -71,7 +71,7 @@
 CONFIG_GETTING_STARTED.md (5分钟)
   ↓
 CONFIGURATION_GUIDE.md (20分钟)
-  ↓  
+  ↓
 README.md (5分钟，了解其他文档)
 ```
 
@@ -123,13 +123,13 @@ CONFIG_QUICK_REFERENCE.md (15分钟)
 
 ## 🎯 常见需求快速跳转
 
-| 我想... | 查看 |
-|---------|------|
-| 快速上手 | [CONFIG_GETTING_STARTED.md](./CONFIG_GETTING_STARTED.md) |
-| 完整学习 | [CONFIGURATION_GUIDE.md](./CONFIGURATION_GUIDE.md) |
-| 了解架构 | [CONFIG_ARCHITECTURE.md](./CONFIG_ARCHITECTURE.md) |
-| 查找信息 | [README.md](./README.md) |
-| 配置安全 | [CONFIG_SECURITY_ANALYSIS.md](./CONFIG_SECURITY_ANALYSIS.md) |
+| 我想...  | 查看                                                                   |
+| -------- | ---------------------------------------------------------------------- |
+| 快速上手 | [CONFIG_GETTING_STARTED.md](./CONFIG_GETTING_STARTED.md)               |
+| 完整学习 | [CONFIGURATION_GUIDE.md](./CONFIGURATION_GUIDE.md)                     |
+| 了解架构 | [CONFIG_ARCHITECTURE.md](./CONFIG_ARCHITECTURE.md)                     |
+| 查找信息 | [README.md](./README.md)                                               |
+| 配置安全 | [CONFIG_SECURITY_ANALYSIS.md](./CONFIG_SECURITY_ANALYSIS.md)           |
 | 区分缓存 | [IMPORTANT_CACHE_CLARIFICATION.md](./IMPORTANT_CACHE_CLARIFICATION.md) |
 
 ---

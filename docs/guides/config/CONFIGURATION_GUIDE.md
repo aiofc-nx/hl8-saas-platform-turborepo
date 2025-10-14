@@ -8,10 +8,10 @@
 
 本项目中存在**两种完全不同的缓存**，请不要混淆：
 
-| 缓存类型 | 模块 | 用途 | 使用方式 | 依赖关系 |
-|---------|------|------|---------|---------|
-| **配置缓存** | `libs/config` | 缓存配置加载结果 | 框架自动、透明 | 独立实现 |
-| **业务数据缓存** | `libs/caching` | 缓存用户数据等 | 应用手动调用 | 独立实现 |
+| 缓存类型         | 模块           | 用途             | 使用方式       | 依赖关系 |
+| ---------------- | -------------- | ---------------- | -------------- | -------- |
+| **配置缓存**     | `libs/config`  | 缓存配置加载结果 | 框架自动、透明 | 独立实现 |
+| **业务数据缓存** | `libs/caching` | 缓存用户数据等   | 应用手动调用   | 独立实现 |
 
 **关键点**：
 
@@ -115,7 +115,7 @@ import { AppConfig } from './config/app.config.js';
 export class MyService {
   constructor(
     // 注入配置
-    private readonly config: AppConfig
+    private readonly config: AppConfig,
   ) {}
 
   someMethod() {
@@ -123,7 +123,7 @@ export class MyService {
     const port = this.config.PORT;
     const logLevel = this.config.logging.level;
     const redisHost = this.config.caching.redis.host;
-    
+
     console.log(`App running on port ${port}`);
     console.log(`Log level: ${logLevel}`);
   }
@@ -254,24 +254,24 @@ RATE_LIMIT__STRATEGY=tenant          # ip | tenant | user | custom
 ```typescript
 export class AppConfig {
   // 应用基础配置
-  NODE_ENV: string;              // 运行环境
-  PORT: number;                  // 应用端口
+  NODE_ENV: string; // 运行环境
+  PORT: number; // 应用端口
 
   // 日志配置
-  logging: LoggingConfig;        // from @hl8/nestjs-fastify
+  logging: LoggingConfig; // from @hl8/nestjs-fastify
 
   // 缓存配置
-  caching: CachingModuleConfig;  // from @hl8/caching
+  caching: CachingModuleConfig; // from @hl8/caching
 
   // Metrics 配置
-  metrics: MetricsModuleConfig;  // from @hl8/nestjs-fastify
+  metrics: MetricsModuleConfig; // from @hl8/nestjs-fastify
 
   // 速率限制配置（可选）
-  rateLimit?: RateLimitModuleConfig;  // from @hl8/nestjs-fastify
+  rateLimit?: RateLimitModuleConfig; // from @hl8/nestjs-fastify
 
   // 辅助方法
-  get isProduction(): boolean;   // 是否生产环境
-  get isDevelopment(): boolean;  // 是否开发环境
+  get isProduction(): boolean; // 是否生产环境
+  get isDevelopment(): boolean; // 是否开发环境
 }
 ```
 
@@ -281,11 +281,11 @@ export class AppConfig {
 
 ```typescript
 export class LoggingConfig {
-  level: string;                       // 日志级别
-  prettyPrint: boolean;                // 是否美化输出
-  includeIsolationContext: boolean;    // 是否包含隔离上下文
-  timestamp: boolean;                  // 是否包含时间戳
-  enabled: boolean;                    // 是否启用日志
+  level: string; // 日志级别
+  prettyPrint: boolean; // 是否美化输出
+  includeIsolationContext: boolean; // 是否包含隔离上下文
+  timestamp: boolean; // 是否包含时间戳
+  enabled: boolean; // 是否启用日志
 }
 ```
 
@@ -295,17 +295,17 @@ export class LoggingConfig {
 
 ```typescript
 export class CachingModuleConfig {
-  redis: RedisConfig;       // Redis 连接配置
-  ttl?: number;             // 缓存过期时间（秒）
-  keyPrefix?: string;       // 缓存键前缀
-  debug?: boolean;          // 调试日志
+  redis: RedisConfig; // Redis 连接配置
+  ttl?: number; // 缓存过期时间（秒）
+  keyPrefix?: string; // 缓存键前缀
+  debug?: boolean; // 调试日志
 }
 
 export class RedisConfig {
-  host: string;             // Redis 主机
-  port: number;             // Redis 端口
-  password?: string;        // Redis 密码
-  db?: number;              // 数据库编号
+  host: string; // Redis 主机
+  port: number; // Redis 端口
+  password?: string; // Redis 密码
+  db?: number; // 数据库编号
 }
 ```
 
@@ -321,9 +321,7 @@ import { AppConfig } from './config/app.config.js';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly config: AppConfig
-  ) {}
+  constructor(private readonly config: AppConfig) {}
 
   async getUsers() {
     // 访问应用配置
@@ -376,9 +374,7 @@ import { AppConfig } from './config/app.config.js';
 
 @Controller('api')
 export class ApiController {
-  constructor(
-    private readonly config: AppConfig
-  ) {}
+  constructor(private readonly config: AppConfig) {}
 
   @Get('config')
   getConfig() {
@@ -477,10 +473,10 @@ import { deepFreeze } from './config/config-security.util.js';
 
 // main.ts
 const config = app.get(AppConfig);
-deepFreeze(config);  // 深度冻结配置
+deepFreeze(config); // 深度冻结配置
 
 // 现在配置完全不可修改
-config.PORT = 9999;  // ❌ TypeError
+config.PORT = 9999; // ❌ TypeError
 ```
 
 #### 2. 敏感信息保护
@@ -490,7 +486,10 @@ config.PORT = 9999;  // ❌ TypeError
 **防护**：
 
 ```typescript
-import { cleanupSensitiveEnvVars, getSafeConfigCopy } from './config/config-security.util.js';
+import {
+  cleanupSensitiveEnvVars,
+  getSafeConfigCopy,
+} from './config/config-security.util.js';
 
 // 生产环境清理敏感环境变量
 if (config.isProduction) {
@@ -499,7 +498,7 @@ if (config.isProduction) {
 
 // 打印日志时隐藏敏感信息
 const safeConfig = getSafeConfigCopy(config);
-console.log('Config:', safeConfig);  // password: '***'
+console.log('Config:', safeConfig); // password: '***'
 ```
 
 #### 3. 文件权限
@@ -534,10 +533,10 @@ ls -l .env.local
 TypedConfigModule.forRoot({
   schema: AppConfig,
   load: [
-    fileLoader({ path: './config/app.yml' }),  // 基础配置
-    dotenvLoader({ envFilePath: ['.env.local', '.env'] }),  // 敏感配置
+    fileLoader({ path: './config/app.yml' }), // 基础配置
+    dotenvLoader({ envFilePath: ['.env.local', '.env'] }), // 敏感配置
   ],
-})
+});
 ```
 
 ### 安全工具
@@ -581,7 +580,7 @@ TypedConfigModule.forRoot({
 3. **在配置类中提供合理的默认值**
 
    ```typescript
-   NODE_ENV: string = 'development';  // 提供默认值
+   NODE_ENV: string = 'development'; // 提供默认值
    ```
 
 4. **使用类型安全的配置访问**
@@ -731,10 +730,10 @@ export PORT=8080
 
 **A**: 完全不同的两种缓存：
 
-| 缓存类型 | 提供者 | 用途 | 使用方式 |
-|---------|--------|------|---------|
-| 配置缓存 | `libs/config` | 缓存 AppConfig 实例 | 自动、透明 |
-| 业务数据缓存 | `libs/caching` | 缓存用户数据等 | 手动调用 |
+| 缓存类型     | 提供者         | 用途                | 使用方式   |
+| ------------ | -------------- | ------------------- | ---------- |
+| 配置缓存     | `libs/config`  | 缓存 AppConfig 实例 | 自动、透明 |
+| 业务数据缓存 | `libs/caching` | 缓存用户数据等      | 手动调用   |
 
 详见：[配置缓存机制详解](./CONFIG_CACHE_EXPLAINED.md)
 

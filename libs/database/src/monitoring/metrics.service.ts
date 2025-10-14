@@ -33,12 +33,12 @@
  *   async findAll(): Promise<User[]> {
  *     const startTime = Date.now();
  *     const result = await this.em.find(User, {});
- *     
+ *
  *     this.metrics.recordQuery({
  *       duration: Date.now() - startTime,
  *       query: 'SELECT * FROM users',
  *     });
- *     
+ *
  *     return result;
  *   }
  * }
@@ -47,11 +47,15 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { MONITORING_DEFAULTS } from '../constants/defaults.js';
-import type { QueryMetrics, SlowQueryLog, DatabaseMetrics } from '../types/monitoring.types.js';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
+import { MONITORING_DEFAULTS } from '../constants/defaults.js';
+import type {
+  DatabaseMetrics,
+  QueryMetrics,
+  SlowQueryLog,
+} from '../types/monitoring.types.js';
 
 @Injectable()
 export class MetricsService {
@@ -63,9 +67,7 @@ export class MetricsService {
     rolledBack: 0,
   };
 
-  constructor(
-    private readonly logger: FastifyLoggerService,
-  ) {
+  constructor(private readonly logger: FastifyLoggerService) {
     this.logger.log('MetricsService 初始化');
   }
 
@@ -82,7 +84,9 @@ export class MetricsService {
 
     // 添加到滑动窗口
     this.queryDurations.push(duration);
-    if (this.queryDurations.length > MONITORING_DEFAULTS.QUERY_METRICS_WINDOW_SIZE) {
+    if (
+      this.queryDurations.length > MONITORING_DEFAULTS.QUERY_METRICS_WINDOW_SIZE
+    ) {
       this.queryDurations.shift();
     }
 
@@ -100,7 +104,9 @@ export class MetricsService {
       this.slowQueryQueue.push(slowQuery);
 
       // 保持队列大小
-      if (this.slowQueryQueue.length > MONITORING_DEFAULTS.SLOW_QUERY_MAX_SIZE) {
+      if (
+        this.slowQueryQueue.length > MONITORING_DEFAULTS.SLOW_QUERY_MAX_SIZE
+      ) {
         this.slowQueryQueue.shift();
       }
 
@@ -176,7 +182,10 @@ export class MetricsService {
    * 减少活动事务计数
    */
   decrementActiveTransactions(): void {
-    this.transactionStats.active = Math.max(0, this.transactionStats.active - 1);
+    this.transactionStats.active = Math.max(
+      0,
+      this.transactionStats.active - 1,
+    );
   }
 
   /**
@@ -208,4 +217,3 @@ export class MetricsService {
     };
   }
 }
-

@@ -2,11 +2,22 @@
   "name": "@hl8/exceptions",
   "version": "0.1.0",
   "description": "统一的异常处理模块，遵循 RFC7807 标准",
+  "keywords": [
+    "nestjs",
+    "exceptions",
+    "error-handling",
+    "rfc7807",
+    "http-errors"
+  ],
+  "license": "MIT",
+  "author": "HL8 Team",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./index.js": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
@@ -27,16 +38,18 @@
       "import": "./dist/config/index.js"
     }
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist -p tsconfig.build.json",
-    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
     "dev": "tsc -p tsconfig.build.json --watch",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "lint": "eslint .",
-    "clean": "rm -rf dist"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -45,6 +58,8 @@
   },
   "devDependencies": {
     "@nestjs/testing": "^10.0.0",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@swc/cli": "^0.5.0",
     "@swc/core": "^1.10.6",
     "@types/jest": "^29.5.14",
@@ -56,14 +71,5 @@
   "peerDependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0"
-  },
-  "keywords": [
-    "nestjs",
-    "exceptions",
-    "error-handling",
-    "rfc7807",
-    "http-errors"
-  ],
-  "author": "HL8 Team",
-  "license": "MIT"
+  }
 }

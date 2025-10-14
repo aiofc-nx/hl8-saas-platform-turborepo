@@ -39,10 +39,10 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { IsolationContextService } from '@hl8/nestjs-isolation';
 import type { IsolationContext } from '@hl8/isolation-model';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { IsolationContextService } from '@hl8/nestjs-isolation';
+import { Injectable } from '@nestjs/common';
 import { IsolationContextMissingException } from '../exceptions/isolation-context-missing.exception.js';
 
 /**
@@ -53,16 +53,16 @@ import { IsolationContextMissingException } from '../exceptions/isolation-contex
 export enum IsolationLevel {
   /** 平台级 */
   PLATFORM = 'PLATFORM',
-  
+
   /** 租户级 */
   TENANT = 'TENANT',
-  
+
   /** 组织级 */
   ORGANIZATION = 'ORGANIZATION',
-  
+
   /** 部门级 */
   DEPARTMENT = 'DEPARTMENT',
-  
+
   /** 用户级 */
   USER = 'USER',
 }
@@ -151,10 +151,9 @@ export class DatabaseIsolationService {
 
     if (!context) {
       this.logger.warn('隔离上下文缺失', { requiredLevel: level });
-      throw new IsolationContextMissingException(
-        '数据访问要求提供隔离上下文',
-        { requiredLevel: level }
-      );
+      throw new IsolationContextMissingException('数据访问要求提供隔离上下文', {
+        requiredLevel: level,
+      });
     }
 
     // 根据隔离级别验证
@@ -163,7 +162,7 @@ export class DatabaseIsolationService {
         if (!context.tenantId) {
           throw new IsolationContextMissingException(
             '租户级数据访问要求提供租户 ID',
-            { requiredLevel: level }
+            { requiredLevel: level },
           );
         }
         break;
@@ -172,7 +171,7 @@ export class DatabaseIsolationService {
         if (!context.tenantId || !context.organizationId) {
           throw new IsolationContextMissingException(
             '组织级数据访问要求提供租户 ID 和组织 ID',
-            { requiredLevel: level }
+            { requiredLevel: level },
           );
         }
         break;
@@ -181,7 +180,7 @@ export class DatabaseIsolationService {
         if (!context.tenantId || !context.departmentId) {
           throw new IsolationContextMissingException(
             '部门级数据访问要求提供租户 ID 和部门 ID',
-            { requiredLevel: level }
+            { requiredLevel: level },
           );
         }
         break;
@@ -190,7 +189,7 @@ export class DatabaseIsolationService {
         if (!context.userId) {
           throw new IsolationContextMissingException(
             '用户级数据访问要求提供用户 ID',
-            { requiredLevel: level }
+            { requiredLevel: level },
           );
         }
         break;
@@ -221,7 +220,7 @@ export class DatabaseIsolationService {
    */
   buildIsolationFilter(level: IsolationLevel): Record<string, string> {
     this.validateContext(level);
-    
+
     const context = this.getContext()!;
     const filter: Record<string, string> = {};
 
@@ -248,4 +247,3 @@ export class DatabaseIsolationService {
     return filter;
   }
 }
-

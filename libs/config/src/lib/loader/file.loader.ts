@@ -66,10 +66,10 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
 import * as yaml from 'js-yaml';
+import * as path from 'path';
+import { ConfigError, ErrorHandler } from '../errors/index.js';
 import { ConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
-import { ErrorHandler, ConfigError } from '../errors/index.js';
 import { ConfigRecord } from '../types/index.js';
 
 /**
@@ -228,7 +228,7 @@ export const fileLoader = (options: FileLoaderOptions = {}): ConfigLoader => {
               new Error(`Unsupported file format: ${ext}`),
               configPath,
               'json, yml, yaml',
-              { ext, configPath }
+              { ext, configPath },
             );
         }
       } catch (error) {
@@ -248,7 +248,7 @@ export const fileLoader = (options: FileLoaderOptions = {}): ConfigLoader => {
           throw ErrorHandler.handleVariableExpansionError(
             error as Error,
             'substituteEnvironmentVariables',
-            { configPath, ignoreEnvironmentVariableSubstitution }
+            { configPath, ignoreEnvironmentVariableSubstitution },
           );
         }
       }
@@ -316,13 +316,13 @@ function substituteEnvironmentVariables(config: ConfigRecord): ConfigRecord {
         // 支持 ${VAR} 语法
         const value = process.env[key];
         return value !== undefined ? value : match;
-      }
+      },
     ) as unknown as ConfigRecord;
   }
 
   if (Array.isArray(config)) {
     return config.map(
-      substituteEnvironmentVariables
+      substituteEnvironmentVariables,
     ) as unknown as ConfigRecord;
   }
 

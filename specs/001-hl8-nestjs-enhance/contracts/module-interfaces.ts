@@ -44,7 +44,7 @@ export interface ExceptionMessageProvider {
   getMessage(
     errorCode: string,
     messageType: 'title' | 'detail',
-    params?: Record<string, any>
+    params?: Record<string, any>,
   ): string | undefined;
 
   /**
@@ -102,7 +102,7 @@ export interface IHttpException {
   type?: string;
   /** 根因异常 */
   rootCause?: Error;
-  
+
   /**
    * 转换为 RFC7807 格式
    */
@@ -399,7 +399,7 @@ export enum DataSharingLevel {
 export interface BaseDataModel {
   /** 数据唯一标识 */
   id: string;
-  
+
   // === 隔离字段（定义数据归属）===
   /** 租户ID（可为空表示平台级数据） */
   tenantId?: string;
@@ -409,7 +409,7 @@ export interface BaseDataModel {
   departmentId?: string;
   /** 用户ID（创建者/所有者） */
   userId?: string;
-  
+
   // === 共享控制字段 ⭐ ===
   /** 是否共享（默认 false） */
   isShared: boolean;
@@ -417,7 +417,7 @@ export interface BaseDataModel {
   sharingLevel?: DataSharingLevel;
   /** 明确共享给哪些对象（可选，ID列表） */
   sharedWith?: string[];
-  
+
   // === 时间戳 ===
   /** 创建时间 */
   createdAt: Date;
@@ -435,30 +435,30 @@ export interface BaseDataModel {
 export interface EnterpriseFastifyAdapterOptions {
   /** Fastify 实例选项 */
   fastifyOptions?: FastifyInstanceOptions;
-  
+
   /** 是否启用 CORS（默认启用） */
   enableCors?: boolean;
   /** CORS 选项 */
   corsOptions?: CorsOptions;
-  
+
   /** 是否启用限流（默认禁用） */
   enableRateLimit?: boolean;
   /** 限流选项 */
   rateLimitOptions?: RateLimitOptions;
-  
+
   /** 是否启用熔断器（默认禁用） */
   enableCircuitBreaker?: boolean;
   /** 熔断器选项 */
   circuitBreakerOptions?: CircuitBreakerOptions;
-  
+
   /** 是否启用安全头（默认启用） */
   enableSecurity?: boolean;
   /** 安全选项 */
   securityOptions?: SecurityOptions;
-  
+
   /** 是否启用性能监控（默认启用） */
   enablePerformanceMonitoring?: boolean;
-  
+
   /** 是否启用健康检查端点（默认启用） */
   enableHealthCheck?: boolean;
   /** 健康检查路径 */
@@ -566,4 +566,3 @@ export interface DynamicModule {
   /** 控制器 */
   controllers?: any[];
 }
-

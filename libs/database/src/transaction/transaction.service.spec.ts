@@ -4,12 +4,12 @@
  * @description 测试 TransactionService 的事务管理功能
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
-import { ClsService } from 'nestjs-cls';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { TransactionService } from './transaction.service.js';
+import { EntityManager, MikroORM } from '@mikro-orm/core';
+import { Test, TestingModule } from '@nestjs/testing';
+import { ClsService } from 'nestjs-cls';
 import { DatabaseTransactionException } from '../exceptions/database-transaction.exception.js';
+import { TransactionService } from './transaction.service.js';
 
 describe('TransactionService', () => {
   let service: TransactionService;
@@ -74,7 +74,7 @@ describe('TransactionService', () => {
       expect(result).toBe('success');
       expect(mockLogger.log).toHaveBeenCalledWith(
         '事务提交成功',
-        expect.objectContaining({ duration: expect.any(Number) })
+        expect.objectContaining({ duration: expect.any(Number) }),
       );
     });
 
@@ -85,7 +85,7 @@ describe('TransactionService', () => {
       await expect(
         service.runInTransaction(async () => {
           throw new Error('Transaction failed');
-        })
+        }),
       ).rejects.toThrow(DatabaseTransactionException);
     });
 
@@ -99,7 +99,7 @@ describe('TransactionService', () => {
 
       expect(result).toBe('success');
       expect(mockLogger.debug).toHaveBeenCalledWith(
-        '检测到现有事务，复用 EntityManager'
+        '检测到现有事务，复用 EntityManager',
       );
     });
   });
@@ -114,4 +114,3 @@ describe('TransactionService', () => {
     });
   });
 });
-

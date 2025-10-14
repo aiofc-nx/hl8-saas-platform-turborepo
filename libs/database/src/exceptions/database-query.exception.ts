@@ -42,12 +42,11 @@ export class DatabaseQueryException extends AbstractHttpException {
    */
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_QUERY_ERROR',  // errorCode
-      '数据库查询错误',         // title
-      detail,                  // detail
-      500,                     // status
-      data                     // data
+      'DATABASE_QUERY_ERROR', // errorCode
+      '数据库查询错误', // title
+      detail, // detail
+      500, // status
+      data, // data
     );
   }
 }
-

@@ -5,12 +5,9 @@
  * @since 1.0.0
  */
 
-import {
-  ConfigLoader,
-  AsyncConfigLoader,
-} from '../interfaces/typed-config-module-options.interface.js';
-import { ErrorHandler, ConfigError } from '../errors/index.js';
 import { CONFIG_DEFAULTS } from '../constants.js';
+import { ErrorHandler } from '../errors/index.js';
+import { AsyncConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
 
 /**
  * 远程加载器选项接口
@@ -37,7 +34,7 @@ export interface RemoteLoaderOptions {
   /**
    * 配置类型
    * @description 配置文件的类型
-   * 
+   *
    * @remarks
    * 使用 any 符合宪章 IX 允许场景：HTTP 响应类型未知。
    */
@@ -49,7 +46,7 @@ export interface RemoteLoaderOptions {
    * @description 将 HTTP 响应体映射为配置对象的函数
    * @param response HTTP 响应
    * @returns 配置对象
-   * 
+   *
    * @remarks
    * 使用 any 符合宪章 IX 允许场景：HTTP 响应和配置对象结构未知。
    */
@@ -61,7 +58,7 @@ export interface RemoteLoaderOptions {
    * @description 确定是否应该重试请求的函数
    * @param response HTTP 响应
    * @returns 是否应该重试
-   * 
+   *
    * @remarks
    * 使用 any 符合宪章 IX 允许场景：HTTP 响应类型未知。
    */
@@ -102,7 +99,7 @@ export interface RemoteLoaderOptions {
  */
 export const remoteLoader = (
   url: string,
-  options: RemoteLoaderOptions = {}
+  options: RemoteLoaderOptions = {},
 ): AsyncConfigLoader => {
   const {
     requestConfig = {},
@@ -138,7 +135,7 @@ export const remoteLoader = (
     throw ErrorHandler.handleNetworkError(
       lastError || new Error('Unknown network error'),
       url,
-      { retries, retryInterval, attempt: retries + 1 }
+      { retries, retryInterval, attempt: retries + 1 },
     );
   };
 };
@@ -154,7 +151,7 @@ export const remoteLoader = (
  */
 async function makeRequest(
   url: string,
-  config: Record<string, unknown>
+  config: Record<string, unknown>,
 ): Promise<{ data: unknown; status: number }> {
   // 这里应该使用实际的 HTTP 客户端，如 axios 或 fetch
   // 为了简化，这里使用 fetch API
@@ -186,14 +183,14 @@ async function makeRequest(
  * @returns 解析后的配置对象
  * @author HL8 SAAS Platform Team
  * @since 1.0.0
- * 
+ *
  * @remarks
  * 使用 any 符合宪章 IX 允许场景：HTTP 响应数据类型未知，可能是 string 或已解析的对象。
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- HTTP 响应和配置对象类型未知（宪章 IX 允许场景：第三方库集成）
 function parseConfig(
   data: any,
-  type: string | ((response: any) => string)
+  type: string | ((response: any) => string),
 ): Record<string, any> {
   const configType = typeof type === 'function' ? type(data) : type;
 

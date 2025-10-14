@@ -69,7 +69,7 @@ export class ConfigValidator {
    */
   static validate<T extends object>(
     schema: new () => T,
-    config: Record<string, any>
+    config: Record<string, any>,
   ): T {
     // 转换为类实例
     const configInstance = plainToClass(schema, config, {
@@ -109,4 +109,3 @@ export class ConfigValidator {
       .join('\n');
   }
 }
-

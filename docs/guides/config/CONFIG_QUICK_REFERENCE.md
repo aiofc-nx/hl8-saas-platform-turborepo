@@ -8,10 +8,10 @@
 
 **两种缓存，职责不同**：
 
-| 缓存类型 | 提供者 | 用途 | 使用方式 |
-|---------|--------|------|---------|
-| **配置缓存** | `libs/config` | 缓存配置加载结果 | 自动、透明 ✨ |
-| **业务数据缓存** | `libs/caching` | 缓存用户数据等 | 手动调用 🔧 |
+| 缓存类型         | 提供者         | 用途             | 使用方式      |
+| ---------------- | -------------- | ---------------- | ------------- |
+| **配置缓存**     | `libs/config`  | 缓存配置加载结果 | 自动、透明 ✨ |
+| **业务数据缓存** | `libs/caching` | 缓存用户数据等   | 手动调用 🔧   |
 
 详见：[配置缓存机制详解](./CONFIG_CACHE_EXPLAINED.md)
 
@@ -19,11 +19,11 @@
 
 ## 三层架构速查
 
-| 层次 | 位置 | 职责 | 示例 |
-|------|------|------|------|
-| **🔧 配置框架层** | `libs/config/` | 提供配置管理工具 | `TypedConfigModule`, `dotenvLoader` |
-| **📦 业务库层** | `libs/*/src/config/` | 定义业务模块的配置类 | `LoggingConfig`, `CachingModuleConfig` |
-| **🏢 应用层** | `apps/*/src/config/` | 组合使用 + 应用特有配置 | `AppConfig` |
+| 层次              | 位置                 | 职责                    | 示例                                   |
+| ----------------- | -------------------- | ----------------------- | -------------------------------------- |
+| **🔧 配置框架层** | `libs/config/`       | 提供配置管理工具        | `TypedConfigModule`, `dotenvLoader`    |
+| **📦 业务库层**   | `libs/*/src/config/` | 定义业务模块的配置类    | `LoggingConfig`, `CachingModuleConfig` |
+| **🏢 应用层**     | `apps/*/src/config/` | 组合使用 + 应用特有配置 | `AppConfig`                            |
 
 ---
 
@@ -62,11 +62,11 @@
 
 **示例**：
 
-| 业务库 | 配置文件 | 定义的配置类 |
-|--------|----------|-------------|
-| `@hl8/nestjs-fastify` | `src/config/logging.config.ts` | `LoggingConfig` |
-| | `src/config/fastify-modules.config.ts` | `MetricsModuleConfig`, `RateLimitModuleConfig` |
-| `@hl8/caching` | `src/config/caching.config.ts` | `RedisConfig`, `CachingModuleConfig` |
+| 业务库                | 配置文件                               | 定义的配置类                                   |
+| --------------------- | -------------------------------------- | ---------------------------------------------- |
+| `@hl8/nestjs-fastify` | `src/config/logging.config.ts`         | `LoggingConfig`                                |
+|                       | `src/config/fastify-modules.config.ts` | `MetricsModuleConfig`, `RateLimitModuleConfig` |
+| `@hl8/caching`        | `src/config/caching.config.ts`         | `RedisConfig`, `CachingModuleConfig`           |
 
 **为什么在这里？**
 

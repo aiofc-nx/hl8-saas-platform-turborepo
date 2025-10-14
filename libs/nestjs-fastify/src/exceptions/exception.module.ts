@@ -7,11 +7,11 @@
  * @since 0.1.0
  */
 
-import { Module, DynamicModule, Global } from '@nestjs/common';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import { FastifyHttpExceptionFilter } from './filters/fastify-http-exception.filter.js';
-import { FastifyAnyExceptionFilter } from './filters/fastify-any-exception.filter.js';
 import { FastifyLoggerService } from '../logging/fastify-logger.service.js';
+import { FastifyAnyExceptionFilter } from './filters/fastify-any-exception.filter.js';
+import { FastifyHttpExceptionFilter } from './filters/fastify-http-exception.filter.js';
 
 export interface FastifyExceptionModuleOptions {
   isProduction?: boolean;
@@ -43,4 +43,3 @@ export class FastifyExceptionModule {
     };
   }
 }
-

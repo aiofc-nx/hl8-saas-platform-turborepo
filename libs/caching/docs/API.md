@@ -45,15 +45,15 @@ interface RedisOptions {
 }
 ```
 
-| 参数 | 类型 | 必填 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `redis.host` | string | 是 | - | Redis 主机地址 |
-| `redis.port` | number | 是 | - | Redis 端口 |
-| `redis.password` | string | 否 | - | Redis 密码 |
-| `redis.db` | number | 否 | 0 | Redis 数据库编号 |
-| `redis.maxRetriesPerRequest` | number | 否 | 3 | 每个请求最大重试次数 |
-| `ttl` | number | 否 | 3600 | 默认 TTL（秒） |
-| `keyPrefix` | string | 否 | 'hl8:cache:' | 缓存键前缀 |
+| 参数                         | 类型   | 必填 | 默认值       | 说明                 |
+| ---------------------------- | ------ | ---- | ------------ | -------------------- |
+| `redis.host`                 | string | 是   | -            | Redis 主机地址       |
+| `redis.port`                 | number | 是   | -            | Redis 端口           |
+| `redis.password`             | string | 否   | -            | Redis 密码           |
+| `redis.db`                   | number | 否   | 0            | Redis 数据库编号     |
+| `redis.maxRetriesPerRequest` | number | 否   | 3            | 每个请求最大重试次数 |
+| `ttl`                        | number | 否   | 3600         | 默认 TTL（秒）       |
+| `keyPrefix`                  | string | 否   | 'hl8:cache:' | 缓存键前缀           |
 
 **示例**:
 
@@ -93,7 +93,9 @@ static forRootAsync(options: CachingModuleAsyncOptions): DynamicModule
 interface CachingModuleAsyncOptions {
   imports?: any[];
   inject?: any[];
-  useFactory: (...args: any[]) => Promise<CachingModuleOptions> | CachingModuleOptions;
+  useFactory: (
+    ...args: any[]
+  ) => Promise<CachingModuleOptions> | CachingModuleOptions;
 }
 ```
 
@@ -149,22 +151,22 @@ async get<T>(namespace: string, key: string): Promise<T | undefined>
 @Injectable()
 export class UserService {
   constructor(private readonly cacheService: CacheService) {}
-  
+
   async getUserById(id: string): Promise<User | null> {
     // 尝试从缓存获取
     const cached = await this.cacheService.get<User>('user', id);
     if (cached) {
       return cached;
     }
-    
+
     // 从数据库查询
     const user = await this.repository.findOne(id);
-    
+
     // 存入缓存
     if (user) {
       await this.cacheService.set('user', id, user, 1800);
     }
-    
+
     return user;
   }
 }
@@ -292,7 +294,7 @@ async clear(pattern?: string): Promise<void>
 
 **参数**:
 
-- `pattern` (string, 可选): 匹配模式（支持 * 通配符），不提供则清空所有缓存
+- `pattern` (string, 可选): 匹配模式（支持 \* 通配符），不提供则清空所有缓存
 
 **返回值**:
 
@@ -342,13 +344,13 @@ interface CacheableOptions {
 }
 ```
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `namespace` | string | - | 命名空间 |
-| `keyGenerator` | function | 使用第一个参数 | 自定义键生成函数 |
-| `ttl` | number | 配置的默认值 | 过期时间（秒） |
-| `condition` | function | - | 条件函数，返回 false 时不缓存 |
-| `cacheNull` | boolean | false | 是否缓存 null 值 |
+| 参数           | 类型     | 默认值         | 说明                          |
+| -------------- | -------- | -------------- | ----------------------------- |
+| `namespace`    | string   | -              | 命名空间                      |
+| `keyGenerator` | function | 使用第一个参数 | 自定义键生成函数              |
+| `ttl`          | number   | 配置的默认值   | 过期时间（秒）                |
+| `condition`    | function | -              | 条件函数，返回 false 时不缓存 |
+| `cacheNull`    | boolean  | false          | 是否缓存 null 值              |
 
 **示例**:
 
@@ -360,7 +362,7 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // 自定义键
   @Cacheable('user', {
     keyGenerator: (id: string) => `profile:${id}`,
@@ -368,7 +370,7 @@ export class UserService {
   async getUserProfile(id: string): Promise<UserProfile> {
     return this.repository.findProfile(id);
   }
-  
+
   // 自定义 TTL
   @Cacheable('user', {
     ttl: 1800, // 30 分钟
@@ -376,7 +378,7 @@ export class UserService {
   async getActiveUsers(): Promise<User[]> {
     return this.repository.findActive();
   }
-  
+
   // 条件缓存
   @Cacheable('user', {
     condition: (id: string) => id !== 'admin', // 不缓存 admin
@@ -384,7 +386,7 @@ export class UserService {
   async getUserData(id: string): Promise<any> {
     return this.fetchUserData(id);
   }
-  
+
   // 缓存 null 值
   @Cacheable('user', {
     cacheNull: true, // 防止缓存穿透
@@ -418,13 +420,13 @@ interface CacheEvictOptions {
 }
 ```
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `namespace` | string | - | 命名空间 |
-| `keyGenerator` | function | 使用第一个参数 | 自定义键生成函数 |
-| `allEntries` | boolean | false | 是否清除所有缓存 |
-| `beforeInvocation` | boolean | false | 是否在方法执行前清除 |
-| `condition` | function | - | 条件函数，返回 false 时不清除 |
+| 参数               | 类型     | 默认值         | 说明                          |
+| ------------------ | -------- | -------------- | ----------------------------- |
+| `namespace`        | string   | -              | 命名空间                      |
+| `keyGenerator`     | function | 使用第一个参数 | 自定义键生成函数              |
+| `allEntries`       | boolean  | false          | 是否清除所有缓存              |
+| `beforeInvocation` | boolean  | false          | 是否在方法执行前清除          |
+| `condition`        | function | -              | 条件函数，返回 false 时不清除 |
 
 **示例**:
 
@@ -436,7 +438,7 @@ export class UserService {
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
-  
+
   // 删除前清除缓存
   @CacheEvict('user', {
     beforeInvocation: true,
@@ -444,7 +446,7 @@ export class UserService {
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete(id);
   }
-  
+
   // 清除所有用户缓存
   @CacheEvict('user', {
     allEntries: true,
@@ -452,7 +454,7 @@ export class UserService {
   async resetAllUsers(): Promise<void> {
     await this.repository.truncate();
   }
-  
+
   // 条件清除
   @CacheEvict('user', {
     condition: (id: string) => id !== 'system',
@@ -485,12 +487,12 @@ interface CachePutOptions {
 }
 ```
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `namespace` | string | - | 命名空间 |
-| `keyGenerator` | function | 使用第一个参数 | 自定义键生成函数 |
-| `ttl` | number | 配置的默认值 | 过期时间（秒） |
-| `condition` | function | - | 条件函数，返回 false 时不更新 |
+| 参数           | 类型     | 默认值         | 说明                          |
+| -------------- | -------- | -------------- | ----------------------------- |
+| `namespace`    | string   | -              | 命名空间                      |
+| `keyGenerator` | function | 使用第一个参数 | 自定义键生成函数              |
+| `ttl`          | number   | 配置的默认值   | 过期时间（秒）                |
+| `condition`    | function | -              | 条件函数，返回 false 时不更新 |
 
 **示例**:
 
@@ -501,7 +503,7 @@ export class UserService {
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // 更新数据并刷新缓存
   @CachePut('user')
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
@@ -509,7 +511,7 @@ export class UserService {
     // 缓存自动更新，getUserById 将获取最新数据
     return user;
   }
-  
+
   // 定时刷新缓存
   @CachePut('user', {
     keyGenerator: (id: string) => id,
@@ -695,7 +697,7 @@ resetMetrics() {
 **签名**:
 
 ```typescript
-function serialize(value: any): string
+function serialize(value: any): string;
 ```
 
 **参数**:
@@ -735,7 +737,7 @@ await redis.set('user:123', serialized);
 **签名**:
 
 ```typescript
-function deserialize<T = any>(value: string): T
+function deserialize<T = any>(value: string): T;
 ```
 
 **参数**:
@@ -765,7 +767,7 @@ if (cached) {
 **签名**:
 
 ```typescript
-function isSerializable(value: any): boolean
+function isSerializable(value: any): boolean;
 ```
 
 **返回值**:
@@ -789,7 +791,7 @@ if (isSerializable(obj)) {
 **签名**:
 
 ```typescript
-function generateKey(parts: (string | number | null | undefined)[]): string
+function generateKey(parts: (string | number | null | undefined)[]): string;
 ```
 
 **参数**:
@@ -820,7 +822,7 @@ const key = generateKey(['user', '', null, 'list']);
 **签名**:
 
 ```typescript
-function sanitizeKey(key: string): string
+function sanitizeKey(key: string): string;
 ```
 
 **参数**:
@@ -847,7 +849,7 @@ const clean = sanitizeKey('user name @123');
 **签名**:
 
 ```typescript
-function isValidKey(key: string): boolean
+function isValidKey(key: string): boolean;
 ```
 
 **返回值**:
@@ -858,7 +860,7 @@ function isValidKey(key: string): boolean
 
 ```typescript
 isValidKey('user:profile:123'); // true
-isValidKey('user name');         // false
+isValidKey('user name'); // false
 ```
 
 ---
@@ -870,13 +872,13 @@ isValidKey('user name');         // false
 **签名**:
 
 ```typescript
-function generatePattern(prefix: string, pattern: string): string
+function generatePattern(prefix: string, pattern: string): string;
 ```
 
 **参数**:
 
 - `prefix` (string): 键前缀
-- `pattern` (string): 匹配模式（支持 * 通配符）
+- `pattern` (string): 匹配模式（支持 \* 通配符）
 
 **返回值**:
 

@@ -58,18 +58,21 @@
  * @since 1.0.0
  */
 
-import { Module, DynamicModule, Global, Provider } from '@nestjs/common';
-import { ClsModule } from 'nestjs-cls';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
-import { DI_TOKENS } from './constants/tokens.js';
-import { POOL_DEFAULTS } from './constants/defaults.js';
+import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
+import { ClsModule } from 'nestjs-cls';
 import { ConnectionManager } from './connection/connection.manager.js';
-import { TransactionService } from './transaction/transaction.service.js';
+import { POOL_DEFAULTS } from './constants/defaults.js';
+import { DI_TOKENS } from './constants/tokens.js';
 import { DatabaseIsolationService } from './isolation/isolation.service.js';
 import { HealthCheckService } from './monitoring/health-check.service.js';
 import { MetricsService } from './monitoring/metrics.service.js';
-import type { DatabaseModuleOptions, DatabaseModuleAsyncOptions } from './types/module.types.js';
+import { TransactionService } from './transaction/transaction.service.js';
+import type {
+  DatabaseModuleAsyncOptions,
+  DatabaseModuleOptions,
+} from './types/module.types.js';
 
 /**
  * 数据库管理模块
@@ -123,9 +126,13 @@ export class DatabaseModule {
           pool: {
             min: options.pool?.min ?? POOL_DEFAULTS.MIN,
             max: options.pool?.max ?? POOL_DEFAULTS.MAX,
-            idleTimeoutMillis: options.pool?.idleTimeoutMillis ?? POOL_DEFAULTS.IDLE_TIMEOUT,
-            acquireTimeoutMillis: options.pool?.acquireTimeoutMillis ?? POOL_DEFAULTS.ACQUIRE_TIMEOUT,
-            createTimeoutMillis: options.pool?.createTimeoutMillis ?? POOL_DEFAULTS.CREATE_TIMEOUT,
+            idleTimeoutMillis:
+              options.pool?.idleTimeoutMillis ?? POOL_DEFAULTS.IDLE_TIMEOUT,
+            acquireTimeoutMillis:
+              options.pool?.acquireTimeoutMillis ??
+              POOL_DEFAULTS.ACQUIRE_TIMEOUT,
+            createTimeoutMillis:
+              options.pool?.createTimeoutMillis ?? POOL_DEFAULTS.CREATE_TIMEOUT,
           },
           debug: options.debug ?? false,
           ...options.mikroORM,
@@ -180,7 +187,7 @@ export class DatabaseModule {
         MikroOrmModule.forRootAsync({
           useFactory: async (...args: any[]) => {
             const config = await options.useFactory(...args);
-            
+
             return {
               driver: PostgreSqlDriver,
               host: config.connection.host,
@@ -192,9 +199,14 @@ export class DatabaseModule {
               pool: {
                 min: config.pool?.min ?? POOL_DEFAULTS.MIN,
                 max: config.pool?.max ?? POOL_DEFAULTS.MAX,
-                idleTimeoutMillis: config.pool?.idleTimeoutMillis ?? POOL_DEFAULTS.IDLE_TIMEOUT,
-                acquireTimeoutMillis: config.pool?.acquireTimeoutMillis ?? POOL_DEFAULTS.ACQUIRE_TIMEOUT,
-                createTimeoutMillis: config.pool?.createTimeoutMillis ?? POOL_DEFAULTS.CREATE_TIMEOUT,
+                idleTimeoutMillis:
+                  config.pool?.idleTimeoutMillis ?? POOL_DEFAULTS.IDLE_TIMEOUT,
+                acquireTimeoutMillis:
+                  config.pool?.acquireTimeoutMillis ??
+                  POOL_DEFAULTS.ACQUIRE_TIMEOUT,
+                createTimeoutMillis:
+                  config.pool?.createTimeoutMillis ??
+                  POOL_DEFAULTS.CREATE_TIMEOUT,
               },
               debug: config.debug ?? false,
               ...config.mikroORM,
@@ -215,4 +227,3 @@ export class DatabaseModule {
     };
   }
 }
-

@@ -126,6 +126,10 @@ export const setupSwagger = async (
   });
 
   console.log('📚 Swagger documentation is available at:');
-  console.log(`   📖 UI: http://localhost:${process.env.PORT || 3001}/api-docs`);
-  console.log(`   📄 JSON: http://localhost:${process.env.PORT || 3001}/api-docs-json`);
+  console.log(
+    `   📖 UI: http://localhost:${process.env.PORT || 3001}/api-docs`,
+  );
+  console.log(
+    `   📄 JSON: http://localhost:${process.env.PORT || 3001}/api-docs-json`,
+  );
 };

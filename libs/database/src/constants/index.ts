@@ -6,7 +6,6 @@
  * @since 1.0.0
  */
 
-export * from './tokens.js';
 export * from './defaults.js';
 export * from './error-codes.js';
-
+export * from './tokens.js';

@@ -39,11 +39,13 @@ import { IsolationLevel } from './isolation.service.js';
  * @param level - 需要的隔离级别，默认为 TENANT
  * @returns 方法装饰器
  */
-export function IsolationAware(level: IsolationLevel = IsolationLevel.TENANT): MethodDecorator {
+export function IsolationAware(
+  level: IsolationLevel = IsolationLevel.TENANT,
+): MethodDecorator {
   return function (
     target: any,
     propertyKey: string | symbol,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
@@ -54,7 +56,7 @@ export function IsolationAware(level: IsolationLevel = IsolationLevel.TENANT): M
       if (!isolationService) {
         throw new Error(
           `@IsolationAware 装饰器要求类注入 DatabaseIsolationService。` +
-          `请在 ${target.constructor.name} 中添加：constructor(private readonly isolationService: DatabaseIsolationService)`
+            `请在 ${target.constructor.name} 中添加：constructor(private readonly isolationService: DatabaseIsolationService)`,
         );
       }
 
@@ -68,4 +70,3 @@ export function IsolationAware(level: IsolationLevel = IsolationLevel.TENANT): M
     return descriptor;
   };
 }
-

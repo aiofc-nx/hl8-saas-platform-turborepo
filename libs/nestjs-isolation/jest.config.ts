@@ -21,10 +21,7 @@ const config: Config = {
       },
     ],
   },
-  testMatch: [
-    '<rootDir>/src/**/*.spec.ts',
-    '<rootDir>/__tests__/**/*.spec.ts',
-  ],
+  testMatch: ['<rootDir>/src/**/*.spec.ts', '<rootDir>/__tests__/**/*.spec.ts'],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.spec.ts',
@@ -44,4 +41,3 @@ const config: Config = {
 };
 
 export default config;
-

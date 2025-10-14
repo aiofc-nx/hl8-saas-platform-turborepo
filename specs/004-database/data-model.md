@@ -21,25 +21,25 @@
 interface ConnectionConfig {
   /** 数据库类型 */
   type: 'postgresql' | 'mongodb';
-  
+
   /** 主机地址 */
   host: string;
-  
+
   /** 端口号 */
   port: number;
-  
+
   /** 数据库名称 */
   database: string;
-  
+
   /** 用户名 */
   username: string;
-  
+
   /** 密码（敏感信息） */
   password: string;
-  
+
   /** 连接池配置 */
   pool: PoolConfig;
-  
+
   /** SSL 配置（可选） */
   ssl?: SSLConfig;
 }
@@ -55,16 +55,16 @@ interface ConnectionConfig {
 interface PoolConfig {
   /** 最小连接数 */
   min: number;
-  
+
   /** 最大连接数 */
   max: number;
-  
+
   /** 空闲超时（毫秒） */
   idleTimeoutMillis: number;
-  
+
   /** 获取连接超时（毫秒） */
   acquireTimeoutMillis: number;
-  
+
   /** 创建连接超时（毫秒） */
   createTimeoutMillis: number;
 }
@@ -88,16 +88,16 @@ interface PoolConfig {
 enum ConnectionStatus {
   /** 未连接 */
   DISCONNECTED = 'disconnected',
-  
+
   /** 连接中 */
   CONNECTING = 'connecting',
-  
+
   /** 已连接 */
   CONNECTED = 'connected',
-  
+
   /** 连接失败 */
   FAILED = 'failed',
-  
+
   /** 重连中 */
   RECONNECTING = 'reconnecting',
 }
@@ -113,25 +113,25 @@ enum ConnectionStatus {
 interface ConnectionInfo {
   /** 连接状态 */
   status: ConnectionStatus;
-  
+
   /** 数据库类型 */
   type: string;
-  
+
   /** 主机地址 */
   host: string;
-  
+
   /** 端口号 */
   port: number;
-  
+
   /** 数据库名称 */
   database: string;
-  
+
   /** 连接建立时间 */
   connectedAt?: Date;
-  
+
   /** 最后活动时间 */
   lastActivityAt?: Date;
-  
+
   /** 连接池统计 */
   poolStats: PoolStats;
 }
@@ -147,19 +147,19 @@ interface ConnectionInfo {
 interface PoolStats {
   /** 总连接数 */
   total: number;
-  
+
   /** 活动连接数 */
   active: number;
-  
+
   /** 空闲连接数 */
   idle: number;
-  
+
   /** 等待中的请求数 */
   waiting: number;
-  
+
   /** 最大连接数限制 */
   max: number;
-  
+
   /** 最小连接数限制 */
   min: number;
 }
@@ -175,10 +175,10 @@ interface PoolStats {
 interface TransactionOptions {
   /** 事务隔离级别（使用数据库默认） */
   isolationLevel?: 'read committed' | 'repeatable read' | 'serializable';
-  
+
   /** 是否只读事务 */
   readOnly?: boolean;
-  
+
   /** 事务超时（毫秒） */
   timeout?: number;
 }
@@ -194,16 +194,16 @@ interface TransactionOptions {
 interface TransactionContext {
   /** 事务 ID（用于追踪） */
   transactionId: string;
-  
+
   /** 事务 EntityManager */
   entityManager: EntityManager;
-  
+
   /** 事务开始时间 */
   startedAt: Date;
-  
+
   /** 事务选项 */
   options?: TransactionOptions;
-  
+
   /** 是否嵌套事务 */
   isNested: boolean;
 }
@@ -219,31 +219,31 @@ interface TransactionContext {
 interface IsolationContext {
   /** 平台 ID */
   platformId: string;
-  
+
   /** 租户 ID */
   tenantId?: string;
-  
+
   /** 组织 ID */
   organizationId?: string;
-  
+
   /** 部门 ID */
   departmentId?: string;
-  
+
   /** 用户 ID */
   userId?: string;
-  
+
   /** 隔离级别 */
   level: IsolationLevel;
-  
+
   /** 获取租户 ID */
   getTenantId(): string | undefined;
-  
+
   /** 获取组织 ID */
   getOrganizationId(): string | undefined;
-  
+
   /** 获取部门 ID */
   getDepartmentId(): string | undefined;
-  
+
   /** 获取用户 ID */
   getUserId(): string | undefined;
 }
@@ -261,13 +261,13 @@ interface IsolationContext {
 interface MigrationInfo {
   /** 迁移名称 */
   name: string;
-  
+
   /** 迁移执行时间 */
   executedAt: Date | null;
-  
+
   /** 迁移状态 */
   status: 'executed' | 'pending' | 'failed';
-  
+
   /** 迁移文件路径 */
   path?: string;
 }
@@ -283,13 +283,13 @@ interface MigrationInfo {
 interface MigrationResult {
   /** 成功执行的迁移 */
   executed: string[];
-  
+
   /** 失败的迁移 */
   failed: string[];
-  
+
   /** 执行时间（毫秒） */
   duration: number;
-  
+
   /** 错误信息（如果有） */
   error?: string;
 }
@@ -305,22 +305,22 @@ interface MigrationResult {
 interface HealthCheckResult {
   /** 健康状态 */
   status: 'healthy' | 'unhealthy' | 'degraded';
-  
+
   /** 检查时间 */
   checkedAt: Date;
-  
+
   /** 响应时间（毫秒） */
   responseTime: number;
-  
+
   /** 连接状态 */
   connection: {
     isConnected: boolean;
     error?: string;
   };
-  
+
   /** 连接池状态 */
   pool: PoolStats;
-  
+
   /** 详细信息 */
   details?: Record<string, any>;
 }
@@ -336,26 +336,26 @@ interface HealthCheckResult {
 interface QueryMetrics {
   /** 查询 SQL */
   query: string;
-  
+
   /** 执行时间（毫秒） */
   duration: number;
-  
+
   /** 执行时间戳 */
   executedAt: Date;
-  
+
   /** 是否为慢查询 */
   isSlow: boolean;
-  
+
   /** 查询参数（脱敏） */
   params?: any[];
-  
+
   /** 隔离上下文 */
   isolationContext?: {
     tenantId?: string;
     organizationId?: string;
     departmentId?: string;
   };
-  
+
   /** 请求 ID（用于追踪） */
   requestId?: string;
 }
@@ -371,25 +371,25 @@ interface QueryMetrics {
 interface SlowQueryLog {
   /** 日志 ID */
   id: string;
-  
+
   /** 查询 SQL */
   query: string;
-  
+
   /** 执行时间（毫秒） */
   duration: number;
-  
+
   /** 执行时间戳 */
   timestamp: Date;
-  
+
   /** 查询参数（脱敏） */
   params?: any[];
-  
+
   /** 租户 ID */
   tenantId?: string;
-  
+
   /** 请求 ID */
   requestId?: string;
-  
+
   /** 堆栈跟踪 */
   stackTrace?: string;
 }
@@ -405,45 +405,45 @@ interface SlowQueryLog {
 interface DatabaseMetrics {
   /** 采集时间 */
   timestamp: Date;
-  
+
   /** 连接池指标 */
   pool: PoolStats;
-  
+
   /** 查询统计 */
   queries: {
     /** 总查询数 */
     total: number;
-    
+
     /** 平均执行时间（毫秒） */
     avgDuration: number;
-    
+
     /** 最大执行时间（毫秒） */
     maxDuration: number;
-    
+
     /** 慢查询数量 */
     slowCount: number;
   };
-  
+
   /** 事务统计 */
   transactions: {
     /** 活动事务数 */
     active: number;
-    
+
     /** 提交成功数 */
     committed: number;
-    
+
     /** 回滚数 */
     rolledBack: number;
   };
-  
+
   /** 资源使用 */
   resources?: {
     /** 内存使用（字节） */
     memoryUsage?: number;
-    
+
     /** CPU 使用率（百分比） */
     cpuUsage?: number;
-    
+
     /** 磁盘使用（字节） */
     diskUsage?: number;
   };
@@ -615,7 +615,7 @@ interface DatabaseMetrics {
 interface SlowQueryMemoryCache {
   /** 最大保留数量（默认 100） */
   maxSize: number;
-  
+
   /** 慢查询列表（FIFO 队列） */
   queries: SlowQueryLog[];
 }
@@ -644,12 +644,12 @@ interface SlowQueryMemoryCache {
 
 ```typescript
 interface PoolStats {
-  total: number;    // 当前总连接数
-  active: number;   // 活动连接数
-  idle: number;     // 空闲连接数
-  waiting: number;  // 等待连接的请求数
-  max: number;      // 最大连接数限制
-  min: number;      // 最小连接数限制
+  total: number; // 当前总连接数
+  active: number; // 活动连接数
+  idle: number; // 空闲连接数
+  waiting: number; // 等待连接的请求数
+  max: number; // 最大连接数限制
+  min: number; // 最小连接数限制
 }
 ```
 
@@ -667,10 +667,10 @@ interface PoolStats {
 interface QueryMetricsMemory {
   /** 滑动窗口大小（如最近 1000 次查询） */
   windowSize: number;
-  
+
   /** 最近的查询执行时间 */
   recentDurations: number[];
-  
+
   /** 统计信息 */
   stats: {
     total: number;
@@ -839,10 +839,10 @@ type DatabaseType = 'postgresql' | 'mongodb' | 'mysql' | 'sqlite';
 ```typescript
 interface ConnectionConfig {
   // ...其他字段
-  
+
   /** 分片键（可选） */
   shardKey?: string;
-  
+
   /** 分片数量（可选） */
   shardCount?: number;
 }
@@ -855,7 +855,7 @@ interface ConnectionConfig {
 ```typescript
 interface ConnectionConfig {
   // ...其他字段
-  
+
   /** 读库配置（可选） */
   replicas?: {
     host: string;

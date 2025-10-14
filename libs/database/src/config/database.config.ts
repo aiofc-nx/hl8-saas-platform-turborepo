@@ -41,9 +41,20 @@
  * @since 1.0.0
  */
 
-import { IsString, IsNumber, IsOptional, Min, Max, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
-import { POOL_DEFAULTS, CONNECTION_DEFAULTS, MONITORING_DEFAULTS } from '../constants/defaults.js';
+import {
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
+import {
+  CONNECTION_DEFAULTS,
+  MONITORING_DEFAULTS,
+  POOL_DEFAULTS,
+} from '../constants/defaults.js';
 
 /**
  * 数据库配置类
@@ -193,11 +204,11 @@ export class DatabaseConfig {
     if (this.type === 'postgresql') {
       return `postgresql://${this.username}:${this.password}@${this.host}:${this.port}/${this.database}`;
     }
-    
+
     if (this.type === 'mongodb') {
       return `mongodb://${this.username}:${this.password}@${this.host}:${this.port}/${this.database}`;
     }
-    
+
     throw new Error(`不支持的数据库类型: ${this.type}`);
   }
 
@@ -234,4 +245,3 @@ export class DatabaseConfig {
     };
   }
 }
-

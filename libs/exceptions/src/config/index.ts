@@ -7,4 +7,3 @@
  */
 
 export * from './exception.config.js';
-

@@ -16,12 +16,12 @@
 
 ### 文件迁移
 
-| 操作 | 文件数 | 详情 |
-|------|--------|------|
-| **已移动** | 4 | FASTIFY_TRAINING.md<br>DOCUMENTATION_ENHANCEMENTS.md<br>TRAINING_DOC_SUMMARY.md<br>FINAL_DOCUMENTATION_SUMMARY.md |
-| **新建** | 3 | docs/README.md<br>docs/DOCS_MIGRATION.md<br>docs/MIGRATION_COMPLETED.md |
-| **更新** | 4 | README.md<br>FASTIFY_TRAINING.md<br>TRAINING_DOC_SUMMARY.md<br>docs/README.md |
-| **保留** | 3 | README.md<br>CHANGELOG.md<br>docs/LOGGING_CONFIG.md |
+| 操作       | 文件数 | 详情                                                                                                              |
+| ---------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
+| **已移动** | 4      | FASTIFY_TRAINING.md<br>DOCUMENTATION_ENHANCEMENTS.md<br>TRAINING_DOC_SUMMARY.md<br>FINAL_DOCUMENTATION_SUMMARY.md |
+| **新建**   | 3      | docs/README.md<br>docs/DOCS_MIGRATION.md<br>docs/MIGRATION_COMPLETED.md                                           |
+| **更新**   | 4      | README.md<br>FASTIFY_TRAINING.md<br>TRAINING_DOC_SUMMARY.md<br>docs/README.md                                     |
+| **保留**   | 3      | README.md<br>CHANGELOG.md<br>docs/LOGGING_CONFIG.md                                                               |
 
 ---
 
@@ -90,22 +90,22 @@ libs/nestjs-fastify/docs/
 
 ### 总体数据
 
-| 指标 | 根目录 | docs/ | 总计 |
-|------|--------|-------|------|
-| **文件数** | 2 | 8 | 10 |
-| **总大小** | ~28.5KB | ~111KB | ~139.5KB |
-| **总行数** | ~1,250 | ~4,600+ | ~5,850+ |
+| 指标       | 根目录  | docs/   | 总计     |
+| ---------- | ------- | ------- | -------- |
+| **文件数** | 2       | 8       | 10       |
+| **总大小** | ~28.5KB | ~111KB  | ~139.5KB |
+| **总行数** | ~1,250  | ~4,600+ | ~5,850+  |
 
 ### 文档分类
 
-| 类型 | 数量 | 文件 |
-|------|------|------|
-| **主文档** | 1 | README.md |
-| **变更日志** | 1 | CHANGELOG.md |
-| **导航索引** | 1 | docs/README.md |
-| **培训教材** | 1 | docs/FASTIFY_TRAINING.md |
-| **专项文档** | 1 | docs/LOGGING_CONFIG.md |
-| **说明文档** | 5 | docs/DOCUMENTATION_ENHANCEMENTS.md<br>docs/TRAINING_DOC_SUMMARY.md<br>docs/FINAL_DOCUMENTATION_SUMMARY.md<br>docs/DOCS_MIGRATION.md<br>docs/MIGRATION_COMPLETED.md |
+| 类型         | 数量 | 文件                                                                                                                                                               |
+| ------------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **主文档**   | 1    | README.md                                                                                                                                                          |
+| **变更日志** | 1    | CHANGELOG.md                                                                                                                                                       |
+| **导航索引** | 1    | docs/README.md                                                                                                                                                     |
+| **培训教材** | 1    | docs/FASTIFY_TRAINING.md                                                                                                                                           |
+| **专项文档** | 1    | docs/LOGGING_CONFIG.md                                                                                                                                             |
+| **说明文档** | 5    | docs/DOCUMENTATION_ENHANCEMENTS.md<br>docs/TRAINING_DOC_SUMMARY.md<br>docs/FINAL_DOCUMENTATION_SUMMARY.md<br>docs/DOCS_MIGRATION.md<br>docs/MIGRATION_COMPLETED.md |
 
 ---
 
@@ -254,13 +254,13 @@ libs/nestjs-fastify/
 
 ## 📖 关键文档
 
-| 文档 | 说明 | 链接 |
-|------|------|------|
-| **主文档** | 模块 API 参考 | [README.md](../README.md) |
-| **文档导航** | 文档中心入口 | [docs/README.md](./README.md) |
-| **培训教材** | 完整培训内容 | [FASTIFY_TRAINING.md](./FASTIFY_TRAINING.md) |
-| **日志配置** | 日志模块详解 | [LOGGING_CONFIG.md](./LOGGING_CONFIG.md) |
-| **迁移说明** | 迁移过程详情 | [DOCS_MIGRATION.md](./DOCS_MIGRATION.md) |
+| 文档         | 说明          | 链接                                         |
+| ------------ | ------------- | -------------------------------------------- |
+| **主文档**   | 模块 API 参考 | [README.md](../README.md)                    |
+| **文档导航** | 文档中心入口  | [docs/README.md](./README.md)                |
+| **培训教材** | 完整培训内容  | [FASTIFY_TRAINING.md](./FASTIFY_TRAINING.md) |
+| **日志配置** | 日志模块详解  | [LOGGING_CONFIG.md](./LOGGING_CONFIG.md)     |
+| **迁移说明** | 迁移过程详情  | [DOCS_MIGRATION.md](./DOCS_MIGRATION.md)     |
 
 ---
 
@@ -289,11 +289,11 @@ libs/nestjs-fastify/
 
 ## 🎯 模块文档对比
 
-| 模块 | 根目录 .md | docs/ 文档数 | 状态 |
-|------|-----------|-------------|------|
-| **exceptions** | 2 | 7 | ✅ 已完成 |
-| **nestjs-fastify** | 2 | 8 | ✅ **刚完成** |
-| **nestjs-isolation** | 2 | 0 | ⚠️ 待整理 |
+| 模块                 | 根目录 .md | docs/ 文档数 | 状态          |
+| -------------------- | ---------- | ------------ | ------------- |
+| **exceptions**       | 2          | 7            | ✅ 已完成     |
+| **nestjs-fastify**   | 2          | 8            | ✅ **刚完成** |
+| **nestjs-isolation** | 2          | 0            | ⚠️ 待整理     |
 
 **nestjs-fastify 文档最完整！** ⭐⭐⭐
 

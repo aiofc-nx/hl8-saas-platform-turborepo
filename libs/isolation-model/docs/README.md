@@ -156,27 +156,25 @@ import {
 const platformContext = IsolationContext.platform();
 
 // 2. 租户级
-const tenantContext = IsolationContext.tenant(
-  TenantId.create('tenant-123')
-);
+const tenantContext = IsolationContext.tenant(TenantId.create('tenant-123'));
 
 // 3. 组织级
 const orgContext = IsolationContext.organization(
   TenantId.create('tenant-123'),
-  OrganizationId.create('org-456')
+  OrganizationId.create('org-456'),
 );
 
 // 4. 部门级
 const deptContext = IsolationContext.department(
   TenantId.create('tenant-123'),
   OrganizationId.create('org-456'),
-  DepartmentId.create('dept-789')
+  DepartmentId.create('dept-789'),
 );
 
 // 5. 用户级
 const userContext = IsolationContext.user(
   UserId.create('user-001'),
-  TenantId.create('tenant-123')  // 可选
+  TenantId.create('tenant-123'), // 可选
 );
 ```
 
@@ -193,7 +191,7 @@ const cacheKey = context.buildCacheKey('user', 'list');
 // tenant:tenant-123:user:list
 
 // 获取层级
-console.log('Level:', context.level);  // IsolationLevel.TENANT
+console.log('Level:', context.level); // IsolationLevel.TENANT
 ```
 
 ---
@@ -218,13 +216,13 @@ USER = 4           ← 按用户隔离
 
 #### 层级规则
 
-| 层级 | 必需字段 | 可选字段 | 使用场景 |
-|------|---------|---------|---------|
-| **PLATFORM** | - | - | 系统管理、全局数据 |
-| **TENANT** | `tenantId` | - | 多租户 SAAS |
-| **ORGANIZATION** | `tenantId`, `organizationId` | - | 大型企业 |
-| **DEPARTMENT** | `tenantId`, `organizationId`, `departmentId` | - | 部门管理 |
-| **USER** | `userId` | `tenantId` | 个人数据 |
+| 层级             | 必需字段                                     | 可选字段   | 使用场景           |
+| ---------------- | -------------------------------------------- | ---------- | ------------------ |
+| **PLATFORM**     | -                                            | -          | 系统管理、全局数据 |
+| **TENANT**       | `tenantId`                                   | -          | 多租户 SAAS        |
+| **ORGANIZATION** | `tenantId`, `organizationId`                 | -          | 大型企业           |
+| **DEPARTMENT**   | `tenantId`, `organizationId`, `departmentId` | -          | 部门管理           |
+| **USER**         | `userId`                                     | `tenantId` | 个人数据           |
 
 ---
 
@@ -242,7 +240,7 @@ USER = 4           ← 按用户隔离
 ```typescript
 // TenantId - 租户 ID
 const tenantId = TenantId.create('tenant-123');
-console.log(tenantId.value);  // 'tenant-123'
+console.log(tenantId.value); // 'tenant-123'
 
 // OrganizationId - 组织 ID
 const orgId = OrganizationId.create('org-456');
@@ -267,8 +265,8 @@ const tenantId = TenantId.create('tenant-123');
 // 2. 值相等
 const id1 = TenantId.create('tenant-123');
 const id2 = TenantId.create('tenant-123');
-console.log(id1.equals(id2));  // true（值相等）
-console.log(id1 === id2);      // false（不同对象）
+console.log(id1.equals(id2)); // true（值相等）
+console.log(id1 === id2); // false（不同对象）
 
 // 3. 类型安全
 const tenantId = TenantId.create('tenant-123');
@@ -305,14 +303,14 @@ interface IsolationContext {
   readonly organizationId?: OrganizationId;
   readonly departmentId?: DepartmentId;
   readonly userId?: UserId;
-  
+
   // 层级判断
   isPlatformLevel(): boolean;
   isTenantLevel(): boolean;
   isOrganizationLevel(): boolean;
   isDepartmentLevel(): boolean;
   isUserLevel(): boolean;
-  
+
   // 工具方法
   buildCacheKey(...parts: string[]): string;
   buildDatabaseFilter(): Record<string, any>;
@@ -345,7 +343,7 @@ orgContext.buildCacheKey('employee', 'list');
 ```typescript
 const context = IsolationContext.organization(
   TenantId.create('tenant-123'),
-  OrganizationId.create('org-456')
+  OrganizationId.create('org-456'),
 );
 
 const filter = context.buildDatabaseFilter();
@@ -356,7 +354,7 @@ const filter = context.buildDatabaseFilter();
 
 // 用于数据库查询
 const users = await userRepo.find({
-  where: filter  // 自动过滤租户和组织
+  where: filter, // 自动过滤租户和组织
 });
 ```
 
@@ -366,9 +364,9 @@ const users = await userRepo.find({
 const context = IsolationContext.tenant(TenantId.create('tenant-123'));
 
 // 检查是否满足访问要求
-context.canAccess(IsolationLevel.PLATFORM);      // true
-context.canAccess(IsolationLevel.TENANT);        // true
-context.canAccess(IsolationLevel.ORGANIZATION);  // false（层级不够）
+context.canAccess(IsolationLevel.PLATFORM); // true
+context.canAccess(IsolationLevel.TENANT); // true
+context.canAccess(IsolationLevel.ORGANIZATION); // false（层级不够）
 ```
 
 ---
@@ -382,30 +380,30 @@ context.canAccess(IsolationLevel.ORGANIZATION);  // false（层级不够）
 ```typescript
 class TenantId extends EntityId {
   // 创建租户 ID
-  static create(value: string): TenantId
-  
+  static create(value: string): TenantId;
+
   // 属性
-  readonly value: string
-  
+  readonly value: string;
+
   // 方法
-  equals(other: TenantId): boolean
-  toString(): string
+  equals(other: TenantId): boolean;
+  toString(): string;
 }
 
 // 使用
 const tenantId = TenantId.create('tenant-123');
-console.log(tenantId.value);  // 'tenant-123'
-console.log(tenantId.toString());  // 'tenant-123'
+console.log(tenantId.value); // 'tenant-123'
+console.log(tenantId.toString()); // 'tenant-123'
 ```
 
 #### OrganizationId
 
 ```typescript
 class OrganizationId extends EntityId {
-  static create(value: string): OrganizationId
-  readonly value: string
-  equals(other: OrganizationId): boolean
-  toString(): string
+  static create(value: string): OrganizationId;
+  readonly value: string;
+  equals(other: OrganizationId): boolean;
+  toString(): string;
 }
 ```
 
@@ -413,10 +411,10 @@ class OrganizationId extends EntityId {
 
 ```typescript
 class DepartmentId extends EntityId {
-  static create(value: string): DepartmentId
-  readonly value: string
-  equals(other: DepartmentId): boolean
-  toString(): string
+  static create(value: string): DepartmentId;
+  readonly value: string;
+  equals(other: DepartmentId): boolean;
+  toString(): string;
 }
 ```
 
@@ -424,10 +422,10 @@ class DepartmentId extends EntityId {
 
 ```typescript
 class UserId extends EntityId {
-  static create(value: string): UserId
-  readonly value: string
-  equals(other: UserId): boolean
-  toString(): string
+  static create(value: string): UserId;
+  readonly value: string;
+  equals(other: UserId): boolean;
+  toString(): string;
 }
 ```
 
@@ -440,29 +438,26 @@ class UserId extends EntityId {
 ```typescript
 class IsolationContext {
   // 创建平台级上下文
-  static platform(): IsolationContext
-  
+  static platform(): IsolationContext;
+
   // 创建租户级上下文
-  static tenant(tenantId: TenantId): IsolationContext
-  
+  static tenant(tenantId: TenantId): IsolationContext;
+
   // 创建组织级上下文
   static organization(
     tenantId: TenantId,
-    organizationId: OrganizationId
-  ): IsolationContext
-  
+    organizationId: OrganizationId,
+  ): IsolationContext;
+
   // 创建部门级上下文
   static department(
     tenantId: TenantId,
     organizationId: OrganizationId,
-    departmentId: DepartmentId
-  ): IsolationContext
-  
+    departmentId: DepartmentId,
+  ): IsolationContext;
+
   // 创建用户级上下文
-  static user(
-    userId: UserId,
-    tenantId?: TenantId
-  ): IsolationContext
+  static user(userId: UserId, tenantId?: TenantId): IsolationContext;
 }
 ```
 
@@ -497,11 +492,11 @@ getLevel(): IsolationLevel
 
 ```typescript
 enum IsolationLevel {
-  PLATFORM = 0,      // 平台级
-  TENANT = 1,        // 租户级
-  ORGANIZATION = 2,  // 组织级
-  DEPARTMENT = 3,    // 部门级
-  USER = 4,          // 用户级
+  PLATFORM = 0, // 平台级
+  TENANT = 1, // 租户级
+  ORGANIZATION = 2, // 组织级
+  DEPARTMENT = 3, // 部门级
+  USER = 4, // 用户级
 }
 ```
 
@@ -509,11 +504,11 @@ enum IsolationLevel {
 
 ```typescript
 enum SharingLevel {
-  PRIVATE = 0,       // 私有（仅创建者）
-  DEPARTMENT = 1,    // 部门共享
-  ORGANIZATION = 2,  // 组织共享
-  TENANT = 3,        // 租户共享
-  PUBLIC = 4,        // 公开
+  PRIVATE = 0, // 私有（仅创建者）
+  DEPARTMENT = 1, // 部门共享
+  ORGANIZATION = 2, // 组织共享
+  TENANT = 3, // 租户共享
+  PUBLIC = 4, // 公开
 }
 ```
 
@@ -552,7 +547,7 @@ class UserRepository {
   async findAll(context: IsolationContext) {
     // 自动根据上下文构建过滤条件
     const filter = context.buildDatabaseFilter();
-    
+
     // filter = { tenantId: 'tenant-123' }
     return this.db.users.find({ where: filter });
   }
@@ -589,7 +584,7 @@ import { IsolationContext, IsolationLevel } from '@hl8/isolation-model';
 class AccessControl {
   canAccessResource(
     userContext: IsolationContext,
-    requiredLevel: IsolationLevel
+    requiredLevel: IsolationLevel,
   ): boolean {
     return userContext.canAccess(requiredLevel);
   }
@@ -599,11 +594,11 @@ class AccessControl {
 const userContext = IsolationContext.tenant(TenantId.create('tenant-123'));
 
 // 可以访问平台级和租户级资源
-accessControl.canAccessResource(userContext, IsolationLevel.PLATFORM);  // true
-accessControl.canAccessResource(userContext, IsolationLevel.TENANT);    // true
+accessControl.canAccessResource(userContext, IsolationLevel.PLATFORM); // true
+accessControl.canAccessResource(userContext, IsolationLevel.TENANT); // true
 
 // 不能访问组织级资源（层级不够）
-accessControl.canAccessResource(userContext, IsolationLevel.ORGANIZATION);  // false
+accessControl.canAccessResource(userContext, IsolationLevel.ORGANIZATION); // false
 ```
 
 ---
@@ -620,11 +615,11 @@ export class UserController {
   @Get()
   async getUsers(@CurrentContext() context: IsolationContext) {
     // context 是 @hl8/isolation-model 的实体
-    
+
     if (context.isTenantLevel()) {
       return this.userService.findByTenant(context.tenantId);
     }
-    
+
     // ...
   }
 }
@@ -642,13 +637,13 @@ export class UserController {
 // ❌ 使用字符串的问题
 function findUser(tenantId: string, userId: string) {
   // 容易搞混参数顺序
-  return db.find(userId, tenantId);  // ← 顺序错了！
+  return db.find(userId, tenantId); // ← 顺序错了！
 }
 
 // ✅ 使用值对象
 function findUser(tenantId: TenantId, userId: UserId) {
   // 类型不匹配，编译器会报错
-  return db.find(userId, tenantId);  // ✅ 类型检查
+  return db.find(userId, tenantId); // ✅ 类型检查
 }
 ```
 
@@ -704,16 +699,16 @@ class TenantId extends EntityId {
     if (!value || value.trim() === '') {
       throw new IsolationValidationError('Tenant ID cannot be empty');
     }
-    
+
     return new TenantId(value);
   }
 }
 
 // 使用时自动验证
 try {
-  const tenantId = TenantId.create('');  // ← 抛出错误
+  const tenantId = TenantId.create(''); // ← 抛出错误
 } catch (error) {
-  console.error(error.message);  // 'Tenant ID cannot be empty'
+  console.error(error.message); // 'Tenant ID cannot be empty'
 }
 ```
 
@@ -753,7 +748,7 @@ import { IsolationContext, TenantId } from '@hl8/isolation-model';
 app.get('/users', (req, res) => {
   const tenantId = req.headers['x-tenant-id'];
   const context = IsolationContext.tenant(TenantId.create(tenantId));
-  
+
   const users = await userService.findByContext(context);
   res.json(users);
 });
@@ -770,14 +765,15 @@ const cacheKey = context.buildCacheKey('data');
 **A**: 领域事件用于追踪和审计：
 
 ```typescript
-import { ContextCreatedEvent, ContextSwitchedEvent } from '@hl8/isolation-model';
+import {
+  ContextCreatedEvent,
+  ContextSwitchedEvent,
+} from '@hl8/isolation-model';
 
 // 上下文创建事件
-const event = new ContextCreatedEvent(
-  context,
-  new Date(),
-  { source: 'api-request' }
-);
+const event = new ContextCreatedEvent(context, new Date(), {
+  source: 'api-request',
+});
 
 // 可以用于：
 // - 审计日志
@@ -806,12 +802,12 @@ const context = IsolationContext.tenant(TenantId.create('tenant-123'));
 ```typescript
 // ✅ 好的做法
 if (context.isTenantLevel()) {
-  const tenantId: TenantId = context.tenantId!;  // 类型安全
+  const tenantId: TenantId = context.tenantId!; // 类型安全
   console.log(tenantId.value);
 }
 
 // ❌ 避免
-const tenantId = context.tenantId?.value || 'default';  // 不应该有默认值
+const tenantId = context.tenantId?.value || 'default'; // 不应该有默认值
 ```
 
 ---
@@ -834,9 +830,9 @@ const cacheKey = `${context.level}:${context.tenantId?.value}:user:list`;
 // ✅ 好的做法：利用不可变性，安全地共享
 class Service {
   private context: IsolationContext;
-  
+
   setContext(context: IsolationContext) {
-    this.context = context;  // 安全，因为不可变
+    this.context = context; // 安全，因为不可变
   }
 }
 ```
@@ -855,7 +851,8 @@ if (id1.equals(id2)) {
 }
 
 // ❌ 避免
-if (id1 === id2) {  // 永远是 false（不同对象）
+if (id1 === id2) {
+  // 永远是 false（不同对象）
   // ...
 }
 ```
@@ -900,13 +897,13 @@ libs/isolation-model/src/
 
 ### DDD 模式应用
 
-| DDD 模式 | 实现 | 说明 |
-|----------|------|------|
-| **实体** | `IsolationContext` | 有标识符和生命周期 |
-| **值对象** | `TenantId`, `OrganizationId` 等 | 不可变，值相等 |
-| **领域事件** | `ContextCreatedEvent` 等 | 领域发生的事件 |
-| **枚举** | `IsolationLevel` | 类型安全的常量 |
-| **接口** | `IsolationValidator` 等 | 依赖倒置 |
+| DDD 模式     | 实现                            | 说明               |
+| ------------ | ------------------------------- | ------------------ |
+| **实体**     | `IsolationContext`              | 有标识符和生命周期 |
+| **值对象**   | `TenantId`, `OrganizationId` 等 | 不可变，值相等     |
+| **领域事件** | `ContextCreatedEvent` 等        | 领域发生的事件     |
+| **枚举**     | `IsolationLevel`                | 类型安全的常量     |
+| **接口**     | `IsolationValidator` 等         | 依赖倒置           |
 
 ---
 

@@ -74,29 +74,29 @@
 ```typescript
 /**
  * 缓存键值对象
- * 
+ *
  * @description 封装缓存键的生成逻辑和业务规则
- * 
+ *
  * ## 业务规则
- * 
+ *
  * ### 键格式规则
  * - 格式: {prefix}:{level}:{namespace}:{key}
  * - level: platform/tenant/org/dept/user
  * - 键长度不超过 256 字符
  * - 不允许包含空格和特殊字符（除 : _ -）
- * 
+ *
  * ### 层级规则
  * - 平台级: platform:{namespace}:{key}
  * - 租户级: tenant:{tenantId}:{namespace}:{key}
  * - 组织级: tenant:{tenantId}:org:{orgId}:{namespace}:{key}
  * - 部门级: tenant:{tenantId}:org:{orgId}:dept:{deptId}:{namespace}:{key}
  * - 用户级: user:{userId}:{namespace}:{key}
- * 
+ *
  * @since 1.0.0
  */
 export class CacheKey {
   private readonly fullKey: string;
-  
+
   private constructor(
     private readonly prefix: string,
     private readonly level: CacheLevel,
@@ -107,90 +107,102 @@ export class CacheKey {
     this.fullKey = this.buildKey();
     this.validate();
   }
-  
+
   /**
    * 创建平台级缓存键
    */
   static forPlatform(namespace: string, key: string, prefix: string): CacheKey {
     return new CacheKey(prefix, CacheLevel.PLATFORM, namespace, key);
   }
-  
+
   /**
    * 创建租户级缓存键
    */
   static forTenant(
-    namespace: string, 
-    key: string, 
-    prefix: string, 
-    context: IsolationContext
+    namespace: string,
+    key: string,
+    prefix: string,
+    context: IsolationContext,
   ): CacheKey {
     if (!context.tenantId) {
-      throw new GeneralBadRequestException('租户 ID 缺失', '租户级缓存需要提供租户 ID');
+      throw new GeneralBadRequestException(
+        '租户 ID 缺失',
+        '租户级缓存需要提供租户 ID',
+      );
     }
     return new CacheKey(prefix, CacheLevel.TENANT, namespace, key, context);
   }
-  
+
   /**
    * 创建组织级缓存键
    */
   static forOrganization(
-    namespace: string, 
-    key: string, 
-    prefix: string, 
-    context: IsolationContext
+    namespace: string,
+    key: string,
+    prefix: string,
+    context: IsolationContext,
   ): CacheKey {
     if (!context.tenantId || !context.organizationId) {
       throw new GeneralBadRequestException(
         '组织级缓存需要租户 ID 和组织 ID',
-        '请确保隔离上下文包含完整信息'
+        '请确保隔离上下文包含完整信息',
       );
     }
-    return new CacheKey(prefix, CacheLevel.ORGANIZATION, namespace, key, context);
+    return new CacheKey(
+      prefix,
+      CacheLevel.ORGANIZATION,
+      namespace,
+      key,
+      context,
+    );
   }
-  
+
   /**
    * 创建部门级缓存键
    */
   static forDepartment(
-    namespace: string, 
-    key: string, 
-    prefix: string, 
-    context: IsolationContext
+    namespace: string,
+    key: string,
+    prefix: string,
+    context: IsolationContext,
   ): CacheKey {
     if (!context.tenantId || !context.organizationId || !context.departmentId) {
       throw new GeneralBadRequestException(
         '部门级缓存需要租户 ID、组织 ID 和部门 ID',
-        '请确保隔离上下文包含完整信息'
+        '请确保隔离上下文包含完整信息',
       );
     }
     return new CacheKey(prefix, CacheLevel.DEPARTMENT, namespace, key, context);
   }
-  
+
   /**
    * 创建用户级缓存键
    */
   static forUser(
-    namespace: string, 
-    key: string, 
-    prefix: string, 
-    context: IsolationContext
+    namespace: string,
+    key: string,
+    prefix: string,
+    context: IsolationContext,
   ): CacheKey {
     if (!context.userId) {
-      throw new GeneralBadRequestException('用户 ID 缺失', '用户级缓存需要提供用户 ID');
+      throw new GeneralBadRequestException(
+        '用户 ID 缺失',
+        '用户级缓存需要提供用户 ID',
+      );
     }
     return new CacheKey(prefix, CacheLevel.USER, namespace, key, context);
   }
-  
+
   /**
    * 根据隔离上下文自动创建缓存键
-   * 
+   *
    * @description 自动判断隔离层级并创建相应的缓存键
    */
   static fromContext(
-    namespace: string, 
-    key: string, 
-    prefix: string, 
-    context: IsolationContext
+    namespace: string,
+    key: string,
+    prefix: string,
+    context: IsolationContext,
   ): CacheKey {
     // 自动判断层级
     if (context.departmentId) {
@@ -208,64 +220,69 @@ export class CacheKey {
     // 默认平台级
     return CacheKey.forPlatform(namespace, key, prefix);
   }
-  
+
   /**
    * 构建完整的缓存键
-   * 
+   *
    * @private
    */
   private buildKey(): string {
     const parts = [this.prefix];
-    
+
     switch (this.level) {
       case CacheLevel.PLATFORM:
         parts.push('platform', this.namespace, this.key);
         break;
-        
+
       case CacheLevel.TENANT:
         parts.push(
-          'tenant', 
-          this.isolationContext!.tenantId!, 
-          this.namespace, 
-          this.key
+          'tenant',
+          this.isolationContext!.tenantId!,
+          this.namespace,
+          this.key,
         );
         break;
-        
+
       case CacheLevel.ORGANIZATION:
         parts.push(
-          'tenant', 
+          'tenant',
           this.isolationContext!.tenantId!,
           'org',
           this.isolationContext!.organizationId!,
-          this.namespace, 
-          this.key
+          this.namespace,
+          this.key,
         );
         break;
-        
+
       case CacheLevel.DEPARTMENT:
         parts.push(
-          'tenant', 
+          'tenant',
           this.isolationContext!.tenantId!,
           'org',
           this.isolationContext!.organizationId!,
           'dept',
           this.isolationContext!.departmentId!,
-          this.namespace, 
-          this.key
+          this.namespace,
+          this.key,
         );
         break;
-        
+
       case CacheLevel.USER:
-        parts.push('user', this.isolationContext!.userId!, this.namespace, this.key);
+        parts.push(
+          'user',
+          this.isolationContext!.userId!,
+          this.namespace,
+          this.key,
+        );
         break;
     }
-    
+
     return parts.join(':');
   }
-  
+
   /**
    * 验证缓存键的有效性
-   * 
+   *
    * @throws {GeneralBadRequestException} 键无效
    * @private
    */
@@ -275,42 +292,42 @@ export class CacheKey {
       throw new GeneralBadRequestException(
         '缓存键过长',
         `缓存键长度不能超过 256 字符，当前长度: ${this.fullKey.length}`,
-        { key: this.fullKey }
+        { key: this.fullKey },
       );
     }
-    
+
     // 验证字符
     const invalidChars = /[^\w:_-]/;
     if (invalidChars.test(this.fullKey)) {
       throw new GeneralBadRequestException(
         '缓存键包含无效字符',
         '缓存键只能包含字母、数字、冒号、下划线和连字符',
-        { key: this.fullKey }
+        { key: this.fullKey },
       );
     }
   }
-  
+
   /**
    * 获取完整的缓存键
    */
   toString(): string {
     return this.fullKey;
   }
-  
+
   /**
    * 获取缓存层级
    */
   getLevel(): CacheLevel {
     return this.level;
   }
-  
+
   /**
    * 生成匹配模式（用于批量删除）
    */
   toPattern(): string {
     return `${this.fullKey}*`;
   }
-  
+
   /**
    * 值对象相等性比较
    */
@@ -325,37 +342,37 @@ export class CacheKey {
 ```typescript
 /**
  * 缓存条目值对象
- * 
+ *
  * @description 封装缓存条目的验证和序列化逻辑
- * 
+ *
  * ## 业务规则
- * 
+ *
  * ### TTL 规则
  * - 最小值: 1 秒
  * - 最大值: 2,592,000 秒（30 天）
  * - 0 表示永不过期（慎用）
  * - 负数无效
- * 
+ *
  * ### 值大小规则
  * - 推荐最大: 1MB
  * - 警告阈值: 512KB
  * - 超过 1MB 会记录警告日志
- * 
+ *
  * ### 序列化规则
  * - 使用 JSON 序列化
  * - 处理循环引用
  * - 处理特殊类型（Date、Buffer、Set、Map）
- * 
+ *
  * @since 1.0.0
  */
 export class CacheEntry<T = any> {
   private static readonly MAX_TTL = 2592000; // 30 天
   private static readonly WARN_SIZE = 512 * 1024; // 512KB
   private static readonly MAX_SIZE = 1 * 1024 * 1024; // 1MB
-  
+
   private readonly serializedValue: string;
   private readonly size: number;
-  
+
   private constructor(
     private readonly key: CacheKey,
     private readonly value: T,
@@ -367,7 +384,7 @@ export class CacheEntry<T = any> {
     this.size = Buffer.byteLength(this.serializedValue, 'utf-8');
     this.validateSize();
   }
-  
+
   /**
    * 创建缓存条目
    */
@@ -378,7 +395,7 @@ export class CacheEntry<T = any> {
     logger?: ILoggerService,
   ): CacheEntry<T> {
     const entry = new CacheEntry(key, value, ttl, new Date());
-    
+
     // 记录警告（如果值过大）
     if (logger && entry.size > CacheEntry.WARN_SIZE) {
       logger.warn('缓存值较大', {
@@ -387,37 +404,35 @@ export class CacheEntry<T = any> {
         threshold: CacheEntry.WARN_SIZE,
       });
     }
-    
+
     return entry;
   }
-  
+
   /**
    * 验证 TTL 有效性
-   * 
+   *
    * @throws {GeneralBadRequestException} TTL 无效
    * @private
    */
   private validateTTL(): void {
     if (this.ttl < 0) {
-      throw new GeneralBadRequestException(
-        'TTL 无效',
-        'TTL 不能为负数',
-        { ttl: this.ttl }
-      );
+      throw new GeneralBadRequestException('TTL 无效', 'TTL 不能为负数', {
+        ttl: this.ttl,
+      });
     }
-    
+
     if (this.ttl > CacheEntry.MAX_TTL) {
       throw new GeneralBadRequestException(
         'TTL 过大',
         `TTL 不能超过 ${CacheEntry.MAX_TTL} 秒（30 天）`,
-        { ttl: this.ttl, max: CacheEntry.MAX_TTL }
+        { ttl: this.ttl, max: CacheEntry.MAX_TTL },
       );
     }
   }
-  
+
   /**
    * 序列化缓存值
-   * 
+   *
    * @private
    */
   private serialize(): string {
@@ -432,16 +447,16 @@ export class CacheEntry<T = any> {
       );
     }
   }
-  
+
   /**
    * 获取 JSON 序列化的 replacer 函数
-   * 
+   *
    * @description 处理循环引用和特殊类型
    * @private
    */
   private getReplacer(): (key: string, value: any) => any {
     const seen = new WeakSet();
-    
+
     return (key: string, value: any) => {
       // 处理循环引用
       if (typeof value === 'object' && value !== null) {
@@ -450,7 +465,7 @@ export class CacheEntry<T = any> {
         }
         seen.add(value);
       }
-      
+
       // 处理特殊类型
       if (value instanceof Date) {
         return { __type: 'Date', value: value.toISOString() };
@@ -464,14 +479,14 @@ export class CacheEntry<T = any> {
       if (Buffer.isBuffer(value)) {
         return { __type: 'Buffer', value: value.toString('base64') };
       }
-      
+
       return value;
     };
   }
-  
+
   /**
    * 验证值大小
-   * 
+   *
    * @throws {GeneralBadRequestException} 值过大
    * @private
    */
@@ -480,57 +495,57 @@ export class CacheEntry<T = any> {
       throw new GeneralBadRequestException(
         '缓存值过大',
         `缓存值不能超过 ${CacheEntry.MAX_SIZE} 字节（1MB）`,
-        { 
-          key: this.key.toString(), 
-          size: this.size, 
-          max: CacheEntry.MAX_SIZE 
-        }
+        {
+          key: this.key.toString(),
+          size: this.size,
+          max: CacheEntry.MAX_SIZE,
+        },
       );
     }
   }
-  
+
   /**
    * 获取序列化后的值
    */
   getSerializedValue(): string {
     return this.serializedValue;
   }
-  
+
   /**
    * 获取原始值
    */
   getValue(): T {
     return this.value;
   }
-  
+
   /**
    * 获取 TTL
    */
   getTTL(): number {
     return this.ttl;
   }
-  
+
   /**
    * 获取缓存键
    */
   getKey(): CacheKey {
     return this.key;
   }
-  
+
   /**
    * 获取值大小（字节）
    */
   getSize(): number {
     return this.size;
   }
-  
+
   /**
    * 获取创建时间
    */
   getCreatedAt(): Date {
     return this.createdAt;
   }
-  
+
   /**
    * 检查是否即将过期（剩余时间 < 10%）
    */
@@ -538,14 +553,14 @@ export class CacheEntry<T = any> {
     if (this.ttl === 0) {
       return false; // 永不过期
     }
-    
+
     const elapsed = (currentTime.getTime() - this.createdAt.getTime()) / 1000;
     const remaining = this.ttl - elapsed;
     const threshold = this.ttl * 0.1;
-    
+
     return remaining < threshold && remaining > 0;
   }
-  
+
   /**
    * 检查是否已过期
    */
@@ -553,7 +568,7 @@ export class CacheEntry<T = any> {
     if (this.ttl === 0) {
       return false; // 永不过期
     }
-    
+
     const elapsed = (currentTime.getTime() - this.createdAt.getTime()) / 1000;
     return elapsed >= this.ttl;
   }
@@ -604,25 +619,25 @@ export class CacheService {
     private readonly cls: ClsService<IsolationContext>, // 上下文服务
     @Optional() private readonly logger?: ILoggerService,
   ) {}
-  
+
   /**
    * 获取缓存（自动隔离）
    */
   async get<T>(namespace: string, key: string): Promise<T | null> {
     const context = this.cls.get(); // 获取当前隔离上下文
     const cacheKey = CacheKey.fromContext(
-      namespace, 
-      key, 
-      this.options.keyPrefix, 
-      context
+      namespace,
+      key,
+      this.options.keyPrefix,
+      context,
     );
-    
+
     try {
       const value = await this.redis.get(cacheKey.toString());
       if (value === null) {
         return null;
       }
-      
+
       return this.deserialize<T>(value);
     } catch (error) {
       this.logger?.error('缓存读取失败', error.stack, {
@@ -637,42 +652,42 @@ export class CacheService {
       );
     }
   }
-  
+
   /**
    * 设置缓存（自动隔离）
    */
   async set<T>(
-    namespace: string, 
-    key: string, 
-    value: T, 
-    ttl?: number
+    namespace: string,
+    key: string,
+    value: T,
+    ttl?: number,
   ): Promise<void> {
     const context = this.cls.get();
     const cacheKey = CacheKey.fromContext(
-      namespace, 
-      key, 
-      this.options.keyPrefix, 
-      context
+      namespace,
+      key,
+      this.options.keyPrefix,
+      context,
     );
-    
+
     const entry = CacheEntry.create(
-      cacheKey, 
-      value, 
+      cacheKey,
+      value,
       ttl ?? this.options.defaultTTL,
       this.logger,
     );
-    
+
     try {
       if (entry.getTTL() > 0) {
         await this.redis.setex(
-          cacheKey.toString(), 
-          entry.getTTL(), 
-          entry.getSerializedValue()
+          cacheKey.toString(),
+          entry.getTTL(),
+          entry.getSerializedValue(),
         );
       } else {
         await this.redis.set(cacheKey.toString(), entry.getSerializedValue());
       }
-      
+
       this.logger?.debug('缓存写入成功', {
         key: cacheKey.toString(),
         level: cacheKey.getLevel(),
@@ -691,67 +706,70 @@ export class CacheService {
       );
     }
   }
-  
+
   /**
    * 清除租户级缓存（批量删除）
    */
-  async clearTenantCache(tenantId: string, namespace?: string): Promise<number> {
+  async clearTenantCache(
+    tenantId: string,
+    namespace?: string,
+  ): Promise<number> {
     const pattern = namespace
       ? `${this.options.keyPrefix}tenant:${tenantId}:${namespace}:*`
       : `${this.options.keyPrefix}tenant:${tenantId}:*`;
-    
+
     return this.clearByPattern(pattern);
   }
-  
+
   /**
    * 清除组织级缓存（批量删除）
    */
   async clearOrganizationCache(
-    tenantId: string, 
-    orgId: string, 
-    namespace?: string
+    tenantId: string,
+    orgId: string,
+    namespace?: string,
   ): Promise<number> {
     const pattern = namespace
       ? `${this.options.keyPrefix}tenant:${tenantId}:org:${orgId}:${namespace}:*`
       : `${this.options.keyPrefix}tenant:${tenantId}:org:${orgId}:*`;
-    
+
     return this.clearByPattern(pattern);
   }
-  
+
   /**
    * 根据模式清除缓存
-   * 
+   *
    * @private
    */
   private async clearByPattern(pattern: string): Promise<number> {
     try {
       let cursor = '0';
       let deletedCount = 0;
-      
+
       do {
         // 使用 SCAN 避免阻塞
         const result = await this.redis.scan(
-          cursor, 
-          'MATCH', 
-          pattern, 
-          'COUNT', 
-          100
+          cursor,
+          'MATCH',
+          pattern,
+          'COUNT',
+          100,
         );
-        
+
         cursor = result[0];
         const keys = result[1];
-        
+
         if (keys.length > 0) {
           await this.redis.del(...keys);
           deletedCount += keys.length;
         }
       } while (cursor !== '0');
-      
+
       this.logger?.info('批量清除缓存成功', {
         pattern,
         deletedCount,
       });
-      
+
       return deletedCount;
     } catch (error) {
       this.logger?.error('批量清除缓存失败', error.stack, { pattern });
@@ -763,10 +781,10 @@ export class CacheService {
       );
     }
   }
-  
+
   /**
    * 反序列化缓存值
-   * 
+   *
    * @private
    */
   private deserialize<T>(value: string): T {
@@ -781,10 +799,10 @@ export class CacheService {
       );
     }
   }
-  
+
   /**
    * 获取 JSON 反序列化的 reviver 函数
-   * 
+   *
    * @private
    */
   private getReviver(): (key: string, value: any) => any {
@@ -846,7 +864,7 @@ export class CacheService {
 ```typescript
 /**
  * 缓存指标服务
- * 
+ *
  * @description 收集和报告缓存性能指标
  */
 @Injectable()
@@ -858,7 +876,7 @@ export class CacheMetricsService {
     totalLatency: 0,
     operationCount: 0,
   };
-  
+
   /**
    * 记录缓存命中
    */
@@ -866,7 +884,7 @@ export class CacheMetricsService {
     this.metrics.hits++;
     this.recordLatency(latency);
   }
-  
+
   /**
    * 记录缓存未命中
    */
@@ -874,24 +892,24 @@ export class CacheMetricsService {
     this.metrics.misses++;
     this.recordLatency(latency);
   }
-  
+
   /**
    * 记录错误
    */
   recordError(): void {
     this.metrics.errors++;
   }
-  
+
   /**
    * 记录延迟
-   * 
+   *
    * @private
    */
   private recordLatency(latency: number): void {
     this.metrics.totalLatency += latency;
     this.metrics.operationCount++;
   }
-  
+
   /**
    * 获取缓存命中率
    */
@@ -899,7 +917,7 @@ export class CacheMetricsService {
     const total = this.metrics.hits + this.metrics.misses;
     return total > 0 ? this.metrics.hits / total : 0;
   }
-  
+
   /**
    * 获取平均延迟（毫秒）
    */
@@ -908,7 +926,7 @@ export class CacheMetricsService {
       ? this.metrics.totalLatency / this.metrics.operationCount
       : 0;
   }
-  
+
   /**
    * 获取完整指标
    */
@@ -922,7 +940,7 @@ export class CacheMetricsService {
       totalOperations: this.metrics.operationCount,
     };
   }
-  
+
   /**
    * 重置指标
    */
@@ -965,7 +983,7 @@ export class CacheMetricsService {
      const pipeline = this.redis.pipeline();
      keys.forEach(key => pipeline.get(key));
      const results = await pipeline.exec();
-     return results.map(([err, value]) => 
+     return results.map(([err, value]) =>
        err ? null : this.deserialize(value)
      );
    }
@@ -1050,7 +1068,7 @@ libs/nestjs-infra (兼容层)
   "devDependencies": {
     "@nestjs/testing": "^11.1.6",
     "@repo/eslint-config": "workspace:*",
-    "@repo/ts-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@swc/cli": "^0.7.0",
     "@swc/core": "^1.10.14",
     "@swc/jest": "^0.2.37",
@@ -1087,13 +1105,13 @@ libs/nestjs-infra (兼容层)
 
 ### 关键决策汇总
 
-| 决策点 | 选择方案 | 理由 |
-|--------|---------|------|
-| 拆分策略 | 渐进式拆分 + 兼容层 | 平滑迁移，降低影响 |
-| DDD 设计 | CacheKey + CacheEntry 值对象 | 业务规则封装，符合充血模型 |
-| 多层级隔离 | nestjs-cls + 自动键生成 | 开发者无需手动处理，减少错误 |
-| 性能优化 | Pipeline + 指标监控 | 满足 < 10ms 延迟要求 |
-| 依赖管理 | 最小化依赖 + workspace 协议 | 减少依赖冲突，提升安全性 |
+| 决策点     | 选择方案                     | 理由                         |
+| ---------- | ---------------------------- | ---------------------------- |
+| 拆分策略   | 渐进式拆分 + 兼容层          | 平滑迁移，降低影响           |
+| DDD 设计   | CacheKey + CacheEntry 值对象 | 业务规则封装，符合充血模型   |
+| 多层级隔离 | nestjs-cls + 自动键生成      | 开发者无需手动处理，减少错误 |
+| 性能优化   | Pipeline + 指标监控          | 满足 < 10ms 延迟要求         |
+| 依赖管理   | 最小化依赖 + workspace 协议  | 减少依赖冲突，提升安全性     |
 
 ### 实施建议
 
@@ -1119,12 +1137,12 @@ libs/nestjs-infra (兼容层)
 
 ### 风险与缓解
 
-| 风险 | 影响 | 缓解措施 |
-|------|------|---------|
-| 兼容性问题 | 高 | 保留兼容层，提供迁移指南 |
-| 性能下降 | 中 | 性能基准测试，持续监控 |
-| 依赖冲突 | 低 | 使用 peer dependencies，锁定版本 |
-| 文档不完整 | 中 | 先完善文档再发布，提供示例代码 |
+| 风险       | 影响 | 缓解措施                         |
+| ---------- | ---- | -------------------------------- |
+| 兼容性问题 | 高   | 保留兼容层，提供迁移指南         |
+| 性能下降   | 中   | 性能基准测试，持续监控           |
+| 依赖冲突   | 低   | 使用 peer dependencies，锁定版本 |
+| 文档不完整 | 中   | 先完善文档再发布，提供示例代码   |
 
 ### 未解决问题
 

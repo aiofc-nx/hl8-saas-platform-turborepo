@@ -27,7 +27,9 @@ export class HealthCheckException extends HttpException {
         details,
         timestamp: new Date().toISOString(),
       },
-      healthStatus === 'unhealthy' ? HttpStatus.SERVICE_UNAVAILABLE : HttpStatus.OK,
+      healthStatus === 'unhealthy'
+        ? HttpStatus.SERVICE_UNAVAILABLE
+        : HttpStatus.OK,
     );
   }
 }

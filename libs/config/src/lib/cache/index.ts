@@ -7,8 +7,8 @@
  */
 
 // 缓存提供者
-export { MemoryCacheProvider } from './memory-cache.provider.js';
 export { FileCacheProvider } from './file-cache.provider.js';
+export { MemoryCacheProvider } from './memory-cache.provider.js';
 
 // 缓存管理器
 export { CacheManager } from './cache.manager.js';

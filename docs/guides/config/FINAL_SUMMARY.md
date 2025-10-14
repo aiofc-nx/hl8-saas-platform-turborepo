@@ -138,8 +138,8 @@
 
 1. **三层配置架构**
    - 配置框架层（libs/config）
-   - 业务库层（libs/*/src/config/）
-   - 应用层（apps/*/src/config/）
+   - 业务库层（libs/\*/src/config/）
+   - 应用层（apps/\*/src/config/）
 
 2. **单一配置源原则**
    - 每个配置类只在一个地方定义
@@ -165,23 +165,23 @@
 
 ### 按主题分类
 
-| 主题 | 文档数量 | 说明 |
-|------|---------|------|
-| 入门使用 | 4 | 快速上手、完整指南 |
-| 架构设计 | 4 | 三层架构、模块选项 |
-| 缓存澄清 | 4 | 避免混淆 |
-| 安全指南 | 3 | 环境变量、安全措施 |
-| 文档说明 | 3 | 总结、重组 |
+| 主题     | 文档数量 | 说明               |
+| -------- | -------- | ------------------ |
+| 入门使用 | 4        | 快速上手、完整指南 |
+| 架构设计 | 4        | 三层架构、模块选项 |
+| 缓存澄清 | 4        | 避免混淆           |
+| 安全指南 | 3        | 环境变量、安全措施 |
+| 文档说明 | 3        | 总结、重组         |
 
 ### 按受众分类
 
-| 受众 | 推荐文档 |
-|------|---------|
-| **新用户** | README_FIRST.md, CONFIG_GETTING_STARTED.md |
-| **开发者** | CONFIGURATION_GUIDE.md, CONFIG_QUICK_REFERENCE.md |
-| **架构师** | CONFIG_ARCHITECTURE.md, MODULE_OPTIONS_VS_APP_CONFIG.md |
-| **安全关注** | CONFIG_SECURITY_ANALYSIS.md, CONFIG_ENV_VS_FILE.md |
-| **所有人** | README.md (索引) |
+| 受众         | 推荐文档                                                |
+| ------------ | ------------------------------------------------------- |
+| **新用户**   | README_FIRST.md, CONFIG_GETTING_STARTED.md              |
+| **开发者**   | CONFIGURATION_GUIDE.md, CONFIG_QUICK_REFERENCE.md       |
+| **架构师**   | CONFIG_ARCHITECTURE.md, MODULE_OPTIONS_VS_APP_CONFIG.md |
+| **安全关注** | CONFIG_SECURITY_ANALYSIS.md, CONFIG_ENV_VS_FILE.md      |
+| **所有人**   | README.md (索引)                                        |
 
 ---
 

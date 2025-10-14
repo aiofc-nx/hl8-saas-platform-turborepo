@@ -100,6 +100,7 @@ hl8-saas-platform-turborepo/
 **配置文档目录**：📁 [docs/guides/config/](./docs/guides/config/)
 
 **必读文档**：
+
 - 📖 [配置文档索引](./docs/guides/config/README.md)
 - ⚡ [配置快速入门](./docs/guides/config/CONFIG_GETTING_STARTED.md)
 - 📘 [配置使用指南](./docs/guides/config/CONFIGURATION_GUIDE.md)

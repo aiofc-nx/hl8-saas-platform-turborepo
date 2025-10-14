@@ -1,19 +1,3 @@
-import baseConfig from '@repo/eslint-config/base.js';
+import nest from '@repo/eslint-config/eslint-nest.config.mjs';
 
-export default [
-  ...baseConfig,
-  {
-    files: ['**/*.ts'],
-    rules: {
-      // NestJS specific rules
-      '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-    },
-  },
-  {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**'],
-  },
-];
-
+export default [...nest];

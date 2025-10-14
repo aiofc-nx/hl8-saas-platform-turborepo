@@ -112,7 +112,11 @@ describe('DefaultMessageProvider', () => {
       const params = { param1: 'value1' };
 
       // Act
-      const message = customProvider.getMessage('MULTI_PARAM', 'detail', params);
+      const message = customProvider.getMessage(
+        'MULTI_PARAM',
+        'detail',
+        params,
+      );
 
       // Assert
       expect(message).toBe('value1 and {{param2}}');
@@ -141,7 +145,11 @@ describe('DefaultMessageProvider', () => {
       const codes = provider.getAvailableErrorCodes();
 
       // Assert
-      expect(codes).toEqual(['NOT_FOUND', 'BAD_REQUEST', 'INTERNAL_SERVER_ERROR']);
+      expect(codes).toEqual([
+        'NOT_FOUND',
+        'BAD_REQUEST',
+        'INTERNAL_SERVER_ERROR',
+      ]);
     });
 
     it('返回的数组应包含所有预定义的错误代码', () => {
@@ -216,8 +224,12 @@ describe('DefaultMessageProvider', () => {
       };
 
       // Act
-      const messageNull = customProvider.getMessage('NULL', 'detail', { value: null });
-      const messageUndefined = customProvider.getMessage('NULL', 'detail', { value: undefined });
+      const messageNull = customProvider.getMessage('NULL', 'detail', {
+        value: null,
+      });
+      const messageUndefined = customProvider.getMessage('NULL', 'detail', {
+        value: undefined,
+      });
 
       // Assert
       expect(messageNull).toBe('Value: null');
@@ -235,11 +247,14 @@ describe('DefaultMessageProvider', () => {
       const params = { user: null };
 
       // Act
-      const message = customProvider.getMessage('NESTED_NULL', 'detail', params);
+      const message = customProvider.getMessage(
+        'NESTED_NULL',
+        'detail',
+        params,
+      );
 
       // Assert
       expect(message).toBe('User: {{user.name}}'); // 应保留占位符
     });
   });
 });
-

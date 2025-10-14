@@ -29,12 +29,17 @@ describe('MetricsService', () => {
     it('应该记录 HTTP 请求', () => {
       const incCalls: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
       const observeCalls: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
-      
-      prometheusService.httpRequestsTotal.inc = ((labels: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+
+      prometheusService.httpRequestsTotal.inc = ((labels: any) => {
+        // eslint-disable-line @typescript-eslint/no-explicit-any
         incCalls.push(labels);
       }) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-      
-      prometheusService.httpRequestDuration.observe = ((labels: any, value: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+
+      prometheusService.httpRequestDuration.observe = ((
+        labels: any,
+        value: number,
+      ) => {
+        // eslint-disable-line @typescript-eslint/no-explicit-any
         observeCalls.push({ labels, value });
       }) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -52,7 +57,8 @@ describe('MetricsService', () => {
 
     it('应该记录租户级别的请求', () => {
       const incCalls: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
-      prometheusService.httpRequestsTotal.inc = ((labels: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+      prometheusService.httpRequestsTotal.inc = ((labels: any) => {
+        // eslint-disable-line @typescript-eslint/no-explicit-any
         incCalls.push(labels);
       }) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -69,12 +75,14 @@ describe('MetricsService', () => {
     it('应该记录错误请求', () => {
       const incCalls: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
       const errorCalls: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
-      
-      prometheusService.httpRequestsTotal.inc = ((labels: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+
+      prometheusService.httpRequestsTotal.inc = ((labels: any) => {
+        // eslint-disable-line @typescript-eslint/no-explicit-any
         incCalls.push(labels);
       }) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-      
-      prometheusService.httpErrorsTotal.inc = ((labels: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+
+      prometheusService.httpErrorsTotal.inc = ((labels: any) => {
+        // eslint-disable-line @typescript-eslint/no-explicit-any
         errorCalls.push(labels);
       }) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -91,7 +99,8 @@ describe('MetricsService', () => {
 
     it('应该记录服务器错误', () => {
       const errorCalls: any[] = []; // eslint-disable-line @typescript-eslint/no-explicit-any
-      prometheusService.httpErrorsTotal.inc = ((labels: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+      prometheusService.httpErrorsTotal.inc = ((labels: any) => {
+        // eslint-disable-line @typescript-eslint/no-explicit-any
         errorCalls.push(labels);
       }) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -116,4 +125,3 @@ describe('MetricsService', () => {
     });
   });
 });
-

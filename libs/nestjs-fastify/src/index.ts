@@ -1,6 +1,6 @@
 /**
  * @fileoverview NestJS Fastify 模块导出
- * 
+ *
  * @description
  * 统一导出所有 Fastify 企业基础设施模块
  */
@@ -33,5 +33,5 @@ export * from './fastify/index.js';
 export * from './config/index.js';
 
 // 请求 ID 工具
-export * from './utils/request-id.generator.js';
 export * from './plugins/request-id.plugin.js';
+export * from './utils/request-id.generator.js';

@@ -22,7 +22,7 @@
 
 ```typescript
 // 环境变量是可以被修改的
-process.env.NODE_ENV = 'hacked';  // ⚠️ 可以修改
+process.env.NODE_ENV = 'hacked'; // ⚠️ 可以修改
 
 // 但在我们的配置系统中
 export class AppConfig {
@@ -59,13 +59,13 @@ export class AppConfig {
 
 #### 风险场景分析
 
-| 场景 | 风险级别 | 说明 |
-|------|---------|------|
-| **运行时修改 process.env** | 🟡 低 | 配置已在启动时固化，修改不影响配置实例 |
-| **第三方包修改环境变量** | 🟡 低-中 | 启动后修改不影响配置，但可能影响依赖环境变量的第三方包 |
-| **代码注入攻击** | 🔴 高 | 如果能执行任意代码，修改什么都没用了 |
-| **.env 文件泄露** | 🔴 高 | 敏感信息泄露 |
-| **配置文件泄露** | 🔴 高 | 同样会泄露敏感信息 |
+| 场景                       | 风险级别 | 说明                                                   |
+| -------------------------- | -------- | ------------------------------------------------------ |
+| **运行时修改 process.env** | 🟡 低    | 配置已在启动时固化，修改不影响配置实例                 |
+| **第三方包修改环境变量**   | 🟡 低-中 | 启动后修改不影响配置，但可能影响依赖环境变量的第三方包 |
+| **代码注入攻击**           | 🔴 高    | 如果能执行任意代码，修改什么都没用了                   |
+| **.env 文件泄露**          | 🔴 高    | 敏感信息泄露                                           |
+| **配置文件泄露**           | 🔴 高    | 同样会泄露敏感信息                                     |
 
 #### 关键发现
 
@@ -88,15 +88,15 @@ export class AppConfig {
 
 ### 安全性对比
 
-| 方面 | 环境变量 | 配置文件 |
-|------|---------|---------|
-| **被代码修改** | ⚠️ process.env 可修改 | ⚠️ 文件可被读写 |
-| **泄露风险** | 🔴 需要保护 .env 文件 | 🔴 需要保护配置文件 |
-| **版本控制** | ✅ .env 不应提交 | ⚠️ 可能包含敏感信息 |
-| **注入攻击防护** | 🟡 都需要防护 | 🟡 都需要防护 |
-| **权限控制** | ✅ OS 级别文件权限 | ✅ OS 级别文件权限 |
-| **审计追踪** | ❌ 较难追踪 | ✅ 可以版本控制 |
-| **12-Factor App** | ✅ 符合最佳实践 | ⚠️ 不符合 |
+| 方面              | 环境变量              | 配置文件            |
+| ----------------- | --------------------- | ------------------- |
+| **被代码修改**    | ⚠️ process.env 可修改 | ⚠️ 文件可被读写     |
+| **泄露风险**      | 🔴 需要保护 .env 文件 | 🔴 需要保护配置文件 |
+| **版本控制**      | ✅ .env 不应提交      | ⚠️ 可能包含敏感信息 |
+| **注入攻击防护**  | 🟡 都需要防护         | 🟡 都需要防护       |
+| **权限控制**      | ✅ OS 级别文件权限    | ✅ OS 级别文件权限  |
+| **审计追踪**      | ❌ 较难追踪           | ✅ 可以版本控制     |
+| **12-Factor App** | ✅ 符合最佳实践       | ⚠️ 不符合           |
 
 ---
 
@@ -110,17 +110,17 @@ export class AppConfig {
 // 配置类使用 readonly
 export class AppConfig {
   @IsString()
-  public readonly DATABASE_PASSWORD: string;  // ← readonly
-  
+  public readonly DATABASE_PASSWORD: string; // ← readonly
+
   @IsNumber()
-  public readonly PORT: number;  // ← readonly
+  public readonly PORT: number; // ← readonly
 }
 
 // 配置在启动时加载并固化
 TypedConfigModule.forRoot({
   schema: AppConfig,
   load: [dotenvLoader()],
-})
+});
 ```
 
 **优势**：
@@ -136,8 +136,8 @@ TypedConfigModule.forRoot({
 ```typescript
 // 在配置加载后，可以冻结对象
 const config = await getConfig();
-Object.freeze(config);           // 完全冻结
-Object.freeze(config.logging);   // 冻结子对象
+Object.freeze(config); // 完全冻结
+Object.freeze(config.logging); // 冻结子对象
 Object.freeze(config.caching);
 ```
 
@@ -153,13 +153,13 @@ TypedConfigModule.forRoot({
   load: [
     // 1. 先加载配置文件（基础配置）
     fileLoader({ path: './config/app.yml' }),
-    
+
     // 2. 再加载环境变量（覆盖）
     dotenvLoader({
       envFilePath: ['.env.local', '.env'],
     }),
   ],
-})
+});
 ```
 
 **配置文件示例**：
@@ -200,10 +200,8 @@ DATABASE__HOST=prod-db.internal  # 覆盖配置文件
 ```typescript
 TypedConfigModule.forRoot({
   schema: AppConfig,
-  load: [
-    fileLoader({ path: './config/production.yml' }),
-  ],
-})
+  load: [fileLoader({ path: './config/production.yml' })],
+});
 ```
 
 **问题**：
@@ -228,11 +226,11 @@ export class AppConfig {
 // ✅ 启动后冻结配置对象
 const config = await app.get(AppConfig);
 Object.freeze(config);
-deepFreeze(config);  // 深度冻结
+deepFreeze(config); // 深度冻结
 
 // ❌ 避免可变配置
 export class BadConfig {
-  public DATABASE_PASSWORD: string;  // 没有 readonly
+  public DATABASE_PASSWORD: string; // 没有 readonly
 }
 ```
 
@@ -273,7 +271,7 @@ chmod 600 .env.local  # 仅所有者可读写
 ```typescript
 // ✅ 删除敏感环境变量
 if (process.env.NODE_ENV === 'production') {
-  delete process.env.DATABASE_PASSWORD;  // 配置已加载，删除环境变量
+  delete process.env.DATABASE_PASSWORD; // 配置已加载，删除环境变量
   delete process.env.API_KEY;
 }
 ```
@@ -284,21 +282,21 @@ if (process.env.NODE_ENV === 'production') {
 
 ### 环境变量的风险
 
-| 风险 | 严重程度 | 缓解措施 |
-|------|---------|---------|
-| 被代码修改 | 🟡 低 | 使用 readonly 配置类 |
-| .env 文件泄露 | 🔴 高 | 不提交到 git，限制文件权限 |
-| 第三方包读取 | 🟡 中 | 启动后删除敏感环境变量 |
-| 日志泄露 | 🟡 中 | 避免打印环境变量 |
+| 风险          | 严重程度 | 缓解措施                   |
+| ------------- | -------- | -------------------------- |
+| 被代码修改    | 🟡 低    | 使用 readonly 配置类       |
+| .env 文件泄露 | 🔴 高    | 不提交到 git，限制文件权限 |
+| 第三方包读取  | 🟡 中    | 启动后删除敏感环境变量     |
+| 日志泄露      | 🟡 中    | 避免打印环境变量           |
 
 ### 配置文件的风险
 
-| 风险 | 严重程度 | 缓解措施 |
-|------|---------|---------|
-| 被代码修改 | 🟡 低 | 使用 readonly 配置类 |
-| 配置文件泄露 | 🔴 高 | 不提交敏感配置，限制权限 |
-| 版本控制泄露 | 🔴 高 | 敏感信息用环境变量 |
-| 部署复杂度 | 🟡 中 | 需要管理多环境配置文件 |
+| 风险         | 严重程度 | 缓解措施                 |
+| ------------ | -------- | ------------------------ |
+| 被代码修改   | 🟡 低    | 使用 readonly 配置类     |
+| 配置文件泄露 | 🔴 高    | 不提交敏感配置，限制权限 |
+| 版本控制泄露 | 🔴 高    | 敏感信息用环境变量       |
+| 部署复杂度   | 🟡 中    | 需要管理多环境配置文件   |
 
 **结论**：风险类似，关键在于如何保护敏感信息！
 
@@ -338,7 +336,7 @@ metrics:
 
 # 数据库配置（不含密码）
 database:
-  host: localhost  # 开发环境默认值
+  host: localhost # 开发环境默认值
   port: 5432
   database: hl8_dev
   # password 通过环境变量提供
@@ -363,14 +361,14 @@ TypedConfigModule.forRoot({
   load: [
     // 先加载配置文件（基础配置）
     fileLoader({ path: './config/app.yml' }),
-    
+
     // 再加载环境变量（敏感配置 + 覆盖）
     dotenvLoader({
       envFilePath: ['.env.local', '.env'],
       separator: '__',
     }),
   ],
-})
+});
 ```
 
 #### 4. 启动后保护
@@ -379,18 +377,18 @@ TypedConfigModule.forRoot({
 // main.ts
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // 获取配置并冻结
   const config = app.get(AppConfig);
   deepFreeze(config);
-  
+
   // 生产环境删除敏感环境变量
   if (config.NODE_ENV === 'production') {
     delete process.env.DATABASE_PASSWORD;
     delete process.env.API_SECRET_KEY;
     delete process.env.REDIS_PASSWORD;
   }
-  
+
   await app.listen(config.PORT);
 }
 ```
@@ -407,14 +405,14 @@ async function bootstrap() {
  */
 function deepFreeze<T>(obj: T): T {
   Object.freeze(obj);
-  
+
   Object.getOwnPropertyNames(obj).forEach((prop) => {
     const value = (obj as any)[prop];
     if (value && typeof value === 'object') {
       deepFreeze(value);
     }
   });
-  
+
   return obj;
 }
 
@@ -423,7 +421,7 @@ const config = app.get(AppConfig);
 deepFreeze(config);
 
 // 现在配置完全不可修改
-config.PORT = 9999;  // ❌ TypeError: Cannot assign to read only property
+config.PORT = 9999; // ❌ TypeError: Cannot assign to read only property
 ```
 
 ### 2. 敏感信息保护
@@ -432,16 +430,16 @@ config.PORT = 9999;  // ❌ TypeError: Cannot assign to read only property
 // 配置类中标记敏感字段
 export class AppConfig {
   @IsString()
-  @IsSensitive()  // 自定义装饰器
+  @IsSensitive() // 自定义装饰器
   public readonly DATABASE_PASSWORD!: string;
-  
+
   @IsString()
   @IsSensitive()
   public readonly API_SECRET_KEY!: string;
 }
 
 // 重写 toJSON，隐藏敏感信息
-AppConfig.prototype.toJSON = function() {
+AppConfig.prototype.toJSON = function () {
   const { DATABASE_PASSWORD, API_SECRET_KEY, ...safe } = this;
   return {
     ...safe,
@@ -463,7 +461,7 @@ const SENSITIVE_ENV_VARS = [
 ];
 
 function cleanupSensitiveEnvVars() {
-  SENSITIVE_ENV_VARS.forEach(key => {
+  SENSITIVE_ENV_VARS.forEach((key) => {
     if (process.env[key]) {
       delete process.env[key];
     }
@@ -483,13 +481,13 @@ const SENSITIVE_CONFIG = Symbol('sensitive');
 
 export class AppConfig {
   public readonly PORT: number = 3000;
-  
+
   // 敏感配置使用 Symbol
   private readonly [SENSITIVE_CONFIG] = {
     databasePassword: process.env.DATABASE_PASSWORD,
     apiKey: process.env.API_SECRET_KEY,
   };
-  
+
   // 提供受控访问
   getDatabasePassword(): string {
     // 可以添加额外的安全检查
@@ -520,13 +518,13 @@ export class AppConfig {
 3. **冻结配置对象**
 
    ```typescript
-   deepFreeze(config);  // ✅
+   deepFreeze(config); // ✅
    ```
 
 4. **启动后清理敏感环境变量**
 
    ```typescript
-   delete process.env.DATABASE_PASSWORD;  // ✅
+   delete process.env.DATABASE_PASSWORD; // ✅
    ```
 
 5. **不在日志中打印配置**
@@ -534,7 +532,7 @@ export class AppConfig {
    ```typescript
    // ❌ 避免
    console.log('Config:', config);
-   
+
    // ✅ 推荐
    logger.info(`App started on port ${config.PORT}`);
    ```
@@ -543,7 +541,7 @@ export class AppConfig {
 
    ```typescript
    // 从 AWS Secrets Manager / Azure Key Vault 加载
-   remoteLoader({ url: 'vault://secrets/app-config' })
+   remoteLoader({ url: 'vault://secrets/app-config' });
    ```
 
 ### ❌ 避免的做法
@@ -561,7 +559,7 @@ export class AppConfig {
    ```typescript
    // ❌ 避免
    export class AppConfig {
-     public PORT: number;  // 没有 readonly
+     public PORT: number; // 没有 readonly
    }
    ```
 
@@ -587,15 +585,15 @@ export class AppConfig {
 
 ```typescript
 // 环境变量确实可以被修改
-process.env.NODE_ENV = 'hacked';  // ⚠️ 可以
+process.env.NODE_ENV = 'hacked'; // ⚠️ 可以
 
 // 但是配置实例是不可变的
 const config = new AppConfig();
-config.NODE_ENV = 'hacked';  // ❌ readonly 保护
+config.NODE_ENV = 'hacked'; // ❌ readonly 保护
 
 // 即使修改了 process.env
 process.env.PORT = '9999';
-console.log(config.PORT);  // 还是原来的值（如 3000）
+console.log(config.PORT); // 还是原来的值（如 3000）
 ```
 
 **关键理解**：
@@ -702,9 +700,7 @@ delete process.env.DATABASE_PASSWORD;
 
 // 4. 生产环境使用密钥管理服务
 if (isProd) {
-  load: [
-    remoteLoader({ url: 'vault://secrets/app-config' })
-  ]
+  load: [remoteLoader({ url: 'vault://secrets/app-config' })];
 }
 ```
 
@@ -769,7 +765,7 @@ if (isProd) {
 
    ```typescript
    // 生产环境
-   remoteLoader({ url: 'vault://...' })
+   remoteLoader({ url: 'vault://...' });
    ```
 
 ---

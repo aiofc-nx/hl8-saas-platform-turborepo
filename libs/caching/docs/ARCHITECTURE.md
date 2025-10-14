@@ -76,7 +76,7 @@ graph TD
     D -->|读写| H[RedisService]
     E -->|依赖| I[@hl8/isolation-model]
     H -->|连接| J[Redis]
-    
+
     style I fill:#d1e7dd,stroke:#0f5132,stroke-width:3px
     style E fill:#cfe2ff,stroke:#084298
     style F fill:#cfe2ff,stroke:#084298
@@ -135,21 +135,21 @@ export class UserService {
 ```typescript
 intercept(context: ExecutionContext, next: CallHandler) {
   const metadata = this.reflector.get(CACHEABLE_KEY, context.getHandler());
-  
+
   if (metadata) {
     // 1. 生成缓存键
     const key = this.generateKey(metadata, args);
-    
+
     // 2. 检查缓存
     const cached = await this.cacheService.get(key);
     if (cached) return of(cached);
-    
+
     // 3. 执行方法
     const result = await next.handle().toPromise();
-    
+
     // 4. 更新缓存
     await this.cacheService.set(key, result);
-    
+
     return result;
   }
 }
@@ -213,7 +213,7 @@ intercept(context: ExecutionContext, next: CallHandler) {
 - 键必须符合 Redis 命名规范
 - 自动组合隔离上下文
 - 最大长度限制（256字符）
-- 支持模式匹配（*）
+- 支持模式匹配（\*）
 
 **核心方法**：
 
@@ -224,12 +224,12 @@ class CacheKey {
     namespace: string,
     key: string,
     prefix: string,
-    context: IsolationContext
+    context: IsolationContext,
   ): CacheKey;
-  
+
   // 转换为 Redis 键
   toRedisKey(): string;
-  
+
   // 转换为模式
   toPattern(): string;
 }
@@ -250,13 +250,13 @@ class CacheKey {
 class CacheEntry<T> {
   // 创建缓存条目
   static create<T>(value: T, ttl: number): CacheEntry<T>;
-  
+
   // 检查是否过期
   isExpired(): boolean;
-  
+
   // 检查是否即将过期
   isExpiringSoon(threshold?: number): boolean;
-  
+
   // 获取剩余 TTL
   getRemainingTTL(): number;
 }
@@ -295,12 +295,12 @@ class CacheKey {
     private readonly key: string,
     private readonly context: IsolationContext
   ) {}
-  
+
   // 业务逻辑内聚
   toRedisKey(): string {
     return this.context.buildCacheKey(this.namespace, this.key);
   }
-  
+
   static fromContext(...): CacheKey {
     // 工厂方法
   }
@@ -324,7 +324,7 @@ class CacheKey {
 class CacheKey {
   // 私有构造函数
   private constructor(...) {}
-  
+
   // 工厂方法
   static fromContext(
     namespace: string,
@@ -429,14 +429,14 @@ class CacheService {
   async get<T>(namespace: string, key: string): Promise<T | undefined> {
     // 1. 从 CLS 读取隔离上下文
     const context = this.cls.get('ISOLATION_CONTEXT');
-    
+
     // 2. 创建 CacheKey（自动组合隔离信息）
     const cacheKey = CacheKey.fromContext(namespace, key, this.prefix, context);
-    
+
     // 3. 生成 Redis 键
     const redisKey = cacheKey.toRedisKey();
     // 例如：hl8:cache:tenant:550e8400...:user:u123:profile
-    
+
     // 4. 从 Redis 获取
     return this.redis.get(redisKey);
   }
@@ -487,7 +487,7 @@ getUserById('123')
 ```typescript
 class TenantId {
   private static cache = new Map<string, TenantId>();
-  
+
   static create(value: string): TenantId {
     // 复用已存在的实例
     let instance = this.cache.get(value);
@@ -517,7 +517,7 @@ class TenantId {
 async clearByPattern(pattern: string): Promise<number> {
   let cursor = '0';
   let deletedCount = 0;
-  
+
   do {
     // 使用 SCAN 避免阻塞
     const [newCursor, keys] = await this.redis.scan(
@@ -527,15 +527,15 @@ async clearByPattern(pattern: string): Promise<number> {
       'COUNT',
       100
     );
-    
+
     if (keys.length > 0) {
       await this.redis.del(...keys);
       deletedCount += keys.length;
     }
-    
+
     cursor = newCursor;
   } while (cursor !== '0');
-  
+
   return deletedCount;
 }
 ```
@@ -560,8 +560,8 @@ CachingModule.forRoot({
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,
     lazyConnect: false,
-  }
-})
+  },
+});
 ```
 
 **特性**：
@@ -616,7 +616,7 @@ class MessagePackSerializer implements Serializer {
   serialize(value: any): string {
     return msgpack.encode(value);
   }
-  
+
   deserialize<T>(value: string): T {
     return msgpack.decode(value);
   }
@@ -677,7 +677,7 @@ class PrometheusExporter implements MetricsExporter {
 ✅ **自动隔离**：零侵入，开发体验好  
 ✅ **高性能**：Flyweight、批量操作、连接池  
 ✅ **可扩展**：接口抽象，易于扩展  
-✅ **可测试**：依赖注入，完整测试覆盖  
+✅ **可测试**：依赖注入，完整测试覆盖
 
 ### 技术栈
 

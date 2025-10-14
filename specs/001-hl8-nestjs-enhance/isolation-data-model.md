@@ -57,9 +57,9 @@
 
 **属性**:
 
-| 属性 | 类型 | 描述 | 必需 |
-|------|------|------|------|
-| `value` | `string` | 租户 ID 值（只读） | ✅ |
+| 属性    | 类型     | 描述               | 必需 |
+| ------- | -------- | ------------------ | ---- |
+| `value` | `string` | 租户 ID 值（只读） | ✅   |
 
 **业务规则**:
 
@@ -87,11 +87,11 @@ toString(): string           // 字符串表示
 ```typescript
 export class TenantId {
   private static cache = new Map<string, TenantId>(); // Flyweight 模式
-  
+
   private constructor(private readonly value: string) {
     this.validate();
   }
-  
+
   static create(value: string): TenantId {
     let instance = this.cache.get(value);
     if (!instance) {
@@ -100,33 +100,39 @@ export class TenantId {
     }
     return instance;
   }
-  
+
   private validate(): void {
     if (!this.value || typeof this.value !== 'string') {
-      throw new IsolationValidationError('租户 ID 必须是非空字符串', 'INVALID_TENANT_ID');
+      throw new IsolationValidationError(
+        '租户 ID 必须是非空字符串',
+        'INVALID_TENANT_ID',
+      );
     }
-    
+
     if (this.value.length > 50) {
-      throw new IsolationValidationError('租户 ID 长度不能超过 50 字符', 'TENANT_ID_TOO_LONG');
+      throw new IsolationValidationError(
+        '租户 ID 长度不能超过 50 字符',
+        'TENANT_ID_TOO_LONG',
+      );
     }
-    
+
     if (!/^[a-zA-Z0-9_-]+$/.test(this.value)) {
       throw new IsolationValidationError(
         '租户 ID 只能包含字母、数字、下划线和连字符',
-        'INVALID_TENANT_ID_FORMAT'
+        'INVALID_TENANT_ID_FORMAT',
       );
     }
   }
-  
+
   getValue(): string {
     return this.value;
   }
-  
+
   equals(other?: TenantId): boolean {
     if (!other) return false;
     return this.value === other.value;
   }
-  
+
   toString(): string {
     return this.value;
   }
@@ -179,12 +185,12 @@ export class TenantId {
 
 **属性**:
 
-| 属性 | 类型 | 描述 | 必需 |
-|------|------|------|------|
-| `tenantId` | `TenantId?` | 租户 ID（值对象） | ❌ |
-| `organizationId` | `OrganizationId?` | 组织 ID（值对象） | ❌ |
-| `departmentId` | `DepartmentId?` | 部门 ID（值对象） | ❌ |
-| `userId` | `UserId?` | 用户 ID（值对象） | ❌ |
+| 属性             | 类型              | 描述              | 必需 |
+| ---------------- | ----------------- | ----------------- | ---- |
+| `tenantId`       | `TenantId?`       | 租户 ID（值对象） | ❌   |
+| `organizationId` | `OrganizationId?` | 组织 ID（值对象） | ❌   |
+| `departmentId`   | `DepartmentId?`   | 部门 ID（值对象） | ❌   |
+| `userId`         | `UserId?`         | 用户 ID（值对象） | ❌   |
 
 **业务规则**:
 
@@ -256,7 +262,7 @@ const tenantId = TenantId.create('t123');
 const context = IsolationContext.tenant(tenantId);
 
 console.log(context.getIsolationLevel()); // IsolationLevel.TENANT
-console.log(context.buildCacheKey('user', 'list')); 
+console.log(context.buildCacheKey('user', 'list'));
 // 输出: tenant:t123:user:list
 
 // 示例 2: 创建部门级上下文
@@ -272,9 +278,9 @@ const userContext = IsolationContext.department(tenantId, orgId, deptId);
 const dataContext = IsolationContext.organization(tenantId, orgId);
 
 const canAccess = userContext.canAccess(
-  dataContext, 
-  true,  // 共享数据
-  SharingLevel.ORGANIZATION
+  dataContext,
+  true, // 共享数据
+  SharingLevel.ORGANIZATION,
 );
 console.log(canAccess); // true（用户在组织内，可访问组织共享数据）
 ```
@@ -288,24 +294,24 @@ console.log(canAccess); // true（用户在组织内，可访问组织共享数�
 ```typescript
 /**
  * 隔离级别枚举
- * 
+ *
  * @description 定义 5 个数据隔离层级
- * 
+ *
  * @since 1.0.0
  */
 export enum IsolationLevel {
   /** 平台级 - 跨租户 */
   PLATFORM = 'platform',
-  
+
   /** 租户级 - 租户内 */
   TENANT = 'tenant',
-  
+
   /** 组织级 - 组织内 */
   ORGANIZATION = 'organization',
-  
+
   /** 部门级 - 部门内 */
   DEPARTMENT = 'department',
-  
+
   /** 用户级 - 用户私有 */
   USER = 'user',
 }
@@ -318,24 +324,24 @@ export enum IsolationLevel {
 ```typescript
 /**
  * 共享级别枚举
- * 
+ *
  * @description 定义数据的共享范围
- * 
+ *
  * @since 1.0.0
  */
 export enum SharingLevel {
   /** 平台共享 - 所有租户可访问 */
   PLATFORM = 'platform',
-  
+
   /** 租户共享 - 租户内所有用户可访问 */
   TENANT = 'tenant',
-  
+
   /** 组织共享 - 组织内所有用户可访问 */
   ORGANIZATION = 'organization',
-  
+
   /** 部门共享 - 部门内所有用户可访问 */
   DEPARTMENT = 'department',
-  
+
   /** 用户私有 - 仅用户本人可访问 */
   USER = 'user',
 }
@@ -352,28 +358,28 @@ export enum SharingLevel {
 ```typescript
 /**
  * 隔离上下文提供者接口
- * 
+ *
  * @description 定义上下文存储和获取的标准接口
- * 
+ *
  * ## 实现要求
- * 
+ *
  * - 必须支持请求级上下文存储
  * - 必须线程安全（Node.js 异步安全）
  * - 获取操作无副作用
- * 
+ *
  * @since 1.0.0
  */
 export interface IIsolationContextProvider {
   /**
    * 获取当前隔离上下文
-   * 
+   *
    * @returns 隔离上下文，不存在返回 undefined
    */
   getIsolationContext(): IsolationContext | undefined;
-  
+
   /**
    * 设置隔离上下文
-   * 
+   *
    * @param context - 隔离上下文
    */
   setIsolationContext(context: IsolationContext): void;
@@ -389,23 +395,23 @@ export interface IIsolationContextProvider {
 ```typescript
 /**
  * 隔离验证器接口
- * 
+ *
  * @description 定义数据访问权限验证的标准接口
- * 
+ *
  * @since 1.0.0
  */
 export interface IIsolationValidator {
   /**
    * 验证隔离级别
-   * 
+   *
    * @param requiredLevel - 要求的最低隔离级别
    * @returns 如果当前级别满足要求返回 true
    */
   validateIsolationLevel(requiredLevel: IsolationLevel): boolean;
-  
+
   /**
    * 检查数据访问权限
-   * 
+   *
    * @param dataContext - 数据的隔离上下文
    * @param isShared - 数据是否共享
    * @param sharingLevel - 共享级别（如果是共享数据）
@@ -428,21 +434,21 @@ export interface IIsolationValidator {
 ```typescript
 /**
  * 数据访问上下文
- * 
+ *
  * @description 定义数据的隔离属性和共享策略
- * 
+ *
  * @since 1.0.0
  */
 export interface DataAccessContext {
   /** 数据的隔离上下文 */
   isolationContext: IsolationContext;
-  
+
   /** 是否共享数据 */
   isShared: boolean;
-  
+
   /** 共享级别（如果是共享数据） */
   sharingLevel?: SharingLevel;
-  
+
   /** 精确共享对象列表（可选） */
   sharedWith?: string[];
 }
@@ -457,25 +463,25 @@ export interface DataAccessContext {
 ```typescript
 /**
  * 隔离上下文创建事件
- * 
+ *
  * @description 当请求到达并成功构建隔离上下文时触发
- * 
+ *
  * ## 使用场景
- * 
+ *
  * - 审计追踪
  * - 上下文传播
  * - 安全监控
- * 
+ *
  * @since 1.0.0
  */
 export class IsolationContextCreatedEvent {
   constructor(
     /** 隔离上下文 */
     public readonly context: IsolationContext,
-    
+
     /** 请求 ID */
     public readonly requestId: string,
-    
+
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
   ) {}
@@ -489,28 +495,28 @@ export class IsolationContextCreatedEvent {
 ```typescript
 /**
  * 隔离上下文切换事件
- * 
+ *
  * @description 当用户切换组织或部门时触发
- * 
+ *
  * ## 使用场景
- * 
+ *
  * - 用户行为分析
  * - 异常检测
  * - 审计追踪
- * 
+ *
  * @since 1.0.0
  */
 export class IsolationContextSwitchedEvent {
   constructor(
     /** 切换前的上下文 */
     public readonly from: IsolationContext,
-    
+
     /** 切换后的上下文 */
     public readonly to: IsolationContext,
-    
+
     /** 切换原因 */
     public readonly reason: string,
-    
+
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
   ) {}
@@ -524,28 +530,28 @@ export class IsolationContextSwitchedEvent {
 ```typescript
 /**
  * 数据访问被拒绝事件
- * 
+ *
  * @description 当用户尝试访问无权限的数据时触发
- * 
+ *
  * ## 使用场景
- * 
+ *
  * - 安全审计
  * - 异常行为检测
  * - 权限问题诊断
- * 
+ *
  * @since 1.0.0
  */
 export class DataAccessDeniedEvent {
   constructor(
     /** 用户上下文 */
     public readonly userContext: IsolationContext,
-    
+
     /** 数据上下文 */
     public readonly dataContext: IsolationContext,
-    
+
     /** 拒绝原因 */
     public readonly reason: string,
-    
+
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
   ) {}
@@ -563,9 +569,9 @@ export class DataAccessDeniedEvent {
 ```typescript
 /**
  * 隔离验证异常
- * 
+ *
  * @description 当隔离上下文验证失败时抛出
- * 
+ *
  * @since 1.0.0
  */
 export class IsolationValidationError extends Error {
@@ -603,19 +609,19 @@ export class IsolationValidationError extends Error {
 ```typescript
 /**
  * 隔离模块配置选项
- * 
+ *
  * @since 1.0.0
  */
 export interface IsolationModuleOptions {
   /** 是否全局模块，默认 true */
   global?: boolean;
-  
+
   /** 是否自动注册中间件，默认 true */
   autoRegisterMiddleware?: boolean;
-  
+
   /** 提取策略，默认 'header' */
   extractionStrategy?: 'header' | 'jwt' | 'custom';
-  
+
   /** 自定义提取器（如果 strategy 为 'custom'） */
   customExtractor?: IExtractionStrategy;
 }
@@ -630,15 +636,15 @@ export interface IsolationModuleOptions {
 ```typescript
 /**
  * 提取策略接口
- * 
+ *
  * @description 定义从请求中提取隔离标识的策略
- * 
+ *
  * @since 1.0.0
  */
 export interface IExtractionStrategy {
   /**
    * 从请求中提取隔离标识
-   * 
+   *
    * @param request - HTTP 请求对象
    * @returns 提取的标识符对象
    */
@@ -759,16 +765,16 @@ export type { IsolationModuleOptions } from './types/module-options.interface.js
 
 ### 领域模型库验证规则
 
-| 数据类型 | 验证规则 | 错误代码 |
-|---------|---------|---------|
-| TenantId | 非空字符串 | INVALID_TENANT_ID |
-| TenantId | 长度 1-50 字符 | TENANT_ID_TOO_LONG |
-| TenantId | 只含字母、数字、_、- | INVALID_TENANT_ID_FORMAT |
-| OrganizationId | 同 TenantId | INVALID_ORGANIZATION_ID |
-| DepartmentId | 同 TenantId | INVALID_DEPARTMENT_ID |
-| UserId | 同 TenantId | INVALID_USER_ID |
-| IsolationContext | 组织级需要租户 | INVALID_ORGANIZATION_CONTEXT |
-| IsolationContext | 部门级需要租户+组织 | INVALID_DEPARTMENT_CONTEXT |
+| 数据类型         | 验证规则              | 错误代码                     |
+| ---------------- | --------------------- | ---------------------------- |
+| TenantId         | 非空字符串            | INVALID_TENANT_ID            |
+| TenantId         | 长度 1-50 字符        | TENANT_ID_TOO_LONG           |
+| TenantId         | 只含字母、数字、\_、- | INVALID_TENANT_ID_FORMAT     |
+| OrganizationId   | 同 TenantId           | INVALID_ORGANIZATION_ID      |
+| DepartmentId     | 同 TenantId           | INVALID_DEPARTMENT_ID        |
+| UserId           | 同 TenantId           | INVALID_USER_ID              |
+| IsolationContext | 组织级需要租户        | INVALID_ORGANIZATION_CONTEXT |
+| IsolationContext | 部门级需要租户+组织   | INVALID_DEPARTMENT_CONTEXT   |
 
 ---
 
@@ -780,7 +786,7 @@ export type { IsolationModuleOptions } from './types/module-options.interface.js
 // 所有 ID 值对象使用 Flyweight 模式
 export class TenantId {
   private static cache = new Map<string, TenantId>();
-  
+
   static create(value: string): TenantId {
     let instance = this.cache.get(value);
     if (!instance) {
@@ -803,7 +809,7 @@ export class TenantId {
 ```typescript
 export class IsolationContext {
   private _level?: IsolationLevel; // 缓存计算结果
-  
+
   getIsolationLevel(): IsolationLevel {
     if (this._level === undefined) {
       this._level = this.computeLevel();
@@ -844,11 +850,11 @@ export class CacheService {
   constructor(
     private readonly contextProvider: IIsolationContextProvider,
   ) {}
-  
+
   async get<T>(namespace: string, key: string): Promise<T | null> {
-    const context = this.contextProvider.getIsolationContext() 
+    const context = this.contextProvider.getIsolationContext()
       ?? IsolationContext.platform();
-    
+
     const cacheKey = context.buildCacheKey(namespace, key);
     return this.redis.get(cacheKey);
   }
@@ -874,13 +880,13 @@ export class LoggerService {
   constructor(
     private readonly contextProvider: IIsolationContextProvider,
   ) {}
-  
+
   info(message: string, data?: any): void {
     const context = this.contextProvider.getIsolationContext()
       ?? IsolationContext.platform();
-    
+
     const logContext = context.buildLogContext();
-    
+
     this.pino.info({
       ...logContext,
       message,

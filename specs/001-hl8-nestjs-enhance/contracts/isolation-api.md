@@ -107,7 +107,7 @@ console.log(context.buildCacheKey('user', 'list')); // tenant:t123:user:list
 
 ```typescript
 static organization(
-  tenantId: TenantId, 
+  tenantId: TenantId,
   organizationId: OrganizationId
 ): IsolationContext
 ```
@@ -122,7 +122,7 @@ static organization(
 ```typescript
 const context = IsolationContext.organization(
   TenantId.create('t123'),
-  OrganizationId.create('o456')
+  OrganizationId.create('o456'),
 );
 
 console.log(context.buildLogContext());
@@ -254,7 +254,7 @@ buildLogContext(): Record<string, string>
 const context = IsolationContext.department(
   TenantId.create('t123'),
   OrganizationId.create('o456'),
-  DepartmentId.create('d789')
+  DepartmentId.create('d789'),
 );
 
 const logContext = context.buildLogContext();
@@ -314,9 +314,9 @@ const dataContext = IsolationContext.organization(t123, o456);
 
 // 检查访问权限
 const canAccess = userContext.canAccess(
-  dataContext, 
-  true, 
-  SharingLevel.ORGANIZATION
+  dataContext,
+  true,
+  SharingLevel.ORGANIZATION,
 );
 
 if (canAccess) {
@@ -378,13 +378,13 @@ static forRoot(options?: IsolationModuleOptions): DynamicModule
 interface IsolationModuleOptions {
   /** 是否全局模块，默认 true */
   global?: boolean;
-  
+
   /** 是否自动注册中间件，默认 true */
   autoRegisterMiddleware?: boolean;
-  
+
   /** 提取策略，默认 'header' */
   extractionStrategy?: 'header' | 'jwt' | 'custom';
-  
+
   /** 自定义提取器（如果 strategy 为 'custom'） */
   customExtractor?: IExtractionStrategy;
 }
@@ -424,17 +424,15 @@ getIsolationContext(): IsolationContext | undefined
 ```typescript
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly isolationService: IsolationContextService,
-  ) {}
-  
+  constructor(private readonly isolationService: IsolationContextService) {}
+
   async getUsers() {
     const context = this.isolationService.getIsolationContext();
-    
+
     if (!context) {
       throw new BadRequestException('隔离上下文缺失');
     }
-    
+
     // 使用上下文
     const where = context.buildWhereClause();
     return this.userRepository.find({ where });
@@ -482,13 +480,15 @@ export class TenantService {
   constructor(
     private readonly isolationValidator: MultiLevelIsolationService,
   ) {}
-  
+
   async createTenant(data: CreateTenantDto) {
     // 验证必须是平台级操作
-    if (!this.isolationValidator.validateIsolationLevel(IsolationLevel.PLATFORM)) {
+    if (
+      !this.isolationValidator.validateIsolationLevel(IsolationLevel.PLATFORM)
+    ) {
       throw new ForbiddenException('只有平台管理员可以创建租户');
     }
-    
+
     // 创建租户
     return this.tenantRepository.create(data);
   }
@@ -527,7 +527,7 @@ checkDataAccess(
 @Controller('tenants')
 export class TenantController {
   @Get()
-  @RequireTenant()  // 必须有租户上下文
+  @RequireTenant() // 必须有租户上下文
   async getTenantInfo() {
     // 自动验证隔离上下文
     return { message: '租户信息' };
@@ -585,24 +585,24 @@ export class UserController {
 
 ### 异常类型
 
-| 异常类型 | 描述 | 使用场景 |
-|---------|------|---------|
-| `IsolationValidationError` | ID 值对象验证失败 | 创建值对象时 |
-| `IsolationValidationError` | 上下文验证失败 | 创建上下文时 |
-| `ForbiddenException` | 隔离级别不足（实现库） | 守卫拦截时 |
+| 异常类型                   | 描述                   | 使用场景     |
+| -------------------------- | ---------------------- | ------------ |
+| `IsolationValidationError` | ID 值对象验证失败      | 创建值对象时 |
+| `IsolationValidationError` | 上下文验证失败         | 创建上下文时 |
+| `ForbiddenException`       | 隔离级别不足（实现库） | 守卫拦截时   |
 
 ### 错误代码
 
-| 代码 | 描述 |
-|------|------|
-| `INVALID_TENANT_ID` | 租户 ID 无效 |
-| `INVALID_ORGANIZATION_ID` | 组织 ID 无效 |
-| `INVALID_DEPARTMENT_ID` | 部门 ID 无效 |
-| `INVALID_USER_ID` | 用户 ID 无效 |
-| `INVALID_ORGANIZATION_CONTEXT` | 组织上下文缺少租户 |
-| `INVALID_DEPARTMENT_CONTEXT` | 部门上下文缺少租户或组织 |
-| `ISOLATION_LEVEL_INSUFFICIENT` | 隔离级别不足 |
-| `ACCESS_DENIED` | 数据访问被拒绝 |
+| 代码                           | 描述                     |
+| ------------------------------ | ------------------------ |
+| `INVALID_TENANT_ID`            | 租户 ID 无效             |
+| `INVALID_ORGANIZATION_ID`      | 组织 ID 无效             |
+| `INVALID_DEPARTMENT_ID`        | 部门 ID 无效             |
+| `INVALID_USER_ID`              | 用户 ID 无效             |
+| `INVALID_ORGANIZATION_CONTEXT` | 组织上下文缺少租户       |
+| `INVALID_DEPARTMENT_CONTEXT`   | 部门上下文缺少租户或组织 |
+| `ISOLATION_LEVEL_INSUFFICIENT` | 隔离级别不足             |
+| `ACCESS_DENIED`                | 数据访问被拒绝           |
 
 ---
 
@@ -619,18 +619,18 @@ import type { IIsolationContextProvider } from '@hl8/isolation-model';
 @Injectable()
 export class CacheService {
   constructor(
-    @Inject('ISOLATION_CONTEXT_PROVIDER') 
+    @Inject('ISOLATION_CONTEXT_PROVIDER')
     private readonly contextProvider: IIsolationContextProvider,
   ) {}
-  
+
   async get<T>(namespace: string, key: string): Promise<T | null> {
     // 获取隔离上下文（使用接口，零依赖！）
-    const context = this.contextProvider.getIsolationContext() 
-      ?? IsolationContext.platform();
-    
+    const context =
+      this.contextProvider.getIsolationContext() ?? IsolationContext.platform();
+
     // 使用领域模型生成缓存键
     const cacheKey = context.buildCacheKey(namespace, key);
-    
+
     return this.redis.get(cacheKey);
   }
 }
@@ -652,15 +652,15 @@ export class LoggerService {
     @Inject('ISOLATION_CONTEXT_PROVIDER')
     private readonly contextProvider: IIsolationContextProvider,
   ) {}
-  
+
   info(message: string, data?: any): void {
     // 获取隔离上下文（零依赖！）
-    const context = this.contextProvider.getIsolationContext()
-      ?? IsolationContext.platform();
-    
+    const context =
+      this.contextProvider.getIsolationContext() ?? IsolationContext.platform();
+
     // 使用领域模型生成日志上下文
     const logContext = context.buildLogContext();
-    
+
     this.pino.info({
       ...logContext,
       message,
@@ -685,15 +685,15 @@ export abstract class BaseRepository<T> {
     @Inject('ISOLATION_CONTEXT_PROVIDER')
     protected readonly contextProvider: IIsolationContextProvider,
   ) {}
-  
+
   protected async findAll(): Promise<T[]> {
     // 获取隔离上下文
-    const context = this.contextProvider.getIsolationContext()
-      ?? IsolationContext.platform();
-    
+    const context =
+      this.contextProvider.getIsolationContext() ?? IsolationContext.platform();
+
     // 使用领域模型生成 WHERE 子句
     const where = context.buildWhereClause();
-    
+
     // 执行查询（自动隔离）
     return this.repository.find({ where });
   }
@@ -761,9 +761,9 @@ curl -H "X-Tenant-Id: t123" \
 ### 版本兼容矩阵
 
 | nestjs-isolation | nestjs-isolation-impl | NestJS |
-|-----------------|----------------------|--------|
-| 1.x             | 1.x                  | ^11.0  |
-| 2.x             | 2.x                  | ^12.0  |
+| ---------------- | --------------------- | ------ |
+| 1.x              | 1.x                   | ^11.0  |
+| 2.x              | 2.x                   | ^12.0  |
 
 ---
 
@@ -771,13 +771,13 @@ curl -H "X-Tenant-Id: t123" \
 
 ### 零开销抽象
 
-| 操作 | 目标性能 | 实测性能 |
-|------|---------|---------|
-| TenantId.create() | < 0.1ms | < 0.05ms（带缓存） |
+| 操作                | 目标性能 | 实测性能              |
+| ------------------- | -------- | --------------------- |
+| TenantId.create()   | < 0.1ms  | < 0.05ms（带缓存）    |
 | getIsolationLevel() | < 0.01ms | < 0.005ms（延迟计算） |
-| buildCacheKey() | < 0.5ms | 0.2-0.3ms |
-| buildLogContext() | < 0.3ms | 0.1-0.2ms |
-| canAccess() | < 0.2ms | 0.1-0.15ms |
+| buildCacheKey()     | < 0.5ms  | 0.2-0.3ms             |
+| buildLogContext()   | < 0.3ms  | 0.1-0.2ms             |
+| canAccess()         | < 0.2ms  | 0.1-0.15ms            |
 
 ### 内存占用
 
@@ -808,7 +808,7 @@ constructor(
 
 ```typescript
 // ✅ 推荐：提供默认平台级上下文
-const context = this.contextProvider.getIsolationContext() 
+const context = this.contextProvider.getIsolationContext()
   ?? IsolationContext.platform();
 
 // ❌ 避免：直接使用可能为 undefined 的上下文

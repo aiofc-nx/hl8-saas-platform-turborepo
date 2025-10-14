@@ -2,7 +2,10 @@
  * AbstractHttpException 单元测试
  */
 
-import { AbstractHttpException, ProblemDetails } from './abstract-http.exception.js';
+import {
+  AbstractHttpException,
+  ProblemDetails,
+} from './abstract-http.exception.js';
 
 /**
  * 测试用异常类
@@ -186,7 +189,13 @@ describe('AbstractHttpException', () => {
       const data = { key: 'value' };
 
       // Act
-      const exception = new TestException(errorCode, title, detail, status, data);
+      const exception = new TestException(
+        errorCode,
+        title,
+        detail,
+        status,
+        data,
+      );
 
       // Assert
       const response = exception.getResponse();
@@ -270,4 +279,3 @@ describe('AbstractHttpException', () => {
     });
   });
 });
-

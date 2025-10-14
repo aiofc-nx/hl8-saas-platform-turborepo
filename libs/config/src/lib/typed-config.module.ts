@@ -1,171 +1,20 @@
-/**
- * 类型化配置模块
- *
- * 提供完全类型安全的配置管理模块，支持配置文件解析、环境变量管理、
- * 配置验证、变量扩展等功能。基于 class-validator 和 class-transformer
- * 实现类型安全的配置管理。
- *
- * @description 此模块是配置系统的核心，提供统一的配置管理接口。
- * 支持多格式配置文件加载、环境变量替换、配置验证和缓存功能。
- * 遵循 Clean Architecture 的基础设施层设计原则。
- *
- * ## 业务规则
- *
- * ### 配置加载规则
- * - 支持 JSON、YAML、YML 格式的配置文件
- * - 支持环境变量替换和默认值设置
- * - 支持远程配置加载和本地配置文件
- * - 配置加载失败时阻止应用启动
- *
- * ### 配置验证规则
- * - 基于 class-validator 进行配置验证
- * - 支持自定义验证规则和验证选项
- * - 验证失败时提供详细的错误信息
- * - 支持嵌套配置的递归验证
- *
- * ### 类型安全规则
- * - 配置类必须继承自基础配置类
- * - 支持 TypeScript 类型推断和自动补全
- * - 编译时类型检查确保配置正确性
- * - 运行时类型验证确保配置完整性
- *
- * ### 缓存管理规则
- * - 支持内存缓存和文件缓存策略
- * - 支持缓存键前缀和自定义键生成器
- * - 支持缓存过期时间（TTL）设置
- * - 支持缓存统计和事件监听
- * - 支持缓存失效和更新策略
- *
- * ## 业务逻辑流程
- *
- * 1. **配置加载**：从文件系统或远程服务加载配置
- * 2. **环境变量替换**：替换配置中的环境变量引用
- * 3. **配置标准化**：执行自定义的配置转换逻辑
- * 4. **配置验证**：使用 class-validator 验证配置完整性
- * 5. **提供者注册**：将配置注册为 NestJS 提供者
- * 6. **缓存初始化**：初始化配置缓存（如果启用）
- *
- * @example
- * ```typescript
- * import { TypedConfigModule, fileLoader, dotenvLoader } from '@hl8/config';
- * import { Module, Injectable } from '@nestjs/common';
- * import { Type } from 'class-transformer';
- * import { IsString, IsNumber, ValidateNested } from 'class-validator';
- *
- * // 定义配置类
- * export class DatabaseConfig {
- *   @IsString()
- *   public readonly host!: string;
- *
- *   @IsNumber()
- *   @Type(() => Number)
- *   public readonly port!: number;
- * }
- *
- * export class RootConfig {
- *   @ValidateNested()
- *   @Type(() => DatabaseConfig)
- *   public readonly database!: DatabaseConfig;
- * }
- *
- * // 配置模块
- * @Module({
- *   imports: [
- *     TypedConfigModule.forRoot({
- *       schema: RootConfig,
- *       load: [
- *         fileLoader({ path: './config/app.yml' }),
- *         dotenvLoader({ separator: '__' })
- *       ]
- *     })
- *   ],
- * })
- * export class AppModule {}
- *
- * // 使用配置 - 完全类型安全
- * @Injectable()
- * export class DatabaseService {
- *   constructor(
- *     private readonly config: RootConfig,
- *     private readonly databaseConfig: DatabaseConfig
- *   ) {}
- *
- *   connect() {
- *     // 完全的类型推断和自动补全
- *     console.log(`${this.databaseConfig.host}:${this.databaseConfig.port}`);
- *   }
- * }
- * ```
- */
-
-import { Module, DynamicModule, Provider } from '@nestjs/common';
+import { DynamicModule, Module, Provider } from '@nestjs/common';
 import chalk from 'chalk';
 import type { ClassConstructor } from 'class-transformer';
-import type { ValidatorOptions, ValidationError } from 'class-validator';
+import type { ValidationError, ValidatorOptions } from 'class-validator';
 import merge from 'lodash.merge';
+import { CacheManager, CacheOptions } from './cache/index.js';
+import { ErrorHandler } from './errors/index.js';
 import {
   TypedConfigModuleAsyncOptions,
   TypedConfigModuleOptions,
 } from './interfaces/typed-config-module-options.interface.js';
+import { ConfigRecord } from './types/index.js';
+import { debug } from './utils/debug.util.js';
 import { forEachDeep } from './utils/for-each-deep.util.js';
 import { identity } from './utils/identity.util.js';
-import { debug } from './utils/debug.util.js';
-import { validateSync, plainToClass } from './utils/imports.util.js';
-import { ErrorHandler, ConfigError } from './errors/index.js';
-import { ConfigRecord, ConfigNormalizer, ConfigValidator } from './types/index.js';
-import { CacheManager, CacheOptions } from './cache/index.js';
+import { plainToClass, validateSync } from './utils/imports.util.js';
 
-/**
- * 类型化配置模块类
- *
- * 类型化配置模块的核心实现类，提供同步和异步的配置模块创建方法。
- * 支持配置加载、验证、标准化和提供者注册等完整功能。
- *
- * @description 此类是配置模块的核心实现，封装了配置管理的所有业务逻辑。
- * 支持多种配置加载器、自定义验证函数、配置标准化和缓存管理。
- * 遵循 NestJS 模块设计模式，提供完整的依赖注入支持。
- *
- * ## 业务规则
- *
- * ### 模块创建规则
- * - 同步创建：使用 forRoot 方法创建同步配置模块
- * - 异步创建：使用 forRootAsync 方法创建异步配置模块
- * - 全局模块：默认注册为全局模块，可在整个应用中使用
- * - 提供者注册：自动注册配置类和嵌套配置对象为提供者
- *
- * ### 配置加载规则
- * - 支持单个或多个配置加载器
- * - 配置加载器按顺序执行，后续配置会覆盖前面的配置
- * - 支持同步和异步配置加载器混合使用
- * - 配置加载失败时阻止模块创建
- *
- * ### 配置验证规则
- * - 默认使用 class-validator 进行配置验证
- * - 支持自定义验证函数和验证选项
- * - 验证失败时提供详细的错误信息和堆栈跟踪
- * - 验证通过后返回类型化的配置对象
- *
- * ### 缓存管理规则
- * - 支持可选的配置缓存功能
- * - 缓存键基于配置内容和配置类名称
- * - 支持缓存失效和更新策略
- * - 缓存统计和监控功能
- *
- * @example
- * ```typescript
- * // 同步配置模块创建
- * const syncModule = TypedConfigModule.forRoot({
- *   schema: RootConfig,
- *   load: fileLoader({ path: './config/app.yml' })
- * });
- *
- * // 异步配置模块创建
- * const asyncModule = await TypedConfigModule.forRootAsync({
- *   schema: RootConfig,
- *   load: remoteLoader('http://config-server/api/config')
- * });
- * ```
- */
 @Module({})
 export class TypedConfigModule {
   /**
@@ -331,7 +180,7 @@ export class TypedConfigModule {
    * ```
    */
   public static async forRootAsync(
-    options: TypedConfigModuleAsyncOptions
+    options: TypedConfigModuleAsyncOptions,
   ): Promise<DynamicModule> {
     const rawConfig = await this.getRawConfigAsync(options.load);
     return this.getDynamicModule(options, rawConfig);
@@ -348,7 +197,7 @@ export class TypedConfigModule {
    */
   private static getDynamicModule(
     options: TypedConfigModuleOptions | TypedConfigModuleAsyncOptions,
-    rawConfig: ConfigRecord
+    rawConfig: ConfigRecord,
   ) {
     const {
       schema: Config,
@@ -361,7 +210,7 @@ export class TypedConfigModule {
 
     if (typeof rawConfig !== 'object') {
       throw new Error(
-        `Configuration should be an object, received: ${rawConfig}. Please check the return value of \`load()\``
+        `Configuration should be an object, received: ${rawConfig}. Please check the return value of \`load()\``,
       );
     }
 
@@ -397,8 +246,8 @@ export class TypedConfigModule {
           const error = e as Error & { details?: unknown };
           debug(
             `Config load failed: ${error}. Details: ${JSON.stringify(
-              error.details
-            )}`
+              error.details,
+            )}`,
           );
           throw e;
         }
@@ -418,7 +267,7 @@ export class TypedConfigModule {
    * @since 1.0.0
    */
   private static async getRawConfigAsync(
-    load: TypedConfigModuleAsyncOptions['load']
+    load: TypedConfigModuleAsyncOptions['load'],
   ) {
     if (Array.isArray(load)) {
       const config = {};
@@ -430,8 +279,8 @@ export class TypedConfigModule {
           const error = e as Error & { details?: unknown };
           debug(
             `Config load failed: ${error}. Details: ${JSON.stringify(
-              error.details
-            )}`
+              error.details,
+            )}`,
           );
           throw e;
         }
@@ -450,15 +299,15 @@ export class TypedConfigModule {
    * @returns 提供者数组
    * @author HL8 SAAS Platform Team
    * @since 1.0.0
-   * 
+   *
    * @remarks
    * 使用 any 符合宪章 IX 允许场景：配置对象和配置类类型动态。
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 配置对象和配置类类型动态（宪章 IX 允许场景：泛型约束）
+
   private static getProviders(
     config: any,
     Config: ClassConstructor<any>,
-    cacheOptions?: CacheOptions
+    cacheOptions?: CacheOptions,
   ): Provider[] {
     const providers: Provider[] = [
       {
@@ -475,7 +324,6 @@ export class TypedConfigModule {
       });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 配置值类型未知（宪章 IX 允许场景）
     forEachDeep(config, (value: any) => {
       if (
         value &&
@@ -504,7 +352,7 @@ export class TypedConfigModule {
   private static validateWithClassValidator(
     rawConfig: ConfigRecord,
     Config: ClassConstructor<ConfigRecord>,
-    options?: Partial<ValidatorOptions>
+    options?: Partial<ValidatorOptions>,
   ) {
     const config = plainToClass(Config, rawConfig, {
       enableImplicitConversion: true,
@@ -545,13 +393,13 @@ export class TypedConfigModule {
           .map(
             ([key, val]) =>
               `    - ${key}: ${chalk.yellow(
-                val
-              )}, current config is \`${chalk.blue(JSON.stringify(value))}\``
+                val,
+              )}, current config is \`${chalk.blue(JSON.stringify(value))}\``,
           )
           .join(`\n`);
         const msg = [
           `  - config ${chalk.cyan(
-            property
+            property,
           )} does not match the following rules:`,
           `${constraintMessage}`,
         ].join(`\n`);
@@ -561,7 +409,7 @@ export class TypedConfigModule {
       .join(`\n`);
 
     const configErrorMessage = chalk.red(
-      `Configuration is not valid:\n${messages}\n`
+      `Configuration is not valid:\n${messages}\n`,
     );
     return configErrorMessage;
   }
@@ -584,7 +432,7 @@ export class TypedConfigModule {
 
     const helper = (
       { property, constraints, children, value }: ValidationError,
-      prefix: string
+      prefix: string,
     ) => {
       const keyPath = prefix ? `${prefix}.${property}` : property;
       if (constraints) {

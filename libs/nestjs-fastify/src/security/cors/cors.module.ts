@@ -2,7 +2,7 @@
  * @fileoverview CORS 配置模块
  */
 
-import { Module, DynamicModule, Global } from '@nestjs/common';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import type { CorsOptions } from './types/cors-options.js';
 import { DEFAULT_CORS_OPTIONS } from './types/cors-options.js';
 
@@ -28,4 +28,3 @@ export class CorsModule {
     };
   }
 }
-

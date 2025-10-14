@@ -109,4 +109,3 @@ export interface ExceptionMessageProvider {
    */
   getAvailableErrorCodes?(): string[];
 }
-

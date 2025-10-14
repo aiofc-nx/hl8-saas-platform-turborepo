@@ -16,12 +16,12 @@
 
 ### 文件迁移
 
-| 操作 | 文件数 | 详情 |
-|------|--------|------|
-| **已移动** | 4 | EXCEPTION_HANDLING_TRAINING.md<br>DOCUMENTATION_ENHANCEMENTS.md<br>TRAINING_DOC_SUMMARY.md<br>FINAL_DOCUMENTATION_SUMMARY.md |
-| **新建** | 3 | docs/README.md<br>docs/DOCS_MIGRATION.md<br>docs/MIGRATION_COMPLETED.md |
-| **更新** | 5 | README.md<br>EXCEPTION_HANDLING_TRAINING.md<br>TRAINING_DOC_SUMMARY.md<br>FINAL_DOCUMENTATION_SUMMARY.md<br>docs/README.md |
-| **保留** | 2 | README.md<br>CHANGELOG.md |
+| 操作       | 文件数 | 详情                                                                                                                         |
+| ---------- | ------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| **已移动** | 4      | EXCEPTION_HANDLING_TRAINING.md<br>DOCUMENTATION_ENHANCEMENTS.md<br>TRAINING_DOC_SUMMARY.md<br>FINAL_DOCUMENTATION_SUMMARY.md |
+| **新建**   | 3      | docs/README.md<br>docs/DOCS_MIGRATION.md<br>docs/MIGRATION_COMPLETED.md                                                      |
+| **更新**   | 5      | README.md<br>EXCEPTION_HANDLING_TRAINING.md<br>TRAINING_DOC_SUMMARY.md<br>FINAL_DOCUMENTATION_SUMMARY.md<br>docs/README.md   |
+| **保留**   | 2      | README.md<br>CHANGELOG.md                                                                                                    |
 
 ---
 
@@ -92,22 +92,22 @@ libs/exceptions/docs/
 
 ### 总体数据
 
-| 指标 | 根目录 | docs/ | 总计 |
-|------|--------|-------|------|
-| **文件数** | 2 | 7 | 9 |
-| **总大小** | ~23KB | ~76KB | ~99KB |
-| **总行数** | ~500 | ~3,200+ | ~3,700+ |
+| 指标       | 根目录 | docs/   | 总计    |
+| ---------- | ------ | ------- | ------- |
+| **文件数** | 2      | 7       | 9       |
+| **总大小** | ~23KB  | ~76KB   | ~99KB   |
+| **总行数** | ~500   | ~3,200+ | ~3,700+ |
 
 ### 文档分类
 
-| 类型 | 数量 | 文件 |
-|------|------|------|
-| **主文档** | 1 | README.md |
-| **变更日志** | 1 | CHANGELOG.md |
-| **导航索引** | 1 | docs/README.md |
-| **培训教材** | 1 | docs/EXCEPTION_HANDLING_TRAINING.md |
-| **说明文档** | 4 | docs/DOCUMENTATION_ENHANCEMENTS.md<br>docs/TRAINING_DOC_SUMMARY.md<br>docs/FINAL_DOCUMENTATION_SUMMARY.md<br>docs/DOCS_MIGRATION.md |
-| **迁移记录** | 1 | docs/MIGRATION_COMPLETED.md |
+| 类型         | 数量 | 文件                                                                                                                                |
+| ------------ | ---- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **主文档**   | 1    | README.md                                                                                                                           |
+| **变更日志** | 1    | CHANGELOG.md                                                                                                                        |
+| **导航索引** | 1    | docs/README.md                                                                                                                      |
+| **培训教材** | 1    | docs/EXCEPTION_HANDLING_TRAINING.md                                                                                                 |
+| **说明文档** | 4    | docs/DOCUMENTATION_ENHANCEMENTS.md<br>docs/TRAINING_DOC_SUMMARY.md<br>docs/FINAL_DOCUMENTATION_SUMMARY.md<br>docs/DOCS_MIGRATION.md |
+| **迁移记录** | 1    | docs/MIGRATION_COMPLETED.md                                                                                                         |
 
 ---
 
@@ -357,12 +357,12 @@ libs/[module]/
 
 ### 数据对比
 
-| 指标 | 迁移前 | 迁移后 | 改善 |
-|------|--------|--------|------|
-| 根目录 .md 文件 | 6 | 2 | ↓ 67% |
-| 文档集中度 | 分散 | 集中 | ✅ |
-| 导航完善度 | 无 | 完善 | ✅ |
-| 可维护性 | 中 | 高 | ✅ |
+| 指标            | 迁移前 | 迁移后 | 改善  |
+| --------------- | ------ | ------ | ----- |
+| 根目录 .md 文件 | 6      | 2      | ↓ 67% |
+| 文档集中度      | 分散   | 集中   | ✅    |
+| 导航完善度      | 无     | 完善   | ✅    |
+| 可维护性        | 中     | 高     | ✅    |
 
 ### 达成目标
 

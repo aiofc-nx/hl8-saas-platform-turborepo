@@ -6,10 +6,10 @@
 graph TD
     A[libs/nestjs-infra] -->|build| B[apps/fastify-api]
     A -->|build| C[apps/api]
-    
+
     D[packages/*] -->|build| B
     D -->|build| C
-    
+
     E[开发模式 dev] -.->|不依赖| A
     F[生产构建 build] -->|必须先构建| A
     G[测试 test] -->|必须先构建| A
@@ -24,7 +24,7 @@ graph TD
 
 ```
 1. libs/nestjs-infra (build)
-2. packages/* (build)  
+2. packages/* (build)
 3. apps/fastify-api (build)
 4. apps/api (build)
 ```
@@ -33,7 +33,7 @@ graph TD
 
 ```json
 {
-  "dependsOn": ["^build"]  // ^ 表示先构建所有依赖项
+  "dependsOn": ["^build"] // ^ 表示先构建所有依赖项
 }
 ```
 
@@ -99,7 +99,7 @@ pnpm turbo build:swc
 {
   "cache": false,
   "persistent": true,
-  "dependsOn": []  // 不依赖任何构建
+  "dependsOn": [] // 不依赖任何构建
 }
 ```
 
@@ -208,7 +208,7 @@ pnpm turbo test:cov
 
 ```json
 {
-  "dependsOn": ["^build", "build"]  // 依赖项和自身都要构建
+  "dependsOn": ["^build", "build"] // 依赖项和自身都要构建
 }
 ```
 
@@ -448,7 +448,7 @@ pnpm turbo clean && pnpm turbo build
    # ❌ 不需要
    cd libs/nestjs-infra && pnpm build
    cd apps/fastify-api && pnpm dev
-   
+
    # ✅ 直接启动
    cd apps/fastify-api && pnpm dev
    ```
@@ -458,7 +458,7 @@ pnpm turbo clean && pnpm turbo build
    ```bash
    # ❌ 错误（apps 可能找不到 libs 的编译产物）
    cd apps/fastify-api && pnpm build
-   
+
    # ✅ 正确（Turborepo 自动处理依赖顺序）
    pnpm turbo build
    ```
@@ -468,7 +468,7 @@ pnpm turbo clean && pnpm turbo build
    ```bash
    # ❌ 跳过类型检查可能导致运行时错误
    pnpm build --no-type-check
-   
+
    # ✅ 使用完整检查
    pnpm turbo type-check && pnpm turbo build
    ```
@@ -477,14 +477,14 @@ pnpm turbo clean && pnpm turbo build
 
 ## 🎯 总结
 
-| 场景 | 命令 | 是否需要构建 libs | 时间 |
-|------|------|-----------------|------|
-| **日常开发** | `pnpm dev` | ❌ 否 | ⚡ 秒级启动 |
-| **类型检查** | `pnpm turbo type-check` | ✅ 是 | ~10s |
-| **代码检查** | `pnpm turbo lint` | ✅ 是 | ~5s |
-| **单元测试** | `pnpm turbo test` | ✅ 是 | ~30s |
-| **生产构建** | `pnpm turbo build` | ✅ 是 | ~1min |
-| **E2E 测试** | `pnpm turbo test:e2e` | ✅ 是（含自身）| ~2min |
+| 场景         | 命令                    | 是否需要构建 libs | 时间        |
+| ------------ | ----------------------- | ----------------- | ----------- |
+| **日常开发** | `pnpm dev`              | ❌ 否             | ⚡ 秒级启动 |
+| **类型检查** | `pnpm turbo type-check` | ✅ 是             | ~10s        |
+| **代码检查** | `pnpm turbo lint`       | ✅ 是             | ~5s         |
+| **单元测试** | `pnpm turbo test`       | ✅ 是             | ~30s        |
+| **生产构建** | `pnpm turbo build`      | ✅ 是             | ~1min       |
+| **E2E 测试** | `pnpm turbo test:e2e`   | ✅ 是（含自身）   | ~2min       |
 
 **核心优势**：
 

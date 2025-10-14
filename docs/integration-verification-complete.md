@@ -130,24 +130,24 @@ enableHealthCheck: false,
 
 ### apps/fastify-api 集成情况
 
-| 模块 | 状态 | 说明 |
-|------|------|------|
+| 模块                       | 状态      | 说明                  |
+| -------------------------- | --------- | --------------------- |
 | `EnterpriseFastifyAdapter` | ✅ 已启用 | 企业级 Fastify 适配器 |
-| `FastifyExceptionModule` | ✅ 已启用 | RFC7807 异常处理 |
-| `FastifyLoggingModule` | ✅ 已启用 | 零开销 Pino 日志 |
-| `IsolationModule` | ✅ 已启用 | 5 级数据隔离 |
-| `CachingModule` | ⏸️ 已注释 | 需要 Redis 服务器 |
+| `FastifyExceptionModule`   | ✅ 已启用 | RFC7807 异常处理      |
+| `FastifyLoggingModule`     | ✅ 已启用 | 零开销 Pino 日志      |
+| `IsolationModule`          | ✅ 已启用 | 5 级数据隔离          |
+| `CachingModule`            | ⏸️ 已注释 | 需要 Redis 服务器     |
 
 ### EnterpriseFastifyAdapter 功能
 
-| 功能 | 状态 | 说明 |
-|------|------|------|
-| CORS 支持 | ⚠️ 禁用 | 避免装饰器冲突 |
-| 性能监控 | ✅ 启用 | 请求耗时追踪 |
-| 健康检查 | ⚠️ 禁用 | 避免路由冲突 |
-| 安全头 | ✅ 启用 | Helmet 安全配置 |
-| 限流 | ⏸️ 生产启用 | 基于 IP/租户 |
-| 熔断器 | ⏸️ 生产启用 | 自动故障保护 |
+| 功能      | 状态        | 说明            |
+| --------- | ----------- | --------------- |
+| CORS 支持 | ⚠️ 禁用     | 避免装饰器冲突  |
+| 性能监控  | ✅ 启用     | 请求耗时追踪    |
+| 健康检查  | ⚠️ 禁用     | 避免路由冲突    |
+| 安全头    | ✅ 启用     | Helmet 安全配置 |
+| 限流      | ⏸️ 生产启用 | 基于 IP/租户    |
+| 熔断器    | ⏸️ 生产启用 | 自动故障保护    |
 
 ---
 
@@ -193,7 +193,7 @@ pnpm --filter fastify-api build
 ### 移动的文件 (git mv)
 
 ```
-libs/nestjs-infra/src/fastify/enterprise-fastify.adapter.ts 
+libs/nestjs-infra/src/fastify/enterprise-fastify.adapter.ts
   → libs/nestjs-fastify/src/fastify/
 
 libs/nestjs-infra/src/fastify/config/fastify.config.ts
@@ -367,15 +367,15 @@ platform → nestjs-infra → nestjs-fastify → apps
 
 ## ✅ 验收标准
 
-| 标准 | 状态 | 说明 |
-|------|------|------|
-| 三层架构实施 | ✅ 完成 | platform → infra → fastify |
-| 所有包构建成功 | ✅ 完成 | 4 个包全部成功 |
-| 应用成功启动 | ✅ 完成 | 端口 3001 |
-| 模块正常加载 | ✅ 完成 | 5 个模块全部加载 |
-| API 可访问 | ✅ 完成 | `/` 和 `/info` |
-| 无构建错误 | ✅ 完成 | TypeScript 检查通过 |
-| 无运行时错误 | ✅ 完成 | 应用正常运行 |
+| 标准           | 状态    | 说明                       |
+| -------------- | ------- | -------------------------- |
+| 三层架构实施   | ✅ 完成 | platform → infra → fastify |
+| 所有包构建成功 | ✅ 完成 | 4 个包全部成功             |
+| 应用成功启动   | ✅ 完成 | 端口 3001                  |
+| 模块正常加载   | ✅ 完成 | 5 个模块全部加载           |
+| API 可访问     | ✅ 完成 | `/` 和 `/info`             |
+| 无构建错误     | ✅ 完成 | TypeScript 检查通过        |
+| 无运行时错误   | ✅ 完成 | 应用正常运行               |
 
 ---
 

@@ -4,11 +4,11 @@
  * @description 测试 ConnectionManager 的核心功能
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { MikroORM } from '@mikro-orm/core';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { ConnectionManager } from './connection.manager.js';
+import { MikroORM } from '@mikro-orm/core';
+import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseConnectionException } from '../exceptions/database-connection.exception.js';
+import { ConnectionManager } from './connection.manager.js';
 
 describe('ConnectionManager', () => {
   let manager: ConnectionManager;
@@ -59,27 +59,29 @@ describe('ConnectionManager', () => {
   describe('connect', () => {
     it('应该成功建立连接', async () => {
       await manager.connect();
-      
+
       expect(mockLogger.log).toHaveBeenCalledWith(
         '数据库连接成功',
         expect.objectContaining({
           host: 'localhost',
           database: 'test_db',
-        })
+        }),
       );
     });
 
     it('应该在连接失败时抛出异常', async () => {
       mockOrm.isConnected.mockRejectedValue(new Error('Connection failed'));
 
-      await expect(manager.connect()).rejects.toThrow(DatabaseConnectionException);
+      await expect(manager.connect()).rejects.toThrow(
+        DatabaseConnectionException,
+      );
     });
   });
 
   describe('disconnect', () => {
     it('应该优雅关闭连接', async () => {
       await manager.disconnect();
-      
+
       expect(mockOrm.close).toHaveBeenCalledWith(true);
       expect(mockLogger.log).toHaveBeenCalledWith('数据库连接已关闭');
     });
@@ -87,7 +89,9 @@ describe('ConnectionManager', () => {
     it('应该处理关闭失败的情况', async () => {
       mockOrm.close.mockRejectedValue(new Error('Close failed'));
 
-      await expect(manager.disconnect()).rejects.toThrow(DatabaseConnectionException);
+      await expect(manager.disconnect()).rejects.toThrow(
+        DatabaseConnectionException,
+      );
     });
   });
 
@@ -102,7 +106,7 @@ describe('ConnectionManager', () => {
   describe('getConnectionInfo', () => {
     it('应该返回连接信息', async () => {
       const info = await manager.getConnectionInfo();
-      
+
       expect(info).toHaveProperty('status');
       expect(info).toHaveProperty('type');
       expect(info).toHaveProperty('host');
@@ -112,4 +116,3 @@ describe('ConnectionManager', () => {
     });
   });
 });
-

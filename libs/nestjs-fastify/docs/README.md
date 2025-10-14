@@ -216,15 +216,15 @@ libs/nestjs-fastify/
 
 ## 📊 文档统计
 
-| 文档 | 大小 | 行数 | 类型 |
-|------|------|------|------|
-| README.md | 8KB | 370 | 导航索引 |
-| FASTIFY_TRAINING.md | 65KB | 2,082 | 培训教材 |
-| LOGGING_CONFIG.md | 9KB | 299 | 专项文档 |
-| DOCUMENTATION_ENHANCEMENTS.md | 15KB | 473 | 说明文档 |
-| TRAINING_DOC_SUMMARY.md | 11KB | 348 | 使用指南 |
-| FINAL_DOCUMENTATION_SUMMARY.md | 20KB | ~600 | 总结报告 |
-| DOCS_MIGRATION.md | 9KB | ~360 | 迁移说明 |
+| 文档                           | 大小 | 行数  | 类型     |
+| ------------------------------ | ---- | ----- | -------- |
+| README.md                      | 8KB  | 370   | 导航索引 |
+| FASTIFY_TRAINING.md            | 65KB | 2,082 | 培训教材 |
+| LOGGING_CONFIG.md              | 9KB  | 299   | 专项文档 |
+| DOCUMENTATION_ENHANCEMENTS.md  | 15KB | 473   | 说明文档 |
+| TRAINING_DOC_SUMMARY.md        | 11KB | 348   | 使用指南 |
+| FINAL_DOCUMENTATION_SUMMARY.md | 20KB | ~600  | 总结报告 |
+| DOCS_MIGRATION.md              | 9KB  | ~360  | 迁移说明 |
 
 **总计**：约 137KB，4,530+ 行
 
@@ -306,10 +306,10 @@ libs/nestjs-fastify/
    ├─ 为什么设计（15分钟）
    ├─ 与官方区别（25分钟）
    └─ 如何使用（20分钟）
-   
+
 2. 实践操作（20分钟）
    └─ 创建测试项目
-   
+
 3. Q&A（10分钟）
 ```
 

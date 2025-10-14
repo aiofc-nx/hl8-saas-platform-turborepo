@@ -13,7 +13,7 @@
 **快速入口**：
 
 - 📖 [配置文档索引](./config/README.md) - 所有配置文档的导航
-- ⚡ [配置快速入门](./config/CONFIG_GETTING_STARTED.md) - 5分钟快速上手  
+- ⚡ [配置快速入门](./config/CONFIG_GETTING_STARTED.md) - 5分钟快速上手
 - 📘 [配置使用指南](./config/CONFIGURATION_GUIDE.md) - 完整的使用手册
 
 **⚠️ 重要说明**：

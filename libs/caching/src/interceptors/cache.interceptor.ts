@@ -1,21 +1,21 @@
 /**
  * 缓存拦截器
- * 
+ *
  * @description 处理 @Cacheable、@CacheEvict、@CachePut 装饰器的核心逻辑
- * 
+ *
  * @since 1.0.0
  * @internal
  */
 
 import {
-  Injectable,
-  NestInterceptor,
-  ExecutionContext,
   CallHandler,
+  ExecutionContext,
+  Injectable,
   Logger,
+  NestInterceptor,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Observable, of, from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { CacheService } from '../services/cache.service.js';
 
@@ -53,44 +53,44 @@ export interface CachePutMetadata {
 @Injectable()
 export class CacheInterceptor implements NestInterceptor {
   private readonly logger = new Logger(CacheInterceptor.name);
-  
+
   constructor(
     private readonly cacheService: CacheService,
     private readonly reflector: Reflector,
   ) {}
-  
+
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const cacheableMetadata = this.reflector.get<CacheableMetadata>(
       CACHEABLE_KEY,
       context.getHandler(),
     );
-    
+
     const cacheEvictMetadata = this.reflector.get<CacheEvictMetadata>(
       CACHE_EVICT_KEY,
       context.getHandler(),
     );
-    
+
     const cachePutMetadata = this.reflector.get<CachePutMetadata>(
       CACHE_PUT_KEY,
       context.getHandler(),
     );
-    
+
     // 获取方法参数
     const request = context.switchToHttp().getRequest();
     const args = context.getArgs();
-    
+
     // 处理 @CacheEvict（beforeInvocation = true）
     if (cacheEvictMetadata?.beforeInvocation) {
       return from(this.handleCacheEvict(cacheEvictMetadata, args)).pipe(
         switchMap(() => next.handle()),
       );
     }
-    
+
     // 处理 @Cacheable
     if (cacheableMetadata) {
       return from(this.handleCacheable(cacheableMetadata, args, next));
     }
-    
+
     // 处理 @CachePut
     if (cachePutMetadata) {
       return next.handle().pipe(
@@ -100,7 +100,7 @@ export class CacheInterceptor implements NestInterceptor {
         }),
       );
     }
-    
+
     // 处理 @CacheEvict（afterInvocation，默认）
     if (cacheEvictMetadata && !cacheEvictMetadata.beforeInvocation) {
       return next.handle().pipe(
@@ -109,13 +109,13 @@ export class CacheInterceptor implements NestInterceptor {
         }),
       );
     }
-    
+
     return next.handle();
   }
-  
+
   /**
    * 处理 @Cacheable 逻辑
-   * 
+   *
    * @remarks
    * 使用 any[] 和 any 符合宪章 IX 允许场景：处理任意方法的参数和返回值。
    */
@@ -129,23 +129,26 @@ export class CacheInterceptor implements NestInterceptor {
     if (metadata.condition && !metadata.condition(...args)) {
       return next.handle().toPromise();
     }
-    
+
     // 生成缓存键
-    const cacheKey = metadata.keyGenerator 
+    const cacheKey = metadata.keyGenerator
       ? metadata.keyGenerator(...args)
       : this.generateDefaultKey(args);
-    
+
     // 尝试从缓存获取
-    const cachedValue = await this.cacheService.get(metadata.namespace, cacheKey);
-    
+    const cachedValue = await this.cacheService.get(
+      metadata.namespace,
+      cacheKey,
+    );
+
     if (cachedValue !== undefined) {
       this.logger.debug(`缓存命中: ${metadata.namespace}:${cacheKey}`);
       return cachedValue;
     }
-    
+
     // 缓存未命中，执行方法
     const result = await next.handle().toPromise();
-    
+
     // 存储到缓存
     if (result !== null || metadata.cacheNull) {
       await this.cacheService.set(
@@ -156,13 +159,13 @@ export class CacheInterceptor implements NestInterceptor {
       );
       this.logger.debug(`缓存更新: ${metadata.namespace}:${cacheKey}`);
     }
-    
+
     return result;
   }
-  
+
   /**
    * 处理 @CacheEvict 逻辑
-   * 
+   *
    * @remarks
    * 使用 any[] 符合宪章 IX 允许场景：处理任意方法的参数。
    */
@@ -175,7 +178,7 @@ export class CacheInterceptor implements NestInterceptor {
     if (metadata.condition && !metadata.condition(...args)) {
       return;
     }
-    
+
     if (metadata.allEntries) {
       // 清除所有缓存（根据命名空间）
       await this.cacheService.clear();
@@ -185,15 +188,15 @@ export class CacheInterceptor implements NestInterceptor {
       const cacheKey = metadata.keyGenerator
         ? metadata.keyGenerator(...args)
         : this.generateDefaultKey(args);
-      
+
       await this.cacheService.del(metadata.namespace, cacheKey);
       this.logger.debug(`缓存失效: ${metadata.namespace}:${cacheKey}`);
     }
   }
-  
+
   /**
    * 处理 @CachePut 逻辑
-   * 
+   *
    * @remarks
    * 使用 any[] 和 any 符合宪章 IX 允许场景：处理任意方法的参数和返回值。
    */
@@ -207,12 +210,12 @@ export class CacheInterceptor implements NestInterceptor {
     if (metadata.condition && !metadata.condition(...args)) {
       return;
     }
-    
+
     // 生成缓存键
     const cacheKey = metadata.keyGenerator
       ? metadata.keyGenerator(...args)
       : this.generateDefaultKey(args);
-    
+
     // 更新缓存
     await this.cacheService.set(
       metadata.namespace,
@@ -220,15 +223,15 @@ export class CacheInterceptor implements NestInterceptor {
       result,
       metadata.ttl,
     );
-    
+
     this.logger.debug(`缓存强制更新: ${metadata.namespace}:${cacheKey}`);
   }
-  
+
   /**
    * 生成默认缓存键
-   * 
+   *
    * @private
-   * 
+   *
    * @remarks
    * 使用 any[] 符合宪章 IX 允许场景：处理任意方法的参数。
    */
@@ -237,20 +240,19 @@ export class CacheInterceptor implements NestInterceptor {
     if (args.length === 0) {
       return 'default';
     }
-    
+
     // 使用第一个参数作为键
     const firstArg = args[0];
-    
+
     if (typeof firstArg === 'string' || typeof firstArg === 'number') {
       return String(firstArg);
     }
-    
+
     if (firstArg?.id) {
       return String(firstArg.id);
     }
-    
+
     // 使用 JSON 序列化（简化版）
     return JSON.stringify(firstArg);
   }
 }
-

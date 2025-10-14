@@ -218,12 +218,12 @@ libs/nestjs-fastify/
 
 ### 预期复杂度
 
-| 模块 | 复杂度 | 原因 |
-|------|-------|------|
-| RateLimitModule | 中 | Redis 集成，多租户支持 |
-| SecurityModule | 低 | 配置封装 |
-| MetricsModule | 中 | Prometheus 集成 |
-| CompressionModule | 低 | Fastify 插件封装 |
+| 模块              | 复杂度 | 原因                   |
+| ----------------- | ------ | ---------------------- |
+| RateLimitModule   | 中     | Redis 集成，多租户支持 |
+| SecurityModule    | 低     | 配置封装               |
+| MetricsModule     | 中     | Prometheus 集成        |
+| CompressionModule | 低     | Fastify 插件封装       |
 
 ---
 

@@ -159,23 +159,23 @@
 
 ### 核心文档（docs/）
 
-| 文档 | 用途 | 推荐读者 |
-|------|------|----------|
-| **CONFIG_GETTING_STARTED.md** | 快速入门 | 新用户 ⭐⭐ |
-| **CONFIGURATION_GUIDE.md** | 完整使用指南 | 所有开发者 ⭐ |
-| **CONFIG_ARCHITECTURE.md** | 架构说明 | 架构师、高级开发者 |
-| **CONFIG_QUICK_REFERENCE.md** | 速查手册 | 需要快速查找的开发者 |
-| **CONFIG_VISUAL_GUIDE.md** | 可视化指南 | 视觉学习者 |
-| **CONFIG_INDEX.md** | 文档索引 | 所有人 |
+| 文档                          | 用途         | 推荐读者             |
+| ----------------------------- | ------------ | -------------------- |
+| **CONFIG_GETTING_STARTED.md** | 快速入门     | 新用户 ⭐⭐          |
+| **CONFIGURATION_GUIDE.md**    | 完整使用指南 | 所有开发者 ⭐        |
+| **CONFIG_ARCHITECTURE.md**    | 架构说明     | 架构师、高级开发者   |
+| **CONFIG_QUICK_REFERENCE.md** | 速查手册     | 需要快速查找的开发者 |
+| **CONFIG_VISUAL_GUIDE.md**    | 可视化指南   | 视觉学习者           |
+| **CONFIG_INDEX.md**           | 文档索引     | 所有人               |
 
 ### 应用文档（apps/fastify-api/）
 
-| 文档 | 用途 | 推荐读者 |
-|------|------|----------|
-| **CONFIG.md** | 应用配置说明 | 使用该应用的开发者 |
-| **CONFIG_ARCHITECTURE.md** | 应用层架构 | 应用维护者 |
-| **CONFIG_FIXES.md** | 修复记录 | 了解历史的开发者 |
-| **WHY_SINGLE_CONFIG_SOURCE.md** | 设计原则 | 架构师、技术负责人 |
+| 文档                            | 用途         | 推荐读者           |
+| ------------------------------- | ------------ | ------------------ |
+| **CONFIG.md**                   | 应用配置说明 | 使用该应用的开发者 |
+| **CONFIG_ARCHITECTURE.md**      | 应用层架构   | 应用维护者         |
+| **CONFIG_FIXES.md**             | 修复记录     | 了解历史的开发者   |
+| **WHY_SINGLE_CONFIG_SOURCE.md** | 设计原则     | 架构师、技术负责人 |
 
 ---
 

@@ -2,32 +2,38 @@
   "name": "@hl8/nestjs-isolation",
   "version": "1.0.0",
   "description": "NestJS 数据隔离实现库 - 基于 @hl8/isolation-model 领域模型",
+  "keywords": [
+    "nestjs",
+    "isolation",
+    "multi-tenancy",
+    "middleware",
+    "guard"
+  ],
+  "license": "MIT",
+  "author": "HL8 Team",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./index.js": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
-  "engines": {
-    "node": ">=20"
-  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist -p tsconfig.build.json",
-    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
     "dev": "tsc -p tsconfig.build.json --watch",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "lint": "eslint .",
-    "clean": "rm -rf dist"
-  },
-  "peerDependencies": {
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/core": "^11.0.0"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hl8/isolation-model": "workspace:*",
@@ -37,7 +43,7 @@
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/testing": "^11.1.6",
     "@repo/eslint-config": "workspace:*",
-    "@repo/ts-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.15.3",
@@ -47,13 +53,11 @@
     "ts-jest": "^29.2.5",
     "typescript": "5.9.2"
   },
-  "keywords": [
-    "nestjs",
-    "isolation",
-    "multi-tenancy",
-    "middleware",
-    "guard"
-  ],
-  "author": "HL8 Team",
-  "license": "MIT"
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
 }

@@ -4,8 +4,8 @@
  * @description 测试 DatabaseConfig 类
  */
 
-import { DatabaseConfig } from './database.config.js';
 import { POOL_DEFAULTS } from '../constants/defaults.js';
+import { DatabaseConfig } from './database.config.js';
 
 describe('DatabaseConfig', () => {
   let config: DatabaseConfig;
@@ -33,18 +33,24 @@ describe('DatabaseConfig', () => {
   describe('getConnectionString', () => {
     it('应该生成正确的 PostgreSQL 连接字符串', () => {
       const connStr = config.getConnectionString();
-      expect(connStr).toBe('postgresql://test_user:test_pass@localhost:5432/test_db');
+      expect(connStr).toBe(
+        'postgresql://test_user:test_pass@localhost:5432/test_db',
+      );
     });
 
     it('应该生成正确的 MongoDB 连接字符串', () => {
       config.type = 'mongodb';
       const connStr = config.getConnectionString();
-      expect(connStr).toBe('mongodb://test_user:test_pass@localhost:5432/test_db');
+      expect(connStr).toBe(
+        'mongodb://test_user:test_pass@localhost:5432/test_db',
+      );
     });
 
     it('应该在不支持的数据库类型时抛出错误', () => {
       (config as any).type = 'mysql';
-      expect(() => config.getConnectionString()).toThrow('不支持的数据库类型: mysql');
+      expect(() => config.getConnectionString()).toThrow(
+        '不支持的数据库类型: mysql',
+      );
     });
   });
 
@@ -68,7 +74,9 @@ describe('DatabaseConfig', () => {
       expect(poolConfig.min).toBe(POOL_DEFAULTS.MIN);
       expect(poolConfig.max).toBe(POOL_DEFAULTS.MAX);
       expect(poolConfig.idleTimeoutMillis).toBe(POOL_DEFAULTS.IDLE_TIMEOUT);
-      expect(poolConfig.acquireTimeoutMillis).toBe(POOL_DEFAULTS.ACQUIRE_TIMEOUT);
+      expect(poolConfig.acquireTimeoutMillis).toBe(
+        POOL_DEFAULTS.ACQUIRE_TIMEOUT,
+      );
     });
 
     it('应该使用自定义连接池配置', () => {
@@ -83,4 +91,3 @@ describe('DatabaseConfig', () => {
     });
   });
 });
-

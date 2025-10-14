@@ -7,6 +7,9 @@
     "builder": "swc",
     "typeCheck": true,
     "assets": [],
-    "watchAssets": false
+    "watchAssets": false,
+    "tsConfigPath": "tsconfig.build.json",
+    "preserveWatchOutput": true,
+    "webpack": false
   }
 }

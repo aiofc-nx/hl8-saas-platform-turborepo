@@ -46,23 +46,21 @@ export class DefaultMessageProvider implements ExceptionMessageProvider {
    *
    * @private
    */
-  private readonly messages: Record<
-    string,
-    { title: string; detail: string }
-  > = {
-    NOT_FOUND: {
-      title: '资源未找到',
-      detail: '请求的{{resource}}不存在',
-    },
-    BAD_REQUEST: {
-      title: '错误的请求',
-      detail: '请求参数不符合要求',
-    },
-    INTERNAL_SERVER_ERROR: {
-      title: '服务器内部错误',
-      detail: '处理请求时发生未预期的错误',
-    },
-  };
+  private readonly messages: Record<string, { title: string; detail: string }> =
+    {
+      NOT_FOUND: {
+        title: '资源未找到',
+        detail: '请求的{{resource}}不存在',
+      },
+      BAD_REQUEST: {
+        title: '错误的请求',
+        detail: '请求参数不符合要求',
+      },
+      INTERNAL_SERVER_ERROR: {
+        title: '服务器内部错误',
+        detail: '处理请求时发生未预期的错误',
+      },
+    };
 
   /**
    * 获取消息
@@ -159,4 +157,3 @@ export class DefaultMessageProvider implements ExceptionMessageProvider {
     return value;
   }
 }
-

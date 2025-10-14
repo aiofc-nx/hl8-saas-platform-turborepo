@@ -37,13 +37,7 @@
  * ```
  */
 
-import {
-  Entity,
-  PrimaryKey,
-  Property,
-  Index,
-  Unique,
-} from '@mikro-orm/core';
+import { Entity, Index, PrimaryKey, Property, Unique } from '@mikro-orm/core';
 import { v4 as uuid } from 'uuid';
 
 @Entity({ tableName: 'users' })
@@ -158,4 +152,3 @@ export class User {
     this.isActive = true;
   }
 }
-

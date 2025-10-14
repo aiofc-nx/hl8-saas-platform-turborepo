@@ -33,7 +33,7 @@ import { AppConfig } from './config/app.config.js';
 export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
   // 获取配置（使用自定义的 AppConfig）
   const appConfig = app.get(AppConfig);
-  
+
   // 全局日志服务已通过 FastifyLoggingModule 自动配置
   // 所有模块自动使用 FastifyLoggerService（零开销 + 隔离上下文）
 
@@ -54,10 +54,10 @@ export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
   const host = process.env.HOST || '0.0.0.0';
 
   await app.listen(port, host);
-  
+
   // 输出启动信息
   const displayHost = host === '0.0.0.0' ? 'localhost' : host;
-  
+
   console.log('\n' + '='.repeat(70));
   console.log('🚀 HL8 SAAS Platform - Application Started Successfully');
   console.log('='.repeat(70));

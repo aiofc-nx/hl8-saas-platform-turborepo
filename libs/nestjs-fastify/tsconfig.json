@@ -1,13 +1,19 @@
 {
-  "extends": "@repo/ts-config/base.json",
+  "extends": "@repo/typescript-config/nestjs.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "incremental": false,
+    "baseUrl": ".",
     "rootDir": "./src",
-    "sourceMap": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "outDir": "./dist",
+    "paths": {
+      "@hl8/config": ["node_modules/@hl8/config"],
+      "@hl8/exceptions": ["node_modules/@hl8/exceptions"],
+      "@hl8/isolation-model": ["node_modules/@hl8/isolation-model"],
+      "@hl8/nestjs-isolation": ["node_modules/@hl8/nestjs-isolation"]
+    }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "__tests__"]
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }
-

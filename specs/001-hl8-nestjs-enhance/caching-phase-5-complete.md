@@ -10,13 +10,13 @@
 
 ### 已完成任务（T027-T031）
 
-| 任务 | 组件 | 代码行数 | 测试行数 | 状态 |
-|------|------|---------|---------|------|
-| T027 | CacheMetrics 接口 | ~80 行 | - | ✅ |
-| T028 | CacheMetricsService | ~240 行 | ~240 行 | ✅ |
-| T029 | Serializer 工具 | ~190 行 | ~280 行 | ✅ |
-| T030 | Key Generator 工具 | ~140 行 | ~180 行 | ✅ |
-| T031 | CacheMetricsService 测试 | - | ~240 行 | ✅ |
+| 任务 | 组件                     | 代码行数 | 测试行数 | 状态 |
+| ---- | ------------------------ | -------- | -------- | ---- |
+| T027 | CacheMetrics 接口        | ~80 行   | -        | ✅   |
+| T028 | CacheMetricsService      | ~240 行  | ~240 行  | ✅   |
+| T029 | Serializer 工具          | ~190 行  | ~280 行  | ✅   |
+| T030 | Key Generator 工具       | ~140 行  | ~180 行  | ✅   |
+| T031 | CacheMetricsService 测试 | -        | ~240 行  | ✅   |
 
 **总计**: ~650 行代码 + ~940 行测试 = ~1,590 行
 
@@ -45,17 +45,15 @@
 ```typescript
 @Injectable()
 export class CacheService {
-  constructor(
-    private readonly metricsService: CacheMetricsService,
-  ) {}
-  
+  constructor(private readonly metricsService: CacheMetricsService) {}
+
   async get<T>(namespace: string, key: string): Promise<T | undefined> {
     const startTime = Date.now();
-    
+
     try {
       const value = await this.redis.get(key);
       const latency = Date.now() - startTime;
-      
+
       if (value) {
         this.metricsService.recordHit(latency);
         return JSON.parse(value);
@@ -176,7 +174,7 @@ const clean = sanitizeKey('user name @123');
 
 // 验证键
 isValidKey('user:profile:123'); // true
-isValidKey('user name');         // false
+isValidKey('user name'); // false
 
 // 生成模式
 const pattern = generatePattern('cache', 'user:*');
@@ -202,13 +200,13 @@ Coverage:    55.4% (statements)
 
 ### 分模块覆盖
 
-| 模块 | 语句 | 分支 | 函数 | 行 |
-|------|------|------|------|-----|
-| **监控 (Monitoring)** | 100% | 100% | 100% | 100% ⭐ |
-| **工具 (Utils)** | 89.47% | 89.28% | 100% | 89.47% ⭐ |
-| 领域层 | 78.94% | 64.28% | 90.62% | 78.94% |
-| 服务层 | 41.04% | 50% | 50% | 40.15% |
-| 装饰器 | 0% | 100% | 0% | 0% |
+| 模块                  | 语句   | 分支   | 函数   | 行        |
+| --------------------- | ------ | ------ | ------ | --------- |
+| **监控 (Monitoring)** | 100%   | 100%   | 100%   | 100% ⭐   |
+| **工具 (Utils)**      | 89.47% | 89.28% | 100%   | 89.47% ⭐ |
+| 领域层                | 78.94% | 64.28% | 90.62% | 78.94%    |
+| 服务层                | 41.04% | 50%    | 50%    | 40.15%    |
+| 装饰器                | 0%     | 100%   | 0%     | 0%        |
 
 **说明**：
 
@@ -279,15 +277,15 @@ restored instanceof Date; // true
 generateKey(['user name', 'profile @123', '', null]);
 
 // 输出：清理后的键
-'username:profile123'
+('username:profile123');
 ```
 
 **验证规则**：
 
 ```typescript
-isValidKey('user:profile:123');  // ✅ true
-isValidKey('user name');         // ❌ false（包含空格）
-isValidKey('user\nprofile');     // ❌ false（包含换行符）
+isValidKey('user:profile:123'); // ✅ true
+isValidKey('user name'); // ❌ false（包含空格）
+isValidKey('user\nprofile'); // ❌ false（包含换行符）
 ```
 
 ---
@@ -303,15 +301,15 @@ export class CacheService {
     private readonly redis: RedisService,
     private readonly metrics: CacheMetricsService,
   ) {}
-  
+
   async get<T>(namespace: string, key: string): Promise<T | undefined> {
     const startTime = Date.now();
     const cacheKey = generateKey([namespace, key]);
-    
+
     try {
       const value = await this.redis.get(sanitizeKey(cacheKey));
       const latency = Date.now() - startTime;
-      
+
       if (value) {
         this.metrics.recordHit(latency);
         return deserialize<T>(value);
@@ -325,7 +323,7 @@ export class CacheService {
       throw error;
     }
   }
-  
+
   async set<T>(
     namespace: string,
     key: string,
@@ -334,7 +332,7 @@ export class CacheService {
   ): Promise<void> {
     const cacheKey = generateKey([namespace, key]);
     const serialized = serialize(value);
-    
+
     await this.redis.set(sanitizeKey(cacheKey), serialized, ttl);
   }
 }
@@ -346,12 +344,12 @@ export class CacheService {
 @Controller('cache')
 export class CacheController {
   constructor(private readonly metrics: CacheMetricsService) {}
-  
+
   @Get('metrics')
   getMetrics() {
     return this.metrics.getMetrics();
   }
-  
+
   @Post('metrics/reset')
   resetMetrics() {
     this.metrics.reset();
@@ -366,14 +364,14 @@ export class CacheController {
 
 ### Caching 模块总进度
 
-| Phase | 任务数 | 完成数 | 完成率 | 状态 |
-|-------|-------|--------|--------|------|
-| Phase 1 | 5 | 5 | 100% | ✅ 完成 |
-| Phase 2 | 8 | 8 | 100% | ✅ 完成 |
-| Phase 3 | 8 | 7 | 87.5% | ✅ 完成 |
-| Phase 4 | 5 | 3 | 60% | ✅ 完成 |
-| **Phase 5** | 6 | 5 | **83.3%** | **✅ 完成** |
-| Phase 7 | 2 | 0 | 0% | ⚪ 待开发 |
+| Phase       | 任务数 | 完成数 | 完成率    | 状态        |
+| ----------- | ------ | ------ | --------- | ----------- |
+| Phase 1     | 5      | 5      | 100%      | ✅ 完成     |
+| Phase 2     | 8      | 8      | 100%      | ✅ 完成     |
+| Phase 3     | 8      | 7      | 87.5%     | ✅ 完成     |
+| Phase 4     | 5      | 3      | 60%       | ✅ 完成     |
+| **Phase 5** | 6      | 5      | **83.3%** | **✅ 完成** |
+| Phase 7     | 2      | 0      | 0%        | ⚪ 待开发   |
 
 **总计**: 28/34 任务（82.4%）
 
@@ -486,11 +484,11 @@ Phase 5: 监控和工具          ~650 行
 @Controller('admin')
 export class AdminController {
   constructor(private readonly metrics: CacheMetricsService) {}
-  
+
   @Get('cache/dashboard')
   getCacheDashboard() {
     const metrics = this.metrics.getMetrics();
-    
+
     return {
       performance: {
         hitRate: `${(metrics.hitRate * 100).toFixed(2)}%`,
@@ -517,17 +515,19 @@ export class CacheReportService {
     private readonly metrics: CacheMetricsService,
     private readonly logger: Logger,
   ) {}
-  
+
   @Cron('0 0 * * *') // 每天午夜
   generateDailyReport() {
     const metrics = this.metrics.getMetrics();
-    
+
     this.logger.log('=== 缓存日报 ===');
     this.logger.log(`命中率: ${(metrics.hitRate * 100).toFixed(2)}%`);
     this.logger.log(`平均延迟: ${metrics.averageLatency.toFixed(2)}ms`);
     this.logger.log(`总操作: ${metrics.totalOperations}`);
-    this.logger.log(`错误率: ${(metrics.errors / metrics.totalOperations * 100).toFixed(2)}%`);
-    
+    this.logger.log(
+      `错误率: ${((metrics.errors / metrics.totalOperations) * 100).toFixed(2)}%`,
+    );
+
     // 重置指标
     this.metrics.reset();
   }
@@ -548,14 +548,14 @@ export class UserService {
       permissions: session.permissions,
       metadata: session.metadata,
     });
-    
+
     await redis.set(`session:${userId}`, serialized, 3600);
   }
-  
+
   async getUserSession(userId: string): Promise<UserSession | null> {
     const cached = await redis.get(`session:${userId}`);
     if (!cached) return null;
-    
+
     // 反序列化并自动恢复 Date 对象
     const session = deserialize<any>(cached);
     return {

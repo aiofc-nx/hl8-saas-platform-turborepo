@@ -33,4 +33,3 @@ import { UserService } from '../services/user.service.js';
   exports: [UserService],
 })
 export class UserModule {}
-

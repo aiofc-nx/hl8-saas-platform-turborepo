@@ -45,4 +45,3 @@ export class MetricsService {
     return this.prometheusService.getMetrics();
   }
 }
-

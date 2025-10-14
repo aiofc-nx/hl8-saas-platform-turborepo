@@ -17,7 +17,11 @@
     "externalHelpers": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@hl8/nestjs-fastify": ["node_modules/@hl8/nestjs-fastify"],
+      "@hl8/caching": ["node_modules/@hl8/caching"],
+      "@hl8/exceptions": ["node_modules/@hl8/exceptions"],
+      "@hl8/database": ["node_modules/@hl8/database"]
     }
   },
   "module": {

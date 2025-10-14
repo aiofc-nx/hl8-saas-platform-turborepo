@@ -1,23 +1,23 @@
 /**
  * @fileoverview 速率限制配置类型
- * 
+ *
  * @description
  * 定义速率限制模块的配置接口和类型，支持多种限流策略：
  * - IP 级别限流
  * - 租户级别限流
  * - 用户级别限流
  * - 自定义键生成
- * 
+ *
  * @module security/rate-limit/types
  */
 
+import { IsBoolean, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import type { FastifyRequest } from 'fastify';
 import type { Redis } from 'ioredis';
-import { IsInt, IsBoolean, IsOptional, Min, IsString } from 'class-validator';
 
 /**
  * 速率限制策略类型
- * 
+ *
  * @description
  * 定义速率限制的应用层级：
  * - `ip`: 基于客户端 IP 地址限流
@@ -29,13 +29,13 @@ export type RateLimitStrategy = 'ip' | 'tenant' | 'user' | 'custom';
 
 /**
  * 键生成函数类型
- * 
+ *
  * @description
  * 自定义键生成函数，用于创建限流键
- * 
+ *
  * @param req - Fastify 请求对象
  * @returns 限流键字符串
- * 
+ *
  * @example
  * ```typescript
  * const keyGenerator: KeyGenerator = (req) => {
@@ -50,27 +50,27 @@ export type KeyGenerator = (req: FastifyRequest<any>) => string;
 
 /**
  * 速率限制选项接口
- * 
+ *
  * @description
  * 配置速率限制的核心参数
- * 
+ *
  * ## 业务规则
- * 
+ *
  * ### 限流窗口规则
  * - 使用滑动窗口算法
  * - 时间窗口单位为毫秒
  * - 窗口过期后自动重置计数
- * 
+ *
  * ### 错误处理规则
  * - skipOnError 为 true 时，Redis 错误不阻塞请求
  * - skipOnError 为 false 时，Redis 错误返回 500
- * 
+ *
  * ### Redis 存储规则
  * - 如果提供 redis 客户端，使用分布式存储
  * - 如果未提供，使用内存存储（单实例）
  * - Redis 键格式: `ratelimit:{strategy}:{key}`
  * - TTL 设置为 timeWindow 的 2 倍
- * 
+ *
  * @example
  * ```typescript
  * const options: RateLimitOptions = {
@@ -84,7 +84,7 @@ export type KeyGenerator = (req: FastifyRequest<any>) => string;
 export interface RateLimitOptions {
   /**
    * 时间窗口内最大请求数
-   * 
+   *
    * @remarks
    * - 必须 > 0
    * - 建议根据业务类型设置：
@@ -96,7 +96,7 @@ export interface RateLimitOptions {
 
   /**
    * 时间窗口（毫秒）
-   * 
+   *
    * @remarks
    * - 必须 > 0
    * - 常用值:
@@ -108,20 +108,20 @@ export interface RateLimitOptions {
 
   /**
    * 限流策略
-   * 
+   *
    * @remarks
    * - `ip`: 基于客户端 IP（默认）
    * - `tenant`: 基于租户 ID
    * - `user`: 基于用户 ID
    * - `custom`: 使用 keyGenerator
-   * 
+   *
    * @default 'ip'
    */
   strategy?: RateLimitStrategy;
 
   /**
    * 自定义键生成函数
-   * 
+   *
    * @remarks
    * 仅当 strategy 为 'custom' 时生效
    */
@@ -129,7 +129,7 @@ export interface RateLimitOptions {
 
   /**
    * Redis 客户端（可选）
-   * 
+   *
    * @remarks
    * - 提供则使用分布式存储
    * - 不提供则使用内存存储
@@ -138,29 +138,29 @@ export interface RateLimitOptions {
 
   /**
    * Redis 错误时是否跳过限流
-   * 
+   *
    * @remarks
    * - true: Redis 错误不阻塞请求（降级策略）
    * - false: Redis 错误返回 500
-   * 
+   *
    * @default true
    */
   skipOnError?: boolean;
 
   /**
    * 自定义错误消息
-   * 
+   *
    * @default '请求过于频繁，请稍后再试'
    */
   errorMessage?: string;
 
   /**
    * 响应头中是否包含限流信息
-   * 
+   *
    * @remarks
    * - true: 添加 X-RateLimit-* 响应头
    * - false: 不添加
-   * 
+   *
    * @default true
    */
   addHeaders?: boolean;
@@ -168,17 +168,17 @@ export interface RateLimitOptions {
 
 /**
  * 速率限制配置类
- * 
+ *
  * @description
  * 使用 class-validator 验证配置参数
- * 
+ *
  * @example
  * ```typescript
  * const config = new RateLimitConfig();
  * config.max = 100;
  * config.timeWindow = 60000;
  * config.strategy = 'tenant';
- * 
+ *
  * const errors = await validate(config);
  * if (errors.length > 0) {
  *   throw new Error('配置验证失败');
@@ -243,10 +243,10 @@ export class RateLimitConfig implements RateLimitOptions {
 
 /**
  * 速率限制状态
- * 
+ *
  * @description
  * 表示当前限流状态
- * 
+ *
  * @example
  * ```typescript
  * const status: RateLimitStatus = {
@@ -286,11 +286,10 @@ export interface RateLimitStatus {
 
 /**
  * 速率限制元数据键
- * 
+ *
  * @description
  * 用于在装饰器中存储元数据的键名
- * 
+ *
  * @internal
  */
 export const RATE_LIMIT_METADATA_KEY = 'rate-limit:options';
-

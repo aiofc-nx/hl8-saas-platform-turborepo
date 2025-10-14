@@ -37,10 +37,7 @@ NestJS 官方提供了基础的 Fastify 支持：
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 
-const app = await NestFactory.create(
-  AppModule,
-  new FastifyAdapter()
-);
+const app = await NestFactory.create(AppModule, new FastifyAdapter());
 ```
 
 **官方适配器的定位**：
@@ -92,9 +89,9 @@ import { Logger } from '@nestjs/common';
 
 export class UserService {
   private readonly logger = new Logger(UserService.name);
-  
+
   async findUser(id: string) {
-    this.logger.log(`Finding user ${id}`);  // 性能不是最优
+    this.logger.log(`Finding user ${id}`); // 性能不是最优
   }
 }
 ```
@@ -143,11 +140,11 @@ import cors from '@fastify/cors';
 ```typescript
 // 统一的模块化设计
 import {
-  SecurityModule,      // 安全头
-  RateLimitModule,     // 速率限制
-  CorsModule,          // CORS
-  CompressionModule,   // 压缩
-  MetricsModule,       // Metrics
+  SecurityModule, // 安全头
+  RateLimitModule, // 速率限制
+  CorsModule, // CORS
+  CompressionModule, // 压缩
+  MetricsModule, // Metrics
 } from '@hl8/nestjs-fastify';
 
 // 统一配置，开箱即用
@@ -215,7 +212,7 @@ async getUsers(@CurrentContext() context: IsolationContext) {
 export class HealthController {
   @Get('health')
   getHealth() {
-    return { status: 'ok' };  // 太简单，不够用
+    return { status: 'ok' }; // 太简单，不够用
   }
 }
 ```
@@ -318,16 +315,16 @@ await app.register(cors, { /* 配置 */ });
 ```typescript
 // 官方方式：类型支持有限
 app.register(somePlugin, {
-  option1: 'value',  // 可能拼写错误，不报错
+  option1: 'value', // 可能拼写错误，不报错
 });
 
 // 我们的方式：完整的类型定义
 import { RateLimitModuleConfig } from '@hl8/nestjs-fastify';
 
 RateLimitModule.forRoot({
-  max: 100,          // ✅ 类型检查
+  max: 100, // ✅ 类型检查
   timeWindow: 60000, // ✅ IntelliSense 提示
-  strategy: 'tenant',// ✅ 枚举类型，不会拼错
+  strategy: 'tenant', // ✅ 枚举类型，不会拼错
 });
 ```
 
@@ -363,22 +360,22 @@ RateLimitModule.forRoot({
 
 ### 2.1 功能对比表
 
-| 功能 | 官方 FastifyAdapter | EnterpriseFastifyAdapter |
-|------|---------------------|--------------------------|
-| **基础适配** | ✅ | ✅ |
-| **RFC7807 异常** | ❌ 需要自己实现 | ✅ FastifyExceptionModule |
-| **高性能日志** | ⚠️ 可以用 Pino，但要手动配置 | ✅ FastifyLoggingModule |
-| **安全头** | ❌ 需要手动注册 `@fastify/helmet` | ✅ SecurityModule |
-| **速率限制** | ❌ 需要手动注册 `@fastify/rate-limit` | ✅ RateLimitModule |
-| **CORS** | ⚠️ 手动注册 `@fastify/cors` | ✅ CorsModule |
-| **压缩** | ⚠️ 手动注册 `@fastify/compress` | ✅ CompressionModule |
-| **Metrics** | ❌ 需要自己集成 Prometheus | ✅ MetricsModule |
-| **健康检查** | ❌ 需要自己实现 | ✅ 内置 `/health` |
-| **多租户支持** | ❌ 无 | ✅ 与 IsolationModule 集成 |
-| **优雅关闭** | ⚠️ 基础 | ✅ 增强 |
-| **请求追踪** | ❌ 无 | ✅ 自动生成请求 ID |
-| **配置管理** | ❌ 分散 | ✅ 统一的配置类 |
-| **TypeScript 支持** | ⚠️ 基础 | ✅ 完整类型定义 |
+| 功能                | 官方 FastifyAdapter                   | EnterpriseFastifyAdapter   |
+| ------------------- | ------------------------------------- | -------------------------- |
+| **基础适配**        | ✅                                    | ✅                         |
+| **RFC7807 异常**    | ❌ 需要自己实现                       | ✅ FastifyExceptionModule  |
+| **高性能日志**      | ⚠️ 可以用 Pino，但要手动配置          | ✅ FastifyLoggingModule    |
+| **安全头**          | ❌ 需要手动注册 `@fastify/helmet`     | ✅ SecurityModule          |
+| **速率限制**        | ❌ 需要手动注册 `@fastify/rate-limit` | ✅ RateLimitModule         |
+| **CORS**            | ⚠️ 手动注册 `@fastify/cors`           | ✅ CorsModule              |
+| **压缩**            | ⚠️ 手动注册 `@fastify/compress`       | ✅ CompressionModule       |
+| **Metrics**         | ❌ 需要自己集成 Prometheus            | ✅ MetricsModule           |
+| **健康检查**        | ❌ 需要自己实现                       | ✅ 内置 `/health`          |
+| **多租户支持**      | ❌ 无                                 | ✅ 与 IsolationModule 集成 |
+| **优雅关闭**        | ⚠️ 基础                               | ✅ 增强                    |
+| **请求追踪**        | ❌ 无                                 | ✅ 自动生成请求 ID         |
+| **配置管理**        | ❌ 分散                               | ✅ 统一的配置类            |
+| **TypeScript 支持** | ⚠️ 基础                               | ✅ 完整类型定义            |
 
 ---
 
@@ -430,7 +427,7 @@ async function bootstrap() {
     timeWindow: 60000,
     cache: 10000,
     allowList: ['127.0.0.1'],
-    redis: redisClient,  // 需要自己创建 Redis 客户端
+    redis: redisClient, // 需要自己创建 Redis 客户端
     skipOnError: true,
   });
 
@@ -479,7 +476,7 @@ async function bootstrap() {
   // 1. 创建应用（一行代码）
   const app = await NestFactory.create(
     AppModule,
-    new EnterpriseFastifyAdapter()  // ← 所有基础功能已包含
+    new EnterpriseFastifyAdapter(), // ← 所有基础功能已包含
   );
 
   // 2. 启动应用
@@ -499,13 +496,13 @@ import {
 
 @Module({
   imports: [
-    FastifyExceptionModule.forRoot(),  // 异常处理 ✅
-    FastifyLoggingModule.forRoot(),    // 日志 ✅
-    SecurityModule.forRoot(),          // 安全头 ✅
-    RateLimitModule.forRoot(),         // 速率限制 ✅
-    CorsModule.forRoot(),              // CORS ✅
-    CompressionModule.forRoot(),       // 压缩 ✅
-    MetricsModule.forRoot(),           // Metrics ✅
+    FastifyExceptionModule.forRoot(), // 异常处理 ✅
+    FastifyLoggingModule.forRoot(), // 日志 ✅
+    SecurityModule.forRoot(), // 安全头 ✅
+    RateLimitModule.forRoot(), // 速率限制 ✅
+    CorsModule.forRoot(), // CORS ✅
+    CompressionModule.forRoot(), // 压缩 ✅
+    MetricsModule.forRoot(), // Metrics ✅
   ],
 })
 export class AppModule {}
@@ -613,10 +610,7 @@ app.module.ts
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 
-const app = await NestFactory.create(
-  AppModule,
-  new FastifyAdapter()
-);
+const app = await NestFactory.create(AppModule, new FastifyAdapter());
 
 // 提供：
 // ✅ 基本的 Fastify 集成
@@ -629,10 +623,7 @@ const app = await NestFactory.create(
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
 
-const app = await NestFactory.create(
-  AppModule,
-  new EnterpriseFastifyAdapter()
-);
+const app = await NestFactory.create(AppModule, new EnterpriseFastifyAdapter());
 
 // 提供：
 // ✅ 基本的 Fastify 集成
@@ -669,8 +660,12 @@ import rateLimit from '@fastify/rate-limit';
 const fastifyAdapter = new FastifyAdapter();
 
 // 注册插件（在 main.ts 中）
-await fastifyAdapter.register(helmet, { /* 配置 */ });
-await fastifyAdapter.register(rateLimit, { /* 配置 */ });
+await fastifyAdapter.register(helmet, {
+  /* 配置 */
+});
+await fastifyAdapter.register(rateLimit, {
+  /* 配置 */
+});
 // ...
 
 const app = await NestFactory.create(AppModule, fastifyAdapter);
@@ -686,8 +681,12 @@ const app = await NestFactory.create(AppModule, fastifyAdapter);
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 @Module({
   imports: [
-    SecurityModule.forRoot({ /* 配置 */ }),     // 在模块中
-    RateLimitModule.forRoot({ /* 配置 */ }),    // 在模块中
+    SecurityModule.forRoot({
+      /* 配置 */
+    }), // 在模块中
+    RateLimitModule.forRoot({
+      /* 配置 */
+    }), // 在模块中
   ],
 })
 export class AppModule {}
@@ -841,11 +840,13 @@ const fastifyAdapter = new FastifyAdapter({
 
 // app.module.ts 中的配置
 ConfigModule.forRoot({
-  load: [/* 配置文件 */],
+  load: [
+    /* 配置文件 */
+  ],
 });
 
 // 其他地方的配置
-process.env.SOME_CONFIG
+process.env.SOME_CONFIG;
 
 // 问题：
 // ❌ 配置分散在多个地方
@@ -882,15 +883,15 @@ export class AppConfig {
 TypedConfigModule.forRoot({
   schema: AppConfig,
   load: [dotenvLoader()],
-})
+});
 
 // 3. 使用配置（类型安全 + 验证）
 FastifyLoggingModule.forRootAsync({
   inject: [AppConfig],
   useFactory: (config: AppConfig) => ({
-    config: config.logging,  // ← 类型安全，自动补全
+    config: config.logging, // ← 类型安全，自动补全
   }),
-})
+});
 
 // 优势：
 // ✅ 配置集中管理
@@ -918,10 +919,10 @@ export class UserController {
   @Get()
   async getUsers(@Headers('x-tenant-id') tenantId: string) {
     // 每个方法都要手动获取 tenantId
-    
+
     // 手动添加到日志
     this.logger.log('Getting users', UserController.name, { tenantId });
-    
+
     // 手动传递给服务
     return this.userService.findByTenant(tenantId);
   }
@@ -942,19 +943,19 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 @Controller('users')
 export class UserController {
   constructor(
-    private readonly logger: FastifyLoggerService,  // ← 自动包含上下文
+    private readonly logger: FastifyLoggerService, // ← 自动包含上下文
     private readonly userService: UserService,
   ) {}
 
   @Get()
-  @RequireTenant()  // ← 自动验证
+  @RequireTenant() // ← 自动验证
   async getUsers(@CurrentContext() context: IsolationContext) {
     // context 自动包含 tenantId
-    
+
     // 日志自动包含 tenantId（无需手动添加）
     this.logger.info('Getting users');
     // → { msg: 'Getting users', tenantId: 'tenant-123', ... }
-    
+
     return this.userService.findByContext(context);
   }
 }
@@ -1092,9 +1093,9 @@ import { FastifyAdapter } from '@nestjs/platform-fastify';
 async function bootstrap() {
   const app = await NestFactory.create(
     AppModule,
-    new FastifyAdapter()  // ← 官方适配器
+    new FastifyAdapter(), // ← 官方适配器
   );
-  
+
   await app.listen(3000);
 }
 
@@ -1107,9 +1108,9 @@ import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
 async function bootstrap() {
   const app = await NestFactory.create(
     AppModule,
-    new EnterpriseFastifyAdapter()  // ← 企业级适配器
+    new EnterpriseFastifyAdapter(), // ← 企业级适配器
   );
-  
+
   await app.listen(3000, '0.0.0.0');
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
@@ -1132,10 +1133,18 @@ async function bootstrap() {
 // main.ts
 const fastifyAdapter = new FastifyAdapter();
 
-await fastifyAdapter.register(helmet, { /* 配置 */ });
-await fastifyAdapter.register(rateLimit, { /* 配置 */ });
-await fastifyAdapter.register(cors, { /* 配置 */ });
-await fastifyAdapter.register(compress, { /* 配置 */ });
+await fastifyAdapter.register(helmet, {
+  /* 配置 */
+});
+await fastifyAdapter.register(rateLimit, {
+  /* 配置 */
+});
+await fastifyAdapter.register(cors, {
+  /* 配置 */
+});
+await fastifyAdapter.register(compress, {
+  /* 配置 */
+});
 
 const app = await NestFactory.create(AppModule, fastifyAdapter);
 
@@ -1155,13 +1164,13 @@ import {
 
 @Module({
   imports: [
-    FastifyExceptionModule.forRoot(),   // ← 模块化
-    FastifyLoggingModule.forRoot(),     // ← 模块化
-    SecurityModule.forRoot(),           // ← 模块化
-    RateLimitModule.forRoot(),          // ← 模块化
-    CorsModule.forRoot(),               // ← 模块化
-    CompressionModule.forRoot(),        // ← 模块化
-    MetricsModule.forRoot(),            // ← 模块化
+    FastifyExceptionModule.forRoot(), // ← 模块化
+    FastifyLoggingModule.forRoot(), // ← 模块化
+    SecurityModule.forRoot(), // ← 模块化
+    RateLimitModule.forRoot(), // ← 模块化
+    CorsModule.forRoot(), // ← 模块化
+    CompressionModule.forRoot(), // ← 模块化
+    MetricsModule.forRoot(), // ← 模块化
   ],
 })
 export class AppModule {}
@@ -1187,11 +1196,11 @@ import { NotFoundException } from '@nestjs/common';
 @Get(':id')
 async getUser(@Param('id') id: string) {
   const user = await this.userService.findById(id);
-  
+
   if (!user) {
     throw new NotFoundException(`User ${id} not found`);
   }
-  
+
   return user;
 }
 
@@ -1216,7 +1225,7 @@ import { GeneralNotFoundException } from '@hl8/exceptions';
 @Get(':id')
 async getUser(@Param('id') id: string) {
   const user = await this.userService.findById(id);
-  
+
   if (!user) {
     throw new GeneralNotFoundException(
       '用户未找到',
@@ -1224,7 +1233,7 @@ async getUser(@Param('id') id: string) {
       { userId: id }
     );
   }
-  
+
   return user;
 }
 
@@ -1351,7 +1360,7 @@ import { RateLimitModule } from '@hl8/nestjs-fastify';
 @Module({
   imports: [
     RateLimitModule.forRoot({
-      max: 1000,           // 全局默认限制
+      max: 1000, // 全局默认限制
       timeWindow: 60000,
       strategy: 'ip',
     }),
@@ -1363,14 +1372,14 @@ export class AppModule {}
 import { RateLimit, RateLimitByTenant } from '@hl8/nestjs-fastify';
 
 @Controller('users')
-@RateLimit({ max: 500, timeWindow: 60000 })  // 控制器级别
+@RateLimit({ max: 500, timeWindow: 60000 }) // 控制器级别
 export class UserController {
   @Post()
-  @RateLimit({ max: 10, timeWindow: 60000 })  // 方法级别（更严格）
+  @RateLimit({ max: 10, timeWindow: 60000 }) // 方法级别（更严格）
   async create(@Body() data: CreateUserDto) {
     return this.userService.create(data);
   }
-  
+
   @Get()
   // 使用控制器级别的限制（500 次/分钟）
   async findAll() {
@@ -1380,7 +1389,7 @@ export class UserController {
 
 // 按租户限制
 @Controller('premium-api')
-@RateLimitByTenant({ max: 10000, timeWindow: 60000 })  // 每个租户 10000 次
+@RateLimitByTenant({ max: 10000, timeWindow: 60000 }) // 每个租户 10000 次
 export class PremiumApiController {
   // 高级客户有更高的配额
 }
@@ -1434,8 +1443,8 @@ import { SecurityModule } from '@hl8/nestjs-fastify';
 @Module({
   imports: [
     // 使用默认安全配置（推荐）
-    SecurityModule.forRoot(),  // ← 开箱即用
-    
+    SecurityModule.forRoot(), // ← 开箱即用
+
     // 或自定义配置
     SecurityModule.forRoot({
       contentSecurityPolicy: {
@@ -1484,22 +1493,25 @@ const httpRequestDuration = new Histogram({
 export class MetricsMiddleware implements NestMiddleware {
   use(req: any, res: any, next: () => void) {
     const start = Date.now();
-    
+
     res.on('finish', () => {
       const duration = (Date.now() - start) / 1000;
-      
+
       httpRequestsTotal.inc({
         method: req.method,
         path: req.url,
         status: res.statusCode,
       });
-      
-      httpRequestDuration.observe({
-        method: req.method,
-        path: req.url,
-      }, duration);
+
+      httpRequestDuration.observe(
+        {
+          method: req.method,
+          path: req.url,
+        },
+        duration,
+      );
     });
-    
+
     next();
   }
 }
@@ -1528,7 +1540,7 @@ import { MetricsModule } from '@hl8/nestjs-fastify';
         app: 'my-app',
         environment: process.env.NODE_ENV,
       },
-      includeTenantMetrics: true,  // ← 自动按租户统计
+      includeTenantMetrics: true, // ← 自动按租户统计
     }),
   ],
 })
@@ -1660,7 +1672,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(
     AppModule,
-    new EnterpriseFastifyAdapter()
+    new EnterpriseFastifyAdapter(),
   );
 
   await app.listen(3000, '0.0.0.0');
@@ -1692,14 +1704,14 @@ import { AppConfig } from './config/app.config';
       isGlobal: true,
       load: [dotenvLoader()],
     }),
-    
-    IsolationModule.forRoot(),                    // 多租户
-    FastifyExceptionModule.forRoot(),             // 异常
-    FastifyLoggingModule.forRoot(),               // 日志
-    SecurityModule.forRoot(),                     // 安全
+
+    IsolationModule.forRoot(), // 多租户
+    FastifyExceptionModule.forRoot(), // 异常
+    FastifyLoggingModule.forRoot(), // 日志
+    SecurityModule.forRoot(), // 安全
     RateLimitModule.forRoot({ strategy: 'tenant' }), // 速率限制
-    CorsModule.forRoot(),                         // CORS
-    CompressionModule.forRoot(),                  // 压缩
+    CorsModule.forRoot(), // CORS
+    CompressionModule.forRoot(), // 压缩
     MetricsModule.forRoot({ includeTenantMetrics: true }), // Metrics
   ],
 })
@@ -1770,7 +1782,7 @@ export class AppModule {}
    ```typescript
    const app = await NestFactory.create(
      AppModule,
-     new EnterpriseFastifyAdapter()
+     new EnterpriseFastifyAdapter(),
    );
    ```
 
@@ -1827,7 +1839,7 @@ export class AppModule {}
 export class TenantMiddleware implements NestMiddleware {
   use(req: any, res: any, next: () => void) {
     const tenantId = req.headers['x-tenant-id'];
-    req.tenantId = tenantId;  // 手动保存
+    req.tenantId = tenantId; // 手动保存
     next();
   }
 }
@@ -1837,11 +1849,11 @@ export class TenantMiddleware implements NestMiddleware {
 export class UserController {
   @Get()
   async getUsers(@Req() req: any) {
-    const tenantId = req.tenantId;  // 手动获取
-    
+    const tenantId = req.tenantId; // 手动获取
+
     // 手动添加到日志
     this.logger.log('Getting users', { tenantId });
-    
+
     // 手动传递给服务
     return this.userService.findByTenant(tenantId);
   }
@@ -1851,7 +1863,7 @@ export class UserController {
 this.metrics.inc({
   method: 'GET',
   path: '/users',
-  tenant: tenantId,  // 手动添加
+  tenant: tenantId, // 手动添加
 });
 
 // 4. 手动配置速率限制
@@ -1872,20 +1884,20 @@ this.metrics.inc({
 // 1. 导入模块
 @Module({
   imports: [
-    IsolationModule.forRoot(),  // ← 自动处理租户
-    
+    IsolationModule.forRoot(), // ← 自动处理租户
+
     FastifyLoggingModule.forRoot({
       config: {
-        includeIsolationContext: true,  // ← 自动包含租户信息
+        includeIsolationContext: true, // ← 自动包含租户信息
       },
     }),
-    
+
     RateLimitModule.forRoot({
-      strategy: 'tenant',  // ← 按租户限制
+      strategy: 'tenant', // ← 按租户限制
     }),
-    
+
     MetricsModule.forRoot({
-      includeTenantMetrics: true,  // ← 按租户统计
+      includeTenantMetrics: true, // ← 按租户统计
     }),
   ],
 })
@@ -1897,13 +1909,13 @@ import { CurrentContext, RequireTenant } from '@hl8/nestjs-isolation';
 @Controller('users')
 export class UserController {
   @Get()
-  @RequireTenant()  // ← 自动验证和提取
+  @RequireTenant() // ← 自动验证和提取
   async getUsers(@CurrentContext() context: IsolationContext) {
     // context 自动包含 tenantId
     // 日志自动包含 tenantId
     // Metrics 自动按租户统计
     // 速率限制自动按租户
-    
+
     return this.userService.findByContext(context);
   }
 }
@@ -2006,16 +2018,16 @@ throw new GeneralNotFoundException('用户未找到', '...', { userId });
 
 #### 与官方适配器的区别
 
-| 维度 | 官方适配器 | 我们的模块 |
-|------|-----------|-----------|
-| **定位** | 基础适配 | 企业级解决方案 |
-| **功能** | 最小集 | 完整功能集 |
-| **配置** | 分散 | 统一模块化 |
-| **代码量** | 约 300 行 | 约 60 行 |
-| **开发时间** | 2-3 天 | 30 分钟 |
-| **多租户** | 需要自己实现 | 原生支持 |
-| **类型安全** | 基础 | 完整 |
-| **维护成本** | 每项目单独 | 统一维护 |
+| 维度         | 官方适配器   | 我们的模块     |
+| ------------ | ------------ | -------------- |
+| **定位**     | 基础适配     | 企业级解决方案 |
+| **功能**     | 最小集       | 完整功能集     |
+| **配置**     | 分散         | 统一模块化     |
+| **代码量**   | 约 300 行    | 约 60 行       |
+| **开发时间** | 2-3 天       | 30 分钟        |
+| **多租户**   | 需要自己实现 | 原生支持       |
+| **类型安全** | 基础         | 完整           |
+| **维护成本** | 每项目单独   | 统一维护       |
 
 ---
 

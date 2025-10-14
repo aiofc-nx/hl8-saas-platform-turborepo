@@ -2,7 +2,7 @@
  * @fileoverview RateLimitGuard 单元测试
  */
 
-import { ExecutionContext, HttpException, HttpStatus } from '@nestjs/common';
+import { ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RateLimitGuard } from './rate-limit.guard';
 import type { RateLimitOptions } from './types/rate-limit-options';
@@ -91,7 +91,9 @@ describe('RateLimitGuard', () => {
 
       const calls = response.headerCalls;
       expect(calls.some(([name]) => name === 'X-RateLimit-Limit')).toBe(true);
-      expect(calls.some(([name]) => name === 'X-RateLimit-Remaining')).toBe(true);
+      expect(calls.some(([name]) => name === 'X-RateLimit-Remaining')).toBe(
+        true,
+      );
       expect(calls.some(([name]) => name === 'X-RateLimit-Reset')).toBe(true);
     });
 
@@ -111,4 +113,3 @@ describe('RateLimitGuard', () => {
     });
   });
 });
-

@@ -6,6 +6,5 @@
  * @since 1.0.0
  */
 
-export * from './isolation.service.js';
 export * from './isolation-aware.decorator.js';
-
+export * from './isolation.service.js';

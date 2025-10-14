@@ -38,4 +38,3 @@ export const DEFAULT_METRICS_OPTIONS: MetricsOptions = {
   path: '/metrics',
   enableDefaultMetrics: true,
 };
-

@@ -1,21 +1,21 @@
 /**
  * @hl8/nestjs-isolation
- * 
+ *
  * NestJS 数据隔离实现库
- * 
+ *
  * ## 特性
- * 
+ *
  * - 自动从请求头提取隔离上下文
  * - 提供装饰器、守卫、中间件
  * - 基于 nestjs-cls 实现请求级上下文
  * - 支持 Fastify 和 Express
- * 
+ *
  * ## 依赖
- * 
+ *
  * - @hl8/isolation-model - 纯领域模型库（零依赖）
  * - NestJS >= 11.0
  * - nestjs-cls >= 6.0
- * 
+ *
  * @module @hl8/nestjs-isolation
  * @since 1.0.0
  */
@@ -35,4 +35,3 @@ export * from './decorators/index.js';
 
 // 守卫
 export { IsolationGuard } from './guards/isolation.guard.js';
-

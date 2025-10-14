@@ -2,7 +2,7 @@
  * @fileoverview 压缩中间件模块
  */
 
-import { Module, DynamicModule, Global } from '@nestjs/common';
+import { DynamicModule, Global, Module } from '@nestjs/common';
 import type { CompressionOptions } from './types/compression-options.js';
 import { DEFAULT_COMPRESSION_OPTIONS } from './types/compression-options.js';
 
@@ -28,4 +28,3 @@ export class CompressionModule {
     };
   }
 }
-

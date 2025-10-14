@@ -49,14 +49,14 @@
 
 #### 属性
 
-| 属性 | 类型 | 描述 | 必需 |
-|------|------|------|------|
-| `fullKey` | `string` | 完整的缓存键（只读） | ✅ |
-| `prefix` | `string` | 键前缀（如 `hl8:cache:`） | ✅ |
-| `level` | `CacheLevel` | 缓存层级（枚举） | ✅ |
-| `namespace` | `string` | 命名空间（业务模块名） | ✅ |
-| `key` | `string` | 原始键名 | ✅ |
-| `isolationContext` | `IsolationContext?` | 隔离上下文（可选） | ❌ |
+| 属性               | 类型                | 描述                      | 必需 |
+| ------------------ | ------------------- | ------------------------- | ---- |
+| `fullKey`          | `string`            | 完整的缓存键（只读）      | ✅   |
+| `prefix`           | `string`            | 键前缀（如 `hl8:cache:`） | ✅   |
+| `level`            | `CacheLevel`        | 缓存层级（枚举）          | ✅   |
+| `namespace`        | `string`            | 命名空间（业务模块名）    | ✅   |
+| `key`              | `string`            | 原始键名                  | ✅   |
+| `isolationContext` | `IsolationContext?` | 隔离上下文（可选）        | ❌   |
 
 #### 业务规则
 
@@ -77,8 +77,8 @@
 
 **字符限制**:
 
-- 允许: 字母、数字、冒号（:）、下划线（_）、连字符（-）
-- 禁止: 空格、特殊字符（!@#$%^&*等）
+- 允许: 字母、数字、冒号（:）、下划线（\_）、连字符（-）
+- 禁止: 空格、特殊字符（!@#$%^&\*等）
 - 原因: 避免键冲突和编码问题
 
 **层级验证**:
@@ -97,41 +97,41 @@ CacheKey.forPlatform(namespace: string, key: string, prefix: string): CacheKey
 
 // 租户级缓存键
 CacheKey.forTenant(
-  namespace: string, 
-  key: string, 
-  prefix: string, 
+  namespace: string,
+  key: string,
+  prefix: string,
   context: IsolationContext
 ): CacheKey
 
 // 组织级缓存键
 CacheKey.forOrganization(
-  namespace: string, 
-  key: string, 
-  prefix: string, 
+  namespace: string,
+  key: string,
+  prefix: string,
   context: IsolationContext
 ): CacheKey
 
 // 部门级缓存键
 CacheKey.forDepartment(
-  namespace: string, 
-  key: string, 
-  prefix: string, 
+  namespace: string,
+  key: string,
+  prefix: string,
   context: IsolationContext
 ): CacheKey
 
 // 用户级缓存键
 CacheKey.forUser(
-  namespace: string, 
-  key: string, 
-  prefix: string, 
+  namespace: string,
+  key: string,
+  prefix: string,
   context: IsolationContext
 ): CacheKey
 
 // 自动判断层级（推荐）
 CacheKey.fromContext(
-  namespace: string, 
-  key: string, 
-  prefix: string, 
+  namespace: string,
+  key: string,
+  prefix: string,
   context: IsolationContext
 ): CacheKey
 ```
@@ -157,13 +157,18 @@ equals(other: CacheKey): boolean
 ```typescript
 // 示例 1: 平台级缓存键
 const platformKey = CacheKey.forPlatform('system', 'version', 'hl8:cache:');
-console.log(platformKey.toString()); 
+console.log(platformKey.toString());
 // 输出: hl8:cache:platform:system:version
 
 // 示例 2: 租户级缓存键
 const context = { tenantId: 't123' };
-const tenantKey = CacheKey.forTenant('config', 'feature-flags', 'hl8:cache:', context);
-console.log(tenantKey.toString()); 
+const tenantKey = CacheKey.forTenant(
+  'config',
+  'feature-flags',
+  'hl8:cache:',
+  context,
+);
+console.log(tenantKey.toString());
 // 输出: hl8:cache:tenant:t123:config:feature-flags
 
 // 示例 3: 自动判断层级
@@ -172,7 +177,7 @@ const autoKey = CacheKey.fromContext('user-list', 'active', 'hl8:cache:', {
   organizationId: 'o456',
   departmentId: 'd789',
 });
-console.log(autoKey.toString()); 
+console.log(autoKey.toString());
 // 输出: hl8:cache:tenant:t123:org:o456:dept:d789:user-list:active
 ```
 
@@ -184,14 +189,14 @@ console.log(autoKey.toString());
 
 #### 属性
 
-| 属性 | 类型 | 描述 | 必需 |
-|------|------|------|------|
-| `key` | `CacheKey` | 缓存键（值对象） | ✅ |
-| `value` | `T` | 缓存值（泛型） | ✅ |
-| `ttl` | `number` | 过期时间（秒） | ✅ |
-| `createdAt` | `Date` | 创建时间 | ✅ |
-| `serializedValue` | `string` | 序列化后的值（只读） | ✅ |
-| `size` | `number` | 值大小（字节，只读） | ✅ |
+| 属性              | 类型       | 描述                 | 必需 |
+| ----------------- | ---------- | -------------------- | ---- |
+| `key`             | `CacheKey` | 缓存键（值对象）     | ✅   |
+| `value`           | `T`        | 缓存值（泛型）       | ✅   |
+| `ttl`             | `number`   | 过期时间（秒）       | ✅   |
+| `createdAt`       | `Date`     | 创建时间             | ✅   |
+| `serializedValue` | `string`   | 序列化后的值（只读） | ✅   |
+| `size`            | `number`   | 值大小（字节，只读） | ✅   |
 
 #### 业务规则
 
@@ -266,7 +271,9 @@ isExpired(currentTime?: Date): boolean
 
 ```typescript
 // 示例 1: 创建缓存条目
-const key = CacheKey.forTenant('user', 'profile', 'hl8:cache:', { tenantId: 't123' });
+const key = CacheKey.forTenant('user', 'profile', 'hl8:cache:', {
+  tenantId: 't123',
+});
 const value = { id: 'u999', name: '张三', email: 'zhangsan@example.com' };
 const entry = CacheEntry.create(key, value, 3600, logger);
 
@@ -290,7 +297,10 @@ if (entry.isExpired()) {
 const complexValue = {
   date: new Date('2025-10-12'),
   tags: new Set(['tag1', 'tag2']),
-  metadata: new Map([['key1', 'value1'], ['key2', 'value2']]),
+  metadata: new Map([
+    ['key1', 'value1'],
+    ['key2', 'value2'],
+  ]),
 };
 const complexEntry = CacheEntry.create(key, complexValue, 1800);
 // 序列化后自动处理 Date、Set、Map 类型
@@ -307,32 +317,32 @@ const complexEntry = CacheEntry.create(key, complexValue, 1800);
 ```typescript
 /**
  * 缓存层级枚举
- * 
+ *
  * @description 定义缓存的 5 个隔离层级
- * 
+ *
  * ## 层级说明
- * 
+ *
  * - PLATFORM: 平台级缓存，跨租户共享
  * - TENANT: 租户级缓存，租户内共享
  * - ORGANIZATION: 组织级缓存，组织内共享
  * - DEPARTMENT: 部门级缓存，部门内共享
  * - USER: 用户级缓存，用户私有
- * 
+ *
  * @since 1.0.0
  */
 export enum CacheLevel {
   /** 平台级缓存 */
   PLATFORM = 'platform',
-  
+
   /** 租户级缓存 */
   TENANT = 'tenant',
-  
+
   /** 组织级缓存 */
   ORGANIZATION = 'organization',
-  
+
   /** 部门级缓存 */
   DEPARTMENT = 'department',
-  
+
   /** 用户级缓存 */
   USER = 'user',
 }
@@ -367,51 +377,51 @@ switch (level) {
 ```typescript
 /**
  * 缓存服务接口
- * 
+ *
  * @description 定义缓存的基本 CRUD 操作
- * 
+ *
  * @since 1.0.0
  */
 export interface ICacheService {
   /**
    * 获取缓存值
-   * 
+   *
    * @param namespace - 命名空间
    * @param key - 缓存键
    * @returns 缓存值，不存在返回 null
    */
   get<T>(namespace: string, key: string): Promise<T | null>;
-  
+
   /**
    * 设置缓存值
-   * 
+   *
    * @param namespace - 命名空间
    * @param key - 缓存键
    * @param value - 缓存值
    * @param ttl - 过期时间（秒），可选
    */
   set<T>(namespace: string, key: string, value: T, ttl?: number): Promise<void>;
-  
+
   /**
    * 删除缓存
-   * 
+   *
    * @param namespace - 命名空间
    * @param key - 缓存键
    */
   del(namespace: string, key: string): Promise<void>;
-  
+
   /**
    * 检查缓存是否存在
-   * 
+   *
    * @param namespace - 命名空间
    * @param key - 缓存键
    * @returns 存在返回 true，否则返回 false
    */
   exists(namespace: string, key: string): Promise<boolean>;
-  
+
   /**
    * 清空缓存
-   * 
+   *
    * @param pattern - 匹配模式（可选），默认清空所有
    */
   clear(pattern?: string): Promise<void>;
@@ -427,9 +437,9 @@ export interface ICacheService {
 ```typescript
 /**
  * Redis 服务接口
- * 
+ *
  * @description 管理 Redis 连接和基础操作
- * 
+ *
  * @since 1.0.0
  */
 export interface IRedisService {
@@ -437,23 +447,23 @@ export interface IRedisService {
    * 连接 Redis
    */
   connect(): Promise<void>;
-  
+
   /**
    * 断开 Redis 连接
    */
   disconnect(): Promise<void>;
-  
+
   /**
    * 获取 Redis 客户端
-   * 
+   *
    * @returns Redis 客户端实例
    * @throws {GeneralInternalServerException} Redis 未连接
    */
   getClient(): Redis;
-  
+
   /**
    * 健康检查
-   * 
+   *
    * @returns 连接状态
    */
   healthCheck(): Promise<boolean>;
@@ -471,19 +481,19 @@ export interface IRedisService {
 ```typescript
 /**
  * 缓存模块配置选项
- * 
+ *
  * @since 1.0.0
  */
 export interface CachingModuleOptions {
   /** Redis 连接配置 */
   redis: RedisOptions;
-  
+
   /** 默认 TTL（秒），默认 3600 */
   defaultTTL?: number;
-  
+
   /** 缓存键前缀，默认 'hl8:cache:' */
   keyPrefix?: string;
-  
+
   /** 是否启用指标监控，默认 true */
   enableMetrics?: boolean;
 }
@@ -498,25 +508,25 @@ export interface CachingModuleOptions {
 ```typescript
 /**
  * Redis 连接配置
- * 
+ *
  * @since 1.0.0
  */
 export interface RedisOptions {
   /** Redis 主机地址 */
   host: string;
-  
+
   /** Redis 端口，默认 6379 */
   port: number;
-  
+
   /** Redis 密码（可选） */
   password?: string;
-  
+
   /** Redis 数据库索引，默认 0 */
   db?: number;
-  
+
   /** 连接超时（毫秒），默认 10000 */
   connectTimeout?: number;
-  
+
   /** 重试策略（可选） */
   retryStrategy?: (times: number) => number | void;
 }
@@ -533,22 +543,22 @@ export interface RedisOptions {
 ```typescript
 /**
  * 缓存失效事件
- * 
+ *
  * @description 记录单个缓存键的失效
- * 
+ *
  * @since 1.0.0
  */
 export class CacheInvalidatedEvent {
   constructor(
     /** 缓存键 */
     public readonly key: string,
-    
+
     /** 缓存层级 */
     public readonly level: CacheLevel,
-    
+
     /** 失效原因 */
     public readonly reason: 'expired' | 'deleted' | 'evicted',
-    
+
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
   ) {}
@@ -570,22 +580,22 @@ export class CacheInvalidatedEvent {
 ```typescript
 /**
  * 缓存层级失效事件
- * 
+ *
  * @description 记录整个层级的缓存失效
- * 
+ *
  * @since 1.0.0
  */
 export class CacheLevelInvalidatedEvent {
   constructor(
     /** 失效的层级类型 */
     public readonly level: CacheLevel,
-    
+
     /** 层级标识符（如 tenantId、orgId） */
     public readonly identifier: string,
-    
+
     /** 删除的键数量 */
     public readonly deletedCount: number,
-    
+
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
   ) {}
@@ -609,25 +619,25 @@ export class CacheLevelInvalidatedEvent {
 ```typescript
 /**
  * 缓存指标
- * 
+ *
  * @since 1.0.0
  */
 export interface CacheMetrics {
   /** 缓存命中次数 */
   hits: number;
-  
+
   /** 缓存未命中次数 */
   misses: number;
-  
+
   /** 错误次数 */
   errors: number;
-  
+
   /** 缓存命中率（0-1） */
   hitRate: number;
-  
+
   /** 平均延迟（毫秒） */
   averageLatency: number;
-  
+
   /** 总操作次数 */
   totalOperations: number;
 }
@@ -679,16 +689,16 @@ console.log(`总操作: ${metrics.totalOperations}`);
 
 ## 数据验证规则汇总
 
-| 数据类型 | 验证规则 | 错误类型 |
-|---------|---------|---------|
-| CacheKey | 长度 ≤ 256 字符 | GeneralBadRequestException |
-| CacheKey | 仅允许字母、数字、:、_、- | GeneralBadRequestException |
-| CacheKey | 层级标识符必需 | GeneralBadRequestException |
-| CacheEntry | TTL ≥ 0 | GeneralBadRequestException |
-| CacheEntry | TTL ≤ 2,592,000 秒 | GeneralBadRequestException |
-| CacheEntry | 值大小 ≤ 1MB | GeneralBadRequestException |
-| Redis配置 | host 必需 | ConfigValidationException |
-| Redis配置 | port 在 1-65535 范围内 | ConfigValidationException |
+| 数据类型   | 验证规则                   | 错误类型                   |
+| ---------- | -------------------------- | -------------------------- |
+| CacheKey   | 长度 ≤ 256 字符            | GeneralBadRequestException |
+| CacheKey   | 仅允许字母、数字、:、\_、- | GeneralBadRequestException |
+| CacheKey   | 层级标识符必需             | GeneralBadRequestException |
+| CacheEntry | TTL ≥ 0                    | GeneralBadRequestException |
+| CacheEntry | TTL ≤ 2,592,000 秒         | GeneralBadRequestException |
+| CacheEntry | 值大小 ≤ 1MB               | GeneralBadRequestException |
+| Redis配置  | host 必需                  | ConfigValidationException  |
+| Redis配置  | port 在 1-65535 范围内     | ConfigValidationException  |
 
 ---
 
@@ -709,9 +719,9 @@ export type { ICacheService } from './cache-service.interface.js';
 export type { IRedisService } from './redis-service.interface.js';
 
 // 配置
-export type { 
-  CachingModuleOptions, 
-  CachingModuleAsyncOptions 
+export type {
+  CachingModuleOptions,
+  CachingModuleAsyncOptions,
 } from './cache-options.interface.js';
 export type { RedisOptions } from './redis-options.interface.js';
 

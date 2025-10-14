@@ -143,16 +143,16 @@
 
 ### 我想
 
-| 场景 | 推荐文档 | 时间 |
-|------|---------|------|
-| 快速开始使用配置 | CONFIG_GETTING_STARTED.md | 5分钟 |
-| 了解所有环境变量 | CONFIGURATION_GUIDE.md | 20分钟 |
-| 添加新配置 | CONFIGURATION_GUIDE.md → 添加新配置 | 10分钟 |
-| 理解配置架构 | CONFIG_ARCHITECTURE.md | 30分钟 |
-| 查找特定信息 | CONFIG_QUICK_REFERENCE.md | 5分钟 |
-| 图形化理解 | CONFIG_VISUAL_GUIDE.md | 15分钟 |
-| 了解设计原则 | WHY_SINGLE_CONFIG_SOURCE.md | 15分钟 |
-| 解决配置问题 | CONFIGURATION_GUIDE.md → 常见问题 | 10分钟 |
+| 场景             | 推荐文档                            | 时间   |
+| ---------------- | ----------------------------------- | ------ |
+| 快速开始使用配置 | CONFIG_GETTING_STARTED.md           | 5分钟  |
+| 了解所有环境变量 | CONFIGURATION_GUIDE.md              | 20分钟 |
+| 添加新配置       | CONFIGURATION_GUIDE.md → 添加新配置 | 10分钟 |
+| 理解配置架构     | CONFIG_ARCHITECTURE.md              | 30分钟 |
+| 查找特定信息     | CONFIG_QUICK_REFERENCE.md           | 5分钟  |
+| 图形化理解       | CONFIG_VISUAL_GUIDE.md              | 15分钟 |
+| 了解设计原则     | WHY_SINGLE_CONFIG_SOURCE.md         | 15分钟 |
+| 解决配置问题     | CONFIGURATION_GUIDE.md → 常见问题   | 10分钟 |
 
 ---
 
@@ -160,26 +160,26 @@
 
 ### 按类型分类
 
-| 类型 | 文档数量 | 文档列表 |
-|------|---------|---------|
-| **入门指南** | 1 | CONFIG_GETTING_STARTED.md |
-| **使用手册** | 1 | CONFIGURATION_GUIDE.md |
-| **架构文档** | 2 | CONFIG_ARCHITECTURE.md, CONFIG_VISUAL_GUIDE.md |
-| **参考手册** | 1 | CONFIG_QUICK_REFERENCE.md |
-| **缓存澄清** | 3 | CONFIG_TWO_CACHES.md, IMPORTANT_CACHE_CLARIFICATION.md, CONFIG_CACHE_EXPLAINED.md |
-| **索引导航** | 1 | CONFIG_INDEX.md |
-| **应用文档** | 4 | apps/fastify-api/ 下的 4 份文档 |
+| 类型         | 文档数量 | 文档列表                                                                          |
+| ------------ | -------- | --------------------------------------------------------------------------------- |
+| **入门指南** | 1        | CONFIG_GETTING_STARTED.md                                                         |
+| **使用手册** | 1        | CONFIGURATION_GUIDE.md                                                            |
+| **架构文档** | 2        | CONFIG_ARCHITECTURE.md, CONFIG_VISUAL_GUIDE.md                                    |
+| **参考手册** | 1        | CONFIG_QUICK_REFERENCE.md                                                         |
+| **缓存澄清** | 3        | CONFIG_TWO_CACHES.md, IMPORTANT_CACHE_CLARIFICATION.md, CONFIG_CACHE_EXPLAINED.md |
+| **索引导航** | 1        | CONFIG_INDEX.md                                                                   |
+| **应用文档** | 4        | apps/fastify-api/ 下的 4 份文档                                                   |
 
 **总计**：13 份完整的配置文档
 
 ### 按受众分类
 
-| 受众 | 推荐文档 |
-|------|---------|
-| **新用户** | CONFIG_GETTING_STARTED.md, CONFIGURATION_GUIDE.md |
-| **开发者** | CONFIGURATION_GUIDE.md, CONFIG_QUICK_REFERENCE.md |
+| 受众       | 推荐文档                                            |
+| ---------- | --------------------------------------------------- |
+| **新用户** | CONFIG_GETTING_STARTED.md, CONFIGURATION_GUIDE.md   |
+| **开发者** | CONFIGURATION_GUIDE.md, CONFIG_QUICK_REFERENCE.md   |
 | **架构师** | CONFIG_ARCHITECTURE.md, WHY_SINGLE_CONFIG_SOURCE.md |
-| **所有人** | CONFIG_INDEX.md (导航入口) |
+| **所有人** | CONFIG_INDEX.md (导航入口)                          |
 
 ---
 

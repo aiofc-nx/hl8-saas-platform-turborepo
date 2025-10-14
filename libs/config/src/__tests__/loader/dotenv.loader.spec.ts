@@ -7,7 +7,7 @@
  */
 
 import { dotenvLoader } from '../../lib/loader/dotenv.loader';
-import { createTestEnvVars, testAssertions } from '../test-utils';
+import { createTestEnvVars } from '../test-utils';
 
 describe('dotenvLoader', () => {
   let originalEnv: NodeJS.ProcessEnv;
@@ -130,7 +130,7 @@ describe('dotenvLoader', () => {
             .split('_')
             .map(
               (part) =>
-                part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+                part.charAt(0).toUpperCase() + part.slice(1).toLowerCase(),
             )
             .join(''),
       });

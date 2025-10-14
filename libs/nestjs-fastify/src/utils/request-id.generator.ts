@@ -1,33 +1,33 @@
 /**
  * 请求 ID 生成器
- * 
+ *
  * @description 提供自定义的请求 ID 生成功能，支持多种生成策略
- * 
+ *
  * ## 业务规则
- * 
+ *
  * ### 生成策略
  * - UUID v4: 标准 UUID 格式，全局唯一
  * - ULID: 时间排序的 ID，性能更好
  * - 自定义前缀: 支持业务前缀标识
  * - 时间戳: 基于时间戳的 ID
- * 
+ *
  * ### 性能考虑
  * - 生成速度要快，不能影响请求性能
  * - 支持高并发场景
  * - 内存占用要小
- * 
+ *
  * @example
  * ```typescript
  * // 使用默认 UUID 生成器
  * const requestId = RequestIdGenerator.generate();
- * 
+ *
  * // 使用自定义前缀
  * const requestId = RequestIdGenerator.generate('api');
- * 
+ *
  * // 使用 ULID 生成器
  * const requestId = RequestIdGenerator.generateULID();
  * ```
- * 
+ *
  * @since 1.0.0
  */
 import { randomBytes, randomUUID } from 'crypto';
@@ -62,22 +62,23 @@ export interface RequestIdGeneratorOptions {
 
 /**
  * 请求 ID 生成器类
- * 
+ *
  * @description 提供多种请求 ID 生成策略
  * @class RequestIdGenerator
  * @since 1.0.0
  */
 export class RequestIdGenerator {
-  private static readonly DEFAULT_OPTIONS: Required<RequestIdGeneratorOptions> = {
-    strategy: RequestIdStrategy.UUID,
-    prefix: '',
-    includeTimestamp: false,
-    randomLength: 8,
-  };
+  private static readonly DEFAULT_OPTIONS: Required<RequestIdGeneratorOptions> =
+    {
+      strategy: RequestIdStrategy.UUID,
+      prefix: '',
+      includeTimestamp: false,
+      randomLength: 8,
+    };
 
   /**
    * 生成请求 ID
-   * 
+   *
    * @param options 生成选项
    * @returns 请求 ID 字符串
    */
@@ -100,19 +101,21 @@ export class RequestIdGenerator {
 
   /**
    * 生成 UUID v4 格式的请求 ID
-   * 
+   *
    * @param options 生成选项
    * @returns UUID 字符串
    * @private
    */
-  private static generateUUID(options: Required<RequestIdGeneratorOptions>): string {
+  private static generateUUID(
+    options: Required<RequestIdGeneratorOptions>,
+  ): string {
     const uuid = randomUUID();
     return options.prefix ? `${options.prefix}-${uuid}` : uuid;
   }
 
   /**
    * 生成 ULID 格式的请求 ID
-   * 
+   *
    * @returns ULID 字符串
    * @private
    */
@@ -125,12 +128,14 @@ export class RequestIdGenerator {
 
   /**
    * 生成基于时间戳的请求 ID
-   * 
+   *
    * @param options 生成选项
    * @returns 时间戳 ID 字符串
    * @private
    */
-  private static generateTimestamp(options: Required<RequestIdGeneratorOptions>): string {
+  private static generateTimestamp(
+    options: Required<RequestIdGeneratorOptions>,
+  ): string {
     const timestamp = Date.now().toString(36);
     const random = randomBytes(options.randomLength).toString('hex');
     const id = `${timestamp}-${random}`;
@@ -139,19 +144,21 @@ export class RequestIdGenerator {
 
   /**
    * 生成带前缀的请求 ID
-   * 
+   *
    * @param options 生成选项
    * @returns 前缀 ID 字符串
    * @private
    */
-  private static generatePrefixed(options: Required<RequestIdGeneratorOptions>): string {
+  private static generatePrefixed(
+    options: Required<RequestIdGeneratorOptions>,
+  ): string {
     const uuid = randomUUID();
     return `${options.prefix}-${uuid}`;
   }
 
   /**
    * 快速生成请求 ID（默认配置）
-   * 
+   *
    * @returns 请求 ID 字符串
    */
   static quick(): string {
@@ -160,7 +167,7 @@ export class RequestIdGenerator {
 
   /**
    * 生成带业务前缀的请求 ID
-   * 
+   *
    * @param prefix 业务前缀
    * @returns 带前缀的请求 ID
    */
@@ -170,7 +177,7 @@ export class RequestIdGenerator {
 
   /**
    * 生成 ULID 格式的请求 ID
-   * 
+   *
    * @returns ULID 字符串
    */
   static ulid(): string {
@@ -179,7 +186,7 @@ export class RequestIdGenerator {
 
   /**
    * 验证请求 ID 格式
-   * 
+   *
    * @param id 请求 ID
    * @returns 是否为有效格式
    */
@@ -189,7 +196,8 @@ export class RequestIdGenerator {
     }
 
     // UUID 格式验证
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (uuidRegex.test(id)) {
       return true;
     }
@@ -207,7 +215,8 @@ export class RequestIdGenerator {
     }
 
     // 前缀格式验证
-    const prefixedRegex = /^[a-z0-9-]+-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const prefixedRegex =
+      /^[a-z0-9-]+-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (prefixedRegex.test(id)) {
       return true;
     }
@@ -217,17 +226,22 @@ export class RequestIdGenerator {
 
   /**
    * 从请求头中提取请求 ID
-   * 
+   *
    * @param headers 请求头
    * @returns 请求 ID 或 null
    */
-  static extractFromHeaders(headers: Record<string, string | string[] | undefined>): string | null {
-    const requestId = headers['x-request-id'] || headers['x-request-id'] || headers['request-id'];
-    
+  static extractFromHeaders(
+    headers: Record<string, string | string[] | undefined>,
+  ): string | null {
+    const requestId =
+      headers['x-request-id'] ||
+      headers['x-request-id'] ||
+      headers['request-id'];
+
     if (typeof requestId === 'string' && this.isValid(requestId)) {
       return requestId;
     }
-    
+
     return null;
   }
 }

@@ -1,7 +1,9 @@
+import {
+  createFastifyLoggerConfig,
+  EnterpriseFastifyAdapter,
+} from '@hl8/nestjs-fastify/index.js';
 import { NestFactory } from '@nestjs/core';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
-import { createFastifyLoggerConfig } from '@hl8/nestjs-fastify';
 import { AppModule } from './app.module.js';
 import { bootstrap } from './bootstrap.js';
 import { setupSwagger } from './swagger.js';

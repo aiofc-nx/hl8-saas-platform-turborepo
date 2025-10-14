@@ -71,4 +71,3 @@ export class PrometheusService {
     return this.registry;
   }
 }
-

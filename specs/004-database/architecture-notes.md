@@ -85,7 +85,7 @@ class DatabaseService {
     // 不应该在这里实现 Redis 缓存逻辑
     const cached = await this.redis.get(`user:${id}`);
     if (cached) return cached;
-    
+
     const user = await this.em.findOne(User, { id });
     await this.redis.set(`user:${id}`, user);
     return user;
@@ -96,7 +96,7 @@ class DatabaseService {
 class UserService {
   constructor(
     private readonly database: DatabaseService,
-    private readonly cache: CacheService,  // 来自 @hl8/caching
+    private readonly cache: CacheService, // 来自 @hl8/caching
   ) {}
 
   async getUser(id: string): Promise<User> {
@@ -161,7 +161,7 @@ class UserRepository {
 class User {
   @PrimaryKey()
   id: string;
-  
+
   @Property()
   name: string;
 }
@@ -188,8 +188,8 @@ class User {
 export class UserService {
   constructor(
     @InjectEntityManager()
-    private readonly em: EntityManager,  // 来自 @hl8/database
-    
+    private readonly em: EntityManager, // 来自 @hl8/database
+
     private readonly cache: CacheService, // 来自 @hl8/caching
   ) {}
 
@@ -235,12 +235,12 @@ export class DatabaseIsolationService {
   applyIsolationFilter<T>(qb: QueryBuilder<T>): QueryBuilder<T> {
     // 从 isolation 模块获取上下文
     const context = this.isolationService.getContext();
-    
+
     // 应用隔离过滤
     if (context.getTenantId()) {
       qb.andWhere({ tenantId: context.getTenantId() });
     }
-    
+
     return qb;
   }
 }
@@ -299,7 +299,7 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 @Injectable()
 export class ConnectionManager {
   constructor(
-    private readonly logger: FastifyLoggerService,  // 注入全局日志服务
+    private readonly logger: FastifyLoggerService, // 注入全局日志服务
   ) {}
 
   async connect(): Promise<void> {
@@ -333,10 +333,10 @@ export class ConnectionManager {
   "time": 1697123456789,
   "msg": "正在连接数据库...",
   "context": "ConnectionManager",
-  "tenantId": "tenant-123",      // 自动添加
-  "organizationId": "org-456",   // 自动添加
-  "userId": "user-001",          // 自动添加
-  "requestId": "req-abc-123",    // 自动添加
+  "tenantId": "tenant-123", // 自动添加
+  "organizationId": "org-456", // 自动添加
+  "userId": "user-001", // 自动添加
+  "requestId": "req-abc-123", // 自动添加
   "host": "localhost",
   "port": 5432
 }
@@ -361,11 +361,11 @@ import { AbstractHttpException } from '@hl8/exceptions';
 export class DatabaseConnectionException extends AbstractHttpException {
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_CONNECTION_ERROR',  // errorCode
-      '数据库连接错误',              // title
-      detail,                       // detail
-      503,                          // status
-      data                          // data (可选)
+      'DATABASE_CONNECTION_ERROR', // errorCode
+      '数据库连接错误', // title
+      detail, // detail
+      503, // status
+      data, // data (可选)
     );
   }
 }
@@ -488,14 +488,14 @@ libs/
 @Injectable()
 export class MetricsService {
   constructor(
-    private readonly redis: RedisService,  // ❌ 不应该依赖 Redis
+    private readonly redis: RedisService, // ❌ 不应该依赖 Redis
   ) {}
 
   async getQueryMetrics(): Promise<QueryMetrics> {
     // ❌ 不应该在 database 模块中使用 Redis
     const cached = await this.redis.get('db:metrics');
     if (cached) return cached;
-    
+
     const metrics = this.calculateMetrics();
     await this.redis.set('db:metrics', metrics, 60);
     return metrics;
@@ -541,12 +541,12 @@ export class MetricsService {
 export class UserService {
   constructor(
     @InjectEntityManager()
-    private readonly em: EntityManager,      // 来自 @hl8/database
-    
-    private readonly cache: CacheService,    // 来自 @hl8/caching
+    private readonly em: EntityManager, // 来自 @hl8/database
+
+    private readonly cache: CacheService, // 来自 @hl8/caching
   ) {}
 
-  @Transactional()  // 来自 @hl8/database
+  @Transactional() // 来自 @hl8/database
   async createUser(data: CreateUserDto): Promise<User> {
     // 1. 创建用户（使用 database）
     const user = new User(data);
@@ -560,9 +560,13 @@ export class UserService {
 
   async getUser(id: string): Promise<User> {
     // 缓存策略由应用层决定
-    return this.cache.wrap(`user:${id}`, async () => {
-      return this.em.findOne(User, { id });
-    }, { ttl: 300 });
+    return this.cache.wrap(
+      `user:${id}`,
+      async () => {
+        return this.em.findOne(User, { id });
+      },
+      { ttl: 300 },
+    );
   }
 }
 ```
@@ -584,10 +588,10 @@ const poolStats = await healthCheckService.getPoolStats();
 @Cron('*/5 * * * *')  // 每 5 分钟
 async collectMetrics() {
   const stats = await this.healthCheckService.getPoolStats();
-  
+
   // 存储到 Redis（使用 @hl8/caching）
   await this.cache.set(`metrics:db:pool:${Date.now()}`, stats, { ttl: 86400 });
-  
+
   // 或发送到监控系统
   await this.monitoringService.sendMetrics('database.pool', stats);
 }
@@ -601,12 +605,12 @@ async collectMetrics() {
 
 **职责分工**：
 
-| 步骤 | 模块 | 职责 |
-|------|------|------|
-| 1. 获取隔离上下文 | @hl8/nestjs-isolation | 从请求中提取租户 ID |
-| 2. 查询数据库 | @hl8/database | 提供 EntityManager，应用隔离过滤 |
-| 3. 缓存结果 | @hl8/caching | 存储到 Redis |
-| 4. 返回数据 | 应用层 | 编排上述步骤 |
+| 步骤              | 模块                  | 职责                             |
+| ----------------- | --------------------- | -------------------------------- |
+| 1. 获取隔离上下文 | @hl8/nestjs-isolation | 从请求中提取租户 ID              |
+| 2. 查询数据库     | @hl8/database         | 提供 EntityManager，应用隔离过滤 |
+| 3. 缓存结果       | @hl8/caching          | 存储到 Redis                     |
+| 4. 返回数据       | 应用层                | 编排上述步骤                     |
 
 **代码示例**：
 
@@ -614,8 +618,8 @@ async collectMetrics() {
 @Injectable()
 export class UserService {
   constructor(
-    private readonly em: EntityManager,          // @hl8/database
-    private readonly cache: CacheService,        // @hl8/caching
+    private readonly em: EntityManager, // @hl8/database
+    private readonly cache: CacheService, // @hl8/caching
     private readonly isolation: IsolationService, // @hl8/nestjs-isolation
   ) {}
 
@@ -643,7 +647,7 @@ export class UserService {
 ```typescript
 @Injectable()
 export class UserService {
-  @Transactional()  // @hl8/database 提供
+  @Transactional() // @hl8/database 提供
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     // 1. 数据库操作（@hl8/database）
     const user = await this.em.findOneOrFail(User, { id });
@@ -672,8 +676,8 @@ export class UserService {
 - ✅ @hl8/exceptions - 异常处理
 - ✅ @hl8/nestjs-isolation - 数据隔离
 - ✅ @hl8/isolation-model - 隔离领域模型
-- ✅ @mikro-orm/* - ORM 核心
-- ✅ @nestjs/* - NestJS 框架
+- ✅ @mikro-orm/\* - ORM 核心
+- ✅ @nestjs/\* - NestJS 框架
 - ✅ nestjs-cls - 上下文管理
 
 **不应该依赖**：

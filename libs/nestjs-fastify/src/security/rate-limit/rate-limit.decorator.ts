@@ -1,11 +1,11 @@
 /**
  * @fileoverview 速率限制装饰器
- * 
+ *
  * @description
  * 提供方法和类级别的速率限制装饰器，用于声明式配置限流策略
- * 
+ *
  * ## 使用场景
- * 
+ *
  * ### 场景 1: 控制器级别限流
  * ```typescript
  * @Controller('users')
@@ -14,7 +14,7 @@
  *   // 所有方法继承控制器的限流配置
  * }
  * ```
- * 
+ *
  * ### 场景 2: 方法级别限流
  * ```typescript
  * @Controller('users')
@@ -26,7 +26,7 @@
  *   }
  * }
  * ```
- * 
+ *
  * ### 场景 3: 多层级限流
  * ```typescript
  * @Controller('users')
@@ -39,37 +39,40 @@
  *   }
  * }
  * ```
- * 
+ *
  * @module security/rate-limit
  */
 
 import { SetMetadata, applyDecorators } from '@nestjs/common';
-import type { RateLimitOptions, RATE_LIMIT_METADATA_KEY } from './types/rate-limit-options.js';
+import type {
+  RATE_LIMIT_METADATA_KEY,
+  RateLimitOptions,
+} from './types/rate-limit-options.js';
 
 /**
  * 速率限制装饰器
- * 
+ *
  * @description
  * 为控制器或方法设置速率限制配置
- * 
+ *
  * ## 业务规则
- * 
+ *
  * ### 优先级规则
  * - 方法级别配置 > 控制器级别配置 > 全局配置
  * - 方法级别配置会完全覆盖控制器级别配置
- * 
+ *
  * ### 配置合并规则
  * - 不支持部分覆盖，必须提供完整配置
  * - 如果方法没有装饰器，继承控制器配置
  * - 如果控制器没有装饰器，使用全局配置
- * 
+ *
  * ### 限流策略
  * - 支持 IP、租户、用户、自定义四种策略
  * - 租户和用户策略需要配合 isolation-model 使用
  * - 自定义策略需要提供 keyGenerator 函数
- * 
+ *
  * ## 参数说明
- * 
+ *
  * @param options - 速率限制选项
  * @param options.max - 时间窗口内最大请求数
  * @param options.timeWindow - 时间窗口（毫秒）
@@ -79,26 +82,26 @@ import type { RateLimitOptions, RATE_LIMIT_METADATA_KEY } from './types/rate-lim
  * @param options.skipOnError - Redis 错误时是否跳过限流（默认 true）
  * @param options.errorMessage - 自定义错误消息
  * @param options.addHeaders - 是否在响应头中添加限流信息（默认 true）
- * 
+ *
  * @returns 装饰器函数
- * 
+ *
  * @example
  * ```typescript
  * // 示例 1: IP 级别限流
  * @Controller('api')
  * @RateLimit({ max: 100, timeWindow: 60000 })
  * export class ApiController {}
- * 
+ *
  * // 示例 2: 租户级别限流
  * @Controller('tenants')
- * @RateLimit({ 
- *   max: 1000, 
- *   timeWindow: 60000, 
+ * @RateLimit({
+ *   max: 1000,
+ *   timeWindow: 60000,
  *   strategy: 'tenant',
  *   redis: redisClient,
  * })
  * export class TenantController {}
- * 
+ *
  * // 示例 3: 自定义限流
  * @Controller('custom')
  * export class CustomController {
@@ -111,7 +114,7 @@ import type { RateLimitOptions, RATE_LIMIT_METADATA_KEY } from './types/rate-lim
  *   })
  *   create() {}
  * }
- * 
+ *
  * // 示例 4: 多层级限流
  * @Controller('users')
  * @RateLimit({ max: 1000, timeWindow: 60000 })
@@ -120,13 +123,13 @@ import type { RateLimitOptions, RATE_LIMIT_METADATA_KEY } from './types/rate-lim
  *   list() {
  *     // 继承控制器的 1000/分钟 限制
  *   }
- * 
+ *
  *   @Post()
  *   @RateLimit({ max: 10, timeWindow: 60000 })
  *   create() {
  *     // 使用方法级别的 10/分钟 限制
  *   }
- * 
+ *
  *   @Delete(':id')
  *   @RateLimit({ max: 1, timeWindow: 60000 })
  *   delete() {
@@ -134,17 +137,19 @@ import type { RateLimitOptions, RATE_LIMIT_METADATA_KEY } from './types/rate-lim
  *   }
  * }
  * ```
- * 
+ *
  * @remarks
  * - 装饰器只是设置元数据，实际限流由 RateLimitGuard 执行
  * - 需要配合 RateLimitGuard 使用才能生效
  * - 建议在全局或模块级别注册 RateLimitGuard
- * 
+ *
  * @see RateLimitGuard
  * @see RateLimitService
  * @see RateLimitOptions
  */
-export const RateLimit = (options: Partial<RateLimitOptions>): MethodDecorator & ClassDecorator => {
+export const RateLimit = (
+  options: Partial<RateLimitOptions>,
+): MethodDecorator & ClassDecorator => {
   // 验证必需参数
   if (!options.max || options.max <= 0) {
     throw new Error('RateLimit 装饰器必须指定 max 参数且 > 0');
@@ -173,20 +178,23 @@ export const RateLimit = (options: Partial<RateLimitOptions>): MethodDecorator &
 
   // 使用 applyDecorators 支持多个装饰器组合
   return applyDecorators(
-    SetMetadata('rate-limit:options' as typeof RATE_LIMIT_METADATA_KEY, fullOptions),
+    SetMetadata(
+      'rate-limit:options' as typeof RATE_LIMIT_METADATA_KEY,
+      fullOptions,
+    ),
   );
 };
 
 /**
  * IP 级别速率限制装饰器（快捷方式）
- * 
+ *
  * @description
  * 基于客户端 IP 地址的速率限制
- * 
+ *
  * @param max - 时间窗口内最大请求数
  * @param timeWindow - 时间窗口（毫秒）
  * @returns 装饰器函数
- * 
+ *
  * @example
  * ```typescript
  * @Controller('api')
@@ -194,7 +202,10 @@ export const RateLimit = (options: Partial<RateLimitOptions>): MethodDecorator &
  * export class ApiController {}
  * ```
  */
-export const RateLimitByIp = (max: number, timeWindow: number): MethodDecorator & ClassDecorator => {
+export const RateLimitByIp = (
+  max: number,
+  timeWindow: number,
+): MethodDecorator & ClassDecorator => {
   return RateLimit({
     max,
     timeWindow,
@@ -204,26 +215,29 @@ export const RateLimitByIp = (max: number, timeWindow: number): MethodDecorator 
 
 /**
  * 租户级别速率限制装饰器（快捷方式）
- * 
+ *
  * @description
  * 基于租户 ID 的速率限制，需要配合 isolation-model 使用
- * 
+ *
  * @param max - 时间窗口内最大请求数
  * @param timeWindow - 时间窗口（毫秒）
  * @returns 装饰器函数
- * 
+ *
  * @example
  * ```typescript
  * @Controller('tenants')
  * @RateLimitByTenant(1000, 60000)  // 1000 次/分钟/租户
  * export class TenantController {}
  * ```
- * 
+ *
  * @remarks
  * - 需要请求头包含 X-Tenant-Id
  * - 如果缺少 X-Tenant-Id，降级为 IP 限流
  */
-export const RateLimitByTenant = (max: number, timeWindow: number): MethodDecorator & ClassDecorator => {
+export const RateLimitByTenant = (
+  max: number,
+  timeWindow: number,
+): MethodDecorator & ClassDecorator => {
   return RateLimit({
     max,
     timeWindow,
@@ -233,14 +247,14 @@ export const RateLimitByTenant = (max: number, timeWindow: number): MethodDecora
 
 /**
  * 用户级别速率限制装饰器（快捷方式）
- * 
+ *
  * @description
  * 基于用户 ID 的速率限制，需要配合 isolation-model 使用
- * 
+ *
  * @param max - 时间窗口内最大请求数
  * @param timeWindow - 时间窗口（毫秒）
  * @returns 装饰器函数
- * 
+ *
  * @example
  * ```typescript
  * @Controller('users')
@@ -250,17 +264,19 @@ export const RateLimitByTenant = (max: number, timeWindow: number): MethodDecora
  *   create() {}
  * }
  * ```
- * 
+ *
  * @remarks
  * - 需要请求头包含 X-User-Id
  * - 如果缺少 X-User-Id，降级为租户限流
  * - 如果租户也缺少，降级为 IP 限流
  */
-export const RateLimitByUser = (max: number, timeWindow: number): MethodDecorator & ClassDecorator => {
+export const RateLimitByUser = (
+  max: number,
+  timeWindow: number,
+): MethodDecorator & ClassDecorator => {
   return RateLimit({
     max,
     timeWindow,
     strategy: 'user',
   });
 };
-

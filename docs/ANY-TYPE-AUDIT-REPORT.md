@@ -2,7 +2,7 @@
 
 **日期**: 2025-10-12  
 **宪章版本**: v1.5.0  
-**检查范围**: libs/* 所有核心库  
+**检查范围**: libs/\* 所有核心库  
 **状态**: ✅ 审计完成
 
 ---
@@ -30,7 +30,7 @@
 {
   "@typescript-eslint/no-explicit-any": "error",
   "overrides": {
-    "**/*.spec.ts": "off"  // 测试文件可以使用 any
+    "**/*.spec.ts": "off" // 测试文件可以使用 any
   }
 }
 ```
@@ -39,16 +39,16 @@
 
 ## 📊 检查结果统计
 
-| 库 | 源代码 any | 测试代码 any | 总计 | 状态 | 符合度 |
-|---|---|---|---|---|---|
-| **isolation-model** | 0 | 0 | 0 | ✅ | 100% |
-| **nestjs-isolation** | 0 | 0 | 0 | ✅ | 100% |
-| **nestjs-caching** | 27 | 5 | 32 | ✅ | 100% 合理 |
-| **config** | 23 | 11 | 34 | 🟡 | 需审查 |
-| **nestjs-fastify** | 8 | 0 | 8 | 🟡 | 需审查 |
-| **nestjs-infra** | 30 | 6 | 36 | 🟡 | 需审查 |
-| **platform** | 4 | 0 | 4 | 🟡 | 需审查 |
-| **总计** | **92** | **22** | **114** | 🟡 | - |
+| 库                   | 源代码 any | 测试代码 any | 总计    | 状态 | 符合度    |
+| -------------------- | ---------- | ------------ | ------- | ---- | --------- |
+| **isolation-model**  | 0          | 0            | 0       | ✅   | 100%      |
+| **nestjs-isolation** | 0          | 0            | 0       | ✅   | 100%      |
+| **nestjs-caching**   | 27         | 5            | 32      | ✅   | 100% 合理 |
+| **config**           | 23         | 11           | 34      | 🟡   | 需审查    |
+| **nestjs-fastify**   | 8          | 0            | 8       | 🟡   | 需审查    |
+| **nestjs-infra**     | 30         | 6            | 36      | 🟡   | 需审查    |
+| **platform**         | 4          | 0            | 4       | 🟡   | 需审查    |
+| **总计**             | **92**     | **22**       | **114** | 🟡   | -         |
 
 ---
 
@@ -100,7 +100,7 @@ keyGenerator?: (...args: any[]) => string
 condition?: (...args: any[]) => boolean
 ```
 
-**位置**: decorators/*.ts, interceptors/cache.interceptor.ts  
+**位置**: decorators/\*.ts, interceptors/cache.interceptor.ts  
 **理由**: 装饰器必须支持任意方法签名
 
 #### 2. 拦截器参数（5处）✅ 符合宪章
@@ -148,10 +148,10 @@ warn(message: string, context?: any)
 #### 6. 测试 Mock（5处）✅ 允许
 
 ```typescript
-mockService: any
+mockService: any;
 ```
 
-**位置**: *.spec.ts  
+**位置**: \*.spec.ts  
 **理由**: 测试文件允许使用 any
 
 ---
@@ -311,8 +311,8 @@ mockService: any
 ```typescript
 // 宪章允许：高阶函数和装饰器
 interface CacheableOptions {
-  keyGenerator?: (...args: any[]) => string;  // ✅ 必须支持任意签名
-  condition?: (...args: any[]) => boolean;    // ✅ 必须支持任意签名
+  keyGenerator?: (...args: any[]) => string; // ✅ 必须支持任意签名
+  condition?: (...args: any[]) => boolean; // ✅ 必须支持任意签名
 }
 ```
 
@@ -320,8 +320,11 @@ interface CacheableOptions {
 
 ```typescript
 // 宪章允许：泛型约束中的函数类型
-type ReturnType<T extends (...args: any[]) => any> = 
-  T extends (...args: any[]) => infer R ? R : never;
+type ReturnType<T extends (...args: any[]) => any> = T extends (
+  ...args: any[]
+) => infer R
+  ? R
+  : never;
 ```
 
 #### ✅ 序列化工具
@@ -341,7 +344,7 @@ function serialize(value: any): string {
 // ✅ 正确的注释格式
 function process(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器必须支持任意方法签名
-  fn: (...args: any[]) => any
+  fn: (...args: any[]) => any,
 ): void {
   // ...
 }

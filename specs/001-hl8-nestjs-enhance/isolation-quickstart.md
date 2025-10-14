@@ -66,24 +66,24 @@ Isolation 数据隔离模块提供企业级多层级数据隔离功能，拆分�
 ```typescript
 // libs/nestjs-caching/src/cache.service.ts
 import { Injectable, Inject } from '@nestjs/common';
-import { IsolationContext } from '@hl8/isolation-model';  // 零依赖！
+import { IsolationContext } from '@hl8/isolation-model'; // 零依赖！
 import type { IIsolationContextProvider } from '@hl8/isolation-model';
 
 @Injectable()
 export class CacheService {
   constructor(
-    @Inject('ISOLATION_CONTEXT_PROVIDER') 
+    @Inject('ISOLATION_CONTEXT_PROVIDER')
     private readonly contextProvider: IIsolationContextProvider,
   ) {}
-  
+
   async get<T>(namespace: string, key: string): Promise<T | null> {
     // 获取隔离上下文（使用接口，零依赖）
-    const context = this.contextProvider.getIsolationContext() 
-      ?? IsolationContext.platform();
-    
+    const context =
+      this.contextProvider.getIsolationContext() ?? IsolationContext.platform();
+
     // 使用领域模型生成缓存键
     const cacheKey = context.buildCacheKey(namespace, key);
-    
+
     // 执行缓存操作
     return this.redis.get(cacheKey);
   }
@@ -104,7 +104,7 @@ export class CacheService {
 ```typescript
 // libs/nestjs-logging/src/logger.service.ts
 import { Injectable, Inject } from '@nestjs/common';
-import { IsolationContext } from '@hl8/isolation-model';  // 零依赖！
+import { IsolationContext } from '@hl8/isolation-model'; // 零依赖！
 import type { IIsolationContextProvider } from '@hl8/isolation-model';
 
 @Injectable()
@@ -113,15 +113,15 @@ export class LoggerService {
     @Inject('ISOLATION_CONTEXT_PROVIDER')
     private readonly contextProvider: IIsolationContextProvider,
   ) {}
-  
+
   info(message: string, data?: any): void {
     // 获取隔离上下文
-    const context = this.contextProvider.getIsolationContext()
-      ?? IsolationContext.platform();
-    
+    const context =
+      this.contextProvider.getIsolationContext() ?? IsolationContext.platform();
+
     // 使用领域模型生成日志上下文
     const logContext = context.buildLogContext();
-    
+
     // 记录日志
     this.pino.info({
       ...logContext,
@@ -147,9 +147,9 @@ import { IsolationModule } from '@hl8/nestjs-isolation';
 @Module({
   imports: [
     IsolationModule.forRoot({
-      global: true,                      // 全局模块
-      autoRegisterMiddleware: true,      // 自动注册中间件
-      extractionStrategy: 'header',      // 从请求头提取
+      global: true, // 全局模块
+      autoRegisterMiddleware: true, // 自动注册中间件
+      extractionStrategy: 'header', // 从请求头提取
     }),
   ],
 })
@@ -179,21 +179,19 @@ import { IsolationContextService } from '@hl8/nestjs-isolation';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly isolationService: IsolationContextService,
-  ) {}
-  
+  constructor(private readonly isolationService: IsolationContextService) {}
+
   async getUsers() {
     // 获取当前请求的隔离上下文
     const context = this.isolationService.getIsolationContext();
-    
+
     if (!context) {
       throw new BadRequestException('隔离上下文缺失');
     }
-    
+
     // 使用上下文构建查询条件
     const where = context.buildWhereClause();
-    
+
     // 自动隔离查询
     return this.userRepository.find({ where });
   }
@@ -213,7 +211,7 @@ import { RequireTenant } from '@hl8/nestjs-isolation';
 @Controller('tenants')
 export class TenantController {
   @Get()
-  @RequireTenant()  // 自动验证租户上下文
+  @RequireTenant() // 自动验证租户上下文
   async getTenantInfo() {
     // 如果请求头缺少 X-Tenant-Id，会自动返回 403 错误
     return { message: '租户信息' };
@@ -234,7 +232,7 @@ export class UserController {
   async getUsers(@CurrentContext() context: IsolationContext) {
     // 直接使用上下文
     console.log(`当前隔离级别: ${context.getIsolationLevel()}`);
-    
+
     const where = context.buildWhereClause();
     return this.userService.find(where);
   }
@@ -249,12 +247,12 @@ export class UserController {
 
 ```typescript
 // 任何 TypeScript 环境（浏览器、Node.js、Deno）
-import { 
-  IsolationContext, 
-  TenantId, 
+import {
+  IsolationContext,
+  TenantId,
   OrganizationId,
-  IsolationLevel 
-} from '@hl8/isolation-model';  // 零依赖！
+  IsolationLevel,
+} from '@hl8/isolation-model'; // 零依赖！
 
 // 创建隔离上下文
 const tenantId = TenantId.create('t123');
@@ -262,18 +260,18 @@ const orgId = OrganizationId.create('o456');
 const context = IsolationContext.organization(tenantId, orgId);
 
 // 使用领域模型
-console.log(context.getIsolationLevel());  // IsolationLevel.ORGANIZATION
-console.log(context.buildCacheKey('user', 'list'));  
+console.log(context.getIsolationLevel()); // IsolationLevel.ORGANIZATION
+console.log(context.buildCacheKey('user', 'list'));
 // 输出: tenant:t123:org:o456:user:list
 
 // 判断权限
 const dataContext = IsolationContext.tenant(tenantId);
 const canAccess = context.canAccess(
   dataContext,
-  true,  // 共享数据
-  SharingLevel.TENANT
+  true, // 共享数据
+  SharingLevel.TENANT,
 );
-console.log(canAccess);  // true
+console.log(canAccess); // true
 ```
 
 ---
@@ -293,7 +291,7 @@ class JwtExtractionStrategy implements IExtractionStrategy {
   extract(request: any) {
     const token = request.headers.authorization?.replace('Bearer ', '');
     const payload = this.jwtService.decode(token);
-    
+
     return {
       tenantId: payload.tid,
       organizationId: payload.oid,
@@ -322,27 +320,34 @@ export class AppModule {}
 
 ```typescript
 // libs/isolation-model/src/entities/isolation-context.entity.spec.ts
-import { IsolationContext, TenantId, IsolationLevel } from '@hl8/isolation-model';
+import {
+  IsolationContext,
+  TenantId,
+  IsolationLevel,
+} from '@hl8/isolation-model';
 
 describe('IsolationContext', () => {
   it('should create platform level context', () => {
     const context = IsolationContext.platform();
-    
+
     expect(context.isEmpty()).toBe(true);
     expect(context.getIsolationLevel()).toBe(IsolationLevel.PLATFORM);
   });
-  
+
   it('should build cache key correctly', () => {
     const context = IsolationContext.tenant(TenantId.create('t123'));
     const cacheKey = context.buildCacheKey('user', 'list');
-    
+
     expect(cacheKey).toBe('tenant:t123:user:list');
   });
-  
+
   it('should validate organization context', () => {
     // 组织级上下文必须有租户
     expect(() => {
-      IsolationContext.organization(undefined as any, OrganizationId.create('o456'));
+      IsolationContext.organization(
+        undefined as any,
+        OrganizationId.create('o456'),
+      );
     }).toThrow('组织级上下文必须包含租户 ID');
   });
 });
@@ -353,21 +358,24 @@ describe('IsolationContext', () => {
 ```typescript
 // libs/nestjs-isolation/__tests__/integration/context-extraction.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
-import { IsolationModule, IsolationContextService } from '@hl8/nestjs-isolation';
+import {
+  IsolationModule,
+  IsolationContextService,
+} from '@hl8/nestjs-isolation';
 import { IsolationLevel } from '@hl8/isolation-model';
 
 describe('Context Extraction', () => {
   let module: TestingModule;
   let service: IsolationContextService;
-  
+
   beforeAll(async () => {
     module = await Test.createTestingModule({
       imports: [IsolationModule.forRoot()],
     }).compile();
-    
+
     service = module.get<IsolationContextService>(IsolationContextService);
   });
-  
+
   it('should extract tenant context from headers', async () => {
     // 模拟请求
     const request = {
@@ -375,10 +383,10 @@ describe('Context Extraction', () => {
         'x-tenant-id': 't123',
       },
     };
-    
+
     // 提取并设置上下文
     // ... (需要配合中间件测试)
-    
+
     const context = service.getIsolationContext();
     expect(context?.getIsolationLevel()).toBe(IsolationLevel.TENANT);
   });
@@ -397,7 +405,7 @@ import { IsolationContext } from '@hl8/isolation-model';
 const context = IsolationContext.department(
   TenantId.create('t123'),
   OrganizationId.create('o456'),
-  DepartmentId.create('d789')
+  DepartmentId.create('d789'),
 );
 
 // 生成 WHERE 子句
@@ -433,7 +441,7 @@ import { IsolationContext } from '@hl8/isolation-model';
 
 const context = IsolationContext.organization(
   TenantId.create('t123'),
-  OrganizationId.create('o456')
+  OrganizationId.create('o456'),
 );
 
 // 生成日志上下文
@@ -457,20 +465,20 @@ import { IsolationContext, SharingLevel } from '@hl8/isolation-model';
 const userContext = IsolationContext.department(
   TenantId.create('t123'),
   OrganizationId.create('o456'),
-  DepartmentId.create('d789')
+  DepartmentId.create('d789'),
 );
 
 // 数据上下文（组织级共享）
 const dataContext = IsolationContext.organization(
   TenantId.create('t123'),
-  OrganizationId.create('o456')
+  OrganizationId.create('o456'),
 );
 
 // 检查权限
 const canAccess = userContext.canAccess(
   dataContext,
-  true,  // 共享数据
-  SharingLevel.ORGANIZATION
+  true, // 共享数据
+  SharingLevel.ORGANIZATION,
 );
 
 if (canAccess) {
@@ -516,9 +524,9 @@ import { IsolationContext } from '@hl8/isolation-model';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  
+
   @Get()
-  @RequireTenant()  // 自动验证租户上下文
+  @RequireTenant() // 自动验证租户上下文
   async getUsers(@CurrentContext() context: IsolationContext) {
     // 使用领域模型
     const where = context.buildWhereClause();
@@ -535,17 +543,15 @@ import { IsolationContextService } from '@hl8/nestjs-isolation';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly isolationService: IsolationContextService,
-  ) {}
-  
+  constructor(private readonly isolationService: IsolationContextService) {}
+
   async findAll(where?: any) {
     // 如果没有提供 where，从上下文生成
     if (!where) {
       const context = this.isolationService.getIsolationContext();
       where = context?.buildWhereClause() ?? {};
     }
-    
+
     return this.userRepository.find({ where });
   }
 }
@@ -621,7 +627,7 @@ constructor(
 
 ```typescript
 // ✅ 推荐：提供默认上下文
-const context = this.contextProvider.getIsolationContext() 
+const context = this.contextProvider.getIsolationContext()
   ?? IsolationContext.platform();
 
 // ❌ 避免：假设上下文总是存在

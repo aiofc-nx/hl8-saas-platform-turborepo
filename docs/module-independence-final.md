@@ -30,7 +30,7 @@ export {
 
 ```typescript
 // libs/nestjs-fastify/src/index.ts
-export * from './core/index.js';  // ❌ 混淆了职责边界
+export * from './core/index.js'; // ❌ 混淆了职责边界
 ```
 
 ### 问题分析
@@ -46,10 +46,10 @@ export * from './core/index.js';  // ❌ 混淆了职责边界
 
 ```typescript
 // 用户不知道这些模块的真实来源
-import { 
-  FastifyExceptionModule,  // Fastify 专用
-  CachingModule,           // 实际来自 nestjs-infra？
-  IsolationModule          // 实际来自 nestjs-infra？
+import {
+  FastifyExceptionModule, // Fastify 专用
+  CachingModule, // 实际来自 nestjs-infra？
+  IsolationModule, // 实际来自 nestjs-infra？
 } from '@hl8/nestjs-fastify';
 ```
 
@@ -91,12 +91,12 @@ export const version = '0.1.0';
 ```typescript
 // ✅ 明确的分离导入
 import {
-  FastifyExceptionModule,    // Fastify 专用
+  FastifyExceptionModule, // Fastify 专用
   FastifyLoggingModule,
 } from '@hl8/nestjs-fastify';
 
 import {
-  CachingModule,              // NestJS 通用
+  CachingModule, // NestJS 通用
   IsolationModule,
   CachingModuleConfig,
 } from '@hl8/nestjs-infra';
@@ -131,12 +131,12 @@ apps/fastify-api
 
 ### 职责明确 ✅
 
-| 包 | 职责 | 依赖 |
-|---|------|------|
-| `@hl8/platform` | 纯业务逻辑 | 无 |
-| `@hl8/nestjs-infra` | NestJS 通用模块 | `@hl8/platform` |
+| 包                    | 职责             | 依赖                |
+| --------------------- | ---------------- | ------------------- |
+| `@hl8/platform`       | 纯业务逻辑       | 无                  |
+| `@hl8/nestjs-infra`   | NestJS 通用模块  | `@hl8/platform`     |
 | `@hl8/nestjs-fastify` | Fastify 专用优化 | `@hl8/nestjs-infra` |
-| `apps/fastify-api` | 应用层 | 两个包 |
+| `apps/fastify-api`    | 应用层           | 两个包              |
 
 ### 导入路径清晰 ✅
 
@@ -248,27 +248,27 @@ libs/nestjs-fastify/src/
 
 ```typescript
 // 1. 从 @hl8/platform 导入核心业务逻辑
-import { 
-  EntityId, 
-  TenantId, 
+import {
+  EntityId,
+  TenantId,
   IsolationContext,
-  IsolationLevel 
+  IsolationLevel,
 } from '@hl8/platform';
 
 // 2. 从 @hl8/nestjs-infra 导入 NestJS 通用模块
-import { 
+import {
   CachingModule,
   IsolationModule,
   TypedConfigModule,
-  LoggingModule 
+  LoggingModule,
 } from '@hl8/nestjs-infra';
 
 // 3. 从 @hl8/nestjs-fastify 导入 Fastify 专用模块
-import { 
+import {
   EnterpriseFastifyAdapter,
   FastifyExceptionModule,
   FastifyLoggingModule,
-  HealthCheckService 
+  HealthCheckService,
 } from '@hl8/nestjs-fastify';
 ```
 
@@ -286,14 +286,14 @@ import { EnterpriseFastifyAdapter } from '@hl8/nestjs-infra';
 
 ## 🎯 验收标准
 
-| 标准 | 状态 | 说明 |
-|------|------|------|
-| 删除重新导出 | ✅ | `core/index.ts` 已删除 |
-| 分离导入路径 | ✅ | 应用从两个包分别导入 |
-| 构建成功 | ✅ | 所有包构建无错误 |
-| 应用启动 | ✅ | 正常启动在 3001 端口 |
-| 职责清晰 | ✅ | 每个包职责明确 |
-| 文档更新 | ✅ | 添加导入指南 |
+| 标准         | 状态 | 说明                   |
+| ------------ | ---- | ---------------------- |
+| 删除重新导出 | ✅   | `core/index.ts` 已删除 |
+| 分离导入路径 | ✅   | 应用从两个包分别导入   |
+| 构建成功     | ✅   | 所有包构建无错误       |
+| 应用启动     | ✅   | 正常启动在 3001 端口   |
+| 职责清晰     | ✅   | 每个包职责明确         |
+| 文档更新     | ✅   | 添加导入指南           |
 
 ---
 

@@ -79,9 +79,9 @@ libs/caching 的业务数据缓存
 
    ```typescript
    TypedConfigModule.forRoot({
-     schema: AppConfig,  // 传入配置类
-     load: [dotenvLoader()],  // 配置加载器
-   })
+     schema: AppConfig, // 传入配置类
+     load: [dotenvLoader()], // 配置加载器
+   });
    ```
 
 2. **配置加载器**
@@ -213,9 +213,7 @@ import {
   RateLimitModuleConfig,
 } from '@hl8/nestjs-fastify';
 
-import {
-  CachingModuleConfig,
-} from '@hl8/caching';
+import { CachingModuleConfig } from '@hl8/caching';
 
 // 3. 定义应用配置类
 export class AppConfig {
@@ -268,22 +266,22 @@ export class AppConfig {
 ```
 1. 定义配置类
    └─> AppConfig (组合 LoggingConfig, CachingModuleConfig...)
-   
+
 2. 注册配置模块
    └─> TypedConfigModule.forRoot({
          schema: AppConfig,
          load: [dotenvLoader()]
        })
-   
+
 3. 加载环境变量
    └─> .env 文件 → dotenvLoader 读取
-   
+
 4. 类型转换
    └─> class-transformer 转换类型
-   
+
 5. 验证配置
    └─> class-validator 验证规则
-   
+
 6. 注入使用
    └─> constructor(private config: AppConfig) {}
 ```
@@ -342,7 +340,9 @@ hl8-saas-platform-turborepo/
 ```typescript
 // ✅ 正确：在业务库中定义
 // libs/caching/src/config/caching.config.ts
-export class CachingModuleConfig { /* ... */ }
+export class CachingModuleConfig {
+  /* ... */
+}
 
 // ✅ 正确：在应用中导入使用
 // apps/fastify-api/src/config/app.config.ts
@@ -350,7 +350,9 @@ import { CachingModuleConfig } from '@hl8/caching';
 
 // ❌ 错误：在应用中重新定义
 // apps/fastify-api/src/config/app.config.ts
-export class CachingModuleConfig { /* ... */ }  // ❌ 不要这样！
+export class CachingModuleConfig {
+  /* ... */
+} // ❌ 不要这样！
 ```
 
 ### 2. 配置分层原则
@@ -394,12 +396,12 @@ export class CachingModuleConfig { /* ... */ }  // ❌ 不要这样！
 
 **A**: 类型安全程度不同
 
-| 特性 | @nestjs/config | @hl8/config |
-|------|----------------|-------------|
-| 类型安全 | 运行时（需手动获取） | 编译时 + 运行时 |
-| 配置验证 | 需手动实现 | 基于 class-validator |
-| 智能提示 | 有限 | 完整的 TypeScript 支持 |
-| 嵌套配置 | 需手动处理 | 自动支持（使用 `__`） |
+| 特性     | @nestjs/config       | @hl8/config            |
+| -------- | -------------------- | ---------------------- |
+| 类型安全 | 运行时（需手动获取） | 编译时 + 运行时        |
+| 配置验证 | 需手动实现           | 基于 class-validator   |
+| 智能提示 | 有限                 | 完整的 TypeScript 支持 |
+| 嵌套配置 | 需手动处理           | 自动支持（使用 `__`）  |
 
 ### Q3: 为什么不把所有配置类都放在 `libs/config`？
 
@@ -427,11 +429,11 @@ import { RedisConfig } from '@hl8/shared-config';
 
 ## 📊 配置层次对比
 
-| 层次 | 职责 | 示例 | 能否被其他模块导入 |
-|------|------|------|-------------------|
-| 配置框架层 | 提供配置管理工具 | `TypedConfigModule`, `dotenvLoader` | ✅ 所有模块都可以使用 |
-| 业务库层 | 定义业务模块配置类 | `LoggingConfig`, `CachingModuleConfig` | ✅ 可以被应用层导入 |
-| 应用层 | 组合配置，定义应用特有配置 | `AppConfig` | ❌ 仅供当前应用使用 |
+| 层次       | 职责                       | 示例                                   | 能否被其他模块导入    |
+| ---------- | -------------------------- | -------------------------------------- | --------------------- |
+| 配置框架层 | 提供配置管理工具           | `TypedConfigModule`, `dotenvLoader`    | ✅ 所有模块都可以使用 |
+| 业务库层   | 定义业务模块配置类         | `LoggingConfig`, `CachingModuleConfig` | ✅ 可以被应用层导入   |
+| 应用层     | 组合配置，定义应用特有配置 | `AppConfig`                            | ❌ 仅供当前应用使用   |
 
 ---
 

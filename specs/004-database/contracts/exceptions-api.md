@@ -14,6 +14,7 @@ import { AbstractHttpException } from '@hl8/exceptions';
 ```
 
 **基类构造函数签名**：
+
 ```typescript
 constructor(
   errorCode: string,    // 错误代码（大写蛇形）
@@ -37,21 +38,24 @@ constructor(
 **用途**: 数据库连接失败时抛出
 
 **构造函数**：
+
 ```typescript
 constructor(detail: string, data?: Record<string, any>)
 ```
 
 **参数**：
+
 - `detail`: 详细错误说明（中文）
 - `data`: 诊断信息（可选），如 { host, port, database }
 
 **使用示例**：
+
 ```typescript
 try {
   await this.orm.connect();
 } catch (error) {
   this.logger.error('数据库连接失败', error.stack);
-  
+
   throw new DatabaseConnectionException(
     '无法连接到数据库服务器，请检查数据库配置和网络连接',
     {
@@ -59,12 +63,13 @@ try {
       port: this.config.port,
       database: this.config.database,
       // 不包含 username、password
-    }
+    },
   );
 }
 ```
 
 **RFC7807 响应示例**：
+
 ```json
 {
   "type": "https://docs.hl8.com/errors#DATABASE_CONNECTION_ERROR",
@@ -92,22 +97,25 @@ try {
 **用途**: 数据库查询执行失败时抛出
 
 **构造函数**：
+
 ```typescript
 constructor(detail: string, data?: Record<string, any>)
 ```
 
 **参数**：
+
 - `detail`: 详细错误说明（中文）
 - `data`: 诊断信息（可选），如 { query（脱敏）, operation }
 
 **使用示例**：
+
 ```typescript
 async findUsers(filter: FilterQuery<User>): Promise<User[]> {
   try {
     return await this.em.find(User, filter);
   } catch (error) {
     this.logger.error('查询用户失败', error.stack);
-    
+
     throw new DatabaseQueryException(
       '查询用户数据失败',
       {
@@ -120,6 +128,7 @@ async findUsers(filter: FilterQuery<User>): Promise<User[]> {
 ```
 
 **RFC7807 响应示例**：
+
 ```json
 {
   "type": "https://docs.hl8.com/errors#DATABASE_QUERY_ERROR",
@@ -145,29 +154,32 @@ async findUsers(filter: FilterQuery<User>): Promise<User[]> {
 **用途**: 事务执行失败时抛出
 
 **构造函数**：
+
 ```typescript
 constructor(detail: string, data?: Record<string, any>)
 ```
 
 **参数**：
+
 - `detail`: 详细错误说明（中文）
 - `data`: 诊断信息（可选），如 { operation, step }
 
 **使用示例**：
+
 ```typescript
 @Transactional()
 async createUserWithProfile(userData: UserData): Promise<User> {
   try {
     const user = new User(userData);
     await this.em.persistAndFlush(user);
-    
+
     const profile = new Profile(user.id);
     await this.em.persistAndFlush(profile);
-    
+
     return user;
   } catch (error) {
     this.logger.error('创建用户事务失败', error.stack);
-    
+
     throw new DatabaseTransactionException(
       '创建用户及其档案失败，所有操作已回滚',
       {
@@ -179,6 +191,7 @@ async createUserWithProfile(userData: UserData): Promise<User> {
 ```
 
 **RFC7807 响应示例**：
+
 ```json
 {
   "type": "https://docs.hl8.com/errors#DATABASE_TRANSACTION_ERROR",
@@ -204,20 +217,23 @@ async createUserWithProfile(userData: UserData): Promise<User> {
 **用途**: 需要隔离上下文但未提供时抛出
 
 **构造函数**：
+
 ```typescript
 constructor(detail: string, data?: Record<string, any>)
 ```
 
 **参数**：
+
 - `detail`: 详细错误说明（中文）
 - `data`: 诊断信息（可选），如 { requiredLevel }
 
 **使用示例**：
+
 ```typescript
 @IsolationAware(IsolationLevel.TENANT)
 async findTenantData(): Promise<Data[]> {
   const context = this.isolationService.getContext();
-  
+
   if (!context || !context.getTenantId()) {
     throw new IsolationContextMissingException(
       '租户级数据访问要求提供租户 ID',
@@ -227,12 +243,13 @@ async findTenantData(): Promise<Data[]> {
       }
     );
   }
-  
+
   return this.em.find(Data, { tenantId: context.getTenantId() });
 }
 ```
 
 **RFC7807 响应示例**：
+
 ```json
 {
   "type": "https://docs.hl8.com/errors#ISOLATION_CONTEXT_MISSING",
@@ -252,12 +269,12 @@ async findTenantData(): Promise<Data[]> {
 
 ## 异常类汇总
 
-| 异常类 | HTTP 状态 | 错误代码 | 使用场景 |
-|--------|----------|----------|----------|
-| `DatabaseConnectionException` | 503 | DATABASE_CONNECTION_ERROR | 连接失败、连接断开、连接超时 |
-| `DatabaseQueryException` | 500 | DATABASE_QUERY_ERROR | 查询执行失败、SQL 错误 |
-| `DatabaseTransactionException` | 500 | DATABASE_TRANSACTION_ERROR | 事务提交失败、回滚失败 |
-| `IsolationContextMissingException` | 400 | ISOLATION_CONTEXT_MISSING | 缺少必需的隔离上下文 |
+| 异常类                             | HTTP 状态 | 错误代码                   | 使用场景                     |
+| ---------------------------------- | --------- | -------------------------- | ---------------------------- |
+| `DatabaseConnectionException`      | 503       | DATABASE_CONNECTION_ERROR  | 连接失败、连接断开、连接超时 |
+| `DatabaseQueryException`           | 500       | DATABASE_QUERY_ERROR       | 查询执行失败、SQL 错误       |
+| `DatabaseTransactionException`     | 500       | DATABASE_TRANSACTION_ERROR | 事务提交失败、回滚失败       |
+| `IsolationContextMissingException` | 400       | ISOLATION_CONTEXT_MISSING  | 缺少必需的隔离上下文         |
 
 ---
 
@@ -292,6 +309,7 @@ throw new DatabaseConnectionException('...', { ... });
 ### 2. 不包含敏感信息
 
 data 参数不应包含：
+
 - ❌ 密码
 - ❌ 密钥
 - ❌ 完整的 SQL（可能包含敏感数据）
@@ -315,27 +333,22 @@ throw new DatabaseQueryException('查询失败', {
 ```typescript
 // ✅ 正确
 throw new DatabaseConnectionException(
-  '无法连接到数据库服务器，请检查数据库配置和网络连接'
+  '无法连接到数据库服务器，请检查数据库配置和网络连接',
 );
 
 // ❌ 错误（使用英文）
-throw new DatabaseConnectionException(
-  'Failed to connect to database server'
-);
+throw new DatabaseConnectionException('Failed to connect to database server');
 ```
 
 ### 4. 提供有用的上下文
 
 ```typescript
 // ✅ 正确（包含诊断信息）
-throw new DatabaseConnectionException(
-  '数据库连接超时',
-  {
-    host: config.host,
-    port: config.port,
-    timeoutMs: 5000,
-  }
-);
+throw new DatabaseConnectionException('数据库连接超时', {
+  host: config.host,
+  port: config.port,
+  timeoutMs: 5000,
+});
 
 // ❌ 错误（信息不足）
 throw new DatabaseConnectionException('连接失败');
@@ -360,7 +373,9 @@ database 模块依赖于应用已经配置了 `ExceptionModule`：
     }),
 
     // 2. 导入 database 模块
-    DatabaseModule.forRootAsync({ /* ... */ }),
+    DatabaseModule.forRootAsync({
+      /* ... */
+    }),
   ],
 })
 export class AppModule {}
@@ -392,7 +407,7 @@ describe('ConnectionManager', () => {
 
     // Act & Assert
     await expect(connectionManager.connect()).rejects.toThrow(
-      DatabaseConnectionException
+      DatabaseConnectionException,
     );
   });
 
@@ -431,10 +446,12 @@ export const DATABASE_ERROR_CODES = {
   ISOLATION_CONTEXT_MISSING: 'ISOLATION_CONTEXT_MISSING',
 } as const;
 
-export type DatabaseErrorCode = typeof DATABASE_ERROR_CODES[keyof typeof DATABASE_ERROR_CODES];
+export type DatabaseErrorCode =
+  (typeof DATABASE_ERROR_CODES)[keyof typeof DATABASE_ERROR_CODES];
 ```
 
 **用途**：
+
 - 类型安全的错误代码引用
 - 便于文档生成
 - 便于错误统计和监控
@@ -461,7 +478,7 @@ async connect(): Promise<void> {
   } catch (error) {
     // 记录原始错误到日志
     this.logger.error('数据库连接失败', error.stack);
-    
+
     // 抛出业务异常（不在 data 中包含原始错误）
     throw new DatabaseConnectionException(
       `连接到 ${this.config.host}:${this.config.port} 失败`,
@@ -477,6 +494,7 @@ async connect(): Promise<void> {
 ### 3. 统一的错误响应
 
 所有异常都通过 @hl8/exceptions 的全局过滤器处理，保证：
+
 - ✅ 统一的 RFC7807 格式
 - ✅ 统一的日志记录
 - ✅ 统一的敏感信息过滤
@@ -513,7 +531,7 @@ export * from './exceptions/index.js';
 某些场景可以直接使用 @hl8/exceptions 提供的预定义异常：
 
 ```typescript
-import { 
+import {
   GeneralNotFoundException,
   GeneralBadRequestException,
   InvalidIsolationContextException,
@@ -522,7 +540,7 @@ import {
 
 // 示例：租户未找到
 if (!tenant) {
-  throw new TenantNotFoundException(tenantId);  // 直接使用预定义异常
+  throw new TenantNotFoundException(tenantId); // 直接使用预定义异常
 }
 
 // 示例：隔离上下文无效
@@ -534,8 +552,9 @@ if (!context.getTenantId()) {
 ### Database 专用异常
 
 只有数据库操作特定的异常才定义在 database 模块中：
+
 - DatabaseConnectionException
-- DatabaseQueryException  
+- DatabaseQueryException
 - DatabaseTransactionException
 
 **原则**：能用预定义的就用预定义的，只在必要时创建专用异常。
@@ -552,4 +571,3 @@ if (!context.getTenantId()) {
 
 **完成时间**: 2025-10-13  
 **依赖**: @hl8/exceptions ^0.1.0
-

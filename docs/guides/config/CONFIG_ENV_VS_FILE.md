@@ -126,11 +126,11 @@ getEnv() {
 
 ```typescript
 // ✅ 使用配置实例
-console.log({ port: config.PORT });  // 只打印需要的
+console.log({ port: config.PORT }); // 只打印需要的
 
 // ✅ 隐藏敏感信息
 const safeConfig = getSafeConfigCopy(config);
-console.log(safeConfig);  // password: '***'
+console.log(safeConfig); // password: '***'
 
 // ✅ 启动后删除
 delete process.env.DATABASE_PASSWORD;
@@ -250,12 +250,12 @@ docker run -v ./config:/app/config my-app
 
 ### 方案对比表
 
-| 方案 | 安全性 | 便利性 | 12-Factor | 推荐度 |
-|------|-------|-------|-----------|--------|
-| **纯环境变量** | 🟡 中 | ✅ 高 | ✅ 是 | ⭐⭐⭐ |
-| **纯配置文件** | 🟡 中 | ⚠️ 低 | ❌ 否 | ⭐ |
-| **混合方式** | ✅ 高 | ✅ 高 | ✅ 是 | ⭐⭐⭐⭐⭐ |
-| **密钥管理服务** | ✅ 最高 | ⚠️ 中 | ✅ 是 | ⭐⭐⭐⭐ |
+| 方案             | 安全性  | 便利性 | 12-Factor | 推荐度     |
+| ---------------- | ------- | ------ | --------- | ---------- |
+| **纯环境变量**   | 🟡 中   | ✅ 高  | ✅ 是     | ⭐⭐⭐     |
+| **纯配置文件**   | 🟡 中   | ⚠️ 低  | ❌ 否     | ⭐         |
+| **混合方式**     | ✅ 高   | ✅ 高  | ✅ 是     | ⭐⭐⭐⭐⭐ |
+| **密钥管理服务** | ✅ 最高 | ⚠️ 中  | ✅ 是     | ⭐⭐⭐⭐   |
 
 ### 推荐：混合方式（最佳实践）
 
@@ -352,21 +352,21 @@ RUN chmod 555 /app
 
 ### 真正需要担心的
 
-| 威胁 | 严重程度 | 发生概率 | 防护方法 |
-|------|---------|---------|---------|
-| .env 文件泄露到 git | 🔴 高 | 🟡 中 | .gitignore |
-| 配置文件权限设置错误 | 🔴 高 | 🟡 中 | chmod 600 |
-| 代码注入攻击 | 🔴 极高 | 🟢 低 | 输入验证、依赖审计 |
-| 日志中打印敏感信息 | 🔴 高 | 🟡 中 | 使用 safeConfig |
-| Docker 镜像包含密钥 | 🔴 高 | 🟡 中 | 多阶段构建、密钥注入 |
+| 威胁                 | 严重程度 | 发生概率 | 防护方法             |
+| -------------------- | -------- | -------- | -------------------- |
+| .env 文件泄露到 git  | 🔴 高    | 🟡 中    | .gitignore           |
+| 配置文件权限设置错误 | 🔴 高    | 🟡 中    | chmod 600            |
+| 代码注入攻击         | 🔴 极高  | 🟢 低    | 输入验证、依赖审计   |
+| 日志中打印敏感信息   | 🔴 高    | 🟡 中    | 使用 safeConfig      |
+| Docker 镜像包含密钥  | 🔴 高    | 🟡 中    | 多阶段构建、密钥注入 |
 
 ### 不必要过度担心的
 
-| 担心 | 实际风险 | 说明 |
-|------|---------|------|
-| 运行时修改 process.env | 🟢 低 | readonly + freeze 已保护 |
-| 第三方包读取环境变量 | 🟡 低-中 | 启动后清理即可 |
-| 环境变量本身不安全 | 🟢 低 | 与配置文件风险相同 |
+| 担心                   | 实际风险 | 说明                     |
+| ---------------------- | -------- | ------------------------ |
+| 运行时修改 process.env | 🟢 低    | readonly + freeze 已保护 |
+| 第三方包读取环境变量   | 🟡 低-中 | 启动后清理即可           |
+| 环境变量本身不安全     | 🟢 低    | 与配置文件风险相同       |
 
 ---
 
@@ -413,15 +413,13 @@ RUN chmod 555 /app
 ```typescript
 // 1. 配置文件（基础配置）
 // config/app.yml
-app:
-  name: hl8-api
-logging:
-  level: info
+app: name: hl8 - api;
+logging: level: info;
 
 // 2. 环境变量（敏感配置）
 // .env.local（不提交）
-DATABASE__PASSWORD=secret123
-API__SECRET_KEY=xxxx
+DATABASE__PASSWORD = secret123;
+API__SECRET_KEY = xxxx;
 
 // 3. 配置加载
 TypedConfigModule.forRoot({
@@ -430,12 +428,12 @@ TypedConfigModule.forRoot({
     fileLoader({ path: './config/app.yml' }),
     dotenvLoader({ envFilePath: ['.env.local', '.env'] }),
   ],
-})
+});
 
 // 4. 安全加固
 const config = app.get(AppConfig);
-deepFreeze(config);  // 冻结
-cleanupSensitiveEnvVars();  // 清理
+deepFreeze(config); // 冻结
+cleanupSensitiveEnvVars(); // 清理
 ```
 
 ---
@@ -507,11 +505,11 @@ TypedConfigModule.forRoot({
   load: [
     // 基础配置用文件（可版本控制）
     fileLoader({ path: './config/app.yml' }),
-    
+
     // 敏感配置用环境变量（不提交）
     dotenvLoader({ envFilePath: ['.env.local'] }),
   ],
-})
+});
 ```
 
 **优势**：

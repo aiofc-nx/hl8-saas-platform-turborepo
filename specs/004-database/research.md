@@ -250,7 +250,7 @@ export class DatabaseIsolationService {
     entity: string,
   ): QueryBuilder<T> {
     const context = this.baseIsolationService.getContext();
-    
+
     if (!context) {
       throw new DatabaseQueryException('缺少隔离上下文');
     }
@@ -408,10 +408,10 @@ export class UserService {
   async createUser(data: CreateUserDto): Promise<User> {
     // 从上下文获取事务 EM
     const em = this.cls.get<EntityManager>('entityManager');
-    
+
     const user = new User(data);
     await em.persistAndFlush(user);
-    
+
     return user;
   }
 }
@@ -450,9 +450,7 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 @Injectable()
 export class ConnectionManager {
-  constructor(
-    private readonly logger: FastifyLoggerService,
-  ) {}
+  constructor(private readonly logger: FastifyLoggerService) {}
 
   async connect(): Promise<void> {
     this.logger.log('正在连接数据库...');
@@ -477,7 +475,7 @@ import { Logger } from '@nestjs/common';
 @Injectable()
 export class ConnectionManager {
   private readonly logger = new Logger(ConnectionManager.name);
-  
+
   // ... 使用方式相同
 }
 ```
@@ -518,13 +516,13 @@ export class ConnectionManager {
   imports: [
     // 1. Fastify 日志模块（最早）
     FastifyLoggingModule.forRoot(),
-    
+
     // 2. 异常模块
     FastifyExceptionModule.forRoot(),
-    
+
     // 3. 隔离模块
     IsolationModule.forRoot(),
-    
+
     // 4. Database 模块（可以注入上面的服务）
     DatabaseModule.forRootAsync({
       useFactory: (config: DatabaseConfig) => ({
@@ -584,11 +582,11 @@ import { AbstractHttpException } from '@hl8/exceptions';
 export class DatabaseConnectionException extends AbstractHttpException {
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_CONNECTION_ERROR',  // errorCode
-      '数据库连接错误',              // title
-      detail,                       // detail
-      503,                          // status
-      data                          // data (可选)
+      'DATABASE_CONNECTION_ERROR', // errorCode
+      '数据库连接错误', // title
+      detail, // detail
+      503, // status
+      data, // data (可选)
     );
   }
 }
@@ -600,13 +598,7 @@ export class DatabaseConnectionException extends AbstractHttpException {
  */
 export class DatabaseQueryException extends AbstractHttpException {
   constructor(detail: string, data?: Record<string, any>) {
-    super(
-      'DATABASE_QUERY_ERROR',
-      '数据库查询错误',
-      detail,
-      500,
-      data
-    );
+    super('DATABASE_QUERY_ERROR', '数据库查询错误', detail, 500, data);
   }
 }
 
@@ -617,13 +609,7 @@ export class DatabaseQueryException extends AbstractHttpException {
  */
 export class DatabaseTransactionException extends AbstractHttpException {
   constructor(detail: string, data?: Record<string, any>) {
-    super(
-      'DATABASE_TRANSACTION_ERROR',
-      '数据库事务错误',
-      detail,
-      500,
-      data
-    );
+    super('DATABASE_TRANSACTION_ERROR', '数据库事务错误', detail, 500, data);
   }
 }
 ```
@@ -652,16 +638,13 @@ export class ConnectionManager {
       this.logger.log('数据库连接成功');
     } catch (error) {
       this.logger.error('数据库连接失败', error.stack);
-      
-      throw new DatabaseConnectionException(
-        '无法连接到数据库服务器',
-        {
-          host: this.config.host,
-          port: this.config.port,
-          database: this.config.database,
-          // 不包含密码等敏感信息
-        }
-      );
+
+      throw new DatabaseConnectionException('无法连接到数据库服务器', {
+        host: this.config.host,
+        port: this.config.port,
+        database: this.config.database,
+        // 不包含密码等敏感信息
+      });
     }
   }
 
@@ -670,15 +653,12 @@ export class ConnectionManager {
       return await this.em.execute(sql, params);
     } catch (error) {
       this.logger.error('查询执行失败', error.stack);
-      
-      throw new DatabaseQueryException(
-        '数据库查询执行失败',
-        {
-          // 脱敏后的 SQL（隐藏敏感参数）
-          query: this.sanitizeQuery(sql),
-          // 不包含实际参数值
-        }
-      );
+
+      throw new DatabaseQueryException('数据库查询执行失败', {
+        // 脱敏后的 SQL（隐藏敏感参数）
+        query: this.sanitizeQuery(sql),
+        // 不包含实际参数值
+      });
     }
   }
 }
@@ -864,9 +844,9 @@ const config: Options = {
     max: dbConfig.poolMax,
     idleTimeoutMillis: dbConfig.idleTimeoutMillis,
     acquireTimeoutMillis: 10000, // 获取连接超时：10秒
-    createTimeoutMillis: 5000,   // 创建连接超时：5秒
-    destroyTimeoutMillis: 5000,  // 销毁连接超时：5秒
-    reapIntervalMillis: 1000,    // 清理空闲连接间隔：1秒
+    createTimeoutMillis: 5000, // 创建连接超时：5秒
+    destroyTimeoutMillis: 5000, // 销毁连接超时：5秒
+    reapIntervalMillis: 1000, // 清理空闲连接间隔：1秒
     createRetryIntervalMillis: 200, // 创建失败重试间隔：200ms
   },
 };
@@ -977,13 +957,13 @@ export class ConnectionPoolMonitor {
 
 ## 风险与缓解
 
-| 风险 | 影响 | 缓解措施 |
-|------|------|----------|
-| MikroORM 6.x 与 NestJS 11 兼容性问题 | 中 | 使用官方集成包 @mikro-orm/nestjs，参考官方文档 |
-| ES Module 导入实体路径问题 | 中 | 使用编译后的 .js 文件路径，配置 entities 和 entitiesTs |
-| nestjs-cls 6.0 API 变更 | 低 | 参考官方迁移指南，测试所有上下文管理功能 |
-| 连接池资源耗尽 | 高 | 实现连接池监控，设置合理的超时和限制 |
-| 多租户数据泄露 | 高 | 强制隔离检查，使用装饰器确保隔离，记录审计日志 |
+| 风险                                 | 影响 | 缓解措施                                               |
+| ------------------------------------ | ---- | ------------------------------------------------------ |
+| MikroORM 6.x 与 NestJS 11 兼容性问题 | 中   | 使用官方集成包 @mikro-orm/nestjs，参考官方文档         |
+| ES Module 导入实体路径问题           | 中   | 使用编译后的 .js 文件路径，配置 entities 和 entitiesTs |
+| nestjs-cls 6.0 API 变更              | 低   | 参考官方迁移指南，测试所有上下文管理功能               |
+| 连接池资源耗尽                       | 高   | 实现连接池监控，设置合理的超时和限制                   |
+| 多租户数据泄露                       | 高   | 强制隔离检查，使用装饰器确保隔离，记录审计日志         |
 
 ---
 

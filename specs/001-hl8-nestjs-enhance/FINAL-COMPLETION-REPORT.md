@@ -84,7 +84,7 @@
 ```
 Test Suites: 9 passed, 9 total
 Tests:       102 passed, 102 total
-Coverage:    
+Coverage:
 - Statements: 98.18%
 - Branches:   92.59%
 - Functions:  100%
@@ -239,13 +239,13 @@ Coverage:
 graph TD
     A[业务代码] -->|使用| B[@hl8/nestjs-isolation]
     A -->|使用| C[@hl8/nestjs-caching]
-    
+
     B -->|依赖| D[@hl8/isolation-model]
     C -->|依赖| D
-    
+
     E[Logging 模块] -.->|未来依赖| D
     F[Database 模块] -.->|未来依赖| D
-    
+
     style D fill:#d1e7dd,stroke:#0f5132,stroke-width:3px
     style B fill:#cfe2ff,stroke:#084298
     style C fill:#cfe2ff,stroke:#084298
@@ -288,28 +288,28 @@ graph TD
 
 ### Isolation 模块（100% 完成）
 
-| Phase | 任务 | 完成 | 完成率 |
-|-------|------|------|--------|
-| Phase 1 | T001-T004 | 4/4 | 100% ✅ |
-| Phase 2 | T005-T016 | 12/12 | 100% ✅ |
-| Phase 3 | T017-T020 | 4/4 | 100% ✅ |
-| Phase 4 | T021-T027 | 7/7 | 100% ✅ |
-| Phase 5 | T028 | 1/1 | 100% ✅ |
+| Phase    | 任务          | 完成      | 完成率     |
+| -------- | ------------- | --------- | ---------- |
+| Phase 1  | T001-T004     | 4/4       | 100% ✅    |
+| Phase 2  | T005-T016     | 12/12     | 100% ✅    |
+| Phase 3  | T017-T020     | 4/4       | 100% ✅    |
+| Phase 4  | T021-T027     | 7/7       | 100% ✅    |
+| Phase 5  | T028          | 1/1       | 100% ✅    |
 | **总计** | **T001-T028** | **28/30** | **93%** ✅ |
 
 **说明**：T029-T030 不适用（nestjs-infra 将移除）
 
 ### Caching 模块（Phase 1-3 完成）
 
-| Phase | 任务 | 完成 | 完成率 |
-|-------|------|------|--------|
-| Phase 1 | T001-T005 | 5/5 | 100% ✅ |
-| Phase 2 | T006-T013 | 8/8 | 100% ✅ |
-| Phase 3 | T014-T021 | 7/8 | 87.5% ✅ |
-| Phase 4 | T022-T026 | 0/5 | 0% ⚪ |
-| Phase 5 | T027-T032 | 0/6 | 0% ⚪ |
-| Phase 6 | T033-T036 | 0/4 | 不适用 |
-| Phase 7 | T037-T038 | 0/2 | 0% ⚪ |
+| Phase    | 任务          | 完成      | 完成率     |
+| -------- | ------------- | --------- | ---------- |
+| Phase 1  | T001-T005     | 5/5       | 100% ✅    |
+| Phase 2  | T006-T013     | 8/8       | 100% ✅    |
+| Phase 3  | T014-T021     | 7/8       | 87.5% ✅   |
+| Phase 4  | T022-T026     | 0/5       | 0% ⚪      |
+| Phase 5  | T027-T032     | 0/6       | 0% ⚪      |
+| Phase 6  | T033-T036     | 0/4       | 不适用     |
+| Phase 7  | T037-T038     | 0/2       | 0% ⚪      |
 | **总计** | **T001-T021** | **20/38** | **53%** 🟡 |
 
 **说明**：核心功能已完成，装饰器和监控待实现
@@ -321,6 +321,7 @@ graph TD
 ### ⭐⭐⭐ EntityId 基类设计
 
 **您的洞察**：
+
 > "这些 Id 其实都是统一的，在本 SAAS 平台所有的实体 Id 都是 UUID v4 格式，所以是不是应该抽象一个 EntityId.vo"
 
 **实施效果**：
@@ -395,7 +396,7 @@ export class IsolationContext {
     }
     // ...
   }
-  
+
   canAccess(dataContext: IsolationContext, isShared: boolean): boolean {
     // 权限验证逻辑封装在实体内部
     if (!isShared) {
@@ -406,8 +407,8 @@ export class IsolationContext {
 }
 
 // 业务代码使用：
-const key = context.buildCacheKey('users', 'list');  // 简洁！
-const canAccess = context.canAccess(dataContext, false);  // 清晰！
+const key = context.buildCacheKey('users', 'list'); // 简洁！
+const canAccess = context.canAccess(dataContext, false); // 清晰！
 ```
 
 **避免贫血模型**：
@@ -437,16 +438,16 @@ export class CacheKeyBuilder {
 @Injectable()
 export class UserService {
   constructor(private readonly cacheService: CacheService) {}
-  
+
   async getUsers(): Promise<User[]> {
     // 🎯 无需手动传递 tenantId！
     let users = await this.cacheService.get<User[]>('user', 'list');
-    
+
     if (!users) {
       users = await this.repository.findAll();
       await this.cacheService.set('user', 'list', users);
     }
-    
+
     return users;
   }
 }
@@ -455,7 +456,7 @@ export class UserService {
 private buildKey(namespace: string, key: string): CacheKey {
   // 1. 从 CLS 自动获取隔离上下文
   const context = this.cls.get('ISOLATION_CONTEXT');
-  
+
   // 2. 委托给领域模型生成键
   return CacheKey.fromContext(namespace, key, this.keyPrefix, context);
 }
@@ -483,13 +484,13 @@ curl -H "X-Tenant-Id: 123e4567-e89b-42d3-a456-426614174000" \
 
 ### 测试质量
 
-| 指标 | 值 | 目标 | 状态 |
-|------|---|------|------|
-| 总测试用例 | 168 | - | ⭐⭐⭐ |
-| 通过率 | 100% | 100% | ✅ |
-| 领域层覆盖 | 78-98% | 90% | ✅ 优秀 |
-| 服务层覆盖 | 40-56% | 50% | ✅ 合格 |
-| 集成测试 | 14 个 | - | ✅ 完整 |
+| 指标       | 值     | 目标 | 状态    |
+| ---------- | ------ | ---- | ------- |
+| 总测试用例 | 168    | -    | ⭐⭐⭐  |
+| 通过率     | 100%   | 100% | ✅      |
+| 领域层覆盖 | 78-98% | 90%  | ✅ 优秀 |
+| 服务层覆盖 | 40-56% | 50%  | ✅ 合格 |
+| 集成测试   | 14 个  | -    | ✅ 完整 |
 
 ### 代码质量
 
@@ -521,26 +522,26 @@ curl -H "X-Tenant-Id: 123e4567-e89b-42d3-a456-426614174000" \
 
 ### 设计模式应用
 
-| 模式 | 应用位置 | 效果 |
-|------|---------|------|
-| **工厂方法** | IsolationContext.tenant() 等 | 创建逻辑封装 |
-| **Flyweight** | 所有 ID 值对象 | 内存优化 |
-| **策略模式** | Redis 重试策略 | 灵活配置 |
-| **模板方法** | clearByPattern() | 代码复用 |
-| **装饰器模式** | @RequireTenant 等 | AOP 支持 |
-| **依赖注入** | NestJS 标准 DI | 松耦合 |
+| 模式           | 应用位置                     | 效果         |
+| -------------- | ---------------------------- | ------------ |
+| **工厂方法**   | IsolationContext.tenant() 等 | 创建逻辑封装 |
+| **Flyweight**  | 所有 ID 值对象               | 内存优化     |
+| **策略模式**   | Redis 重试策略               | 灵活配置     |
+| **模板方法**   | clearByPattern()             | 代码复用     |
+| **装饰器模式** | @RequireTenant 等            | AOP 支持     |
+| **依赖注入**   | NestJS 标准 DI               | 松耦合       |
 
 ### 技术选型验证
 
-| 技术 | 用途 | 验证结果 |
-|------|------|---------|
-| TypeScript 5.9.2 | 类型系统 | ✅ 优秀 |
-| Node.js >= 20 | 运行时 | ✅ ES Module 完美支持 |
-| NestJS 11.1.6 | 框架 | ✅ 最新稳定版 |
-| ioredis 5.4.2 | Redis 客户端 | ✅ 类型定义完整 |
-| nestjs-cls 6.0.1 | CLS 管理 | ✅ setup 回调完美 |
-| Jest 30.2.0 | 测试框架 | ✅ ES Module 支持 |
-| ts-jest | TypeScript 转换 | ✅ default-esm 预设 |
+| 技术             | 用途            | 验证结果              |
+| ---------------- | --------------- | --------------------- |
+| TypeScript 5.9.2 | 类型系统        | ✅ 优秀               |
+| Node.js >= 20    | 运行时          | ✅ ES Module 完美支持 |
+| NestJS 11.1.6    | 框架            | ✅ 最新稳定版         |
+| ioredis 5.4.2    | Redis 客户端    | ✅ 类型定义完整       |
+| nestjs-cls 6.0.1 | CLS 管理        | ✅ setup 回调完美     |
+| Jest 30.2.0      | 测试框架        | ✅ ES Module 支持     |
+| ts-jest          | TypeScript 转换 | ✅ default-esm 预设   |
 
 ---
 
@@ -557,7 +558,7 @@ import { CachingModule } from '@hl8/nestjs-caching';
   imports: [
     // 1. 配置隔离模块（自动提取上下文）
     IsolationModule.forRoot(),
-    
+
     // 2. 配置缓存模块（自动隔离）
     CachingModule.forRoot({
       redis: {
@@ -581,19 +582,19 @@ import { CacheService } from '@hl8/nestjs-caching';
 @Injectable()
 export class UserService {
   constructor(private readonly cacheService: CacheService) {}
-  
+
   async getUsers(): Promise<User[]> {
     // 🎯 自动使用隔离上下文！
     let users = await this.cacheService.get<User[]>('user', 'list');
-    
+
     if (!users) {
       users = await this.repository.findAll();
       await this.cacheService.set('user', 'list', users, 1800);
     }
-    
+
     return users;
   }
-  
+
   async clearUserCache(): Promise<void> {
     await this.cacheService.del('user', 'list');
   }
@@ -794,6 +795,7 @@ curl -H "X-Tenant-Id: 123e4567-e89b-42d3-a456-426614174000" \
 您的建议对项目质量提升起到了关键作用：
 
 1. **EntityId 抽象建议** ⭐⭐⭐
+
    > "这些 Id 其实都是统一的，在本 SAAS 平台所有的实体 Id 都是 UUID v4 格式，所以是不是应该抽象一个 EntityId.vo"
 
    **效果**：
@@ -802,6 +804,7 @@ curl -H "X-Tenant-Id: 123e4567-e89b-42d3-a456-426614174000" \
    - 代码质量显著提升
 
 2. **明确架构决策**
+
    > "libs/nestjs-infra 将被全部拆分不复存在"
 
    **效果**：

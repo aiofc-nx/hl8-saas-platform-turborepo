@@ -43,13 +43,13 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
-import { ClsService } from 'nestjs-cls';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { EntityManager, MikroORM } from '@mikro-orm/core';
+import { Injectable } from '@nestjs/common';
+import { ClsService } from 'nestjs-cls';
+import { v4 as uuidv4 } from 'uuid';
 import { DatabaseTransactionException } from '../exceptions/database-transaction.exception.js';
 import type { TransactionOptions } from '../types/transaction.types.js';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TransactionService {
@@ -83,7 +83,7 @@ export class TransactionService {
    */
   async runInTransaction<T>(
     callback: (em: EntityManager) => Promise<T>,
-    options?: TransactionOptions
+    options?: TransactionOptions,
   ): Promise<T> {
     // 检查是否已在事务中
     const existingEm = this.cls.get<EntityManager>('entityManager');
@@ -99,7 +99,7 @@ export class TransactionService {
 
     try {
       const em = this.orm.em.fork();
-      
+
       const result = await em.transactional(async (transactionEm) => {
         // 将事务 EM 存储到上下文
         this.cls.set('entityManager', transactionEm);
@@ -120,23 +120,26 @@ export class TransactionService {
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       // 记录技术错误日志用于监控和调试
       this.logger.error('事务执行失败，已回滚', undefined, {
-        transactionId, 
+        transactionId,
         duration,
-        err: error instanceof Error ? {
-          type: error.constructor.name,
-          message: error.message,
-          stack: error.stack,
-        } : undefined,
+        err:
+          error instanceof Error
+            ? {
+                type: error.constructor.name,
+                message: error.message,
+                stack: error.stack,
+              }
+            : undefined,
       });
 
       // 抛出业务异常
-      throw new DatabaseTransactionException(
-        '事务执行失败，所有操作已回滚',
-        { transactionId, duration }
-      );
+      throw new DatabaseTransactionException('事务执行失败，所有操作已回滚', {
+        transactionId,
+        duration,
+      });
     }
   }
 
@@ -182,4 +185,3 @@ export class TransactionService {
     return this.cls.get<string>('transactionId');
   }
 }
-

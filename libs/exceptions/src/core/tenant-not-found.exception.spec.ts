@@ -17,8 +17,7 @@ describe('TenantNotFoundException', () => {
     const exception = new TenantNotFoundException('tenant-456', '详细信息');
 
     const rfc7807 = exception.toRFC7807();
-    
+
     expect(rfc7807.data?.tenantId).toBe('tenant-456');
   });
 });
-

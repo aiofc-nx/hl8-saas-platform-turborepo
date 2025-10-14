@@ -15,7 +15,7 @@ describe('DatabaseQueryException', () => {
   it('应该包含正确的错误代码和状态码', () => {
     const exception = new DatabaseQueryException('查询失败');
     const response = exception.getResponse() as any;
-    
+
     expect(response.errorCode).toBe('DATABASE_QUERY_ERROR');
     expect(response.status).toBe(500);
     expect(response.title).toBe('数据库查询错误');
@@ -25,9 +25,8 @@ describe('DatabaseQueryException', () => {
     const exception = new DatabaseQueryException('查询失败', {
       operation: 'findUsers',
     });
-    
+
     const response = exception.getResponse() as any;
     expect(response.data.operation).toBe('findUsers');
   });
 });
-

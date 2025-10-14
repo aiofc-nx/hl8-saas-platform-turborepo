@@ -43,16 +43,16 @@
  * ```
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityManager } from '@mikro-orm/core';
 import {
+  DatabaseIsolationService,
+  IsolationAware,
+  IsolationLevel,
   Transactional,
   TransactionService,
-  IsolationAware,
-  DatabaseIsolationService,
-  IsolationLevel,
-} from '@hl8/database';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+} from '@hl8/database/index.js';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify/index.js';
+import { EntityManager } from '@mikro-orm/core';
+import { Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity.js';
 
 /**
@@ -292,4 +292,3 @@ export class UserService {
     return true;
   }
 }
-

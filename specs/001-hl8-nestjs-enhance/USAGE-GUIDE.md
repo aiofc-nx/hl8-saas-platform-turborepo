@@ -27,7 +27,7 @@ import { CachingModule } from '@hl8/nestjs-caching';
   imports: [
     // 1. 配置隔离模块（自动提取租户/组织/用户上下文）
     IsolationModule.forRoot(),
-    
+
     // 2. 配置缓存模块（自动多层级隔离）
     CachingModule.forRoot({
       redis: {
@@ -56,13 +56,13 @@ export class UsersService {
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
-  
+
   // 更新操作：刷新缓存
   @CachePut('users')
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
-  
+
   // 删除操作：清除缓存
   @CacheEvict('users')
   async deleteUser(id: string): Promise<void> {

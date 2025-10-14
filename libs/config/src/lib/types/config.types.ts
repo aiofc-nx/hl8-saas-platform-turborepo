@@ -32,7 +32,7 @@ export type ConfigObject = {
  * @description 配置记录的类型定义，用于替代 Record<string, any>
  * @type ConfigRecord
  * @since 1.0.0
- * 
+ *
  * @remarks
  * 使用 any 符合宪章 IX 允许场景：配置值可以是任意类型（字符串、数字、对象等）。
  * 配置库必须支持动态配置的灵活性。
@@ -133,7 +133,7 @@ export type EnvSubstitutor = (config: ConfigRecord) => ConfigRecord;
 export type DeepTraverseCallback = (
   value: ConfigValue | ConfigObject,
   key: string,
-  path: string
+  path: string,
 ) => void;
 
 /**

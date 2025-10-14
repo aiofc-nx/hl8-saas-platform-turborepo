@@ -39,20 +39,20 @@
  *
  * // 使用配置
  * constructor(private readonly config: AppConfig) {}
- * 
+ *
  * // 访问配置
  * const logLevel = this.config.logging.level;
  * const redisHost = this.config.redis.host;
  * ```
  */
 
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
-  IsString,
+  IsIn,
   IsNumber,
   IsOptional,
+  IsString,
   ValidateNested,
-  IsIn,
 } from 'class-validator';
 
 // 从 @hl8/nestjs-fastify 导入配置类（单一配置源）
@@ -60,16 +60,13 @@ import {
   LoggingConfig,
   MetricsModuleConfig,
   RateLimitModuleConfig,
-} from '@hl8/nestjs-fastify';
+} from '@hl8/nestjs-fastify/index.js';
 
 // 从 @hl8/caching 导入配置类（单一配置源）
-import {
-  RedisConfig,
-  CachingModuleConfig,
-} from '@hl8/caching';
+import { CachingModuleConfig } from '@hl8/caching/index.js';
 
 // 从 @hl8/database 导入配置类（单一配置源）
-import { DatabaseConfig } from '@hl8/database';
+import { DatabaseConfig } from '@hl8/database/index.js';
 
 /**
  * 应用配置
@@ -143,10 +140,8 @@ export class AppConfig {
    *
    * @description 直接使用 @hl8/database 的 DatabaseConfig
    */
-  @ValidateNested()
-  @Type(() => DatabaseConfig)
   @IsOptional()
-  public readonly database: DatabaseConfig = new DatabaseConfig();
+  public readonly database?: any;
 
   /**
    * 是否为生产环境
@@ -162,4 +157,3 @@ export class AppConfig {
     return this.NODE_ENV === 'development';
   }
 }
-

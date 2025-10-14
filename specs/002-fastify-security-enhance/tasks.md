@@ -77,11 +77,11 @@ libs/nestjs-fastify/src/
 
 ```typescript
 export interface RateLimitOptions {
-  max: number;              // 最大请求数
-  timeWindow: number;       // 时间窗口（毫秒）
-  redis?: RedisClient;      // 可选 Redis 客户端
-  skipOnError?: boolean;    // 错误时跳过限流
-  keyGenerator?: (req: Request) => string;  // 自定义键生成
+  max: number; // 最大请求数
+  timeWindow: number; // 时间窗口（毫秒）
+  redis?: RedisClient; // 可选 Redis 客户端
+  skipOnError?: boolean; // 错误时跳过限流
+  keyGenerator?: (req: Request) => string; // 自定义键生成
 }
 ```
 
@@ -338,7 +338,7 @@ CorsModule.forRoot({
   origin: ['https://app.example.com', 'https://admin.example.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-})
+});
 ```
 
 **验收标准**:

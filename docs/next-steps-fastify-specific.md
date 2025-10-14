@@ -10,21 +10,21 @@
 
 ### 当前问题
 
-| 模块 | 问题 | 影响 |
-|------|------|------|
-| **ExceptionModule** | `.status()` vs `.code()` | 异常响应失败 |
-| **LoggingModule** | HttpAdapterHost 时机 | 启动失败（静默）|
-| **通用设计** | 偏向 Express | Fastify 特性未利用 |
+| 模块                | 问题                     | 影响               |
+| ------------------- | ------------------------ | ------------------ |
+| **ExceptionModule** | `.status()` vs `.code()` | 异常响应失败       |
+| **LoggingModule**   | HttpAdapterHost 时机     | 启动失败（静默）   |
+| **通用设计**        | 偏向 Express             | Fastify 特性未利用 |
 
 ### Fastify vs Express 的关键差异
 
-| 特性 | Express | Fastify | 影响 |
-|------|---------|---------|------|
-| **Response API** | `.status().send()` | `.code().send()` | ✅ 已修复 |
-| **Logger** | 需要集成 | 内置 Pino | ⚠️ 未充分利用 |
-| **Schema 验证** | 手动 | 内置 JSON Schema | ⚠️ 未使用 |
-| **插件系统** | 中间件 | Fastify 插件 | ⚠️ 未优化 |
-| **性能** | 中等 | 极高 | ⚠️ 未充分发挥 |
+| 特性             | Express            | Fastify          | 影响          |
+| ---------------- | ------------------ | ---------------- | ------------- |
+| **Response API** | `.status().send()` | `.code().send()` | ✅ 已修复     |
+| **Logger**       | 需要集成           | 内置 Pino        | ⚠️ 未充分利用 |
+| **Schema 验证**  | 手动               | 内置 JSON Schema | ⚠️ 未使用     |
+| **插件系统**     | 中间件             | Fastify 插件     | ⚠️ 未优化     |
+| **性能**         | 中等               | 极高             | ⚠️ 未充分发挥 |
 
 ---
 
@@ -129,7 +129,7 @@ response.code(500).send(...)    // ✅ Fastify 风格
 export class FastifyLoggerService {
   constructor(
     @Inject(HTTP_ADAPTER_HOST)
-    private readonly httpAdapterHost: HttpAdapterHost
+    private readonly httpAdapterHost: HttpAdapterHost,
   ) {
     // 直接获取 Fastify 的 Pino 实例
     const fastifyInstance = this.httpAdapterHost.httpAdapter.getInstance();
@@ -293,12 +293,12 @@ export {
   FastifyExceptionModule,
   FastifyLoggingModule,
   EnterpriseFastifyAdapter,
-  
+
   // 从 @hl8/nestjs-infra 复用
   CachingModule,
   IsolationModule,
   TypedConfigModule,
-  
+
   // Shared
   EntityId,
   IsolationContext,
@@ -314,13 +314,13 @@ export {
 export class EnterpriseFastifyAdapter extends FastifyAdapter {
   async init() {
     await super.init();
-    
+
     const fastify = this.getInstance();
-    
+
     // 使用 Fastify 原生插件系统（避免冲突）
     fastify.register(require('@fastify/cors'), {});
     fastify.register(require('@fastify/helmet'), {});
-    
+
     // 直接访问 Fastify 的 Pino
     const logger = fastify.log;
   }
@@ -361,15 +361,15 @@ libs/nestjs-fastify/
 
 ## ⏱️ 时间估算
 
-| Phase | 任务 | 预计时间 |
-|-------|------|---------|
-| **Phase 1** | 项目初始化 | 1-2 h |
-| **Phase 2** | Fastify 异常处理 | 2-3 h |
-| **Phase 3** | Fastify 日志模块 | 1-2 h |
-| **Phase 4** | 复用模块导出 | 0.5 h |
-| **Phase 5** | 适配器优化 | 2-3 h |
-| **Phase 6** | 集成测试 | 1-2 h |
-| **总计** | | **8-13 小时** |
+| Phase       | 任务             | 预计时间      |
+| ----------- | ---------------- | ------------- |
+| **Phase 1** | 项目初始化       | 1-2 h         |
+| **Phase 2** | Fastify 异常处理 | 2-3 h         |
+| **Phase 3** | Fastify 日志模块 | 1-2 h         |
+| **Phase 4** | 复用模块导出     | 0.5 h         |
+| **Phase 5** | 适配器优化       | 2-3 h         |
+| **Phase 6** | 集成测试         | 1-2 h         |
+| **总计**    |                  | **8-13 小时** |
 
 ---
 
@@ -413,11 +413,11 @@ import { AbstractHttpException } from '@hl8/nestjs-infra';
 export class FastifyHttpExceptionFilter {
   catch(exception: AbstractHttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<FastifyReply>();  // ← Fastify Reply
+    const response = ctx.getResponse<FastifyReply>(); // ← Fastify Reply
     const problemDetails = exception.toRFC7807();
-    
+
     response
-      .code(problemDetails.status)  // ← Fastify .code()
+      .code(problemDetails.status) // ← Fastify .code()
       .header('Content-Type', 'application/problem+json')
       .send(problemDetails);
   }
@@ -430,11 +430,11 @@ export class FastifyHttpExceptionFilter {
 // src/logging/fastify-logger.service.ts
 export class FastifyLoggerService implements LoggerService {
   private logger: pino.Logger;
-  
+
   constructor() {
     // 在模块中通过 useFactory 注入 Fastify 的 Pino 实例
   }
-  
+
   log(message: string, context?: any) {
     this.logger.info(context, message);
   }

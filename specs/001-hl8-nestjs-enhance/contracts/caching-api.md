@@ -40,9 +40,9 @@ export { CacheLevel } from './types/cache-level.enum.js';
 // 接口
 export type { ICacheService } from './types/cache-service.interface.js';
 export type { IRedisService } from './types/redis-service.interface.js';
-export type { 
-  CachingModuleOptions, 
-  CachingModuleAsyncOptions 
+export type {
+  CachingModuleOptions,
+  CachingModuleAsyncOptions,
 } from './types/cache-options.interface.js';
 export type { RedisOptions } from './types/redis-options.interface.js';
 export type { CacheMetrics } from './types/cache-metrics.interface.js';
@@ -80,13 +80,13 @@ static forRoot(options: CachingModuleOptions): DynamicModule
 interface CachingModuleOptions {
   /** Redis 连接配置 */
   redis: RedisOptions;
-  
+
   /** 默认 TTL（秒），默认 3600 */
   defaultTTL?: number;
-  
+
   /** 缓存键前缀，默认 'hl8:cache:' */
   keyPrefix?: string;
-  
+
   /** 是否启用指标监控，默认 true */
   enableMetrics?: boolean;
 }
@@ -94,19 +94,19 @@ interface CachingModuleOptions {
 interface RedisOptions {
   /** Redis 主机地址 */
   host: string;
-  
+
   /** Redis 端口 */
   port: number;
-  
+
   /** Redis 密码（可选） */
   password?: string;
-  
+
   /** Redis 数据库索引，默认 0 */
   db?: number;
-  
+
   /** 连接超时（毫秒），默认 10000 */
   connectTimeout?: number;
-  
+
   /** 重试策略（可选） */
   retryStrategy?: (times: number) => number | void;
 }
@@ -115,7 +115,7 @@ interface RedisOptions {
 **返回值**:
 
 ```typescript
-DynamicModule
+DynamicModule;
 ```
 
 **使用示例**:
@@ -164,11 +164,13 @@ static forRootAsync(options: CachingModuleAsyncOptions): DynamicModule
 ```typescript
 interface CachingModuleAsyncOptions {
   /** 工厂函数 */
-  useFactory: (...args: any[]) => Promise<CachingModuleOptions> | CachingModuleOptions;
-  
+  useFactory: (
+    ...args: any[]
+  ) => Promise<CachingModuleOptions> | CachingModuleOptions;
+
   /** 注入的依赖 */
   inject?: any[];
-  
+
   /** 导入的模块 */
   imports?: any[];
 }
@@ -240,21 +242,24 @@ import { CacheService } from '@hl8/nestjs-caching';
 @Injectable()
 export class UserService {
   constructor(private readonly cacheService: CacheService) {}
-  
+
   async getUserProfile(userId: string) {
     // 自动根据当前隔离上下文生成缓存键
-    const cached = await this.cacheService.get<UserProfile>('user', `profile:${userId}`);
-    
+    const cached = await this.cacheService.get<UserProfile>(
+      'user',
+      `profile:${userId}`,
+    );
+
     if (cached) {
       return cached;
     }
-    
+
     // 从数据库加载
     const profile = await this.loadFromDatabase(userId);
-    
+
     // 缓存结果
     await this.cacheService.set('user', `profile:${userId}`, profile, 1800);
-    
+
     return profile;
   }
 }
@@ -447,8 +452,8 @@ const totalCount = await cacheService.clearTenantCache('t123');
 
 ```typescript
 async clearOrganizationCache(
-  tenantId: string, 
-  orgId: string, 
+  tenantId: string,
+  orgId: string,
   namespace?: string
 ): Promise<number>
 ```
@@ -467,7 +472,11 @@ async clearOrganizationCache(
 
 ```typescript
 // 清除组织的成员列表缓存
-const count = await cacheService.clearOrganizationCache('t123', 'o456', 'members');
+const count = await cacheService.clearOrganizationCache(
+  't123',
+  'o456',
+  'members',
+);
 ```
 
 ---
@@ -480,8 +489,8 @@ const count = await cacheService.clearOrganizationCache('t123', 'o456', 'members
 
 ```typescript
 async clearDepartmentCache(
-  tenantId: string, 
-  orgId: string, 
+  tenantId: string,
+  orgId: string,
   deptId: string,
   namespace?: string
 ): Promise<number>
@@ -502,7 +511,12 @@ async clearDepartmentCache(
 
 ```typescript
 // 清除部门的任务缓存
-const count = await cacheService.clearDepartmentCache('t123', 'o456', 'd789', 'tasks');
+const count = await cacheService.clearDepartmentCache(
+  't123',
+  'o456',
+  'd789',
+  'tasks',
+);
 ```
 
 ---
@@ -525,13 +539,13 @@ const count = await cacheService.clearDepartmentCache('t123', 'o456', 'd789', 't
 interface CacheableOptions {
   /** 缓存键生成函数 */
   keyGenerator?: (...args: any[]) => string;
-  
+
   /** TTL（秒），默认使用配置的 defaultTTL */
   ttl?: number;
-  
+
   /** 条件函数，返回 false 时不缓存 */
   condition?: (...args: any[]) => boolean;
-  
+
   /** 异常时是否缓存 null，默认 false */
   cacheNull?: boolean;
 }
@@ -555,7 +569,7 @@ export class UserService {
   async getUserProfile(userId: string): Promise<UserProfile> {
     return this.userRepository.findOne(userId);
   }
-  
+
   /**
    * 条件缓存：仅缓存激活用户
    */
@@ -593,13 +607,13 @@ export class UserService {
 interface CacheEvictOptions {
   /** 缓存键生成函数 */
   keyGenerator?: (...args: any[]) => string;
-  
+
   /** 是否清除所有，默认 false */
   allEntries?: boolean;
-  
+
   /** 在方法执行前清除，默认 false（方法执行后清除） */
   beforeInvocation?: boolean;
-  
+
   /** 条件函数 */
   condition?: (...args: any[]) => boolean;
 }
@@ -616,10 +630,13 @@ export class UserService {
   @CacheEvict('user', {
     keyGenerator: (userId: string) => `profile:${userId}`,
   })
-  async updateUserProfile(userId: string, data: Partial<UserProfile>): Promise<void> {
+  async updateUserProfile(
+    userId: string,
+    data: Partial<UserProfile>,
+  ): Promise<void> {
     await this.userRepository.update(userId, data);
   }
-  
+
   /**
    * 删除用户（清除所有用户缓存）
    */
@@ -650,10 +667,10 @@ export class UserService {
 interface CachePutOptions {
   /** 缓存键生成函数 */
   keyGenerator?: (...args: any[]) => string;
-  
+
   /** TTL（秒） */
   ttl?: number;
-  
+
   /** 条件函数 */
   condition?: (...args: any[]) => boolean;
 }
@@ -703,19 +720,19 @@ getMetrics(): CacheMetrics
 interface CacheMetrics {
   /** 缓存命中次数 */
   hits: number;
-  
+
   /** 缓存未命中次数 */
   misses: number;
-  
+
   /** 错误次数 */
   errors: number;
-  
+
   /** 缓存命中率（0-1） */
   hitRate: number;
-  
+
   /** 平均延迟（毫秒） */
   averageLatency: number;
-  
+
   /** 总操作次数 */
   totalOperations: number;
 }
@@ -730,10 +747,10 @@ import { CacheMetricsService } from '@hl8/nestjs-caching';
 @Injectable()
 export class MonitoringService {
   constructor(private readonly metricsService: CacheMetricsService) {}
-  
+
   async getCacheHealth() {
     const metrics = this.metricsService.getMetrics();
-    
+
     return {
       hitRate: `${(metrics.hitRate * 100).toFixed(2)}%`,
       averageLatency: `${metrics.averageLatency.toFixed(2)}ms`,
@@ -794,14 +811,14 @@ import { RedisService } from '@hl8/nestjs-caching';
 @Injectable()
 export class CustomCacheService {
   constructor(private readonly redisService: RedisService) {}
-  
+
   async customOperation() {
     const redis = this.redisService.getClient();
-    
+
     // 执行自定义 Redis 命令
     await redis.zadd('leaderboard', 100, 'user1');
     const rank = await redis.zrank('leaderboard', 'user1');
-    
+
     return rank;
   }
 }
@@ -837,14 +854,14 @@ import { RedisService } from '@hl8/nestjs-caching';
 @Injectable()
 export class HealthService {
   constructor(private readonly redisService: RedisService) {}
-  
+
   async checkRedis() {
     const isHealthy = await this.redisService.healthCheck();
-    
+
     if (!isHealthy) {
       console.error('Redis 连接异常');
     }
-    
+
     return { redis: isHealthy ? 'up' : 'down' };
   }
 }
@@ -856,11 +873,11 @@ export class HealthService {
 
 ### 异常类型
 
-| 异常类型 | 描述 | 处理建议 |
-|---------|------|---------|
-| `GeneralBadRequestException` | 参数无效（TTL、键长度等） | 检查输入参数 |
-| `GeneralInternalServerException` | Redis 操作失败 | 检查 Redis 连接，查看日志 |
-| `ConfigValidationException` | 配置验证失败 | 检查模块配置 |
+| 异常类型                         | 描述                      | 处理建议                  |
+| -------------------------------- | ------------------------- | ------------------------- |
+| `GeneralBadRequestException`     | 参数无效（TTL、键长度等） | 检查输入参数              |
+| `GeneralInternalServerException` | Redis 操作失败            | 检查 Redis 连接，查看日志 |
+| `ConfigValidationException`      | 配置验证失败              | 检查模块配置              |
 
 ### 错误响应格式
 
@@ -903,7 +920,7 @@ await cacheService.set<UserProfile>('user', 'profile:u999', {
 ### 类型导出
 
 ```typescript
-import type { 
+import type {
   CachingModuleOptions,
   RedisOptions,
   CacheMetrics,
@@ -949,12 +966,12 @@ async clearCache(tenantId: string): Promise<void>
 
 ### 延迟保证
 
-| 操作 | 目标延迟 (p95) | 实测延迟 |
-|------|---------------|---------|
-| get() | < 10ms | 3-5ms |
-| set() | < 10ms | 5-8ms |
-| del() | < 5ms | 2-3ms |
-| exists() | < 5ms | 2-3ms |
+| 操作     | 目标延迟 (p95) | 实测延迟 |
+| -------- | -------------- | -------- |
+| get()    | < 10ms         | 3-5ms    |
+| set()    | < 10ms         | 5-8ms    |
+| del()    | < 5ms          | 2-3ms    |
+| exists() | < 5ms          | 2-3ms    |
 
 ### 吞吐量保证
 
@@ -969,14 +986,14 @@ async clearCache(tenantId: string): Promise<void>
 
 ```typescript
 // ✅ 推荐：使用小写字母和连字符
-'user-profile'
-'product-list'
-'order-summary'
+'user-profile';
+'product-list';
+'order-summary';
 
 // ❌ 避免：使用大写或特殊字符
-'UserProfile'
-'product_list'
-'order.summary'
+'UserProfile';
+'product_list';
+'order.summary';
 ```
 
 ### 2. TTL 设置

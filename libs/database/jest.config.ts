@@ -7,13 +7,16 @@ export default {
   displayName: '@hl8/database',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.ts$': ['ts-jest', { 
-      useESM: false,
-      tsconfig: {
-        module: 'commonjs',
-        esModuleInterop: true,
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        useESM: false,
+        tsconfig: {
+          module: 'commonjs',
+          esModuleInterop: true,
+        },
       },
-    }],
+    ],
   },
   moduleFileExtensions: ['ts', 'js'],
   coverageDirectory: '../../coverage/libs/database',
@@ -23,11 +26,7 @@ export default {
     '/dist/',
     '.spec.ts$',
   ],
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.spec.ts',
-    '!src/**/index.ts',
-  ],
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.spec.ts', '!src/**/index.ts'],
   coverageThreshold: {
     global: {
       branches: 70,
@@ -39,8 +38,5 @@ export default {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  testMatch: [
-    '**/*.spec.ts',
-  ],
+  testMatch: ['**/*.spec.ts'],
 };
-

@@ -17,28 +17,28 @@ import type { ConnectionConfig, PoolConfig } from './connection.types.js';
 export interface DatabaseModuleOptions {
   /** 数据库连接配置 */
   connection: ConnectionConfig;
-  
+
   /** 连接池配置（可选） */
   pool?: Partial<PoolConfig>;
-  
+
   /** 实体类数组 */
   entities: Function[];
-  
+
   /** MikroORM 额外配置（可选） */
   mikroORM?: Partial<MikroORMOptions>;
-  
+
   /** 监控配置（可选） */
   monitoring?: {
     /** 是否启用慢查询记录 */
     enableSlowQueryLog?: boolean;
-    
+
     /** 慢查询阈值（毫秒） */
     slowQueryThreshold?: number;
-    
+
     /** 是否启用查询指标 */
     enableQueryMetrics?: boolean;
   };
-  
+
   /** 是否启用调试模式（可选） */
   debug?: boolean;
 }
@@ -54,8 +54,10 @@ export interface DatabaseModuleAsyncOptions {
    *
    * @description 返回模块配置的工厂函数
    */
-  useFactory: (...args: any[]) => Promise<DatabaseModuleOptions> | DatabaseModuleOptions;
-  
+  useFactory: (
+    ...args: any[]
+  ) => Promise<DatabaseModuleOptions> | DatabaseModuleOptions;
+
   /**
    * 依赖注入
    *
@@ -63,4 +65,3 @@ export interface DatabaseModuleAsyncOptions {
    */
   inject?: any[];
 }
-

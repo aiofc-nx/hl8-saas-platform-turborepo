@@ -23,8 +23,7 @@ describe('UnauthorizedOrganizationException', () => {
     );
 
     const rfc7807 = exception.toRFC7807();
-    
+
     expect(rfc7807.data?.organizationId).toBe('org-456');
   });
 });
-

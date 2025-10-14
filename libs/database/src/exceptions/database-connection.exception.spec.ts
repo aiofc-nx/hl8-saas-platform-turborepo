@@ -15,7 +15,7 @@ describe('DatabaseConnectionException', () => {
   it('应该包含正确的错误代码和状态码', () => {
     const exception = new DatabaseConnectionException('连接失败');
     const response = exception.getResponse() as any;
-    
+
     expect(response.errorCode).toBe('DATABASE_CONNECTION_ERROR');
     expect(response.status).toBe(503);
     expect(response.title).toBe('数据库连接错误');
@@ -27,7 +27,7 @@ describe('DatabaseConnectionException', () => {
       host: 'localhost',
       port: 5432,
     });
-    
+
     const response = exception.getResponse() as any;
     expect(response.data).toEqual({
       host: 'localhost',
@@ -38,11 +38,10 @@ describe('DatabaseConnectionException', () => {
   it('应该包含必需的响应字段', () => {
     const exception = new DatabaseConnectionException('连接失败');
     const response = exception.getResponse() as any;
-    
+
     expect(response).toHaveProperty('title');
     expect(response).toHaveProperty('detail');
     expect(response).toHaveProperty('status');
     expect(response).toHaveProperty('errorCode');
   });
 });
-

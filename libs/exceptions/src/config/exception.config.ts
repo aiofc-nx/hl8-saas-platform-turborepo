@@ -14,8 +14,8 @@
  */
 
 import { ModuleMetadata, Type } from '@nestjs/common';
-import { ExceptionMessageProvider } from '../providers/exception-message.provider.js';
 import { ILoggerService } from '../filters/http-exception.filter.js';
+import { ExceptionMessageProvider } from '../providers/exception-message.provider.js';
 
 /**
  * 异常模块配置
@@ -126,4 +126,3 @@ export const DEFAULT_EXCEPTION_OPTIONS: ExceptionModuleOptions = {
   registerGlobalFilters: true,
   isProduction: process.env.NODE_ENV === 'production',
 };
-

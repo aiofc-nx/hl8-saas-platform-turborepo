@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **CacheKey**: 值对象，封装缓存键生成逻辑
   - 自动组合隔离上下文
-  - 支持模式匹配（*）
+  - 支持模式匹配（\*）
   - 键长度限制（256字符）
 - **CacheEntry**: 值对象，封装缓存条目
   - 自动序列化/反序列化

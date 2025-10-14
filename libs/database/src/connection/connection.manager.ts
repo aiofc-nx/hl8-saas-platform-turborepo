@@ -39,13 +39,16 @@
  * @since 1.0.0
  */
 
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { MikroORM } from '@mikro-orm/core';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { DATABASE_ERROR_CODES } from '../constants/error-codes.js';
+import { MikroORM } from '@mikro-orm/core';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { CONNECTION_DEFAULTS } from '../constants/defaults.js';
 import { DatabaseConnectionException } from '../exceptions/database-connection.exception.js';
-import { ConnectionStatus, type ConnectionInfo, type PoolStats } from '../types/connection.types.js';
+import {
+  ConnectionStatus,
+  type ConnectionInfo,
+  type PoolStats,
+} from '../types/connection.types.js';
 
 @Injectable()
 export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
@@ -91,9 +94,9 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
   async connect(): Promise<void> {
     try {
       this.connectionStatus = ConnectionStatus.CONNECTING;
-      
+
       const connected = await this.orm.isConnected();
-      
+
       if (!connected) {
         // MikroORM 在创建时会自动连接，这里只是确认状态
         // 如果未连接，等待一段时间让连接建立
@@ -124,7 +127,7 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
             host: this.getConnectionConfig().host,
             port: this.getConnectionConfig().port,
             attempts: this.reconnectAttempts,
-          }
+          },
         );
       }
     }
@@ -160,14 +163,18 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
 
     // 计算退避延迟（指数增长）
     const delay = Math.min(
-      CONNECTION_DEFAULTS.RECONNECT_INITIAL_DELAY * Math.pow(2, this.reconnectAttempts - 1),
-      CONNECTION_DEFAULTS.RECONNECT_MAX_DELAY
+      CONNECTION_DEFAULTS.RECONNECT_INITIAL_DELAY *
+        Math.pow(2, this.reconnectAttempts - 1),
+      CONNECTION_DEFAULTS.RECONNECT_MAX_DELAY,
     );
 
-    this.logger.warn(`重连数据库（第 ${this.reconnectAttempts} 次尝试），等待 ${delay}ms`, {
-      attempt: this.reconnectAttempts,
-      delayMs: delay,
-    });
+    this.logger.warn(
+      `重连数据库（第 ${this.reconnectAttempts} 次尝试），等待 ${delay}ms`,
+      {
+        attempt: this.reconnectAttempts,
+        delayMs: delay,
+      },
+    );
 
     await this.sleep(delay);
     await this.connect();
@@ -270,7 +277,7 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
    * @private
    */
   private getConnectionConfig() {
-    const config = (this.orm.config as any);
+    const config = this.orm.config as any;
     return {
       type: config.get('type'),
       host: config.get('host'),
@@ -289,4 +296,3 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
-

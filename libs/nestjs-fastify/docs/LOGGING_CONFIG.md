@@ -75,16 +75,16 @@ export class AppModule {}
 
 ### LoggingConfig
 
-| 属性 | 类型 | 默认值 | 描述 |
-|------|------|--------|------|
-| `level` | `LogLevel` | `'info'` | 最低日志级别 |
-| `prettyPrint` | `boolean` | `false` | 是否使用美化输出 |
-| `includeIsolationContext` | `boolean` | `true` | 是否包含隔离上下文 |
-| `timestamp` | `boolean` | `true` | 是否包含时间戳 |
-| `logFile` | `string?` | `undefined` | 日志文件路径（可选） |
-| `logRequestDetails` | `boolean` | `false` | 是否记录请求详情 |
-| `logResponseDetails` | `boolean` | `false` | 是否记录响应详情 |
-| `enabled` | `boolean` | `true` | 全局开关 |
+| 属性                      | 类型       | 默认值      | 描述                 |
+| ------------------------- | ---------- | ----------- | -------------------- |
+| `level`                   | `LogLevel` | `'info'`    | 最低日志级别         |
+| `prettyPrint`             | `boolean`  | `false`     | 是否使用美化输出     |
+| `includeIsolationContext` | `boolean`  | `true`      | 是否包含隔离上下文   |
+| `timestamp`               | `boolean`  | `true`      | 是否包含时间戳       |
+| `logFile`                 | `string?`  | `undefined` | 日志文件路径（可选） |
+| `logRequestDetails`       | `boolean`  | `false`     | 是否记录请求详情     |
+| `logResponseDetails`      | `boolean`  | `false`     | 是否记录响应详情     |
+| `enabled`                 | `boolean`  | `true`      | 全局开关             |
 
 ### LogLevel
 
@@ -112,7 +112,7 @@ FastifyLoggingModule.forRoot({
     logRequestDetails: true,
     logResponseDetails: true,
   },
-})
+});
 ```
 
 ### 生产环境
@@ -127,7 +127,7 @@ FastifyLoggingModule.forRoot({
     logRequestDetails: false,
     logResponseDetails: false,
   },
-})
+});
 ```
 
 ### 性能测试
@@ -138,7 +138,7 @@ FastifyLoggingModule.forRoot({
     level: 'silent',
     enabled: false,
   },
-})
+});
 ```
 
 ## 注入日志服务

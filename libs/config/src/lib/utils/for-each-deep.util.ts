@@ -19,7 +19,7 @@
  * ```
  * @author HL8 SAAS Platform Team
  * @since 1.0.0
- * 
+ *
  * @remarks
  * 使用 any 符合宪章 IX 允许场景：通用工具函数必须支持任意对象结构。
  */
@@ -27,7 +27,7 @@
 export const forEachDeep = (
   obj: any,
   callback: (value: any, key: string, path: string) => void,
-  path: string = ''
+  path: string = '',
 ): void => {
   if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
     for (const [key, value] of Object.entries(obj)) {

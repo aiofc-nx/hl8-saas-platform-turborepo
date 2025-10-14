@@ -4,11 +4,14 @@
  * @description 测试 DatabaseIsolationService 的隔离功能
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { IsolationContextService } from '@hl8/nestjs-isolation';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { DatabaseIsolationService, IsolationLevel } from './isolation.service.js';
+import { IsolationContextService } from '@hl8/nestjs-isolation';
+import { Test, TestingModule } from '@nestjs/testing';
 import { IsolationContextMissingException } from '../exceptions/isolation-context-missing.exception.js';
+import {
+  DatabaseIsolationService,
+  IsolationLevel,
+} from './isolation.service.js';
 
 describe('DatabaseIsolationService', () => {
   let service: DatabaseIsolationService;
@@ -110,4 +113,3 @@ describe('DatabaseIsolationService', () => {
     });
   });
 });
-

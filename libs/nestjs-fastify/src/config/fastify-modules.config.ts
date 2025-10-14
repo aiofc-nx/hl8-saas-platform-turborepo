@@ -1,17 +1,24 @@
 /**
  * @fileoverview Fastify 模块统一配置
- * 
+ *
  * @description
  * 集中管理所有 Fastify 增强模块的配置
  */
 
-import { IsInt, IsBoolean, IsOptional, Min, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import type { RateLimitOptions } from '../security/rate-limit/types/rate-limit-options.js';
-import type { HelmetOptions } from '../security/helmet/types/helmet-options.js';
-import type { CorsOptions } from '../security/cors/types/cors-options.js';
+import {
+  IsBoolean,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import type { CompressionOptions } from '../performance/compression/types/compression-options.js';
 import type { MetricsOptions } from '../performance/metrics/types/metrics-options.js';
+import type { CorsOptions } from '../security/cors/types/cors-options.js';
+import type { HelmetOptions } from '../security/helmet/types/helmet-options.js';
+import type { RateLimitOptions } from '../security/rate-limit/types/rate-limit-options.js';
 
 /**
  * 速率限制配置
@@ -96,10 +103,10 @@ export class MetricsModuleConfig implements MetricsOptions {
 
 /**
  * Fastify 模块统一配置
- * 
+ *
  * @description
  * 管理所有 Fastify 增强模块的配置
- * 
+ *
  * @example
  * ```typescript
  * const config = new FastifyModulesConfig();
@@ -111,7 +118,7 @@ export class MetricsModuleConfig implements MetricsOptions {
  * config.metrics = {
  *   includeTenantMetrics: true,
  * };
- * 
+ *
  * const errors = await validate(config);
  * ```
  */
@@ -182,4 +189,3 @@ export const DEFAULT_FASTIFY_MODULES_CONFIG: FastifyModulesConfig = {
     enableDefaultMetrics: true,
   },
 };
-

@@ -4,8 +4,8 @@
  * @description 测试 HealthCheckService 的健康检查功能
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Test, TestingModule } from '@nestjs/testing';
 import { ConnectionManager } from '../connection/connection.manager.js';
 import { HealthCheckService } from './health-check.service.js';
 
@@ -93,7 +93,9 @@ describe('HealthCheckService', () => {
     });
 
     it('应该处理检查异常', async () => {
-      mockConnectionManager.isConnected.mockRejectedValue(new Error('Check failed'));
+      mockConnectionManager.isConnected.mockRejectedValue(
+        new Error('Check failed'),
+      );
 
       const result = await service.check();
 
@@ -117,4 +119,3 @@ describe('HealthCheckService', () => {
     });
   });
 });
-

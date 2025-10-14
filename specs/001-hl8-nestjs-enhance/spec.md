@@ -66,14 +66,14 @@
 
 ### 整合范围
 
-| 原包名 | 核心功能 | 整合后位置 | 优先级 | 状态 |
-|--------|---------|-----------|--------|------|
+| 原包名             | 核心功能                                    | 整合后位置                | 优先级 | 状态       |
+| ------------------ | ------------------------------------------- | ------------------------- | ------ | ---------- |
 | **@hl8/common** ⭐ | **统一异常处理（RFC7807）、值对象、装饰器** | **exceptions/ + shared/** | **P0** | **待整合** |
-| @hl8/multi-tenancy | 5层级数据隔离（平台/租户/组织/部门/用户） | **isolation/**（重命名） | P1 | 待整合 |
-| @hl8/cache | Redis 缓存、租户隔离缓存、装饰器 | caching/ | P1 | 待整合 |
-| @hl8/fastify-pro | Fastify 适配器、中间件、插件 | fastify/ | P1 | 待整合 |
-| @hl8/config | 类型安全配置、多格式加载、验证 | configuration/ | P1 | 待整合 |
-| @hl8/logger | Pino 日志、结构化日志 | logging/ | P1 | 部分已完成 |
+| @hl8/multi-tenancy | 5层级数据隔离（平台/租户/组织/部门/用户）   | **isolation/**（重命名）  | P1     | 待整合     |
+| @hl8/cache         | Redis 缓存、租户隔离缓存、装饰器            | caching/                  | P1     | 待整合     |
+| @hl8/fastify-pro   | Fastify 适配器、中间件、插件                | fastify/                  | P1     | 待整合     |
+| @hl8/config        | 类型安全配置、多格式加载、验证              | configuration/            | P1     | 待整合     |
+| @hl8/logger        | Pino 日志、结构化日志                       | logging/                  | P1     | 部分已完成 |
 
 **详细评估报告**: 参见 [analysis/legacy-modules-assessment.md](./analysis/legacy-modules-assessment.md)
 
@@ -255,12 +255,12 @@ libs/nestjs-infra（基础设施库，功能导向）
 
 **职责划分**：
 
-| 层次 | 职责 | 架构模式 |
-|------|------|---------|
-| 业务应用 | 实现业务用例，提供用户接口 | Clean Architecture + DDD + CQRS + ES + EDA |
-| 业务模块 | 实现领域逻辑，定义聚合根 | Clean Architecture + DDD |
-| 共享内核 | 定义共享领域概念 | DDD Shared Kernel |
-| **基础设施库** | **提供技术能力** | **功能导向** |
+| 层次           | 职责                       | 架构模式                                   |
+| -------------- | -------------------------- | ------------------------------------------ |
+| 业务应用       | 实现业务用例，提供用户接口 | Clean Architecture + DDD + CQRS + ES + EDA |
+| 业务模块       | 实现领域逻辑，定义聚合根   | Clean Architecture + DDD                   |
+| 共享内核       | 定义共享领域概念           | DDD Shared Kernel                          |
+| **基础设施库** | **提供技术能力**           | **功能导向**                               |
 
 ### 多层级数据隔离支持
 
@@ -326,11 +326,11 @@ interface BaseDataModel {
   organizationId?: string;
   departmentId?: string;
   userId?: string;
-  
+
   // 共享控制字段 ⭐
-  isShared: boolean;              // 是否共享（默认 false）
+  isShared: boolean; // 是否共享（默认 false）
   sharingLevel?: DataSharingLevel; // 共享级别
-  sharedWith?: string[];          // 精确共享对象列表（可选）
+  sharedWith?: string[]; // 精确共享对象列表（可选）
 }
 ```
 
@@ -353,13 +353,13 @@ interface BaseDataModel {
 
 **共享规则**：
 
-| 隔离级别 | 允许的共享级别 | 典型场景 |
-|---------|---------------|---------|
-| PLATFORM | PLATFORM | 平台数据只能平台级 |
-| TENANT | PLATFORM, TENANT | 租户工单共享到平台 |
+| 隔离级别     | 允许的共享级别                 | 典型场景           |
+| ------------ | ------------------------------ | ------------------ |
+| PLATFORM     | PLATFORM                       | 平台数据只能平台级 |
+| TENANT       | PLATFORM, TENANT               | 租户工单共享到平台 |
 | ORGANIZATION | PLATFORM, TENANT, ORGANIZATION | 组织案例共享到租户 |
-| DEPARTMENT | 所有级别 | 部门公告共享到组织 |
-| USER | 所有级别 | 用户文档共享到部门 |
+| DEPARTMENT   | 所有级别                       | 部门公告共享到组织 |
+| USER         | 所有级别                       | 用户文档共享到部门 |
 
 **事件驱动**：
 
@@ -817,7 +817,7 @@ interface BaseDataModel {
 
 ```json
 {
-  "extends": "@repo/ts-config/nestjs.json",
+  "extends": "@repo/typescript-config/nestjs.json",
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",

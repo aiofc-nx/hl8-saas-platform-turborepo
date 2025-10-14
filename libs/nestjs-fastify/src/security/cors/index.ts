@@ -3,6 +3,5 @@
  */
 
 export { CorsModule } from './cors.module.js';
-export type { CorsOptions } from './types/cors-options.js';
 export { DEFAULT_CORS_OPTIONS } from './types/cors-options.js';
-
+export type { CorsOptions } from './types/cors-options.js';

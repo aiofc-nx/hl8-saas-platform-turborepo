@@ -17,14 +17,14 @@
 
 ## 接口文件列表
 
-| 文件 | 描述 |
-|------|------|
-| caching-contracts.ts | 缓存模块的公共接口 |
-| configuration-contracts.ts | 配置模块的公共接口 |
-| logging-contracts.ts | 日志模块的公共接口 |
-| multi-tenancy-contracts.ts | 多租户模块的公共接口 |
-| fastify-contracts.ts | Fastify 适配器的公共接口 |
-| shared-contracts.ts | 共享领域模型的公共接口 |
+| 文件                       | 描述                     |
+| -------------------------- | ------------------------ |
+| caching-contracts.ts       | 缓存模块的公共接口       |
+| configuration-contracts.ts | 配置模块的公共接口       |
+| logging-contracts.ts       | 日志模块的公共接口       |
+| multi-tenancy-contracts.ts | 多租户模块的公共接口     |
+| fastify-contracts.ts       | Fastify 适配器的公共接口 |
+| shared-contracts.ts        | 共享领域模型的公共接口   |
 
 ## 接口设计原则
 
@@ -75,10 +75,10 @@ export class UserService {
 
 ## 接口稳定性等级
 
-| 等级 | 描述 | 变更策略 |
-|------|------|---------|
-| **Stable** | 稳定接口，生产可用 | 严格遵循 SemVer，breaking changes 需要主版本升级 |
-| **Beta** | 测试接口，可能变更 | 次版本可以包含 breaking changes |
-| **Experimental** | 实验性接口，随时可能移除 | 不保证向后兼容 |
+| 等级             | 描述                     | 变更策略                                         |
+| ---------------- | ------------------------ | ------------------------------------------------ |
+| **Stable**       | 稳定接口，生产可用       | 严格遵循 SemVer，breaking changes 需要主版本升级 |
+| **Beta**         | 测试接口，可能变更       | 次版本可以包含 breaking changes                  |
+| **Experimental** | 实验性接口，随时可能移除 | 不保证向后兼容                                   |
 
 当前所有接口均为 **Stable** 级别。

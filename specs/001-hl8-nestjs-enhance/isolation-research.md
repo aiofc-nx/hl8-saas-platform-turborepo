@@ -68,7 +68,7 @@
    - IIsolationContextProvider 接口
    - IIsolationValidator 接口
    - 领域事件定义（纯类）
-   
+
    // 不包含：
    - ❌ NestJS 装饰器、模块、服务
    - ❌ nestjs-cls 依赖
@@ -85,7 +85,7 @@
    - MultiLevelIsolationService（实现 IIsolationValidator）
    - 中间件、守卫、装饰器
    - 提取策略
-   
+
    // 依赖：
    - @hl8/isolation-model（领域模型）
    - NestJS
@@ -133,29 +133,29 @@ export class TenantId {
   private constructor(private readonly value: string) {
     this.validate();
   }
-  
+
   static create(value: string): TenantId {
     return new TenantId(value);
   }
-  
+
   private validate(): void {
     if (!this.value || typeof this.value !== 'string') {
       throw new Error('租户 ID 必须是非空字符串');
     }
-    
+
     if (this.value.length > 50) {
       throw new Error('租户 ID 长度不能超过 50 字符');
     }
-    
+
     if (!/^[a-zA-Z0-9_-]+$/.test(this.value)) {
       throw new Error('租户 ID 只能包含字母、数字、下划线和连字符');
     }
   }
-  
+
   getValue(): string {
     return this.value;
   }
-  
+
   equals(other: TenantId): boolean {
     return this.value === other.value;
   }
@@ -175,11 +175,11 @@ export interface IIsolationContextProvider {
 @Injectable()
 export class IsolationContextService implements IIsolationContextProvider {
   constructor(private readonly cls: ClsService) {}
-  
+
   getIsolationContext(): IsolationContext | undefined {
     return this.cls.get('ISOLATION_CONTEXT');
   }
-  
+
   setIsolationContext(context: IsolationContext): void {
     this.cls.set('ISOLATION_CONTEXT', context);
   }
@@ -243,26 +243,26 @@ export class IsolationExceptionFilter implements ExceptionFilter {
 
 **IsolationContext 实体设计**:
 
-```typescript
+````typescript
 /**
  * 隔离上下文实体
- * 
+ *
  * @description 封装多层级数据隔离的核心业务逻辑
- * 
+ *
  * ## 业务规则
- * 
+ *
  * ### 层级判断规则
  * - 有 departmentId → DEPARTMENT 级
  * - 有 organizationId → ORGANIZATION 级
  * - 有 tenantId → TENANT 级
  * - 有 userId（无租户）→ USER 级
  * - 默认 → PLATFORM 级
- * 
+ *
  * ### 验证规则
  * - 组织级必须有租户
  * - 部门级必须有租户和组织
  * - 所有 ID 必须有效
- * 
+ *
  * @since 1.0.0
  */
 export class IsolationContext {
@@ -277,31 +277,31 @@ export class IsolationContext {
   ) {
     this.validate();
   }
-  
+
   /**
    * 创建平台级上下文
    */
   static platform(): IsolationContext {
     return new IsolationContext();
   }
-  
+
   /**
    * 创建租户级上下文
    */
   static tenant(tenantId: TenantId): IsolationContext {
     return new IsolationContext(tenantId);
   }
-  
+
   /**
    * 创建组织级上下文
    */
   static organization(
-    tenantId: TenantId, 
-    organizationId: OrganizationId
+    tenantId: TenantId,
+    organizationId: OrganizationId,
   ): IsolationContext {
     return new IsolationContext(tenantId, organizationId);
   }
-  
+
   /**
    * 创建部门级上下文
    */
@@ -312,17 +312,17 @@ export class IsolationContext {
   ): IsolationContext {
     return new IsolationContext(tenantId, organizationId, departmentId);
   }
-  
+
   /**
    * 创建用户级上下文
    */
   static user(userId: UserId, tenantId?: TenantId): IsolationContext {
     return new IsolationContext(tenantId, undefined, undefined, userId);
   }
-  
+
   /**
    * 验证上下文有效性
-   * 
+   *
    * @throws {IsolationValidationError} 上下文无效
    * @private
    */
@@ -331,22 +331,22 @@ export class IsolationContext {
     if (this.organizationId && !this.tenantId) {
       throw new IsolationValidationError(
         '组织级上下文必须包含租户 ID',
-        'INVALID_ORGANIZATION_CONTEXT'
+        'INVALID_ORGANIZATION_CONTEXT',
       );
     }
-    
+
     // 部门级必须有租户和组织
     if (this.departmentId && (!this.tenantId || !this.organizationId)) {
       throw new IsolationValidationError(
         '部门级上下文必须包含租户 ID 和组织 ID',
-        'INVALID_DEPARTMENT_CONTEXT'
+        'INVALID_DEPARTMENT_CONTEXT',
       );
     }
   }
-  
+
   /**
    * 获取隔离级别（业务逻辑）
-   * 
+   *
    * @returns 隔离级别
    */
   getIsolationLevel(): IsolationLevel {
@@ -356,25 +356,30 @@ export class IsolationContext {
     if (this.userId) return IsolationLevel.USER;
     return IsolationLevel.PLATFORM;
   }
-  
+
   /**
    * 判断是否为空上下文（平台级）
-   * 
+   *
    * @returns 如果所有标识符都为空返回 true
    */
   isEmpty(): boolean {
-    return !this.tenantId && !this.organizationId && !this.departmentId && !this.userId;
+    return (
+      !this.tenantId &&
+      !this.organizationId &&
+      !this.departmentId &&
+      !this.userId
+    );
   }
-  
+
   /**
    * 构建缓存键前缀（业务逻辑）
-   * 
+   *
    * @description 根据隔离级别生成缓存键前缀
-   * 
+   *
    * @param namespace - 命名空间
    * @param key - 键名
    * @returns 完整的缓存键
-   * 
+   *
    * @example
    * ```typescript
    * const context = IsolationContext.department(
@@ -382,63 +387,73 @@ export class IsolationContext {
    *   OrganizationId.create('o456'),
    *   DepartmentId.create('d789'),
    * );
-   * 
+   *
    * const cacheKey = context.buildCacheKey('user', 'list');
    * // 返回: tenant:t123:org:o456:dept:d789:user:list
    * ```
    */
   buildCacheKey(namespace: string, key: string): string {
     const parts: string[] = [];
-    
+
     switch (this.getIsolationLevel()) {
       case IsolationLevel.PLATFORM:
         parts.push('platform', namespace, key);
         break;
-        
+
       case IsolationLevel.TENANT:
         parts.push('tenant', this.tenantId!.getValue(), namespace, key);
         break;
-        
+
       case IsolationLevel.ORGANIZATION:
         parts.push(
-          'tenant', this.tenantId!.getValue(),
-          'org', this.organizationId!.getValue(),
-          namespace, key
+          'tenant',
+          this.tenantId!.getValue(),
+          'org',
+          this.organizationId!.getValue(),
+          namespace,
+          key,
         );
         break;
-        
+
       case IsolationLevel.DEPARTMENT:
         parts.push(
-          'tenant', this.tenantId!.getValue(),
-          'org', this.organizationId!.getValue(),
-          'dept', this.departmentId!.getValue(),
-          namespace, key
+          'tenant',
+          this.tenantId!.getValue(),
+          'org',
+          this.organizationId!.getValue(),
+          'dept',
+          this.departmentId!.getValue(),
+          namespace,
+          key,
         );
         break;
-        
+
       case IsolationLevel.USER:
         if (this.tenantId) {
           parts.push(
-            'tenant', this.tenantId.getValue(),
-            'user', this.userId!.getValue(),
-            namespace, key
+            'tenant',
+            this.tenantId.getValue(),
+            'user',
+            this.userId!.getValue(),
+            namespace,
+            key,
           );
         } else {
           parts.push('user', this.userId!.getValue(), namespace, key);
         }
         break;
     }
-    
+
     return parts.join(':');
   }
-  
+
   /**
    * 构建日志上下文（业务逻辑）
-   * 
+   *
    * @description 生成结构化的日志上下文对象
-   * 
+   *
    * @returns 日志上下文对象
-   * 
+   *
    * @example
    * ```typescript
    * const logContext = context.buildLogContext();
@@ -448,7 +463,7 @@ export class IsolationContext {
    */
   buildLogContext(): Record<string, string> {
     const logContext: Record<string, string> = {};
-    
+
     if (this.tenantId) {
       logContext.tenantId = this.tenantId.getValue();
     }
@@ -461,35 +476,35 @@ export class IsolationContext {
     if (this.userId) {
       logContext.userId = this.userId.getValue();
     }
-    
+
     return logContext;
   }
-  
+
   /**
    * 检查是否可以访问数据（业务逻辑）
-   * 
+   *
    * @description 验证当前上下文是否可以访问目标数据
-   * 
+   *
    * @param dataContext - 数据的隔离上下文
    * @param isShared - 数据是否共享
    * @param sharingLevel - 共享级别（如果是共享数据）
    * @returns 如果可以访问返回 true，否则返回 false
-   * 
+   *
    * ## 访问规则
-   * 
+   *
    * ### 非共享数据
    * - 只能在数据所有者的隔离层级访问
    * - 示例：部门 A 的非共享数据不能被部门 B 访问
-   * 
+   *
    * ### 共享数据
    * - 可以在共享级别及其下级访问
    * - 示例：租户级共享数据可被该租户的所有组织、部门、用户访问
-   * 
+   *
    * @example
    * ```typescript
    * const userContext = IsolationContext.department(t123, o456, d789);
    * const dataContext = IsolationContext.organization(t123, o456);
-   * 
+   *
    * // 检查访问权限
    * const canAccess = userContext.canAccess(dataContext, true, SharingLevel.ORGANIZATION);
    * // 返回 true（共享数据，用户在组织内）
@@ -504,19 +519,19 @@ export class IsolationContext {
     if (this.isEmpty()) {
       return true;
     }
-    
+
     // 非共享数据：必须完全匹配
     if (!isShared) {
       return this.matches(dataContext);
     }
-    
+
     // 共享数据：检查共享级别
     return this.canAccessSharedData(dataContext, sharingLevel);
   }
-  
+
   /**
    * 检查是否匹配另一个上下文（私有方法）
-   * 
+   *
    * @private
    */
   private matches(other: IsolationContext): boolean {
@@ -527,10 +542,10 @@ export class IsolationContext {
       this.userId?.equals(other.userId)
     );
   }
-  
+
   /**
    * 检查是否可以访问共享数据（私有方法）
-   * 
+   *
    * @private
    */
   private canAccessSharedData(
@@ -540,33 +555,35 @@ export class IsolationContext {
     if (!sharingLevel) {
       return false;
     }
-    
+
     switch (sharingLevel) {
       case SharingLevel.PLATFORM:
         return true; // 平台共享，所有人可访问
-        
+
       case SharingLevel.TENANT:
         return this.tenantId?.equals(dataContext.tenantId) ?? false;
-        
+
       case SharingLevel.ORGANIZATION:
         return (
-          this.tenantId?.equals(dataContext.tenantId) &&
-          this.organizationId?.equals(dataContext.organizationId)
-        ) ?? false;
-        
+          (this.tenantId?.equals(dataContext.tenantId) &&
+            this.organizationId?.equals(dataContext.organizationId)) ??
+          false
+        );
+
       case SharingLevel.DEPARTMENT:
         return (
-          this.tenantId?.equals(dataContext.tenantId) &&
-          this.organizationId?.equals(dataContext.organizationId) &&
-          this.departmentId?.equals(dataContext.departmentId)
-        ) ?? false;
-        
+          (this.tenantId?.equals(dataContext.tenantId) &&
+            this.organizationId?.equals(dataContext.organizationId) &&
+            this.departmentId?.equals(dataContext.departmentId)) ??
+          false
+        );
+
       default:
         return false;
     }
   }
 }
-```
+````
 
 **充血模型的优势**:
 
@@ -612,15 +629,15 @@ export class CacheService {
   constructor(
     private readonly contextProvider: IIsolationContextProvider, // 注入接口
   ) {}
-  
+
   async get<T>(namespace: string, key: string): Promise<T | null> {
     // 获取隔离上下文
-    const context = this.contextProvider.getIsolationContext() 
-      ?? IsolationContext.platform();
-    
+    const context =
+      this.contextProvider.getIsolationContext() ?? IsolationContext.platform();
+
     // 使用领域模型生成缓存键
     const cacheKey = context.buildCacheKey(namespace, key);
-    
+
     // 执行缓存操作
     return this.redis.get(cacheKey);
   }
@@ -640,15 +657,15 @@ export class LoggerService {
   constructor(
     private readonly contextProvider: IIsolationContextProvider, // 注入接口
   ) {}
-  
+
   info(message: string, data?: any): void {
     // 获取隔离上下文
-    const context = this.contextProvider.getIsolationContext()
-      ?? IsolationContext.platform();
-    
+    const context =
+      this.contextProvider.getIsolationContext() ?? IsolationContext.platform();
+
     // 使用领域模型生成日志上下文
     const logContext = context.buildLogContext();
-    
+
     // 记录日志
     this.pino.info({
       ...logContext,
@@ -668,24 +685,24 @@ import { IsolationContext, IsolationLevel } from '@hl8/isolation-model';
 export abstract class BaseRepository<T> {
   protected buildWhereClause(context: IsolationContext): any {
     const level = context.getIsolationLevel();
-    
+
     switch (level) {
       case IsolationLevel.TENANT:
         return { tenantId: context.tenantId?.getValue() };
-        
+
       case IsolationLevel.ORGANIZATION:
         return {
           tenantId: context.tenantId?.getValue(),
           organizationId: context.organizationId?.getValue(),
         };
-        
+
       case IsolationLevel.DEPARTMENT:
         return {
           tenantId: context.tenantId?.getValue(),
           organizationId: context.organizationId?.getValue(),
           departmentId: context.departmentId?.getValue(),
         };
-        
+
       default:
         return {};
     }
@@ -728,42 +745,42 @@ export abstract class BaseRepository<T> {
  */
 export class TenantId {
   private static cache = new Map<string, TenantId>();
-  
+
   private constructor(private readonly value: string) {
     this.validate();
   }
-  
+
   /**
    * 创建租户 ID（使用缓存）
-   * 
+   *
    * @description 相同的 ID 值返回相同的实例，减少对象创建开销
    */
   static create(value: string): TenantId {
     // 从缓存获取
     let instance = this.cache.get(value);
-    
+
     if (!instance) {
       instance = new TenantId(value);
       this.cache.set(value, instance);
     }
-    
+
     return instance;
   }
-  
+
   getValue(): string {
     return this.value;
   }
-  
+
   equals(other?: TenantId): boolean {
     if (!other) return false;
     return this.value === other.value;
   }
-  
+
   private validate(): void {
     if (!this.value || typeof this.value !== 'string') {
       throw new IsolationValidationError(
         '租户 ID 必须是非空字符串',
-        'INVALID_TENANT_ID'
+        'INVALID_TENANT_ID',
       );
     }
   }
@@ -782,7 +799,7 @@ export class TenantId {
 ```typescript
 export class IsolationContext {
   private _level?: IsolationLevel; // 缓存计算结果
-  
+
   getIsolationLevel(): IsolationLevel {
     // 延迟计算 + 缓存结果
     if (this._level === undefined) {
@@ -792,7 +809,7 @@ export class IsolationContext {
       else if (this.userId) this._level = IsolationLevel.USER;
       else this._level = IsolationLevel.PLATFORM;
     }
-    
+
     return this._level;
   }
 }
@@ -821,7 +838,7 @@ buildCacheKey(namespace: string, key: string): string {
 **性能基准**:
 
 - 值对象创建（带缓存）: < 0.1ms
-- 隔离级别计算（带缓存）: < 0.01ms  
+- 隔离级别计算（带缓存）: < 0.01ms
 - buildCacheKey: < 0.5ms
 - buildLogContext: < 0.3ms
 - canAccess: < 0.2ms
@@ -842,13 +859,13 @@ buildCacheKey(namespace: string, key: string): string {
 
 ### 关键决策汇总
 
-| 决策点 | 选择方案 | 理由 |
-|--------|---------|------|
-| 拆分策略 | 领域模型 + 实现库（两个包） | 依赖倒置，避免依赖传递 |
-| 依赖管理 | 领域模型零依赖 | 最小依赖，跨平台通用 |
-| DDD 设计 | IsolationContext 充血模型 | 业务逻辑封装，避免贫血模型 |
-| API 设计 | 简洁、类型安全 | 易用性，被多个模块引用 |
-| 性能优化 | Flyweight + 延迟计算 | 零开销抽象 |
+| 决策点   | 选择方案                    | 理由                       |
+| -------- | --------------------------- | -------------------------- |
+| 拆分策略 | 领域模型 + 实现库（两个包） | 依赖倒置，避免依赖传递     |
+| 依赖管理 | 领域模型零依赖              | 最小依赖，跨平台通用       |
+| DDD 设计 | IsolationContext 充血模型   | 业务逻辑封装，避免贫血模型 |
+| API 设计 | 简洁、类型安全              | 易用性，被多个模块引用     |
+| 性能优化 | Flyweight + 延迟计算        | 零开销抽象                 |
 
 ### 实施建议
 
@@ -860,23 +877,20 @@ buildCacheKey(namespace: string, key: string): string {
    - 实现枚举（IsolationLevel、SharingLevel）
    - 编写单元测试（覆盖率 >= 95%）
 
-**第二阶段（Week 2）**:
-2. 创建 `libs/nestjs-isolation-impl` 实现库
+**第二阶段（Week 2）**: 2. 创建 `libs/nestjs-isolation-impl` 实现库
 
 - 实现 IsolationContextService（基于 nestjs-cls）
 - 实现 MultiLevelIsolationService
 - 实现中间件、守卫、装饰器
 - 编写集成测试
 
-**第三阶段（Week 3）**:
-3. 更新依赖库使用新的领域模型
+**第三阶段（Week 3）**: 3. 更新依赖库使用新的领域模型
 
 - 更新 `libs/nestjs-caching` 使用 @hl8/nestjs-isolation
 - 更新 `libs/nestjs-logging` 使用 @hl8/nestjs-isolation
 - 移除对 @hl8/platform 的 IsolationContext 依赖
 
-**第四阶段（Week 4）**:
-4. 兼容层和迁移
+**第四阶段（Week 4）**: 4. 兼容层和迁移
 
 - 在 `libs/nestjs-infra` 创建兼容层
 - 提供迁移指南
@@ -884,12 +898,12 @@ buildCacheKey(namespace: string, key: string): string {
 
 ### 风险与缓解
 
-| 风险 | 影响 | 缓解措施 |
-|------|------|---------|
-| 依赖循环 | 高 | 明确依赖方向：caching/logging → isolation（领域模型） |
-| API 复杂度 | 中 | 提供静态工厂方法，简化使用 |
-| 性能开销 | 低 | 使用 Flyweight 和延迟计算优化 |
-| 测试困难 | 低 | 零依赖使测试更简单 |
+| 风险       | 影响 | 缓解措施                                              |
+| ---------- | ---- | ----------------------------------------------------- |
+| 依赖循环   | 高   | 明确依赖方向：caching/logging → isolation（领域模型） |
+| API 复杂度 | 中   | 提供静态工厂方法，简化使用                            |
+| 性能开销   | 低   | 使用 Flyweight 和延迟计算优化                         |
+| 测试困难   | 低   | 零依赖使测试更简单                                    |
 
 ### 关键洞察
 
@@ -902,7 +916,7 @@ buildCacheKey(namespace: string, key: string): string {
    caching → isolation-impl → nestjs-cls
                             → @nestjs/common
                             → class-validator
-   
+
    正确设计：
    caching → isolation（零依赖！）
    ```
@@ -914,7 +928,7 @@ buildCacheKey(namespace: string, key: string): string {
    libs/nestjs-isolation           # NestJS + nestjs-cls
    libs/express-isolation          # Express + express-cls（未来）
    libs/koa-isolation              # Koa + koa-cls（未来）
-   
+
    // 但都依赖同一个领域模型
    libs/isolation-model            # 纯领域模型，框架无关
    ```
@@ -923,9 +937,9 @@ buildCacheKey(namespace: string, key: string): string {
 
    ```typescript
    // 所有模块使用相同的领域模型
-   caching.buildKey(context)      // 使用 IsolationContext
-   logger.log(message, context)   // 使用 IsolationContext
-   database.query(context)        // 使用 IsolationContext
+   caching.buildKey(context); // 使用 IsolationContext
+   logger.log(message, context); // 使用 IsolationContext
+   database.query(context); // 使用 IsolationContext
    ```
 
 ---

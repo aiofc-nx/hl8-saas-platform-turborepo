@@ -81,24 +81,24 @@ import { CacheService } from '@hl8/nestjs-caching';
 @Injectable()
 export class UserService {
   constructor(private readonly cacheService: CacheService) {}
-  
+
   async getUserProfile(userId: string) {
     // 尝试从缓存获取
     const cached = await this.cacheService.get<UserProfile>(
-      'user', 
-      `profile:${userId}`
+      'user',
+      `profile:${userId}`,
     );
-    
+
     if (cached) {
       return cached;
     }
-    
+
     // 从数据库加载
     const profile = await this.userRepository.findOne(userId);
-    
+
     // 缓存结果（30 分钟）
     await this.cacheService.set('user', `profile:${userId}`, profile, 1800);
-    
+
     return profile;
   }
 }
@@ -129,7 +129,7 @@ import { Cacheable } from '@hl8/nestjs-caching';
 export class UserService {
   /**
    * 自动缓存用户配置
-   * 
+   *
    * - 首次调用：执行方法并缓存结果
    * - 再次调用：直接返回缓存，不执行方法
    */
@@ -158,11 +158,14 @@ export class UserService {
   @CacheEvict('user', {
     keyGenerator: (userId: string) => `profile:${userId}`,
   })
-  async updateUserProfile(userId: string, data: Partial<UserProfile>): Promise<void> {
+  async updateUserProfile(
+    userId: string,
+    data: Partial<UserProfile>,
+  ): Promise<void> {
     await this.userRepository.update(userId, data);
     // 缓存会在方法执行后自动清除
   }
-  
+
   /**
    * 删除用户时清除所有相关缓存
    */
@@ -206,13 +209,13 @@ export class UserService {
 
 ### 隔离层级说明
 
-| 层级 | 描述 | 缓存键示例 |
-|------|------|-----------|
-| Platform | 平台级缓存 | `hl8:cache:platform:system:version` |
-| Tenant | 租户级缓存 | `hl8:cache:tenant:t123:config:flags` |
-| Organization | 组织级缓存 | `hl8:cache:tenant:t123:org:o456:members:list` |
-| Department | 部门级缓存 | `hl8:cache:tenant:t123:org:o456:dept:d789:tasks:active` |
-| User | 用户级缓存 | `hl8:cache:user:u999:preferences:theme` |
+| 层级         | 描述       | 缓存键示例                                              |
+| ------------ | ---------- | ------------------------------------------------------- |
+| Platform     | 平台级缓存 | `hl8:cache:platform:system:version`                     |
+| Tenant       | 租户级缓存 | `hl8:cache:tenant:t123:config:flags`                    |
+| Organization | 组织级缓存 | `hl8:cache:tenant:t123:org:o456:members:list`           |
+| Department   | 部门级缓存 | `hl8:cache:tenant:t123:org:o456:dept:d789:tasks:active` |
+| User         | 用户级缓存 | `hl8:cache:user:u999:preferences:theme`                 |
 
 ### 自动隔离示例
 
@@ -223,12 +226,12 @@ import { CacheService } from '@hl8/nestjs-caching';
 @Injectable()
 export class DataService {
   constructor(private readonly cacheService: CacheService) {}
-  
+
   async getData() {
     // 自动根据当前请求的隔离上下文生成缓存键
     // 如果当前用户属于租户 t123，组织 o456，部门 d789
     // 生成的键: hl8:cache:tenant:t123:org:o456:dept:d789:data:list
-    
+
     return this.cacheService.get('data', 'list');
   }
 }
@@ -254,19 +257,22 @@ import { CacheService } from '@hl8/nestjs-caching';
 @Injectable()
 export class TenantService {
   constructor(private readonly cacheService: CacheService) {}
-  
+
   /**
    * 租户配置更新后清除所有缓存
    */
-  async updateTenantConfig(tenantId: string, config: TenantConfig): Promise<void> {
+  async updateTenantConfig(
+    tenantId: string,
+    config: TenantConfig,
+  ): Promise<void> {
     await this.tenantRepository.update(tenantId, config);
-    
+
     // 清除该租户的所有缓存
     const count = await this.cacheService.clearTenantCache(tenantId);
-    
+
     console.log(`清除了 ${count} 个缓存键`);
   }
-  
+
   /**
    * 仅清除租户的用户缓存
    */
@@ -285,7 +291,7 @@ export class TenantService {
  */
 async reorganize(tenantId: string, orgId: string): Promise<void> {
   await this.organizationRepository.update(tenantId, orgId);
-  
+
   // 清除组织的所有缓存
   await this.cacheService.clearOrganizationCache(tenantId, orgId);
 }
@@ -361,20 +367,20 @@ import { CacheMetricsService } from '@hl8/nestjs-caching';
 @Injectable()
 export class MonitoringService {
   constructor(private readonly metricsService: CacheMetricsService) {}
-  
+
   /**
    * 每分钟报告缓存指标
    */
   @Cron(CronExpression.EVERY_MINUTE)
   reportCacheMetrics() {
     const metrics = this.metricsService.getMetrics();
-    
+
     console.log('=== 缓存性能指标 ===');
     console.log(`命中率: ${(metrics.hitRate * 100).toFixed(2)}%`);
     console.log(`平均延迟: ${metrics.averageLatency.toFixed(2)}ms`);
     console.log(`总操作: ${metrics.totalOperations}`);
     console.log(`错误次数: ${metrics.errors}`);
-    
+
     // 重置指标（可选）
     this.metricsService.reset();
   }
@@ -391,11 +397,11 @@ import { RedisService } from '@hl8/nestjs-caching';
 @Controller('health')
 export class HealthController {
   constructor(private readonly redisService: RedisService) {}
-  
+
   @Get()
   async check() {
     const redisHealthy = await this.redisService.healthCheck();
-    
+
     return {
       status: redisHealthy ? 'ok' : 'error',
       redis: redisHealthy ? 'up' : 'down',
@@ -419,20 +425,27 @@ import { RedisService } from '@hl8/nestjs-caching';
 @Injectable()
 export class LeaderboardService {
   constructor(private readonly redisService: RedisService) {}
-  
+
   async addScore(userId: string, score: number): Promise<void> {
     const redis = this.redisService.getClient();
-    
+
     // 使用 Redis 的 Sorted Set
     await redis.zadd('leaderboard', score, userId);
   }
-  
-  async getTopUsers(limit: number = 10): Promise<Array<{ userId: string; score: number }>> {
+
+  async getTopUsers(
+    limit: number = 10,
+  ): Promise<Array<{ userId: string; score: number }>> {
     const redis = this.redisService.getClient();
-    
+
     // 获取排行榜前 N 名
-    const results = await redis.zrevrange('leaderboard', 0, limit - 1, 'WITHSCORES');
-    
+    const results = await redis.zrevrange(
+      'leaderboard',
+      0,
+      limit - 1,
+      'WITHSCORES',
+    );
+
     const leaderboard = [];
     for (let i = 0; i < results.length; i += 2) {
       leaderboard.push({
@@ -440,7 +453,7 @@ export class LeaderboardService {
         score: parseFloat(results[i + 1]),
       });
     }
-    
+
     return leaderboard;
   }
 }
@@ -461,7 +474,7 @@ import { CacheService } from '@hl8/nestjs-caching';
 describe('UserService', () => {
   let service: UserService;
   let cacheService: CacheService;
-  
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -476,27 +489,27 @@ describe('UserService', () => {
         },
       ],
     }).compile();
-    
+
     service = module.get<UserService>(UserService);
     cacheService = module.get<CacheService>(CacheService);
   });
-  
+
   it('should cache user profile', async () => {
     const userId = 'u999';
     const profile = { id: userId, name: '张三' };
-    
+
     // Mock 缓存未命中
     jest.spyOn(cacheService, 'get').mockResolvedValue(null);
     jest.spyOn(cacheService, 'set').mockResolvedValue(undefined);
-    
+
     const result = await service.getUserProfile(userId);
-    
+
     expect(cacheService.get).toHaveBeenCalledWith('user', `profile:${userId}`);
     expect(cacheService.set).toHaveBeenCalledWith(
-      'user', 
-      `profile:${userId}`, 
-      expect.any(Object), 
-      1800
+      'user',
+      `profile:${userId}`,
+      expect.any(Object),
+      1800,
     );
   });
 });
@@ -512,7 +525,7 @@ import Redis from 'ioredis-mock';
 
 describe('Caching Integration', () => {
   let cacheService: CacheService;
-  
+
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -526,21 +539,21 @@ describe('Caching Integration', () => {
         }),
       ],
     }).compile();
-    
+
     cacheService = module.get<CacheService>(CacheService);
   });
-  
+
   it('should set and get cache', async () => {
     await cacheService.set('test', 'key1', { value: 'test' }, 60);
     const result = await cacheService.get('test', 'key1');
-    
+
     expect(result).toEqual({ value: 'test' });
   });
-  
+
   it('should delete cache', async () => {
     await cacheService.set('test', 'key2', { value: 'test' }, 60);
     await cacheService.del('test', 'key2');
-    
+
     const result = await cacheService.get('test', 'key2');
     expect(result).toBeNull();
   });
@@ -618,13 +631,13 @@ await cacheService.set('user', 'session', data, 86400 * 30); // 30 天（太长�
 
 ```typescript
 // ✅ 使用清晰的命名空间
-'user'        // 用户相关
-'product'     // 产品相关
-'order'       // 订单相关
+'user'; // 用户相关
+'product'; // 产品相关
+'order'; // 订单相关
 
 // ❌ 避免混合命名空间
-'user-product'  // 不清晰
-'data'          // 过于宽泛
+'user-product'; // 不清晰
+'data'; // 过于宽泛
 ```
 
 ### 3. 批量操作优化

@@ -27,13 +27,13 @@
 
 #### 配置选项说明表格
 
-| 选项 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `enableLogging` | `boolean` | `true` | 是否启用日志记录 |
-| `logger` | `ILoggerService` | - | 自定义日志服务 |
-| `messageProvider` | `ExceptionMessageProvider` | - | 自定义消息提供器 |
-| `isProduction` | `boolean` | 自动检测 | 是否为生产环境 |
-| `registerGlobalFilters` | `boolean` | `true` | 是否注册全局过滤器 |
+| 选项                    | 类型                       | 默认值   | 说明               |
+| ----------------------- | -------------------------- | -------- | ------------------ |
+| `enableLogging`         | `boolean`                  | `true`   | 是否启用日志记录   |
+| `logger`                | `ILoggerService`           | -        | 自定义日志服务     |
+| `messageProvider`       | `ExceptionMessageProvider` | -        | 自定义消息提供器   |
+| `isProduction`          | `boolean`                  | 自动检测 | 是否为生产环境     |
+| `registerGlobalFilters` | `boolean`                  | `true`   | 是否注册全局过滤器 |
 
 #### 三种配置方式
 

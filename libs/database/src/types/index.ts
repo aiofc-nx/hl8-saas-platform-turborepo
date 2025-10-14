@@ -7,7 +7,6 @@
  */
 
 export * from './connection.types.js';
-export * from './transaction.types.js';
-export * from './monitoring.types.js';
 export * from './module.types.js';
-
+export * from './monitoring.types.js';
+export * from './transaction.types.js';

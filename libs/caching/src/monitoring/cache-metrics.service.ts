@@ -1,25 +1,25 @@
 /**
  * 缓存性能指标服务
- * 
+ *
  * @description 收集和计算缓存性能指标
- * 
+ *
  * ## 业务规则
- * 
+ *
  * ### 指标收集规则
  * - 每次缓存操作都应记录指标
  * - 指标数据存储在内存中
  * - 支持手动重置指标
- * 
+ *
  * ### 计算规则
  * - 命中率 = hits / (hits + misses)
  * - 平均延迟 = totalLatency / totalOperations
  * - 总操作数 = hits + misses + errors
- * 
+ *
  * ### 延迟测量
  * - 记录每次操作的开始和结束时间
  * - 计算时间差（毫秒）
  * - 累加到总延迟
- * 
+ *
  * @example
  * ```typescript
  * @Injectable()
@@ -27,14 +27,14 @@
  *   constructor(
  *     private readonly metricsService: CacheMetricsService,
  *   ) {}
- *   
+ *
  *   async get<T>(namespace: string, key: string): Promise<T | undefined> {
  *     const startTime = Date.now();
- *     
+ *
  *     try {
  *       const value = await this.redis.get(key);
  *       const latency = Date.now() - startTime;
- *       
+ *
  *       if (value) {
  *         this.metricsService.recordHit(latency);
  *         return JSON.parse(value);
@@ -50,7 +50,7 @@
  *   }
  * }
  * ```
- * 
+ *
  * @since 1.0.0
  */
 
@@ -60,23 +60,23 @@ import type { CacheMetrics } from '../types/cache-metrics.interface.js';
 @Injectable()
 export class CacheMetricsService {
   private readonly logger = new Logger(CacheMetricsService.name);
-  
+
   private hits = 0;
   private misses = 0;
   private errors = 0;
   private totalLatency = 0;
-  
+
   /**
    * 记录缓存命中
-   * 
+   *
    * @param latency - 操作延迟（毫秒）
-   * 
+   *
    * @example
    * ```typescript
    * const startTime = Date.now();
    * const value = await redis.get(key);
    * const latency = Date.now() - startTime;
-   * 
+   *
    * if (value) {
    *   metricsService.recordHit(latency);
    * }
@@ -87,18 +87,18 @@ export class CacheMetricsService {
     this.totalLatency += latency;
     this.logger.debug(`缓存命中 | 延迟: ${latency.toFixed(2)}ms`);
   }
-  
+
   /**
    * 记录缓存未命中
-   * 
+   *
    * @param latency - 操作延迟（毫秒）
-   * 
+   *
    * @example
    * ```typescript
    * const startTime = Date.now();
    * const value = await redis.get(key);
    * const latency = Date.now() - startTime;
-   * 
+   *
    * if (!value) {
    *   metricsService.recordMiss(latency);
    * }
@@ -109,12 +109,12 @@ export class CacheMetricsService {
     this.totalLatency += latency;
     this.logger.debug(`缓存未命中 | 延迟: ${latency.toFixed(2)}ms`);
   }
-  
+
   /**
    * 记录缓存错误
-   * 
+   *
    * @param latency - 操作延迟（毫秒）
-   * 
+   *
    * @example
    * ```typescript
    * try {
@@ -130,12 +130,12 @@ export class CacheMetricsService {
     this.totalLatency += latency;
     this.logger.warn(`缓存错误 | 延迟: ${latency.toFixed(2)}ms`);
   }
-  
+
   /**
    * 获取缓存命中率
-   * 
+   *
    * @returns 命中率（0-1）
-   * 
+   *
    * @example
    * ```typescript
    * const hitRate = metricsService.getHitRate();
@@ -149,12 +149,12 @@ export class CacheMetricsService {
     }
     return this.hits / totalQueries;
   }
-  
+
   /**
    * 获取平均延迟
-   * 
+   *
    * @returns 平均延迟（毫秒）
-   * 
+   *
    * @example
    * ```typescript
    * const avgLatency = metricsService.getAverageLatency();
@@ -168,16 +168,16 @@ export class CacheMetricsService {
     }
     return this.totalLatency / totalOperations;
   }
-  
+
   /**
    * 获取完整的缓存指标
-   * 
+   *
    * @returns 缓存指标对象
-   * 
+   *
    * @example
    * ```typescript
    * const metrics = metricsService.getMetrics();
-   * 
+   *
    * console.log(`命中: ${metrics.hits}`);
    * console.log(`未命中: ${metrics.misses}`);
    * console.log(`错误: ${metrics.errors}`);
@@ -196,12 +196,12 @@ export class CacheMetricsService {
       totalOperations: this.hits + this.misses + this.errors,
     };
   }
-  
+
   /**
    * 重置所有指标
-   * 
+   *
    * @description 清空所有缓存指标数据，用于重新开始收集
-   * 
+   *
    * @example
    * ```typescript
    * // 定时重置指标（每天）
@@ -215,12 +215,13 @@ export class CacheMetricsService {
    */
   reset(): void {
     const metrics = this.getMetrics();
-    this.logger.log(`重置指标 | 命中率: ${(metrics.hitRate * 100).toFixed(2)}%, 总操作: ${metrics.totalOperations}`);
-    
+    this.logger.log(
+      `重置指标 | 命中率: ${(metrics.hitRate * 100).toFixed(2)}%, 总操作: ${metrics.totalOperations}`,
+    );
+
     this.hits = 0;
     this.misses = 0;
     this.errors = 0;
     this.totalLatency = 0;
   }
 }
-

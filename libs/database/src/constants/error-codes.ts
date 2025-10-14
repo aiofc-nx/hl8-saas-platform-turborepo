@@ -52,5 +52,5 @@ export const DATABASE_ERROR_CODES = {
 /**
  * 数据库错误代码类型
  */
-export type DatabaseErrorCode = typeof DATABASE_ERROR_CODES[keyof typeof DATABASE_ERROR_CODES];
-
+export type DatabaseErrorCode =
+  (typeof DATABASE_ERROR_CODES)[keyof typeof DATABASE_ERROR_CODES];

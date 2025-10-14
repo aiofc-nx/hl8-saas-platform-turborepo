@@ -52,7 +52,7 @@ import { DatabaseModule, DatabaseConfig } from '@hl8/database';
       schema: DatabaseConfig,
       load: [dotenvLoader()],
     }),
-    
+
     DatabaseModule.forRootAsync({
       useFactory: (config: DatabaseConfig) => ({
         connection: {
@@ -116,9 +116,7 @@ export class UserService {
 ```typescript
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly transactionService: TransactionService,
-  ) {}
+  constructor(private readonly transactionService: TransactionService) {}
 
   @Transactional()
   async createUser(data: CreateUserDto): Promise<User> {
@@ -145,14 +143,14 @@ const result = await this.transactionService.runInTransaction(async (em) => {
 ```typescript
 @Injectable()
 export class UserRepository {
-  constructor(
-    private readonly isolationService: DatabaseIsolationService,
-  ) {}
+  constructor(private readonly isolationService: DatabaseIsolationService) {}
 
   @IsolationAware(IsolationLevel.TENANT)
   async findAll(): Promise<User[]> {
     // 自动应用租户隔离
-    const filter = this.isolationService.buildIsolationFilter(IsolationLevel.TENANT);
+    const filter = this.isolationService.buildIsolationFilter(
+      IsolationLevel.TENANT,
+    );
     return this.em.find(User, filter);
   }
 }

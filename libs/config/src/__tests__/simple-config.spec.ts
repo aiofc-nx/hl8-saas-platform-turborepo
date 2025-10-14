@@ -9,7 +9,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileLoader } from '../lib/loader/file.loader';
-import { createTempDir, cleanupTempFiles } from './test-utils';
+import { cleanupTempFiles, createTempDir } from './test-utils';
 
 describe('环境变量替换功能测试', () => {
   let tempDir: string;
@@ -88,7 +88,7 @@ describe('环境变量替换功能测试', () => {
       const config = loader();
 
       expect(config['value']).toBe(
-        'your-super-secret-jwt-key-change-in-production'
+        'your-super-secret-jwt-key-change-in-production',
       );
     });
   });

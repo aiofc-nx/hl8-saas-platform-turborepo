@@ -6,21 +6,21 @@
  * @since 1.0.0
  */
 
+import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import * as crypto from 'crypto';
 import { promisify } from 'util';
+import { CacheEventType } from '../constants.js';
+import { ConfigLogger } from '../services/config-logger.service.js';
 import {
-  CacheProvider,
   CacheEntry,
-  CacheStats,
   CacheEvent,
   CacheEventListener,
+  CacheProvider,
+  CacheStats,
   FileCacheOptions,
 } from '../types/cache.types.js';
-import { ConfigLogger } from '../services/config-logger.service.js';
 import { ConfigRecord } from '../types/config.types.js';
-import { CacheEventType } from '../constants.js';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -126,7 +126,7 @@ export class FileCacheProvider implements CacheProvider {
   public async set(
     key: string,
     value: ConfigRecord,
-    ttl?: number
+    ttl?: number,
   ): Promise<void> {
     try {
       const filePath = this.getFilePath(key);
@@ -382,7 +382,7 @@ export class FileCacheProvider implements CacheProvider {
    */
   private async writeCacheEntry(
     filePath: string,
-    entry: CacheEntry
+    entry: CacheEntry,
   ): Promise<void> {
     const data = JSON.stringify(entry);
     await writeFile(filePath, data, 'utf8');
@@ -477,7 +477,7 @@ export class FileCacheProvider implements CacheProvider {
   private emitEvent(
     type: CacheEventType,
     key: string,
-    data?: Record<string, unknown>
+    data?: Record<string, unknown>,
   ): void {
     const event: CacheEvent = {
       type,
@@ -493,10 +493,10 @@ export class FileCacheProvider implements CacheProvider {
           listener(event);
         } catch (error) {
           const logger = ConfigLogger.getInstance();
-          logger.error('缓存事件监听器错误', { 
-            event: event.type, 
+          logger.error('缓存事件监听器错误', {
+            event: event.type,
             error: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined
+            stack: error instanceof Error ? error.stack : undefined,
           });
         }
       }

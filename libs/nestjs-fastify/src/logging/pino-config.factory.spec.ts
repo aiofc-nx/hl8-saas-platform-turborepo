@@ -8,9 +8,9 @@
 
 import {
   createDevelopmentPinoConfig,
-  createProductionPinoConfig,
-  createPinoConfig,
   createFastifyLoggerConfig,
+  createPinoConfig,
+  createProductionPinoConfig,
   DEFAULT_SERIALIZERS,
 } from './pino-config.factory.js';
 
@@ -25,7 +25,7 @@ describe('Pino 配置工厂', () => {
     it('err 序列化器应该正确序列化 Error 对象', () => {
       const error = new Error('测试错误');
       const serialized = DEFAULT_SERIALIZERS.err(error);
-      
+
       expect(serialized).toEqual({
         type: 'Error',
         message: '测试错误',
@@ -40,7 +40,7 @@ describe('Pino 配置工厂', () => {
         headers: { 'content-type': 'application/json' },
       };
       const serialized = DEFAULT_SERIALIZERS.req(req);
-      
+
       expect(serialized).toEqual({
         method: 'GET',
         url: '/test',
@@ -51,7 +51,7 @@ describe('Pino 配置工厂', () => {
     it('res 序列化器应该正确序列化响应对象', () => {
       const res = { statusCode: 200 };
       const serialized = DEFAULT_SERIALIZERS.res(res);
-      
+
       expect(serialized).toEqual({
         statusCode: 200,
       });
@@ -61,7 +61,7 @@ describe('Pino 配置工厂', () => {
   describe('createDevelopmentPinoConfig', () => {
     it('应该创建开发环境配置', () => {
       const config = createDevelopmentPinoConfig();
-      
+
       expect(config.level).toBe('debug');
       expect(config.transport).toBeDefined();
       expect((config.transport as any)?.target).toBe('pino-pretty');
@@ -73,7 +73,7 @@ describe('Pino 配置工厂', () => {
         level: 'info',
         colorize: false,
       });
-      
+
       expect(config.level).toBe('info');
       expect(config.transport?.options?.colorize).toBe(false);
     });
@@ -82,7 +82,7 @@ describe('Pino 配置工厂', () => {
   describe('createProductionPinoConfig', () => {
     it('应该创建生产环境配置', () => {
       const config = createProductionPinoConfig();
-      
+
       expect(config.level).toBe('info');
       expect(config.transport).toBeUndefined();
       expect(config.serializers).toEqual(DEFAULT_SERIALIZERS);
@@ -92,7 +92,7 @@ describe('Pino 配置工厂', () => {
       const config = createProductionPinoConfig({
         level: 'warn',
       });
-      
+
       expect(config.level).toBe('warn');
     });
   });
@@ -111,7 +111,7 @@ describe('Pino 配置工厂', () => {
     it('在开发环境应该返回开发配置', () => {
       process.env.NODE_ENV = 'development';
       const config = createPinoConfig();
-      
+
       expect(config.transport).toBeDefined();
       expect((config.transport as any)?.target).toBe('pino-pretty');
     });
@@ -119,7 +119,7 @@ describe('Pino 配置工厂', () => {
     it('在生产环境应该返回生产配置', () => {
       process.env.NODE_ENV = 'production';
       const config = createPinoConfig();
-      
+
       expect(config.transport).toBeUndefined();
     });
 
@@ -127,7 +127,7 @@ describe('Pino 配置工厂', () => {
       const config = createPinoConfig({
         level: 'error',
       });
-      
+
       expect(config.level).toBe('error');
     });
   });
@@ -135,7 +135,7 @@ describe('Pino 配置工厂', () => {
   describe('createFastifyLoggerConfig', () => {
     it('应该创建 Fastify 日志配置', () => {
       const config = createFastifyLoggerConfig();
-      
+
       expect(config.serializers).toEqual(DEFAULT_SERIALIZERS);
     });
 
@@ -144,7 +144,7 @@ describe('Pino 配置工厂', () => {
         level: 'debug',
         prettyPrint: true,
       });
-      
+
       expect(config.level).toBe('debug');
       expect(config.transport?.options).toBeDefined();
     });
@@ -156,7 +156,7 @@ describe('Pino 配置工厂', () => {
       const prodConfig = createProductionPinoConfig();
       const autoConfig = createPinoConfig();
       const fastifyConfig = createFastifyLoggerConfig();
-      
+
       expect(devConfig.serializers).toEqual(DEFAULT_SERIALIZERS);
       expect(prodConfig.serializers).toEqual(DEFAULT_SERIALIZERS);
       expect(autoConfig.serializers).toEqual(DEFAULT_SERIALIZERS);
@@ -171,9 +171,9 @@ describe('Pino 配置工厂', () => {
         new SyntaxError('语法错误'),
       ];
 
-      errorTypes.forEach(error => {
+      errorTypes.forEach((error) => {
         const serialized = DEFAULT_SERIALIZERS.err(error);
-        
+
         expect(serialized).toHaveProperty('type');
         expect(serialized).toHaveProperty('message');
         expect(serialized).toHaveProperty('stack');

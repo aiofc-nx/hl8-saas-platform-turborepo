@@ -51,7 +51,7 @@ export const DEFAULT_SERIALIZERS = {
     message: err.message,
     stack: err.stack,
   }),
-  
+
   /**
    * 请求对象序列化器
    */
@@ -60,7 +60,7 @@ export const DEFAULT_SERIALIZERS = {
     url: req.url,
     headers: req.headers,
   }),
-  
+
   /**
    * 响应对象序列化器
    */
@@ -75,7 +75,9 @@ export const DEFAULT_SERIALIZERS = {
  * @param options - 配置选项
  * @returns Pino 配置对象
  */
-export function createDevelopmentPinoConfig(options: PinoConfigOptions = {}): LoggerOptions {
+export function createDevelopmentPinoConfig(
+  options: PinoConfigOptions = {},
+): LoggerOptions {
   const {
     level = 'debug',
     prettyPrint = true,
@@ -104,7 +106,9 @@ export function createDevelopmentPinoConfig(options: PinoConfigOptions = {}): Lo
  * @param options - 配置选项
  * @returns Pino 配置对象
  */
-export function createProductionPinoConfig(options: PinoConfigOptions = {}): LoggerOptions {
+export function createProductionPinoConfig(
+  options: PinoConfigOptions = {},
+): LoggerOptions {
   const { level = 'info' } = options;
 
   return {
@@ -119,13 +123,15 @@ export function createProductionPinoConfig(options: PinoConfigOptions = {}): Log
  * @param options - 配置选项
  * @returns Pino 配置对象
  */
-export function createPinoConfig(options: PinoConfigOptions = {}): LoggerOptions {
+export function createPinoConfig(
+  options: PinoConfigOptions = {},
+): LoggerOptions {
   const isDevelopment = process.env.NODE_ENV === 'development';
-  
+
   if (isDevelopment) {
     return createDevelopmentPinoConfig(options);
   }
-  
+
   return createProductionPinoConfig(options);
 }
 
@@ -135,6 +141,8 @@ export function createPinoConfig(options: PinoConfigOptions = {}): LoggerOptions
  * @param options - 配置选项
  * @returns Fastify 日志配置对象
  */
-export function createFastifyLoggerConfig(options: PinoConfigOptions = {}): LoggerOptions {
+export function createFastifyLoggerConfig(
+  options: PinoConfigOptions = {},
+): LoggerOptions {
   return createPinoConfig(options);
 }

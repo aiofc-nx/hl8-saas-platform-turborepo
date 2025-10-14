@@ -6,8 +6,8 @@
  * @since 1.0.0
  */
 
+import { dotenvLoader, fileLoader } from '../lib/loader';
 import { TypedConfigModule } from '../lib/typed-config.module';
-import { fileLoader, dotenvLoader } from '../lib/loader';
 
 describe('配置模块工作测试', () => {
   describe('基本功能', () => {

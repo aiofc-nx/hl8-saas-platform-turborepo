@@ -134,7 +134,7 @@ export function createTempDir(prefix: string = 'test'): string {
 
   const tempDir = path.join(
     os.tmpdir(),
-    `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
   );
 
   // 实际创建目录
@@ -180,7 +180,7 @@ export async function cleanupTempFiles(paths: string[]): Promise<void> {
 export function mockFetch(
   url: string,
   response: any,
-  status: number = 200
+  status: number = 200,
 ): void {
   const originalFetch = global.fetch;
 
@@ -247,7 +247,7 @@ export const testAssertions = {
   assertErrorType(
     error: any,
     expectedType: string,
-    expectedMessage?: string
+    expectedMessage?: string,
   ): void {
     expect(error).toBeInstanceOf(Error);
     expect(error.name).toBe(expectedType);

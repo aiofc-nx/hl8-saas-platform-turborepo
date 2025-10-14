@@ -6,17 +6,17 @@
  * @since 1.0.0
  */
 
+import { CacheEventType } from '../constants.js';
+import { ConfigLogger } from '../services/config-logger.service.js';
 import {
-  CacheProvider,
   CacheEntry,
-  CacheStats,
   CacheEvent,
   CacheEventListener,
+  CacheProvider,
+  CacheStats,
   MemoryCacheOptions,
 } from '../types/cache.types.js';
 import { ConfigRecord } from '../types/config.types.js';
-import { CacheEventType } from '../constants.js';
-import { ConfigLogger } from '../services/config-logger.service.js';
 
 /**
  * 内存缓存提供者类
@@ -103,7 +103,7 @@ export class MemoryCacheProvider implements CacheProvider {
   public async set(
     key: string,
     value: ConfigRecord,
-    ttl?: number
+    ttl?: number,
   ): Promise<void> {
     try {
       const now = new Date();
@@ -312,7 +312,7 @@ export class MemoryCacheProvider implements CacheProvider {
       .map(([key, entry]) => ({ key, entry }))
       .sort(
         (a, b) =>
-          a.entry.lastAccessedAt.getTime() - b.entry.lastAccessedAt.getTime()
+          a.entry.lastAccessedAt.getTime() - b.entry.lastAccessedAt.getTime(),
       );
 
     // 移除最旧的 25% 条目
@@ -397,7 +397,7 @@ export class MemoryCacheProvider implements CacheProvider {
   private emitEvent(
     type: CacheEventType,
     key: string,
-    data?: Record<string, unknown>
+    data?: Record<string, unknown>,
   ): void {
     const event: CacheEvent = {
       type,
@@ -413,10 +413,10 @@ export class MemoryCacheProvider implements CacheProvider {
           listener(event);
         } catch (error) {
           const logger = ConfigLogger.getInstance();
-          logger.error('缓存事件监听器错误', { 
-            event: event.type, 
+          logger.error('缓存事件监听器错误', {
+            event: event.type,
             error: error instanceof Error ? error.message : String(error),
-            stack: error instanceof Error ? error.stack : undefined
+            stack: error instanceof Error ? error.stack : undefined,
           });
         }
       }

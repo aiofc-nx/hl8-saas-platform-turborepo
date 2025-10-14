@@ -9,7 +9,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileLoader } from '../../lib/loader/file.loader';
-import { createTempDir, cleanupTempFiles } from '../test-utils';
+import { cleanupTempFiles, createTempDir } from '../test-utils';
 
 describe('环境变量替换功能', () => {
   let tempDir: string;
@@ -124,7 +124,7 @@ describe('环境变量替换功能', () => {
       const config = loader();
 
       expect(config.value).toBe(
-        'your-super-secret-jwt-key-change-in-production'
+        'your-super-secret-jwt-key-change-in-production',
       );
     });
 
@@ -258,10 +258,10 @@ auth:
       const config = loader();
 
       expect(config.auth.jwtSecret).toBe(
-        'your-super-secret-jwt-key-change-in-production'
+        'your-super-secret-jwt-key-change-in-production',
       );
       expect(config.auth.jwtRefreshSecret).toBe(
-        'your-super-secret-refresh-key'
+        'your-super-secret-refresh-key',
       );
       expect(config.auth.passwordSaltRounds).toBe(12);
     });

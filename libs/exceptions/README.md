@@ -27,7 +27,7 @@ ExceptionModule.forRootAsync({
     enableLogging: config.logging.enabled,
     isProduction: config.isProduction,
   }),
-})
+});
 ```
 
 详见：[模块选项 vs 应用配置](../../docs/guides/config/MODULE_OPTIONS_VS_APP_CONFIG.md)
@@ -113,7 +113,7 @@ export class AppModule {}
 ### 2. 使用异常类
 
 ```typescript
-import { 
+import {
   GeneralNotFoundException,
   GeneralBadRequestException,
 } from '@hl8/exceptions';
@@ -122,15 +122,15 @@ import {
 export class UserService {
   async findById(userId: string): Promise<User> {
     const user = await this.userRepo.findById(userId);
-    
+
     if (!user) {
       throw new GeneralNotFoundException(
         '用户未找到',
         `ID 为 "${userId}" 的用户不存在`,
-        { userId }
+        { userId },
       );
     }
-    
+
     return user;
   }
 }
@@ -148,11 +148,11 @@ import { AbstractHttpException } from '@hl8/exceptions';
 export class CustomException extends AbstractHttpException {
   constructor(message: string) {
     super(
-      'CUSTOM_ERROR',      // 错误代码
-      '自定义错误',         // 简短标题
-      message,             // 详细说明
-      400,                 // HTTP 状态码
-      { timestamp: Date.now() }  // 附加数据（可选）
+      'CUSTOM_ERROR', // 错误代码
+      '自定义错误', // 简短标题
+      message, // 详细说明
+      400, // HTTP 状态码
+      { timestamp: Date.now() }, // 附加数据（可选）
     );
   }
 }
@@ -186,7 +186,7 @@ export class CustomException extends AbstractHttpException {
 throw new GeneralBadRequestException(
   '邮箱格式错误',
   `邮箱地址 "${email}" 格式不正确`,
-  { email, expectedFormat: 'user@example.com' }
+  { email, expectedFormat: 'user@example.com' },
 );
 ```
 
@@ -196,7 +196,7 @@ throw new GeneralBadRequestException(
 throw new GeneralNotFoundException(
   '用户未找到',
   `ID 为 "${userId}" 的用户不存在`,
-  { userId }
+  { userId },
 );
 ```
 
@@ -210,7 +210,7 @@ try {
     '外部服务调用失败',
     '调用支付服务时发生错误',
     { service: 'payment' },
-    error  // rootCause
+    error, // rootCause
   );
 }
 ```
@@ -243,13 +243,13 @@ throw new UnauthorizedOrganizationException(orgId);
 
 **可用选项**：
 
-| 选项 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `enableLogging` | `boolean` | `true` | 是否启用日志记录 |
-| `logger` | `ILoggerService` | - | 自定义日志服务（可选） |
-| `messageProvider` | `ExceptionMessageProvider` | - | 自定义消息提供器（可选） |
-| `isProduction` | `boolean` | 自动检测 | 是否为生产环境 |
-| `registerGlobalFilters` | `boolean` | `true` | 是否注册全局过滤器 |
+| 选项                    | 类型                       | 默认值   | 说明                     |
+| ----------------------- | -------------------------- | -------- | ------------------------ |
+| `enableLogging`         | `boolean`                  | `true`   | 是否启用日志记录         |
+| `logger`                | `ILoggerService`           | -        | 自定义日志服务（可选）   |
+| `messageProvider`       | `ExceptionMessageProvider` | -        | 自定义消息提供器（可选） |
+| `isProduction`          | `boolean`                  | 自动检测 | 是否为生产环境           |
+| `registerGlobalFilters` | `boolean`                  | `true`   | 是否注册全局过滤器       |
 
 详见：`src/config/exception.config.ts`
 
@@ -265,16 +265,16 @@ import { ExceptionModule } from '@hl8/exceptions';
     ExceptionModule.forRoot({
       // 是否启用日志记录
       enableLogging: true,
-      
+
       // 自定义日志服务
       logger: customLoggerService,
-      
+
       // 自定义消息提供器
       messageProvider: customMessageProvider,
-      
+
       // 是否为生产环境
       isProduction: process.env.NODE_ENV === 'production',
-      
+
       // 是否注册全局过滤器
       registerGlobalFilters: true,
     }),
@@ -294,7 +294,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    
+
     ExceptionModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
@@ -325,7 +325,7 @@ import { AppConfig } from './config/app.config.js';
       isGlobal: true,
       load: [dotenvLoader()],
     }),
-    
+
     // 2. 从应用配置获取值配置异常模块
     ExceptionModule.forRootAsync({
       inject: [AppConfig],
@@ -359,15 +359,15 @@ import { ExceptionMessageProvider } from '@hl8/exceptions';
 @Injectable()
 export class I18nMessageProvider implements ExceptionMessageProvider {
   constructor(private i18n: I18nService) {}
-  
+
   getMessage(
-    errorCode: string, 
-    field: 'title' | 'detail', 
-    data?: any
+    errorCode: string,
+    field: 'title' | 'detail',
+    data?: any,
   ): string | undefined {
     return this.i18n.t(`errors.${errorCode}.${field}`, data);
   }
-  
+
   hasMessage(errorCode: string): boolean {
     return this.i18n.exists(`errors.${errorCode}`);
   }
@@ -483,7 +483,7 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 @Module({
   imports: [
     FastifyLoggingModule.forRoot({ ... }),
-    
+
     ExceptionModule.forRootAsync({
       inject: [FastifyLoggerService],
       useFactory: (logger: FastifyLoggerService) => ({
@@ -519,18 +519,18 @@ ExceptionModule.forRootAsync({
     enableLogging: config.logging.enabled,
     isProduction: config.isProduction,
   }),
-})
+});
 ```
 
 ### Q3: 生产环境和开发环境有什么区别？
 
 **A**: 主要区别：
 
-| 特性 | 开发环境 | 生产环境 |
-|------|---------|---------|
-| 错误详情 | ✅ 完整堆栈 | ❌ 隐藏敏感信息 |
+| 特性     | 开发环境                     | 生产环境           |
+| -------- | ---------------------------- | ------------------ |
+| 错误详情 | ✅ 完整堆栈                  | ❌ 隐藏敏感信息    |
 | 日志级别 | `warn` (4xx) + `error` (5xx) | `error` (5xx only) |
-| 调试信息 | ✅ 包含 | ❌ 不包含 |
+| 调试信息 | ✅ 包含                      | ❌ 不包含          |
 
 ### Q4: 如何创建自定义异常？
 
@@ -544,7 +544,7 @@ export class ProductOutOfStockException extends AbstractHttpException {
       '商品库存不足',
       `商品 ${productId} 库存不足，请求 ${requested}，可用 ${available}`,
       400,
-      { productId, requested, available }
+      { productId, requested, available },
     );
   }
 }
@@ -576,7 +576,9 @@ export class ProductOutOfStockException extends AbstractHttpException {
 // 好
 export class OrderNotFoundException extends AbstractHttpException {
   constructor(orderId: string) {
-    super('ORDER_NOT_FOUND', '订单未找到', `订单 ${orderId} 不存在`, 404, { orderId });
+    super('ORDER_NOT_FOUND', '订单未找到', `订单 ${orderId} 不存在`, 404, {
+      orderId,
+    });
   }
 }
 
@@ -591,7 +593,7 @@ throw new Error('Not found');
 throw new GeneralBadRequestException(
   '库存不足',
   `请求数量 ${quantity} 超过可用库存 ${stock}`,
-  { requestedQuantity: quantity, availableStock: stock }
+  { requestedQuantity: quantity, availableStock: stock },
 );
 
 // 不好
@@ -608,7 +610,7 @@ try {
     '服务调用失败',
     '调用外部服务时发生错误',
     { service: 'external' },
-    error  // 保留原始错误作为 rootCause
+    error, // 保留原始错误作为 rootCause
   );
 }
 ```
@@ -620,13 +622,13 @@ try {
 throw new GeneralInternalServerException(
   '数据库操作失败',
   '保存用户数据时发生错误',
-  { operation: 'saveUser' }
+  { operation: 'saveUser' },
 );
 
 // 不好（暴露了数据库信息）
 throw new GeneralInternalServerException(
   '数据库错误',
-  `Connection to postgres://admin:password@localhost:5432/db failed`
+  `Connection to postgres://admin:password@localhost:5432/db failed`,
 );
 ```
 
@@ -731,15 +733,15 @@ export class UserService {
   // 示例1：资源未找到
   async findById(id: string) {
     const user = await this.userRepo.findById(id);
-    
+
     if (!user) {
       throw new GeneralNotFoundException(
         '用户未找到',
         `ID 为 "${id}" 的用户不存在`,
-        { userId: id }
+        { userId: id },
       );
     }
-    
+
     return user;
   }
 
@@ -749,10 +751,10 @@ export class UserService {
       throw new GeneralBadRequestException(
         '邮箱格式错误',
         `邮箱地址 "${email}" 格式不正确`,
-        { email, expectedFormat: 'user@example.com' }
+        { email, expectedFormat: 'user@example.com' },
       );
     }
-    
+
     return this.userRepo.updateEmail(id, email);
   }
 
@@ -765,7 +767,7 @@ export class UserService {
         '发送邮件失败',
         '调用邮件服务时发生错误',
         { userId, service: 'email' },
-        error  // rootCause
+        error, // rootCause
       );
     }
   }
@@ -817,8 +819,8 @@ export class UserController {
 ```typescript
 ExceptionModule.forRoot({
   isProduction: true,
-  enableLogging: true,  // 保留日志，但减少详情
-})
+  enableLogging: true, // 保留日志，但减少详情
+});
 ```
 
 在生产环境：
@@ -838,13 +840,13 @@ ExceptionModule.forRoot({
 throw new GeneralInternalServerException(
   '数据库操作失败',
   '保存数据时发生错误',
-  { operation: 'save' }
+  { operation: 'save' },
 );
 
 // ❌ 避免暴露
 throw new GeneralInternalServerException(
   '数据库错误',
-  `Error: Connection failed to postgres://user:pass@host:5432/db`
+  `Error: Connection failed to postgres://user:pass@host:5432/db`,
 );
 ```
 

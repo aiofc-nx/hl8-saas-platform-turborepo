@@ -68,5 +68,4 @@ export const DI_TOKENS = {
 /**
  * 依赖注入令牌类型
  */
-export type DiToken = typeof DI_TOKENS[keyof typeof DI_TOKENS];
-
+export type DiToken = (typeof DI_TOKENS)[keyof typeof DI_TOKENS];

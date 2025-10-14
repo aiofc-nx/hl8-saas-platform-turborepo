@@ -38,7 +38,7 @@ export interface ExceptionModuleOptions {
 ExceptionModule.forRoot({
   enableLogging: true,
   isProduction: false,
-})
+});
 ```
 
 **特点**：
@@ -70,8 +70,8 @@ export class AppConfig {
 // 使用方式
 TypedConfigModule.forRoot({
   schema: AppConfig,
-  load: [dotenvLoader()],  // 从 .env 加载
-})
+  load: [dotenvLoader()], // 从 .env 加载
+});
 ```
 
 **特点**：
@@ -85,15 +85,15 @@ TypedConfigModule.forRoot({
 
 ## 🔀 详细对比
 
-| 特性 | 模块选项 | 应用配置 |
-|------|---------|---------|
-| **用途** | 配置模块行为 | 配置应用数据 |
-| **定义方式** | Interface | Class |
-| **数据来源** | 代码中传入 | .env 文件 |
-| **使用场景** | 模块注册时 | 运行时使用 |
-| **验证方式** | TypeScript 类型 | class-validator |
-| **示例** | `forRoot({ ... })` | `constructor(config: AppConfig)` |
-| **是否使用 TypedConfigModule** | ❌ 不使用 | ✅ 使用 |
+| 特性                           | 模块选项           | 应用配置                         |
+| ------------------------------ | ------------------ | -------------------------------- |
+| **用途**                       | 配置模块行为       | 配置应用数据                     |
+| **定义方式**                   | Interface          | Class                            |
+| **数据来源**                   | 代码中传入         | .env 文件                        |
+| **使用场景**                   | 模块注册时         | 运行时使用                       |
+| **验证方式**                   | TypeScript 类型    | class-validator                  |
+| **示例**                       | `forRoot({ ... })` | `constructor(config: AppConfig)` |
+| **是否使用 TypedConfigModule** | ❌ 不使用          | ✅ 使用                          |
 
 ---
 
@@ -107,9 +107,9 @@ TypedConfigModule.forRoot({
   imports: [
     ExceptionModule.forRoot({
       // 这些是模块选项，配置模块行为
-      enableLogging: true,           // 模块是否记录日志
-      registerGlobalFilters: true,   // 模块是否注册全局过滤器
-      isProduction: false,           // 模块的工作模式
+      enableLogging: true, // 模块是否记录日志
+      registerGlobalFilters: true, // 模块是否注册全局过滤器
+      isProduction: false, // 模块的工作模式
     }),
   ],
 })
@@ -129,7 +129,7 @@ export class AppModule {}
 @Injectable()
 export class MyService {
   constructor(
-    private readonly config: AppConfig  // 注入应用配置
+    private readonly config: AppConfig, // 注入应用配置
   ) {}
 
   someMethod() {
@@ -221,13 +221,13 @@ TypedConfigModule 验证
 export class AppConfig {
   NODE_ENV: string;
   PORT: number;
-  
+
   // ❌ 这样不对！模块选项不应该在这里
   exceptionModuleOptions: ExceptionModuleOptions;
 }
 
 // ❌ 然后从 .env 读取
-EXCEPTION__ENABLE_LOGGING=true
+EXCEPTION__ENABLE_LOGGING = true;
 ```
 
 #### ✅ 正确做法
@@ -240,7 +240,7 @@ EXCEPTION__ENABLE_LOGGING=true
       schema: AppConfig,
       load: [dotenvLoader()],
     }),
-    
+
     ExceptionModule.forRoot({
       // 直接传入模块选项
       enableLogging: true,
@@ -256,7 +256,7 @@ EXCEPTION__ENABLE_LOGGING=true
       schema: AppConfig,
       load: [dotenvLoader()],
     }),
-    
+
     ExceptionModule.forRootAsync({
       inject: [AppConfig],
       useFactory: (config: AppConfig) => ({
@@ -333,7 +333,7 @@ EXCEPTION__ENABLE_LOGGING=true
 ExceptionModule.forRoot({
   enableLogging: true,
   isProduction: process.env.NODE_ENV === 'production',
-})
+});
 
 // 方式2：从 AppConfig 获取（复杂配置）
 ExceptionModule.forRootAsync({
@@ -342,7 +342,7 @@ ExceptionModule.forRootAsync({
     enableLogging: config.logging.enabled,
     isProduction: config.isProduction,
   }),
-})
+});
 ```
 
 ---
@@ -357,7 +357,7 @@ ExceptionModule.forRootAsync({
    CachingModule.forRoot({
      redis: { host, port },
      ttl: 3600,
-   })
+   });
    ```
 
 2. **LoggingModuleOptions** (应该在 `libs/nestjs-fastify`)
@@ -365,7 +365,7 @@ ExceptionModule.forRootAsync({
    ```typescript
    LoggingModule.forRoot({
      config: { level: 'info' },
-   })
+   });
    ```
 
 这些都是**模块选项**，不需要使用 TypedConfigModule。
@@ -450,7 +450,7 @@ ExceptionModule.forRootAsync({
     enableLogging: config.logging.enabled,
     isProduction: config.isProduction,
   }),
-})
+});
 ```
 
 ### ❌ 不需要这样
@@ -464,15 +464,15 @@ export class ExceptionModuleOptions {
 
 // ❌ 不要用 TypedConfigModule 加载模块选项
 TypedConfigModule.forRoot({
-  schema: ExceptionModuleOptions,  // 不需要
-})
+  schema: ExceptionModuleOptions, // 不需要
+});
 ```
 
 ---
 
 ## 🎯 清晰的职责划分
 
-### 模块配置文件（libs/*/src/config/）
+### 模块配置文件（libs/\*/src/config/）
 
 **职责**：
 
@@ -491,7 +491,7 @@ TypedConfigModule.forRoot({
 - `libs/exceptions/src/config/exception.config.ts` ✅
 - `libs/caching/src/config/caching.config.ts` - 但这个既有模块选项也有配置类
 
-### 应用配置文件（apps/*/src/config/）
+### 应用配置文件（apps/\*/src/config/）
 
 **职责**：
 
@@ -561,7 +561,7 @@ export interface CachingModuleOptions {
 // 1. 在 AppConfig 中添加字段
 export class AppConfig {
   // 其他配置...
-  
+
   @IsBoolean()
   @IsOptional()
   public readonly EXCEPTION_ENABLE_LOGGING: boolean = true;
@@ -574,7 +574,7 @@ ExceptionModule.forRootAsync({
     enableLogging: config.EXCEPTION_ENABLE_LOGGING,
     isProduction: config.isProduction,
   }),
-})
+});
 ```
 
 但通常不需要这样，因为模块选项比较简单，直接传入即可。

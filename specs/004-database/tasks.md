@@ -115,13 +115,11 @@
   - 实现连接健康检查
   - 实现自动重连机制
   - 注入 FastifyLoggerService 记录日志
-  
 - [ ] **T038** [P] [US1] 创建 `libs/database/src/connection/connection-pool.ts`（连接池管理）
   - 配置连接池参数
   - 实现连接复用逻辑
   - 实现空闲连接回收
   - 实现不健康连接检测
-  
 - [ ] **T039** [US1] 创建 `libs/database/src/connection/index.ts`（连接模块导出）
 
 - [ ] **T040** [US1] 创建 `libs/database/src/database.module.ts`（NestJS 模块定义）
@@ -132,7 +130,6 @@
   - 注册 ConnectionManager 提供者
   - 实现 onModuleInit 生命周期钩子
   - 实现 onModuleDestroy 生命周期钩子
-  
 - [ ] **T041** [US1] 创建 `libs/database/src/index.ts`（主导出文件）
   - 导出常量
   - 导出类型
@@ -175,13 +172,11 @@
   - 实现 validateIsolationContext() 方法
   - 实现 getRequiredContext() 方法
   - 注入 FastifyLoggerService 记录隔离日志
-  
 - [ ] **T048** [P] [US2] 创建 `libs/database/src/isolation/isolation-aware.decorator.ts`
   - 实现 @IsolationAware() 装饰器
   - 支持配置隔离级别（TENANT/ORGANIZATION/DEPARTMENT/USER）
   - 在方法执行前验证隔离上下文
   - 缺少上下文时抛出 IsolationContextMissingException
-  
 - [ ] **T049** [US2] 创建 `libs/database/src/isolation/index.ts`（隔离模块导出）
 
 - [ ] **T050** [US2] 更新 `libs/database/src/database.module.ts`
@@ -223,7 +218,6 @@
   - 实现 rollbackTransaction() 方法
   - 集成 nestjs-cls 存储事务上下文
   - 注入 FastifyLoggerService 记录事务日志
-  
 - [ ] **T056** [P] [US3] 创建 `libs/database/src/transaction/transactional.decorator.ts`
   - 实现 @Transactional() 装饰器
   - 支持嵌套事务检测
@@ -231,7 +225,6 @@
   - 自动回滚失败的事务
   - 将事务 EntityManager 存储到 CLS 上下文
   - 事务结束后清理上下文
-  
 - [ ] **T057** [US3] 创建 `libs/database/src/transaction/index.ts`（事务模块导出）
 
 - [ ] **T058** [US3] 更新 `libs/database/src/database.module.ts`
@@ -313,7 +306,6 @@
   - 实现 getPoolStats() 方法（返回连接池统计）
   - 实现 checkConnectivity() 方法（测试数据库连通性）
   - 注入 FastifyLoggerService 记录健康检查日志
-  
 - [ ] **T068** [P] [US5] 创建 `libs/database/src/monitoring/metrics.service.ts`
   - 实现慢查询内存队列（FIFO，最近 100 条）
   - 实现 recordQuery() 方法（记录查询执行时间）
@@ -321,7 +313,6 @@
   - 实现 getDatabaseMetrics() 方法（返回整体指标）
   - 实现查询性能统计（滑动窗口，最近 1000 次）
   - 注入 FastifyLoggerService 记录监控日志
-  
 - [ ] **T069** [US5] 创建 `libs/database/src/monitoring/index.ts`（监控模块导出）
 
 - [ ] **T070** [US5] 更新 `libs/database/src/database.module.ts`
@@ -355,7 +346,6 @@
   - 添加完整的 API 文档
   - 添加使用示例
   - 添加常见问题解答
-  
 - [ ] **T074** [P] 创建 `libs/database/docs/API.md`（详细 API 文档）
 
 - [ ] **T075** [P] 创建 `libs/database/docs/INTEGRATION.md`（集成指南）
@@ -411,7 +401,7 @@ Phase 2: Foundational (基础设施) ← BLOCKS 所有用户故事
    ├─→ Phase 6: User Story 4 (P3) - 连接池管理
    │
    └─→ Phase 7: User Story 5 (P4) - 监控和健康检查
-   
+
 所有用户故事完成后
    ↓
 Phase 8: Polish & Cross-Cutting Concerns
@@ -419,13 +409,13 @@ Phase 8: Polish & Cross-Cutting Concerns
 
 ### User Story Dependencies
 
-| User Story | 依赖 | 可以并行？ | 说明 |
-|-----------|------|-----------|------|
-| US1 (P1) 数据库连接 | Phase 2 | - | 最高优先级，MVP 核心 |
-| US2 (P2) 多租户隔离 | Phase 2, US1 | 部分 | 依赖基础连接，但可独立实现 |
-| US3 (P2) 事务管理 | Phase 2, US1 | 部分 | 依赖基础连接，但可独立实现 |
-| US4 (P3) 连接池管理 | Phase 2, US1 | 部分 | 增强 US1 的连接池功能 |
-| US5 (P4) 监控检查 | Phase 2, US1 | 部分 | 监控所有功能，但可独立实现 |
+| User Story          | 依赖         | 可以并行？ | 说明                       |
+| ------------------- | ------------ | ---------- | -------------------------- |
+| US1 (P1) 数据库连接 | Phase 2      | -          | 最高优先级，MVP 核心       |
+| US2 (P2) 多租户隔离 | Phase 2, US1 | 部分       | 依赖基础连接，但可独立实现 |
+| US3 (P2) 事务管理   | Phase 2, US1 | 部分       | 依赖基础连接，但可独立实现 |
+| US4 (P3) 连接池管理 | Phase 2, US1 | 部分       | 增强 US1 的连接池功能      |
+| US5 (P4) 监控检查   | Phase 2, US1 | 部分       | 监控所有功能，但可独立实现 |
 
 **说明**：
 
@@ -624,27 +614,27 @@ Phase 3: User Story 1 (T034-T044)
 
 ### 总览
 
-| Phase | 任务数 | 预估时间 | 可并行任务 |
-|-------|--------|----------|-----------|
-| Phase 1: Setup | 10 | 0.5 天 | T001-T008 (8个) |
-| Phase 2: Foundational | 23 | 1.5 天 | 大部分可并行 |
-| Phase 3: US1 | 11 | 3-4 天 | T034-T038, T042-T044 |
-| Phase 4: US2 | 8 | 2-3 天 | T045-T048 |
-| Phase 5: US3 | 8 | 2-3 天 | T053-T056 |
-| Phase 6: US4 | 4 | 1-2 天 | T061-T064 (部分) |
-| Phase 7: US5 | 8 | 2-3 天 | T065-T068, T072 (部分) |
-| Phase 8: Polish | 16 | 2-3 天 | T073-T075 (部分) |
-| **总计** | **88** | **10-15 天** | **~40 个可并行** |
+| Phase                 | 任务数 | 预估时间     | 可并行任务             |
+| --------------------- | ------ | ------------ | ---------------------- |
+| Phase 1: Setup        | 10     | 0.5 天       | T001-T008 (8个)        |
+| Phase 2: Foundational | 23     | 1.5 天       | 大部分可并行           |
+| Phase 3: US1          | 11     | 3-4 天       | T034-T038, T042-T044   |
+| Phase 4: US2          | 8      | 2-3 天       | T045-T048              |
+| Phase 5: US3          | 8      | 2-3 天       | T053-T056              |
+| Phase 6: US4          | 4      | 1-2 天       | T061-T064 (部分)       |
+| Phase 7: US5          | 8      | 2-3 天       | T065-T068, T072 (部分) |
+| Phase 8: Polish       | 16     | 2-3 天       | T073-T075 (部分)       |
+| **总计**              | **88** | **10-15 天** | **~40 个可并行**       |
 
 ### 按用户故事统计
 
-| User Story | 任务数 | 核心文件数 | 测试文件数 |
-|-----------|--------|-----------|-----------|
-| US1 - 数据库连接 | 11 | 5 | 6 |
-| US2 - 多租户隔离 | 8 | 3 | 3 |
-| US3 - 事务管理 | 8 | 3 | 3 |
-| US4 - 连接池管理 | 4 | 2 | 2 |
-| US5 - 监控检查 | 8 | 3 | 3 |
+| User Story       | 任务数 | 核心文件数 | 测试文件数 |
+| ---------------- | ------ | ---------- | ---------- |
+| US1 - 数据库连接 | 11     | 5          | 6          |
+| US2 - 多租户隔离 | 8      | 3          | 3          |
+| US3 - 事务管理   | 8      | 3          | 3          |
+| US4 - 连接池管理 | 4      | 2          | 2          |
+| US5 - 监控检查   | 8      | 3          | 3          |
 
 ### MVP 范围（推荐）
 

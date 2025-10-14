@@ -16,7 +16,7 @@ import type { EntityManager } from '@mikro-orm/core';
 export interface TransactionOptions {
   /** 是否只读事务 */
   readOnly?: boolean;
-  
+
   /** 事务超时（毫秒） */
   timeout?: number;
 }
@@ -29,17 +29,16 @@ export interface TransactionOptions {
 export interface TransactionContext {
   /** 事务 ID（用于追踪） */
   transactionId: string;
-  
+
   /** 事务 EntityManager */
   entityManager: EntityManager;
-  
+
   /** 事务开始时间 */
   startedAt: Date;
-  
+
   /** 事务选项 */
   options?: TransactionOptions;
-  
+
   /** 是否嵌套事务 */
   isNested: boolean;
 }
-

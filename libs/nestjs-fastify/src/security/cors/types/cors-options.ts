@@ -27,4 +27,3 @@ export const DEFAULT_CORS_OPTIONS: CorsOptions = {
   ],
   maxAge: 86400,
 };
-

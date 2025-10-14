@@ -116,19 +116,19 @@ export class AppModule {}
 interface DatabaseModuleOptions {
   /** 数据库连接配置 */
   connection: ConnectionConfig;
-  
+
   /** 连接池配置（可选） */
   pool?: PoolConfig;
-  
+
   /** 实体类数组 */
   entities: Function[];
-  
+
   /** 迁移配置（可选） */
   migrations?: MigrationConfig;
-  
+
   /** 监控配置（可选） */
   monitoring?: MonitoringConfig;
-  
+
   /** 是否启用调试模式（可选） */
   debug?: boolean;
 }
@@ -141,8 +141,10 @@ interface DatabaseModuleOptions {
 ```typescript
 interface DatabaseModuleAsyncOptions {
   /** 工厂函数 */
-  useFactory: (...args: any[]) => Promise<DatabaseModuleOptions> | DatabaseModuleOptions;
-  
+  useFactory: (
+    ...args: any[]
+  ) => Promise<DatabaseModuleOptions> | DatabaseModuleOptions;
+
   /** 依赖注入（可选） */
   inject?: any[];
 }
@@ -247,7 +249,7 @@ constructor(
 **签名**:
 
 ```typescript
-function Transactional(options?: TransactionalOptions): MethodDecorator
+function Transactional(options?: TransactionalOptions): MethodDecorator;
 ```
 
 **参数**:
@@ -276,7 +278,7 @@ export class UserService {
 **签名**:
 
 ```typescript
-function IsolationAware(level?: IsolationLevel): MethodDecorator
+function IsolationAware(level?: IsolationLevel): MethodDecorator;
 ```
 
 **参数**:
@@ -501,19 +503,21 @@ DB_SLOW_QUERY_THRESHOLD=1000
     TypedConfigModule.forRoot({
       schema: DatabaseConfig,
     }),
-    
+
     // 2. 隔离模块
     IsolationModule.forRoot(),
-    
+
     // 3. 数据库模块
     DatabaseModule.forRootAsync({
       useFactory: (config: DatabaseConfig) => ({
         connection: config.getConnectionConfig(),
-        entities: [/* 实体列表 */],
+        entities: [
+          /* 实体列表 */
+        ],
       }),
       inject: [DatabaseConfig],
     }),
-    
+
     // 4. 其他业务模块
     UserModule,
     // ...
@@ -539,9 +543,7 @@ export class AppModule {}
 // 在任何模块中都可以注入
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly connectionManager: ConnectionManager
-  ) {}
+  constructor(private readonly connectionManager: ConnectionManager) {}
 }
 ```
 

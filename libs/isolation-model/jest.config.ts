@@ -14,7 +14,7 @@ const config: Config = {
   ],
   coverageThreshold: {
     global: {
-      branches: 90,  // 降低到 90%（未覆盖的主要是异常分支）
+      branches: 90, // 降低到 90%（未覆盖的主要是异常分支）
       functions: 95,
       lines: 95,
       statements: 95,
@@ -25,17 +25,19 @@ const config: Config = {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', {
-      useESM: true,
-      tsconfig: {
-        module: 'ESNext',
-        moduleResolution: 'node',
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: {
+          module: 'ESNext',
+          moduleResolution: 'node',
+        },
       },
-    }],
+    ],
   },
   extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
 
 export default config;
-

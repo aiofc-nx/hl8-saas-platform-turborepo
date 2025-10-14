@@ -72,17 +72,17 @@ TypedConfigModule.forRoot({
   load: [
     // 1. 配置文件（基础配置，可版本控制）
     fileLoader({ path: './config/app.yml' }),
-    
+
     // 2. 环境变量（敏感配置 + 覆盖）
     dotenvLoader({ envFilePath: ['.env.local', '.env'] }),
   ],
-})
+});
 
 // 3. 安全加固
 const config = app.get(AppConfig);
-deepFreeze(config);  // 冻结
+deepFreeze(config); // 冻结
 if (config.isProduction) {
-  cleanupSensitiveEnvVars();  // 清理
+  cleanupSensitiveEnvVars(); // 清理
 }
 ```
 
@@ -94,14 +94,14 @@ if (config.isProduction) {
 
 ```typescript
 export class AppConfig {
-  public readonly PORT: number;  // ← readonly
+  public readonly PORT: number; // ← readonly
 }
 
 // 启动时冻结
-deepFreeze(config);  // ← 深度冻结
+deepFreeze(config); // ← 深度冻结
 
 // 结果：完全不可修改
-config.PORT = 9999;  // ❌ TypeError
+config.PORT = 9999; // ❌ TypeError
 ```
 
 ### 2. 敏感信息保护
@@ -111,8 +111,8 @@ config.PORT = 9999;  // ❌ TypeError
 cleanupSensitiveEnvVars();
 
 // 结果
-process.env.DATABASE_PASSWORD;  // undefined（已删除）
-config.caching.redis.password;  // 'secret123'（仍可用）
+process.env.DATABASE_PASSWORD; // undefined（已删除）
+config.caching.redis.password; // 'secret123'（仍可用）
 ```
 
 ### 3. 日志安全
@@ -138,16 +138,16 @@ console.log(safeConfig);
 
 ## 📋 安全对比表
 
-| 安全措施 | 环境变量 | 配置文件 | 说明 |
-|---------|---------|---------|------|
-| **readonly 保护** | ✅ | ✅ | 两者都有 |
-| **deepFreeze 保护** | ✅ | ✅ | 两者都有 |
-| **版本控制风险** | ✅ 不提交 | ⚠️ 可能提交 | 环境变量更安全 |
-| **CI/CD 友好** | ✅ 原生支持 | ⚠️ 需要额外处理 | 环境变量更便利 |
-| **云平台支持** | ✅ 原生支持 | ⚠️ 需要挂载卷 | 环境变量更简单 |
-| **12-Factor App** | ✅ 符合 | ❌ 不符合 | 环境变量是标准 |
-| **泄露风险** | 🔴 都需要保护 | 🔴 都需要保护 | 风险相同 |
-| **修改防护** | ✅ readonly+freeze | ✅ readonly+freeze | 防护相同 |
+| 安全措施            | 环境变量           | 配置文件           | 说明           |
+| ------------------- | ------------------ | ------------------ | -------------- |
+| **readonly 保护**   | ✅                 | ✅                 | 两者都有       |
+| **deepFreeze 保护** | ✅                 | ✅                 | 两者都有       |
+| **版本控制风险**    | ✅ 不提交          | ⚠️ 可能提交        | 环境变量更安全 |
+| **CI/CD 友好**      | ✅ 原生支持        | ⚠️ 需要额外处理    | 环境变量更便利 |
+| **云平台支持**      | ✅ 原生支持        | ⚠️ 需要挂载卷      | 环境变量更简单 |
+| **12-Factor App**   | ✅ 符合            | ❌ 不符合          | 环境变量是标准 |
+| **泄露风险**        | 🔴 都需要保护      | 🔴 都需要保护      | 风险相同       |
+| **修改防护**        | ✅ readonly+freeze | ✅ readonly+freeze | 防护相同       |
 
 **结论**：加上防护措施后，环境变量**不比**配置文件不安全！
 
@@ -189,9 +189,9 @@ cleanupSensitiveEnvVars();
 
 // ✅ 4. 混合策略（可选）
 load: [
-  fileLoader({ path: './config/app.yml' }),  // 基础配置
-  dotenvLoader(),  // 敏感配置
-]
+  fileLoader({ path: './config/app.yml' }), // 基础配置
+  dotenvLoader(), // 敏感配置
+];
 ```
 
 ### 如果真的更倾向配置文件

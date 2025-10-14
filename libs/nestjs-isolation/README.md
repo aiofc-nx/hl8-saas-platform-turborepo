@@ -23,7 +23,7 @@ NestJS 数据隔离实现库 - 基于 `@hl8/isolation-model` 领域模型
 ```typescript
 @Module({
   imports: [
-    IsolationModule.forRoot(),  // ← 无需配置选项
+    IsolationModule.forRoot(), // ← 无需配置选项
   ],
 })
 export class AppModule {}
@@ -99,7 +99,7 @@ import { IsolationModule } from '@hl8/nestjs-isolation';
 
 @Module({
   imports: [
-    IsolationModule.forRoot(),  // ← 注册隔离模块
+    IsolationModule.forRoot(), // ← 注册隔离模块
   ],
 })
 export class AppModule {}
@@ -116,12 +116,12 @@ import { IsolationContext } from '@hl8/isolation-model';
 @Controller('users')
 export class UserController {
   @Get()
-  @RequireTenant()  // ← 要求租户级上下文
+  @RequireTenant() // ← 要求租户级上下文
   async getUsers(@CurrentContext() context: IsolationContext) {
     // context.tenantId 自动从请求头提取
     console.log('Tenant ID:', context.tenantId?.value);
     console.log('Level:', context.level);
-    
+
     return this.userService.findByTenant(context.tenantId);
   }
 }
@@ -168,13 +168,13 @@ curl -H "X-Tenant-Id: 550e8400-e29b-41d4-a716-446655440000" \
 
 #### 层级详解
 
-| 层级 | 说明 | 必需字段 | 使用场景 |
-|------|------|---------|---------|
-| **Platform** | 平台级，无隔离 | - | 系统管理员、全局数据 |
-| **Tenant** | 租户级 | `tenantId` | 多租户 SAAS 应用 |
-| **Organization** | 组织级 | `tenantId`, `organizationId` | 大型企业，多组织管理 |
-| **Department** | 部门级 | `tenantId`, `organizationId`, `departmentId` | 部门独立管理 |
-| **User** | 用户级 | `userId`, `tenantId`(可选) | 个人数据隔离 |
+| 层级             | 说明           | 必需字段                                     | 使用场景             |
+| ---------------- | -------------- | -------------------------------------------- | -------------------- |
+| **Platform**     | 平台级，无隔离 | -                                            | 系统管理员、全局数据 |
+| **Tenant**       | 租户级         | `tenantId`                                   | 多租户 SAAS 应用     |
+| **Organization** | 组织级         | `tenantId`, `organizationId`                 | 大型企业，多组织管理 |
+| **Department**   | 部门级         | `tenantId`, `organizationId`, `departmentId` | 部门独立管理         |
+| **User**         | 用户级         | `userId`, `tenantId`(可选)                   | 个人数据隔离         |
 
 ### 隔离上下文（IsolationContext）
 
@@ -184,13 +184,13 @@ curl -H "X-Tenant-Id: 550e8400-e29b-41d4-a716-446655440000" \
 interface IsolationContext {
   // 当前隔离级别
   level: IsolationLevel;
-  
+
   // ID 字段（根据层级不同而不同）
   tenantId?: TenantId;
   organizationId?: OrganizationId;
   departmentId?: DepartmentId;
   userId?: UserId;
-  
+
   // 工具方法
   isTenantLevel(): boolean;
   isOrganizationLevel(): boolean;
@@ -297,14 +297,12 @@ import { IsolationContextService } from '@hl8/nestjs-isolation';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly isolationContext: IsolationContextService,
-  ) {}
+  constructor(private readonly isolationContext: IsolationContextService) {}
 
   async findUsers() {
     const context = this.isolationContext.getContext();
     console.log('Current level:', context.level);
-    
+
     if (context.isTenantLevel()) {
       return this.findByTenant(context.tenantId);
     }
@@ -322,13 +320,11 @@ import { MultiLevelIsolationService } from '@hl8/nestjs-isolation';
 
 @Injectable()
 export class DataService {
-  constructor(
-    private readonly multiLevel: MultiLevelIsolationService,
-  ) {}
+  constructor(private readonly multiLevel: MultiLevelIsolationService) {}
 
   async getData() {
     const context = this.multiLevel.getCurrentContext();
-    
+
     // 根据层级返回不同数据
     if (context.isDepartmentLevel()) {
       return this.getDepartmentData(context);
@@ -344,13 +340,13 @@ export class DataService {
 
 ### 标准请求头
 
-| 请求头 | 说明 | 格式 | 必需 |
-|--------|------|------|------|
-| `X-Tenant-Id` | 租户 ID | UUID | 租户级及以上 |
-| `X-Organization-Id` | 组织 ID | UUID | 组织级及以上 |
-| `X-Department-Id` | 部门 ID | UUID | 部门级 |
-| `X-User-Id` | 用户 ID | UUID | 用户级 |
-| `X-Request-Id` | 请求 ID | 字符串 | 否（自动生成）|
+| 请求头              | 说明    | 格式   | 必需           |
+| ------------------- | ------- | ------ | -------------- |
+| `X-Tenant-Id`       | 租户 ID | UUID   | 租户级及以上   |
+| `X-Organization-Id` | 组织 ID | UUID   | 组织级及以上   |
+| `X-Department-Id`   | 部门 ID | UUID   | 部门级         |
+| `X-User-Id`         | 用户 ID | UUID   | 用户级         |
+| `X-Request-Id`      | 请求 ID | 字符串 | 否（自动生成） |
 
 ### 请求示例
 
@@ -409,7 +405,7 @@ curl -H "X-User-Id: 9d4f6e8a-1234-5678-90ab-cdef12345678" \
 @Controller('products')
 export class ProductController {
   @Get()
-  @RequireTenant()  // 要求租户上下文
+  @RequireTenant() // 要求租户上下文
   async getProducts(@CurrentContext() context: IsolationContext) {
     // 只返回当前租户的产品
     return this.productService.findByTenant(context.tenantId);
@@ -424,12 +420,12 @@ export class ProductController {
 @Controller('employees')
 export class EmployeeController {
   @Get()
-  @RequireOrganization()  // 要求组织上下文
+  @RequireOrganization() // 要求组织上下文
   async getEmployees(@CurrentContext() context: IsolationContext) {
     // 只返回当前组织的员工
     return this.empService.findByOrganization(
       context.tenantId,
-      context.organizationId
+      context.organizationId,
     );
   }
 }
@@ -442,13 +438,13 @@ export class EmployeeController {
 @Controller('documents')
 export class DocumentController {
   @Get()
-  @RequireDepartment()  // 要求部门上下文
+  @RequireDepartment() // 要求部门上下文
   async getDocuments(@CurrentContext() context: IsolationContext) {
     // 只返回当前部门的文档
     return this.docService.findByDepartment(
       context.tenantId,
       context.organizationId,
-      context.departmentId
+      context.departmentId,
     );
   }
 }
@@ -510,15 +506,15 @@ export class UserController {
     @CurrentContext() context: IsolationContext,
   ) {
     const user = await this.userService.findOne(id, context.tenantId);
-    
+
     if (!user) {
       throw new GeneralNotFoundException(
         '用户未找到',
         `租户 ${context.tenantId?.value} 中不存在 ID 为 ${id} 的用户`,
-        { userId: id, tenantId: context.tenantId?.value }
+        { userId: id, tenantId: context.tenantId?.value },
       );
     }
-    
+
     return user;
   }
 }
@@ -538,16 +534,16 @@ export class UserRepository {
 
   async findAll() {
     const context = this.isolationContext.getContext();
-    
+
     const query = this.repo.createQueryBuilder('user');
-    
+
     // 根据隔离级别添加 WHERE 条件
     if (context.isTenantLevel()) {
       query.where('user.tenantId = :tenantId', {
         tenantId: context.tenantId?.value,
       });
     }
-    
+
     if (context.isOrganizationLevel()) {
       query.where('user.tenantId = :tenantId', {
         tenantId: context.tenantId?.value,
@@ -556,7 +552,7 @@ export class UserRepository {
         orgId: context.organizationId?.value,
       });
     }
-    
+
     return query.getMany();
   }
 }
@@ -577,7 +573,7 @@ export class AuditService {
 
   async logAction(action: string) {
     const context = this.isolationContext.getContext();
-    
+
     this.logger.info('User action', {
       action,
       level: context.level,
@@ -618,9 +614,7 @@ export class AuditService {
 ```typescript
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly isolationContext: IsolationContextService,
-  ) {}
+  constructor(private readonly isolationContext: IsolationContextService) {}
 
   async findUsers() {
     const context = this.isolationContext.getContext();
@@ -650,8 +644,8 @@ async getUsers(@CurrentContext() context: IsolationContext) {
 
 ```typescript
 // 没有请求头或格式错误
-context.level === IsolationLevel.PLATFORM  // true
-context.tenantId === undefined             // true
+context.level === IsolationLevel.PLATFORM; // true
+context.tenantId === undefined; // true
 ```
 
 ---
@@ -709,7 +703,7 @@ export class HeaderMapperMiddleware implements NestMiddleware {
 @Controller('users')
 export class UserController {
   @Get()
-  @RequireTenant()  // 明确要求隔离级别
+  @RequireTenant() // 明确要求隔离级别
   async getUsers(@CurrentContext() context: IsolationContext) {
     return this.userService.findByContext(context);
   }
@@ -738,7 +732,7 @@ export class UserService {
     if (!context.isTenantLevel()) {
       throw new BadRequestException('需要租户上下文');
     }
-    
+
     return this.repo.find({
       where: { tenantId: context.tenantId.value },
     });
@@ -753,12 +747,12 @@ export class UserService {
 ```typescript
 // ✅ 好的做法
 if (context.tenantId) {
-  const id = context.tenantId.value;  // 类型安全
+  const id = context.tenantId.value; // 类型安全
   // 使用 id
 }
 
 // ❌ 避免
-const id = context.tenantId?.value || 'default';  // 不应该有默认值
+const id = context.tenantId?.value || 'default'; // 不应该有默认值
 ```
 
 ---
@@ -771,18 +765,18 @@ const id = context.tenantId?.value || 'default';  // 不应该有默认值
 export class Repository {
   async findAll(context: IsolationContext) {
     const query = this.createQueryBuilder();
-    
+
     // 根据隔离级别添加条件
     if (context.isTenantLevel()) {
       query.where('tenantId = :tid', { tid: context.tenantId.value });
     }
-    
+
     if (context.isOrganizationLevel()) {
       query.andWhere('organizationId = :oid', {
         oid: context.organizationId.value,
       });
     }
-    
+
     return query.getMany();
   }
 }

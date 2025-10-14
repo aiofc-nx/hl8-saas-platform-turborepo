@@ -4,8 +4,8 @@
  * @description 测试 MetricsService 的性能监控功能
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Test, TestingModule } from '@nestjs/testing';
 import { MetricsService } from './metrics.service.js';
 
 describe('MetricsService', () => {
@@ -55,7 +55,7 @@ describe('MetricsService', () => {
       expect(slowQueries[0].duration).toBe(2000);
       expect(mockLogger.warn).toHaveBeenCalledWith(
         '检测到慢查询',
-        expect.objectContaining({ duration: 2000 })
+        expect.objectContaining({ duration: 2000 }),
       );
     });
 
@@ -107,9 +107,21 @@ describe('MetricsService', () => {
 
   describe('getDatabaseMetrics', () => {
     it('应该返回数据库整体指标', () => {
-      service.recordQuery({ duration: 100, executedAt: new Date(), isSlow: false });
-      service.recordQuery({ duration: 200, executedAt: new Date(), isSlow: false });
-      service.recordQuery({ duration: 2000, executedAt: new Date(), isSlow: true });
+      service.recordQuery({
+        duration: 100,
+        executedAt: new Date(),
+        isSlow: false,
+      });
+      service.recordQuery({
+        duration: 200,
+        executedAt: new Date(),
+        isSlow: false,
+      });
+      service.recordQuery({
+        duration: 2000,
+        executedAt: new Date(),
+        isSlow: true,
+      });
 
       const mockPoolStats = {
         total: 10,
@@ -134,7 +146,14 @@ describe('MetricsService', () => {
       service.recordTransactionCommit();
       service.recordTransactionCommit();
 
-      const mockPoolStats = { total: 10, active: 3, idle: 7, waiting: 0, max: 20, min: 5 };
+      const mockPoolStats = {
+        total: 10,
+        active: 3,
+        idle: 7,
+        waiting: 0,
+        max: 20,
+        min: 5,
+      };
       const metrics = service.getDatabaseMetrics(mockPoolStats);
 
       expect(metrics.transactions.committed).toBe(2);
@@ -143,11 +162,17 @@ describe('MetricsService', () => {
     it('应该正确记录事务回滚', () => {
       service.recordTransactionRollback();
 
-      const mockPoolStats = { total: 10, active: 3, idle: 7, waiting: 0, max: 20, min: 5 };
+      const mockPoolStats = {
+        total: 10,
+        active: 3,
+        idle: 7,
+        waiting: 0,
+        max: 20,
+        min: 5,
+      };
       const metrics = service.getDatabaseMetrics(mockPoolStats);
 
       expect(metrics.transactions.rolledBack).toBe(1);
     });
   });
 });
-

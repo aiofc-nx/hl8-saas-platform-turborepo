@@ -41,33 +41,36 @@
 **位置**: `@hl8/nestjs-fastify/logging/fastify-logger.service.ts`
 
 **核心特性**:
+
 ```typescript
 @Injectable({ scope: Scope.TRANSIENT })
 export class FastifyLoggerService implements NestLoggerService, ILoggerService {
   constructor(
-    private readonly pinoLogger: PinoLogger,               // ← Fastify 内置 Pino
-    @Optional() private readonly isolationService?,        // ← 隔离上下文服务
+    private readonly pinoLogger: PinoLogger, // ← Fastify 内置 Pino
+    @Optional() private readonly isolationService?, // ← 隔离上下文服务
   ) {}
-  
+
   log(message: any, ...optionalParams: any[]): void {
-    const context = this.enrichContext(optionalParams[0]);  // ← 自动丰富上下文
+    const context = this.enrichContext(optionalParams[0]); // ← 自动丰富上下文
     this.pinoLogger.info(context, message);
   }
-  
+
   private enrichContext(context?: any): any {
     return {
       ...context,
-      isolation: this.isolationService?.getIsolationContext(),  // ← 自动添加
+      isolation: this.isolationService?.getIsolationContext(), // ← 自动添加
     };
   }
 }
 ```
 
 **实现的接口**:
+
 - ✅ `NestLoggerService` - NestJS 标准日志接口
 - ✅ `ILoggerService` - 内部统一日志接口
 
 **特性**:
+
 - ⚡ **零开销** - 复用 Fastify Pino，无需创建新实例
 - 🎯 **自动隔离上下文** - 每条日志自动包含租户/组织/部门/用户
 - 🔍 **便于审计追踪** - SAAS 多租户必备功能
@@ -78,6 +81,7 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
 **位置**: `@hl8/nestjs-fastify/logging/logging.module.ts`
 
 **核心代码**:
+
 ```typescript
 static forRoot(): DynamicModule {
   return {
@@ -92,12 +96,12 @@ static forRoot(): DynamicModule {
         ) => {
           // 1. 获取 Fastify 实例
           const fastifyInstance = httpAdapterHost?.httpAdapter?.getInstance?.();
-          
+
           if (fastifyInstance?.log) {
             // 2. 复用 Fastify Pino（主策略）
             return new FastifyLoggerService(fastifyInstance.log, isolationService);
           }
-          
+
           // 3. 创建新实例（降级策略）
           const pino = require('pino');
           return new FastifyLoggerService(pino({ level: 'info' }), isolationService);
@@ -114,6 +118,7 @@ static forRoot(): DynamicModule {
 ```
 
 **工作机制**:
+
 1. 在 NestJS 依赖注入阶段执行
 2. 获取 Fastify 实例和内置 Pino
 3. 注入 IsolationContextService（如果可用）
@@ -123,6 +128,7 @@ static forRoot(): DynamicModule {
 ### 3. 异常过滤器 - 使用全局 Logger
 
 **FastifyExceptionModule 配置**:
+
 ```typescript
 static forRoot(options = {}): DynamicModule {
   return {
@@ -147,6 +153,7 @@ static forRoot(options = {}): DynamicModule {
 ```
 
 **异常日志输出**:
+
 ```json
 {
   "level": "error",
@@ -172,6 +179,7 @@ static forRoot(options = {}): DynamicModule {
 ### 1. 真正的全局统一 ✅
 
 **一个 Logger 实例，服务所有模块**:
+
 ```
 Fastify Pino 实例
     ↓ 增强
@@ -184,6 +192,7 @@ FastifyLoggerService (全局单例)
 ```
 
 **好处**:
+
 - ✅ 配置统一
 - ✅ 输出格式一致
 - ✅ 隔离上下文统一自动添加
@@ -192,6 +201,7 @@ FastifyLoggerService (全局单例)
 ### 2. 零性能开销 ⚡
 
 **性能对比**:
+
 ```
 创建新 Logger:   ~100KB 内存 + 1-2μs/log
 复用 Fastify:    0KB 内存 + 0.1μs/log
@@ -202,6 +212,7 @@ FastifyLoggerService (全局单例)
 ### 3. 自动隔离上下文 🎯
 
 **所有日志自动包含**:
+
 ```json
 "isolation": {
   "tenantId": "...",
@@ -212,6 +223,7 @@ FastifyLoggerService (全局单例)
 ```
 
 **价值**:
+
 - ✅ 便于多租户审计
 - ✅ 快速定位问题
 - ✅ 合规要求满足
@@ -219,6 +231,7 @@ FastifyLoggerService (全局单例)
 ### 4. 可选降级 🛡️
 
 **鲁棒性设计**:
+
 ```typescript
 // 1. IsolationContextService 可选
 @Optional() private readonly isolationService?
@@ -287,10 +300,10 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 @Injectable()
 export class UserService {
   constructor(private readonly logger: FastifyLoggerService) {}
-  
+
   async createUser(data: CreateUserDto) {
     this.logger.log('开始创建用户', { email: data.email });
-    
+
     try {
       const user = await this.userRepository.save(data);
       this.logger.log('用户创建成功', { userId: user.id });
@@ -304,6 +317,7 @@ export class UserService {
 ```
 
 **日志输出**:
+
 ```json
 {
   "level": "info",
@@ -375,13 +389,14 @@ throw new GeneralNotFoundException('USER_NOT_FOUND', '用户不存在');
 
 ```typescript
 // 核心功能始终可用
-new FastifyLoggerService(pinoLogger)
+new FastifyLoggerService(pinoLogger);
 
 // 可选增强（如果 IsolationModule 启用）
-new FastifyLoggerService(pinoLogger, isolationService)
+new FastifyLoggerService(pinoLogger, isolationService);
 ```
 
 **好处**:
+
 - ✅ 最大灵活性
 - ✅ 渐进式增强
 - ✅ 降级保证可用性
@@ -392,21 +407,22 @@ new FastifyLoggerService(pinoLogger, isolationService)
 
 ### 日志调用性能
 
-| 场景 | 耗时 | 说明 |
-|------|------|------|
-| 基础日志 | ~0.1μs | 直接调用 Pino |
-| 添加上下文 | ~0.15μs | enrichContext() |
-| 添加隔离上下文 | ~0.2μs | 获取 + 合并 |
+| 场景           | 耗时    | 说明            |
+| -------------- | ------- | --------------- |
+| 基础日志       | ~0.1μs  | 直接调用 Pino   |
+| 添加上下文     | ~0.15μs | enrichContext() |
+| 添加隔离上下文 | ~0.2μs  | 获取 + 合并     |
 
 **对比**:
+
 - 创建新 Pino: ~1-2μs
 - **提升**: **5-10x** ⚡
 
 ### 内存使用
 
-| 场景 | 内存 |
-|------|------|
-| 新建 Logger | +100KB |
+| 场景         | 内存    |
+| ------------ | ------- |
+| 新建 Logger  | +100KB  |
 | 复用 Fastify | **0KB** |
 
 **节省**: 100KB × Logger 实例数
@@ -432,6 +448,7 @@ new FastifyLoggerService(pinoLogger, isolationService)
 ```
 
 **依赖关系**:
+
 - FastifyLoggingModule - 必需（提供 Logger）
 - IsolationModule - 可选（提供隔离上下文增强）
 - FastifyExceptionModule - 使用 Logger
@@ -457,32 +474,36 @@ new FastifyLoggerService(pinoLogger, isolationService)
 ### ✅ 推荐做法
 
 1. **始终启用 FastifyLoggingModule**
+
    ```typescript
-   FastifyLoggingModule.forRoot()  // 零配置
+   FastifyLoggingModule.forRoot(); // 零配置
    ```
 
 2. **如需隔离上下文，启用 IsolationModule**
+
    ```typescript
-   IsolationModule.forRoot()  // 自动增强日志
+   IsolationModule.forRoot(); // 自动增强日志
    ```
 
 3. **业务服务注入 FastifyLoggerService**
+
    ```typescript
    constructor(private logger: FastifyLoggerService) {}
    ```
 
 4. **使用结构化日志**
    ```typescript
-   this.logger.log('操作完成', { 
+   this.logger.log('操作完成', {
      userId: '123',
      action: 'create',
-     resource: 'order'
+     resource: 'order',
    });
    ```
 
 ### ❌ 避免做法
 
 1. **不要创建多个 Logger 实例**
+
    ```typescript
    // ❌ 错误
    const logger = new Logger('MyService');
@@ -490,6 +511,7 @@ new FastifyLoggerService(pinoLogger, isolationService)
    ```
 
 2. **不要同时启用多个日志模块**
+
    ```typescript
    // ❌ 错误
    FastifyLoggingModule.forRoot(),
@@ -513,14 +535,15 @@ import { Logger } from '@nestjs/common';
 
 export class MyService {
   private logger = new Logger(MyService.name);
-  
+
   doSomething() {
-    this.logger.log('Something');  // ❌ 无隔离上下文
+    this.logger.log('Something'); // ❌ 无隔离上下文
   }
 }
 ```
 
 **缺点**:
+
 - ❌ 无隔离上下文
 - ❌ 性能一般
 - ❌ 不是结构化日志
@@ -534,14 +557,15 @@ import { LoggerService } from '@hl8/nestjs-infra';
 
 export class MyService {
   constructor(private logger: LoggerService) {}
-  
+
   doSomething() {
-    this.logger.log('Something');  // ✅ 有隔离上下文
+    this.logger.log('Something'); // ✅ 有隔离上下文
   }
 }
 ```
 
 **特点**:
+
 - ✅ 有隔离上下文
 - ⚠️ 创建新 Pino 实例（有开销）
 - ✅ 结构化日志
@@ -555,14 +579,15 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 export class MyService {
   constructor(private logger: FastifyLoggerService) {}
-  
+
   doSomething() {
-    this.logger.log('Something');  // ✅ 零开销 + 隔离上下文
+    this.logger.log('Something'); // ✅ 零开销 + 隔离上下文
   }
 }
 ```
 
 **特点**:
+
 - ✅ 有隔离上下文
 - ⚡ 零开销（复用 Fastify Pino）
 - ✅ 结构化日志
@@ -576,16 +601,19 @@ export class MyService {
 
 ### 架构决策
 
-**核心理念**: 
+**核心理念**:
+
 > 复用 HTTP Server 内置的日志能力，增强而不是替换
 
 **实现方式**:
+
 1. ✅ 获取 Fastify 内置 Pino
 2. ✅ 增强它（添加隔离上下文）
 3. ✅ 作为全局服务提供
 4. ✅ 所有模块统一使用
 
 **优势**:
+
 - ⚡ 极致性能（零开销）
 - 🎯 功能完整（隔离上下文）
 - 🏗️ 架构清晰（单一 Logger）
@@ -594,6 +622,7 @@ export class MyService {
 ### 对比：重构前后
 
 **重构前**:
+
 ```
 ❌ 多个 Logger 实现
 ❌ 性能和功能不可兼得
@@ -602,6 +631,7 @@ export class MyService {
 ```
 
 **重构后**:
+
 ```
 ✅ 单一全局 Logger
 ✅ 性能和功能兼得
@@ -612,4 +642,3 @@ export class MyService {
 ---
 
 **🎉 统一日志架构完全成功！基于 Fastify 内置 Pino 的全局日志服务已就绪！**
-

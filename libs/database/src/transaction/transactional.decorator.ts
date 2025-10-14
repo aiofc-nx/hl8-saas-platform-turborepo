@@ -30,10 +30,10 @@
  *   async createUser(data: CreateUserDto): Promise<User> {
  *     // 从 CLS 获取事务 EM
  *     const em = this.cls.get<EntityManager>('entityManager') || this.em;
- *     
+ *
  *     const user = new User(data);
  *     await em.persistAndFlush(user);
- *     
+ *
  *     return user;
  *   }
  * }
@@ -62,18 +62,18 @@ export function Transactional(options?: TransactionOptions): MethodDecorator {
   return function (
     target: any,
     propertyKey: string | symbol,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
       // 获取 TransactionService（需要类中注入）
       const transactionService = (this as any).transactionService;
-      
+
       if (!transactionService) {
         throw new Error(
           `@Transactional 装饰器要求类注入 TransactionService。` +
-          `请在 ${target.constructor.name} 中添加：constructor(private readonly transactionService: TransactionService)`
+            `请在 ${target.constructor.name} 中添加：constructor(private readonly transactionService: TransactionService)`,
         );
       }
 
@@ -86,4 +86,3 @@ export function Transactional(options?: TransactionOptions): MethodDecorator {
     return descriptor;
   };
 }
-

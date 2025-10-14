@@ -19,7 +19,7 @@
  * @example
  * ```typescript
  * const context = this.isolationService.getContext();
- * 
+ *
  * if (!context || !context.getTenantId()) {
  *   throw new IsolationContextMissingException(
  *     '租户级数据访问要求提供租户 ID',
@@ -42,12 +42,11 @@ export class IsolationContextMissingException extends AbstractHttpException {
    */
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'ISOLATION_CONTEXT_MISSING',  // errorCode
-      '隔离上下文缺失',              // title
-      detail,                        // detail
-      400,                           // status
-      data                           // data
+      'ISOLATION_CONTEXT_MISSING', // errorCode
+      '隔离上下文缺失', // title
+      detail, // detail
+      400, // status
+      data, // data
     );
   }
 }
-

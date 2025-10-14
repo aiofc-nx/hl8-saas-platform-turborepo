@@ -1,17 +1,17 @@
 /**
  * 缓存模块
- * 
+ *
  * @description 提供多层级数据隔离的缓存功能
- * 
+ *
  * ## 功能特性
- * 
+ *
  * - 自动多层级数据隔离
  * - Redis 作为缓存后端
  * - DDD 充血模型设计
  * - 完整的装饰器支持
- * 
+ *
  * ## 使用方式
- * 
+ *
  * ```typescript
  * @Module({
  *   imports: [
@@ -27,27 +27,30 @@
  * })
  * export class AppModule {}
  * ```
- * 
+ *
  * @since 1.0.0
  */
 
-import { Module, DynamicModule, Global } from '@nestjs/common';
-import type { CachingModuleOptions, CachingModuleAsyncOptions } from './types/cache-options.interface.js';
-import { RedisService, REDIS_OPTIONS } from './services/redis.service.js';
-import { CacheService, CACHE_OPTIONS } from './services/cache.service.js';
+import { DynamicModule, Global, Module } from '@nestjs/common';
+import { CacheSerializationException } from './exceptions/cache-serialization.exception.js';
 import { CacheInterceptor } from './interceptors/cache.interceptor.js';
 import { CacheMetricsService } from './monitoring/cache-metrics.service.js';
-import { CacheSerializationException } from './exceptions/cache-serialization.exception.js';
+import { CACHE_OPTIONS, CacheService } from './services/cache.service.js';
+import { REDIS_OPTIONS, RedisService } from './services/redis.service.js';
+import type {
+  CachingModuleAsyncOptions,
+  CachingModuleOptions,
+} from './types/cache-options.interface.js';
 
 @Global()
 @Module({})
 export class CachingModule {
   /**
    * 同步配置缓存模块
-   * 
+   *
    * @param options - 缓存模块配置
    * @returns 动态模块
-   * 
+   *
    * @example
    * ```typescript
    * CachingModule.forRoot({
@@ -77,16 +80,21 @@ export class CachingModule {
         CacheInterceptor,
         CacheMetricsService,
       ],
-      exports: [RedisService, CacheService, CacheInterceptor, CacheMetricsService],
+      exports: [
+        RedisService,
+        CacheService,
+        CacheInterceptor,
+        CacheMetricsService,
+      ],
     };
   }
-  
+
   /**
    * 异步配置缓存模块
-   * 
+   *
    * @param options - 异步配置选项
    * @returns 动态模块
-   * 
+   *
    * @example
    * ```typescript
    * CachingModule.forRootAsync({
@@ -111,7 +119,9 @@ export class CachingModule {
               const config = await options.useFactory(...args);
               return config.redis;
             }
-            throw new CacheSerializationException('useFactory is required for async configuration');
+            throw new CacheSerializationException(
+              'useFactory is required for async configuration',
+            );
           },
           inject: options.inject || [],
         },
@@ -126,7 +136,9 @@ export class CachingModule {
                 keyPrefix: config.keyPrefix,
               };
             }
-            throw new CacheSerializationException('useFactory is required for async configuration');
+            throw new CacheSerializationException(
+              'useFactory is required for async configuration',
+            );
           },
           inject: options.inject || [],
         },
@@ -135,8 +147,12 @@ export class CachingModule {
         CacheInterceptor,
         CacheMetricsService,
       ],
-      exports: [RedisService, CacheService, CacheInterceptor, CacheMetricsService],
+      exports: [
+        RedisService,
+        CacheService,
+        CacheInterceptor,
+        CacheMetricsService,
+      ],
     };
   }
 }
-

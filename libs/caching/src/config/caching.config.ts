@@ -1,24 +1,32 @@
 /**
  * 缓存配置类
- * 
+ *
  * @description 使用 class-validator 进行配置验证
- * 
+ *
  * ## 验证规则
- * 
+ *
  * ### Redis 配置
  * - host: 非空字符串
  * - port: 1-65535
  * - db: >= 0
- * 
+ *
  * ### 缓存配置
  * - ttl: >= 0（0 表示永不过期）
  * - keyPrefix: 非空字符串
- * 
+ *
  * @since 1.0.0
  */
 
-import { IsString, IsNumber, IsOptional, IsBoolean, Min, Max, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 /**
  * Redis 配置类
@@ -29,7 +37,7 @@ export class RedisConfig {
    */
   @IsString()
   host: string = 'localhost';
-  
+
   /**
    * Redis 端口
    */
@@ -37,14 +45,14 @@ export class RedisConfig {
   @Min(1)
   @Max(65535)
   port: number = 6379;
-  
+
   /**
    * Redis 密码（可选）
    */
   @IsOptional()
   @IsString()
   password?: string;
-  
+
   /**
    * Redis 数据库编号
    */
@@ -52,7 +60,7 @@ export class RedisConfig {
   @IsNumber()
   @Min(0)
   db?: number;
-  
+
   /**
    * 连接超时时间（毫秒）
    */
@@ -60,7 +68,7 @@ export class RedisConfig {
   @IsNumber()
   @Min(1000)
   connectTimeout?: number;
-  
+
   /**
    * 最大重试次数
    */
@@ -68,7 +76,7 @@ export class RedisConfig {
   @IsNumber()
   @Min(0)
   maxRetriesPerRequest?: number;
-  
+
   /**
    * 是否启用离线队列
    */
@@ -87,7 +95,7 @@ export class CachingModuleConfig {
   @ValidateNested()
   @Type(() => RedisConfig)
   redis: RedisConfig = new RedisConfig();
-  
+
   /**
    * 默认 TTL（秒）
    */
@@ -95,14 +103,14 @@ export class CachingModuleConfig {
   @IsNumber()
   @Min(0)
   ttl?: number;
-  
+
   /**
    * 缓存键前缀
    */
   @IsOptional()
   @IsString()
   keyPrefix?: string;
-  
+
   /**
    * 是否启用调试日志
    */
@@ -110,4 +118,3 @@ export class CachingModuleConfig {
   @IsBoolean()
   debug?: boolean;
 }
-

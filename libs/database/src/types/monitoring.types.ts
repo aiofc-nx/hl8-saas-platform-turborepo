@@ -16,22 +16,22 @@ import type { PoolStats } from './connection.types.js';
 export interface HealthCheckResult {
   /** 健康状态 */
   status: 'healthy' | 'unhealthy' | 'degraded';
-  
+
   /** 检查时间 */
   checkedAt: Date;
-  
+
   /** 响应时间（毫秒） */
   responseTime: number;
-  
+
   /** 连接状态 */
   connection: {
     isConnected: boolean;
     error?: string;
   };
-  
+
   /** 连接池状态 */
   pool: PoolStats;
-  
+
   /** 详细信息 */
   details?: Record<string, unknown>;
 }
@@ -44,23 +44,23 @@ export interface HealthCheckResult {
 export interface QueryMetrics {
   /** 查询 SQL（脱敏） */
   query?: string;
-  
+
   /** 执行时间（毫秒） */
   duration: number;
-  
+
   /** 执行时间戳 */
   executedAt: Date;
-  
+
   /** 是否为慢查询 */
   isSlow: boolean;
-  
+
   /** 隔离上下文 */
   isolationContext?: {
     tenantId?: string;
     organizationId?: string;
     departmentId?: string;
   };
-  
+
   /** 请求 ID（用于追踪） */
   requestId?: string;
 }
@@ -73,22 +73,22 @@ export interface QueryMetrics {
 export interface SlowQueryLog {
   /** 日志 ID */
   id: string;
-  
+
   /** 查询 SQL（脱敏） */
   query: string;
-  
+
   /** 执行时间（毫秒） */
   duration: number;
-  
+
   /** 执行时间戳 */
   timestamp: Date;
-  
+
   /** 租户 ID */
   tenantId?: string;
-  
+
   /** 请求 ID */
   requestId?: string;
-  
+
   /** 堆栈跟踪 */
   stackTrace?: string;
 }
@@ -101,35 +101,34 @@ export interface SlowQueryLog {
 export interface DatabaseMetrics {
   /** 采集时间 */
   timestamp: Date;
-  
+
   /** 连接池指标 */
   pool: PoolStats;
-  
+
   /** 查询统计 */
   queries: {
     /** 总查询数 */
     total: number;
-    
+
     /** 平均执行时间（毫秒） */
     avgDuration: number;
-    
+
     /** 最大执行时间（毫秒） */
     maxDuration: number;
-    
+
     /** 慢查询数量 */
     slowCount: number;
   };
-  
+
   /** 事务统计 */
   transactions: {
     /** 活动事务数 */
     active: number;
-    
+
     /** 提交成功数 */
     committed: number;
-    
+
     /** 回滚数 */
     rolledBack: number;
   };
 }
-

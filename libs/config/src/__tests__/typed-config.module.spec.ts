@@ -8,7 +8,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypedConfigModule } from '../lib/typed-config.module';
-import { TestConfig, createTestConfig, testAssertions } from './test-utils';
+import { TestConfig, createTestConfig } from './test-utils';
 
 describe('TypedConfigModule', () => {
   let module: TestingModule;
@@ -107,7 +107,7 @@ describe('TypedConfigModule', () => {
         TypedConfigModule.forRootAsync({
           schema: TestConfig,
           load: asyncLoader,
-        })
+        }),
       ).rejects.toThrow('Async load failed');
     });
   });

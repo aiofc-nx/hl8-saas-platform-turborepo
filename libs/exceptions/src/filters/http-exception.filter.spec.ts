@@ -2,11 +2,15 @@
  * HttpExceptionFilter 单元测试
  */
 
-import { HttpExceptionFilter, ILoggerService, IExceptionMessageProvider } from './http-exception.filter.js';
-import { GeneralNotFoundException } from '../core/general-not-found.exception.js';
+import { ArgumentsHost } from '@nestjs/common';
 import { GeneralBadRequestException } from '../core/general-bad-request.exception.js';
 import { GeneralInternalServerException } from '../core/general-internal-server.exception.js';
-import { ArgumentsHost } from '@nestjs/common';
+import { GeneralNotFoundException } from '../core/general-not-found.exception.js';
+import {
+  HttpExceptionFilter,
+  IExceptionMessageProvider,
+  ILoggerService,
+} from './http-exception.filter.js';
 
 describe('HttpExceptionFilter', () => {
   let filter: HttpExceptionFilter;
@@ -31,9 +35,15 @@ describe('HttpExceptionFilter', () => {
 
     // 创建支持链式调用的 mock response（Fastify风格）
     mockResponse = {
-      status: function() { return this; },
-      code: function() { return this; },  // Fastify使用code而不是status
-      header: function() { return this; },
+      status: function () {
+        return this;
+      },
+      code: function () {
+        return this;
+      }, // Fastify使用code而不是status
+      header: function () {
+        return this;
+      },
       send: () => {},
     } as any;
 
@@ -285,7 +295,7 @@ describe('HttpExceptionFilter', () => {
 
       // Act & Assert - 应该不抛出错误
       expect(() => filter.catch(exception, mockArgumentsHost)).not.toThrow();
-      
+
       // 验证响应正常发送
       expect(mockResponse.status).toHaveBeenCalled();
       expect(mockResponse.send).toHaveBeenCalled();
@@ -303,11 +313,9 @@ describe('HttpExceptionFilter', () => {
         .mockReturnValueOnce('自定义标题')
         .mockReturnValueOnce('自定义详情');
 
-      const exception = new GeneralNotFoundException(
-        '默认标题',
-        '默认详情',
-        { userId: '123' },
-      );
+      const exception = new GeneralNotFoundException('默认标题', '默认详情', {
+        userId: '123',
+      });
 
       // Act
       filter.catch(exception, mockArgumentsHost);
@@ -355,10 +363,7 @@ describe('HttpExceptionFilter', () => {
         .mockReturnValueOnce('自定义标题')
         .mockReturnValueOnce(undefined); // detail 返回 undefined
 
-      const exception = new GeneralBadRequestException(
-        '默认标题',
-        '默认详情',
-      );
+      const exception = new GeneralBadRequestException('默认标题', '默认详情');
 
       // Act
       filter.catch(exception, mockArgumentsHost);
@@ -417,4 +422,3 @@ describe('HttpExceptionFilter', () => {
     });
   });
 });
-
