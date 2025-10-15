@@ -118,7 +118,7 @@
  * @since 1.1.0
  */
 
-import { EntityId } from '../../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
 import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { BaseAggregateRoot } from './base-aggregate-root.js';

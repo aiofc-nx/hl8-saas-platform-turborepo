@@ -6,7 +6,7 @@
  */
 
 import { BaseCommand } from '@hl8/hybrid-archi';
-import { TenantType } from '../../../../domain/tenant/value-objects/tenant-type.enum';
+import { TenantType } from '../../../../domain/tenant/value-objects/tenant-type.enum.js';
 
 export class UpgradeTenantCommand extends BaseCommand {
   constructor(

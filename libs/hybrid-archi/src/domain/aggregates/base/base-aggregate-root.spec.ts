@@ -9,7 +9,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { BaseAggregateRoot } from './base-aggregate-root.js';
-import { EntityId } from '../../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
 import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { TenantContextService } from '@hl8/nestjs-isolation';

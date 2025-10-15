@@ -34,7 +34,7 @@ export { BaseEntity } from '../domain/entities/base.js';
 export { BaseAggregateRoot } from '../domain/aggregates/base.js';
 
 // 实体ID
-export { EntityId } from '../domain/value-objects/entity-id.js';
+export { EntityId  } from '@hl8/isolation-model';
 
 // ==================== 配置集成类型 ====================
 // 已迁移到 @hl8/config 模块，请使用以下导入：

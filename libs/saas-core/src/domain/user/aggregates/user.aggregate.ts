@@ -22,7 +22,7 @@
 
 import { TenantAwareAggregateRoot, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
 import { Username, Email, PhoneNumber } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { User } from '../entities/user.entity';
 import { UserProfile } from '../entities/user-profile.entity';
 import { UserCredentials } from '../entities/user-credentials.entity';

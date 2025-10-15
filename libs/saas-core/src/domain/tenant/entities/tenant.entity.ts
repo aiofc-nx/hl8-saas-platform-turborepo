@@ -53,12 +53,12 @@
  */
 
 import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { TenantStatus } from '../value-objects/tenant-status.vo';
-import { PinoLogger } from '@hl8/logger';
-import { TenantCode } from '../value-objects/tenant-code.vo';
-import { TenantDomain } from '../value-objects/tenant-domain.vo';
-import { TenantType } from '../value-objects/tenant-type.enum';
-import { TENANT_STATUS_TRANSITIONS } from '../../../constants/tenant.constants';
+import { TenantStatus } from '../value-objects/tenant-status.vo.js';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { TenantCode } from '../value-objects/tenant-code.vo.js';
+import { TenantDomain } from '../value-objects/tenant-domain.vo.js';
+import { TenantType } from '../value-objects/tenant-type.enum.js';
+import { TENANT_STATUS_TRANSITIONS } from '../../../constants/tenant.constants.js';
 
 /**
  * 租户实体

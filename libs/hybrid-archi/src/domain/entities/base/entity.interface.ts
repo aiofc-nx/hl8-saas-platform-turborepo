@@ -63,7 +63,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import { IBaseEntity } from './base-entity.interface';
 
 /**

@@ -14,7 +14,7 @@ export type {
   ICommandValidationResult,
   ICommandMetadata,
   ICommandFactory,
-} from './command.interface';
+} from './command.interface.js';
 
 // 命令处理器接口
-export * from './command-handler.interface';
+export * from './command-handler.interface.js';

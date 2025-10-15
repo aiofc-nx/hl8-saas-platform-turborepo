@@ -6,7 +6,7 @@
  */
 
 import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 
 export class OrganizationMember extends BaseEntity {
   constructor(

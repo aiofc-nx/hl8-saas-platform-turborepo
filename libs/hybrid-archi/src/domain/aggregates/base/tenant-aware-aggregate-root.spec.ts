@@ -6,7 +6,7 @@
  */
 
 import { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root.js';
-import { EntityId } from '../../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
 import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
 import { PinoLogger } from '@hl8/nestjs-fastify/logging';

@@ -40,7 +40,7 @@ import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.j
 import { ICommandHandler } from '../commands/base/command-handler.interface';
 import { IQueryHandler } from '../queries/base/query-handler.interface';
 import { IEventHandler } from '../events/base/event-handler.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 /**
  * 消息处理上下文接口

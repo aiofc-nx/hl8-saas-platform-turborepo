@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 import { BaseCommand } from './base-command.js';
-import { EntityId } from '../../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 // 测试用的命令类
 class TestCommand extends BaseCommand {

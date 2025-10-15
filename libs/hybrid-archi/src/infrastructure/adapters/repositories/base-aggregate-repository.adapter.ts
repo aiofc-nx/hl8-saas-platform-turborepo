@@ -13,7 +13,7 @@ import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
 import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { EventService } from '@hl8/nestjs-fastify/messaging';
-import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import { BaseAggregateRoot } from '../../../domain/aggregates/base/base-aggregate-root.js';
 import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
 import { IEntity } from '../../../domain/entities/base/entity.interface';

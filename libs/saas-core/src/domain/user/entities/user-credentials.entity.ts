@@ -8,7 +8,7 @@
  */
 
 import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { LOGIN_SECURITY } from '../../../constants/user.constants';
 
 export class UserCredentials extends BaseEntity {

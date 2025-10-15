@@ -90,7 +90,7 @@
  */
 import { BaseEntity } from '../../entities/base/base-entity.js';
 import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
-import { EntityId } from '../../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
 import { ITenantContext } from '@hl8/nestjs-isolation';
 import { PinoLogger } from '@hl8/nestjs-fastify/logging';

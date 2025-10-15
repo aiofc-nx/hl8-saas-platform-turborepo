@@ -51,7 +51,7 @@ import {
   IMiddleware,
   IMessageContext,
 } from './cqrs-bus.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 /**
  * 命令总线实现

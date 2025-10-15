@@ -45,7 +45,7 @@
 
 import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
 import { Username, Email, PhoneNumber, UserStatus } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { USER_STATUS_TRANSITIONS } from '../../../constants/user.constants';
 
 /**

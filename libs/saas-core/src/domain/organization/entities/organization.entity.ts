@@ -7,7 +7,7 @@
 
 import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
 import { OrganizationStatus } from '../value-objects/organization-status.vo';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { OrganizationType } from '../value-objects/organization-type.vo';
 
 export class Organization extends BaseEntity {

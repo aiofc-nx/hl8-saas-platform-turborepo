@@ -62,7 +62,7 @@
  *
  * @since 1.0.0
  */
-import { EntityId } from '../../../../domain/value-objects/entity-id.js';
+import { EntityId } from '@hl8/isolation-model';
 
 export abstract class BaseCommand {
   private readonly _commandId: EntityId;

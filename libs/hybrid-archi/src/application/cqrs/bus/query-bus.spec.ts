@@ -13,7 +13,7 @@ import {
 } from '../queries/base/base-query.js';
 import { IQueryHandler } from '../queries/base/query-handler.interface';
 import { IMiddleware, IMessageContext } from './cqrs-bus.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 // 测试用的有效UUID
 const TEST_TENANT_ID = EntityId.generate().toString();

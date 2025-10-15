@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 import { BaseDomainEvent } from './base-domain-event.js';
-import { EntityId } from '../../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 // 测试用的具体事件类
 class TestDomainEvent extends BaseDomainEvent {

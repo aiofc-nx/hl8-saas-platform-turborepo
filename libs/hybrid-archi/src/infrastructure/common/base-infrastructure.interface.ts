@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 /**
  * 基础设施服务状态

@@ -69,7 +69,7 @@
  *
  * @since 1.0.0
  */
-import { EntityId } from '../../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import { IAuditInfo, IPartialAuditInfo } from './audit-info.js';
 import { IEntity } from './entity.interface';
 import { TenantContextService, ITenantContext } from '@hl8/nestjs-isolation';

@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 /**
  * 业务规则类型枚举

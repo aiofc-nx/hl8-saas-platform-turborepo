@@ -15,7 +15,7 @@ import {
   getSagaMetadata,
 } from './saga.decorator';
 import { BaseDomainEvent } from '../../domain/events/base/base-domain-event.js';
-import { EntityId } from '../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 // 测试用的事件类
 class TestSagaEvent extends BaseDomainEvent {

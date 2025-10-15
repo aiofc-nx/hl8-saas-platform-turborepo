@@ -8,7 +8,7 @@
  */
 
 import { CommandHandler, ICommandHandler } from '@hl8/hybrid-archi';
-import { CreateTenantCommand } from './create-tenant.command';
+import { CreateTenantCommand } from './create-tenant.command.js';
 import { CreateTenantUseCase } from '../../../use-cases/tenant/create-tenant.use-case.js';
 import { EntityId } from '@hl8/hybrid-archi';
 

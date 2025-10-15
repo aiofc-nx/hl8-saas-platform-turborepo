@@ -43,8 +43,8 @@
  */
 
 import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { TenantQuota } from '../value-objects/tenant-quota.vo';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { TenantQuota } from '../value-objects/tenant-quota.vo.js';
 
 /**
  * 租户配置实体

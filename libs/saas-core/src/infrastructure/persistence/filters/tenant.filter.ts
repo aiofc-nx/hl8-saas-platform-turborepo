@@ -35,7 +35,7 @@
  */
 
 import { Filter, FilterQuery } from '@hl8/database';
-import { TenantContextService } from '@hl8/multi-tenancy';
+import { TenantContextService } from '@hl8/nestjs-isolation';
 
 /**
  * 租户过滤器名称

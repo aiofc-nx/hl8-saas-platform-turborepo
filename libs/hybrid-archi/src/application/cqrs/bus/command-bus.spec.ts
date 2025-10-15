@@ -12,7 +12,7 @@ import { CommandBus } from './command-bus.js';
 import { BaseCommand } from '../commands/base/base-command.js';
 import { ICommandHandler } from '../commands/base/command-handler.interface';
 import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 // 测试用的有效UUID
 const TEST_TENANT_ID = EntityId.generate().toString();

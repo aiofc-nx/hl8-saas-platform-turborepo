@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@hl8/hybrid-archi';
-import { LoginUserCommand } from './login-user.command';
+import { LoginUserCommand } from './login-user.command.js';
 import { LoginUserUseCase } from '../../../use-cases/user/login-user.use-case.js';
 
 // @CommandHandler('LoginUserCommand') // TODO: 修复装饰器类型问题

@@ -14,7 +14,7 @@
  */
 
 import { BaseEntity } from '../../../domain/entities/base/base-entity.js';
-import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import {
   IPartialAuditInfo,
 } from '../../../domain/entities/base/audit-info.js';

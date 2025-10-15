@@ -47,14 +47,14 @@
  */
 
 import { TenantAwareAggregateRoot, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { TenantStatus } from '../value-objects/tenant-status.vo';
-import { PinoLogger } from '@hl8/logger';
-import { Tenant } from '../entities/tenant.entity';
-import { TenantConfiguration } from '../entities/tenant-configuration.entity';
-import { TenantCode } from '../value-objects/tenant-code.vo';
-import { TenantDomain } from '../value-objects/tenant-domain.vo';
-import { TenantQuota } from '../value-objects/tenant-quota.vo';
-import { TenantType } from '../value-objects/tenant-type.enum';
+import { TenantStatus } from '../value-objects/tenant-status.vo.js';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Tenant } from '../entities/tenant.entity.js';
+import { TenantConfiguration } from '../entities/tenant-configuration.entity.js';
+import { TenantCode } from '../value-objects/tenant-code.vo.js';
+import { TenantDomain } from '../value-objects/tenant-domain.vo.js';
+import { TenantQuota } from '../value-objects/tenant-quota.vo.js';
+import { TenantType } from '../value-objects/tenant-type.enum.js';
 
 /**
  * 租户聚合根

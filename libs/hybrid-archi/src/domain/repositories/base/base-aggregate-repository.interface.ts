@@ -58,7 +58,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 import { IAggregateRoot } from '../../aggregates/base/aggregate-root.interface';
 import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
 import {

@@ -3,7 +3,7 @@
  */
 
 import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { DepartmentLevel } from '../value-objects/department-level.vo';
 import { DepartmentPath } from '../value-objects/department-path.vo';
 import { DepartmentStatus } from '../value-objects/department-status.enum';

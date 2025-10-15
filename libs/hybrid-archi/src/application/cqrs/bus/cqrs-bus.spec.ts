@@ -12,7 +12,7 @@ import { EventBus } from './event-bus.js';
 import { BaseCommand } from '../commands/base/base-command.js';
 import { BaseQuery, IQueryResult } from '../queries/base/base-query.js';
 import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
-import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 // 测试用的有效UUID
 const TEST_TENANT_ID = EntityId.generate().toString();

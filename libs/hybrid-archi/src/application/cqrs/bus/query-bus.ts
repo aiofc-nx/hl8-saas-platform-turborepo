@@ -53,7 +53,7 @@ import { Injectable } from '@nestjs/common';
 import { BaseQuery, IQueryResult } from '../queries/base/base-query.js';
 import { IQueryHandler } from '../queries/base/query-handler.interface';
 import { IQueryBus, IMiddleware, IMessageContext } from './cqrs-bus.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 /**
  * 查询总线实现

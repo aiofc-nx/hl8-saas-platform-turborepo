@@ -8,7 +8,7 @@
  */
 
 import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { Gender } from '../value-objects/gender.enum';
 
 export class UserProfile extends BaseEntity {

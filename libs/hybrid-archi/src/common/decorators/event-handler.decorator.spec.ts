@@ -16,7 +16,7 @@ import {
 } from './event-handler.decorator';
 import { BaseDomainEvent } from '../../domain/events/base/base-domain-event.js';
 import { IEventHandler } from '../../application/cqrs/events/base/event-handler.interface';
-import { EntityId } from '../../domain/value-objects/entity-id.js';
+import { EntityId  } from '@hl8/isolation-model';
 
 // 测试用的事件类
 class TestEvent extends BaseDomainEvent {

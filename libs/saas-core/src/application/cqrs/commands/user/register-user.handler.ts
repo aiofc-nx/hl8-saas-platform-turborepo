@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@hl8/hybrid-archi';
-import { RegisterUserCommand } from './register-user.command';
+import { RegisterUserCommand } from './register-user.command.js';
 import { RegisterUserUseCase } from '../../../use-cases/user/register-user.use-case.js';
 import { EntityId } from '@hl8/hybrid-archi';
 

@@ -6,7 +6,7 @@
  */
 
 import { CommandHandler, ICommandHandler } from '@hl8/hybrid-archi';
-import { UpgradeTenantCommand } from './upgrade-tenant.command';
+import { UpgradeTenantCommand } from './upgrade-tenant.command.js';
 import { UpgradeTenantUseCase } from '../../../use-cases/tenant/upgrade-tenant.use-case.js';
 
 // @CommandHandler('UpgradeTenantCommand') // TODO: 修复装饰器类型问题
