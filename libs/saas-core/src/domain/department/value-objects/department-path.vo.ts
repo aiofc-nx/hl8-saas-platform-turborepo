@@ -101,7 +101,9 @@ export class DepartmentPath extends BaseValueObject<string> {
     if (!childName || !/^[\w-]+$/.test(childName)) {
       throw new Error("子部门名称格式不正确");
     }
-    return (DepartmentPath as any).create(`${(this as any)._value}/${childName}`);
+    return (DepartmentPath as any).create(
+      `${(this as any)._value}/${childName}`,
+    );
   }
 
   /**

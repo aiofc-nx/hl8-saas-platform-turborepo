@@ -72,9 +72,24 @@ export class TenantCreatedEvent extends BaseDomainEvent {
       createdBy,
       trialDays,
       quota: {
-        users: type === TenantType.ENTERPRISE ? 1000 : type === TenantType.PROFESSIONAL ? 100 : 10,
-        storage: type === TenantType.ENTERPRISE ? 10000 : type === TenantType.PROFESSIONAL ? 1000 : 100,
-        apiCalls: type === TenantType.ENTERPRISE ? 100000 : type === TenantType.PROFESSIONAL ? 10000 : 1000,
+        users:
+          type === TenantType.ENTERPRISE
+            ? 1000
+            : type === TenantType.PROFESSIONAL
+              ? 100
+              : 10,
+        storage:
+          type === TenantType.ENTERPRISE
+            ? 10000
+            : type === TenantType.PROFESSIONAL
+              ? 1000
+              : 100,
+        apiCalls:
+          type === TenantType.ENTERPRISE
+            ? 100000
+            : type === TenantType.PROFESSIONAL
+              ? 10000
+              : 1000,
       },
     };
   }
@@ -89,13 +104,13 @@ export class TenantCreatedEvent extends BaseDomainEvent {
 
   toJSON(): Record<string, unknown> {
     return {
-      eventId: this.eventId.toString(),
+      eventId: (this as any).eventId.toString(),
       eventType: this.eventType,
-      aggregateId: this.aggregateId.toString(),
-      aggregateVersion: this.aggregateVersion,
-      tenantId: this.tenantId.toString(),
-      occurredAt: this.occurredAt.toISOString(),
-      eventVersion: this.eventVersion,
+      aggregateId: (this as any).aggregateId.toString(),
+      aggregateVersion: (this as any).aggregateVersion,
+      tenantId: (this as any).tenantId.toString(),
+      occurredAt: (this as any).occurredAt.toISOString(),
+      eventVersion: (this as any).eventVersion,
       data: this._data,
     };
   }

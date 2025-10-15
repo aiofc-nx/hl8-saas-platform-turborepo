@@ -28,7 +28,8 @@ export class TenantDomain extends BaseValueObject<string> {
   /**
    * 域名正则表达式
    */
-  private static readonly DOMAIN_REGEX = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  private static readonly DOMAIN_REGEX =
+    /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
   /**
    * 系统保留域名
@@ -53,13 +54,12 @@ export class TenantDomain extends BaseValueObject<string> {
    * 验证域名格式
    *
    * @protected
-   * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, "租户域名");
-    this.validateLength(value, 4, 253, "租户域名");
+    (this as any).validateNotEmpty(value, "租户域名");
+    (this as any).validateLength(value, 4, 253, "租户域名");
 
-    this.validatePattern(
+    (this as any).validatePattern(
       value,
       TenantDomain.DOMAIN_REGEX,
       "域名格式不正确",
@@ -108,7 +108,7 @@ export class TenantDomain extends BaseValueObject<string> {
    * @protected
    * @override
    */
-  protected override transform(value: string): string {
+  protected transform(value: string): string {
     return value.toLowerCase().trim();
   }
 
@@ -118,11 +118,11 @@ export class TenantDomain extends BaseValueObject<string> {
    * @returns 主域名
    */
   public getMainDomain(): string {
-    const parts = this.value.split(".");
+    const parts = (this as any).value.split(".");
     if (parts.length >= 2) {
       return parts.slice(-2).join(".");
     }
-    return this.value;
+    return (this as any).value;
   }
 
   /**
@@ -131,7 +131,7 @@ export class TenantDomain extends BaseValueObject<string> {
    * @returns 子域名部分，如果没有则返回 null
    */
   public getSubdomain(): string | null {
-    const parts = this.value.split(".");
+    const parts = (this as any).value.split(".");
     if (parts.length > 2) {
       return parts.slice(0, -2).join(".");
     }
@@ -144,7 +144,7 @@ export class TenantDomain extends BaseValueObject<string> {
    * @returns 顶级域名
    */
   public getTopLevelDomain(): string {
-    const parts = this.value.split(".");
+    const parts = (this as any).value.split(".");
     return parts[parts.length - 1];
   }
 
@@ -154,7 +154,7 @@ export class TenantDomain extends BaseValueObject<string> {
    * @returns 是否为子域名
    */
   public isSubdomain(): boolean {
-    return this.value.split(".").length > 2;
+    return (this as any).value.split(".").length > 2;
   }
 
   /**
@@ -169,13 +169,15 @@ export class TenantDomain extends BaseValueObject<string> {
       throw new Error("子域名不能为空");
     }
 
-    const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "");
+    const cleanSubdomain = subdomain
+      .toLowerCase()
+      .replace(/[^a-zA-Z0-9-]/g, "");
     if (cleanSubdomain.length === 0) {
       throw new Error("子域名格式不正确");
     }
 
-    const fullDomain = `${cleanSubdomain}.${this.value}`;
-    return TenantDomain.create(fullDomain);
+    const fullDomain = `${cleanSubdomain}.${(this as any).value}`;
+    return (TenantDomain as any).create(fullDomain);
   }
 
   /**
@@ -187,7 +189,7 @@ export class TenantDomain extends BaseValueObject<string> {
    */
   public static isValid(domain: string): boolean {
     try {
-      TenantDomain.create(domain);
+      (TenantDomain as any).create(domain);
       return true;
     } catch {
       return false;

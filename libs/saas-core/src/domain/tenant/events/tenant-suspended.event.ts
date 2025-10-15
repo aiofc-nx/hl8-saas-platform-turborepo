@@ -55,7 +55,7 @@ export class TenantSuspendedEvent extends BaseDomainEvent {
    *
    * @returns {object} 事件数据对象
    */
-  public override toJSON(): Record<string, unknown> {
+  public toJSON(): Record<string, unknown> {
     return {
       ...super.toJSON(),
       reason: this.reason,

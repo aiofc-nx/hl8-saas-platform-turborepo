@@ -66,9 +66,24 @@ export class TenantUpgradedEvent extends BaseDomainEvent {
       upgradedBy,
       reason,
       newQuota: {
-        users: toType === TenantType.ENTERPRISE ? 1000 : toType === TenantType.PROFESSIONAL ? 100 : 10,
-        storage: toType === TenantType.ENTERPRISE ? 10000 : toType === TenantType.PROFESSIONAL ? 1000 : 100,
-        apiCalls: toType === TenantType.ENTERPRISE ? 100000 : toType === TenantType.PROFESSIONAL ? 10000 : 1000,
+        users:
+          toType === TenantType.ENTERPRISE
+            ? 1000
+            : toType === TenantType.PROFESSIONAL
+              ? 100
+              : 10,
+        storage:
+          toType === TenantType.ENTERPRISE
+            ? 10000
+            : toType === TenantType.PROFESSIONAL
+              ? 1000
+              : 100,
+        apiCalls:
+          toType === TenantType.ENTERPRISE
+            ? 100000
+            : toType === TenantType.PROFESSIONAL
+              ? 10000
+              : 1000,
       },
       upgradeDate: new Date().toISOString(),
     };
@@ -84,13 +99,13 @@ export class TenantUpgradedEvent extends BaseDomainEvent {
 
   toJSON(): Record<string, unknown> {
     return {
-      eventId: this.eventId.toString(),
+      eventId: (this as any).eventId.toString(),
       eventType: this.eventType,
-      aggregateId: this.aggregateId.toString(),
-      aggregateVersion: this.aggregateVersion,
-      tenantId: this.tenantId.toString(),
-      occurredAt: this.occurredAt.toISOString(),
-      eventVersion: this.eventVersion,
+      aggregateId: (this as any).aggregateId.toString(),
+      aggregateVersion: (this as any).aggregateVersion,
+      tenantId: (this as any).tenantId.toString(),
+      occurredAt: (this as any).occurredAt.toISOString(),
+      eventVersion: (this as any).eventVersion,
       data: this._data,
     };
   }

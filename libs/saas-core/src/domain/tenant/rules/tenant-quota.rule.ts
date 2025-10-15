@@ -134,9 +134,9 @@ export class TenantQuotaRule {
       current,
       max,
       usage,
-      isWarning: usage >= QUOTA_WARNING_THRESHOLDS.WARNING,
-      isCritical: usage >= QUOTA_WARNING_THRESHOLDS.CRITICAL,
-      isBlocked: usage >= QUOTA_WARNING_THRESHOLDS.BLOCKED,
+      isWarning: usage >= QUOTA_WARNING_THRESHOLDS.USAGE_WARNING,
+      isCritical: usage >= QUOTA_WARNING_THRESHOLDS.USAGE_CRITICAL,
+      isBlocked: usage >= 1.0,
     };
   }
 

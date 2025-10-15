@@ -49,3 +49,24 @@ export const TENANT_STATUS_TRANSITIONS = {
   DISABLED: ["ACTIVE"],
   DELETED: [],
 } as const;
+
+export const QUOTA_WARNING_THRESHOLDS = {
+  USAGE_WARNING: 0.8, // 80%
+  USAGE_CRITICAL: 0.95, // 95%
+} as const;
+
+export const TENANT_UPGRADE_PATHS = {
+  TRIAL: ["BASIC", "PROFESSIONAL", "ENTERPRISE"],
+  BASIC: ["PROFESSIONAL", "ENTERPRISE"],
+  PROFESSIONAL: ["ENTERPRISE"],
+  ENTERPRISE: [],
+} as const;
+
+export const TENANT_DOWNGRADE_PATHS = {
+  TRIAL: [],
+  BASIC: ["TRIAL"],
+  PROFESSIONAL: ["TRIAL", "BASIC"],
+  ENTERPRISE: ["TRIAL", "BASIC", "PROFESSIONAL"],
+} as const;
+
+export const TENANT_TYPE_QUOTAS = TENANT_QUOTAS;

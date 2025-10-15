@@ -56,13 +56,12 @@ export class TenantCode extends BaseValueObject<string> {
    * 验证租户代码格式
    *
    * @protected
-   * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, "租户代码");
-    this.validateLength(value, 3, 20, "租户代码");
+    (this as any).validateNotEmpty(value, "租户代码");
+    (this as any).validateLength(value, 3, 20, "租户代码");
 
-    this.validatePattern(
+    (this as any).validatePattern(
       value,
       /^[a-zA-Z0-9-]+$/,
       "租户代码只能包含字母、数字和连字符",
@@ -92,7 +91,7 @@ export class TenantCode extends BaseValueObject<string> {
    * @protected
    * @override
    */
-  protected override transform(value: string): string {
+  protected transform(value: string): string {
     return value.toLowerCase().trim();
   }
 
@@ -144,7 +143,7 @@ export class TenantCode extends BaseValueObject<string> {
    */
   public static isValid(code: string): boolean {
     try {
-      TenantCode.create(code);
+      (TenantCode as any).create(code);
       return true;
     } catch {
       return false;

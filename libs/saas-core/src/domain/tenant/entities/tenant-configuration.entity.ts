@@ -30,7 +30,10 @@
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { TenantId } from "@hl8/isolation-model";
 // import type { IPureLogger } from "@hl8/pure-logger/index.js";
-import { TenantType, TenantTypeUtils } from "../value-objects/tenant-type.enum.js";
+import {
+  TenantType,
+  TenantTypeUtils,
+} from "../value-objects/tenant-type.enum.js";
 
 /**
  * 配额配置接口
@@ -162,8 +165,10 @@ export class TenantConfiguration extends BaseEntity {
     this._tenantType = tenantType;
     this._quota = TenantConfiguration.getDefaultQuota(tenantType);
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户配额已更新 - tenantId: ${(this as any).id.toString()}, type: ${tenantType}`);
+
+    (this as any).logger?.info(
+      `租户配额已更新 - tenantId: ${(this as any).id.toString()}, type: ${tenantType}`,
+    );
   }
 
   /**
@@ -188,8 +193,10 @@ export class TenantConfiguration extends BaseEntity {
   public updateSetting(key: string, value: any, updatedBy: string): void {
     this._settings[key] = value;
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户配置已更新 - tenantId: ${(this as any).id.toString()}, key: ${key}`);
+
+    (this as any).logger?.info(
+      `租户配置已更新 - tenantId: ${(this as any).id.toString()}, key: ${key}`,
+    );
   }
 
   /**
@@ -199,11 +206,16 @@ export class TenantConfiguration extends BaseEntity {
    * @param settings - 配置设置对象
    * @param updatedBy - 更新操作者
    */
-  public updateSettings(settings: Record<string, any>, updatedBy: string): void {
+  public updateSettings(
+    settings: Record<string, any>,
+    updatedBy: string,
+  ): void {
     this._settings = { ...this._settings, ...settings };
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户配置已批量更新 - tenantId: ${(this as any).id.toString()}, keys: ${Object.keys(settings).join(', ')}`);
+
+    (this as any).logger?.info(
+      `租户配置已批量更新 - tenantId: ${(this as any).id.toString()}, keys: ${Object.keys(settings).join(", ")}`,
+    );
   }
 
   /**
@@ -229,9 +241,12 @@ export class TenantConfiguration extends BaseEntity {
    * @param amount - 使用量
    * @returns 是否超出配额
    */
-  public isResourceQuotaExceeded(resource: keyof QuotaConfig, amount: number): boolean {
+  public isResourceQuotaExceeded(
+    resource: keyof QuotaConfig,
+    amount: number,
+  ): boolean {
     const currentUsage = this._usage[resource] || 0;
-    return (currentUsage + amount) > this._quota[resource];
+    return currentUsage + amount > this._quota[resource];
   }
 
   /**
@@ -240,15 +255,26 @@ export class TenantConfiguration extends BaseEntity {
    * @description 获取各资源的配额使用率
    * @returns 使用率对象
    */
-  public getQuotaUsage(): Record<string, { used: number; limit: number; percentage: number }> {
-    const resources: (keyof QuotaConfig)[] = ['users', 'storage', 'apiCalls', 'dbConnections'];
-    const usage: Record<string, { used: number; limit: number; percentage: number }> = {};
+  public getQuotaUsage(): Record<
+    string,
+    { used: number; limit: number; percentage: number }
+  > {
+    const resources: (keyof QuotaConfig)[] = [
+      "users",
+      "storage",
+      "apiCalls",
+      "dbConnections",
+    ];
+    const usage: Record<
+      string,
+      { used: number; limit: number; percentage: number }
+    > = {};
 
-    resources.forEach(resource => {
+    resources.forEach((resource) => {
       const used = this._usage[resource] || 0;
       const limit = this._quota[resource];
       const percentage = limit > 0 ? Math.round((used / limit) * 100) : 0;
-      
+
       usage[resource] = { used, limit, percentage };
     });
 
@@ -282,14 +308,29 @@ export class TenantConfiguration extends BaseEntity {
    */
   private static getDefaultQuota(tenantType: TenantType): QuotaConfig {
     const baseQuota = TenantTypeUtils.getQuota(tenantType);
-    
+
     return {
       users: baseQuota.users,
       storage: baseQuota.storage,
       apiCalls: baseQuota.apiCalls,
-      dbConnections: tenantType === TenantType.ENTERPRISE ? 100 : tenantType === TenantType.PROFESSIONAL ? 20 : 5,
-      maxFileSize: tenantType === TenantType.ENTERPRISE ? 100 : tenantType === TenantType.PROFESSIONAL ? 50 : 10,
-      concurrentRequests: tenantType === TenantType.ENTERPRISE ? 1000 : tenantType === TenantType.PROFESSIONAL ? 100 : 10,
+      dbConnections:
+        tenantType === TenantType.ENTERPRISE
+          ? 100
+          : tenantType === TenantType.PROFESSIONAL
+            ? 20
+            : 5,
+      maxFileSize:
+        tenantType === TenantType.ENTERPRISE
+          ? 100
+          : tenantType === TenantType.PROFESSIONAL
+            ? 50
+            : 10,
+      concurrentRequests:
+        tenantType === TenantType.ENTERPRISE
+          ? 1000
+          : tenantType === TenantType.PROFESSIONAL
+            ? 100
+            : 10,
     };
   }
 
@@ -300,13 +341,15 @@ export class TenantConfiguration extends BaseEntity {
    * @param tenantType - 租户类型
    * @returns 配置设置
    */
-  private static getDefaultSettings(tenantType: TenantType): Record<string, any> {
+  private static getDefaultSettings(
+    tenantType: TenantType,
+  ): Record<string, any> {
     return {
       // 基础设置
       timezone: "Asia/Shanghai",
       language: "zh-CN",
       dateFormat: "YYYY-MM-DD",
-      
+
       // 安全设置
       passwordPolicy: {
         minLength: 8,
@@ -314,16 +357,20 @@ export class TenantConfiguration extends BaseEntity {
         requireNumbers: true,
         requireUppercase: true,
       },
-      
+
       // 功能开关
       features: {
         multiFactorAuth: tenantType !== TenantType.TRIAL,
-        sso: tenantType === TenantType.ENTERPRISE || tenantType === TenantType.PROFESSIONAL,
+        sso:
+          tenantType === TenantType.ENTERPRISE ||
+          tenantType === TenantType.PROFESSIONAL,
         apiAccess: true,
         customBranding: tenantType === TenantType.ENTERPRISE,
-        advancedAnalytics: tenantType === TenantType.ENTERPRISE || tenantType === TenantType.PROFESSIONAL,
+        advancedAnalytics:
+          tenantType === TenantType.ENTERPRISE ||
+          tenantType === TenantType.PROFESSIONAL,
       },
-      
+
       // 通知设置
       notifications: {
         email: true,

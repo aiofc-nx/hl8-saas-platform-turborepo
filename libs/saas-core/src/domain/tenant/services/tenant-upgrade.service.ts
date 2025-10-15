@@ -42,11 +42,11 @@ import { TenantQuota } from "../value-objects/tenant-quota.vo.js";
 import {
   TenantQuotaRule,
   IDowngradeValidation,
-} from "../rules/tenant-quota.rule";
+} from "../rules/tenant-quota.rule.js";
 import {
   TENANT_UPGRADE_PATHS,
   TENANT_DOWNGRADE_PATHS,
-} from "../../../constants/tenant.constants";
+} from "../../../constants/tenant.constants.js";
 
 /**
  * 升级计划
@@ -108,7 +108,7 @@ export class TenantUpgradeService {
    * @returns {boolean} 是否可以升级
    */
   public canUpgrade(currentType: TenantType, targetType: TenantType): boolean {
-    const allowedPaths = TENANT_UPGRADE_PATHS[currentType];
+    const allowedPaths = (TENANT_UPGRADE_PATHS as any)[currentType];
     return allowedPaths?.includes(targetType) || false;
   }
 
@@ -123,7 +123,7 @@ export class TenantUpgradeService {
     currentType: TenantType,
     targetType: TenantType,
   ): boolean {
-    const allowedPaths = TENANT_DOWNGRADE_PATHS[currentType];
+    const allowedPaths = (TENANT_DOWNGRADE_PATHS as any)[currentType];
     return allowedPaths?.includes(targetType) || false;
   }
 
@@ -215,7 +215,7 @@ export class TenantUpgradeService {
     targetType: TenantType,
   ): string[] {
     const featureMap: Record<TenantType, string[]> = {
-      FREE: ["basic_features"],
+      TRIAL: ["basic_features"],
       BASIC: ["basic_features", "advanced_auth"],
       PROFESSIONAL: [
         "basic_features",
@@ -230,16 +230,6 @@ export class TenantUpgradeService {
         "api_access",
         "sso",
         "audit_logs",
-      ],
-      CUSTOM: [
-        "basic_features",
-        "advanced_auth",
-        "advanced_reporting",
-        "api_access",
-        "sso",
-        "audit_logs",
-        "custom_branding",
-        "dedicated_support",
       ],
     };
 

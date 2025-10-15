@@ -44,7 +44,7 @@ export enum TenantStatus {
   /** 试用中 */
   TRIAL = "TRIAL",
   /** 活跃 */
-  ACTIVE = "ACTIVE", 
+  ACTIVE = "ACTIVE",
   /** 暂停 */
   SUSPENDED = "SUSPENDED",
   /** 禁用 */
@@ -169,8 +169,10 @@ export class Tenant extends BaseEntity {
 
     this._status = TenantStatus.ACTIVE;
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户已激活 - tenantId: ${(this as any).id.toString()}, activatedBy: ${activatedBy}`);
+
+    (this as any).logger?.info(
+      `租户已激活 - tenantId: ${(this as any).id.toString()}, activatedBy: ${activatedBy}`,
+    );
   }
 
   /**
@@ -187,8 +189,10 @@ export class Tenant extends BaseEntity {
 
     this._status = TenantStatus.SUSPENDED;
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.warn(`租户已暂停 - tenantId: ${(this as any).id.toString()}, reason: ${reason}`);
+
+    (this as any).logger?.warn(
+      `租户已暂停 - tenantId: ${(this as any).id.toString()}, reason: ${reason}`,
+    );
   }
 
   /**
@@ -204,8 +208,10 @@ export class Tenant extends BaseEntity {
 
     this._status = TenantStatus.ACTIVE;
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户已恢复 - tenantId: ${(this as any).id.toString()}, resumedBy: ${resumedBy}`);
+
+    (this as any).logger?.info(
+      `租户已恢复 - tenantId: ${(this as any).id.toString()}, resumedBy: ${resumedBy}`,
+    );
   }
 
   /**
@@ -226,8 +232,10 @@ export class Tenant extends BaseEntity {
 
     this._status = TenantStatus.DISABLED;
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.warn(`租户已禁用 - tenantId: ${(this as any).id.toString()}, reason: ${reason}`);
+
+    (this as any).logger?.warn(
+      `租户已禁用 - tenantId: ${(this as any).id.toString()}, reason: ${reason}`,
+    );
   }
 
   /**
@@ -238,15 +246,21 @@ export class Tenant extends BaseEntity {
    * @param upgradedBy - 升级操作者
    * @param reason - 升级原因（可选）
    */
-  public upgrade(newType: TenantType, upgradedBy: string, reason?: string): void {
+  public upgrade(
+    newType: TenantType,
+    upgradedBy: string,
+    reason?: string,
+  ): void {
     if (this._status === TenantStatus.DELETED) {
       throw new Error("已删除的租户无法升级");
     }
 
     this._type = newType;
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户类型已升级 - tenantId: ${(this as any).id.toString()}, newType: ${newType}, reason: ${reason || 'N/A'}`);
+
+    (this as any).logger?.info(
+      `租户类型已升级 - tenantId: ${(this as any).id.toString()}, newType: ${newType}, reason: ${reason || "N/A"}`,
+    );
   }
 
   /**
@@ -263,8 +277,10 @@ export class Tenant extends BaseEntity {
 
     this._name = newName.trim();
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户名称已更新 - tenantId: ${(this as any).id.toString()}, newName: ${newName}`);
+
+    (this as any).logger?.info(
+      `租户名称已更新 - tenantId: ${(this as any).id.toString()}, newName: ${newName}`,
+    );
   }
 
   /**
@@ -277,8 +293,10 @@ export class Tenant extends BaseEntity {
   public updateDomain(newDomain: TenantDomain, updatedBy: string): void {
     this._domain = newDomain;
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户域名已更新 - tenantId: ${(this as any).id.toString()}, newDomain: ${(newDomain as any).value}`);
+
+    (this as any).logger?.info(
+      `租户域名已更新 - tenantId: ${(this as any).id.toString()}, newDomain: ${(newDomain as any).value}`,
+    );
   }
 
   /**
@@ -288,11 +306,16 @@ export class Tenant extends BaseEntity {
    * @param newDescription - 新的租户描述
    * @param updatedBy - 更新操作者
    */
-  public updateDescription(newDescription: string | null, updatedBy: string): void {
+  public updateDescription(
+    newDescription: string | null,
+    updatedBy: string,
+  ): void {
     this._description = newDescription;
     (this as any).updateTimestamp();
-    
-    (this as any).logger?.info(`租户描述已更新 - tenantId: ${(this as any).id.toString()}`);
+
+    (this as any).logger?.info(
+      `租户描述已更新 - tenantId: ${(this as any).id.toString()}`,
+    );
   }
 
   /**
@@ -310,6 +333,9 @@ export class Tenant extends BaseEntity {
    * @returns 是否可用（活跃或试用状态）
    */
   public isAvailable(): boolean {
-    return this._status === TenantStatus.ACTIVE || this._status === TenantStatus.TRIAL;
+    return (
+      this._status === TenantStatus.ACTIVE ||
+      this._status === TenantStatus.TRIAL
+    );
   }
 }
