@@ -10,6 +10,12 @@ export class RegisterUserHandler
   constructor(private readonly useCase: RegisterUserUseCase) {}
 
   async execute(command: RegisterUserCommand): Promise<EntityId> {
-    return await this.useCase.execute(command);
+    return await this.useCase.execute({
+      tenantId: (command as any).tenantId,
+      username: command.username,
+      email: command.email,
+      phoneNumber: command.phoneNumber,
+      password: command.password,
+    });
   }
 }

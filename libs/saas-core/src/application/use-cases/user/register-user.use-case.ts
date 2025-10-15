@@ -9,13 +9,16 @@
 
 import { Injectable } from "@nestjs/common";
 import { UserId } from "@hl8/isolation-model";
-import { Username, Email, PhoneNumber } from "../../../../domain/user/value-objects/index.js";
+import { Username } from "../../../../domain/user/value-objects/username.vo.js";
+import { Email } from "../../../../domain/user/value-objects/email.vo.js";
+import { PhoneNumber } from "../../../../domain/user/value-objects/phone-number.vo.js";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { UserAggregate } from "../../../domain/user/aggregates/user.aggregate.js";
 import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
 import { TenantId } from "@hl8/isolation-model";
 export interface IRegisterUserCommand {
+  tenantId: string;
   username: string;
   email: string;
   phoneNumber?: string;
@@ -36,10 +39,10 @@ export class RegisterUserUseCase
       : null;
 
     // 验证唯一性
-    if (await this.userRepository.existsByUsername(username)) {
+    if (await (this.userRepository as any).existsByUsername(TenantId.create(command.tenantId), username)) {
       throw new Error(`用户名 ${command.username} 已存在`);
     }
-    if (await this.userRepository.existsByEmail(email)) {
+    if (await (this.userRepository as any).existsByEmail(TenantId.create(command.tenantId), email)) {
       throw new Error(`邮箱 ${command.email} 已被注册`);
     }
 

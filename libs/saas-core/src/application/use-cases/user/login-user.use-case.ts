@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { Email } from "../../../../domain/user/value-objects/index.js";
+import { Email } from "../../../../domain/user/value-objects/email.vo.js";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 

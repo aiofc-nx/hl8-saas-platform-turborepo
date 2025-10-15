@@ -1,53 +1,29 @@
 /**
  * 组织相关常量
  *
- * @description 定义组织领域相关的常量和配置
+ * @description 定义组织管理相关的业务常量
  *
  * @since 1.0.0
  */
 
-import { OrganizationStatus } from "../domain/organization/value-objects/organization-status.vo.js";
+export const ORGANIZATION_LIMITS = {
+  MAX_NAME_LENGTH: 100,
+  MAX_DESCRIPTION_LENGTH: 500,
+  MAX_CODE_LENGTH: 20,
+  MIN_CODE_LENGTH: 2,
+  MAX_MEMBERS: 1000,
+} as const;
 
-/**
- * 组织状态转换规则
- *
- * @description 定义允许的状态转换规则
- */
-export const ORGANIZATION_STATUS_TRANSITIONS: Record<
-  OrganizationStatus,
-  OrganizationStatus[]
-> = {
-  [OrganizationStatus.PENDING]: [
-    OrganizationStatus.ACTIVE, // 激活
-    OrganizationStatus.DISABLED, // 禁用
-  ],
-  [OrganizationStatus.ACTIVE]: [
-    OrganizationStatus.SUSPENDED, // 暂停
-    OrganizationStatus.DISABLED, // 禁用
-    OrganizationStatus.ARCHIVED, // 归档
-  ],
-  [OrganizationStatus.SUSPENDED]: [
-    OrganizationStatus.ACTIVE, // 恢复
-    OrganizationStatus.DISABLED, // 禁用
-    OrganizationStatus.ARCHIVED, // 归档
-  ],
-  [OrganizationStatus.DISABLED]: [
-    OrganizationStatus.ACTIVE, // 启用
-  ],
-  [OrganizationStatus.ARCHIVED]: [
-    OrganizationStatus.ACTIVE, // 恢复
-  ],
-  [OrganizationStatus.DELETED]: [
-    // 已删除状态不能转换到其他状态
-  ],
-  [OrganizationStatus.REJECTED]: [
-    OrganizationStatus.PENDING, // 重新申请
-  ],
-};
+export const ORGANIZATION_STATUS_TRANSITIONS = {
+  PENDING: ["ACTIVE", "DISABLED"],
+  ACTIVE: ["SUSPENDED", "DISABLED", "ARCHIVED"],
+  SUSPENDED: ["ACTIVE", "DISABLED", "ARCHIVED"],
+  DISABLED: ["ACTIVE"],
+  ARCHIVED: ["ACTIVE"],
+  DELETED: [],
+  REJECTED: ["PENDING"],
+} as const;
 
-/**
- * 组织类型配置
- */
 export const ORGANIZATION_TYPE_CONFIG = {
   PROFESSIONAL_COMMITTEE: {
     name: "专业委员会",
@@ -86,32 +62,25 @@ export const ORGANIZATION_TYPE_CONFIG = {
   },
 } as const;
 
-/**
- * 组织成员角色配置
- */
-export const ORGANIZATION_MEMBER_ROLES = {
-  /** 组织负责人 */
+export const ORGANIZATION_ROLES = {
   OWNER: {
     name: "负责人",
     description: "组织的最高负责人，拥有所有权限",
     permissions: ["all"],
     level: 1,
   },
-  /** 管理员 */
   ADMIN: {
     name: "管理员",
     description: "组织的管理员，拥有管理权限",
     permissions: ["read", "write", "manage"],
     level: 2,
   },
-  /** 成员 */
   MEMBER: {
     name: "成员",
     description: "组织的普通成员",
     permissions: ["read", "write"],
     level: 3,
   },
-  /** 观察者 */
   OBSERVER: {
     name: "观察者",
     description: "只能查看组织信息的观察者",
@@ -120,38 +89,14 @@ export const ORGANIZATION_MEMBER_ROLES = {
   },
 } as const;
 
-/**
- * 组织配置限制
- */
-export const ORGANIZATION_LIMITS = {
-  /** 最大成员数量 */
-  MAX_MEMBERS: 1000,
-  /** 最大子组织数量 */
-  MAX_CHILD_ORGANIZATIONS: 50,
-  /** 最大嵌套层级 */
-  MAX_NESTING_LEVEL: 5,
-  /** 组织名称最大长度 */
-  MAX_NAME_LENGTH: 100,
-  /** 组织代码最大长度 */
-  MAX_CODE_LENGTH: 50,
-  /** 组织描述最大长度 */
-  MAX_DESCRIPTION_LENGTH: 500,
-} as const;
-
-/**
- * 组织权限配置
- */
 export const ORGANIZATION_PERMISSIONS = {
-  /** 基础权限 */
   BASIC: ["organization:read", "organization:members:list"],
-  /** 管理权限 */
   ADMIN: [
     "organization:read",
     "organization:write",
     "organization:members:manage",
     "organization:settings:update",
   ],
-  /** 完整权限 */
   FULL: [
     "organization:read",
     "organization:write",
@@ -162,18 +107,12 @@ export const ORGANIZATION_PERMISSIONS = {
   ],
 } as const;
 
-/**
- * 组织通知配置
- */
-export const ORGANIZATION_NOTIFICATIONS = {
-  /** 成员加入通知 */
-  MEMBER_JOINED: true,
-  /** 成员离开通知 */
-  MEMBER_LEFT: true,
-  /** 角色变更通知 */
-  ROLE_CHANGED: true,
-  /** 组织状态变更通知 */
-  STATUS_CHANGED: true,
-  /** 权限变更通知 */
-  PERMISSIONS_CHANGED: true,
+export const ORGANIZATION_EVENTS = {
+  CREATED: "organization.created",
+  UPDATED: "organization.updated",
+  DELETED: "organization.deleted",
+  MEMBER_ADDED: "organization.member.added",
+  MEMBER_REMOVED: "organization.member.removed",
+  STATUS_CHANGED: "organization.status.changed",
+  PERMISSIONS_CHANGED: "organization.permissions.changed",
 } as const;
