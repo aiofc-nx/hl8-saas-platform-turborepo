@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { Email } from "../../../../domain/user/value-objects/email.vo.js";
+// import { Email } from "../../../../domain/user/value-objects/email.vo";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
@@ -29,8 +29,8 @@ export class LoginUserUseCase
   constructor(private readonly userRepository: IUserAggregateRepository) {}
 
   async execute(command: ILoginUserCommand): Promise<ILoginResult> {
-    const email = Email.create(command.email);
-    const aggregate = await (this.userRepository as any).findByEmail(email);
+    // const email = Email.create(command.email);
+    const aggregate = await (this.userRepository as any).findByEmail(command.email);
 
     if (!aggregate) {
       throw new Error("用户名或密码错误");

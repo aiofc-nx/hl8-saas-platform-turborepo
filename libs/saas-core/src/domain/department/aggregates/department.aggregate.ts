@@ -45,7 +45,7 @@ export class DepartmentAggregate extends TenantAwareAggregateRoot {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: this._id.toString(),
       department: this._department.toObject(),
     };
   }

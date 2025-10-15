@@ -4,7 +4,7 @@
 
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { DepartmentLevel } from "../value-objects/department-level.vo.js";
 import { DepartmentPath } from "../value-objects/department-path.vo.js";
 import { DepartmentStatus } from "../value-objects/department-status.enum.js";
@@ -21,7 +21,7 @@ export class Department extends BaseEntity {
     private _path: DepartmentPath,
     private _status: DepartmentStatus,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -68,7 +68,7 @@ export class Department extends BaseEntity {
       name: this._name,
       fullName: this._fullName,
       level: this._level.level,
-      path: this._path.value,
+      path: (this._path as any).value,
       status: this._status,
     };
   }
