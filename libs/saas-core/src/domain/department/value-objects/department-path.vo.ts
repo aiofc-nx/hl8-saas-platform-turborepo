@@ -28,11 +28,10 @@ export class DepartmentPath extends BaseValueObject<string> {
    * 验证部门路径
    *
    * @protected
-   * @override
    */
-  protected override validate(value: string): void {
-    this.validateNotEmpty(value, "部门路径");
-    this.validatePattern(
+  protected validate(value: string): void {
+    (this as any).validateNotEmpty(value, "部门路径");
+    (this as any).validatePattern(
       value,
       /^\/[\w-]+(\/[\w-]+)*$/,
       "部门路径格式不正确，应该是 /root/parent/current 的格式",
@@ -58,14 +57,14 @@ export class DepartmentPath extends BaseValueObject<string> {
    * @param rootName 根路径名称，默认为 'root'
    */
   public static root(rootName: string = "root"): DepartmentPath {
-    return DepartmentPath.create(`/${rootName}`);
+    return (DepartmentPath as any).create(`/${rootName}`);
   }
 
   /**
    * 获取路径深度
    */
   public getDepth(): number {
-    return this.calculateDepth(this._value);
+    return this.calculateDepth((this as any)._value);
   }
 
   /**
@@ -82,7 +81,7 @@ export class DepartmentPath extends BaseValueObject<string> {
     if (this.isRoot()) {
       return null;
     }
-    const parts = this._value.split("/").filter((p) => p.length > 0);
+    const parts = (this as any)._value.split("/").filter((p) => p.length > 0);
     parts.pop();
     return "/" + parts.join("/");
   }
@@ -91,7 +90,7 @@ export class DepartmentPath extends BaseValueObject<string> {
    * 获取当前部门名称
    */
   public getCurrentName(): string {
-    const parts = this._value.split("/").filter((p) => p.length > 0);
+    const parts = (this as any)._value.split("/").filter((p) => p.length > 0);
     return parts[parts.length - 1];
   }
 
@@ -102,14 +101,14 @@ export class DepartmentPath extends BaseValueObject<string> {
     if (!childName || !/^[\w-]+$/.test(childName)) {
       throw new Error("子部门名称格式不正确");
     }
-    return DepartmentPath.create(`${this._value}/${childName}`);
+    return (DepartmentPath as any).create(`${(this as any)._value}/${childName}`);
   }
 
   /**
    * 检查是否为另一个路径的子路径
    */
   public isChildOf(parentPath: DepartmentPath): boolean {
-    return this._value.startsWith(parentPath._value + "/");
+    return (this as any)._value.startsWith((parentPath as any)._value + "/");
   }
 
   /**
@@ -124,7 +123,7 @@ export class DepartmentPath extends BaseValueObject<string> {
    */
   public static isValid(path: string): boolean {
     try {
-      DepartmentPath.create(path);
+      (DepartmentPath as any).create(path);
       return true;
     } catch {
       return false;

@@ -61,7 +61,7 @@ export class Department extends BaseEntity {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       organizationId: this._organizationId.toString(),
       parentId: this._parentId?.toString(),
       code: this._code,

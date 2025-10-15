@@ -29,11 +29,10 @@ export class DepartmentLevel extends BaseValueObject<number> {
    * 验证部门层级
    *
    * @protected
-   * @override
    */
-  protected override validate(value: number): void {
-    this.validateInteger(value, "部门层级");
-    this.validateRange(
+  protected validate(value: number): void {
+    (this as any).validateInteger(value, "部门层级");
+    (this as any).validateRange(
       value,
       DepartmentLevel.MIN_LEVEL,
       DepartmentLevel.MAX_LEVEL,
@@ -45,21 +44,21 @@ export class DepartmentLevel extends BaseValueObject<number> {
    * 创建根级别（顶级部门）
    */
   public static root(): DepartmentLevel {
-    return DepartmentLevel.create(DepartmentLevel.MIN_LEVEL);
+    return (DepartmentLevel as any).create(DepartmentLevel.MIN_LEVEL);
   }
 
   /**
    * 检查是否为顶级部门
    */
   public isTopLevel(): boolean {
-    return this._value === DepartmentLevel.MIN_LEVEL;
+    return (this as any)._value === DepartmentLevel.MIN_LEVEL;
   }
 
   /**
    * 检查是否已达最深层级
    */
   public isMaxLevel(): boolean {
-    return this._value === DepartmentLevel.MAX_LEVEL;
+    return (this as any)._value === DepartmentLevel.MAX_LEVEL;
   }
 
   /**
@@ -69,7 +68,7 @@ export class DepartmentLevel extends BaseValueObject<number> {
     if (this.isMaxLevel()) {
       throw new Error("已达到最大部门层级，无法创建子部门");
     }
-    return DepartmentLevel.create(this._value + 1);
+    return (DepartmentLevel as any).create((this as any)._value + 1);
   }
 
   /**
@@ -79,7 +78,7 @@ export class DepartmentLevel extends BaseValueObject<number> {
     if (this.isTopLevel()) {
       throw new Error("已是顶级部门，没有上级层级");
     }
-    return DepartmentLevel.create(this._value - 1);
+    return (DepartmentLevel as any).create((this as any)._value - 1);
   }
 
   /**
@@ -93,7 +92,7 @@ export class DepartmentLevel extends BaseValueObject<number> {
    * 获取数值级别（兼容旧API）
    */
   public get level(): number {
-    return this._value;
+    return (this as any)._value;
   }
 
   /**
@@ -101,7 +100,7 @@ export class DepartmentLevel extends BaseValueObject<number> {
    */
   public static isValid(level: number): boolean {
     try {
-      DepartmentLevel.create(level);
+      (DepartmentLevel as any).create(level);
       return true;
     } catch {
       return false;

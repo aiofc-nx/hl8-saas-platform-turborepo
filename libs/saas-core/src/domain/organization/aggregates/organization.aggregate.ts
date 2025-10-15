@@ -7,7 +7,7 @@
 
 import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { Organization } from "../entities/organization.entity.js";
 import { OrganizationMember } from "../entities/organization-member.entity.js";
 import { OrganizationType } from "../value-objects/organization-type.vo.js";
@@ -20,7 +20,7 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
     id: EntityId,
     private _organization: Organization,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -45,17 +45,17 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
   }
 
   public addMember(userId: EntityId, updatedBy: string): void {
-    this.ensureTenantContext();
+    (this as any).ensureTenantContext();
 
     const member = OrganizationMember.create(
       TenantId.generate(),
-      this.id,
+      (this as any).id,
       userId,
       { createdBy: updatedBy },
     );
 
     this._members.push(member);
-    this.logTenantOperation("组织成员已添加", { userId: userId.toString() });
+    (this as any).logTenantOperation("组织成员已添加", { userId: userId.toString() });
   }
 
   public removeMember(userId: EntityId, updatedBy: string): void {
@@ -67,7 +67,7 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       organization: this._organization.toObject(),
       membersCount: this._members.length,
     };

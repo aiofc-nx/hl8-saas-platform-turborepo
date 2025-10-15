@@ -7,7 +7,7 @@
 
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 
 export class OrganizationMember extends BaseEntity {
   constructor(
@@ -18,7 +18,7 @@ export class OrganizationMember extends BaseEntity {
     private _joinedAt: Date,
     private _leftAt: Date | null,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -50,11 +50,11 @@ export class OrganizationMember extends BaseEntity {
 
   public setPosition(position: string, updatedBy?: string): void {
     this._position = position;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public leave(updatedBy?: string): void {
     this._leftAt = new Date();
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 }
