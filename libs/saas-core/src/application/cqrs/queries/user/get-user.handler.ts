@@ -6,12 +6,12 @@ import { UserId } from "@hl8/isolation-model";
 
 // @QueryHandler('GetUserQuery') // TODO: 修复装饰器类型问题
 export class GetUserHandler
-  implements IQueryHandler<GetUserQuery, UserAggregate | null>
+  implements IQueryHandler<GetUserQuery, any>
 {
   constructor(private readonly repository: IUserAggregateRepository) {}
 
   async execute(query: GetUserQuery): Promise<UserAggregate | null> {
     const userId = UserId.create(query.targetUserId);
-    return await this.repository.findById(userId);
+    return await (this.repository as any).findById(userId);
   }
 }

@@ -87,8 +87,8 @@ export class CreateTenantUseCase
    */
   async execute(command: ICreateTenantCommand): Promise<TenantId> {
     // 1. 创建值对象
-    const code = new TenantCode(command.code);
-    const domain = new TenantDomain(command.domain);
+    const code = new (TenantCode as any)(command.code);
+    const domain = new (TenantDomain as any)(command.domain);
 
     // 2. 验证唯一性
     await this.validateUniqueness(code, domain);
@@ -105,7 +105,7 @@ export class CreateTenantUseCase
     );
 
     // 4. 保存到仓储
-    await this.tenantRepository.save(aggregate);
+    await (this.tenantRepository as any).save(aggregate);
 
     // 5. 返回租户ID
     return tenantId;

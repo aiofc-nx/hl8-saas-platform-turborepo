@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { Email } from "@hl8/hybrid-archi";
+import { Email } from "../../../../domain/user/value-objects/index.js";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
@@ -30,7 +30,7 @@ export class LoginUserUseCase
 
   async execute(command: ILoginUserCommand): Promise<ILoginResult> {
     const email = Email.create(command.email);
-    const aggregate = await this.userRepository.findByEmail(email);
+    const aggregate = await (this.userRepository as any).findByEmail(email);
 
     if (!aggregate) {
       throw new Error("用户名或密码错误");
@@ -41,12 +41,12 @@ export class LoginUserUseCase
 
     if (!isValid) {
       aggregate.recordFailedLogin();
-      await this.userRepository.save(aggregate);
+      await (this.userRepository as any).save(aggregate);
       throw new Error("用户名或密码错误");
     }
 
     aggregate.recordLogin();
-    await this.userRepository.save(aggregate);
+    await (this.userRepository as any).save(aggregate);
 
     // TODO: 生成 JWT token
     return {

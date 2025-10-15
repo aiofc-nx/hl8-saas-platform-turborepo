@@ -26,7 +26,7 @@ export class ActivateTenantUseCase
   async execute(command: IActivateTenantCommand): Promise<void> {
     // 加载租户聚合根
     const tenantId = TenantId.create(command.tenantId);
-    const aggregate = await this.tenantRepository.findById(tenantId);
+    const aggregate = await (this.tenantRepository as any).findById(tenantId);
 
     if (!aggregate) {
       throw new Error(`租户不存在: ${command.tenantId}`);
@@ -36,6 +36,6 @@ export class ActivateTenantUseCase
     aggregate.activate(command.activatedBy);
 
     // 保存
-    await this.tenantRepository.save(aggregate);
+    await (this.tenantRepository as any).save(aggregate);
   }
 }

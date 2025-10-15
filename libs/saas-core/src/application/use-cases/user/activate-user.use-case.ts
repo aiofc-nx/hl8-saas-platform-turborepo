@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityId } from "@hl8/hybrid-archi";
+import { UserId } from "@hl8/isolation-model";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
@@ -22,14 +22,14 @@ export class ActivateUserUseCase
   constructor(private readonly userRepository: IUserAggregateRepository) {}
 
   async execute(command: IActivateUserCommand): Promise<void> {
-    const userId = EntityId.create(command.userId);
-    const aggregate = await this.userRepository.findById(userId);
+    const userId = UserId.create(command.userId);
+    const aggregate = await (this.userRepository as any).findById(userId);
 
     if (!aggregate) {
       throw new Error(`用户不存在: ${command.userId}`);
     }
 
     aggregate.verifyEmail(command.activatedBy);
-    await this.userRepository.save(aggregate);
+    await (this.userRepository as any).save(aggregate);
   }
 }

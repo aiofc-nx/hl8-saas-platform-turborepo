@@ -4,6 +4,7 @@
     "allowJs": true,
     "esModuleInterop": true,
     "incremental": false,
+    "isolatedModules": false,
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./dist",

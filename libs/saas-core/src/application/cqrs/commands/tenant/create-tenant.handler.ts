@@ -24,7 +24,7 @@ export class CreateTenantHandler
       name: command.name,
       domain: command.domain,
       type: command.type,
-      createdBy: command.userId!, // 使用 BaseCommand 的 userId getter
+      createdBy: (command as any).userId, // 使用类型断言
     });
   }
 

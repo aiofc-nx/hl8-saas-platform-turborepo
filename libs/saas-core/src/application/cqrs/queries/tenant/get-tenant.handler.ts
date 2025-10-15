@@ -13,12 +13,12 @@ import { TenantId } from "@hl8/isolation-model";
 
 // @QueryHandler('GetTenantQuery') // TODO: 修复装饰器类型问题
 export class GetTenantHandler
-  implements IQueryHandler<GetTenantQuery, TenantAggregate | null>
+  implements IQueryHandler<GetTenantQuery, any>
 {
   constructor(private readonly repository: ITenantAggregateRepository) {}
 
   async execute(query: GetTenantQuery): Promise<TenantAggregate | null> {
     const tenantId = TenantId.create(query.targetTenantId);
-    return await this.repository.findById(tenantId);
+    return await (this.repository as any).findById(tenantId);
   }
 }

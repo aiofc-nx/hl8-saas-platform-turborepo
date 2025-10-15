@@ -19,7 +19,7 @@ export class UpgradeTenantHandler
     await this.useCase.execute({
       tenantId: command.targetTenantId,
       targetType: command.targetType,
-      upgradedBy: command.userId!, // 使用 BaseCommand 的 userId
+      upgradedBy: (command as any).userId, // 使用类型断言
     });
   }
 

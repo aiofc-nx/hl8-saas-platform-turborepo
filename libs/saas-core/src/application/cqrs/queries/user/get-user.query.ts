@@ -24,8 +24,8 @@ export class GetUserQuery extends BaseQuery {
 
   protected createCopyWithSortRules(sortRules: any[]): this {
     const copy = new GetUserQuery(
-      this.tenantId,
-      this.userId,
+      (this as any).tenantId,
+      (this as any).userId,
       this.targetUserId,
     );
     return copy as this;

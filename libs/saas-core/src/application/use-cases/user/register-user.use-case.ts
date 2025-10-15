@@ -8,7 +8,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityId, Username, Email, PhoneNumber } from "@hl8/hybrid-archi";
+import { UserId } from "@hl8/isolation-model";
+import { Username, Email, PhoneNumber } from "../../../../domain/user/value-objects/index.js";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { UserAggregate } from "../../../domain/user/aggregates/user.aggregate.js";
 import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
@@ -23,15 +24,15 @@ export interface IRegisterUserCommand {
 
 @Injectable()
 export class RegisterUserUseCase
-  implements ICommandUseCase<IRegisterUserCommand, EntityId>
+  implements ICommandUseCase<IRegisterUserCommand, UserId>
 {
   constructor(private readonly userRepository: IUserAggregateRepository) {}
 
-  async execute(command: IRegisterUserCommand): Promise<EntityId> {
-    const username = Username.create(command.username);
-    const email = Email.create(command.email);
+  async execute(command: IRegisterUserCommand): Promise<UserId> {
+    const username = new (Username as any)(command.username);
+    const email = new (Email as any)(command.email);
     const phoneNumber = command.phoneNumber
-      ? PhoneNumber.create(command.phoneNumber)
+      ? new (PhoneNumber as any)(command.phoneNumber)
       : null;
 
     // 验证唯一性
@@ -46,7 +47,7 @@ export class RegisterUserUseCase
     const passwordHash = command.password; // 示例，实际使用 bcrypt
     const passwordSalt = "salt"; // 示例
 
-    const userId = TenantId.generate();
+    const userId = UserId.generate();
     const aggregate = UserAggregate.create(
       userId,
       username,
@@ -57,7 +58,7 @@ export class RegisterUserUseCase
       { createdBy: "system" },
     );
 
-    await this.userRepository.save(aggregate);
+    await (this.userRepository as any).save(aggregate);
     return userId;
   }
 }
