@@ -534,7 +534,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
     message: string,
     data?: Record<string, unknown>,
   ): void {
-    this.logger.log(message);
+    this.logger.info(message);
   }
 
   /**

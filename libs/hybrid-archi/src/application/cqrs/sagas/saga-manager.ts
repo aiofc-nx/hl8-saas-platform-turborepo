@@ -56,7 +56,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { Observable, of, throwError } from "rxjs";
 import { map, catchError, tap } from "rxjs/operators";
-import type { FastifyLoggerService } from "@hl8/hybrid-archi";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -260,13 +260,13 @@ export class SagaManager implements ISagaManager {
       catchError((error) => {
         this.logger.error(
           `Saga compensation failed: ${context.sagaType}`,
-          { context: "SYSTEM" },
+          undefined,
           {
+            context: "SYSTEM",
             sagaId,
             sagaType: context.sagaType,
             error: (error as Error).message,
           },
-          error as Error,
         );
         return of(false);
       }),
@@ -577,14 +577,14 @@ export class SagaManager implements ISagaManager {
           error: (error) => {
             this.logger.error(
               `Saga event handler failed: ${handler.name}`,
-              { context: "SYSTEM" },
+              undefined,
               {
+                context: "SYSTEM",
                 sagaId: context.sagaId,
                 eventType,
                 handlerName: handler.name,
                 error: (error as Error).message,
               },
-              error as Error,
             );
           },
         });

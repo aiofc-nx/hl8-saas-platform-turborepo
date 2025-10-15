@@ -200,7 +200,7 @@ export function QueryHandler<TQuery extends IQuery>(
 export function getQueryHandlerMetadata(
   target: unknown,
 ): IQueryMetadata | undefined {
-  return Reflect.getMetadata(QUERY_HANDLER_METADATA_KEY, target as Object);
+  return Reflect.getMetadata(QUERY_HANDLER_METADATA_KEY, target as object);
 }
 
 /**
@@ -210,7 +210,7 @@ export function getQueryHandlerMetadata(
  * @returns 如果是查询处理器返回true，否则返回false
  */
 export function isQueryHandler(target: unknown): boolean {
-  return Reflect.hasMetadata(QUERY_HANDLER_METADATA_KEY, target as Object);
+  return Reflect.hasMetadata(QUERY_HANDLER_METADATA_KEY, target as object);
 }
 
 /**
@@ -289,7 +289,7 @@ export function Query(options: {
  * @returns 查询元数据
  */
 export function getQueryMetadata(target: unknown): IQueryMetadata | undefined {
-  return Reflect.getMetadata(QUERY_METADATA_KEY, target as Object);
+  return Reflect.getMetadata(QUERY_METADATA_KEY, target as object);
 }
 
 /**
@@ -299,5 +299,5 @@ export function getQueryMetadata(target: unknown): IQueryMetadata | undefined {
  * @returns 如果是查询返回true，否则返回false
  */
 export function isQuery(target: unknown): boolean {
-  return Reflect.hasMetadata(QUERY_METADATA_KEY, target as Object);
+  return Reflect.hasMetadata(QUERY_METADATA_KEY, target as object);
 }

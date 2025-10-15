@@ -1,4 +1,3 @@
-import { TenantId } from "@hl8/isolation-model";
 /**
  * 基础领域异常类
  *

@@ -44,7 +44,7 @@
  * @since 1.0.0
  */
 import { Injectable } from "@nestjs/common";
-import type { FastifyLoggerService } from "@hl8/hybrid-archi";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -58,8 +58,9 @@ enum LogContext {
   HTTP_REQUEST = "HTTP_REQUEST",
 }
 import { ModuleRef } from "@nestjs/core";
-import type { ICommandBus, IQueryBus, IEventBus } from "../cqrs/bus.js";
+// import type { ICommandBus, IQueryBus, IEventBus } from "../cqrs/bus.js";
 import { IExplorerResult, IHandlerInfo } from "./core-explorer.service.js";
+import type { ICommandBus, IEventBus, IQueryBus } from "../cqrs/index.js";
 
 /**
  * 注册状态接口
@@ -296,8 +297,8 @@ export class AutoRegistrationService {
       );
       this.logger.log(
         `Registered: ${this.registrationStatus.registeredHandlers}, Failed: ${this.registrationStatus.failedHandlers}`,
-        { context: "SYSTEM" },
         {
+          context: "SYSTEM",
           registeredHandlers: this.registrationStatus.registeredHandlers,
           failedHandlers: this.registrationStatus.failedHandlers,
         },
@@ -305,12 +306,10 @@ export class AutoRegistrationService {
 
       return this.registrationStatus;
     } catch (error) {
-      this.logger.error(
-        "Handler registration failed",
-        { context: "SYSTEM" },
-        {},
-        error as Error,
-      );
+      this.logger.error("Handler registration failed", undefined, {
+        context: "SYSTEM",
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -573,8 +572,10 @@ export class AutoRegistrationService {
       // 如果无法从依赖注入容器获取，尝试直接实例化
       this.logger.warn(
         `Failed to get handler instance from DI container for ${handler.handlerName}, trying direct instantiation`,
-        { context: "SYSTEM" },
-        { handlerName: handler.handlerName },
+        {
+          context: "SYSTEM",
+          handlerName: handler.handlerName,
+        },
       );
       return new handler.handlerClass();
     }
@@ -605,9 +606,13 @@ export class AutoRegistrationService {
 
     this.logger.error(
       `Failed to register ${handlerType} handler ${handler.handlerName}: ${error.message}`,
-      { context: "SYSTEM" },
-      { handlerName: handler.handlerName, handlerType, error: error.message },
-      error,
+      undefined,
+      {
+        context: "SYSTEM",
+        handlerName: handler.handlerName,
+        handlerType,
+        error: error.message,
+      },
     );
   }
 }

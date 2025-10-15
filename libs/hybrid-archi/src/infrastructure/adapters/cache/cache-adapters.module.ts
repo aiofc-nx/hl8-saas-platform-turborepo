@@ -9,8 +9,8 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { CacheModule, CacheService } from "@hl8/hybrid-archi";
-import { LoggerModule, Logger } from "@hl8/hybrid-archi";
+import { CachingModule, CacheService } from "@hl8/caching";
+import { LoggerModule, Logger } from "@hl8/nestjs-fastify";
 
 import { CacheAdapter } from "./cache.adapter.js";
 import { CacheFactory } from "./cache.factory.js";

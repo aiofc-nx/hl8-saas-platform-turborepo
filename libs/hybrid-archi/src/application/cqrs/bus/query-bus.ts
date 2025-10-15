@@ -52,8 +52,11 @@
 import { Injectable } from "@nestjs/common";
 import { BaseQuery, IQueryResult } from "../queries/base/base-query.js";
 import type { IQueryHandler } from "../queries/base/query-handler.interface.js";
-import { IQueryBus, IMiddleware, IMessageContext } from "./cqrs-bus.interface.js";
-import { EntityId } from "@hl8/isolation-model";
+import {
+  IQueryBus,
+  IMiddleware,
+  IMessageContext,
+} from "./cqrs-bus.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

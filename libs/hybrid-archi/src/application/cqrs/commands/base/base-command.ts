@@ -64,7 +64,7 @@
  */
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
-import { ICommand, ICommandValidationResult } from "./command.interface.js.js";
+import { ICommand, ICommandValidationResult } from "./command.interface.js";
 
 export abstract class BaseCommand implements ICommand {
   private readonly _commandId: EntityId;

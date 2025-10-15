@@ -67,7 +67,6 @@ import type {
   ICommandHandler,
   ICommandExecutionContext,
 } from "./command-handler.interface.js";
-import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 基础命令处理器抽象类
