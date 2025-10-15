@@ -64,8 +64,8 @@
  * @since 1.0.0
  */
 
-import { BaseDomainMapper, MappingError } from "./base-domain-mapper";
-import type { IDtoMapper } from "./mapper.interface";
+import { BaseDomainMapper, MappingError } from "./base-domain-mapper.js";
+import type { IDtoMapper } from "./mapper.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

@@ -8,8 +8,8 @@
  */
 
 // 接口导出
-export * from "./saga.interface";
+export * from "./saga.interface.js";
 
 // 实现类导出
-export * from "./base-saga";
-export * from "./saga-manager";
+export * from "./base-saga.js";
+export * from "./saga-manager.js";

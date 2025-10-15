@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-import { IAuditInfo, IPartialAuditInfo, AuditInfoBuilder } from "./audit-info";
+import { IAuditInfo, IPartialAuditInfo, AuditInfoBuilder } from "./audit-info.js";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
 

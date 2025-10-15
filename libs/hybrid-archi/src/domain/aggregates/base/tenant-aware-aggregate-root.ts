@@ -119,12 +119,11 @@
  */
 
 import { EntityId } from "@hl8/isolation-model";
-import { IPartialAuditInfo } from "../../entities/base/audit-info";
+import { IPartialAuditInfo } from "../../entities/base/audit-info.js";
 import type { IPureLogger } from "@hl8/pure-logger";
-import { BaseAggregateRoot } from "./base-aggregate-root";
-import { BaseDomainEvent } from "../../events/base/base-domain-event";
+import { BaseAggregateRoot } from "./base-aggregate-root.js";
+import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
 import { BadRequestException } from "@nestjs/common";
-import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 租户感知聚合根基类

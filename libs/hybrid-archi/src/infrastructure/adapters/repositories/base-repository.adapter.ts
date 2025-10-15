@@ -9,11 +9,11 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/database";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
-import { IEntity } from "../../../domain/entities/base/entity.interface";
+import { IEntity } from "../../../domain/entities/base/entity.interface.js";
 import type {
   IRepository,
   IRepositoryQueryOptions,
@@ -22,7 +22,7 @@ import type {
   ConcurrencyError,
   EntityNotFoundError,
   ValidationError,
-} from "../../../domain/repositories/base/base-repository.interface";
+} from "../../../domain/repositories/base/base-repository.interface.js";
 
 /**
  * 仓储配置接口

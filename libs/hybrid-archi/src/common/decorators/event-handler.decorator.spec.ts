@@ -13,9 +13,9 @@ import {
   supportsEventType,
   getEventHandlerMetadata,
   EventHandlerClass,
-} from "./event-handler.decorator";
-import { BaseDomainEvent } from "../../domain/events/base/base-domain-event";
-import type { IEventHandler } from "../../application/cqrs/events/base/event-handler.interface";
+} from "./event-handler.decorator.js";
+import { BaseDomainEvent } from "../../domain/events/base/base-domain-event.js";
+import type { IEventHandler } from "../../application/cqrs/events/base/event-handler.interface.js";
 import { EntityId } from "@hl8/isolation-model";
 
 // 测试用的事件类

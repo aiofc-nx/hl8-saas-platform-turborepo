@@ -9,20 +9,20 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/database";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { EventService } from "@hl8/nestjs-fastify/messaging";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { EventService } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
-import { BaseAggregateRoot } from "../../../domain/aggregates/base/base-aggregate-root";
-import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
-import { IEntity } from "../../../domain/entities/base/entity.interface";
+import { BaseAggregateRoot } from "../../../domain/aggregates/base/base-aggregate-root.js";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
+import { IEntity } from "../../../domain/entities/base/entity.interface.js";
 import type {
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
-} from "../../../domain/repositories/base/base-repository.interface";
-import { BaseRepositoryAdapter } from "./base-repository.adapter";
+} from "../../../domain/repositories/base/base-repository.interface.js";
+import { BaseRepositoryAdapter } from "./base-repository.adapter.js";
 
 /**
  * 聚合根仓储配置接口

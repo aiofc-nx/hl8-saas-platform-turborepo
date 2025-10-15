@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 import { Injectable, NestMiddleware } from "@nestjs/common";
-import type { ILoggerService } from "../shared/interfaces.js";
+import type { ILoggerService } from "../shared/interfaces.js.js";
 
 /**
  * 日志中间件

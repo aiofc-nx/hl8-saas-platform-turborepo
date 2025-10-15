@@ -7,12 +7,12 @@
  * @example
  */
 
-import { BaseEntity } from "../../src/domain/entities/base/base-entity";
-import { EntityId } from "../../src/domain/value-objects/entity-id";
-import { IPartialAuditInfo } from "../../src/domain/entities/base/audit-info";
+import { BaseEntity } from "../../src/domain/entities/base/base-entity.js";
+import { EntityId } from "../../src/domain/value-objects/entity-id.js";
+import { IPartialAuditInfo } from "../../src/domain/entities/base/audit-info.js";
 
 // 值对象（用于实体属性）
-import { Email, Money } from "./value-object.example";
+import { Email, Money } from "./value-object.example.js";
 
 // ============================================================================
 // 示例 1: 简单实体 - Product

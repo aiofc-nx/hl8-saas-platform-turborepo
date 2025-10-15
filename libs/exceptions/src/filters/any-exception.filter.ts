@@ -115,7 +115,7 @@ export class AnyExceptionFilter implements ExceptionFilter {
 
     // 确定状态码
     let status = 500;
-    let errorCode = "INTERNAL_SERVER_ERROR";
+    const errorCode = "INTERNAL_SERVER_ERROR";
     let title = "服务器内部错误";
     let detail = "处理请求时发生未预期的错误";
 

@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 import { Injectable } from "@nestjs/common";
-import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import type { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 // 定义 LogContext 枚举
 enum LogContext {

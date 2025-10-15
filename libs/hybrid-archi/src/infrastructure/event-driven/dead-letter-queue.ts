@@ -10,9 +10,9 @@
 
 import { Injectable, Inject } from "@nestjs/common";
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheService } from "@hl8/caching";
-import { DatabaseService } from "@hl8/database";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { DatabaseService } from "@hl8/hybrid-archi";
 
 /**
  * 死信队列配置

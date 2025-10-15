@@ -29,9 +29,9 @@ import {
   validateMetadata,
   cloneMetadata,
   getMetadataSummary,
-} from "./metadata.utils";
-import { DecoratorType } from "./metadata.constants";
-import { IMetadata } from "./metadata.interfaces";
+} from "./metadata.utils.js";
+import { DecoratorType } from "./metadata.constants.js";
+import { IMetadata } from "./metadata.interfaces.js";
 
 // 测试用的类
 class TestClass {}

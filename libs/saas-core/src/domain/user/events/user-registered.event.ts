@@ -31,7 +31,7 @@
  */
 
 import { BaseDomainEvent } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model/index.js";
 
 export interface UserRegisteredEventData {
   userId: string;
@@ -68,7 +68,8 @@ export class UserRegisteredEvent extends BaseDomainEvent {
       username,
       registrationMethod,
       registrationSource,
-      isEmailVerified: registrationMethod === "sso" || registrationMethod === "admin",
+      isEmailVerified:
+        registrationMethod === "sso" || registrationMethod === "admin",
       isPhoneVerified: false,
       registrationTime: new Date().toISOString(),
       invitedBy,

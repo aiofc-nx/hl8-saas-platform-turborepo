@@ -2,7 +2,7 @@
  * CacheInvalidatedEvent 事件单元测试
  */
 
-import { IsolationContext, TenantId } from "@hl8/isolation-model";
+import { IsolationContext, TenantId } from "@hl8/isolation-model/index.js";
 import { CacheKey } from "../value-objects/cache-key.vo.js";
 import { CacheInvalidatedEvent } from "./cache-invalidated.event.js";
 

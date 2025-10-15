@@ -295,7 +295,7 @@ else { /* 降级策略 */ }
 
 ```typescript
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class UserService {
@@ -575,7 +575,7 @@ export class MyService {
 ### FastifyLoggerService (本架构)
 
 ```typescript
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 export class MyService {
   constructor(private logger: FastifyLoggerService) {}

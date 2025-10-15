@@ -13,8 +13,8 @@ import type {
   getSagaPriority,
   supportsSagaType,
   getSagaMetadata,
-} from "./saga.decorator";
-import { BaseDomainEvent } from "../../domain/events/base/base-domain-event";
+} from "./saga.decorator.js";
+import { BaseDomainEvent } from "../../domain/events/base/base-domain-event.js";
 import { EntityId } from "@hl8/isolation-model";
 
 // 测试用的事件类

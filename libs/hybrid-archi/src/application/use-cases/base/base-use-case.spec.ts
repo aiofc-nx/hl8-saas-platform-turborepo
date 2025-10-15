@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase } from "./base-use-case";
-import type { IUseCaseContext } from "./use-case.interface";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { BaseUseCase } from "./base-use-case.js";
+import type { IUseCaseContext } from "./use-case.interface.js";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 // 创建具体的测试用例类
 class TestUseCase extends BaseUseCase<TestRequest, TestResponse> {

@@ -9,18 +9,18 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { LoggerModule } from "@hl8/nestjs-fastify";
+import { LoggerModule } from "@hl8/hybrid-archi";
 // import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
-import { MessagingModule } from "@hl8/nestjs-fastify/messaging";
+import { MessagingModule } from "@hl8/hybrid-archi";
 
-import { LoggerPortAdapter } from "./logger-port.adapter";
-import { IdGeneratorPortAdapter } from "./id-generator-port.adapter";
-import { TimeProviderPortAdapter } from "./time-provider-port.adapter";
-import { ValidationPortAdapter } from "./validation-port.adapter";
-import { ConfigurationPortAdapter } from "./configuration-port.adapter";
-import { EventBusPortAdapter } from "./event-bus-port.adapter";
-import { PortAdaptersFactory } from "./port-adapters.factory";
-import { PortAdaptersManager } from "./port-adapters.manager";
+import { LoggerPortAdapter } from "./logger-port.adapter.js";
+import { IdGeneratorPortAdapter } from "./id-generator-port.adapter.js";
+import { TimeProviderPortAdapter } from "./time-provider-port.adapter.js";
+import { ValidationPortAdapter } from "./validation-port.adapter.js";
+import { ConfigurationPortAdapter } from "./configuration-port.adapter.js";
+import { EventBusPortAdapter } from "./event-bus-port.adapter.js";
+import { PortAdaptersFactory } from "./port-adapters.factory.js";
+import { PortAdaptersManager } from "./port-adapters.manager.js";
 
 /**
  * 端口适配器模块选项

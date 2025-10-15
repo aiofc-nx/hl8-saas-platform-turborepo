@@ -7,13 +7,13 @@
  */
 
 // 数据转换器
-export * from "./data.transformer";
+export * from "./data.transformer.js";
 
 // 格式转换器
-export * from "./format.transformer";
+export * from "./format.transformer.js";
 
 // 类型转换器
-export * from "./type.transformer";
+export * from "./type.transformer.js";
 
 // 序列化转换器
-export * from "./serialization.transformer";
+export * from "./serialization.transformer.js";

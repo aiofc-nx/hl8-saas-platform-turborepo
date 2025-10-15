@@ -23,7 +23,7 @@
  * @since 1.0.0
  */
 
-import { BaseValueObject } from "@hl8/hybrid-archi";
+import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
 
 export class TenantCode extends BaseValueObject<string> {
   /**
@@ -105,16 +105,19 @@ export class TenantCode extends BaseValueObject<string> {
   public static generateFromName(organizationName: string): string {
     // 移除特殊字符，保留字母和数字
     const cleaned = organizationName.replace(/[^a-zA-Z0-9\s]/g, "");
-    
+
     // 转换为小写并用连字符连接
-    const words = cleaned.toLowerCase().split(/\s+/).filter(word => word.length > 0);
-    
+    const words = cleaned
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((word) => word.length > 0);
+
     if (words.length === 0) {
       throw new Error("组织名称不能为空或只包含特殊字符");
     }
 
     // 取前3个单词，每个单词最多10个字符
-    const limitedWords = words.slice(0, 3).map(word => word.substring(0, 10));
+    const limitedWords = words.slice(0, 3).map((word) => word.substring(0, 10));
     let suggested = limitedWords.join("-");
 
     // 确保长度在限制范围内

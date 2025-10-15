@@ -9,8 +9,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EventService } from "@hl8/nestjs-fastify/messaging";
-import { IEventBusPort } from "../../../application/ports/shared/shared-ports.interface";
+import { EventService } from "@hl8/hybrid-archi";
+import { IEventBusPort } from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
  * 事件类型枚举
@@ -486,9 +486,7 @@ export class EventBusPortAdapter implements IEventBusPort {
       if (
         typeof (
           this.eventService as unknown as {
-            getSubscribers?: (
-              eventType: string,
-            ) => Promise<
+            getSubscribers?: (eventType: string) => Promise<
               Array<{
                 id: string;
                 handler: string;
@@ -501,9 +499,7 @@ export class EventBusPortAdapter implements IEventBusPort {
       ) {
         return await (
           this.eventService as unknown as {
-            getSubscribers: (
-              eventType: string,
-            ) => Promise<
+            getSubscribers: (eventType: string) => Promise<
               Array<{
                 id: string;
                 handler: string;

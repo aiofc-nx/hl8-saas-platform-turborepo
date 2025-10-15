@@ -4,7 +4,7 @@
  * @description 测试 BaseQuery 基础查询类的功能
  * @since 1.0.0
  */
-import { BaseQuery } from "./base-query";
+import { BaseQuery } from "./base-query.js";
 import { TenantId } from "@hl8/isolation-model";
 
 // 测试用的查询类

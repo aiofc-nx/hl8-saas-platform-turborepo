@@ -688,7 +688,7 @@ import { TypedConfigModule, dotenvLoader } from "@hl8/config";
 import {
   FastifyExceptionModule,
   FastifyLoggingModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 import { AppConfig } from "./config/app.config.js";
 
 @Module({

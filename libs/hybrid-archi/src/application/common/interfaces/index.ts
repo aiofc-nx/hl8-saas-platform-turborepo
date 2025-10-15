@@ -19,4 +19,4 @@ export type {
   IPermissionValidationResult,
   IApplicationAuditor,
   IAuditLog,
-} from "./application-interfaces";
+} from "./application-interfaces.js";

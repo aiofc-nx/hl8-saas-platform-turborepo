@@ -71,9 +71,9 @@
  * @since 1.0.0
  */
 
-import type { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
-import { BaseDomainMapper, MappingError } from "./base-domain-mapper";
-import type { IAggregateMapper } from "./mapper.interface";
+import type { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
+import { BaseDomainMapper, MappingError } from "./base-domain-mapper.js";
+import type { IAggregateMapper } from "./mapper.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

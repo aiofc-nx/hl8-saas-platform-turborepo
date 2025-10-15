@@ -15,7 +15,7 @@
  * @since 1.0.0
  */
 
-import { Options } from "@hl8/database";
+import { Options } from "@hl8/hybrid-archi";
 import { PostgreSqlDriver } from "@mikro-orm/postgresql"; // devDependency，用于测试
 import { join } from "path";
 

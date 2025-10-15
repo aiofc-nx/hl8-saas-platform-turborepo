@@ -14,10 +14,10 @@ import {
   Snapshot,
   SnapshotStoreStats,
   SnapshotStoreConfig,
-} from "./common/snapshot-store.interface";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheService } from "@hl8/caching";
-import { DatabaseService } from "@hl8/database";
+} from "./common/snapshot-store.interface.js";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { DatabaseService } from "@hl8/hybrid-archi";
 
 /**
  * 快照存储实现

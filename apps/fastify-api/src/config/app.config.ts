@@ -60,13 +60,13 @@ import {
   LoggingConfig,
   MetricsModuleConfig,
   RateLimitModuleConfig,
-} from "@hl8/nestjs-fastify/index.js";
+} from "@hl8/nestjs-fastify";
 
 // 从 @hl8/caching 导入配置类（单一配置源）
-import { CachingModuleConfig } from "@hl8/caching/index.js";
+import { CachingModuleConfig } from "@hl8/caching";
 
 // 从 @hl8/database 导入配置类（单一配置源）
-import { DatabaseConfig } from "@hl8/database/index.js";
+import { DatabaseConfig } from "@hl8/database";
 
 /**
  * 应用配置

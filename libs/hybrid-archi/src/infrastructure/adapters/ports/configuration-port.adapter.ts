@@ -10,7 +10,7 @@
 
 import { Injectable } from "@nestjs/common";
 // import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
-import { IConfigurationPort } from "../../../application/ports/shared/shared-ports.interface";
+import { IConfigurationPort } from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
  * 配置类型枚举

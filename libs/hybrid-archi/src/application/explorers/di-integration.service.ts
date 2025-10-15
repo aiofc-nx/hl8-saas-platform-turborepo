@@ -42,7 +42,7 @@
  * @since 1.0.0
  */
 import { Injectable, DynamicModule } from "@nestjs/common";
-import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import type { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -58,10 +58,10 @@ enum LogContext {
 import { ModuleRef } from "@nestjs/core";
 import { NestApplication } from "@nestjs/core";
 import { Type } from "@nestjs/common";
-import { CoreExplorerService } from "./core-explorer.service";
-import { AutoRegistrationService } from "./auto-registration.service";
-import { ModuleScannerService } from "./module-scanner.service";
-import { IHandlerInfo } from "./core-explorer.service";
+import { CoreExplorerService } from "./core-explorer.service.js";
+import { AutoRegistrationService } from "./auto-registration.service.js";
+import { ModuleScannerService } from "./module-scanner.service.js";
+import { IHandlerInfo } from "./core-explorer.service.js";
 
 /**
  * 模块配置接口

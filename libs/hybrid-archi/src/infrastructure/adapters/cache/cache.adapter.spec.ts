@@ -6,9 +6,9 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheAdapter, ICacheConfig, CacheLevel } from "./cache.adapter";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheAdapter, ICacheConfig, CacheLevel } from "./cache.adapter.js";
 
 describe("CacheAdapter", () => {
   let adapter: CacheAdapter;

@@ -211,7 +211,7 @@ import {
   LoggingConfig,
   MetricsModuleConfig,
   RateLimitModuleConfig,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 import { CachingModuleConfig } from "@hl8/caching";
 

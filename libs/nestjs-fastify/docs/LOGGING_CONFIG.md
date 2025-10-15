@@ -18,7 +18,7 @@
 
 ```typescript
 import { Module } from "@nestjs/common";
-import { FastifyLoggingModule } from "@hl8/nestjs-fastify";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ export class AppModule {}
 
 ```typescript
 import { Module } from "@nestjs/common";
-import { FastifyLoggingModule } from "@hl8/nestjs-fastify";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -55,7 +55,7 @@ export class AppModule {}
 
 ```typescript
 import { Module } from "@nestjs/common";
-import { FastifyLoggingModule } from "@hl8/nestjs-fastify";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -147,7 +147,7 @@ FastifyLoggingModule.forRoot({
 
 ```typescript
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class MyService {
@@ -233,7 +233,7 @@ Configuration validation failed:
 
 ```typescript
 import { TypedConfigModule, fileLoader } from "@hl8/config";
-import { FastifyLoggingModule, LoggingConfig } from "@hl8/nestjs-fastify";
+import { FastifyLoggingModule, LoggingConfig } from "@hl8/nestjs-fastify/index.js";
 import { Type } from "class-transformer";
 import { ValidateNested } from "class-validator";
 

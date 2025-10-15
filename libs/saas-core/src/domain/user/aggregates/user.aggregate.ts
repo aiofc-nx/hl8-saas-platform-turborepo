@@ -20,15 +20,15 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
 import { Username, Email, PhoneNumber } from "../value-objects/index.js";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { User } from "../entities/user.entity.js";
 import { UserProfile } from "../entities/user-profile.entity.js";
 import { UserCredentials } from "../entities/user-credentials.entity.js";
 
-import { TenantId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model/index.js";
 export class UserAggregate extends TenantAwareAggregateRoot {
   constructor(
     id: EntityId,
@@ -36,7 +36,7 @@ export class UserAggregate extends TenantAwareAggregateRoot {
     private _profile: UserProfile,
     private _credentials: UserCredentials,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -76,9 +76,11 @@ export class UserAggregate extends TenantAwareAggregateRoot {
   }
 
   public verifyEmail(updatedBy: string): void {
-    this.ensureTenantContext();
+    (this as any).ensureTenantContext();
     this._user.verifyEmail(updatedBy);
-    this.logTenantOperation("用户邮箱已验证", { userId: this.id.toString() });
+    (this as any).logTenantOperation("用户邮箱已验证", {
+      userId: (this as any).id.toString(),
+    });
   }
 
   public authenticate(passwordHash: string): boolean {
@@ -100,10 +102,10 @@ export class UserAggregate extends TenantAwareAggregateRoot {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       user: this._user.toObject(),
       profile: this._profile.toObject(),
-      version: this.version,
+      version: (this as any).version,
     };
   }
 }

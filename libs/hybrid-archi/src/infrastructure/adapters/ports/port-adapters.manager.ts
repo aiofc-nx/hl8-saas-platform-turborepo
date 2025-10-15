@@ -9,15 +9,15 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
 // import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
-import { EventService } from "@hl8/nestjs-fastify/messaging";
+import { EventService } from "@hl8/hybrid-archi";
 import {
   PortAdaptersFactory,
   PortAdapterType,
   IPortAdapterRegistration,
-} from "./port-adapters.factory";
+} from "./port-adapters.factory.js";
 
 /**
  * 端口适配器管理器配置

@@ -6,13 +6,13 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { DatabaseService } from "@hl8/database";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import {
   DatabaseAdapter,
   IDatabaseConfig,
   DatabaseType,
-} from "./database.adapter";
+} from "./database.adapter.js";
 
 describe("DatabaseAdapter", () => {
   let adapter: DatabaseAdapter;

@@ -50,8 +50,8 @@ import type {
   IMetricsService,
   IWebSocketClient,
   IWebSocketContext,
-} from "../../shared/interfaces";
-import { BaseGateway } from "./base-gateway";
+} from "../../shared/interfaces.js";
+import { BaseGateway } from "./base-gateway.js";
 import {
   SubscribeMessage,
   RequireRoles,
@@ -60,12 +60,12 @@ import {
   MonitorPerformance,
   MessageBody,
   WebSocketContext,
-} from "../decorators";
+} from "../decorators.js";
 import {
   IWebSocketMessage,
   IWebSocketResponse,
   WebSocketUtils,
-} from "../utils";
+} from "../utils.js";
 
 /**
  * 获取用户资料消息

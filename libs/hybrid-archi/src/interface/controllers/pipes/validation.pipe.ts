@@ -15,7 +15,7 @@ import {
 } from "@nestjs/common";
 import { validate } from "class-validator";
 import { plainToClass } from "class-transformer";
-import type { ILoggerService } from "../../shared/interfaces";
+import type { ILoggerService } from "../../shared/interfaces.js";
 
 /**
  * 数据验证管道

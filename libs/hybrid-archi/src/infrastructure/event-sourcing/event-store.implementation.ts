@@ -13,12 +13,12 @@ import {
   IEventStore,
   EventStoreStats,
   EventStoreConfig,
-} from "./common/event-store.interface";
-import { ISnapshotStore, Snapshot } from "./common/snapshot-store.interface";
+} from "./common/event-store.interface.js";
+import { ISnapshotStore, Snapshot } from "./common/snapshot-store.interface.js";
 // import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheService } from "@hl8/caching";
-import { DatabaseService } from "@hl8/database";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { DatabaseService } from "@hl8/hybrid-archi";
 
 /**
  * 事件存储实现

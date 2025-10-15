@@ -9,12 +9,12 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { CacheModule, CacheService } from "@hl8/caching";
-import { LoggerModule, Logger } from "@hl8/nestjs-fastify";
+import { CacheModule, CacheService } from "@hl8/hybrid-archi";
+import { LoggerModule, Logger } from "@hl8/hybrid-archi";
 
-import { CacheAdapter } from "./cache.adapter";
-import { CacheFactory } from "./cache.factory";
-import { CacheManager } from "./cache.manager";
+import { CacheAdapter } from "./cache.adapter.js";
+import { CacheFactory } from "./cache.factory.js";
+import { CacheManager } from "./cache.manager.js";
 
 /**
  * 缓存适配器模块选项

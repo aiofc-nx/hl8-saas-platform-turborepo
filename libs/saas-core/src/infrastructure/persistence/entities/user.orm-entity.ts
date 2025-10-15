@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property, Unique, Index } from "@hl8/database";
+import { Entity, PrimaryKey, Property, Unique, Index } from "@hl8/hybrid-archi";
 
 @Entity({ tableName: "users" })
 export class UserOrmEntity {

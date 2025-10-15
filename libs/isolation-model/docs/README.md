@@ -150,7 +150,7 @@ import {
   OrganizationId,
   DepartmentId,
   UserId,
-} from "@hl8/isolation-model";
+} from "@hl8/isolation-model/index.js";
 
 // 1. 平台级（无隔离）
 const platformContext = IsolationContext.platform();
@@ -519,7 +519,7 @@ enum SharingLevel {
 ### 场景1：缓存 Key 构建
 
 ```typescript
-import { IsolationContext, TenantId } from "@hl8/isolation-model";
+import { IsolationContext, TenantId } from "@hl8/isolation-model/index.js";
 
 // 在缓存服务中
 class CacheService {
@@ -541,7 +541,7 @@ const userList = await cacheService.get("user:list", context);
 ### 场景2：数据库查询过滤
 
 ```typescript
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 class UserRepository {
   async findAll(context: IsolationContext) {
@@ -559,7 +559,7 @@ class UserRepository {
 ### 场景3：日志上下文
 
 ```typescript
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 class Logger {
   log(message: string, context: IsolationContext) {
@@ -579,7 +579,7 @@ class Logger {
 ### 场景4：访问控制
 
 ```typescript
-import { IsolationContext, IsolationLevel } from "@hl8/isolation-model";
+import { IsolationContext, IsolationLevel } from "@hl8/isolation-model/index.js";
 
 class AccessControl {
   canAccessResource(
@@ -607,7 +607,7 @@ accessControl.canAccessResource(userContext, IsolationLevel.ORGANIZATION); // fa
 
 ```typescript
 // 与 @hl8/nestjs-isolation 集成
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 import { CurrentContext } from "@hl8/nestjs-isolation";
 
 @Controller("users")
@@ -743,7 +743,7 @@ const newContext = IsolationContext.tenant(TenantId.create("tenant-456"));
 
 ```typescript
 // 在 Express 中
-import { IsolationContext, TenantId } from "@hl8/isolation-model";
+import { IsolationContext, TenantId } from "@hl8/isolation-model/index.js";
 
 app.get("/users", (req, res) => {
   const tenantId = req.headers["x-tenant-id"];
@@ -768,7 +768,7 @@ const cacheKey = context.buildCacheKey("data");
 import {
   ContextCreatedEvent,
   ContextSwitchedEvent,
-} from "@hl8/isolation-model";
+} from "@hl8/isolation-model/index.js";
 
 // 上下文创建事件
 const event = new ContextCreatedEvent(context, new Date(), {

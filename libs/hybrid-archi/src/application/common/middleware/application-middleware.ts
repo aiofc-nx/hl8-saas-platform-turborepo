@@ -41,7 +41,7 @@
 import type {
   IUseCase,
   IUseCaseContext,
-} from "../../use-cases/base/use-case.interface";
+} from "../../use-cases/base/use-case.interface.js";
 
 /**
  * 中间件执行上下文接口

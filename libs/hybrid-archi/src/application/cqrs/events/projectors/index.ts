@@ -12,13 +12,13 @@ export type {
   IProjectorManager,
   IProjectionExecutionContext,
   IProjectionExecutionResult,
-} from "./event-projector.interface";
+} from "./event-projector.interface.js";
 
 // 基础投射器
 export {
   BaseEventProjector,
   BaseReadModelProjector,
-} from "./base-event-projector";
+} from "./base-event-projector.js";
 
 // 投射器管理器
-export { ProjectorManager } from "./projector-manager";
+export { ProjectorManager } from "./projector-manager.js";

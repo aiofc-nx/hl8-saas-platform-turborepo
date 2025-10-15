@@ -4,7 +4,7 @@
  * @description 测试 BaseDomainEvent 基础领域事件类的功能
  * @since 1.0.0
  */
-import { BaseDomainEvent } from "./base-domain-event";
+import { BaseDomainEvent } from "./base-domain-event.js";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
 

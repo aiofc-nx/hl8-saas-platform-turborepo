@@ -7,9 +7,9 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { Gender } from "../value-objects/gender.enum.js";
 
 export class UserProfile extends BaseEntity {
@@ -25,7 +25,7 @@ export class UserProfile extends BaseEntity {
     private _timezone: string,
     private _language: string,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -60,22 +60,22 @@ export class UserProfile extends BaseEntity {
 
   public updateFullName(fullName: string, updatedBy?: string): void {
     this._fullName = fullName;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public updateNickname(nickname: string, updatedBy?: string): void {
     this._nickname = nickname;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public updateAvatar(avatar: string, updatedBy?: string): void {
     this._avatar = avatar;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       userId: this._userId.toString(),
       fullName: this._fullName,
       nickname: this._nickname,

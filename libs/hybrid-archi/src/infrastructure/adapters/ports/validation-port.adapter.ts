@@ -16,7 +16,7 @@ import {
   IPasswordPolicy,
   IPasswordValidationResult,
   ISanitizationRules,
-} from "../../../application/ports/shared/shared-ports.interface";
+} from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
  * 验证规则类型枚举

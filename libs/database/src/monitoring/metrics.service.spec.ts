@@ -4,7 +4,7 @@
  * @description 测试 MetricsService 的性能监控功能
  */
 
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import { Test, TestingModule } from "@nestjs/testing";
 import { MetricsService } from "./metrics.service.js";
 

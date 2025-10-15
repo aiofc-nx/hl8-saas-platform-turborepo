@@ -9,13 +9,13 @@
  */
 
 import { Module } from "@nestjs/common";
-import { DatabaseModule } from "@hl8/database";
-import { CacheModule } from "@hl8/caching";
-import { LoggerModule } from "@hl8/nestjs-fastify";
-import { MessagingModule } from "@hl8/nestjs-fastify/messaging";
+import { DatabaseModule } from "@hl8/hybrid-archi";
+import { CacheModule } from "@hl8/hybrid-archi";
+import { LoggerModule } from "@hl8/hybrid-archi";
+import { MessagingModule } from "@hl8/hybrid-archi";
 
-import { BaseRepositoryAdapter } from "./base-repository.adapter";
-import { BaseAggregateRepositoryAdapter } from "./base-aggregate-repository.adapter";
+import { BaseRepositoryAdapter } from "./base-repository.adapter.js";
+import { BaseAggregateRepositoryAdapter } from "./base-aggregate-repository.adapter.js";
 // import { DomainServiceAdapter } from './domain-service.adapter';
 
 /**

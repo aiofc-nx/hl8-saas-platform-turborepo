@@ -26,7 +26,6 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist",
     "build:types": "tsc --emitDeclarationOnly --outDir dist",
     "dev": "tsc -p tsconfig.build.json --watch",
     "lint": "eslint .",
@@ -50,9 +49,6 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@swc/cli": "^0.7.0",
-    "@swc/core": "^1.13.5",
-    "@swc/jest": "^0.2.37",
     "@types/debug": "^4.1.12",
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",

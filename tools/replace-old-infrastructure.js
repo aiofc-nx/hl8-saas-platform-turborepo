@@ -15,9 +15,9 @@ const INFRASTRUCTURE_MAPPING = {
   "@hl8/logger": "@hl8/nestjs-fastify/logging",
   "@hl8/messaging": "@hl8/nestjs-fastify/messaging",
   "@hl8/config": "@hl8/nestjs-fastify/config",
-  "@hl8/fastify-pro": "@hl8/nestjs-fastify",
+  "@hl8/fastify-pro": "@hl8/nestjs-fastify/index.js",
   "@hl8/multi-tenancy": "@hl8/nestjs-isolation",
-  "@hl8/common": "@hl8/isolation-model",
+  "@hl8/common": "@hl8/isolation-model/index.js",
 };
 
 /**

@@ -36,7 +36,7 @@
  * @since 1.0.0
  */
 
-import { ICommand, ICommandMetadata } from "../base/command.interface";
+import { ICommand, ICommandMetadata } from "../base/command.interface.js";
 
 /**
  * 命令处理器选项接口

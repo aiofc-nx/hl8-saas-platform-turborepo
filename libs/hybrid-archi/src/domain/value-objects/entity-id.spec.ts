@@ -13,7 +13,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from "./entity-id";
+import { EntityId } from "./entity-id.js";
 import { TenantId } from "@hl8/isolation-model";
 
 describe("EntityId", () => {

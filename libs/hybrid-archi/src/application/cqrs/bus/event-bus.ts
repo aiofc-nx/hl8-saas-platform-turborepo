@@ -54,9 +54,9 @@
  * @since 1.0.0
  */
 import { Injectable } from "@nestjs/common";
-import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
-import type { IEventHandler } from "../events/base/event-handler.interface";
-import { IEventBus, IMiddleware, IMessageContext } from "./cqrs-bus.interface";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
+import type { IEventHandler } from "../events/base/event-handler.interface.js";
+import { IEventBus, IMiddleware, IMessageContext } from "./cqrs-bus.interface.js";
 
 /**
  * 事件处理器注册信息

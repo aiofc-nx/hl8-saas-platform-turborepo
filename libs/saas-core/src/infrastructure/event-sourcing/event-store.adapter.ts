@@ -25,7 +25,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityManager } from "@hl8/database";
+import { EntityManager } from "@hl8/hybrid-archi";
 import { BaseDomainEvent } from "@hl8/hybrid-archi";
 
 /**

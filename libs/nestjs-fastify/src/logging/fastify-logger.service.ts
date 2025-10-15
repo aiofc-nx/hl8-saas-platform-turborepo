@@ -21,8 +21,8 @@
  * @since 0.1.0
  */
 
-import type { ILoggerService } from "@hl8/exceptions/index.js";
-import { IsolationContextService } from "@hl8/nestjs-isolation/index.js";
+import type { ILoggerService } from "@hl8/exceptions";
+import { IsolationContextService } from "@hl8/nestjs-isolation";
 import {
   Injectable,
   LoggerService as NestLoggerService,

@@ -59,13 +59,13 @@
  */
 
 import { EntityId } from "@hl8/isolation-model";
-import { IAggregateRoot } from "../../aggregates/base/aggregate-root.interface";
-import { BaseDomainEvent } from "../../events/base/base-domain-event";
+import { IAggregateRoot } from "../../aggregates/base/aggregate-root.interface.js";
+import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
 import type {
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
-} from "./base-repository.interface";
+} from "./base-repository.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

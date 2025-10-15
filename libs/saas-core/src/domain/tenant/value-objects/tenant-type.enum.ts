@@ -109,7 +109,12 @@ export class TenantTypeUtils {
         users: 100,
         storage: 10240,
         apiCalls: 100000,
-        features: ["basic", "basic_integration", "advanced", "advanced_integration"],
+        features: [
+          "basic",
+          "basic_integration",
+          "advanced",
+          "advanced_integration",
+        ],
       },
       [TenantType.ENTERPRISE]: {
         users: -1, // 无限制
@@ -185,7 +190,12 @@ export class TenantTypeUtils {
    * @returns 是否可以升级
    */
   public static canUpgrade(fromType: TenantType, toType: TenantType): boolean {
-    const typeOrder = [TenantType.TRIAL, TenantType.BASIC, TenantType.PROFESSIONAL, TenantType.ENTERPRISE];
+    const typeOrder = [
+      TenantType.TRIAL,
+      TenantType.BASIC,
+      TenantType.PROFESSIONAL,
+      TenantType.ENTERPRISE,
+    ];
     const fromIndex = typeOrder.indexOf(fromType);
     const toIndex = typeOrder.indexOf(toType);
 
@@ -200,8 +210,16 @@ export class TenantTypeUtils {
    * @param toType - 目标类型
    * @returns 是否可以降级
    */
-  public static canDowngrade(fromType: TenantType, toType: TenantType): boolean {
-    const typeOrder = [TenantType.TRIAL, TenantType.BASIC, TenantType.PROFESSIONAL, TenantType.ENTERPRISE];
+  public static canDowngrade(
+    fromType: TenantType,
+    toType: TenantType,
+  ): boolean {
+    const typeOrder = [
+      TenantType.TRIAL,
+      TenantType.BASIC,
+      TenantType.PROFESSIONAL,
+      TenantType.ENTERPRISE,
+    ];
     const fromIndex = typeOrder.indexOf(fromType);
     const toIndex = typeOrder.indexOf(toType);
 

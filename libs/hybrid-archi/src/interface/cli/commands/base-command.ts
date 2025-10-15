@@ -6,7 +6,7 @@
  *
  * @since 1.0.0
  */
-import type { ILoggerService, IMetricsService } from "../../shared/interfaces";
+import type { ILoggerService, IMetricsService } from "../../shared/interfaces.js";
 
 export abstract class CliBaseCommand {
   protected readonly requestId: string;

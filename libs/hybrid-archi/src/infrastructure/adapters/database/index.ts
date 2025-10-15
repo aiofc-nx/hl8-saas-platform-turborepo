@@ -7,9 +7,9 @@
  */
 
 // 数据库适配器
-export * from "./database.adapter";
-export * from "./database.factory";
-export * from "./database.manager";
+export * from "./database.adapter.js";
+export * from "./database.factory.js";
+export * from "./database.manager.js";
 
 // 数据库适配器模块
-export * from "./database-adapters.module";
+export * from "./database-adapters.module.js";

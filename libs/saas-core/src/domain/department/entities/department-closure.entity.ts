@@ -3,9 +3,9 @@
  */
 
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model/index.js";
 
-import { TenantId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model/index.js";
 export class DepartmentClosure extends BaseEntity {
   constructor(
     id: EntityId,

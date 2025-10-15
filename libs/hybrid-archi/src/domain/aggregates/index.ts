@@ -7,13 +7,13 @@
  */
 
 // 基础设施
-export * from "./base";
+export * from "./base/index.js";
 
 // 装饰器
-export * from "./decorators";
+export * from "./decorators/index.js";
 
 // 聚合根验证
-export * from "./validation";
+export * from "./validation/index.js";
 
 // 注意：具体业务实现的聚合根已移除，专注于通用功能组件
 // 通用验证和安全接口在对应的 domain/validation 和 domain/security 中提供

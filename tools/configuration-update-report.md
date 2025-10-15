@@ -26,7 +26,7 @@
 {
   "@hl8/database": "workspace:*",
   "@hl8/caching": "workspace:*",
-  "@hl8/nestjs-fastify": "workspace:*",
+  "@hl8/nestjs-fastify/index.js": "workspace:*",
   "@hl8/nestjs-isolation": "workspace:*",
   "@hl8/exceptions": "workspace:*"
 }
@@ -39,7 +39,7 @@
   "@hl8/hybrid-archi": "workspace:*",
   "@hl8/database": "workspace:*",
   "@hl8/caching": "workspace:*",
-  "@hl8/nestjs-fastify": "workspace:*",
+  "@hl8/nestjs-fastify/index.js": "workspace:*",
   "@hl8/nestjs-isolation": "workspace:*",
   "@hl8/exceptions": "workspace:*"
 }
@@ -80,10 +80,10 @@
   "paths": {
     "@hl8/database": ["node_modules/@hl8/database"],
     "@hl8/caching": ["node_modules/@hl8/caching"],
-    "@hl8/nestjs-fastify": ["node_modules/@hl8/nestjs-fastify"],
+    "@hl8/nestjs-fastify/index.js": ["node_modules/@hl8/nestjs-fastify"],
     "@hl8/nestjs-isolation": ["node_modules/@hl8/nestjs-isolation"],
     "@hl8/exceptions": ["node_modules/@hl8/exceptions"],
-    "@hl8/isolation-model": ["node_modules/@hl8/isolation-model"]
+    "@hl8/isolation-model/index.js": ["node_modules/@hl8/isolation-model"]
   }
 }
 ```

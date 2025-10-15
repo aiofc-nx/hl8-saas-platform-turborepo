@@ -60,7 +60,7 @@
  * @since 1.0.0
  */
 
-import { IDomainMapper } from "./mapper.interface";
+import { IDomainMapper } from "./mapper.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

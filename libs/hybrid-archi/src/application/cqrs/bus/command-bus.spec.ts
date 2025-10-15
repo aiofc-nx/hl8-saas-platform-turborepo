@@ -8,10 +8,10 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { CommandBus } from "./command-bus";
-import { BaseCommand } from "../commands/base/base-command";
-import type { ICommandHandler } from "../commands/base/command-handler.interface";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CommandBus } from "./command-bus.js";
+import { BaseCommand } from "../commands/base/base-command.js";
+import type { ICommandHandler } from "../commands/base/command-handler.interface.js";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
 

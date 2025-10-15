@@ -5,10 +5,10 @@
  * @since 1.0.0
  */
 import { Test, TestingModule } from "@nestjs/testing";
-import { EventBus } from "./event-bus";
-import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
-import type { IEventHandler } from "../events/base/event-handler.interface";
-import { IMiddleware, IMessageContext } from "./cqrs-bus.interface";
+import { EventBus } from "./event-bus.js";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
+import type { IEventHandler } from "../events/base/event-handler.interface.js";
+import { IMiddleware, IMessageContext } from "./cqrs-bus.interface.js";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
 

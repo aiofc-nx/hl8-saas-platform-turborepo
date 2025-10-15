@@ -9,28 +9,28 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheService } from "@hl8/caching";
-import { DatabaseService } from "@hl8/database";
-import { EventService, MessagingService } from "@hl8/nestjs-fastify/messaging";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { EventService, MessagingService } from "@hl8/hybrid-archi";
 // // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
 
 // 导入所有适配器
-import { LoggerPortAdapter } from "../adapters/ports/logger-port.adapter";
-import { IdGeneratorPortAdapter } from "../adapters/ports/id-generator-port.adapter";
-import { TimeProviderPortAdapter } from "../adapters/ports/time-provider-port.adapter";
-import { ValidationPortAdapter } from "../adapters/ports/validation-port.adapter";
-import { ConfigurationPortAdapter } from "../adapters/ports/configuration-port.adapter";
-import { EventBusPortAdapter } from "../adapters/ports/event-bus-port.adapter";
+import { LoggerPortAdapter } from "../adapters/ports/logger-port.adapter.js";
+import { IdGeneratorPortAdapter } from "../adapters/ports/id-generator-port.adapter.js";
+import { TimeProviderPortAdapter } from "../adapters/ports/time-provider-port.adapter.js";
+import { ValidationPortAdapter } from "../adapters/ports/validation-port.adapter.js";
+import { ConfigurationPortAdapter } from "../adapters/ports/configuration-port.adapter.js";
+import { EventBusPortAdapter } from "../adapters/ports/event-bus-port.adapter.js";
 
-import { BaseRepositoryAdapter } from "../adapters/repositories/base-repository.adapter";
-import { BaseAggregateRepositoryAdapter } from "../adapters/repositories/base-aggregate-repository.adapter";
-import { DomainServiceAdapter } from "../adapters/services/domain-service.adapter";
+import { BaseRepositoryAdapter } from "../adapters/repositories/base-repository.adapter.js";
+import { BaseAggregateRepositoryAdapter } from "../adapters/repositories/base-aggregate-repository.adapter.js";
+import { DomainServiceAdapter } from "../adapters/services/domain-service.adapter.js";
 
-import { EventStoreAdapter } from "../adapters/event-store/event-store.adapter";
-import { MessageQueueAdapter } from "../adapters/message-queue/message-queue.adapter";
-import { CacheAdapter } from "../adapters/cache/cache.adapter";
-import { DatabaseAdapter } from "../adapters/database/database.adapter";
+import { EventStoreAdapter } from "../adapters/event-store/event-store.adapter.js";
+import { MessageQueueAdapter } from "../adapters/message-queue/message-queue.adapter.js";
+import { CacheAdapter } from "../adapters/cache/cache.adapter.js";
+import { DatabaseAdapter } from "../adapters/database/database.adapter.js";
 
 /**
  * 基础设施服务类型枚举

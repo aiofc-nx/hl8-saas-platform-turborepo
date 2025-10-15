@@ -7,7 +7,7 @@
  * @example
  */
 
-import { BaseValueObject } from "../../src/domain/value-objects/base-value-object";
+import { BaseValueObject } from "../../src/domain/value-objects/base-value-object.js";
 
 // ============================================================================
 // 示例 1: 简单值对象 - Email

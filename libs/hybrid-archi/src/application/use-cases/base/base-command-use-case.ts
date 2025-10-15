@@ -73,9 +73,9 @@
  * @since 1.0.0
  */
 
-import type { IUseCaseExecutionResult } from "./base-use-case";
-import { BaseUseCase } from "./base-use-case";
-import type { IUseCaseContext } from "./use-case.interface";
+import type { IUseCaseExecutionResult } from "./base-use-case.js";
+import { BaseUseCase } from "./base-use-case.js";
+import type { IUseCaseContext } from "./use-case.interface.js";
 
 /**
  * 基础命令用例抽象类

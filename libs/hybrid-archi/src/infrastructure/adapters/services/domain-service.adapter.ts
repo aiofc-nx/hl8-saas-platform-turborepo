@@ -9,9 +9,9 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheService } from "@hl8/caching";
-import { IDomainService } from "../../../domain/services/base/domain-service.interface";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { IDomainService } from "../../../domain/services/base/domain-service.interface.js";
 
 /**
  * 领域服务配置接口

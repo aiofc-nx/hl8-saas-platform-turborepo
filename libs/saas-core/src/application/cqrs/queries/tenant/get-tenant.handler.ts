@@ -9,12 +9,10 @@ import { QueryHandler, IQueryHandler } from "@hl8/hybrid-archi";
 import { GetTenantQuery } from "./get-tenant.query.js";
 import { ITenantAggregateRepository } from "../../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
 import { TenantAggregate } from "../../../../domain/tenant/aggregates/tenant.aggregate.js";
-import { TenantId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model/index.js";
 
 // @QueryHandler('GetTenantQuery') // TODO: 修复装饰器类型问题
-export class GetTenantHandler
-  implements IQueryHandler<GetTenantQuery, any>
-{
+export class GetTenantHandler implements IQueryHandler<GetTenantQuery, any> {
   constructor(private readonly repository: ITenantAggregateRepository) {}
 
   async execute(query: GetTenantQuery): Promise<TenantAggregate | null> {

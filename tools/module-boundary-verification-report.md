@@ -49,7 +49,7 @@
 ```json
 {
   "dependencies": {
-    "@hl8/isolation-model": "workspace:*"
+    "@hl8/isolation-model/index.js": "workspace:*"
   }
 }
 ```
@@ -59,7 +59,7 @@
 ```json
 {
   "paths": {
-    "@hl8/isolation-model": ["node_modules/@hl8/isolation-model"]
+    "@hl8/isolation-model/index.js": ["node_modules/@hl8/isolation-model"]
   }
 }
 ```
@@ -70,9 +70,9 @@
 
 ```typescript
 // 从 isolation-model 重新导出 ID 值对象
-export { TenantId } from "@hl8/isolation-model";
-export { UserId } from "@hl8/isolation-model";
-export { EntityId } from "@hl8/isolation-model";
+export { TenantId } from "@hl8/isolation-model/index.js";
+export { UserId } from "@hl8/isolation-model/index.js";
+export { EntityId } from "@hl8/isolation-model/index.js";
 ```
 
 ## 构建验证

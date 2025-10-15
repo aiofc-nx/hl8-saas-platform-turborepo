@@ -50,7 +50,7 @@ import {
   FastifyExceptionModule, // Fastify 专用
   CachingModule, // 实际来自 nestjs-infra？
   IsolationModule, // 实际来自 nestjs-infra？
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 ```
 
 ---
@@ -93,7 +93,7 @@ export const version = "0.1.0";
 import {
   FastifyExceptionModule, // Fastify 专用
   FastifyLoggingModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 import {
   CachingModule, // NestJS 通用
@@ -144,7 +144,7 @@ apps/fastify-api
 
 ```typescript
 // ✅ 清晰：这是 Fastify 专用的
-import { FastifyExceptionModule } from "@hl8/nestjs-fastify";
+import { FastifyExceptionModule } from "@hl8/nestjs-fastify/index.js";
 
 // ✅ 清晰：这是 NestJS 通用的
 import { CachingModule } from "@hl8/nestjs-infra";
@@ -269,14 +269,14 @@ import {
   FastifyExceptionModule,
   FastifyLoggingModule,
   HealthCheckService,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 ```
 
 ### ❌ 避免的导入方式
 
 ```typescript
 // ❌ 错误：从 nestjs-fastify 导入通用模块（已不支持）
-import { CachingModule } from "@hl8/nestjs-fastify";
+import { CachingModule } from "@hl8/nestjs-fastify/index.js";
 
 // ❌ 错误：从 nestjs-infra 导入 Fastify 专用功能
 import { EnterpriseFastifyAdapter } from "@hl8/nestjs-infra";

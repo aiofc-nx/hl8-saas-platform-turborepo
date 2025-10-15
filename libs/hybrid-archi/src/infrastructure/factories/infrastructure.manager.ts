@@ -9,12 +9,12 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import {
   InfrastructureFactory,
   IInfrastructureServiceConfig,
   InfrastructureServiceType,
-} from "./infrastructure.factory";
+} from "./infrastructure.factory.js";
 
 /**
  * 基础设施管理器配置

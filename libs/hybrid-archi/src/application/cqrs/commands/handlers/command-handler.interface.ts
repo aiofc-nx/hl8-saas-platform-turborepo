@@ -62,7 +62,7 @@
  * @since 1.0.0
  */
 
-import { ICommand } from "../base/command.interface";
+import { ICommand } from "../base/command.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

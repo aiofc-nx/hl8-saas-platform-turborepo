@@ -10,7 +10,7 @@
 
 import { Injectable } from "@nestjs/common";
 // import { DatabaseService } from '@hl8/database'; // 暂时注释，等待模块就绪
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 /**
  * 数据库配置接口

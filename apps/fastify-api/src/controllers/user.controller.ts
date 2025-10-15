@@ -28,8 +28,8 @@
  * ```
  */
 
-import { HealthCheckService, MetricsService } from "@hl8/database/index.js";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
+import { HealthCheckService, MetricsService } from "@hl8/database";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   Body,
   Controller,

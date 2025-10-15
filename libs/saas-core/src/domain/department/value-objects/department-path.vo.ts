@@ -21,7 +21,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from "@hl8/hybrid-archi";
+import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
 
 export class DepartmentPath extends BaseValueObject<string> {
   /**

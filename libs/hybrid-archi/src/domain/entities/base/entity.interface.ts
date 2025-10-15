@@ -63,9 +63,8 @@
  * @since 1.0.0
  */
 
-import { EntityId } from "@hl8/isolation-model";
-import { IBaseEntity } from "./base-entity.interface";
-import { TenantId } from "@hl8/isolation-model";
+import { EntityId, TenantId } from "@hl8/isolation-model";
+import { IBaseEntity } from "./base-entity.interface.js";
 
 /**
  * 实体接口

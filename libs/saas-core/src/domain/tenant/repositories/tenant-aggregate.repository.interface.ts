@@ -36,7 +36,7 @@
  */
 
 import { IRepository } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model/index.js";
 import { TenantAggregate } from "../aggregates/tenant.aggregate.js";
 import { TenantCode } from "../value-objects/tenant-code.vo.js";
 import { TenantDomain } from "../value-objects/tenant-domain.vo.js";
@@ -95,7 +95,8 @@ export interface TenantListResult {
 /**
  * 租户聚合根仓储接口
  */
-export interface ITenantAggregateRepository extends IRepository<TenantAggregate, EntityId> {
+export interface ITenantAggregateRepository
+  extends IRepository<TenantAggregate, EntityId> {
   /**
    * 根据租户代码查找租户
    *

@@ -1,7 +1,7 @@
 import {
   createFastifyLoggerConfig,
   EnterpriseFastifyAdapter,
-} from "@hl8/nestjs-fastify/index.js";
+} from "@hl8/nestjs-fastify";
 import { NestFactory } from "@nestjs/core";
 import { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { AppModule } from "./app.module.js";

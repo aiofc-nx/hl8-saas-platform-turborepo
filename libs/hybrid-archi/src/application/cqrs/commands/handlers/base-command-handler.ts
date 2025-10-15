@@ -62,11 +62,11 @@
  * @since 1.0.0
  */
 
-import { ICommand } from "../base/command.interface";
+import { ICommand } from "../base/command.interface.js";
 import type {
   ICommandHandler,
   ICommandExecutionContext,
-} from "./command-handler.interface";
+} from "./command-handler.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

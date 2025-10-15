@@ -178,7 +178,7 @@ export class DatabaseModule {}
 
 ```typescript
 import { ClsService } from "nestjs-cls";
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 export class IsolationService {
   constructor(private readonly cls: ClsService) {}
@@ -231,7 +231,7 @@ export class TransactionService {
 **隔离上下文集成**:
 
 ```typescript
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 import { IsolationService as BaseIsolationService } from "@hl8/nestjs-isolation";
 
 export class DatabaseIsolationService {
@@ -446,7 +446,7 @@ export class UserService {
 
 ```typescript
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class ConnectionManager {
@@ -925,11 +925,11 @@ export class ConnectionPoolMonitor {
     "@mikro-orm/postgresql": "^6.3.0",
     "@nestjs/common": "^11.1.6",
     "@nestjs/core": "^11.1.6",
-    "@hl8/nestjs-fastify": "workspace:*",
+    "@hl8/nestjs-fastify/index.js": "workspace:*",
     "@hl8/config": "workspace:*",
     "@hl8/exceptions": "workspace:*",
     "@hl8/nestjs-isolation": "workspace:*",
-    "@hl8/isolation-model": "workspace:*",
+    "@hl8/isolation-model/index.js": "workspace:*",
     "nestjs-cls": "^6.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2"

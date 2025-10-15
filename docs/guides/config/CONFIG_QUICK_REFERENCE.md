@@ -88,7 +88,7 @@
 // apps/fastify-api/src/config/app.config.ts
 
 // 1. 导入业务库的配置类
-import { LoggingConfig } from "@hl8/nestjs-fastify";
+import { LoggingConfig } from "@hl8/nestjs-fastify/index.js";
 import { CachingModuleConfig } from "@hl8/caching";
 
 // 2. 组合使用（不重新定义！）

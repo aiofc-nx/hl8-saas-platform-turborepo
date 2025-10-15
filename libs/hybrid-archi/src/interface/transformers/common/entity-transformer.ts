@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 /**
  * 转换配置接口

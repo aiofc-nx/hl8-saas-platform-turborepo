@@ -9,7 +9,7 @@ import {
   Password,
   InvalidPasswordException,
   WeakPasswordException,
-} from "./password.vo";
+} from "./password.vo.js";
 
 describe("Password值对象", () => {
   describe("创建Password", () => {

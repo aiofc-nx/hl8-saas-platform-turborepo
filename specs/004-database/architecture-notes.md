@@ -294,7 +294,7 @@ export class AppModule {}
 // database 模块使用全局日志服务
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class ConnectionManager {

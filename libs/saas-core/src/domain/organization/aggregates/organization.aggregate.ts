@@ -5,14 +5,14 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
 // import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { Organization } from "../entities/organization.entity.js";
 import { OrganizationMember } from "../entities/organization-member.entity.js";
 import { OrganizationType } from "../value-objects/organization-type.vo.js";
 
-import { TenantId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model/index.js";
 export class OrganizationAggregate extends TenantAwareAggregateRoot {
   private _members: OrganizationMember[] = [];
 

@@ -13,9 +13,9 @@
  * @since 1.0.0
  */
 
-import { BaseEntity } from "../../../domain/entities/base/base-entity";
+import { BaseEntity } from "../../../domain/entities/base/base-entity.js";
 import { EntityId } from "@hl8/isolation-model";
-import { IPartialAuditInfo } from "../../../domain/entities/base/audit-info";
+import { IPartialAuditInfo } from "../../../domain/entities/base/audit-info.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import { BadRequestException } from "@nestjs/common";
 import { TenantId } from "@hl8/isolation-model";

@@ -55,8 +55,8 @@
  * @since 1.0.0
  */
 
-import type { IValueObjectMapper } from "./mapper.interface";
-import { MappingError } from "./base-domain-mapper";
+import type { IValueObjectMapper } from "./mapper.interface.js";
+import { MappingError } from "./base-domain-mapper.js";
 
 /**
  * 基础值对象映射器抽象类

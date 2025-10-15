@@ -9,13 +9,13 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { DatabaseModule } from "@hl8/database";
-import { CacheModule } from "@hl8/caching";
-import { LoggerModule } from "@hl8/nestjs-fastify";
+import { DatabaseModule } from "@hl8/hybrid-archi";
+import { CacheModule } from "@hl8/hybrid-archi";
+import { LoggerModule } from "@hl8/hybrid-archi";
 
-import { EventStoreAdapter } from "./event-store.adapter";
-import { EventStoreFactory } from "./event-store.factory";
-import { EventStoreManager } from "./event-store.manager";
+import { EventStoreAdapter } from "./event-store.adapter.js";
+import { EventStoreFactory } from "./event-store.factory.js";
+import { EventStoreManager } from "./event-store.manager.js";
 
 /**
  * 事件存储适配器模块选项

@@ -145,7 +145,7 @@ import {
   CorsModule, // CORS
   CompressionModule, // 压缩
   MetricsModule, // Metrics
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 // 统一配置，开箱即用
 ```
@@ -319,7 +319,7 @@ app.register(somePlugin, {
 });
 
 // 我们的方式：完整的类型定义
-import { RateLimitModuleConfig } from "@hl8/nestjs-fastify";
+import { RateLimitModuleConfig } from "@hl8/nestjs-fastify/index.js";
 
 RateLimitModule.forRoot({
   max: 100, // ✅ 类型检查
@@ -469,7 +469,7 @@ async function bootstrap() {
 ```typescript
 // main.ts
 import { NestFactory } from "@nestjs/core";
-import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
@@ -492,7 +492,7 @@ import {
   CorsModule,
   CompressionModule,
   MetricsModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -621,7 +621,7 @@ const app = await NestFactory.create(AppModule, new FastifyAdapter());
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // EnterpriseFastifyAdapter
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
 
 const app = await NestFactory.create(AppModule, new EnterpriseFastifyAdapter());
 
@@ -863,7 +863,7 @@ import {
   LoggingConfig,
   MetricsModuleConfig,
   RateLimitModuleConfig,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 export class AppConfig {
   @ValidateNested()
@@ -938,7 +938,7 @@ export class UserController {
 // 我们的方式：自动处理
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 import { CurrentContext, RequireTenant } from "@hl8/nestjs-isolation";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Controller("users")
 export class UserController {
@@ -1103,7 +1103,7 @@ async function bootstrap() {
 // 我们的方式
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 import { NestFactory } from "@nestjs/core";
-import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
 
 async function bootstrap() {
   const app = await NestFactory.create(
@@ -1160,7 +1160,7 @@ import {
   CorsModule,
   CompressionModule,
   MetricsModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -1355,7 +1355,7 @@ await fastifyAdapter.register(rateLimit, {
 // 我们的方式：模块化 + 装饰器
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // app.module.ts
-import { RateLimitModule } from "@hl8/nestjs-fastify";
+import { RateLimitModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -1369,7 +1369,7 @@ import { RateLimitModule } from "@hl8/nestjs-fastify";
 export class AppModule {}
 
 // 在控制器中使用装饰器
-import { RateLimit, RateLimitByTenant } from "@hl8/nestjs-fastify";
+import { RateLimit, RateLimitByTenant } from "@hl8/nestjs-fastify/index.js";
 
 @Controller("users")
 @RateLimit({ max: 500, timeWindow: 60000 }) // 控制器级别
@@ -1438,7 +1438,7 @@ await fastifyAdapter.register(helmet, {
 // 我们的方式
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // app.module.ts
-import { SecurityModule } from "@hl8/nestjs-fastify";
+import { SecurityModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -1531,7 +1531,7 @@ export class MetricsController {
 // 我们的方式：开箱即用
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // app.module.ts
-import { MetricsModule } from "@hl8/nestjs-fastify";
+import { MetricsModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -1666,7 +1666,7 @@ async function bootstrap() {
 // main.ts（约 10 行）
 // ========================================
 import { NestFactory } from "@nestjs/core";
-import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
@@ -1693,7 +1693,7 @@ import {
   CorsModule,
   CompressionModule,
   MetricsModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 import { IsolationModule } from "@hl8/nestjs-isolation";
 import { AppConfig } from "./config/app.config";
 
@@ -1952,7 +1952,7 @@ import { FastifyAdapter } from "@nestjs/platform-fastify";
 const app = await NestFactory.create(AppModule, new FastifyAdapter());
 
 // 之后
-import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
 const app = await NestFactory.create(AppModule, new EnterpriseFastifyAdapter());
 ```
 

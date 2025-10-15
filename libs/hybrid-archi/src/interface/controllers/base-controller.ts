@@ -2,7 +2,7 @@ import type {
   ILoggerService,
   IMetricsService,
   IRequestContext,
-} from "../shared/interfaces";
+} from "../shared/interfaces.js";
 
 /**
  * 基础REST控制器

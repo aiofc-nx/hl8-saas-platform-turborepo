@@ -31,7 +31,7 @@
  */
 
 import { BaseDomainEvent } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model/index.js";
 
 export interface UserLoginEventData {
   userId: string;

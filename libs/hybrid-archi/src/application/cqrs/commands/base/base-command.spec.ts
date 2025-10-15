@@ -4,7 +4,7 @@
  * @description 测试 BaseCommand 基础命令类的功能
  * @since 1.0.0
  */
-import { BaseCommand } from "./base-command";
+import { BaseCommand } from "./base-command.js";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
 

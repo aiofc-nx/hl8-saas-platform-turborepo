@@ -9,10 +9,10 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheAdapter, ICacheConfig } from "./cache.adapter";
-import { CacheFactory, ICacheRegistration } from "./cache.factory";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheAdapter, ICacheConfig } from "./cache.adapter.js";
+import { CacheFactory, ICacheRegistration } from "./cache.factory.js";
 
 /**
  * 缓存管理器配置

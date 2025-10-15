@@ -527,7 +527,7 @@ import { CachingModule, IsolationModule } from "@hl8/nestjs-infra";
 ```json
 {
   "dependencies": {
-    "@hl8/nestjs-fastify": "workspace:*" // ← 使用 Fastify 专用
+    "@hl8/nestjs-fastify/index.js": "workspace:*" // ← 使用 Fastify 专用
     // 移除 @hl8/nestjs-infra
   }
 }
@@ -541,7 +541,7 @@ import {
   FastifyLoggingModule,
   CachingModule,
   IsolationModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 ```
 
 ---

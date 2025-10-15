@@ -734,7 +734,7 @@ export { IsolationValidationError } from "./errors/isolation-validation.error.js
 // libs/nestjs-isolation/src/index.ts
 
 // 重新导出领域模型
-export * from "@hl8/isolation-model";
+export * from "@hl8/isolation-model/index.js";
 
 // NestJS 模块
 export { IsolationModule } from "./isolation.module.js";

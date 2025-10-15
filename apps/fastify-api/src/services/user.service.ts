@@ -49,8 +49,8 @@ import {
   IsolationLevel,
   Transactional,
   TransactionService,
-} from "@hl8/database/index.js";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
+} from "@hl8/database";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { EntityManager } from "@mikro-orm/core";
 import { Injectable } from "@nestjs/common";
 import { User } from "../entities/user.entity.js";

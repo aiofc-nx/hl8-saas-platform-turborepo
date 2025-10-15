@@ -316,7 +316,7 @@ import {
   DepartmentIsolation,
   UserIsolation,
   AccessContext,
-} from "@hl8/isolation-model";
+} from "@hl8/isolation-model/index.js";
 
 /**
  * 数据隔离服务示例

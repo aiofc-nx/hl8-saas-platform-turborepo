@@ -9,13 +9,13 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { MessagingService } from "@hl8/nestjs-fastify/messaging";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { MessagingService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,
-} from "./message-queue.adapter";
+} from "./message-queue.adapter.js";
 
 /**
  * 消息队列注册信息

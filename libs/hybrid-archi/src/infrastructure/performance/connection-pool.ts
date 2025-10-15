@@ -9,8 +9,8 @@
  */
 
 import { Injectable, Inject } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { DatabaseService } from "@hl8/database";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { DatabaseService } from "@hl8/hybrid-archi";
 
 /**
  * 连接池配置

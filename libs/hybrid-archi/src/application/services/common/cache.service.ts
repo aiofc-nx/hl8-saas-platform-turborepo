@@ -10,7 +10,7 @@ import type {
   ICacheService,
   CacheStats,
   CacheConfig,
-} from "./cache.service.interface";
+} from "./cache.service.interface.js";
 
 /**
  * 通用缓存服务

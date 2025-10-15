@@ -43,7 +43,7 @@
  * @since 1.0.0
  */
 
-import type { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
+import type { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
 
 /**
  * 事件流查询结果

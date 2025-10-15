@@ -6,7 +6,7 @@
  */
 
 // 基础实体接口
-export type { IBaseEntity } from "./base-entity.interface";
+export type { IBaseEntity } from "./base-entity.interface.js";
 
 // 实体接口
 export type {
@@ -16,14 +16,14 @@ export type {
   IEntityValidator,
   IEntityValidationResult,
   IEntityAuditInfo,
-} from "./entity.interface";
+} from "./entity.interface.js";
 
 // 基础实体类
-export { BaseEntity } from "./base-entity";
+export { BaseEntity } from "./base-entity.js";
 
 // 审计信息
-export type { IAuditInfo, IPartialAuditInfo } from "./audit-info";
-export { AuditInfoBuilder } from "./audit-info";
+export type { IAuditInfo, IPartialAuditInfo } from "./audit-info.js";
+export { AuditInfoBuilder } from "./audit-info.js";
 
 // 重新导出常用类型
 export type { EntityId } from "@hl8/isolation-model";

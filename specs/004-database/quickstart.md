@@ -175,7 +175,7 @@ export class AppModule {}
 import { Injectable } from "@nestjs/common";
 import { EntityManager, EntityRepository } from "@hl8/database";
 import { InjectEntityManager } from "@mikro-orm/nestjs";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 import { User } from "../entities/user.entity";
 
 @Injectable()

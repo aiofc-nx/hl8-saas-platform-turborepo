@@ -42,9 +42,12 @@
  */
 
 import { Module, DynamicModule, Global } from "@nestjs/common";
-import { DatabaseModule } from "@hl8/database";
-import { CacheModule } from "@hl8/caching";
-import { TypedConfigModule, dotenvLoader } from "@hl8/nestjs-fastify/config";
+import { 
+  DatabaseModule, 
+  CacheModule, 
+  TypedConfigModule, 
+  dotenvLoader 
+} from "@hl8/hybrid-archi";
 import { CommandBus, QueryBus, EventBus } from "@hl8/hybrid-archi";
 import { SaasCoreConfig } from "./config/saas-core.config.js";
 import { EventStoreAdapter } from "./infrastructure/event-sourcing/event-store.adapter.js";

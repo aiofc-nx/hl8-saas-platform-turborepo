@@ -9,10 +9,10 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/database";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { EventStoreAdapter, IEventStoreConfig } from "./event-store.adapter";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { EventStoreAdapter, IEventStoreConfig } from "./event-store.adapter.js";
 
 /**
  * 健康检查结果接口

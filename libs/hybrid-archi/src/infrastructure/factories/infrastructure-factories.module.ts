@@ -9,14 +9,14 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { LoggerModule } from "@hl8/nestjs-fastify";
-import { CacheModule } from "@hl8/caching";
-import { DatabaseModule } from "@hl8/database";
-import { MessagingModule } from "@hl8/nestjs-fastify/messaging";
-import { MultiTenancyModule } from "@hl8/nestjs-isolation";
+import { LoggerModule } from "@hl8/hybrid-archi";
+import { CacheModule } from "@hl8/hybrid-archi";
+import { DatabaseModule } from "@hl8/hybrid-archi";
+import { MessagingModule } from "@hl8/hybrid-archi";
+import { MultiTenancyModule } from "@hl8/hybrid-archi";
 
-import { InfrastructureFactory } from "./infrastructure.factory";
-import { InfrastructureManager } from "./infrastructure.manager";
+import { InfrastructureFactory } from "./infrastructure.factory.js";
+import { InfrastructureManager } from "./infrastructure.manager.js";
 
 /**
  * 基础设施工厂模块选项

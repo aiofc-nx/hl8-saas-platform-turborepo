@@ -613,8 +613,8 @@ export class UserController {
 ```typescript
 // libs/nestjs-caching/src/cache.service.ts
 import { Injectable, Inject } from "@nestjs/common";
-import { IsolationContext } from "@hl8/isolation-model";
-import type { IIsolationContextProvider } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
+import type { IIsolationContextProvider } from "@hl8/isolation-model/index.js";
 
 @Injectable()
 export class CacheService {
@@ -643,8 +643,8 @@ export class CacheService {
 ```typescript
 // libs/nestjs-logging/src/logger.service.ts
 import { Injectable, Inject } from "@nestjs/common";
-import { IsolationContext } from "@hl8/isolation-model";
-import type { IIsolationContextProvider } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
+import type { IIsolationContextProvider } from "@hl8/isolation-model/index.js";
 
 @Injectable()
 export class LoggerService {
@@ -677,8 +677,8 @@ export class LoggerService {
 
 ```typescript
 // libs/nestjs-database/src/repository.base.ts
-import { IsolationContext } from "@hl8/isolation-model";
-import type { IIsolationContextProvider } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
+import type { IIsolationContextProvider } from "@hl8/isolation-model/index.js";
 
 export abstract class BaseRepository<T> {
   constructor(

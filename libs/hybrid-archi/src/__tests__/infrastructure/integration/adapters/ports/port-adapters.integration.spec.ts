@@ -6,16 +6,16 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { LoggerModule } from "@hl8/nestjs-fastify";
+import { LoggerModule } from "@hl8/hybrid-archi";
 // import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
-import { MessagingModule } from "@hl8/nestjs-fastify/messaging";
-import { PortAdaptersModule } from "../../../../../infrastructure/adapters/ports/port-adapters.module";
-import { LoggerPortAdapter } from "../../../../../infrastructure/adapters/ports/logger-port.adapter";
-import { IdGeneratorPortAdapter } from "../../../../../infrastructure/adapters/ports/id-generator-port.adapter";
-import { TimeProviderPortAdapter } from "../../../../../infrastructure/adapters/ports/time-provider-port.adapter";
-import { ValidationPortAdapter } from "../../../../../infrastructure/adapters/ports/validation-port.adapter";
-import { ConfigurationPortAdapter } from "../../../../../infrastructure/adapters/ports/configuration-port.adapter";
-import { EventBusPortAdapter } from "../../../../../infrastructure/adapters/ports/event-bus-port.adapter";
+import { MessagingModule } from "@hl8/hybrid-archi";
+import { PortAdaptersModule } from "../../../../../infrastructure/adapters/ports/port-adapters.module.js";
+import { LoggerPortAdapter } from "../../../../../infrastructure/adapters/ports/logger-port.adapter.js";
+import { IdGeneratorPortAdapter } from "../../../../../infrastructure/adapters/ports/id-generator-port.adapter.js";
+import { TimeProviderPortAdapter } from "../../../../../infrastructure/adapters/ports/time-provider-port.adapter.js";
+import { ValidationPortAdapter } from "../../../../../infrastructure/adapters/ports/validation-port.adapter.js";
+import { ConfigurationPortAdapter } from "../../../../../infrastructure/adapters/ports/configuration-port.adapter.js";
+import { EventBusPortAdapter } from "../../../../../infrastructure/adapters/ports/event-bus-port.adapter.js";
 
 describe("PortAdaptersModule Integration", () => {
   let module: TestingModule;

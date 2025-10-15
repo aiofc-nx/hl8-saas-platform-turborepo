@@ -14,7 +14,7 @@ export type {
   ICommandExecutionResult,
   ICommandValidator,
   ICommandValidationResult,
-} from "./command-handler.interface";
+} from "./command-handler.interface.js";
 
 // 基础命令处理器
-export { BaseCommandHandler } from "./base-command-handler";
+export { BaseCommandHandler } from "./base-command-handler.js";

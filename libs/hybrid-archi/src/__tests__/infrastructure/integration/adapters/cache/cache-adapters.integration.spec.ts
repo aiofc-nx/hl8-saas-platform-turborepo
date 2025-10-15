@@ -6,13 +6,13 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { CacheModule } from "@hl8/caching";
-import { LoggerModule } from "@hl8/nestjs-fastify";
-import { CacheAdaptersModule } from "../../../../../infrastructure/adapters/cache/cache-adapters.module";
-import { CacheAdapter } from "../../../../../infrastructure/adapters/cache/cache.adapter";
-import { CacheFactory } from "../../../../../infrastructure/adapters/cache/cache.factory";
-import { CacheManager } from "../../../../../infrastructure/adapters/cache/cache.manager";
-import { CacheLevel } from "../../../../../infrastructure/adapters/cache/cache.adapter";
+import { CacheModule } from "@hl8/hybrid-archi";
+import { LoggerModule } from "@hl8/hybrid-archi";
+import { CacheAdaptersModule } from "../../../../../infrastructure/adapters/cache/cache-adapters.module.js";
+import { CacheAdapter } from "../../../../../infrastructure/adapters/cache/cache.adapter.js";
+import { CacheFactory } from "../../../../../infrastructure/adapters/cache/cache.factory.js";
+import { CacheManager } from "../../../../../infrastructure/adapters/cache/cache.manager.js";
+import { CacheLevel } from "../../../../../infrastructure/adapters/cache/cache.adapter.js";
 
 describe("CacheAdaptersModule Integration", () => {
   let module: TestingModule;

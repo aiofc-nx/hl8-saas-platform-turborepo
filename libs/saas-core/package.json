@@ -33,7 +33,6 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "build:swc": "swc src -d dist --strip-leading-paths && tsc --emitDeclarationOnly --outDir dist -p tsconfig.build.json",
     "clean": "rm -rf dist",
     "dev": "tsc -p tsconfig.build.json --watch",
     "lint": "eslint .",
@@ -46,9 +45,6 @@
     "@nestjs/testing": "^11.1.6",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@swc/cli": "^0.7.0",
-    "@swc/core": "^1.13.5",
-    "@swc/jest": "^0.2.37",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.16.0",
     "@types/uuid": "^9.0.0",

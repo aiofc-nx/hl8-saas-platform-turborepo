@@ -12,7 +12,7 @@ import {
   OrganizationId,
   TenantId,
   UserId,
-} from "@hl8/isolation-model";
+} from "@hl8/isolation-model/index.js";
 import { CacheLevel } from "../../types/cache-level.enum.js";
 import { CacheKey } from "./cache-key.vo.js";
 

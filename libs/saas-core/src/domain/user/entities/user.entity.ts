@@ -43,18 +43,18 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
 import {
   Username,
   Email,
   PhoneNumber,
   UserStatus,
 } from "../value-objects/index.js";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { USER_STATUS_TRANSITIONS } from "../../../constants/user.constants.js";
 
-import { TenantId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model/index.js";
 /**
  * 用户实体
  *
@@ -86,7 +86,7 @@ export class User extends BaseEntity {
     private _phoneVerified: boolean,
     private _lastLoginAt: Date | null,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -174,7 +174,7 @@ export class User extends BaseEntity {
       this._status = UserStatus.ACTIVE;
     }
 
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   /**
@@ -184,7 +184,7 @@ export class User extends BaseEntity {
    */
   public verifyPhone(updatedBy?: string): void {
     this._phoneVerified = true;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   /**
@@ -196,10 +196,10 @@ export class User extends BaseEntity {
   public disable(reason: string, updatedBy?: string): void {
     this.validateStatusTransition(UserStatus.DISABLED);
     this._status = UserStatus.DISABLED;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
 
-    this.logger?.warn(
-      `用户已禁用 - userId: ${this.id.toString()}, reason: ${reason}`,
+    (this as any).logger?.warn(
+      `用户已禁用 - userId: ${(this as any).id.toString()}, reason: ${reason}`,
     );
   }
 
@@ -213,7 +213,7 @@ export class User extends BaseEntity {
       throw new Error("只有禁用状态的用户可以启用");
     }
     this._status = UserStatus.ACTIVE;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   /**
@@ -225,7 +225,7 @@ export class User extends BaseEntity {
   public lock(reason: string, updatedBy?: string): void {
     this.validateStatusTransition(UserStatus.LOCKED);
     this._status = UserStatus.LOCKED;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   /**
@@ -238,7 +238,7 @@ export class User extends BaseEntity {
       throw new Error("只有锁定状态的用户可以解锁");
     }
     this._status = UserStatus.ACTIVE;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   /**
@@ -246,7 +246,7 @@ export class User extends BaseEntity {
    */
   public recordLogin(): void {
     this._lastLoginAt = new Date();
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   /**
@@ -258,7 +258,7 @@ export class User extends BaseEntity {
   public updateEmail(email: Email, updatedBy?: string): void {
     this._email = email;
     this._emailVerified = false; // 更换邮箱后需要重新验证
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   /**
@@ -270,7 +270,7 @@ export class User extends BaseEntity {
   public updatePhoneNumber(phoneNumber: PhoneNumber, updatedBy?: string): void {
     this._phoneNumber = phoneNumber;
     this._phoneVerified = false; // 更换手机号后需要重新验证
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   // ============================================================================
@@ -311,7 +311,7 @@ export class User extends BaseEntity {
    */
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       username: this._username.value,
       email: this._email.value,
       phoneNumber: this._phoneNumber?.value,

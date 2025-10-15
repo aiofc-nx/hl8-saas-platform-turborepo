@@ -174,7 +174,7 @@ export class UserEntity {
 ### 应用层开发
 
 ```typescript
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class CreateUserUseCase {

@@ -16,4 +16,4 @@ export type {
   IAggregationResult,
   ICachePort,
   IPermissionValidationPort,
-} from "./query-ports.interface";
+} from "./query-ports.interface.js";

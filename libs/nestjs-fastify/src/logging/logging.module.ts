@@ -14,7 +14,7 @@
  */
 
 import { ConfigValidator } from "@hl8/config";
-import { IsolationContextService } from "@hl8/nestjs-isolation/index.js";
+import { IsolationContextService } from "@hl8/nestjs-isolation";
 import { DynamicModule, Global, Module } from "@nestjs/common";
 import { HttpAdapterHost } from "@nestjs/core";
 import pino from "pino";

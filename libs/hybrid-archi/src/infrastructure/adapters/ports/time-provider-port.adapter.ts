@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { ITimeProviderPort } from "../../../application/ports/shared/shared-ports.interface";
+import { ITimeProviderPort } from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
  * 时间格式枚举

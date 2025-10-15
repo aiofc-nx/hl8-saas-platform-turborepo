@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { UserId } from "@hl8/isolation-model";
+import { UserId } from "@hl8/isolation-model/index.js";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 

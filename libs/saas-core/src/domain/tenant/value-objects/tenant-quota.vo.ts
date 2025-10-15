@@ -52,7 +52,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from "@hl8/hybrid-archi";
+import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
 import { TENANT_TYPE_QUOTAS } from "../../../constants/tenant.constants.js";
 import { TenantType } from "./tenant-type.enum.js";
 
@@ -237,7 +237,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 使用率（0-100）
    */
   public getUserQuotaUsage(currentUserCount: number): number {
-    return Math.min((currentUserCount / (this as any)._value.maxUsers) * 100, 100);
+    return Math.min(
+      (currentUserCount / (this as any)._value.maxUsers) * 100,
+      100,
+    );
   }
 
   /**
@@ -247,7 +250,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 使用率（0-100）
    */
   public getStorageQuotaUsage(currentStorageMB: number): number {
-    return Math.min((currentStorageMB / (this as any)._value.maxStorageMB) * 100, 100);
+    return Math.min(
+      (currentStorageMB / (this as any)._value.maxStorageMB) * 100,
+      100,
+    );
   }
 
   /**
@@ -315,7 +321,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 剩余配额
    */
   public getRemainingApiCalls(currentApiCalls: number): number {
-    return Math.max((this as any)._value.maxApiCallsPerDay - currentApiCalls, 0);
+    return Math.max(
+      (this as any)._value.maxApiCallsPerDay - currentApiCalls,
+      0,
+    );
   }
 
   // ============ 配额修改方法 ============

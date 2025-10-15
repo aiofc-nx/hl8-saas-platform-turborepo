@@ -225,7 +225,7 @@ export class AppModule {}
 // 2. 在控制器中使用
 import { Controller, Get } from "@nestjs/common";
 import { RequireTenant, CurrentContext } from "@hl8/nestjs-isolation";
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 @Controller("users")
 export class UserController {

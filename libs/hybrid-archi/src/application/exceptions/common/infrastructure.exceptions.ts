@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { ApplicationException } from "./application.exception";
+import { ApplicationException } from "./application.exception.js";
 
 /**
  * 基础设施异常

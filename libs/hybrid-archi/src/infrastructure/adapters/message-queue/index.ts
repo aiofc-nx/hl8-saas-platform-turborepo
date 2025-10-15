@@ -7,9 +7,9 @@
  */
 
 // 消息队列适配器
-export * from "./message-queue.adapter";
-export * from "./message-queue.factory";
-export * from "./message-queue.manager";
+export * from "./message-queue.adapter.js";
+export * from "./message-queue.factory.js";
+export * from "./message-queue.manager.js";
 
 // 消息队列适配器模块
-export * from "./message-queue-adapters.module";
+export * from "./message-queue-adapters.module.js";

@@ -24,7 +24,7 @@
  * @description 装饰器元数据接口定义
  * @since 1.0.0
  */
-import { DecoratorType, HandlerType } from "./metadata.constants";
+import { DecoratorType, HandlerType } from "./metadata.constants.js";
 
 /**
  * 基础元数据接口

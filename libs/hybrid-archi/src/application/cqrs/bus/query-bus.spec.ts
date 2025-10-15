@@ -5,14 +5,14 @@
  * @since 1.0.0
  */
 import { Test, TestingModule } from "@nestjs/testing";
-import { QueryBus } from "./query-bus";
+import { QueryBus } from "./query-bus.js";
 import {
   BaseQuery,
   IQueryResult,
   IPaginationInfo,
-} from "../queries/base/base-query";
-import type { IQueryHandler } from "../queries/base/query-handler.interface";
-import { IMiddleware, IMessageContext } from "./cqrs-bus.interface";
+} from "../queries/base/base-query.js";
+import type { IQueryHandler } from "../queries/base/query-handler.interface.js";
+import { IMiddleware, IMessageContext } from "./cqrs-bus.interface.js";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
 

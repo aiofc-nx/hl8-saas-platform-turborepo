@@ -70,12 +70,15 @@
  * @since 1.0.0
  */
 import { EntityId } from "@hl8/isolation-model";
-import { IAuditInfo, IPartialAuditInfo } from "./audit-info";
-import { IEntity } from "./entity.interface";
+import { IAuditInfo, IPartialAuditInfo } from "./audit-info.js";
+import { IEntity } from "./entity.interface.js";
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
-import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from "../../../constants";
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from "@nestjs/common";
+import type { IPureLogger } from "@hl8/pure-logger";
+import { ENTITY_OPERATIONS } from "../../../constants.js";
 import { TenantId } from "@hl8/isolation-model";
 
 export abstract class BaseEntity implements IEntity {
@@ -262,7 +265,7 @@ export abstract class BaseEntity implements IEntity {
       this._auditInfo.lastOperationSource = operationContext.source || null;
     }
 
-    this.logger.log(`Entity marked as deleted`);
+    this.logger.info(`Entity marked as deleted`);
   }
 
   /**
@@ -319,7 +322,7 @@ export abstract class BaseEntity implements IEntity {
       this._auditInfo.lastOperationSource = operationContext.source || null;
     }
 
-    this.logger.log(`Entity restored`);
+    this.logger.info(`Entity restored`);
   }
 
   /**
@@ -581,7 +584,7 @@ export abstract class BaseEntity implements IEntity {
     operation: string,
     details?: Record<string, unknown>,
   ): void {
-    this.logger.log(`Entity ${operation}`);
+    this.logger.info(`Entity ${operation}`);
   }
 
   /**

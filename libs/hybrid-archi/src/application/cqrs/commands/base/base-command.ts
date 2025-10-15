@@ -64,7 +64,7 @@
  */
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
-import { ICommand, ICommandValidationResult } from "./command.interface.js";
+import { ICommand, ICommandValidationResult } from "./command.interface.js.js";
 
 export abstract class BaseCommand implements ICommand {
   private readonly _commandId: EntityId;
@@ -341,19 +341,31 @@ export abstract class BaseCommand implements ICommand {
     const errors: Array<{ field: string; message: string; code?: string }> = [];
 
     if (!this._commandId || this._commandId.isEmpty()) {
-      errors.push({ field: "commandId", message: "Command ID cannot be null or empty" });
+      errors.push({
+        field: "commandId",
+        message: "Command ID cannot be null or empty",
+      });
     }
 
     if (!this._tenantId) {
-      errors.push({ field: "tenantId", message: "Tenant ID cannot be null or empty" });
+      errors.push({
+        field: "tenantId",
+        message: "Tenant ID cannot be null or empty",
+      });
     }
 
     if (!this._userId) {
-      errors.push({ field: "userId", message: "User ID cannot be null or empty" });
+      errors.push({
+        field: "userId",
+        message: "User ID cannot be null or empty",
+      });
     }
 
     if (this._commandVersion < 1) {
-      errors.push({ field: "commandVersion", message: "Command version must be greater than 0" });
+      errors.push({
+        field: "commandVersion",
+        message: "Command version must be greater than 0",
+      });
     }
 
     return {
@@ -417,7 +429,7 @@ export abstract class BaseCommand implements ICommand {
     const defaultExpirationTime = 24 * 60 * 60 * 1000; // 24小时
     const expiration = expirationTime || defaultExpirationTime;
     const now = new Date().getTime();
-    return (now - this._createdAt.getTime()) > expiration;
+    return now - this._createdAt.getTime() > expiration;
   }
 
   /**
@@ -431,7 +443,9 @@ export abstract class BaseCommand implements ICommand {
   protected validateInternal(): void {
     const validation = this.validate();
     if (!validation.isValid) {
-      const errorMessages = validation.errors.map(error => `${error.field}: ${error.message}`).join(", ");
+      const errorMessages = validation.errors
+        .map((error) => `${error.field}: ${error.message}`)
+        .join(", ");
       throw new Error(`Command validation failed: ${errorMessages}`);
     }
   }

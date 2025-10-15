@@ -47,12 +47,12 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { BaseDomainEvent } from "../../../../domain/events/base/base-domain-event";
+import { BaseDomainEvent } from "../../../../domain/events/base/base-domain-event.js";
 import {
   IEventProjector,
   IProjectorManager,
   IProjectionExecutionResult,
-} from "./event-projector.interface";
+} from "./event-projector.interface.js";
 
 /**
  * 投射器注册信息

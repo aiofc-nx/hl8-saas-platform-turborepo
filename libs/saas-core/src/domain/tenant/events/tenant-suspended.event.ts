@@ -20,7 +20,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
+import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi/index.js";
 
 /**
  * 租户暂停事件

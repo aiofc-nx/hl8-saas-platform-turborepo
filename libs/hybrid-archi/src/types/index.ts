@@ -18,10 +18,10 @@
 // ==================== 事件总线相关类型 ====================
 
 // 事件总线
-export { EventBus } from "../application/cqrs/bus/event-bus";
+export { EventBus } from "../application/cqrs/bus/event-bus.js";
 
 // CQRS总线
-export { CQRSBus } from "../application/cqrs/bus/cqrs-bus";
+export { CQRSBus } from "../application/cqrs/bus/cqrs-bus.js";
 
 // ==================== 错误处理相关类型 ====================
 // 已迁移到 @hl8/common 模块，请使用以下导入：
@@ -30,8 +30,8 @@ export { CQRSBus } from "../application/cqrs/bus/cqrs-bus";
 // ==================== 实体和值对象类型 ====================
 
 // 基础实体
-export { BaseEntity } from "../domain/entities/base";
-export { BaseAggregateRoot } from "../domain/aggregates/base";
+export { BaseEntity } from "../domain/entities/base.js";
+export { BaseAggregateRoot } from "../domain/aggregates/base.js";
 
 // 实体ID
 export { EntityId } from "@hl8/isolation-model";

@@ -8,7 +8,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityManager } from "@hl8/database";
+import { EntityManager } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/hybrid-archi";
 import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
 import { TenantAggregate } from "../../../domain/tenant/aggregates/tenant.aggregate.js";

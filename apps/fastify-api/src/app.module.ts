@@ -1,12 +1,12 @@
-import { CachingModule } from "@hl8/caching/index.js";
-import { TypedConfigModule, dotenvLoader } from "@hl8/config/index.js";
-import { DatabaseModule, DatabaseConfig } from "@hl8/database/index.js";
+import { CachingModule } from "@hl8/caching";
+import { TypedConfigModule, dotenvLoader } from "@hl8/config";
+import { DatabaseModule, DatabaseConfig } from "@hl8/database";
 import {
   CompressionModule,
   FastifyExceptionModule,
   FastifyLoggingModule,
   MetricsModule,
-} from "@hl8/nestjs-fastify/index.js";
+} from "@hl8/nestjs-fastify";
 import { IsolationModule } from "@hl8/nestjs-isolation";
 import { Module } from "@nestjs/common";
 import { AppController } from "./app.controller.js";

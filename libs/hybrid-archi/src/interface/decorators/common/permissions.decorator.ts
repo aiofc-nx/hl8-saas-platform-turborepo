@@ -9,7 +9,7 @@ import { SetMetadata } from "@nestjs/common";
 import {
   PERMISSIONS_KEY,
   ROLES_KEY,
-} from "../../guards/common/permission.guard";
+} from "../../guards/common/permission.guard.js";
 
 /**
  * 权限装饰器

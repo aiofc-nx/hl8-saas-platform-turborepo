@@ -52,8 +52,8 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent } from "../../events/base/base-domain-event";
-import { IEntity } from "../../entities/base/entity.interface";
+import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
+import { IEntity } from "../../entities/base/entity.interface.js";
 
 /**
  * 聚合根接口

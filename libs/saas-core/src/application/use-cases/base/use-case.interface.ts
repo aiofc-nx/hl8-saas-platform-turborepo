@@ -25,7 +25,8 @@ export interface IUseCase<TRequest, TResponse> {
  * @interface ICommandUseCase
  * @since 1.0.0
  */
-export interface ICommandUseCase<TRequest, TResponse> extends IUseCase<TRequest, TResponse> {
+export interface ICommandUseCase<TRequest, TResponse>
+  extends IUseCase<TRequest, TResponse> {
   /**
    * 执行命令用例
    *
@@ -43,7 +44,8 @@ export interface ICommandUseCase<TRequest, TResponse> extends IUseCase<TRequest,
  * @interface IQueryUseCase
  * @since 1.0.0
  */
-export interface IQueryUseCase<TRequest, TResponse> extends IUseCase<TRequest, TResponse> {
+export interface IQueryUseCase<TRequest, TResponse>
+  extends IUseCase<TRequest, TResponse> {
   /**
    * 执行查询用例
    *

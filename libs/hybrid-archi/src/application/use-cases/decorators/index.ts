@@ -11,7 +11,7 @@ export {
   getUseCaseMetadata,
   isUseCase,
   USE_CASE_METADATA_KEY,
-} from "./use-case.decorator";
+} from "./use-case.decorator.js";
 
 // 用例配置类型
-export type { IUseCaseOptions, UseCaseType } from "./use-case.decorator";
+export type { IUseCaseOptions, UseCaseType } from "./use-case.decorator.js";

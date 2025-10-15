@@ -9,14 +9,14 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/database";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import {
   DatabaseAdapter,
   IDatabaseConfig,
   DatabaseType,
-} from "./database.adapter";
-import { DatabaseFactory, IDatabaseRegistration } from "./database.factory";
+} from "./database.adapter.js";
+import { DatabaseFactory, IDatabaseRegistration } from "./database.factory.js";
 
 /**
  * 数据库管理器配置

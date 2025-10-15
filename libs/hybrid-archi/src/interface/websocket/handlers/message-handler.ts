@@ -47,7 +47,7 @@ import type {
   ILoggerService,
   IMetricsService,
   IWebSocketContext,
-} from "../../shared/interfaces";
+} from "../../shared/interfaces.js";
 
 /**
  * 消息处理器接口

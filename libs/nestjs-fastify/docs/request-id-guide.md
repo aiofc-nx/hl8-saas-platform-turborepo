@@ -28,7 +28,7 @@
 ```typescript
 import { NestFactory } from "@nestjs/core";
 import { NestFastifyApplication } from "@nestjs/platform-fastify";
-import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
@@ -51,7 +51,7 @@ import { NestFastifyApplication } from "@nestjs/platform-fastify";
 import {
   EnterpriseFastifyAdapter,
   RequestIdStrategy,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
@@ -194,7 +194,7 @@ requestIdOptions: {
 ### 手动生成请求 ID
 
 ```typescript
-import { RequestIdGenerator, RequestIdStrategy } from "@hl8/nestjs-fastify";
+import { RequestIdGenerator, RequestIdStrategy } from "@hl8/nestjs-fastify/index.js";
 
 // 快速生成（使用默认配置）
 const requestId = RequestIdGenerator.quick();
@@ -216,7 +216,7 @@ const customId = RequestIdGenerator.generate({
 ### 验证请求 ID
 
 ```typescript
-import { RequestIdGenerator } from "@hl8/nestjs-fastify";
+import { RequestIdGenerator } from "@hl8/nestjs-fastify/index.js";
 
 // 验证 ID 格式
 const isValid = RequestIdGenerator.isValid(
@@ -270,7 +270,7 @@ export class UserService {
 
 ```typescript
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class OrderService {

@@ -14,7 +14,7 @@ import {
   IInfrastructureServiceManager,
   IInfrastructureHealth,
   InfrastructureServiceStatus,
-} from "./base-infrastructure.interface";
+} from "./base-infrastructure.interface.js";
 
 /**
  * 基础基础设施适配器

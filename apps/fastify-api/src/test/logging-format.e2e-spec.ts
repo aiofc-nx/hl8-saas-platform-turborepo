@@ -21,7 +21,7 @@
  * @since 0.1.0
  */
 
-import { TransactionService } from "@hl8/database/index.js";
+import { TransactionService } from "@hl8/database";
 import {
   EnterpriseFastifyAdapter,
   FastifyLoggerService,

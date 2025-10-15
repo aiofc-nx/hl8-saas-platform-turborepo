@@ -110,7 +110,7 @@ import {
   EnterpriseFastifyAdapter,
   FastifyExceptionModule,
   FastifyLoggingModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 // ✅ NestJS 通用
 import {

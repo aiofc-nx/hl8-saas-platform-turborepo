@@ -13,7 +13,7 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from "@nestjs/common";
-import type { ILoggerService, IUserContext } from "../../shared/interfaces";
+import type { ILoggerService, IUserContext } from "../../shared/interfaces.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

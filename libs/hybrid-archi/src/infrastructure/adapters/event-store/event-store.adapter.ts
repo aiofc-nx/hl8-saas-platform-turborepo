@@ -9,10 +9,10 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/database";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
 
 /**
  * 事件存储配置接口

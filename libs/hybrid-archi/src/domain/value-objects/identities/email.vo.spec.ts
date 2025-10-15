@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { Email, InvalidEmailException } from "./email.vo";
+import { Email, InvalidEmailException } from "./email.vo.js";
 
 describe("Email值对象", () => {
   describe("创建Email", () => {

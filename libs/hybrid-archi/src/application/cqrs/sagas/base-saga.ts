@@ -74,7 +74,7 @@
 import { Injectable } from "@nestjs/common";
 import { Observable, of, throwError } from "rxjs";
 import { map, catchError, switchMap, tap } from "rxjs/operators";
-import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import type { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 // 导入 LogContext 类型
 import type {
@@ -82,8 +82,8 @@ import type {
   ISagaStep,
   ISagaExecutionContext,
   ISagaConfiguration,
-} from "./saga.interface";
-import { SagaStatus, SagaStepStatus } from "./saga.interface";
+} from "./saga.interface.js";
+import { SagaStatus, SagaStepStatus } from "./saga.interface.js";
 
 /**
  * 基础 Saga 实现

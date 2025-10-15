@@ -6,9 +6,9 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { SagaManager } from "./saga-manager";
-import { TestSaga } from "./base-saga.spec";
-import { SagaStatus } from "./saga.interface";
+import { SagaManager } from "./saga-manager.js";
+import { TestSaga } from "./base-saga.spec.js";
+import { SagaStatus } from "./saga.interface.js";
 
 describe("SagaManager", () => {
   let sagaManager: SagaManager;

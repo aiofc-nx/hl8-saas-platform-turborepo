@@ -44,7 +44,7 @@
  * @since 1.0.0
  */
 import { Injectable } from "@nestjs/common";
-import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import type { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -58,8 +58,8 @@ enum LogContext {
   HTTP_REQUEST = "HTTP_REQUEST",
 }
 import { ModuleRef } from "@nestjs/core";
-import type { ICommandBus, IQueryBus, IEventBus } from "../cqrs/bus";
-import { IExplorerResult, IHandlerInfo } from "./core-explorer.service";
+import type { ICommandBus, IQueryBus, IEventBus } from "../cqrs/bus.js";
+import { IExplorerResult, IHandlerInfo } from "./core-explorer.service.js";
 
 /**
  * 注册状态接口

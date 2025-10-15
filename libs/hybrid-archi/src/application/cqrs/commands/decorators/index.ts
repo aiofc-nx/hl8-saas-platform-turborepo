@@ -6,10 +6,10 @@
  */
 
 // 装饰器配置接口
-export type { ICommandHandlerOptions } from "./command-handler.decorator";
+export type { ICommandHandlerOptions } from "./command-handler.decorator.js";
 
 // 装饰器函数
-export { CommandHandler, Command } from "./command-handler.decorator";
+export { CommandHandler, Command } from "./command-handler.decorator.js";
 
 // 元数据工具
 export {
@@ -19,4 +19,4 @@ export {
   isCommand,
   COMMAND_HANDLER_METADATA_KEY,
   COMMAND_METADATA_KEY,
-} from "./command-handler.decorator";
+} from "./command-handler.decorator.js";

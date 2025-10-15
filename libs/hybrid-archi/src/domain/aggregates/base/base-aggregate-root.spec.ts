@@ -8,9 +8,9 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { BaseAggregateRoot } from "./base-aggregate-root";
+import { BaseAggregateRoot } from "./base-aggregate-root.js";
 import { EntityId } from "@hl8/isolation-model";
-import { BaseDomainEvent } from "../../events/base/base-domain-event";
+import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import { TenantId } from "@hl8/isolation-model";
 // // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现

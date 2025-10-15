@@ -44,13 +44,13 @@
  * @since 1.0.0
  */
 import { Injectable } from "@nestjs/common";
-import { BaseCommand } from "../commands/base/base-command";
-import type { ICommandHandler } from "../commands/base/command-handler.interface";
+import { BaseCommand } from "../commands/base/base-command.js";
+import type { ICommandHandler } from "../commands/base/command-handler.interface.js";
 import {
   ICommandBus,
   IMiddleware,
   IMessageContext,
-} from "./cqrs-bus.interface";
+} from "./cqrs-bus.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { TenantId, InvalidTenantIdException } from "./tenant-id.vo";
+import { TenantId, InvalidTenantIdException } from "./tenant-id.vo.js";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
 

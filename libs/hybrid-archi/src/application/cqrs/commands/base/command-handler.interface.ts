@@ -64,7 +64,7 @@
  *
  * @since 1.0.0
  */
-import { BaseCommand } from "./base-command";
+import { BaseCommand } from "./base-command.js";
 
 /**
  * 命令处理器接口
@@ -72,7 +72,10 @@ import { BaseCommand } from "./base-command";
  * @template TCommand - 命令类型
  * @template TResult - 命令执行结果类型
  */
-export interface ICommandHandler<TCommand extends BaseCommand = BaseCommand, TResult = void> {
+export interface ICommandHandler<
+  TCommand extends BaseCommand = BaseCommand,
+  TResult = void,
+> {
   /**
    * 执行命令
    *

@@ -2,8 +2,8 @@
  * 权限实体（简化版本）
  */
 
-import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
 import { PermissionAction } from "../value-objects/permission-action.vo.js";
 import { PermissionStatus } from "../value-objects/permission-status.enum.js";
 

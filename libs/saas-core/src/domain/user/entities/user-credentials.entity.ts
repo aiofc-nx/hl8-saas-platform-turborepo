@@ -7,9 +7,9 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { USER_LOGIN_ATTEMPTS } from "../../../constants/user.constants.js";
 
 export class UserCredentials extends BaseEntity {
@@ -24,7 +24,7 @@ export class UserCredentials extends BaseEntity {
     private _mfaEnabled: boolean,
     private _mfaSecret: string | null,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -66,13 +66,13 @@ export class UserCredentials extends BaseEntity {
       this._lockedUntil = new Date(Date.now() + lockoutMinutes * 60 * 1000);
     }
 
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public resetFailedAttempts(): void {
     this._failedLoginAttempts = 0;
     this._lockedUntil = null;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public isLocked(): boolean {
@@ -90,12 +90,12 @@ export class UserCredentials extends BaseEntity {
     this._passwordHash = newPasswordHash;
     this._passwordSalt = newPasswordSalt;
     this._passwordChangedAt = new Date();
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       userId: this._userId.toString(),
       failedLoginAttempts: this._failedLoginAttempts,
       lockedUntil: this._lockedUntil?.toISOString(),

@@ -56,7 +56,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { Observable, of, throwError } from "rxjs";
 import { map, catchError, tap } from "rxjs/operators";
-import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import type { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -84,8 +84,8 @@ import type {
   ISagaStatistics,
   ISagaEvent,
   ISagaEventHandler,
-} from "./saga.interface";
-import { SagaStatus } from "./saga.interface";
+} from "./saga.interface.js";
+import { SagaStatus } from "./saga.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

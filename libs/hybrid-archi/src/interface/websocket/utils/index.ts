@@ -5,4 +5,4 @@
  * @since 1.0.0
  */
 
-export * from "./websocket.utils";
+export * from "./websocket.utils.js";

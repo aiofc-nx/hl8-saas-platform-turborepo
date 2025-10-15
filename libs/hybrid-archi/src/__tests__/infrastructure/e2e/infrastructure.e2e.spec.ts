@@ -6,20 +6,20 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { LoggerModule } from "@hl8/nestjs-fastify";
-import { CacheModule } from "@hl8/caching";
-import { DatabaseModule } from "@hl8/database";
-import { MessagingModule } from "@hl8/nestjs-fastify/messaging";
-import { MultiTenancyModule } from "@hl8/nestjs-isolation";
-import { InfrastructureFactoriesModule } from "../../../infrastructure/factories/infrastructure-factories.module";
-import { PortAdaptersModule } from "../../../infrastructure/adapters/ports/port-adapters.module";
-import { CacheAdaptersModule } from "../../../infrastructure/adapters/cache/cache-adapters.module";
-import { DatabaseAdaptersModule } from "../../../infrastructure/adapters/database/database-adapters.module";
-import { EventStoreAdaptersModule } from "../../../infrastructure/adapters/event-store/event-store-adapters.module";
-import { MessageQueueAdaptersModule } from "../../../infrastructure/adapters/message-queue/message-queue-adapters.module";
-import { InfrastructureFactory } from "../../../infrastructure/factories/infrastructure.factory";
-import { InfrastructureManager } from "../../../infrastructure/factories/infrastructure.manager";
-import { InfrastructureServiceType } from "../../../infrastructure/factories/infrastructure.factory";
+import { LoggerModule } from "@hl8/hybrid-archi";
+import { CacheModule } from "@hl8/hybrid-archi";
+import { DatabaseModule } from "@hl8/hybrid-archi";
+import { MessagingModule } from "@hl8/hybrid-archi";
+import { MultiTenancyModule } from "@hl8/hybrid-archi";
+import { InfrastructureFactoriesModule } from "../../../infrastructure/factories/infrastructure-factories.module.js";
+import { PortAdaptersModule } from "../../../infrastructure/adapters/ports/port-adapters.module.js";
+import { CacheAdaptersModule } from "../../../infrastructure/adapters/cache/cache-adapters.module.js";
+import { DatabaseAdaptersModule } from "../../../infrastructure/adapters/database/database-adapters.module.js";
+import { EventStoreAdaptersModule } from "../../../infrastructure/adapters/event-store/event-store-adapters.module.js";
+import { MessageQueueAdaptersModule } from "../../../infrastructure/adapters/message-queue/message-queue-adapters.module.js";
+import { InfrastructureFactory } from "../../../infrastructure/factories/infrastructure.factory.js";
+import { InfrastructureManager } from "../../../infrastructure/factories/infrastructure.manager.js";
+import { InfrastructureServiceType } from "../../../infrastructure/factories/infrastructure.factory.js";
 
 describe("Infrastructure Layer E2E", () => {
   let module: TestingModule;

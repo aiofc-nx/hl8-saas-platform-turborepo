@@ -25,14 +25,14 @@
  * @since 1.0.0
  */
 import "reflect-metadata";
-import { METADATA_VERSION, DecoratorType } from "./metadata.constants";
+import { METADATA_VERSION, DecoratorType } from "./metadata.constants.js";
 import type {
   IMetadata,
   ICommandHandlerMetadata,
   IQueryHandlerMetadata,
   IEventHandlerMetadata,
   ISagaMetadata,
-} from "./metadata.interfaces";
+} from "./metadata.interfaces.js";
 
 /**
  * 设置元数据

@@ -34,10 +34,9 @@
  * @since 1.0.0
  */
 
-import { Filter, FilterQuery } from "@hl8/database";
-import { TenantContextService } from "@hl8/nestjs-isolation";
+import { Filter, FilterQuery, TenantContextService } from "@hl8/hybrid-archi";
 
-import { TenantId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model/index.js";
 /**
  * 租户过滤器名称
  *

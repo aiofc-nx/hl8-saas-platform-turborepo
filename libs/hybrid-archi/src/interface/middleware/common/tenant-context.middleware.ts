@@ -7,7 +7,7 @@
 
 import { Injectable, NestMiddleware } from "@nestjs/common";
 // import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 // // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
 import { BadRequestException } from "@nestjs/common";
 import { EntityId } from "@hl8/isolation-model";

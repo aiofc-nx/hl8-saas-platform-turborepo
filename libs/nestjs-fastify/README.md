@@ -210,7 +210,7 @@ pnpm add @hl8/nestjs-fastify
 ```typescript
 // main.ts
 import { NestFactory } from "@nestjs/core";
-import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
 import { AppModule } from "./app.module.js";
 
 async function bootstrap() {
@@ -237,7 +237,7 @@ import {
   FastifyLoggingModule,
   CompressionModule,
   MetricsModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -295,7 +295,7 @@ curl http://localhost:3000/health
 **基本用法**：
 
 ```typescript
-import { FastifyExceptionModule } from "@hl8/nestjs-fastify";
+import { FastifyExceptionModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -325,7 +325,7 @@ export class AppModule {}
 **基本用法**：
 
 ```typescript
-import { FastifyLoggingModule } from "@hl8/nestjs-fastify";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -345,7 +345,7 @@ export class AppModule {}
 **在服务中使用**：
 
 ```typescript
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class UserService {
@@ -394,7 +394,7 @@ export class UserService {
 **基本用法**：
 
 ```typescript
-import { CompressionModule } from "@hl8/nestjs-fastify";
+import { CompressionModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -431,7 +431,7 @@ export class AppModule {}
 **基本用法**：
 
 ```typescript
-import { MetricsModule } from "@hl8/nestjs-fastify";
+import { MetricsModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -474,7 +474,7 @@ export class AppModule {}
 **自定义指标**：
 
 ```typescript
-import { MetricsService } from "@hl8/nestjs-fastify";
+import { MetricsService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class OrderService {
@@ -515,7 +515,7 @@ curl http://localhost:3000/metrics
 **基本用法**：
 
 ```typescript
-import { SecurityModule } from "@hl8/nestjs-fastify";
+import { SecurityModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -558,7 +558,7 @@ X-XSS-Protection: 1; mode=block
 **基本用法**：
 
 ```typescript
-import { RateLimitModule } from "@hl8/nestjs-fastify";
+import { RateLimitModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -576,7 +576,7 @@ export class AppModule {}
 **装饰器用法**：
 
 ```typescript
-import { RateLimit } from "@hl8/nestjs-fastify";
+import { RateLimit } from "@hl8/nestjs-fastify/index.js";
 
 // 控制器级别限制
 @Controller("users")
@@ -601,7 +601,7 @@ export class UserController {
 **租户级别限制**：
 
 ```typescript
-import { RateLimitByTenant } from "@hl8/nestjs-fastify";
+import { RateLimitByTenant } from "@hl8/nestjs-fastify/index.js";
 
 @Controller("api")
 @RateLimitByTenant({ max: 10000, timeWindow: 3600000 }) // 10000 次/小时/租户
@@ -628,7 +628,7 @@ Retry-After: 45
 **基本用法**：
 
 ```typescript
-import { CorsModule } from "@hl8/nestjs-fastify";
+import { CorsModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -679,7 +679,7 @@ import {
   CompressionModule,
   MetricsModule,
   RateLimitModule,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 import { IsolationModule } from "@hl8/nestjs-isolation";
 import { AppConfig } from "./config/app.config.js";
 
@@ -816,7 +816,7 @@ import {
   LoggingConfig,
   MetricsModuleConfig,
   RateLimitModuleConfig,
-} from "@hl8/nestjs-fastify";
+} from "@hl8/nestjs-fastify/index.js";
 
 export class AppConfig {
   @IsString()
@@ -855,7 +855,7 @@ export class AppConfig {
 
 ```typescript
 import { IsolationModule } from "@hl8/nestjs-isolation";
-import { FastifyLoggingModule } from "@hl8/nestjs-fastify";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [

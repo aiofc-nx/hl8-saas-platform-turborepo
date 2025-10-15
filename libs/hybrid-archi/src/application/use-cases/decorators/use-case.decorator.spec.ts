@@ -11,7 +11,7 @@ import type {
   getUseCaseMetadata,
   isUseCase,
   IUseCaseOptions,
-} from "./use-case.decorator";
+} from "./use-case.decorator.js";
 
 describe("UseCase装饰器", () => {
   describe("基本装饰功能", () => {

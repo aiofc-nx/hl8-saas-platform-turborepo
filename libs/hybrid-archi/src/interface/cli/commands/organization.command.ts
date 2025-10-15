@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { CliBaseCommand } from "./base-command";
+import { CliBaseCommand } from "./base-command.js";
 
 export class OrganizationCommand extends CliBaseCommand {
   // 占位符实现

@@ -36,7 +36,7 @@ import {
   getHandlerType,
   getAllDecoratorTypes,
   getAllHandlerTypes,
-} from "./metadata.constants";
+} from "./metadata.constants.js";
 
 describe("元数据常量", () => {
   describe("元数据键名常量", () => {

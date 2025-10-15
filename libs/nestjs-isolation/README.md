@@ -111,7 +111,7 @@ export class AppModule {}
 // user.controller.ts
 import { Controller, Get } from "@nestjs/common";
 import { RequireTenant, CurrentContext } from "@hl8/nestjs-isolation";
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 @Controller("users")
 export class UserController {
@@ -561,7 +561,7 @@ export class UserRepository {
 ### 与日志集成
 
 ```typescript
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 import { IsolationContextService } from "@hl8/nestjs-isolation";
 
 @Injectable()

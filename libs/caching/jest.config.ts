@@ -1,7 +1,7 @@
 import type { Config } from "jest";
 
 const config: Config = {
-  displayName: "@hl8/caching",
+  displayName: "@hl8/hybrid-archi",
   preset: "ts-jest/presets/default-esm",
   testEnvironment: "node",
   extensionsToTreatAsEsm: [".ts"],

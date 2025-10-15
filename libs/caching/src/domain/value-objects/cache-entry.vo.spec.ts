@@ -6,7 +6,7 @@
  * @group domain/value-objects
  */
 
-import { IsolationContext, TenantId } from "@hl8/isolation-model";
+import { IsolationContext, TenantId } from "@hl8/isolation-model/index.js";
 import { CacheEntry } from "./cache-entry.vo.js";
 import { CacheKey } from "./cache-key.vo.js";
 

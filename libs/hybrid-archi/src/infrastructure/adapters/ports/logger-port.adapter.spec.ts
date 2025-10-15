@@ -6,8 +6,8 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { LoggerPortAdapter } from "./logger-port.adapter";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { LoggerPortAdapter } from "./logger-port.adapter.js";
 
 describe("LoggerPortAdapter", () => {
   let adapter: LoggerPortAdapter;

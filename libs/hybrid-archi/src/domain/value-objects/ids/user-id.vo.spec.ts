@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { UserId, InvalidUserIdException } from "./user-id.vo";
+import { UserId, InvalidUserIdException } from "./user-id.vo.js";
 
 describe("UserId", () => {
   describe("构造函数", () => {

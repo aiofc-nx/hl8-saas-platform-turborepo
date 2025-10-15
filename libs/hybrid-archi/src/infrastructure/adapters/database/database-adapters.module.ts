@@ -9,12 +9,12 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { DatabaseModule } from "@hl8/database";
-import { LoggerModule } from "@hl8/nestjs-fastify";
+import { DatabaseModule } from "@hl8/hybrid-archi";
+import { LoggerModule } from "@hl8/hybrid-archi";
 
-import { DatabaseAdapter } from "./database.adapter";
-import { DatabaseFactory } from "./database.factory";
-import { DatabaseManager } from "./database.manager";
+import { DatabaseAdapter } from "./database.adapter.js";
+import { DatabaseFactory } from "./database.factory.js";
+import { DatabaseManager } from "./database.manager.js";
 
 /**
  * 数据库适配器模块选项

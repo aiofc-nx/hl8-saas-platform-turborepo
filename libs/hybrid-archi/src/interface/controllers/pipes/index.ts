@@ -7,16 +7,16 @@
  */
 
 // 数据验证管道
-export * from "./validation.pipe";
+export * from "./validation.pipe.js";
 
 // 数据转换管道
-export * from "./transformation.pipe";
+export * from "./transformation.pipe.js";
 
 // 数据清理管道
-export * from "./sanitization.pipe";
+export * from "./sanitization.pipe.js";
 
 // 分页管道
-export * from "./pagination.pipe";
+export * from "./pagination.pipe.js";
 
 // 排序管道
-export * from "./sorting.pipe";
+export * from "./sorting.pipe.js";

@@ -50,13 +50,13 @@ import type {
   IAggregateMapper,
   IValueObjectMapper,
   IDtoMapper,
-} from "../base/mapper.interface";
+} from "../base/mapper.interface.js";
 import {
   MapperType,
   type IMapperMetadata,
   getMapperMetadata,
   isMapper,
-} from "../decorators/mapper.decorator";
+} from "../decorators/mapper.decorator.js";
 
 /**
  * 映射器注册信息接口

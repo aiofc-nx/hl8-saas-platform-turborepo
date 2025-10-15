@@ -8,10 +8,10 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { CacheStrategy } from "./cache-strategy";
-import { CacheStrategyConfig } from "./cache-strategy";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { CacheService } from "@hl8/caching";
+import { CacheStrategy } from "./cache-strategy.js";
+import { CacheStrategyConfig } from "./cache-strategy.js";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
 
 describe("CacheStrategy", () => {
   let cacheStrategy: CacheStrategy;

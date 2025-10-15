@@ -5,13 +5,12 @@
  * @since 1.1.0
  */
 
-import { TenantAwareAggregateRoot } from "./tenant-aware-aggregate-root";
-import { EntityId } from "@hl8/isolation-model";
-import { IPartialAuditInfo } from "../../entities/base/audit-info";
-import { BaseDomainEvent } from "../../events/base/base-domain-event";
+import { TenantAwareAggregateRoot } from "./tenant-aware-aggregate-root.js";
+import { EntityId, TenantId } from "@hl8/isolation-model";
+import { IPartialAuditInfo } from "../../entities/base/audit-info.js";
+import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import { BadRequestException } from "@nestjs/common";
-import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 测试用聚合根

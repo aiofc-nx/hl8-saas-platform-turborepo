@@ -36,7 +36,7 @@
  * @since 1.0.0
  */
 
-import { IQuery, IQueryMetadata } from "../base/query.interface";
+import { IQuery, IQueryMetadata } from "../base/query.interface.js";
 
 /**
  * 构造函数类型定义

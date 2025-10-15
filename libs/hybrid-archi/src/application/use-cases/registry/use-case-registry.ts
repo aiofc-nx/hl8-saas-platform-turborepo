@@ -51,12 +51,12 @@ import type {
   IUseCaseContext,
   IUseCaseRegistry,
   IUseCaseFactory,
-} from "../base/use-case.interface";
+} from "../base/use-case.interface.js";
 import type {
   getUseCaseMetadata,
   IUseCaseOptions,
   // UseCaseType, // 暂时未使用
-} from "../decorators/use-case.decorator";
+} from "../decorators/use-case.decorator.js";
 
 /**
  * 用例注册信息

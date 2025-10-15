@@ -62,11 +62,11 @@
  * @since 1.0.0
  */
 
-import { IQuery } from "../base/query.interface";
+import { IQuery } from "../base/query.interface.js";
 import type {
   IQueryHandler,
   IQueryExecutionContext,
-} from "./query-handler.interface";
+} from "./query-handler.interface.js";
 
 /**
  * 基础查询处理器抽象类

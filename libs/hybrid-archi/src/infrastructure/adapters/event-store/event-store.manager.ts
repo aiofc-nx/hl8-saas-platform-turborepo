@@ -9,14 +9,14 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/database";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { EventStoreAdapter, IEventStoreConfig } from "./event-store.adapter";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { EventStoreAdapter, IEventStoreConfig } from "./event-store.adapter.js";
 import {
   EventStoreFactory,
   IEventStoreRegistration,
-} from "./event-store.factory";
+} from "./event-store.factory.js";
 
 /**
  * 事件存储管理器配置

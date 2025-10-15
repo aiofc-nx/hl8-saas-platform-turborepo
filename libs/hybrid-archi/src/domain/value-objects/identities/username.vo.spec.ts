@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { Username, InvalidUsernameException } from "./username.vo";
+import { Username, InvalidUsernameException } from "./username.vo.js";
 
 describe("Username值对象", () => {
   describe("创建Username", () => {

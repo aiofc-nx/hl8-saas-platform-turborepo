@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-import { BaseSaga } from "./base-saga";
-import { SagaStatus, SagaStepType, SagaStepStatus } from "./saga.interface";
-import type { ISagaStep, ISagaExecutionContext } from "./saga.interface";
+import { BaseSaga } from "./base-saga.js";
+import { SagaStatus, SagaStepType, SagaStepStatus } from "./saga.interface.js";
+import type { ISagaStep, ISagaExecutionContext } from "./saga.interface.js";
 import { Observable, of } from "rxjs";
 
 /**

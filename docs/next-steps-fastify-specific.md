@@ -387,7 +387,7 @@ mkdir -p libs/nestjs-fastify/__tests__
 # 创建 package.json
 cat > libs/nestjs-fastify/package.json <<'EOF'
 {
-  "name": "@hl8/nestjs-fastify",
+  "name": "@hl8/nestjs-fastify/index.js",
   "version": "0.1.0",
   "description": "Fastify 专用的企业级基础设施模块",
   "type": "module",

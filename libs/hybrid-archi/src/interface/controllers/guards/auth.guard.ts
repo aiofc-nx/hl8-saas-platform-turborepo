@@ -49,7 +49,7 @@ import type {
   IUserContext,
   IRole,
   IPermission,
-} from "../../shared/interfaces";
+} from "../../shared/interfaces.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

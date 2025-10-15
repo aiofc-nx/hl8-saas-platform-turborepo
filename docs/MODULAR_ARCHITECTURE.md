@@ -53,9 +53,9 @@ hl8-saas-platform-turborepo/
 
 ```typescript
 // 组合多个业务库
-import { DatabaseModule } from "@hl8/database/index.js";
-import { CachingModule } from "@hl8/caching/index.js";
-import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
+import { DatabaseModule } from "@hl8/database";
+import { CachingModule } from "@hl8/caching";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify";
 ```
 
 ### 2. 业务库层（Libs）
@@ -167,11 +167,11 @@ apps/fastify-api
     "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"],
-      "@hl8/nestjs-fastify": ["node_modules/@hl8/nestjs-fastify"],
-      "@hl8/caching": ["node_modules/@hl8/caching"],
-      "@hl8/database": ["node_modules/@hl8/database"],
-      "@hl8/config": ["node_modules/@hl8/config"],
-      "@hl8/exceptions": ["node_modules/@hl8/exceptions"]
+      "@/config/*": ["./src/config/*"],
+      "@/controllers/*": ["./src/controllers/*"],
+      "@/entities/*": ["./src/entities/*"],
+      "@/modules/*": ["./src/modules/*"],
+      "@/services/*": ["./src/services/*"]
     }
   }
 }
@@ -203,10 +203,10 @@ apps/fastify-api
 #### 1.1 包导入（推荐）
 
 ```typescript
-// ✅ 正确 - 使用明确的文件路径
-import { DatabaseModule } from "@hl8/database/index.js";
-import { CachingModule } from "@hl8/caching/index.js";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
+// ✅ 正确 - 使用包名导入（推荐方式）
+import { DatabaseModule } from "@hl8/database";
+import { CachingModule } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 ```
 
 #### 1.2 相对路径导入
@@ -220,13 +220,13 @@ import { AppConfig } from "./config/app.config.js";
 #### 1.3 避免的导入方式
 
 ```typescript
-// ❌ 错误 - 目录导入（Node.js ES 模块不支持）
-import { DatabaseModule } from "@hl8/database";
-import { CachingModule } from "@hl8/caching";
-
-// ❌ 错误 - 缺少文件扩展名
+// ❌ 错误 - 缺少文件扩展名（相对路径必须包含扩展名）
 import { User } from "../entities/user.entity";
 import { AppConfig } from "./config/app.config";
+
+// ❌ 错误 - 错误的文件扩展名
+import { User } from "../entities/user.entity.ts";
+import { AppConfig } from "./config/app.config.ts";
 ```
 
 ### 2. 包导出配置
@@ -270,7 +270,7 @@ import { AppConfig } from "./config/app.config";
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "builder": "swc",
+    "builder": "tsc",
     "typeCheck": true,
     "assets": [],
     "watchAssets": false,
@@ -370,17 +370,41 @@ export * from "./services/database.service.js";
 
 **问题**: `ERR_UNSUPPORTED_DIR_IMPORT`
 
-**原因**: Node.js ES 模块不支持从目录直接导入
+**原因**: Node.js ES 模块不支持从目录直接导入，通常是由于构建工具配置不当导致的
 
 **解决方案**:
 
-```typescript
-// ❌ 错误
-import { DatabaseModule } from "@hl8/database";
+1. **使用 TypeScript 编译器而不是 SWC**:
+   ```json
+   // nest-cli.json
+   {
+     "compilerOptions": {
+       "builder": "tsc"
+     }
+   }
+   ```
 
-// ✅ 正确
-import { DatabaseModule } from "@hl8/database/index.js";
-```
+2. **配置正确的模块解析策略**:
+   ```json
+   // tsconfig.build.json
+   {
+     "compilerOptions": {
+       "module": "NodeNext",
+       "moduleResolution": "NodeNext"
+     }
+   }
+   ```
+
+3. **移除 SWC 中的路径映射**:
+   ```json
+   // .swcrc
+   {
+     "jsc": {
+       "baseUrl": "."
+       // 移除 paths 配置中的 workspace 依赖映射
+     }
+   }
+   ```
 
 ### 2. TypeScript 路径映射
 
@@ -427,10 +451,12 @@ import { DatabaseModule } from "@hl8/database/index.js";
 
 ### 4. 性能优化
 
-- 使用 SWC 构建器
+- 使用 TypeScript 编译器（推荐）或正确配置 SWC
 - 启用增量编译
 - 合理的缓存策略
 - 监控和指标收集
+
+**注意**: 虽然 SWC 构建速度更快，但在处理 workspace 依赖时容易出现模块解析问题。如果遇到 `ERR_UNSUPPORTED_DIR_IMPORT` 错误，建议使用 TypeScript 编译器。
 
 ## 总结
 

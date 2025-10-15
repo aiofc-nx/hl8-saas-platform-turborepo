@@ -64,9 +64,9 @@
  * @since 1.0.0
  */
 
-import type { IUseCase, IUseCaseContext } from "./use-case.interface";
+import type { IUseCase, IUseCaseContext } from "./use-case.interface.js";
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import {
   BadRequestException,
   InternalServerErrorException,
@@ -75,7 +75,7 @@ import {
   USE_CASE_ERROR_CODES,
   TENANT_ERROR_CODES,
   DEFAULT_ENVIRONMENT,
-} from "../../../constants";
+} from "../../../constants.js";
 
 /**
  * 用例执行结果

@@ -7,16 +7,16 @@
  */
 
 // GraphQL解析器
-export * from "./resolvers";
+export * from "./resolvers.js";
 
 // GraphQL类型定义
-export * from "./types";
+export * from "./types.js";
 
 // GraphQL指令
-export * from "./directives";
+export * from "./directives.js";
 
 // GraphQL中间件
-export * from "./middleware";
+export * from "./middleware.js";
 
 // GraphQL工具
-export * from "./utils";
+export * from "./utils.js";

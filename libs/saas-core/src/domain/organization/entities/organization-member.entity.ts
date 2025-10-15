@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
 // import type { IPureLogger } from "@hl8/pure-logger/index.js";
 
 export class OrganizationMember extends BaseEntity {

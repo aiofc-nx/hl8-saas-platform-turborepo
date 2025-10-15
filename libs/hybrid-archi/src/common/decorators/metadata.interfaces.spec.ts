@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { DecoratorType, HandlerType } from "./metadata.constants";
+import { DecoratorType, HandlerType } from "./metadata.constants.js";
 
 describe("装饰器元数据接口", () => {
   describe("基础接口测试", () => {

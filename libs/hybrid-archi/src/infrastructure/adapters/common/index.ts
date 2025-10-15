@@ -6,13 +6,13 @@
  */
 
 // 数据库适配器
-export * from "./database.adapter.interface";
+export * from "./database.adapter.interface.js";
 
 // 缓存适配器
-export * from "./cache.adapter.interface";
+export * from "./cache.adapter.interface.js";
 
 // 消息队列适配器
-export * from "./message-queue.adapter.interface";
+export * from "./message-queue.adapter.interface.js";
 
 // 邮件服务适配器
-export * from "./email-service.adapter.interface";
+export * from "./email-service.adapter.interface.js";

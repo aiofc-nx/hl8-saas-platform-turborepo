@@ -9,8 +9,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { ILoggerPort } from "../../../application/ports/shared/shared-ports.interface";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { ILoggerPort } from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
  * 日志端口适配器

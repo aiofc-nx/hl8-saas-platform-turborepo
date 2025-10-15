@@ -9,14 +9,14 @@
 export type {
   IEventProjectorOptions,
   IEventProjectorMetadata,
-} from "./event-projector.decorator";
+} from "./event-projector.decorator.js";
 
 // 装饰器函数
 export {
   EventProjector,
   ReadModelProjector,
   AutoRegisterProjector,
-} from "./event-projector.decorator";
+} from "./event-projector.decorator.js";
 
 // 元数据工具
 export {
@@ -24,4 +24,4 @@ export {
   isEventProjector,
   isAutoRegisterProjector,
   EVENT_PROJECTOR_METADATA_KEY,
-} from "./event-projector.decorator";
+} from "./event-projector.decorator.js";

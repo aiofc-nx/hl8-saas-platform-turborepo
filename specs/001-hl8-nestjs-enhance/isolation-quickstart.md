@@ -39,7 +39,7 @@ Isolation 数据隔离模块提供企业级多层级数据隔离功能，拆分�
 # package.json
 {
   "dependencies": {
-    "@hl8/isolation-model": "workspace:*"
+    "@hl8/isolation-model/index.js": "workspace:*"
   }
 }
 ```
@@ -66,8 +66,8 @@ Isolation 数据隔离模块提供企业级多层级数据隔离功能，拆分�
 ```typescript
 // libs/nestjs-caching/src/cache.service.ts
 import { Injectable, Inject } from "@nestjs/common";
-import { IsolationContext } from "@hl8/isolation-model"; // 零依赖！
-import type { IIsolationContextProvider } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js"; // 零依赖！
+import type { IIsolationContextProvider } from "@hl8/isolation-model/index.js";
 
 @Injectable()
 export class CacheService {
@@ -104,8 +104,8 @@ export class CacheService {
 ```typescript
 // libs/nestjs-logging/src/logger.service.ts
 import { Injectable, Inject } from "@nestjs/common";
-import { IsolationContext } from "@hl8/isolation-model"; // 零依赖！
-import type { IIsolationContextProvider } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js"; // 零依赖！
+import type { IIsolationContextProvider } from "@hl8/isolation-model/index.js";
 
 @Injectable()
 export class LoggerService {
@@ -224,7 +224,7 @@ export class TenantController {
 ```typescript
 import { Controller, Get } from "@nestjs/common";
 import { CurrentContext } from "@hl8/nestjs-isolation";
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 @Controller("users")
 export class UserController {
@@ -252,7 +252,7 @@ import {
   TenantId,
   OrganizationId,
   IsolationLevel,
-} from "@hl8/isolation-model"; // 零依赖！
+} from "@hl8/isolation-model/index.js"; // 零依赖！
 
 // 创建隔离上下文
 const tenantId = TenantId.create("t123");
@@ -324,7 +324,7 @@ import {
   IsolationContext,
   TenantId,
   IsolationLevel,
-} from "@hl8/isolation-model";
+} from "@hl8/isolation-model/index.js";
 
 describe("IsolationContext", () => {
   it("should create platform level context", () => {
@@ -362,7 +362,7 @@ import {
   IsolationModule,
   IsolationContextService,
 } from "@hl8/nestjs-isolation";
-import { IsolationLevel } from "@hl8/isolation-model";
+import { IsolationLevel } from "@hl8/isolation-model/index.js";
 
 describe("Context Extraction", () => {
   let module: TestingModule;
@@ -400,7 +400,7 @@ describe("Context Extraction", () => {
 ### 场景 1: 构建数据库查询条件
 
 ```typescript
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 const context = IsolationContext.department(
   TenantId.create("t123"),
@@ -422,7 +422,7 @@ const users = await prisma.user.findMany({ where });
 ### 场景 2: 生成缓存键
 
 ```typescript
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 const context = IsolationContext.tenant(TenantId.create("t123"));
 
@@ -437,7 +437,7 @@ await redis.set(cacheKey, JSON.stringify(userProfile));
 ### 场景 3: 记录结构化日志
 
 ```typescript
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 const context = IsolationContext.organization(
   TenantId.create("t123"),
@@ -459,7 +459,7 @@ pino.info({
 ### 场景 4: 权限验证
 
 ```typescript
-import { IsolationContext, SharingLevel } from "@hl8/isolation-model";
+import { IsolationContext, SharingLevel } from "@hl8/isolation-model/index.js";
 
 // 用户上下文（部门级）
 const userContext = IsolationContext.department(
@@ -519,7 +519,7 @@ export class AppModule {}
 ```typescript
 import { Controller, Get } from "@nestjs/common";
 import { RequireTenant, CurrentContext } from "@hl8/nestjs-isolation";
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 
 @Controller("users")
 export class UserController {
@@ -708,7 +708,7 @@ libs/nestjs-isolation
 import { IsolationContext } from "@hl8/platform";
 
 // 新方式
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 ```
 
 ### 从 nestjs-infra 迁移
@@ -721,7 +721,7 @@ import { IsolationModule } from "@hl8/nestjs-infra";
 import { IsolationModule } from "@hl8/nestjs-isolation";
 
 // 新方式（业务库）
-import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
 ```
 
 ---

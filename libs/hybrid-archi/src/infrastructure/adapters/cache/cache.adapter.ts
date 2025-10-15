@@ -9,8 +9,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { CacheService } from "@hl8/caching";
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 /**
  * 缓存配置接口

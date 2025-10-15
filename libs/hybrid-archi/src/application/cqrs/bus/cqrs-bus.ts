@@ -58,18 +58,18 @@
  */
 import { Injectable } from "@nestjs/common";
 // import type { CoreTypedTypedConfigModule } from '../../../infrastructure/config/core-config.service';
-import type { TypedConfigModule } from "@hl8/config";
-import type { BaseCommand } from "../commands/base/base-command";
-import type { BaseQuery, IQueryResult } from "../queries/base/base-query";
-import type { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
-import type { IUseCaseRegistry } from "../../use-cases/base/use-case.interface";
-import type { ProjectorManager } from "../events/projectors/projector-manager";
+import type { TypedConfigModule } from "@hl8/hybrid-archi";
+import type { BaseCommand } from "../commands/base/base-command.js";
+import type { BaseQuery, IQueryResult } from "../queries/base/base-query.js";
+import type { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
+import type { IUseCaseRegistry } from "../../use-cases/base/use-case.interface.js";
+import type { ProjectorManager } from "../events/projectors/projector-manager.js";
 import type {
   ICQRSBus,
   ICommandBus,
   IQueryBus,
   IEventBus,
-} from "./cqrs-bus.interface";
+} from "./cqrs-bus.interface.js";
 
 /**
  * CQRS 总线统计信息

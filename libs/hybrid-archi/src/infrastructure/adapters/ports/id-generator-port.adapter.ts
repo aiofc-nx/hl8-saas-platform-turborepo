@@ -10,7 +10,7 @@
 
 import { Injectable } from "@nestjs/common";
 import { EntityId } from "@hl8/isolation-model";
-import { IIdGeneratorPort } from "../../../application/ports/shared/shared-ports.interface";
+import { IIdGeneratorPort } from "../../../application/ports/shared/shared-ports.interface.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**

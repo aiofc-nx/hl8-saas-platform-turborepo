@@ -54,7 +54,7 @@ import type {
   IUser,
   IWebSocketClient,
   IJwtPayload,
-} from "../../shared/interfaces";
+} from "../../shared/interfaces.js";
 import { TenantId } from "@hl8/isolation-model";
 
 export abstract class BaseGateway {

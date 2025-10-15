@@ -48,7 +48,7 @@ import type {
   IMetricsService,
   IWebSocketContext,
   IWebSocketClient,
-} from "../../shared/interfaces";
+} from "../../shared/interfaces.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**
@@ -300,9 +300,7 @@ export class AuthMiddleware extends BaseWebSocketMiddleware {
    * @param userId - 用户ID
    * @returns 用户实体或null
    */
-  private async validateUser(
-    userId: string,
-  ): Promise<{
+  private async validateUser(userId: string): Promise<{
     getId(): { getValue(): string };
     getTenantId(): string;
     isActive(): boolean;

@@ -219,7 +219,7 @@ export class LoggerService {
 ```typescript
 // ❌ 用户困惑：该用哪个？
 import { LoggerService } from "@hl8/nestjs-infra"; // 通用，有隔离上下文
-import { FastifyLoggerService } from "@hl8/nestjs-fastify"; // Fastify，无隔离上下文
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js"; // Fastify，无隔离上下文
 
 // 性能好 vs 功能完整？选哪个？
 ```
@@ -228,7 +228,7 @@ import { FastifyLoggerService } from "@hl8/nestjs-fastify"; // Fastify，无隔�
 
 ```typescript
 // ✅ 清晰：Fastify 应用用这个
-import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 // 两全其美：
 // - ⚡ 性能最优（零开销）
@@ -242,7 +242,7 @@ import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 ### Fastify 应用（推荐）
 
 ```typescript
-import { FastifyLoggingModule } from "@hl8/nestjs-fastify";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 import { IsolationModule } from "@hl8/nestjs-infra";
 
 @Module({

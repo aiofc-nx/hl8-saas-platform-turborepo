@@ -101,7 +101,7 @@ libs/isolation-model/
 
 ```json
 {
-  "name": "@hl8/isolation-model",
+  "name": "@hl8/isolation-model/index.js",
   "version": "1.0.0",
   "description": "纯领域模型库 - 多层级数据隔离（零依赖，框架无关）",
   "type": "module",
@@ -889,7 +889,7 @@ libs/nestjs-isolation/
     "@nestjs/core": "^11.0.0"
   },
   "dependencies": {
-    "@hl8/isolation-model": "workspace:*",
+    "@hl8/isolation-model/index.js": "workspace:*",
     "nestjs-cls": "^6.0.1"
   },
   "devDependencies": {
@@ -1070,7 +1070,7 @@ import {
   OrganizationId,
   DepartmentId,
   UserId,
-} from "@hl8/isolation-model";
+} from "@hl8/isolation-model/index.js";
 
 @Injectable()
 export class IsolationExtractionMiddleware implements NestMiddleware {
@@ -1137,7 +1137,7 @@ export class IsolationExtractionMiddleware implements NestMiddleware {
 
 ```typescript
 import { SetMetadata } from "@nestjs/common";
-import { IsolationLevel } from "@hl8/isolation-model";
+import { IsolationLevel } from "@hl8/isolation-model/index.js";
 
 export const REQUIRED_ISOLATION_LEVEL_KEY = "requiredIsolationLevel";
 

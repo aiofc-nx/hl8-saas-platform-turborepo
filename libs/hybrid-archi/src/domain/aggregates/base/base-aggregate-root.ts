@@ -88,13 +88,13 @@
  *
  * @since 1.0.0
  */
-import { BaseEntity } from "../../entities/base/base-entity";
-import { BaseDomainEvent } from "../../events/base/base-domain-event";
+import { BaseEntity } from "../../entities/base/base-entity.js";
+import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
 import { EntityId } from "@hl8/isolation-model";
-import { IPartialAuditInfo } from "../../entities/base/audit-info";
+import { IPartialAuditInfo } from "../../entities/base/audit-info.js";
 // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现
 import type { IPureLogger } from "@hl8/pure-logger";
-import { IAggregateRoot } from "./aggregate-root.interface";
+import { IAggregateRoot } from "./aggregate-root.interface.js";
 
 export abstract class BaseAggregateRoot
   extends BaseEntity

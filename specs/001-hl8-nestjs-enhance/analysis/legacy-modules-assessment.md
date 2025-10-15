@@ -606,7 +606,7 @@ libs/nestjs-infra/
 
 ```typescript
 // 整合前：需要导入多个包
-import { CacheModule } from "@hl8/cache";
+import { CacheModule } from "@hl8/cache/index.js";
 import { TypedConfigModule } from "@hl8/config";
 import { LoggerModule } from "@hl8/logger";
 import { MultiTenancyModule } from "@hl8/multi-tenancy";

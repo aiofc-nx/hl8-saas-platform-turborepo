@@ -30,7 +30,9 @@ export class LoginUserUseCase
 
   async execute(command: ILoginUserCommand): Promise<ILoginResult> {
     // const email = Email.create(command.email);
-    const aggregate = await (this.userRepository as any).findByEmail(command.email);
+    const aggregate = await (this.userRepository as any).findByEmail(
+      command.email,
+    );
 
     if (!aggregate) {
       throw new Error("用户名或密码错误");

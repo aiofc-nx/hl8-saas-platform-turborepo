@@ -30,8 +30,8 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { BaseDomainEvent } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
 import { TenantType } from "../value-objects/tenant-type.enum.js";
 
 export interface TenantUpgradedEventData {

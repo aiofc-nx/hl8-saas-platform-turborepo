@@ -6,16 +6,16 @@
  */
 
 // 基础值对象
-export * from "./base-value-object";
+export * from "./base-value-object.js";
 
 // 通用值对象库（可重用的抽象基类）
-export * from "./common";
+export * from "./common.js";
 
 // 其他值对象
 // entity-id 已移动到 isolation-model，通过 ids 重新导出
-export * from "./identities";
-export * from "./ids";
-export * from "./statuses";
-export * from "./types";
-export * from "./security";
-export * from "./audit";
+export * from "./identities.js";
+export * from "./ids.js";
+export * from "./statuses.js";
+export * from "./types.js";
+export * from "./security.js";
+export * from "./audit.js";

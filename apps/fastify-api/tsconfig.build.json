@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": false,
     "paths": {
@@ -9,11 +10,7 @@
       "@/controllers/*": ["./src/controllers/*"],
       "@/entities/*": ["./src/entities/*"],
       "@/modules/*": ["./src/modules/*"],
-      "@/services/*": ["./src/services/*"],
-      "@hl8/nestjs-fastify": ["node_modules/@hl8/nestjs-fastify"],
-      "@hl8/caching": ["node_modules/@hl8/caching"],
-      "@hl8/exceptions": ["node_modules/@hl8/exceptions"],
-      "@hl8/database": ["node_modules/@hl8/database"]
+      "@/services/*": ["./src/services/*"]
     }
   },
   "exclude": ["node_modules", "__tests__", "dist", "**/*spec.ts"]

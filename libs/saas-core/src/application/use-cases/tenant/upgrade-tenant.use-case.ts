@@ -8,7 +8,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { TenantId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model/index.js";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
 import { TenantUpgradeService } from "../../../domain/tenant/services/tenant-upgrade.service.js";

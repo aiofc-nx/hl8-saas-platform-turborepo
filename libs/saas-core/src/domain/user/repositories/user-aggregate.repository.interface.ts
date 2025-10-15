@@ -37,7 +37,7 @@
  */
 
 import { IRepository } from "@hl8/hybrid-archi";
-import { EntityId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model/index.js";
 import { UserAggregate } from "../aggregates/user.aggregate.js";
 import { Username } from "../value-objects/username.vo.js";
 import { Email } from "../value-objects/email.vo.js";
@@ -106,7 +106,8 @@ export interface UserListResult {
 /**
  * 用户聚合根仓储接口
  */
-export interface IUserAggregateRepository extends IRepository<UserAggregate, EntityId> {
+export interface IUserAggregateRepository
+  extends IRepository<UserAggregate, EntityId> {
   /**
    * 根据用户名查找用户
    *
@@ -115,7 +116,10 @@ export interface IUserAggregateRepository extends IRepository<UserAggregate, Ent
    * @param username - 用户名
    * @returns 用户聚合根，如果不存在则返回 null
    */
-  findByUsername(tenantId: EntityId, username: Username): Promise<UserAggregate | null>;
+  findByUsername(
+    tenantId: EntityId,
+    username: Username,
+  ): Promise<UserAggregate | null>;
 
   /**
    * 根据邮箱查找用户
@@ -145,7 +149,11 @@ export interface IUserAggregateRepository extends IRepository<UserAggregate, Ent
    * @param excludeId - 排除的用户ID（用于更新时检查）
    * @returns 是否存在
    */
-  existsByUsername(tenantId: EntityId, username: Username, excludeId?: EntityId): Promise<boolean>;
+  existsByUsername(
+    tenantId: EntityId,
+    username: Username,
+    excludeId?: EntityId,
+  ): Promise<boolean>;
 
   /**
    * 检查邮箱是否已存在
@@ -156,7 +164,11 @@ export interface IUserAggregateRepository extends IRepository<UserAggregate, Ent
    * @param excludeId - 排除的用户ID（用于更新时检查）
    * @returns 是否存在
    */
-  existsByEmail(tenantId: EntityId, email: Email, excludeId?: EntityId): Promise<boolean>;
+  existsByEmail(
+    tenantId: EntityId,
+    email: Email,
+    excludeId?: EntityId,
+  ): Promise<boolean>;
 
   /**
    * 检查手机号是否已存在
@@ -166,7 +178,10 @@ export interface IUserAggregateRepository extends IRepository<UserAggregate, Ent
    * @param excludeId - 排除的用户ID（用于更新时检查）
    * @returns 是否存在
    */
-  existsByPhoneNumber(phoneNumber: PhoneNumber, excludeId?: EntityId): Promise<boolean>;
+  existsByPhoneNumber(
+    phoneNumber: PhoneNumber,
+    excludeId?: EntityId,
+  ): Promise<boolean>;
 
   /**
    * 分页查询用户列表
@@ -185,7 +200,10 @@ export interface IUserAggregateRepository extends IRepository<UserAggregate, Ent
    * @param status - 用户状态
    * @returns 用户列表
    */
-  findByStatus(tenantId: EntityId, status: UserStatus): Promise<UserAggregate[]>;
+  findByStatus(
+    tenantId: EntityId,
+    status: UserStatus,
+  ): Promise<UserAggregate[]>;
 
   /**
    * 根据租户查询所有用户
@@ -215,7 +233,11 @@ export interface IUserAggregateRepository extends IRepository<UserAggregate, Ent
    * @param limit - 限制数量
    * @returns 用户列表
    */
-  findRecentLoginUsers(tenantId: EntityId, days: number = 7, limit?: number): Promise<UserAggregate[]>;
+  findRecentLoginUsers(
+    tenantId: EntityId,
+    days: number = 7,
+    limit?: number,
+  ): Promise<UserAggregate[]>;
 
   /**
    * 统计用户数量
