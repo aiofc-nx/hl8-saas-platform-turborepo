@@ -47,15 +47,15 @@
  * @since 1.0.0
  */
 
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { Injectable } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
-import { MONITORING_DEFAULTS } from '../constants/defaults.js';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { Injectable } from "@nestjs/common";
+import { v4 as uuidv4 } from "uuid";
+import { MONITORING_DEFAULTS } from "../constants/defaults.js";
 import type {
   DatabaseMetrics,
   QueryMetrics,
   SlowQueryLog,
-} from '../types/monitoring.types.js';
+} from "../types/monitoring.types.js";
 
 @Injectable()
 export class MetricsService {
@@ -68,7 +68,7 @@ export class MetricsService {
   };
 
   constructor(private readonly logger: FastifyLoggerService) {
-    this.logger.log('MetricsService 初始化');
+    this.logger.log("MetricsService 初始化");
   }
 
   /**
@@ -94,7 +94,7 @@ export class MetricsService {
     if (duration >= threshold) {
       const slowQuery: SlowQueryLog = {
         id: uuidv4(),
-        query: metrics.query || 'Unknown query',
+        query: metrics.query || "Unknown query",
         duration,
         timestamp: new Date(),
         tenantId: metrics.isolationContext?.tenantId,
@@ -110,7 +110,7 @@ export class MetricsService {
         this.slowQueryQueue.shift();
       }
 
-      this.logger.warn('检测到慢查询', {
+      this.logger.warn("检测到慢查询", {
         duration,
         threshold,
         query: slowQuery.query,

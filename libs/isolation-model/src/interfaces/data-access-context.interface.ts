@@ -6,8 +6,8 @@
  * @since 1.0.0
  */
 
-import type { IsolationContext } from '../entities/isolation-context.entity.js';
-import type { SharingLevel } from '../enums/sharing-level.enum.js';
+import type { IsolationContext } from "../entities/isolation-context.entity.js";
+import type { SharingLevel } from "../enums/sharing-level.enum.js";
 
 export interface DataAccessContext {
   /** 数据的隔离上下文 */

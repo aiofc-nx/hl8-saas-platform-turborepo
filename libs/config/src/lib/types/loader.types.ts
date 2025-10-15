@@ -12,7 +12,7 @@ import {
   KeyTransformer,
   ResponseMapper,
   RetryCondition,
-} from './config.types.js';
+} from "./config.types.js";
 
 /**
  * 文件加载器选项类型
@@ -69,7 +69,7 @@ export interface RemoteLoaderOptions {
     timeout?: number;
   };
   /** 响应类型 */
-  type?: 'json' | 'yaml' | 'yml' | ResponseMapper;
+  type?: "json" | "yaml" | "yml" | ResponseMapper;
   /** 响应映射器 */
   mapResponse?: ResponseMapper;
   /** 重试条件 */
@@ -121,7 +121,7 @@ export interface ConfigParserType {
  * @type SupportedFileExtension
  * @since 1.0.0
  */
-export type SupportedFileExtension = '.json' | '.yml' | '.yaml';
+export type SupportedFileExtension = ".json" | ".yml" | ".yaml";
 
 /**
  * 文件信息类型

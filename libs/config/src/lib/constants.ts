@@ -38,7 +38,7 @@ export const DI_TOKENS = {
    * private readonly options: TypedConfigModuleOptions
    * ```
    */
-  CONFIG_MODULE_OPTIONS: 'CONFIG_MODULE_OPTIONS',
+  CONFIG_MODULE_OPTIONS: "CONFIG_MODULE_OPTIONS",
 
   /**
    * 配置 Schema 令牌
@@ -51,7 +51,7 @@ export const DI_TOKENS = {
    * private readonly schema: Type<unknown>
    * ```
    */
-  CONFIG_SCHEMA: 'CONFIG_SCHEMA',
+  CONFIG_SCHEMA: "CONFIG_SCHEMA",
 
   /**
    * 缓存提供者令牌
@@ -64,7 +64,7 @@ export const DI_TOKENS = {
    * private readonly cacheProvider: CacheProvider
    * ```
    */
-  CACHE_PROVIDER: 'CACHE_PROVIDER',
+  CACHE_PROVIDER: "CACHE_PROVIDER",
 
   /**
    * 日志记录器提供者令牌
@@ -77,7 +77,7 @@ export const DI_TOKENS = {
    * private readonly logger: PinoLogger
    * ```
    */
-  LOGGER_PROVIDER: 'LOGGER_PROVIDER',
+  LOGGER_PROVIDER: "LOGGER_PROVIDER",
 } as const;
 
 // ============================================================================
@@ -96,28 +96,28 @@ export const CACHE_KEYS = {
    *
    * @description 用于配置数据的缓存键
    */
-  CONFIG: 'config',
+  CONFIG: "config",
 
   /**
    * 文件缓存键前缀
    *
    * @description 用于文件内容的缓存键
    */
-  FILE: 'file',
+  FILE: "file",
 
   /**
    * 远程配置缓存键前缀
    *
    * @description 用于远程配置的缓存键
    */
-  REMOTE: 'remote',
+  REMOTE: "remote",
 
   /**
    * 环境变量缓存键前缀
    *
    * @description 用于环境变量的缓存键
    */
-  ENV: 'env',
+  ENV: "env",
 } as const;
 
 // ============================================================================
@@ -135,35 +135,35 @@ export const LOADER_TYPES = {
    *
    * @description 从文件系统加载配置
    */
-  FILE: 'file',
+  FILE: "file",
 
   /**
    * Dotenv 加载器
    *
    * @description 从 .env 文件加载配置
    */
-  DOTENV: 'dotenv',
+  DOTENV: "dotenv",
 
   /**
    * 远程加载器
    *
    * @description 从远程服务加载配置
    */
-  REMOTE: 'remote',
+  REMOTE: "remote",
 
   /**
    * 目录加载器
    *
    * @description 从目录批量加载配置文件
    */
-  DIRECTORY: 'directory',
+  DIRECTORY: "directory",
 
   /**
    * 数据库加载器
    *
    * @description 从数据库加载配置
    */
-  DATABASE: 'database',
+  DATABASE: "database",
 } as const;
 
 // ============================================================================
@@ -179,27 +179,27 @@ export const FILE_FORMATS = {
   /**
    * JSON 格式
    */
-  JSON: 'json',
+  JSON: "json",
 
   /**
    * YAML 格式
    */
-  YAML: 'yaml',
+  YAML: "yaml",
 
   /**
    * YML 格式（YAML 的别名）
    */
-  YML: 'yml',
+  YML: "yml",
 
   /**
    * ENV 格式
    */
-  ENV: 'env',
+  ENV: "env",
 
   /**
    * TOML 格式
    */
-  TOML: 'toml',
+  TOML: "toml",
 } as const;
 
 // ============================================================================
@@ -225,28 +225,28 @@ export const CONFIG_DEFAULTS = {
    *
    * @description 缓存键的默认前缀
    */
-  CACHE_PREFIX: 'typed-config',
+  CACHE_PREFIX: "typed-config",
 
   /**
    * 默认环境变量分隔符
    *
    * @description 用于环境变量路径分隔的字符
    */
-  ENV_SEPARATOR: '__',
+  ENV_SEPARATOR: "__",
 
   /**
    * 默认配置文件路径
    *
    * @description 配置文件的默认路径
    */
-  DEFAULT_CONFIG_PATH: './config',
+  DEFAULT_CONFIG_PATH: "./config",
 
   /**
    * 默认 .env 文件名
    *
    * @description 环境变量文件的默认名称
    */
-  DEFAULT_ENV_FILE: '.env',
+  DEFAULT_ENV_FILE: ".env",
 
   /**
    * 默认重试次数
@@ -304,32 +304,32 @@ export const CACHE_EVENTS = {
   /**
    * 缓存命中事件
    */
-  HIT: 'hit',
+  HIT: "hit",
 
   /**
    * 缓存未命中事件
    */
-  MISS: 'miss',
+  MISS: "miss",
 
   /**
    * 缓存设置事件
    */
-  SET: 'set',
+  SET: "set",
 
   /**
    * 缓存删除事件
    */
-  DELETE: 'delete',
+  DELETE: "delete",
 
   /**
    * 缓存清空事件
    */
-  CLEAR: 'clear',
+  CLEAR: "clear",
 
   /**
    * 缓存过期事件
    */
-  EXPIRE: 'expire',
+  EXPIRE: "expire",
 } as const;
 
 // ============================================================================
@@ -345,37 +345,37 @@ export const ERROR_CODES = {
   /**
    * 配置验证失败
    */
-  VALIDATION_ERROR: 'CONFIG_VALIDATION_ERROR',
+  VALIDATION_ERROR: "CONFIG_VALIDATION_ERROR",
 
   /**
    * 配置加载失败
    */
-  LOAD_ERROR: 'CONFIG_LOAD_ERROR',
+  LOAD_ERROR: "CONFIG_LOAD_ERROR",
 
   /**
    * 文件不存在
    */
-  FILE_NOT_FOUND: 'CONFIG_FILE_NOT_FOUND',
+  FILE_NOT_FOUND: "CONFIG_FILE_NOT_FOUND",
 
   /**
    * 文件格式错误
    */
-  INVALID_FORMAT: 'CONFIG_INVALID_FORMAT',
+  INVALID_FORMAT: "CONFIG_INVALID_FORMAT",
 
   /**
    * 远程加载失败
    */
-  REMOTE_LOAD_ERROR: 'CONFIG_REMOTE_LOAD_ERROR',
+  REMOTE_LOAD_ERROR: "CONFIG_REMOTE_LOAD_ERROR",
 
   /**
    * 缓存错误
    */
-  CACHE_ERROR: 'CONFIG_CACHE_ERROR',
+  CACHE_ERROR: "CONFIG_CACHE_ERROR",
 
   /**
    * 环境变量替换错误
    */
-  ENV_SUBSTITUTION_ERROR: 'CONFIG_ENV_SUBSTITUTION_ERROR',
+  ENV_SUBSTITUTION_ERROR: "CONFIG_ENV_SUBSTITUTION_ERROR",
 } as const;
 
 // ============================================================================

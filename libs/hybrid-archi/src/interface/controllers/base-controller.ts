@@ -1,8 +1,8 @@
-import {
+import type {
   ILoggerService,
   IMetricsService,
   IRequestContext,
-} from '../shared/interfaces';
+} from "../shared/interfaces.js";
 
 /**
  * 基础REST控制器
@@ -59,7 +59,7 @@ export abstract class BaseController {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.requestId = this.generateRequestId();
     this.correlationId = this.generateCorrelationId();
@@ -83,16 +83,11 @@ export abstract class BaseController {
   protected async handleRequest<TInput, TOutput>(
     input: TInput,
     useCaseExecutor: (input: TInput) => Promise<TOutput>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TOutput> {
     this.getRequestContext();
 
-    this.logger.info(`开始处理${operationName}请求`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      input: this.sanitizeInput(input),
-    });
+    this.logger.log(`开始处理${operationName}请求`);
 
     try {
       // 执行用例
@@ -124,8 +119,8 @@ export abstract class BaseController {
     return {
       requestId: this.requestId,
       correlationId: this.correlationId,
-      userId: 'current-user-id',
-      tenantId: 'current-tenant-id',
+      userId: "current-user-id",
+      tenantId: "current-tenant-id",
       timestamp: new Date(),
     };
   }
@@ -141,19 +136,13 @@ export abstract class BaseController {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.info(`${operationName}操作成功`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      resultType: typeof result,
-    });
+    this.logger.log(`${operationName}操作成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(`${operationName}_success_total`);
     this.metricsService?.recordHistogram(
       `${operationName}_duration_ms`,
-      duration
+      duration,
     );
   }
 
@@ -168,20 +157,10 @@ export abstract class BaseController {
   protected logError(operationName: string, error: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.error(`${operationName}操作失败`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    this.logger.error(`${operationName}操作失败`);
 
     // 记录错误指标
-    this.metricsService?.incrementCounter(`${operationName}_error_total`, {
-      error_type:
-        error instanceof Error ? error.constructor.name : 'UnknownError',
-    });
+    this.metricsService?.incrementCounter(`${operationName}_error_total`);
   }
 
   /**
@@ -193,14 +172,14 @@ export abstract class BaseController {
    * @returns 清理后的数据
    */
   protected sanitizeInput(input: unknown): unknown {
-    if (typeof input === 'object' && input !== null) {
+    if (typeof input === "object" && input !== null) {
       const sanitized = { ...(input as Record<string, unknown>) };
 
       // 清理敏感字段
-      const sensitiveFields = ['password', 'token', 'secret', 'key'];
+      const sensitiveFields = ["password", "token", "secret", "key"];
       sensitiveFields.forEach((field) => {
         if (field in sanitized) {
-          sanitized[field] = '[REDACTED]';
+          sanitized[field] = "[REDACTED]";
         }
       });
 

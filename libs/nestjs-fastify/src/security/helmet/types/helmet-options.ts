@@ -15,7 +15,7 @@
  * @module security/helmet
  */
 
-import type { FastifyHelmetOptions } from '@fastify/helmet';
+import type { FastifyHelmetOptions } from "@fastify/helmet";
 
 /**
  * Helmet 配置选项
@@ -88,8 +88,8 @@ export const DEFAULT_HELMET_OPTIONS: HelmetOptions = {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
-      fontSrc: ["'self'", 'data:'],
+      imgSrc: ["'self'", "data:", "https:"],
+      fontSrc: ["'self'", "data:"],
       connectSrc: ["'self'"],
       frameSrc: ["'none'"],
       objectSrc: ["'none'"],
@@ -106,6 +106,6 @@ export const DEFAULT_HELMET_OPTIONS: HelmetOptions = {
   xContentTypeOptions: false, // false = 启用 nosniff
   xDnsPrefetchControl: { allow: false },
   xDownloadOptions: false, // false = 启用 noopen
-  xFrameOptions: { action: 'deny' },
-  xPermittedCrossDomainPolicies: { permittedPolicies: 'none' },
+  xFrameOptions: { action: "deny" },
+  xPermittedCrossDomainPolicies: { permittedPolicies: "none" },
 };

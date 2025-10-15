@@ -2,11 +2,11 @@
  * 租户控制器单元测试
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { CommandBus, QueryBus } from '@hl8/hybrid-archi';
-import { TenantController } from './tenant.controller';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CommandBus, QueryBus } from "@hl8/hybrid-archi";
+import { TenantController } from "./tenant.controller";
 
-describe('TenantController', () => {
+describe("TenantController", () => {
   let controller: TenantController;
   let commandBus: CommandBus;
   let queryBus: QueryBus;
@@ -35,10 +35,9 @@ describe('TenantController', () => {
     queryBus = module.get<QueryBus>(QueryBus);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 
   // TODO: 添加更多测试
 });
-

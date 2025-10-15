@@ -55,7 +55,7 @@
  * const event = new UserCreatedEvent(
  *   userId,
  *   1,
- *   EntityId.fromString('tenant-123'),  // ✅ 使用EntityId
+ *   TenantId.create('tenant-123'),  // ✅ 使用EntityId
  *   userId,
  *   'user@example.com',
  *   '张三'
@@ -64,7 +64,8 @@
  *
  * @since 1.0.0
  */
-import { EntityId } from '../../value-objects/entity-id';
+import { EntityId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model";
 
 export abstract class BaseDomainEvent {
   private readonly _eventId: EntityId;
@@ -86,9 +87,9 @@ export abstract class BaseDomainEvent {
     aggregateId: EntityId,
     aggregateVersion: number,
     tenantId: EntityId,
-    eventVersion = 1
+    eventVersion = 1,
   ) {
-    this._eventId = EntityId.generate();
+    this._eventId = TenantId.generate();
     this._aggregateId = aggregateId;
     this._aggregateVersion = aggregateVersion;
     this._tenantId = tenantId;
@@ -245,7 +246,7 @@ export abstract class BaseDomainEvent {
       eventType: this.eventType,
       aggregateId: this._aggregateId.toString(),
       aggregateVersion: this._aggregateVersion,
-      tenantId: this._tenantId.toString(),  // ✅ 序列化为string
+      tenantId: this._tenantId.toString(), // ✅ 序列化为string
       occurredAt: this._occurredAt.toISOString(),
       eventVersion: this._eventVersion,
       eventData: this.eventData,
@@ -312,7 +313,7 @@ export abstract class BaseDomainEvent {
    * @returns 如果事件属于指定的租户则返回 true，否则返回 false
    */
   public belongsToTenant(tenantId: EntityId): boolean {
-    return this._tenantId.equals(tenantId);  // ✅ 使用equals方法
+    return this._tenantId.equals(tenantId); // ✅ 使用equals方法
   }
 
   /**
@@ -325,24 +326,23 @@ export abstract class BaseDomainEvent {
    */
   protected validate(): void {
     if (!this._eventId || this._eventId.isEmpty()) {
-      throw new Error('Event ID cannot be null or empty');
+      throw new Error("Event ID cannot be null or empty");
     }
 
     if (!this._aggregateId || this._aggregateId.isEmpty()) {
-      throw new Error('Aggregate ID cannot be null or empty');
+      throw new Error("Aggregate ID cannot be null or empty");
     }
 
     if (!this._tenantId) {
-      throw new Error('Tenant ID cannot be null or empty');
+      throw new Error("Tenant ID cannot be null or empty");
     }
 
     if (this._aggregateVersion < 1) {
-      throw new Error('Aggregate version must be greater than 0');
+      throw new Error("Aggregate version must be greater than 0");
     }
 
     if (this._eventVersion < 1) {
-      throw new Error('Event version must be greater than 0');
+      throw new Error("Event version must be greater than 0");
     }
   }
 }
-

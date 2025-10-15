@@ -6,10 +6,10 @@
  */
 
 // 装饰器配置接口
-export type { IQueryHandlerOptions } from './query-handler.decorator';
+export type { IQueryHandlerOptions } from "./query-handler.decorator.js";
 
 // 装饰器函数
-export { QueryHandler, Query } from './query-handler.decorator';
+export { QueryHandler, Query } from "./query-handler.decorator.js";
 
 // 元数据工具
 export {
@@ -19,4 +19,4 @@ export {
   isQuery,
   QUERY_HANDLER_METADATA_KEY,
   QUERY_METADATA_KEY,
-} from './query-handler.decorator';
+} from "./query-handler.decorator.js";

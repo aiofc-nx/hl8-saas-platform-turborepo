@@ -82,7 +82,7 @@ export interface IMessageQueueAdapter {
   subscribe(
     topic: string,
     handler: MessageHandler,
-    options?: SubscribeOptions
+    options?: SubscribeOptions,
   ): Promise<void>;
 
   /**
@@ -107,7 +107,7 @@ export interface IMessageQueueAdapter {
   publishBatch(
     topic: string,
     messages: any[],
-    options?: PublishOptions
+    options?: PublishOptions,
   ): Promise<void>;
 
   /**

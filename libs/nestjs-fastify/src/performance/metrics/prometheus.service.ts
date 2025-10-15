@@ -2,9 +2,9 @@
  * @fileoverview Prometheus 服务
  */
 
-import { Injectable, Logger } from '@nestjs/common';
-import * as promClient from 'prom-client';
-import type { MetricsOptions } from './types/metrics-options.js';
+import { Injectable, Logger } from "@nestjs/common";
+import * as promClient from "prom-client";
+import type { MetricsOptions } from "./types/metrics-options.js";
 
 @Injectable()
 export class PrometheusService {
@@ -26,26 +26,26 @@ export class PrometheusService {
 
     // 创建 HTTP 请求计数器
     this.httpRequestsTotal = new promClient.Counter({
-      name: 'http_requests_total',
-      help: 'HTTP 请求总数',
-      labelNames: ['method', 'path', 'status', 'tenant_id'],
+      name: "http_requests_total",
+      help: "HTTP 请求总数",
+      labelNames: ["method", "path", "status", "tenant_id"],
       registers: [this.registry],
     });
 
     // 创建 HTTP 响应时间直方图
     this.httpRequestDuration = new promClient.Histogram({
-      name: 'http_request_duration_seconds',
-      help: 'HTTP 请求响应时间（秒）',
-      labelNames: ['method', 'path', 'status', 'tenant_id'],
+      name: "http_request_duration_seconds",
+      help: "HTTP 请求响应时间（秒）",
+      labelNames: ["method", "path", "status", "tenant_id"],
       buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 5],
       registers: [this.registry],
     });
 
     // 创建 HTTP 错误计数器
     this.httpErrorsTotal = new promClient.Counter({
-      name: 'http_errors_total',
-      help: 'HTTP 错误总数',
-      labelNames: ['method', 'path', 'status', 'tenant_id'],
+      name: "http_errors_total",
+      help: "HTTP 错误总数",
+      labelNames: ["method", "path", "status", "tenant_id"],
       registers: [this.registry],
     });
 
@@ -54,7 +54,7 @@ export class PrometheusService {
       promClient.collectDefaultMetrics({ register: this.registry });
     }
 
-    this.logger.log('Prometheus 服务已初始化');
+    this.logger.log("Prometheus 服务已初始化");
   }
 
   /**

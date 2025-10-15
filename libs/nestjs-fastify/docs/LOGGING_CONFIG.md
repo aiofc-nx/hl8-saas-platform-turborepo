@@ -17,8 +17,8 @@
 ### 基础使用（零配置）
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { FastifyLoggingModule } from '@hl8/nestjs-fastify';
+import { Module } from "@nestjs/common";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -32,14 +32,14 @@ export class AppModule {}
 ### 自定义配置
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { FastifyLoggingModule } from '@hl8/nestjs-fastify';
+import { Module } from "@nestjs/common";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     FastifyLoggingModule.forRoot({
       config: {
-        level: 'debug',
+        level: "debug",
         prettyPrint: true,
         includeIsolationContext: true,
         timestamp: true,
@@ -54,15 +54,15 @@ export class AppModule {}
 ### 环境变量配置
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { FastifyLoggingModule } from '@hl8/nestjs-fastify';
+import { Module } from "@nestjs/common";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     FastifyLoggingModule.forRoot({
       config: {
-        level: (process.env.LOG_LEVEL as any) || 'info',
-        prettyPrint: process.env.NODE_ENV === 'development',
+        level: (process.env.LOG_LEVEL as any) || "info",
+        prettyPrint: process.env.NODE_ENV === "development",
         includeIsolationContext: true,
       },
     }),
@@ -105,7 +105,7 @@ export class AppModule {}
 ```typescript
 FastifyLoggingModule.forRoot({
   config: {
-    level: 'debug',
+    level: "debug",
     prettyPrint: true,
     includeIsolationContext: true,
     timestamp: true,
@@ -120,7 +120,7 @@ FastifyLoggingModule.forRoot({
 ```typescript
 FastifyLoggingModule.forRoot({
   config: {
-    level: 'warn',
+    level: "warn",
     prettyPrint: false,
     includeIsolationContext: true,
     timestamp: true,
@@ -135,7 +135,7 @@ FastifyLoggingModule.forRoot({
 ```typescript
 FastifyLoggingModule.forRoot({
   config: {
-    level: 'silent',
+    level: "silent",
     enabled: false,
   },
 });
@@ -146,17 +146,17 @@ FastifyLoggingModule.forRoot({
 在任何地方都可以注入 `FastifyLoggerService`：
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class MyService {
   constructor(private readonly logger: FastifyLoggerService) {}
 
   doSomething() {
-    this.logger.info('Doing something...');
-    this.logger.debug('Debug details...');
-    this.logger.error('Error occurred!', error);
+    this.logger.info("Doing something...");
+    this.logger.debug("Debug details...");
+    this.logger.error("Error occurred!", error);
   }
 }
 ```
@@ -232,10 +232,10 @@ Configuration validation failed:
 如果项目使用了 `@hl8/config`，可以从配置文件加载日志配置：
 
 ```typescript
-import { TypedConfigModule, fileLoader } from '@hl8/config';
-import { FastifyLoggingModule, LoggingConfig } from '@hl8/nestjs-fastify';
-import { Type } from 'class-transformer';
-import { ValidateNested } from 'class-validator';
+import { TypedConfigModule, fileLoader } from "@hl8/config";
+import { FastifyLoggingModule, LoggingConfig } from "@hl8/nestjs-fastify/index.js";
+import { Type } from "class-transformer";
+import { ValidateNested } from "class-validator";
 
 // 定义应用配置
 class AppConfig {
@@ -249,7 +249,7 @@ class AppConfig {
     // 加载配置
     TypedConfigModule.forRoot({
       schema: AppConfig,
-      load: [fileLoader({ path: './config/app.yml' })],
+      load: [fileLoader({ path: "./config/app.yml" })],
     }),
 
     // 使用配置

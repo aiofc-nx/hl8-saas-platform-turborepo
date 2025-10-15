@@ -8,14 +8,14 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { MessagingService } from '@hl8/messaging';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
+import { Injectable } from "@nestjs/common";
+import { MessagingService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,
-} from './message-queue.adapter';
+} from "./message-queue.adapter.js";
 
 /**
  * 消息队列注册信息
@@ -49,7 +49,7 @@ export class MessageQueueFactory {
   constructor(
     private readonly messagingService: MessagingService,
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger
+    private readonly logger: FastifyLoggerService,
   ) {}
 
   /**
@@ -63,7 +63,7 @@ export class MessageQueueFactory {
   createQueue(
     queueName: string,
     queueType: string,
-    config: Partial<IMessageQueueConfig> = {}
+    config: Partial<IMessageQueueConfig> = {},
   ): MessageQueueAdapter {
     // 检查队列是否已存在
     if (this.queues.has(queueName)) {
@@ -77,7 +77,7 @@ export class MessageQueueFactory {
       this.messagingService,
       this.cacheService,
       this.logger,
-      config
+      config,
     );
 
     // 注册队列
@@ -104,10 +104,7 @@ export class MessageQueueFactory {
 
     this.queues.set(queueName, registration);
 
-    this.logger.debug(`创建消息队列: ${queueName}`, {
-      queueType,
-      config: registration.config,
-    });
+    this.logger.debug(`创建消息队列: ${queueName}`);
 
     return queue;
   }
@@ -139,7 +136,7 @@ export class MessageQueueFactory {
   getOrCreateQueue(
     queueName: string,
     queueType: string,
-    config: Partial<IMessageQueueConfig> = {}
+    config: Partial<IMessageQueueConfig> = {},
   ): MessageQueueAdapter {
     const existingQueue = this.getQueue(queueName);
     if (existingQueue) {
@@ -204,7 +201,7 @@ export class MessageQueueFactory {
    */
   updateQueueConfiguration(
     queueName: string,
-    config: Partial<IMessageQueueConfig>
+    config: Partial<IMessageQueueConfig>,
   ): void {
     const registration = this.queues.get(queueName);
     if (!registration) {
@@ -213,9 +210,7 @@ export class MessageQueueFactory {
 
     Object.assign(registration.config, config);
 
-    this.logger.debug(`更新消息队列配置: ${queueName}`, {
-      config: registration.config,
-    });
+    this.logger.debug(`更新消息队列配置: ${queueName}`);
   }
 
   /**
@@ -225,7 +220,7 @@ export class MessageQueueFactory {
    * @returns 清理的队列数量
    */
   async cleanupExpiredQueues(
-    maxAge: number = 24 * 60 * 60 * 1000
+    maxAge: number = 24 * 60 * 60 * 1000,
   ): Promise<number> {
     const now = new Date();
     const expiredQueues: string[] = [];
@@ -241,9 +236,7 @@ export class MessageQueueFactory {
       await this.destroyQueue(queueName);
     }
 
-    this.logger.debug(`清理过期消息队列: ${expiredQueues.length}`, {
-      expiredQueues,
-    });
+    this.logger.debug(`清理过期消息队列: ${expiredQueues.length}`);
 
     return expiredQueues.length;
   }
@@ -314,11 +307,11 @@ export class MessageQueueFactory {
       try {
         const isHealthy = await this.checkQueueHealth(
           queueName,
-          registration.instance!
+          registration.instance!,
         );
         results[queueName] = {
           healthy: isHealthy,
-          status: isHealthy ? 'healthy' : 'unhealthy',
+          status: isHealthy ? "healthy" : "unhealthy",
           queueName,
           queueType: registration.queueType,
           createdAt: registration.createdAt,
@@ -327,7 +320,7 @@ export class MessageQueueFactory {
       } catch (error) {
         results[queueName] = {
           healthy: false,
-          status: 'error',
+          status: "error",
           error: error instanceof Error ? error.message : String(error),
           queueName,
         };
@@ -344,7 +337,7 @@ export class MessageQueueFactory {
    */
   private async checkQueueHealth(
     queueName: string,
-    instance: MessageQueueAdapter
+    instance: MessageQueueAdapter,
   ): Promise<boolean> {
     try {
       // 检查队列是否可用
@@ -361,10 +354,10 @@ export class MessageQueueFactory {
   private async cleanupQueueCache(queueName: string): Promise<void> {
     const pattern = `message:${queueName}:*`;
     // 使用兼容性检查调用 deletePattern 方法
-    if (typeof (this.cacheService as any).deletePattern === 'function') {
+    if (typeof (this.cacheService as any).deletePattern === "function") {
       await (this.cacheService as any).deletePattern(pattern);
     } else {
-      console.warn('CacheService不支持deletePattern方法');
+      console.warn("CacheService不支持deletePattern方法");
     }
   }
 }

@@ -8,9 +8,9 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { ILoggerPort } from '../../../application/ports/shared/shared-ports.interface';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { ILoggerPort } from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
  * 日志端口适配器
@@ -19,7 +19,7 @@ import { ILoggerPort } from '../../../application/ports/shared/shared-ports.inte
  */
 @Injectable()
 export class LoggerPortAdapter implements ILoggerPort {
-  constructor(private readonly logger: PinoLogger) {}
+  constructor(private readonly logger: FastifyLoggerService) {}
 
   /**
    * 记录调试日志
@@ -38,7 +38,7 @@ export class LoggerPortAdapter implements ILoggerPort {
    * @param context - 上下文信息
    */
   info(message: string, context?: Record<string, unknown>): void {
-    this.logger.info(message, context);
+    this.logger.log(message, context);
   }
 
   /**
@@ -61,7 +61,7 @@ export class LoggerPortAdapter implements ILoggerPort {
   error(
     message: string,
     error?: Error,
-    context?: Record<string, unknown>
+    context?: Record<string, unknown>,
   ): void {
     this.logger.error(message, error, context);
   }
@@ -82,7 +82,7 @@ export class LoggerPortAdapter implements ILoggerPort {
    *
    * @param level - 日志级别
    */
-  setLevel(level: 'debug' | 'info' | 'warn' | 'error'): void {
+  setLevel(level: "debug" | "info" | "warn" | "error"): void {
     // 注意：具体的日志级别设置取决于底层日志服务的实现
     // 这里提供接口兼容性，实际实现可能需要根据具体的日志服务调整
     console.log(`设置日志级别: ${level}`);
@@ -95,7 +95,7 @@ export class LoggerPortAdapter implements ILoggerPort {
    */
   getLevel(): string {
     // 注意：具体的日志级别获取取决于底层日志服务的实现
-    return 'info';
+    return "info";
   }
 
   /**

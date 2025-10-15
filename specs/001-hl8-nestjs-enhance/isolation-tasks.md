@@ -101,7 +101,7 @@ libs/isolation-model/
 
 ```json
 {
-  "name": "@hl8/isolation-model",
+  "name": "@hl8/isolation-model/index.js",
   "version": "1.0.0",
   "description": "纯领域模型库 - 多层级数据隔离（零依赖，框架无关）",
   "type": "module",
@@ -186,12 +186,12 @@ libs/isolation-model/
 **文件**: `libs/isolation-model/eslint.config.mjs`
 
 ```javascript
-import baseConfig from '@repo/eslint-config/base.js';
+import baseConfig from "@repo/eslint-config/base.js";
 
 export default [
   ...baseConfig,
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**'],
+    ignores: ["dist/**", "coverage/**", "node_modules/**"],
   },
 ];
 ```
@@ -252,7 +252,7 @@ export class IsolationValidationError extends Error {
     public readonly context?: Record<string, any>,
   ) {
     super(message);
-    this.name = 'IsolationValidationError';
+    this.name = "IsolationValidationError";
 
     // 设置原型链（TypeScript 继承 Error 的必需操作）
     Object.setPrototypeOf(this, IsolationValidationError.prototype);
@@ -289,11 +289,11 @@ export class IsolationValidationError extends Error {
  * @since 1.0.0
  */
 export enum IsolationLevel {
-  PLATFORM = 'platform',
-  TENANT = 'tenant',
-  ORGANIZATION = 'organization',
-  DEPARTMENT = 'department',
-  USER = 'user',
+  PLATFORM = "platform",
+  TENANT = "tenant",
+  ORGANIZATION = "organization",
+  DEPARTMENT = "department",
+  USER = "user",
 }
 ```
 
@@ -308,11 +308,11 @@ export enum IsolationLevel {
  * @since 1.0.0
  */
 export enum SharingLevel {
-  PLATFORM = 'platform',
-  TENANT = 'tenant',
-  ORGANIZATION = 'organization',
-  DEPARTMENT = 'department',
-  USER = 'user',
+  PLATFORM = "platform",
+  TENANT = "tenant",
+  ORGANIZATION = "organization",
+  DEPARTMENT = "department",
+  USER = "user",
 }
 ```
 
@@ -376,24 +376,24 @@ export class TenantId {
   }
 
   private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+    if (!this.value || typeof this.value !== "string") {
       throw new IsolationValidationError(
-        '租户 ID 必须是非空字符串',
-        'INVALID_TENANT_ID',
+        "租户 ID 必须是非空字符串",
+        "INVALID_TENANT_ID",
       );
     }
 
     if (this.value.length > 50) {
       throw new IsolationValidationError(
-        '租户 ID 长度不能超过 50 字符',
-        'TENANT_ID_TOO_LONG',
+        "租户 ID 长度不能超过 50 字符",
+        "TENANT_ID_TOO_LONG",
       );
     }
 
     if (!/^[a-zA-Z0-9_-]+$/.test(this.value)) {
       throw new IsolationValidationError(
-        '租户 ID 只能包含字母、数字、下划线和连字符',
-        'INVALID_TENANT_ID_FORMAT',
+        "租户 ID 只能包含字母、数字、下划线和连字符",
+        "INVALID_TENANT_ID_FORMAT",
       );
     }
   }
@@ -579,15 +579,15 @@ export class IsolationContext {
   private validate(): void {
     if (this.organizationId && !this.tenantId) {
       throw new IsolationValidationError(
-        '组织级上下文必须包含租户 ID',
-        'INVALID_ORGANIZATION_CONTEXT',
+        "组织级上下文必须包含租户 ID",
+        "INVALID_ORGANIZATION_CONTEXT",
       );
     }
 
     if (this.departmentId && (!this.tenantId || !this.organizationId)) {
       throw new IsolationValidationError(
-        '部门级上下文必须包含租户 ID 和组织 ID',
-        'INVALID_DEPARTMENT_CONTEXT',
+        "部门级上下文必须包含租户 ID 和组织 ID",
+        "INVALID_DEPARTMENT_CONTEXT",
       );
     }
   }
@@ -769,30 +769,30 @@ export class IsolationContext {
  */
 
 // 实体
-export { IsolationContext } from './entities/isolation-context.entity.js';
+export { IsolationContext } from "./entities/isolation-context.entity.js";
 
 // 值对象
-export { TenantId } from './value-objects/tenant-id.vo.js';
-export { OrganizationId } from './value-objects/organization-id.vo.js';
-export { DepartmentId } from './value-objects/department-id.vo.js';
-export { UserId } from './value-objects/user-id.vo.js';
+export { TenantId } from "./value-objects/tenant-id.vo.js";
+export { OrganizationId } from "./value-objects/organization-id.vo.js";
+export { DepartmentId } from "./value-objects/department-id.vo.js";
+export { UserId } from "./value-objects/user-id.vo.js";
 
 // 枚举
-export { IsolationLevel } from './enums/isolation-level.enum.js';
-export { SharingLevel } from './enums/sharing-level.enum.js';
+export { IsolationLevel } from "./enums/isolation-level.enum.js";
+export { SharingLevel } from "./enums/sharing-level.enum.js";
 
 // 接口
-export type { IIsolationContextProvider } from './interfaces/isolation-context-provider.interface.js';
-export type { IIsolationValidator } from './interfaces/isolation-validator.interface.js';
-export type { DataAccessContext } from './interfaces/data-access-context.interface.js';
+export type { IIsolationContextProvider } from "./interfaces/isolation-context-provider.interface.js";
+export type { IIsolationValidator } from "./interfaces/isolation-validator.interface.js";
+export type { DataAccessContext } from "./interfaces/data-access-context.interface.js";
 
 // 事件
-export { IsolationContextCreatedEvent } from './events/context-created.event.js';
-export { IsolationContextSwitchedEvent } from './events/context-switched.event.js';
-export { DataAccessDeniedEvent } from './events/access-denied.event.js';
+export { IsolationContextCreatedEvent } from "./events/context-created.event.js";
+export { IsolationContextSwitchedEvent } from "./events/context-switched.event.js";
+export { DataAccessDeniedEvent } from "./events/access-denied.event.js";
 
 // 异常
-export { IsolationValidationError } from './errors/isolation-validation.error.js';
+export { IsolationValidationError } from "./errors/isolation-validation.error.js";
 ```
 
 **验收标准**:
@@ -889,7 +889,7 @@ libs/nestjs-isolation/
     "@nestjs/core": "^11.0.0"
   },
   "dependencies": {
-    "@hl8/isolation-model": "workspace:*",
+    "@hl8/isolation-model/index.js": "workspace:*",
     "nestjs-cls": "^6.0.1"
   },
   "devDependencies": {
@@ -1062,15 +1062,15 @@ export class IsolationContextService implements IIsolationContextProvider {
 **代码**:
 
 ```typescript
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { IsolationContextService } from '../services/isolation-context.service.js';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+import { IsolationContextService } from "../services/isolation-context.service.js";
 import {
   IsolationContext,
   TenantId,
   OrganizationId,
   DepartmentId,
   UserId,
-} from '@hl8/isolation-model';
+} from "@hl8/isolation-model/index.js";
 
 @Injectable()
 export class IsolationExtractionMiddleware implements NestMiddleware {
@@ -1078,10 +1078,10 @@ export class IsolationExtractionMiddleware implements NestMiddleware {
 
   use(req: any, res: any, next: () => void) {
     // 提取标识符
-    const tenantId = req.headers['x-tenant-id'];
-    const orgId = req.headers['x-organization-id'];
-    const deptId = req.headers['x-department-id'];
-    const userId = req.headers['x-user-id'];
+    const tenantId = req.headers["x-tenant-id"];
+    const orgId = req.headers["x-organization-id"];
+    const deptId = req.headers["x-department-id"];
+    const userId = req.headers["x-user-id"];
 
     // 创建隔离上下文
     let context: IsolationContext;
@@ -1136,10 +1136,10 @@ export class IsolationExtractionMiddleware implements NestMiddleware {
 **@RequireTenant 示例**:
 
 ```typescript
-import { SetMetadata } from '@nestjs/common';
-import { IsolationLevel } from '@hl8/isolation-model';
+import { SetMetadata } from "@nestjs/common";
+import { IsolationLevel } from "@hl8/isolation-model/index.js";
 
-export const REQUIRED_ISOLATION_LEVEL_KEY = 'requiredIsolationLevel';
+export const REQUIRED_ISOLATION_LEVEL_KEY = "requiredIsolationLevel";
 
 export const RequireTenant = () =>
   SetMetadata(REQUIRED_ISOLATION_LEVEL_KEY, IsolationLevel.TENANT);
@@ -1148,8 +1148,8 @@ export const RequireTenant = () =>
 **@CurrentContext 示例**:
 
 ```typescript
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { IsolationContextService } from '../services/isolation-context.service.js';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { IsolationContextService } from "../services/isolation-context.service.js";
 
 export const CurrentContext = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
@@ -1306,14 +1306,14 @@ export const CurrentContext = createParamDecorator(
  */
 
 // 重新导出所有内容
-export * from '@hl8/nestjs-isolation';
+export * from "@hl8/nestjs-isolation";
 
 // 打印迁移提示（仅在开发环境）
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   console.warn(
-    '[DEPRECATION WARNING] 您正在使用 @hl8/nestjs-infra 的隔离模块兼容层。' +
-      '请迁移到 @hl8/nestjs-isolation 和 @hl8/isolation-model。' +
-      '兼容层将在 v2.0.0 移除。',
+    "[DEPRECATION WARNING] 您正在使用 @hl8/nestjs-infra 的隔离模块兼容层。" +
+      "请迁移到 @hl8/nestjs-isolation 和 @hl8/isolation-model。" +
+      "兼容层将在 v2.0.0 移除。",
   );
 }
 ````

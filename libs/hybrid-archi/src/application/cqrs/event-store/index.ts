@@ -11,10 +11,10 @@
 export type {
   IEventStore as ICoreEventStore,
   IEventStreamResult as ICoreEventStreamResult,
-} from './event-store.interface';
+} from "./event-store.interface.js";
 
 // 异常类 - 通用异常定义
-export { ConcurrencyError as CoreConcurrencyError } from './concurrency-error';
+export { ConcurrencyError as CoreConcurrencyError } from "./concurrency-error.js";
 
 // 具体实现由@aiofix/database模块提供：
 // import { MongoEventStore, PostgreSQLEventStore } from '@aiofix/database';

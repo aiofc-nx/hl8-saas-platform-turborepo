@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const CLI_PARSERS = 'CLI Parsers System';
+export const CLI_PARSERS = "CLI Parsers System";

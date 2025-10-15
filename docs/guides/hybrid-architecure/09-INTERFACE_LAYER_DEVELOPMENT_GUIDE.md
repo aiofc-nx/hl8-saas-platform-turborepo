@@ -118,28 +118,28 @@ graph TB
             WC[WebSocket Handlers<br/>WebSocket处理器]
             CC[CLI Commands<br/>CLI命令]
         end
-        
+
         subgraph "API接口系统 (API System)"
             V[Versioning<br/>版本控制]
             D[Documentation<br/>文档生成]
             M[Monitoring<br/>监控统计]
             T[Testing<br/>测试支持]
         end
-        
+
         subgraph "验证器系统 (Validators)"
             BV[Business Validators<br/>业务验证器]
             DV[Data Validators<br/>数据验证器]
             FV[Format Validators<br/>格式验证器]
             SV[Security Validators<br/>安全验证器]
         end
-        
+
         subgraph "转换器系统 (Transformers)"
             DT[Data Transformers<br/>数据转换器]
             FT[Format Transformers<br/>格式转换器]
             TT[Type Transformers<br/>类型转换器]
             ST[Serialization Transformers<br/>序列化转换器]
         end
-        
+
         subgraph "中间件系统 (Middleware)"
             AM[Auth Middleware<br/>认证中间件]
             LM[Logging Middleware<br/>日志中间件]
@@ -147,40 +147,40 @@ graph TB
             SM[Security Middleware<br/>安全中间件]
         end
     end
-    
+
     subgraph "应用层 (Application Layer)"
         CH[Command Handlers<br/>命令处理器]
         QH[Query Handlers<br/>查询处理器]
         EH[Event Handlers<br/>事件处理器]
     end
-    
+
     subgraph "外部系统 (External Systems)"
         HTTP[HTTP Clients<br/>HTTP客户端]
         GQL[GraphQL Clients<br/>GraphQL客户端]
         WS[WebSocket Clients<br/>WebSocket客户端]
         CLI[CLI Tools<br/>CLI工具]
     end
-    
+
     HTTP --> RC
     GQL --> GC
     WS --> WC
     CLI --> CC
-    
+
     RC --> CH
     GC --> QH
     WC --> EH
     CC --> CH
-    
+
     AM --> RC
     LM --> RC
     PM --> RC
     SM --> RC
-    
+
     BV --> RC
     DV --> RC
     FV --> RC
     SV --> RC
-    
+
     DT --> RC
     FT --> RC
     TT --> RC
@@ -197,7 +197,7 @@ sequenceDiagram
     participant Validator as 验证器
     participant Transformer as 转换器
     participant UseCase as 用例
-    
+
     Client->>MW: 1. 发送请求
     MW->>MW: 2. 认证授权
     MW->>MW: 3. 日志记录
@@ -223,7 +223,7 @@ sequenceDiagram
 
 #### 3.1.1 BaseController 设计
 
-```typescript
+````typescript
 /**
  * 基础REST控制器
  *
@@ -279,7 +279,7 @@ export abstract class BaseController {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.requestId = this.generateRequestId();
     this.correlationId = this.generateCorrelationId();
@@ -300,7 +300,7 @@ export abstract class BaseController {
   protected async handleRequest<TInput, TOutput>(
     input: TInput,
     useCaseExecutor: (input: TInput) => Promise<TOutput>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TOutput> {
     this.getRequestContext();
 
@@ -341,15 +341,15 @@ export abstract class BaseController {
     return {
       requestId: this.requestId,
       correlationId: this.correlationId,
-      userId: 'current-user-id',
-      tenantId: 'current-tenant-id',
+      userId: "current-user-id",
+      tenantId: "current-tenant-id",
       timestamp: new Date(),
     };
   }
 
   // 其他方法实现...
 }
-```
+````
 
 #### 3.1.2 控制器实现示例
 
@@ -360,7 +360,7 @@ export abstract class BaseController {
  * @description 处理用户相关的HTTP请求
  * @since 1.0.0
  */
-@Controller('users')
+@Controller("users")
 @UseGuards(JwtAuthGuard, TenantIsolationGuard)
 @UseInterceptors(LoggingInterceptor, PerformanceInterceptor)
 export class UserController extends BaseController {
@@ -369,7 +369,7 @@ export class UserController extends BaseController {
     private readonly updateUserProfileUseCase: UpdateUserProfileUseCase,
     private readonly getUserProfileUseCase: GetUserProfileUseCase,
     private readonly logger: ILoggerService,
-    private readonly metricsService: IMetricsService
+    private readonly metricsService: IMetricsService,
   ) {
     super(logger, metricsService);
   }
@@ -383,11 +383,16 @@ export class UserController extends BaseController {
    */
   @Post()
   @UsePipes(ValidationPipe)
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     return this.handleRequest(
       createUserDto,
-      (dto) => this.registerUserUseCase.execute(dto.toUseCaseRequest(this.getRequestContext())),
-      'createUser'
+      (dto) =>
+        this.registerUserUseCase.execute(
+          dto.toUseCaseRequest(this.getRequestContext()),
+        ),
+      "createUser",
     );
   }
 
@@ -399,16 +404,19 @@ export class UserController extends BaseController {
    * @param updateUserDto - 更新用户DTO
    * @returns 用户响应DTO
    */
-  @Put(':id')
+  @Put(":id")
   @UsePipes(ValidationPipe)
   async updateUser(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto
+    @Param("id") id: string,
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
     return this.handleRequest(
       { id, ...updateUserDto },
-      (input) => this.updateUserProfileUseCase.execute(input.toUseCaseRequest(this.getRequestContext())),
-      'updateUser'
+      (input) =>
+        this.updateUserProfileUseCase.execute(
+          input.toUseCaseRequest(this.getRequestContext()),
+        ),
+      "updateUser",
     );
   }
 
@@ -419,12 +427,15 @@ export class UserController extends BaseController {
    * @param id - 用户ID
    * @returns 用户响应DTO
    */
-  @Get(':id')
-  async getUser(@Param('id') id: string): Promise<UserResponseDto> {
+  @Get(":id")
+  async getUser(@Param("id") id: string): Promise<UserResponseDto> {
     return this.handleRequest(
       { id },
-      (input) => this.getUserProfileUseCase.execute(input.toUseCaseRequest(this.getRequestContext())),
-      'getUser'
+      (input) =>
+        this.getUserProfileUseCase.execute(
+          input.toUseCaseRequest(this.getRequestContext()),
+        ),
+      "getUser",
     );
   }
 }
@@ -456,7 +467,7 @@ export class ApiVersioningService {
    */
   getVersion(request: Request): string {
     // 从Header中获取版本
-    const headerVersion = request.headers['api-version'];
+    const headerVersion = request.headers["api-version"];
     if (headerVersion) {
       return headerVersion as string;
     }
@@ -468,13 +479,13 @@ export class ApiVersioningService {
     }
 
     // 从查询参数中获取版本
-    const queryVersion = request.query['version'];
+    const queryVersion = request.query["version"];
     if (queryVersion) {
       return queryVersion as string;
     }
 
     // 返回默认版本
-    return 'v1';
+    return "v1";
   }
 
   /**
@@ -485,7 +496,10 @@ export class ApiVersioningService {
    * @param supportedVersions - 支持的版本列表
    * @returns 是否兼容
    */
-  isVersionCompatible(requestedVersion: string, supportedVersions: string[]): boolean {
+  isVersionCompatible(
+    requestedVersion: string,
+    supportedVersions: string[],
+  ): boolean {
     return supportedVersions.includes(requestedVersion);
   }
 }
@@ -513,27 +527,27 @@ export class ApiDocumentationService {
    */
   generateOpenAPIDocument(controllers: any[]): OpenAPIDocument {
     const document: OpenAPIDocument = {
-      openapi: '3.0.0',
+      openapi: "3.0.0",
       info: {
-        title: 'Hybrid Architecture API',
-        version: '1.0.0',
-        description: 'Hybrid Architecture API Documentation',
+        title: "Hybrid Architecture API",
+        version: "1.0.0",
+        description: "Hybrid Architecture API Documentation",
       },
       paths: {},
       components: {
         schemas: {},
         securitySchemes: {
           bearerAuth: {
-            type: 'http',
-            scheme: 'bearer',
-            bearerFormat: 'JWT',
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
           },
         },
       },
     };
 
     // 处理每个控制器
-    controllers.forEach(controller => {
+    controllers.forEach((controller) => {
       this.processController(controller, document);
     });
 
@@ -575,7 +589,7 @@ export abstract class BaseResolver {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.requestId = this.generateRequestId();
     this.correlationId = this.generateCorrelationId();
@@ -597,7 +611,7 @@ export abstract class BaseResolver {
     context: IGraphQLContext,
     info: GraphQLResolveInfo,
     resolver: (args: TArgs, context: IGraphQLContext) => Promise<TOutput>,
-    operationName: string
+    operationName: string,
   ): Promise<TOutput> {
     this.logger.info(`开始处理GraphQL ${operationName}操作`, {
       requestId: this.requestId,
@@ -647,7 +661,7 @@ export class UserResolver extends BaseResolver {
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly getUserProfileUseCase: GetUserProfileUseCase,
     logger: ILoggerService,
-    metricsService: IMetricsService
+    metricsService: IMetricsService,
   ) {
     super(logger, metricsService);
   }
@@ -662,15 +676,16 @@ export class UserResolver extends BaseResolver {
    */
   @Mutation(() => User)
   async createUser(
-    @Args('input') args: CreateUserInput,
-    @Context() context: IGraphQLContext
+    @Args("input") args: CreateUserInput,
+    @Context() context: IGraphQLContext,
   ): Promise<User> {
     return this.handleResolver(
       args,
       context,
       {} as GraphQLResolveInfo,
-      (input, ctx) => this.registerUserUseCase.execute(input.toUseCaseRequest(ctx)),
-      'createUser'
+      (input, ctx) =>
+        this.registerUserUseCase.execute(input.toUseCaseRequest(ctx)),
+      "createUser",
     );
   }
 
@@ -684,15 +699,16 @@ export class UserResolver extends BaseResolver {
    */
   @Query(() => User)
   async user(
-    @Args('id') id: string,
-    @Context() context: IGraphQLContext
+    @Args("id") id: string,
+    @Context() context: IGraphQLContext,
   ): Promise<User> {
     return this.handleResolver(
       { id },
       context,
       {} as GraphQLResolveInfo,
-      (input, ctx) => this.getUserProfileUseCase.execute(input.toUseCaseRequest(ctx)),
-      'getUser'
+      (input, ctx) =>
+        this.getUserProfileUseCase.execute(input.toUseCaseRequest(ctx)),
+      "getUser",
     );
   }
 }
@@ -719,7 +735,7 @@ export abstract class BaseWebSocketHandler {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.connectionId = this.generateConnectionId();
     this.startTime = Date.now();
@@ -738,8 +754,11 @@ export abstract class BaseWebSocketHandler {
   protected async handleMessage<TMessage, TOutput>(
     message: TMessage,
     context: IWebSocketContext,
-    handler: (message: TMessage, context: IWebSocketContext) => Promise<TOutput>,
-    messageType: string
+    handler: (
+      message: TMessage,
+      context: IWebSocketContext,
+    ) => Promise<TOutput>,
+    messageType: string,
   ): Promise<TOutput> {
     this.logger.info(`开始处理WebSocket ${messageType}消息`, {
       connectionId: this.connectionId,
@@ -800,7 +819,7 @@ export class DataTransformer {
    */
   static toDTO<TDomain, TDTO extends object>(
     domainObject: TDomain,
-    dtoClass: new () => TDTO
+    dtoClass: new () => TDTO,
   ): TDTO {
     const dto = new dtoClass();
 
@@ -825,7 +844,7 @@ export class DataTransformer {
    */
   static toDomain<TDTO, TDomain>(
     dto: TDTO,
-    domainClass: new (...args: any[]) => TDomain
+    domainClass: new (...args: any[]) => TDomain,
   ): TDomain {
     // 这里应该根据具体的领域类构造函数进行转换
     // 实际实现中会调用领域类的工厂方法
@@ -856,7 +875,7 @@ export class DataTransformer {
    */
   static fromJSON<T extends object>(
     json: string,
-    targetClass?: new () => T
+    targetClass?: new () => T,
   ): T | any {
     const obj = JSON.parse(json);
 
@@ -1042,23 +1061,30 @@ export class {Function}Resolver extends BaseResolver {
 
 ```typescript
 // ✅ 正确：使用统一的请求处理
-@Controller('users')
+@Controller("users")
 export class UserController extends BaseController {
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     return this.handleRequest(
       createUserDto,
-      (dto) => this.registerUserUseCase.execute(dto.toUseCaseRequest(this.getRequestContext())),
-      'createUser'
+      (dto) =>
+        this.registerUserUseCase.execute(
+          dto.toUseCaseRequest(this.getRequestContext()),
+        ),
+      "createUser",
     );
   }
 }
 
 // ❌ 错误：直接处理请求
-@Controller('users')
+@Controller("users")
 export class UserController {
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     // ❌ 没有统一的错误处理和日志记录
     const result = await this.registerUserUseCase.execute(createUserDto);
     return result;
@@ -1070,21 +1096,26 @@ export class UserController {
 
 ```typescript
 // ✅ 正确：使用验证管道
-@Controller('users')
+@Controller("users")
 export class UserController extends BaseController {
   @Post()
   @UsePipes(ValidationPipe)
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     return this.handleRequest(
       createUserDto,
-      (dto) => this.registerUserUseCase.execute(dto.toUseCaseRequest(this.getRequestContext())),
-      'createUser'
+      (dto) =>
+        this.registerUserUseCase.execute(
+          dto.toUseCaseRequest(this.getRequestContext()),
+        ),
+      "createUser",
     );
   }
 }
 
 // ❌ 错误：没有输入验证
-@Controller('users')
+@Controller("users")
 export class UserController extends BaseController {
   @Post()
   async createUser(@Body() createUserDto: any): Promise<UserResponseDto> {
@@ -1092,7 +1123,7 @@ export class UserController extends BaseController {
     return this.handleRequest(
       createUserDto,
       (dto) => this.registerUserUseCase.execute(dto),
-      'createUser'
+      "createUser",
     );
   }
 }
@@ -1108,15 +1139,16 @@ export class UserController extends BaseController {
 export class UserResolver extends BaseResolver {
   @Query(() => User)
   async user(
-    @Args('id', { type: () => String }) id: string,
-    @Context() context: IGraphQLContext
+    @Args("id", { type: () => String }) id: string,
+    @Context() context: IGraphQLContext,
   ): Promise<User> {
     return this.handleResolver(
       { id },
       context,
       {} as GraphQLResolveInfo,
-      (input, ctx) => this.getUserProfileUseCase.execute(input.toUseCaseRequest(ctx)),
-      'getUser'
+      (input, ctx) =>
+        this.getUserProfileUseCase.execute(input.toUseCaseRequest(ctx)),
+      "getUser",
     );
   }
 }
@@ -1126,9 +1158,10 @@ export class UserResolver extends BaseResolver {
 export class UserResolver extends BaseResolver {
   @Query(() => User)
   async user(
-    @Args('id') id: any, // ❌ 使用any类型
-    @Context() context: any // ❌ 使用any类型
-  ): Promise<any> { // ❌ 使用any类型
+    @Args("id") id: any, // ❌ 使用any类型
+    @Context() context: any, // ❌ 使用any类型
+  ): Promise<any> {
+    // ❌ 使用any类型
     return this.getUserProfileUseCase.execute({ id });
   }
 }
@@ -1146,29 +1179,36 @@ export class UserResolver extends BaseResolver {
 
 ```typescript
 // ✅ 正确：控制器只负责协议适配
-@Controller('users')
+@Controller("users")
 export class UserController extends BaseController {
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     return this.handleRequest(
       createUserDto,
-      (dto) => this.registerUserUseCase.execute(dto.toUseCaseRequest(this.getRequestContext())),
-      'createUser'
+      (dto) =>
+        this.registerUserUseCase.execute(
+          dto.toUseCaseRequest(this.getRequestContext()),
+        ),
+      "createUser",
     );
   }
 }
 
 // ❌ 错误：控制器包含业务逻辑
-@Controller('users')
+@Controller("users")
 export class UserController extends BaseController {
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     // ❌ 业务逻辑应该在用例中
-    if (createUserDto.email.includes('@')) {
+    if (createUserDto.email.includes("@")) {
       const user = await this.userRepository.save(createUserDto);
       return new UserResponseDto(user);
     }
-    throw new Error('Invalid email');
+    throw new Error("Invalid email");
   }
 }
 ```
@@ -1181,15 +1221,20 @@ export class UserController extends BaseController {
 
 ```typescript
 // ✅ 正确：完整的输入验证
-@Controller('users')
+@Controller("users")
 export class UserController extends BaseController {
   @Post()
   @UsePipes(ValidationPipe)
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     return this.handleRequest(
       createUserDto,
-      (dto) => this.registerUserUseCase.execute(dto.toUseCaseRequest(this.getRequestContext())),
-      'createUser'
+      (dto) =>
+        this.registerUserUseCase.execute(
+          dto.toUseCaseRequest(this.getRequestContext()),
+        ),
+      "createUser",
     );
   }
 }
@@ -1219,14 +1264,19 @@ export class CreateUserDto {
 
 ```typescript
 // ✅ 正确：统一的错误处理
-@Controller('users')
+@Controller("users")
 export class UserController extends BaseController {
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async createUser(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     return this.handleRequest(
       createUserDto,
-      (dto) => this.registerUserUseCase.execute(dto.toUseCaseRequest(this.getRequestContext())),
-      'createUser'
+      (dto) =>
+        this.registerUserUseCase.execute(
+          dto.toUseCaseRequest(this.getRequestContext()),
+        ),
+      "createUser",
     );
   }
 }
@@ -1239,15 +1289,19 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    const status = exception instanceof HttpException 
-      ? exception.getStatus() 
-      : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message: exception instanceof Error ? exception.message : 'Internal server error',
+      message:
+        exception instanceof Error
+          ? exception.message
+          : "Internal server error",
     });
   }
 }

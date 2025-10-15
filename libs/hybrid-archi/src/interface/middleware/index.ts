@@ -7,16 +7,16 @@
  */
 
 // 认证中间件
-export * from './auth.middleware';
+export * from "./auth.middleware.js";
 
 // 日志中间件
-export * from './logging.middleware';
+export * from "./logging.middleware.js";
 
 // 性能中间件
-export * from './performance.middleware';
+export * from "./performance.middleware.js";
 
 // 错误处理中间件
-export * from './error.middleware';
+export * from "./error.middleware.js";
 
 // 安全中间件
-export * from './security.middleware';
+export * from "./security.middleware.js";

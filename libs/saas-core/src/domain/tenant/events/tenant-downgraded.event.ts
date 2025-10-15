@@ -20,8 +20,8 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from '@hl8/hybrid-archi';
-import { TenantType } from '../value-objects/tenant-type.enum';
+import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi/index.js";
+import { TenantType } from "../value-objects/tenant-type.enum.js";
 
 /**
  * 租户降级事件
@@ -52,7 +52,7 @@ export class TenantDowngradedEvent extends BaseDomainEvent {
   }
 
   get eventType(): string {
-    return 'TenantDowngraded';
+    return "TenantDowngraded";
   }
 
   /**
@@ -60,7 +60,7 @@ export class TenantDowngradedEvent extends BaseDomainEvent {
    *
    * @returns {object} 事件数据对象
    */
-  public override toJSON(): Record<string, unknown> {
+  public toJSON(): Record<string, unknown> {
     return {
       ...super.toJSON(),
       fromType: this.fromType,
@@ -69,4 +69,3 @@ export class TenantDowngradedEvent extends BaseDomainEvent {
     };
   }
 }
-

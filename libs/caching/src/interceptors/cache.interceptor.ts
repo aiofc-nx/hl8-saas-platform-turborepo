@@ -13,16 +13,16 @@ import {
   Injectable,
   Logger,
   NestInterceptor,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { from, Observable } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
-import { CacheService } from '../services/cache.service.js';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { from, Observable } from "rxjs";
+import { switchMap, tap } from "rxjs/operators";
+import { CacheService } from "../services/cache.service.js";
 
 // 元数据键
-export const CACHEABLE_KEY = 'cacheable';
-export const CACHE_EVICT_KEY = 'cache_evict';
-export const CACHE_PUT_KEY = 'cache_put';
+export const CACHEABLE_KEY = "cacheable";
+export const CACHE_EVICT_KEY = "cache_evict";
+export const CACHE_PUT_KEY = "cache_put";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 装饰器元数据必须支持任意方法签名（宪章 IX 允许场景：高阶函数和装饰器）
 export interface CacheableMetadata {
@@ -238,13 +238,13 @@ export class CacheInterceptor implements NestInterceptor {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 处理任意方法的参数（宪章 IX 允许场景）
   private generateDefaultKey(args: any[]): string {
     if (args.length === 0) {
-      return 'default';
+      return "default";
     }
 
     // 使用第一个参数作为键
     const firstArg = args[0];
 
-    if (typeof firstArg === 'string' || typeof firstArg === 'number') {
+    if (typeof firstArg === "string" || typeof firstArg === "number") {
       return String(firstArg);
     }
 

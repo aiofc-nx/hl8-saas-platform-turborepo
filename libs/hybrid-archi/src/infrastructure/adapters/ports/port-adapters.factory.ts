@@ -8,29 +8,29 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
-import { TypedConfigModule } from '@hl8/config';
-import { EventService } from '@hl8/messaging';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
+import { EventService } from "@hl8/hybrid-archi";
 
-import { LoggerPortAdapter } from './logger-port.adapter';
-import { IdGeneratorPortAdapter } from './id-generator-port.adapter';
-import { TimeProviderPortAdapter } from './time-provider-port.adapter';
-import { ValidationPortAdapter } from './validation-port.adapter';
-import { ConfigurationPortAdapter } from './configuration-port.adapter';
-import { EventBusPortAdapter } from './event-bus-port.adapter';
+import { LoggerPortAdapter } from "./logger-port.adapter.js";
+import { IdGeneratorPortAdapter } from "./id-generator-port.adapter.js";
+import { TimeProviderPortAdapter } from "./time-provider-port.adapter.js";
+import { ValidationPortAdapter } from "./validation-port.adapter.js";
+import { ConfigurationPortAdapter } from "./configuration-port.adapter.js";
+import { EventBusPortAdapter } from "./event-bus-port.adapter.js";
 
 /**
  * 端口适配器类型
  */
 export type PortAdapterType =
-  | 'logger'
-  | 'idGenerator'
-  | 'timeProvider'
-  | 'validation'
-  | 'configuration'
-  | 'eventBus';
+  | "logger"
+  | "idGenerator"
+  | "timeProvider"
+  | "validation"
+  | "configuration"
+  | "eventBus";
 
 /**
  * 端口适配器注册信息
@@ -61,10 +61,10 @@ export class PortAdaptersFactory {
   >();
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly configService: TypedConfigModule,
-    private readonly eventService: EventService
+    private readonly eventService: EventService,
   ) {}
 
   /**
@@ -85,22 +85,22 @@ export class PortAdaptersFactory {
     let adapter: any;
 
     switch (adapterType) {
-      case 'logger':
+      case "logger":
         adapter = new LoggerPortAdapter(this.logger);
         break;
-      case 'idGenerator':
+      case "idGenerator":
         adapter = new IdGeneratorPortAdapter();
         break;
-      case 'timeProvider':
+      case "timeProvider":
         adapter = new TimeProviderPortAdapter();
         break;
-      case 'validation':
+      case "validation":
         adapter = new ValidationPortAdapter();
         break;
-      case 'configuration':
+      case "configuration":
         adapter = new ConfigurationPortAdapter(this.configService);
         break;
-      case 'eventBus':
+      case "eventBus":
         adapter = new EventBusPortAdapter(this.eventService);
         break;
       default:
@@ -118,9 +118,7 @@ export class PortAdaptersFactory {
 
     this.adapters.set(adapterType, registration);
 
-    this.logger.debug(`创建端口适配器: ${adapterType}`, {
-      adapterType,
-    });
+    this.logger.debug(`创建端口适配器: ${adapterType}`);
 
     return adapter;
   }
@@ -169,7 +167,7 @@ export class PortAdaptersFactory {
 
     try {
       // 清理适配器资源
-      if (adapterType === 'logger' && registration.instance.clearCache) {
+      if (adapterType === "logger" && registration.instance.clearCache) {
         await registration.instance.clearCache();
       }
 
@@ -199,7 +197,7 @@ export class PortAdaptersFactory {
    * @returns 适配器注册信息
    */
   getAdapterRegistration(
-    adapterType: PortAdapterType
+    adapterType: PortAdapterType,
   ): IPortAdapterRegistration | null {
     return this.adapters.get(adapterType) || null;
   }
@@ -211,7 +209,7 @@ export class PortAdaptersFactory {
    * @returns 清理的适配器数量
    */
   async cleanupExpiredAdapters(
-    maxAge: number = 24 * 60 * 60 * 1000
+    maxAge: number = 24 * 60 * 60 * 1000,
   ): Promise<number> {
     const now = new Date();
     const expiredAdapters: PortAdapterType[] = [];
@@ -227,9 +225,7 @@ export class PortAdaptersFactory {
       await this.destroyAdapter(adapterType);
     }
 
-    this.logger.debug(`清理过期端口适配器: ${expiredAdapters.length}`, {
-      expiredAdapters,
-    });
+    this.logger.debug(`清理过期端口适配器: ${expiredAdapters.length}`);
 
     return expiredAdapters.length;
   }
@@ -309,11 +305,11 @@ export class PortAdaptersFactory {
         // 检查适配器是否可用
         const isHealthy = await this.checkAdapterHealth(
           adapterType,
-          registration.instance
+          registration.instance,
         );
         results[adapterType] = {
           healthy: isHealthy,
-          status: isHealthy ? 'healthy' : 'unhealthy',
+          status: isHealthy ? "healthy" : "unhealthy",
           adapterType,
           createdAt: registration.createdAt,
           lastAccessedAt: registration.lastAccessedAt,
@@ -321,7 +317,7 @@ export class PortAdaptersFactory {
       } catch (error) {
         results[adapterType] = {
           healthy: false,
-          status: 'error',
+          status: "error",
           error: error instanceof Error ? error.message : String(error),
           adapterType,
         };
@@ -338,33 +334,33 @@ export class PortAdaptersFactory {
    */
   private async checkAdapterHealth(
     adapterType: PortAdapterType,
-    instance: any
+    instance: any,
   ): Promise<boolean> {
     try {
       switch (adapterType) {
-        case 'logger':
+        case "logger":
           // 检查日志适配器
-          instance.debug('健康检查');
+          instance.debug("健康检查");
           return true;
-        case 'idGenerator': {
+        case "idGenerator": {
           // 检查ID生成器适配器
           const id = instance.generate();
-          return typeof id === 'string' && id.length > 0;
+          return typeof id === "string" && id.length > 0;
         }
-        case 'timeProvider': {
+        case "timeProvider": {
           // 检查时间提供者适配器
           const time = instance.now();
           return time instanceof Date;
         }
-        case 'validation':
+        case "validation":
           // 检查验证适配器
-          return typeof instance.validate === 'function';
-        case 'configuration':
+          return typeof instance.validate === "function";
+        case "configuration":
           // 检查配置适配器
-          return typeof instance.get === 'function';
-        case 'eventBus':
+          return typeof instance.get === "function";
+        case "eventBus":
           // 检查事件总线适配器
-          return typeof instance.publish === 'function';
+          return typeof instance.publish === "function";
         default:
           return false;
       }

@@ -13,19 +13,20 @@
 
 // 上下文管理系统 - 已删除，使用简化的类型定义
 
-// 错误处理机制 - 使用 @hl8/common/exceptions 模块
+// 错误处理机制 - 使用 NestJS 标准异常
 export {
-  GeneralBadRequestException,
-  GeneralNotFoundException,
-  GeneralInternalServerException,
-  AnyExceptionFilter,
-  ExceptionModule,
-} from '@hl8/common';
+  BadRequestException,
+  NotFoundException,
+  InternalServerErrorException,
+  UnauthorizedException,
+  ForbiddenException,
+  ConflictException,
+} from "@nestjs/common";
 
 // 错误处理机制 - 已删除，使用 @hl8/common 标准异常处理
 
 // 装饰器系统 - 已从shared层合并到此处
-export * from './decorators';
+export * from "./decorators.js";
 
 // 测试工具 - 已删除，使用标准 Jest 和 NestJS 测试工具
 

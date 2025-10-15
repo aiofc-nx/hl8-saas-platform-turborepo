@@ -126,8 +126,8 @@ export class CacheKey {
   ): CacheKey {
     if (!context.tenantId) {
       throw new GeneralBadRequestException(
-        '租户 ID 缺失',
-        '租户级缓存需要提供租户 ID',
+        "租户 ID 缺失",
+        "租户级缓存需要提供租户 ID",
       );
     }
     return new CacheKey(prefix, CacheLevel.TENANT, namespace, key, context);
@@ -144,8 +144,8 @@ export class CacheKey {
   ): CacheKey {
     if (!context.tenantId || !context.organizationId) {
       throw new GeneralBadRequestException(
-        '组织级缓存需要租户 ID 和组织 ID',
-        '请确保隔离上下文包含完整信息',
+        "组织级缓存需要租户 ID 和组织 ID",
+        "请确保隔离上下文包含完整信息",
       );
     }
     return new CacheKey(
@@ -168,8 +168,8 @@ export class CacheKey {
   ): CacheKey {
     if (!context.tenantId || !context.organizationId || !context.departmentId) {
       throw new GeneralBadRequestException(
-        '部门级缓存需要租户 ID、组织 ID 和部门 ID',
-        '请确保隔离上下文包含完整信息',
+        "部门级缓存需要租户 ID、组织 ID 和部门 ID",
+        "请确保隔离上下文包含完整信息",
       );
     }
     return new CacheKey(prefix, CacheLevel.DEPARTMENT, namespace, key, context);
@@ -186,8 +186,8 @@ export class CacheKey {
   ): CacheKey {
     if (!context.userId) {
       throw new GeneralBadRequestException(
-        '用户 ID 缺失',
-        '用户级缓存需要提供用户 ID',
+        "用户 ID 缺失",
+        "用户级缓存需要提供用户 ID",
       );
     }
     return new CacheKey(prefix, CacheLevel.USER, namespace, key, context);
@@ -231,12 +231,12 @@ export class CacheKey {
 
     switch (this.level) {
       case CacheLevel.PLATFORM:
-        parts.push('platform', this.namespace, this.key);
+        parts.push("platform", this.namespace, this.key);
         break;
 
       case CacheLevel.TENANT:
         parts.push(
-          'tenant',
+          "tenant",
           this.isolationContext!.tenantId!,
           this.namespace,
           this.key,
@@ -245,9 +245,9 @@ export class CacheKey {
 
       case CacheLevel.ORGANIZATION:
         parts.push(
-          'tenant',
+          "tenant",
           this.isolationContext!.tenantId!,
-          'org',
+          "org",
           this.isolationContext!.organizationId!,
           this.namespace,
           this.key,
@@ -256,11 +256,11 @@ export class CacheKey {
 
       case CacheLevel.DEPARTMENT:
         parts.push(
-          'tenant',
+          "tenant",
           this.isolationContext!.tenantId!,
-          'org',
+          "org",
           this.isolationContext!.organizationId!,
-          'dept',
+          "dept",
           this.isolationContext!.departmentId!,
           this.namespace,
           this.key,
@@ -269,7 +269,7 @@ export class CacheKey {
 
       case CacheLevel.USER:
         parts.push(
-          'user',
+          "user",
           this.isolationContext!.userId!,
           this.namespace,
           this.key,
@@ -277,7 +277,7 @@ export class CacheKey {
         break;
     }
 
-    return parts.join(':');
+    return parts.join(":");
   }
 
   /**
@@ -290,7 +290,7 @@ export class CacheKey {
     // 验证长度
     if (this.fullKey.length > 256) {
       throw new GeneralBadRequestException(
-        '缓存键过长',
+        "缓存键过长",
         `缓存键长度不能超过 256 字符，当前长度: ${this.fullKey.length}`,
         { key: this.fullKey },
       );
@@ -300,8 +300,8 @@ export class CacheKey {
     const invalidChars = /[^\w:_-]/;
     if (invalidChars.test(this.fullKey)) {
       throw new GeneralBadRequestException(
-        '缓存键包含无效字符',
-        '缓存键只能包含字母、数字、冒号、下划线和连字符',
+        "缓存键包含无效字符",
+        "缓存键只能包含字母、数字、冒号、下划线和连字符",
         { key: this.fullKey },
       );
     }
@@ -381,7 +381,7 @@ export class CacheEntry<T = any> {
   ) {
     this.validateTTL();
     this.serializedValue = this.serialize();
-    this.size = Buffer.byteLength(this.serializedValue, 'utf-8');
+    this.size = Buffer.byteLength(this.serializedValue, "utf-8");
     this.validateSize();
   }
 
@@ -398,7 +398,7 @@ export class CacheEntry<T = any> {
 
     // 记录警告（如果值过大）
     if (logger && entry.size > CacheEntry.WARN_SIZE) {
-      logger.warn('缓存值较大', {
+      logger.warn("缓存值较大", {
         key: key.toString(),
         size: entry.size,
         threshold: CacheEntry.WARN_SIZE,
@@ -416,14 +416,14 @@ export class CacheEntry<T = any> {
    */
   private validateTTL(): void {
     if (this.ttl < 0) {
-      throw new GeneralBadRequestException('TTL 无效', 'TTL 不能为负数', {
+      throw new GeneralBadRequestException("TTL 无效", "TTL 不能为负数", {
         ttl: this.ttl,
       });
     }
 
     if (this.ttl > CacheEntry.MAX_TTL) {
       throw new GeneralBadRequestException(
-        'TTL 过大',
+        "TTL 过大",
         `TTL 不能超过 ${CacheEntry.MAX_TTL} 秒（30 天）`,
         { ttl: this.ttl, max: CacheEntry.MAX_TTL },
       );
@@ -440,8 +440,8 @@ export class CacheEntry<T = any> {
       return JSON.stringify(this.value, this.getReplacer());
     } catch (error) {
       throw new GeneralInternalServerException(
-        '缓存值序列化失败',
-        '无法序列化缓存值',
+        "缓存值序列化失败",
+        "无法序列化缓存值",
         { key: this.key.toString() },
         error instanceof Error ? error : undefined,
       );
@@ -459,25 +459,25 @@ export class CacheEntry<T = any> {
 
     return (key: string, value: any) => {
       // 处理循环引用
-      if (typeof value === 'object' && value !== null) {
+      if (typeof value === "object" && value !== null) {
         if (seen.has(value)) {
-          return '[Circular]';
+          return "[Circular]";
         }
         seen.add(value);
       }
 
       // 处理特殊类型
       if (value instanceof Date) {
-        return { __type: 'Date', value: value.toISOString() };
+        return { __type: "Date", value: value.toISOString() };
       }
       if (value instanceof Set) {
-        return { __type: 'Set', value: Array.from(value) };
+        return { __type: "Set", value: Array.from(value) };
       }
       if (value instanceof Map) {
-        return { __type: 'Map', value: Array.from(value.entries()) };
+        return { __type: "Map", value: Array.from(value.entries()) };
       }
       if (Buffer.isBuffer(value)) {
-        return { __type: 'Buffer', value: value.toString('base64') };
+        return { __type: "Buffer", value: value.toString("base64") };
       }
 
       return value;
@@ -493,7 +493,7 @@ export class CacheEntry<T = any> {
   private validateSize(): void {
     if (this.size > CacheEntry.MAX_SIZE) {
       throw new GeneralBadRequestException(
-        '缓存值过大',
+        "缓存值过大",
         `缓存值不能超过 ${CacheEntry.MAX_SIZE} 字节（1MB）`,
         {
           key: this.key.toString(),
@@ -614,8 +614,8 @@ export class CacheEntry<T = any> {
 @Injectable()
 export class CacheService {
   constructor(
-    @Inject('REDIS_CLIENT') private readonly redis: Redis,
-    @Inject('CACHE_OPTIONS') private readonly options: CacheOptions,
+    @Inject("REDIS_CLIENT") private readonly redis: Redis,
+    @Inject("CACHE_OPTIONS") private readonly options: CacheOptions,
     private readonly cls: ClsService<IsolationContext>, // 上下文服务
     @Optional() private readonly logger?: ILoggerService,
   ) {}
@@ -640,12 +640,12 @@ export class CacheService {
 
       return this.deserialize<T>(value);
     } catch (error) {
-      this.logger?.error('缓存读取失败', error.stack, {
+      this.logger?.error("缓存读取失败", error.stack, {
         key: cacheKey.toString(),
         level: cacheKey.getLevel(),
       });
       throw new GeneralInternalServerException(
-        '缓存读取失败',
+        "缓存读取失败",
         `无法读取缓存: ${cacheKey.toString()}`,
         { key: cacheKey.toString() },
         error instanceof Error ? error : undefined,
@@ -688,18 +688,18 @@ export class CacheService {
         await this.redis.set(cacheKey.toString(), entry.getSerializedValue());
       }
 
-      this.logger?.debug('缓存写入成功', {
+      this.logger?.debug("缓存写入成功", {
         key: cacheKey.toString(),
         level: cacheKey.getLevel(),
         size: entry.getSize(),
         ttl: entry.getTTL(),
       });
     } catch (error) {
-      this.logger?.error('缓存写入失败', error.stack, {
+      this.logger?.error("缓存写入失败", error.stack, {
         key: cacheKey.toString(),
       });
       throw new GeneralInternalServerException(
-        '缓存写入失败',
+        "缓存写入失败",
         `无法写入缓存: ${cacheKey.toString()}`,
         { key: cacheKey.toString() },
         error instanceof Error ? error : undefined,
@@ -743,16 +743,16 @@ export class CacheService {
    */
   private async clearByPattern(pattern: string): Promise<number> {
     try {
-      let cursor = '0';
+      let cursor = "0";
       let deletedCount = 0;
 
       do {
         // 使用 SCAN 避免阻塞
         const result = await this.redis.scan(
           cursor,
-          'MATCH',
+          "MATCH",
           pattern,
-          'COUNT',
+          "COUNT",
           100,
         );
 
@@ -763,18 +763,18 @@ export class CacheService {
           await this.redis.del(...keys);
           deletedCount += keys.length;
         }
-      } while (cursor !== '0');
+      } while (cursor !== "0");
 
-      this.logger?.info('批量清除缓存成功', {
+      this.logger?.info("批量清除缓存成功", {
         pattern,
         deletedCount,
       });
 
       return deletedCount;
     } catch (error) {
-      this.logger?.error('批量清除缓存失败', error.stack, { pattern });
+      this.logger?.error("批量清除缓存失败", error.stack, { pattern });
       throw new GeneralInternalServerException(
-        '批量清除缓存失败',
+        "批量清除缓存失败",
         `无法清除缓存: ${pattern}`,
         { pattern },
         error instanceof Error ? error : undefined,
@@ -792,8 +792,8 @@ export class CacheService {
       return JSON.parse(value, this.getReviver());
     } catch (error) {
       throw new GeneralInternalServerException(
-        '缓存值反序列化失败',
-        '无法反序列化缓存值',
+        "缓存值反序列化失败",
+        "无法反序列化缓存值",
         { value },
         error instanceof Error ? error : undefined,
       );
@@ -807,16 +807,16 @@ export class CacheService {
    */
   private getReviver(): (key: string, value: any) => any {
     return (key: string, value: any) => {
-      if (value && typeof value === 'object' && value.__type) {
+      if (value && typeof value === "object" && value.__type) {
         switch (value.__type) {
-          case 'Date':
+          case "Date":
             return new Date(value.value);
-          case 'Set':
+          case "Set":
             return new Set(value.value);
-          case 'Map':
+          case "Map":
             return new Map(value.value);
-          case 'Buffer':
-            return Buffer.from(value.value, 'base64');
+          case "Buffer":
+            return Buffer.from(value.value, "base64");
           default:
             return value;
         }

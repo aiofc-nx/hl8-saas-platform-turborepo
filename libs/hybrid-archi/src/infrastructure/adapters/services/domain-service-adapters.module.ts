@@ -8,13 +8,13 @@
  * @since 1.0.0
  */
 
-import { Module } from '@nestjs/common';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
+import { Module } from "@nestjs/common";
+import { CacheModule } from "@hl8/hybrid-archi";
+import { LoggerModule } from "@hl8/hybrid-archi";
 
-import { DomainServiceAdapter } from './domain-service.adapter';
-import { DomainServiceFactory } from './domain-service.factory';
-import { DomainServiceManager } from './domain-service.manager';
+import { DomainServiceAdapter } from "./domain-service.adapter.js";
+import { DomainServiceFactory } from "./domain-service.factory.js";
+import { DomainServiceManager } from "./domain-service.manager.js";
 
 /**
  * 领域服务适配器模块

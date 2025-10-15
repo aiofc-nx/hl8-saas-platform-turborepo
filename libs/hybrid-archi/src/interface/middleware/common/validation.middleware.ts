@@ -9,10 +9,10 @@ import {
   Injectable,
   NestMiddleware,
   BadRequestException,
-} from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/fastify-pro';
-import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
+} from "@nestjs/common";
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
+import { validate } from "class-validator";
+import { plainToClass } from "class-transformer";
 
 /**
  * 验证中间件
@@ -43,11 +43,7 @@ export class ValidationMiddleware implements NestMiddleware {
    * @param res - Fastify响应
    * @param next - 下一个中间件
    */
-  async use(
-    req: FastifyRequest,
-    res: FastifyReply,
-    next: () => void
-  ): Promise<void> {
+  async use(req: any, res: any, next: () => void): Promise<void> {
     try {
       // 验证请求体
       if (req.body && Object.keys(req.body).length > 0) {
@@ -69,7 +65,7 @@ export class ValidationMiddleware implements NestMiddleware {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException('数据验证失败');
+      throw new BadRequestException("数据验证失败");
     }
   }
 
@@ -80,13 +76,13 @@ export class ValidationMiddleware implements NestMiddleware {
    * @param req - Fastify请求
    * @private
    */
-  private async validateRequestBody(req: FastifyRequest): Promise<void> {
+  private async validateRequestBody(req: any): Promise<void> {
     // 这里可以根据具体的DTO类进行验证
     // 示例：验证JSON格式
     try {
       JSON.stringify(req.body);
     } catch (error) {
-      throw new BadRequestException('请求体格式无效');
+      throw new BadRequestException("请求体格式无效");
     }
   }
 
@@ -97,10 +93,12 @@ export class ValidationMiddleware implements NestMiddleware {
    * @param req - Fastify请求
    * @private
    */
-  private async validateQueryParams(req: FastifyRequest): Promise<void> {
+  private async validateQueryParams(req: any): Promise<void> {
     // 验证查询参数的基本格式
-    for (const [key, value] of Object.entries(req.query as Record<string, unknown>)) {
-      if (typeof value === 'string' && value.length > 1000) {
+    for (const [key, value] of Object.entries(
+      req.query as Record<string, unknown>,
+    )) {
+      if (typeof value === "string" && value.length > 1000) {
         throw new BadRequestException(`查询参数 ${key} 长度超过限制`);
       }
     }
@@ -113,10 +111,12 @@ export class ValidationMiddleware implements NestMiddleware {
    * @param req - Fastify请求
    * @private
    */
-  private async validatePathParams(req: FastifyRequest): Promise<void> {
+  private async validatePathParams(req: any): Promise<void> {
     // 验证路径参数的基本格式
-    for (const [key, value] of Object.entries(req.params as Record<string, unknown>)) {
-      if (typeof value === 'string' && value.length > 100) {
+    for (const [key, value] of Object.entries(
+      req.params as Record<string, unknown>,
+    )) {
+      if (typeof value === "string" && value.length > 100) {
         throw new BadRequestException(`路径参数 ${key} 长度超过限制`);
       }
     }

@@ -2,9 +2,10 @@
  * 权限实体（简化版本）
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PermissionAction } from '../value-objects/permission-action.vo';
-import { PermissionStatus } from '../value-objects/permission-status.enum';
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
+import { PermissionAction } from "../value-objects/permission-action.vo.js";
+import { PermissionStatus } from "../value-objects/permission-status.enum.js";
 
 export class Permission extends BaseEntity {
   constructor(
@@ -47,13 +48,12 @@ export class Permission extends BaseEntity {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       code: this._code,
       name: this._name,
       resource: this._resource,
-      action: this._action.value,
+      action: (this._action as any).value,
       category: this._category,
     };
   }
 }
-

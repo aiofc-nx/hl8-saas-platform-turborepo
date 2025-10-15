@@ -1,3 +1,4 @@
+import { TenantId } from "@hl8/isolation-model";
 /**
  * 接口层共享接口定义
  *
@@ -28,12 +29,12 @@ export interface IMetricsService {
   recordHistogram(
     name: string,
     value: number,
-    labels?: Record<string, string>
+    labels?: Record<string, string>,
   ): void;
   recordGauge(
     name: string,
     value: number,
-    labels?: Record<string, string>
+    labels?: Record<string, string>,
   ): void;
 }
 

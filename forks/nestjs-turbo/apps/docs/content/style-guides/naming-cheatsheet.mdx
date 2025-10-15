@@ -27,12 +27,12 @@ Use English language when naming your variables and functions.
 
 ```js
 /* Bad */
-const primerNombre = 'Gustavo';
-const amigos = ['Kate', 'John'];
+const primerNombre = "Gustavo";
+const amigos = ["Kate", "John"];
 
 /* Good */
-const firstName = 'Gustavo';
-const friends = ['Kate', 'John'];
+const firstName = "Gustavo";
+const friends = ["Kate", "John"];
 ```
 
 > Like it or not, English is the dominant language in programming: the syntax of all programming languages is written in English, as well as countless documentations and educational materials. By writing your code in English you dramatically increase its cohesiveness.
@@ -210,8 +210,8 @@ function removeFilter(filterName, filters) {
   return filters.filter((name) => name !== filterName);
 }
 
-const selectedFilters = ['price', 'availability', 'size'];
-removeFilter('price', selectedFilters);
+const selectedFilters = ["price", "availability", "size"];
+removeFilter("price", selectedFilters);
 ```
 
 > See also [delete](#delete).
@@ -244,7 +244,7 @@ Creates new data from the existing one. Mostly applicable to strings, objects, o
 
 ```js
 function composePageUrl(pageName, pageId) {
-  return pageName.toLowerCase() + '-' + pageId;
+  return pageName.toLowerCase() + "-" + pageId;
 }
 ```
 
@@ -256,10 +256,10 @@ Handles an action. Often used when naming a callback method.
 
 ```js
 function handleLinkClick() {
-  console.log('Clicked a link!');
+  console.log("Clicked a link!");
 }
 
-link.addEventListener('click', handleLinkClick);
+link.addEventListener("click", handleLinkClick);
 ```
 
 ---
@@ -295,12 +295,12 @@ Prefix enhances the meaning of a variable. It is rarely used in function names.
 Describes a characteristic or state of the current context (usually `boolean`).
 
 ```js
-const color = 'blue';
-const isBlue = color === 'blue'; // characteristic
+const color = "blue";
+const isBlue = color === "blue"; // characteristic
 const isPresent = true; // state
 
 if (isBlue && isPresent) {
-  console.log('Blue is present!');
+  console.log("Blue is present!");
 }
 ```
 
@@ -349,7 +349,7 @@ Indicate the previous or the next state of a variable in the current context. Us
 async function getPosts() {
   const prevPosts = this.state.posts;
 
-  const latestPosts = await fetch('...');
+  const latestPosts = await fetch("...");
   const nextPosts = concat(prevPosts, latestPosts);
 
   this.setState({ posts: nextPosts });
@@ -362,10 +362,10 @@ Like a prefix, variable names can be made singular or plural depending on whethe
 
 ```js
 /* Bad */
-const friends = 'Bob';
-const friend = ['Bob', 'Tony', 'Tanya'];
+const friends = "Bob";
+const friend = ["Bob", "Tony", "Tanya"];
 
 /* Good */
-const friend = 'Bob';
-const friends = ['Bob', 'Tony', 'Tanya'];
+const friend = "Bob";
+const friends = ["Bob", "Tony", "Tanya"];
 ```

@@ -33,14 +33,14 @@ import {
   HttpStatus,
   Injectable,
   Logger,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-import { RateLimitService } from './rate-limit.service.js';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { RateLimitService } from "./rate-limit.service.js";
 import type {
   RATE_LIMIT_METADATA_KEY,
   RateLimitOptions,
-} from './types/rate-limit-options.js';
+} from "./types/rate-limit-options.js";
 
 /**
  * 速率限制守卫
@@ -176,7 +176,7 @@ export class RateLimitGuard implements CanActivate {
 
       // 如果没有配置，直接放行
       if (!options) {
-        this.logger.debug('未找到速率限制配置，放行');
+        this.logger.debug("未找到速率限制配置，放行");
         return true;
       }
 
@@ -205,7 +205,7 @@ export class RateLimitGuard implements CanActivate {
         );
 
         throw new HttpException(
-          options.errorMessage || '请求过于频繁，请稍后再试',
+          options.errorMessage || "请求过于频繁，请稍后再试",
           HttpStatus.TOO_MANY_REQUESTS,
         );
       }
@@ -251,23 +251,23 @@ export class RateLimitGuard implements CanActivate {
   private getOptions(context: ExecutionContext): RateLimitOptions | undefined {
     // 方法级别元数据
     const methodOptions = this.reflector.get<RateLimitOptions>(
-      'rate-limit:options' as typeof RATE_LIMIT_METADATA_KEY,
+      "rate-limit:options" as typeof RATE_LIMIT_METADATA_KEY,
       context.getHandler(),
     );
 
     if (methodOptions) {
-      this.logger.debug('使用方法级别限流配置');
+      this.logger.debug("使用方法级别限流配置");
       return methodOptions;
     }
 
     // 控制器级别元数据
     const classOptions = this.reflector.get<RateLimitOptions>(
-      'rate-limit:options' as typeof RATE_LIMIT_METADATA_KEY,
+      "rate-limit:options" as typeof RATE_LIMIT_METADATA_KEY,
       context.getClass(),
     );
 
     if (classOptions) {
-      this.logger.debug('使用控制器级别限流配置');
+      this.logger.debug("使用控制器级别限流配置");
       return classOptions;
     }
 
@@ -320,17 +320,17 @@ export class RateLimitGuard implements CanActivate {
     options: RateLimitOptions,
   ): void {
     // 标准限流头
-    response.header('X-RateLimit-Limit', status.total.toString());
-    response.header('X-RateLimit-Remaining', status.remaining.toString());
+    response.header("X-RateLimit-Limit", status.total.toString());
+    response.header("X-RateLimit-Remaining", status.remaining.toString());
 
     // 计算重置时间（Unix 时间戳，秒）
     const resetTime = Math.ceil(Date.now() / 1000 + status.ttl / 1000);
-    response.header('X-RateLimit-Reset', resetTime.toString());
+    response.header("X-RateLimit-Reset", resetTime.toString());
 
     // 如果超限，添加 Retry-After
     if (!status.allowed) {
       const retryAfter = Math.ceil(status.ttl / 1000);
-      response.header('Retry-After', retryAfter.toString());
+      response.header("Retry-After", retryAfter.toString());
     }
   }
 }

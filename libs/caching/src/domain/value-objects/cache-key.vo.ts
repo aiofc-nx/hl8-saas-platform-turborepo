@@ -44,8 +44,8 @@
  * @since 1.0.0
  */
 
-import type { IsolationContext } from '@hl8/isolation-model';
-import { CacheLevel } from '../../types/cache-level.enum.js';
+import type { IsolationContext } from "@hl8/isolation-model";
+import { CacheLevel } from "../../types/cache-level.enum.js";
 
 /**
  * 通用错误异常（临时定义，后续会从 nestjs-infra 导入）
@@ -53,7 +53,7 @@ import { CacheLevel } from '../../types/cache-level.enum.js';
 class GeneralBadRequestException extends Error {
   constructor(message: string, detail?: string, context?: Record<string, any>) {
     super(detail || message);
-    this.name = 'GeneralBadRequestException';
+    this.name = "GeneralBadRequestException";
   }
 }
 
@@ -138,8 +138,8 @@ export class CacheKey {
   ): CacheKey {
     if (!context.tenantId) {
       throw new GeneralBadRequestException(
-        '租户 ID 缺失',
-        '租户级缓存需要提供租户 ID',
+        "租户 ID 缺失",
+        "租户级缓存需要提供租户 ID",
       );
     }
 
@@ -186,8 +186,8 @@ export class CacheKey {
   ): CacheKey {
     if (!context.tenantId || !context.organizationId) {
       throw new GeneralBadRequestException(
-        '组织级缓存需要租户 ID 和组织 ID',
-        '请确保隔离上下文包含完整信息',
+        "组织级缓存需要租户 ID 和组织 ID",
+        "请确保隔离上下文包含完整信息",
       );
     }
 
@@ -235,8 +235,8 @@ export class CacheKey {
   ): CacheKey {
     if (!context.tenantId || !context.organizationId || !context.departmentId) {
       throw new GeneralBadRequestException(
-        '部门级缓存需要租户 ID、组织 ID 和部门 ID',
-        '请确保隔离上下文包含完整信息',
+        "部门级缓存需要租户 ID、组织 ID 和部门 ID",
+        "请确保隔离上下文包含完整信息",
       );
     }
 
@@ -282,8 +282,8 @@ export class CacheKey {
   ): CacheKey {
     if (!context.userId) {
       throw new GeneralBadRequestException(
-        '用户 ID 缺失',
-        '用户级缓存需要提供用户 ID',
+        "用户 ID 缺失",
+        "用户级缓存需要提供用户 ID",
       );
     }
 
@@ -355,15 +355,15 @@ export class CacheKey {
     isolationLevel: string,
   ): CacheLevel {
     switch (isolationLevel) {
-      case 'platform':
+      case "platform":
         return CacheLevel.PLATFORM;
-      case 'tenant':
+      case "tenant":
         return CacheLevel.TENANT;
-      case 'organization':
+      case "organization":
         return CacheLevel.ORGANIZATION;
-      case 'department':
+      case "department":
         return CacheLevel.DEPARTMENT;
-      case 'user':
+      case "user":
         return CacheLevel.USER;
       default:
         return CacheLevel.PLATFORM;
@@ -386,7 +386,7 @@ export class CacheKey {
 
     // 其他级别应该通过 prebuiltKey 参数传入，不应该走到这里
     throw new Error(
-      '其他级别的缓存键应该通过 IsolationContext.buildCacheKey() 生成',
+      "其他级别的缓存键应该通过 IsolationContext.buildCacheKey() 生成",
     );
   }
 
@@ -400,7 +400,7 @@ export class CacheKey {
     // 验证长度
     if (this.fullKey.length > 256) {
       throw new GeneralBadRequestException(
-        '缓存键过长',
+        "缓存键过长",
         `缓存键长度不能超过 256 字符，当前长度: ${this.fullKey.length}`,
         { key: this.fullKey },
       );
@@ -410,8 +410,8 @@ export class CacheKey {
     const invalidChars = /[^\w:_-]/;
     if (invalidChars.test(this.fullKey)) {
       throw new GeneralBadRequestException(
-        '缓存键包含无效字符',
-        '缓存键只能包含字母、数字、冒号、下划线和连字符',
+        "缓存键包含无效字符",
+        "缓存键只能包含字母、数字、冒号、下划线和连字符",
         { key: this.fullKey },
       );
     }

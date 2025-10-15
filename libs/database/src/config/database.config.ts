@@ -41,7 +41,7 @@
  * @since 1.0.0
  */
 
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsBoolean,
   IsNumber,
@@ -49,12 +49,12 @@ import {
   IsString,
   Max,
   Min,
-} from 'class-validator';
+} from "class-validator";
 import {
   CONNECTION_DEFAULTS,
   MONITORING_DEFAULTS,
   POOL_DEFAULTS,
-} from '../constants/defaults.js';
+} from "../constants/defaults.js";
 
 /**
  * 数据库配置类
@@ -69,7 +69,7 @@ export class DatabaseConfig {
    */
   @IsString()
   @IsOptional()
-  type: 'postgresql' | 'mongodb' = 'postgresql';
+  type: "postgresql" | "mongodb" = "postgresql";
 
   /**
    * 数据库主机地址
@@ -78,7 +78,7 @@ export class DatabaseConfig {
    * @envVar DB_HOST
    */
   @IsString()
-  host: string = 'localhost';
+  host: string = "localhost";
 
   /**
    * 数据库端口
@@ -201,11 +201,11 @@ export class DatabaseConfig {
    * ```
    */
   getConnectionString(): string {
-    if (this.type === 'postgresql') {
+    if (this.type === "postgresql") {
       return `postgresql://${this.username}:${this.password}@${this.host}:${this.port}/${this.database}`;
     }
 
-    if (this.type === 'mongodb') {
+    if (this.type === "mongodb") {
       return `mongodb://${this.username}:${this.password}@${this.host}:${this.port}/${this.database}`;
     }
 

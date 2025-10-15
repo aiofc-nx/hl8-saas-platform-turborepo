@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const RATE_LIMIT_GUARD = 'Rate Limit Guard';
+export const RATE_LIMIT_GUARD = "Rate Limit Guard";

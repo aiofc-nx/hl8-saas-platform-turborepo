@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const TRANSFORMATION_PIPE = 'Transformation Pipe';
+export const TRANSFORMATION_PIPE = "Transformation Pipe";

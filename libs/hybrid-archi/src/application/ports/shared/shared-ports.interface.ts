@@ -35,7 +35,7 @@
  *     const requestId = this.idGenerator.generate();
  *     const startTime = this.timeProvider.now();
  *
- *     this.logger.info('开始处理请求', { requestId });
+ *     this.logger.log('开始处理请求');
  *
  *     const validationResult = await this.validator.validate(request);
  *     if (!validationResult.isValid) {
@@ -50,7 +50,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { EntityId } from "@hl8/isolation-model";
 
 /**
  * 日志记录端口接口
@@ -181,7 +181,7 @@ export interface ITimeProviderPort {
    * @param unit - 时间单位
    * @returns 新的时间
    */
-  add(date: Date, amount: number, unit: 'ms' | 's' | 'm' | 'h' | 'd'): Date;
+  add(date: Date, amount: number, unit: "ms" | "s" | "m" | "h" | "d"): Date;
 
   /**
    * 比较时间
@@ -255,7 +255,7 @@ export interface IValidationSchema {
   /**
    * 模式类型
    */
-  type: 'object' | 'array' | 'string' | 'number' | 'boolean';
+  type: "object" | "array" | "string" | "number" | "boolean";
 
   /**
    * 是否必需
@@ -405,7 +405,7 @@ export interface ISanitizationRules {
   fields: Record<
     string,
     {
-      type: 'mask' | 'remove' | 'hash' | 'encrypt';
+      type: "mask" | "remove" | "hash" | "encrypt";
       options?: Record<string, unknown>;
     }
   >;
@@ -414,7 +414,7 @@ export interface ISanitizationRules {
    * 默认规则
    */
   defaultRule?: {
-    type: 'mask' | 'remove' | 'hash' | 'encrypt';
+    type: "mask" | "remove" | "hash" | "encrypt";
     options?: Record<string, unknown>;
   };
 }

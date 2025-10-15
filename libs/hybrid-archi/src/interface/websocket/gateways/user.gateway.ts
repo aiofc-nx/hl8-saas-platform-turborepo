@@ -45,13 +45,13 @@
  * @since 1.0.0
  */
 
-import {
+import type {
   ILoggerService,
   IMetricsService,
   IWebSocketClient,
   IWebSocketContext,
-} from '../../shared/interfaces';
-import { BaseGateway } from './base-gateway';
+} from "../../shared/interfaces.js";
+import { BaseGateway } from "./base-gateway.js";
 import {
   SubscribeMessage,
   RequireRoles,
@@ -60,12 +60,12 @@ import {
   MonitorPerformance,
   MessageBody,
   WebSocketContext,
-} from '../decorators';
+} from "../decorators.js";
 import {
   IWebSocketMessage,
   IWebSocketResponse,
   WebSocketUtils,
-} from '../utils';
+} from "../utils.js";
 
 /**
  * 获取用户资料消息
@@ -73,7 +73,7 @@ import {
  * @description 定义获取用户资料的消息格式
  */
 export interface GetUserProfileMessage extends IWebSocketMessage {
-  type: 'getUserProfile';
+  type: "getUserProfile";
   data: {
     userId: string;
   };
@@ -89,7 +89,7 @@ export interface UserProfileData {
   name: string;
   email: string;
   avatar?: string;
-  status: 'online' | 'offline' | 'away' | 'busy';
+  status: "online" | "offline" | "away" | "busy";
   lastSeen: Date;
   roles: string[];
   permissions: string[];
@@ -101,9 +101,9 @@ export interface UserProfileData {
  * @description 定义更新用户状态的消息格式
  */
 export interface UpdateUserStatusMessage extends IWebSocketMessage {
-  type: 'updateUserStatus';
+  type: "updateUserStatus";
   data: {
-    status: 'online' | 'offline' | 'away' | 'busy';
+    status: "online" | "offline" | "away" | "busy";
     message?: string;
   };
 }
@@ -114,10 +114,7 @@ export interface UpdateUserStatusMessage extends IWebSocketMessage {
  * @description 提供用户相关的WebSocket功能
  */
 export class UserGateway extends BaseGateway {
-  constructor(
-    logger: ILoggerService,
-    metricsService?: IMetricsService
-  ) {
+  constructor(logger: ILoggerService, metricsService?: IMetricsService) {
     super(logger, metricsService);
   }
 
@@ -130,33 +127,36 @@ export class UserGateway extends BaseGateway {
    * @param context - WebSocket上下文
    * @returns 用户资料响应
    */
-  @SubscribeMessage('getUserProfile')
-  @RequireRoles({ roles: ['user', 'admin'] })
-  @RequireWebSocketPermissions({ permissions: ['user:read'] })
-  @ValidateMessage({ messageType: Object as unknown as new () => GetUserProfileMessage })
+  @SubscribeMessage("getUserProfile")
+  @RequireRoles({ roles: ["user", "admin"] })
+  @RequireWebSocketPermissions({ permissions: ["user:read"] })
+  @ValidateMessage({
+    messageType: Object as unknown as new () => GetUserProfileMessage,
+  })
   @MonitorPerformance({ threshold: 1000 })
   async handleGetUserProfile(
     @MessageBody() data: GetUserProfileMessage,
-    @WebSocketContext() context: IWebSocketContext
+    @WebSocketContext() context: IWebSocketContext,
   ): Promise<IWebSocketResponse<UserProfileData>> {
-    return this.handleMessage(
-      async () => {
-        // 这里应该调用用户服务获取用户资料
-        // 实际实现中会调用GetUserProfileUseCase
-        const userProfile: UserProfileData = {
-          id: data.data.userId,
-          name: '示例用户',
-          email: 'user@example.com',
-          status: 'online',
-          lastSeen: new Date(),
-          roles: ['user'],
-          permissions: ['user:read'],
-        };
+    return this.handleMessage(async () => {
+      // 这里应该调用用户服务获取用户资料
+      // 实际实现中会调用GetUserProfileUseCase
+      const userProfile: UserProfileData = {
+        id: data.data.userId,
+        name: "示例用户",
+        email: "user@example.com",
+        status: "online",
+        lastSeen: new Date(),
+        roles: ["user"],
+        permissions: ["user:read"],
+      };
 
-        return WebSocketUtils.createSuccessResponse(userProfile, context.requestId, context.correlationId);
-      },
-      'getUserProfile'
-    );
+      return WebSocketUtils.createSuccessResponse(
+        userProfile,
+        context.requestId,
+        context.correlationId,
+      );
+    }, "getUserProfile");
   }
 
   /**
@@ -168,33 +168,28 @@ export class UserGateway extends BaseGateway {
    * @param context - WebSocket上下文
    * @returns 更新结果响应
    */
-  @SubscribeMessage('updateUserStatus')
-  @RequireRoles({ roles: ['user', 'admin'] })
-  @ValidateMessage({ messageType: Object as unknown as new () => UpdateUserStatusMessage })
+  @SubscribeMessage("updateUserStatus")
+  @RequireRoles({ roles: ["user", "admin"] })
+  @ValidateMessage({
+    messageType: Object as unknown as new () => UpdateUserStatusMessage,
+  })
   @MonitorPerformance({ threshold: 500 })
   async handleUpdateUserStatus(
     @MessageBody() data: UpdateUserStatusMessage,
-    @WebSocketContext() context: IWebSocketContext
+    @WebSocketContext() context: IWebSocketContext,
   ): Promise<IWebSocketResponse<{ success: boolean }>> {
-    return this.handleMessage(
-      async () => {
-        // 这里应该调用用户服务更新用户状态
-        // 实际实现中会调用UpdateUserStatusUseCase
-        
-        this.logger.info('用户状态更新', {
-          userId: context.userId,
-          newStatus: data.data.status,
-          message: data.data.message,
-        });
+    return this.handleMessage(async () => {
+      // 这里应该调用用户服务更新用户状态
+      // 实际实现中会调用UpdateUserStatusUseCase
 
-        return WebSocketUtils.createSuccessResponse(
-          { success: true },
-          context.requestId,
-          context.correlationId
-        );
-      },
-      'updateUserStatus'
-    );
+      this.logger.log("用户状态更新");
+
+      return WebSocketUtils.createSuccessResponse(
+        { success: true },
+        context.requestId,
+        context.correlationId,
+      );
+    }, "updateUserStatus");
   }
 
   /**
@@ -206,16 +201,13 @@ export class UserGateway extends BaseGateway {
    */
   async handleConnection(client: IWebSocketClient): Promise<void> {
     const isAuthenticated = await this.authenticateConnection(client);
-    
+
     if (!isAuthenticated) {
       client.disconnect(true);
       return;
     }
 
-    this.logger.info('用户WebSocket连接建立', {
-      clientId: client.id,
-      userId: client.id, // 这里应该从认证信息中获取
-    });
+    this.logger.log("用户WebSocket连接建立");
   }
 
   /**
@@ -227,9 +219,7 @@ export class UserGateway extends BaseGateway {
    */
   override handleDisconnection(client: IWebSocketClient): void {
     this.handleDisconnection(client);
-    
-    this.logger.info('用户WebSocket连接断开', {
-      clientId: client.id,
-    });
+
+    this.logger.log("用户WebSocket连接断开");
   }
 }

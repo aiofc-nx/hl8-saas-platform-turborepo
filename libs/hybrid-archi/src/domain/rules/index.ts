@@ -7,4 +7,4 @@
  */
 
 // 基础业务规则接口
-export * from './base-business-rule.interface';
+export * from "./base-business-rule.interface.js";

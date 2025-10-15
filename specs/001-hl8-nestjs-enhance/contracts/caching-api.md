@@ -24,40 +24,40 @@
 
 ```typescript
 // 模块
-export { CachingModule } from './cache.module.js';
+export { CachingModule } from "./cache.module.js";
 
 // 服务
-export { CacheService } from './cache.service.js';
-export { RedisService } from './redis.service.js';
+export { CacheService } from "./cache.service.js";
+export { RedisService } from "./redis.service.js";
 
 // 值对象
-export { CacheKey } from './domain/value-objects/cache-key.vo.js';
-export { CacheEntry } from './domain/value-objects/cache-entry.vo.js';
+export { CacheKey } from "./domain/value-objects/cache-key.vo.js";
+export { CacheEntry } from "./domain/value-objects/cache-entry.vo.js";
 
 // 枚举
-export { CacheLevel } from './types/cache-level.enum.js';
+export { CacheLevel } from "./types/cache-level.enum.js";
 
 // 接口
-export type { ICacheService } from './types/cache-service.interface.js';
-export type { IRedisService } from './types/redis-service.interface.js';
+export type { ICacheService } from "./types/cache-service.interface.js";
+export type { IRedisService } from "./types/redis-service.interface.js";
 export type {
   CachingModuleOptions,
   CachingModuleAsyncOptions,
-} from './types/cache-options.interface.js';
-export type { RedisOptions } from './types/redis-options.interface.js';
-export type { CacheMetrics } from './types/cache-metrics.interface.js';
+} from "./types/cache-options.interface.js";
+export type { RedisOptions } from "./types/redis-options.interface.js";
+export type { CacheMetrics } from "./types/cache-metrics.interface.js";
 
 // 装饰器
-export { Cacheable } from './decorators/cacheable.decorator.js';
-export { CacheEvict } from './decorators/cache-evict.decorator.js';
-export { CachePut } from './decorators/cache-put.decorator.js';
+export { Cacheable } from "./decorators/cacheable.decorator.js";
+export { CacheEvict } from "./decorators/cache-evict.decorator.js";
+export { CachePut } from "./decorators/cache-put.decorator.js";
 
 // 领域事件
-export { CacheInvalidatedEvent } from './domain/events/cache-invalidated.event.js';
-export { CacheLevelInvalidatedEvent } from './domain/events/cache-level-invalidated.event.js';
+export { CacheInvalidatedEvent } from "./domain/events/cache-invalidated.event.js";
+export { CacheLevelInvalidatedEvent } from "./domain/events/cache-level-invalidated.event.js";
 
 // 监控
-export { CacheMetricsService } from './monitoring/cache-metrics.service.js';
+export { CacheMetricsService } from "./monitoring/cache-metrics.service.js";
 ```
 
 ---
@@ -121,20 +121,20 @@ DynamicModule;
 **使用示例**:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { CachingModule } from '@hl8/nestjs-caching';
+import { Module } from "@nestjs/common";
+import { CachingModule } from "@hl8/nestjs-caching";
 
 @Module({
   imports: [
     CachingModule.forRoot({
       redis: {
-        host: 'localhost',
+        host: "localhost",
         port: 6379,
-        password: 'secret',
+        password: "secret",
         db: 0,
       },
       defaultTTL: 3600,
-      keyPrefix: 'hl8:cache:',
+      keyPrefix: "hl8:cache:",
       enableMetrics: true,
     }),
   ],
@@ -179,9 +179,9 @@ interface CachingModuleAsyncOptions {
 **使用示例**:
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CachingModule } from '@hl8/nestjs-caching';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { CachingModule } from "@hl8/nestjs-caching";
 
 @Module({
   imports: [
@@ -190,13 +190,13 @@ import { CachingModule } from '@hl8/nestjs-caching';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         redis: {
-          host: configService.get('REDIS_HOST', 'localhost'),
-          port: configService.get('REDIS_PORT', 6379),
-          password: configService.get('REDIS_PASSWORD'),
-          db: configService.get('REDIS_DB', 0),
+          host: configService.get("REDIS_HOST", "localhost"),
+          port: configService.get("REDIS_PORT", 6379),
+          password: configService.get("REDIS_PASSWORD"),
+          db: configService.get("REDIS_DB", 0),
         },
-        defaultTTL: configService.get('CACHE_DEFAULT_TTL', 3600),
-        keyPrefix: configService.get('CACHE_KEY_PREFIX', 'hl8:cache:'),
+        defaultTTL: configService.get("CACHE_DEFAULT_TTL", 3600),
+        keyPrefix: configService.get("CACHE_KEY_PREFIX", "hl8:cache:"),
         enableMetrics: true,
       }),
       inject: [ConfigService],
@@ -236,8 +236,8 @@ async get<T>(namespace: string, key: string): Promise<T | null>
 **使用示例**:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { CacheService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { CacheService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class UserService {
@@ -246,7 +246,7 @@ export class UserService {
   async getUserProfile(userId: string) {
     // 自动根据当前隔离上下文生成缓存键
     const cached = await this.cacheService.get<UserProfile>(
-      'user',
+      "user",
       `profile:${userId}`,
     );
 
@@ -258,7 +258,7 @@ export class UserService {
     const profile = await this.loadFromDatabase(userId);
 
     // 缓存结果
-    await this.cacheService.set('user', `profile:${userId}`, profile, 1800);
+    await this.cacheService.set("user", `profile:${userId}`, profile, 1800);
 
     return profile;
   }
@@ -303,13 +303,13 @@ async set<T>(namespace: string, key: string, value: T, ttl?: number): Promise<vo
 
 ```typescript
 // 使用默认 TTL
-await cacheService.set('user', 'profile:u999', userProfile);
+await cacheService.set("user", "profile:u999", userProfile);
 
 // 自定义 TTL（30 分钟）
-await cacheService.set('user', 'profile:u999', userProfile, 1800);
+await cacheService.set("user", "profile:u999", userProfile, 1800);
 
 // 永不过期（慎用）
-await cacheService.set('config', 'system-version', '1.0.0', 0);
+await cacheService.set("config", "system-version", "1.0.0", 0);
 ```
 
 **值大小限制**:
@@ -343,7 +343,7 @@ async del(namespace: string, key: string): Promise<void>
 
 ```typescript
 // 删除用户配置缓存
-await cacheService.del('user', 'profile:u999');
+await cacheService.del("user", "profile:u999");
 ```
 
 ---
@@ -370,8 +370,8 @@ async exists(namespace: string, key: string): Promise<boolean>
 **使用示例**:
 
 ```typescript
-if (await cacheService.exists('user', 'profile:u999')) {
-  console.log('缓存存在');
+if (await cacheService.exists("user", "profile:u999")) {
+  console.log("缓存存在");
 }
 ```
 
@@ -399,7 +399,7 @@ async clear(pattern?: string): Promise<void>
 
 ```typescript
 // 清空所有用户缓存
-await cacheService.clear('user:*');
+await cacheService.clear("user:*");
 
 // 清空所有缓存（危险操作）
 await cacheService.clear();
@@ -435,11 +435,11 @@ async clearTenantCache(tenantId: string, namespace?: string): Promise<number>
 
 ```typescript
 // 清除租户的所有用户缓存
-const count = await cacheService.clearTenantCache('t123', 'user');
+const count = await cacheService.clearTenantCache("t123", "user");
 console.log(`清除了 ${count} 个缓存键`);
 
 // 清除租户的所有缓存
-const totalCount = await cacheService.clearTenantCache('t123');
+const totalCount = await cacheService.clearTenantCache("t123");
 ```
 
 ---
@@ -473,9 +473,9 @@ async clearOrganizationCache(
 ```typescript
 // 清除组织的成员列表缓存
 const count = await cacheService.clearOrganizationCache(
-  't123',
-  'o456',
-  'members',
+  "t123",
+  "o456",
+  "members",
 );
 ```
 
@@ -512,10 +512,10 @@ async clearDepartmentCache(
 ```typescript
 // 清除部门的任务缓存
 const count = await cacheService.clearDepartmentCache(
-  't123',
-  'o456',
-  'd789',
-  'tasks',
+  "t123",
+  "o456",
+  "d789",
+  "tasks",
 );
 ```
 
@@ -554,15 +554,15 @@ interface CacheableOptions {
 **使用示例**:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { Cacheable } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { Cacheable } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class UserService {
   /**
    * 获取用户配置（自动缓存）
    */
-  @Cacheable('user', {
+  @Cacheable("user", {
     keyGenerator: (userId: string) => `profile:${userId}`,
     ttl: 1800, // 30 分钟
   })
@@ -573,7 +573,7 @@ export class UserService {
   /**
    * 条件缓存：仅缓存激活用户
    */
-  @Cacheable('user', {
+  @Cacheable("user", {
     keyGenerator: (userId: string) => `status:${userId}`,
     condition: (userId: string, user: User) => user.isActive,
   })
@@ -627,7 +627,7 @@ export class UserService {
   /**
    * 更新用户配置（清除缓存）
    */
-  @CacheEvict('user', {
+  @CacheEvict("user", {
     keyGenerator: (userId: string) => `profile:${userId}`,
   })
   async updateUserProfile(
@@ -640,7 +640,7 @@ export class UserService {
   /**
    * 删除用户（清除所有用户缓存）
    */
-  @CacheEvict('user', {
+  @CacheEvict("user", {
     allEntries: true,
   })
   async deleteUser(userId: string): Promise<void> {
@@ -684,7 +684,7 @@ export class UserService {
   /**
    * 创建用户（立即缓存）
    */
-  @CachePut('user', {
+  @CachePut("user", {
     keyGenerator: (user: User) => `profile:${user.id}`,
     ttl: 3600,
   })
@@ -741,8 +741,8 @@ interface CacheMetrics {
 **使用示例**:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { CacheMetricsService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { CacheMetricsService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class MonitoringService {
@@ -805,8 +805,8 @@ getClient(): Redis
 **使用示例**:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { RedisService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { RedisService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class CustomCacheService {
@@ -816,8 +816,8 @@ export class CustomCacheService {
     const redis = this.redisService.getClient();
 
     // 执行自定义 Redis 命令
-    await redis.zadd('leaderboard', 100, 'user1');
-    const rank = await redis.zrank('leaderboard', 'user1');
+    await redis.zadd("leaderboard", 100, "user1");
+    const rank = await redis.zrank("leaderboard", "user1");
 
     return rank;
   }
@@ -848,8 +848,8 @@ async healthCheck(): Promise<boolean>
 **使用示例**:
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { RedisService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { RedisService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class HealthService {
@@ -859,10 +859,10 @@ export class HealthService {
     const isHealthy = await this.redisService.healthCheck();
 
     if (!isHealthy) {
-      console.error('Redis 连接异常');
+      console.error("Redis 连接异常");
     }
 
-    return { redis: isHealthy ? 'up' : 'down' };
+    return { redis: isHealthy ? "up" : "down" };
   }
 }
 ```
@@ -906,14 +906,14 @@ export class HealthService {
 
 ```typescript
 // 类型推断
-const user = await cacheService.get<User>('user', 'profile:u999');
+const user = await cacheService.get<User>("user", "profile:u999");
 // user 的类型: User | null
 
 // 类型检查
-await cacheService.set<UserProfile>('user', 'profile:u999', {
-  id: 'u999',
-  name: '张三',
-  email: 'zhangsan@example.com',
+await cacheService.set<UserProfile>("user", "profile:u999", {
+  id: "u999",
+  name: "张三",
+  email: "zhangsan@example.com",
 });
 ```
 
@@ -927,7 +927,7 @@ import type {
   CacheLevel,
   ICacheService,
   IRedisService,
-} from '@hl8/nestjs-caching';
+} from "@hl8/nestjs-caching";
 ```
 
 ---
@@ -986,36 +986,36 @@ async clearCache(tenantId: string): Promise<void>
 
 ```typescript
 // ✅ 推荐：使用小写字母和连字符
-'user-profile';
-'product-list';
-'order-summary';
+"user-profile";
+"product-list";
+"order-summary";
 
 // ❌ 避免：使用大写或特殊字符
-'UserProfile';
-'product_list';
-'order.summary';
+"UserProfile";
+"product_list";
+"order.summary";
 ```
 
 ### 2. TTL 设置
 
 ```typescript
 // ✅ 根据数据变更频率设置 TTL
-await cacheService.set('user', 'profile', data, 1800); // 30 分钟（配置数据）
-await cacheService.set('product', 'price', data, 300); // 5 分钟（价格数据）
+await cacheService.set("user", "profile", data, 1800); // 30 分钟（配置数据）
+await cacheService.set("product", "price", data, 300); // 5 分钟（价格数据）
 
 // ❌ 避免：使用过长的 TTL
-await cacheService.set('user', 'session', data, 86400 * 30); // 30 天（太长）
+await cacheService.set("user", "session", data, 86400 * 30); // 30 天（太长）
 ```
 
 ### 3. 批量操作
 
 ```typescript
 // ✅ 使用批量删除
-await cacheService.clearTenantCache('t123', 'user');
+await cacheService.clearTenantCache("t123", "user");
 
 // ❌ 避免：循环删除
 for (const userId of userIds) {
-  await cacheService.del('user', `profile:${userId}`); // 性能差
+  await cacheService.del("user", `profile:${userId}`); // 性能差
 }
 ```
 

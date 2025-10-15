@@ -209,9 +209,9 @@ pnpm add @hl8/nestjs-fastify
 
 ```typescript
 // main.ts
-import { NestFactory } from '@nestjs/core';
-import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
-import { AppModule } from './app.module.js';
+import { NestFactory } from "@nestjs/core";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
+import { AppModule } from "./app.module.js";
 
 async function bootstrap() {
   // 使用 EnterpriseFastifyAdapter
@@ -220,7 +220,7 @@ async function bootstrap() {
     new EnterpriseFastifyAdapter(),
   );
 
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(3000, "0.0.0.0");
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 
@@ -231,26 +231,26 @@ bootstrap();
 
 ```typescript
 // app.module.ts
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 import {
   FastifyExceptionModule,
   FastifyLoggingModule,
   CompressionModule,
   MetricsModule,
-} from '@hl8/nestjs-fastify';
+} from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     // 异常处理（推荐）
     FastifyExceptionModule.forRoot({
-      isProduction: process.env.NODE_ENV === 'production',
+      isProduction: process.env.NODE_ENV === "production",
     }),
 
     // 日志（推荐）
     FastifyLoggingModule.forRoot({
       config: {
-        level: 'info',
-        prettyPrint: process.env.NODE_ENV === 'development',
+        level: "info",
+        prettyPrint: process.env.NODE_ENV === "development",
       },
     }),
 
@@ -263,7 +263,7 @@ import {
     // Metrics（可选）
     MetricsModule.forRoot({
       defaultLabels: {
-        app: 'my-app',
+        app: "my-app",
       },
     }),
   ],
@@ -295,12 +295,12 @@ curl http://localhost:3000/health
 **基本用法**：
 
 ```typescript
-import { FastifyExceptionModule } from '@hl8/nestjs-fastify';
+import { FastifyExceptionModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     FastifyExceptionModule.forRoot({
-      isProduction: process.env.NODE_ENV === 'production',
+      isProduction: process.env.NODE_ENV === "production",
     }),
   ],
 })
@@ -325,13 +325,13 @@ export class AppModule {}
 **基本用法**：
 
 ```typescript
-import { FastifyLoggingModule } from '@hl8/nestjs-fastify';
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     FastifyLoggingModule.forRoot({
       config: {
-        level: 'info', // 日志级别
+        level: "info", // 日志级别
         prettyPrint: true, // 美化输出（开发环境）
         includeIsolationContext: true, // 包含隔离上下文
         timestamp: true, // 时间戳
@@ -345,21 +345,21 @@ export class AppModule {}
 **在服务中使用**：
 
 ```typescript
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class UserService {
   constructor(private readonly logger: FastifyLoggerService) {}
 
   async createUser(data: CreateUserDto) {
-    this.logger.info('Creating user', { email: data.email });
+    this.logger.info("Creating user", { email: data.email });
 
     try {
       const user = await this.userRepo.save(data);
-      this.logger.info('User created', { userId: user.id });
+      this.logger.info("User created", { userId: user.id });
       return user;
     } catch (error) {
-      this.logger.error('Failed to create user', error);
+      this.logger.error("Failed to create user", error);
       throw error;
     }
   }
@@ -394,14 +394,14 @@ export class UserService {
 **基本用法**：
 
 ```typescript
-import { CompressionModule } from '@hl8/nestjs-fastify';
+import { CompressionModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     CompressionModule.forRoot({
       global: true, // 全局启用
       threshold: 1024, // 大于 1KB 才压缩
-      encodings: ['br', 'gzip', 'deflate'], // 支持的编码
+      encodings: ["br", "gzip", "deflate"], // 支持的编码
     }),
   ],
 })
@@ -431,16 +431,16 @@ export class AppModule {}
 **基本用法**：
 
 ```typescript
-import { MetricsModule } from '@hl8/nestjs-fastify';
+import { MetricsModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     MetricsModule.forRoot({
-      path: '/metrics', // Metrics 端点
+      path: "/metrics", // Metrics 端点
       defaultLabels: {
         // 默认标签
-        app: 'my-app',
-        environment: 'production',
+        app: "my-app",
+        environment: "production",
       },
       includeTenantMetrics: true, // 包含租户级指标
       enableDefaultMetrics: true, // 启用默认指标
@@ -474,16 +474,16 @@ export class AppModule {}
 **自定义指标**：
 
 ```typescript
-import { MetricsService } from '@hl8/nestjs-fastify';
+import { MetricsService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class OrderService {
   constructor(private readonly metrics: MetricsService) {
     // 创建自定义指标
     this.orderCounter = this.metrics.createCounter({
-      name: 'orders_created_total',
-      help: 'Total number of orders created',
-      labelNames: ['status'],
+      name: "orders_created_total",
+      help: "Total number of orders created",
+      labelNames: ["status"],
     });
   }
 
@@ -515,7 +515,7 @@ curl http://localhost:3000/metrics
 **基本用法**：
 
 ```typescript
-import { SecurityModule } from '@hl8/nestjs-fastify';
+import { SecurityModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -523,10 +523,10 @@ import { SecurityModule } from '@hl8/nestjs-fastify';
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", 'cdn.example.com'],
+          scriptSrc: ["'self'", "'unsafe-inline'", "cdn.example.com"],
           styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", 'data:', 'https:'],
-          connectSrc: ["'self'", 'api.example.com'],
+          imgSrc: ["'self'", "data:", "https:"],
+          connectSrc: ["'self'", "api.example.com"],
         },
       },
       hsts: {
@@ -558,14 +558,14 @@ X-XSS-Protection: 1; mode=block
 **基本用法**：
 
 ```typescript
-import { RateLimitModule } from '@hl8/nestjs-fastify';
+import { RateLimitModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     RateLimitModule.forRoot({
       max: 100, // 最大请求数
       timeWindow: 60000, // 时间窗口（毫秒）
-      strategy: 'ip', // 限制策略：ip/tenant/user/custom
+      strategy: "ip", // 限制策略：ip/tenant/user/custom
       redis: redisClient, // Redis 客户端（可选）
     }),
   ],
@@ -576,10 +576,10 @@ export class AppModule {}
 **装饰器用法**：
 
 ```typescript
-import { RateLimit } from '@hl8/nestjs-fastify';
+import { RateLimit } from "@hl8/nestjs-fastify/index.js";
 
 // 控制器级别限制
-@Controller('users')
+@Controller("users")
 @RateLimit({ max: 1000, timeWindow: 60000 }) // 1000 次/分钟
 export class UserController {
   // 方法级别限制（更严格）
@@ -601,9 +601,9 @@ export class UserController {
 **租户级别限制**：
 
 ```typescript
-import { RateLimitByTenant } from '@hl8/nestjs-fastify';
+import { RateLimitByTenant } from "@hl8/nestjs-fastify/index.js";
 
-@Controller('api')
+@Controller("api")
 @RateLimitByTenant({ max: 10000, timeWindow: 3600000 }) // 10000 次/小时/租户
 export class ApiController {
   // ...
@@ -628,16 +628,16 @@ Retry-After: 45
 **基本用法**：
 
 ```typescript
-import { CorsModule } from '@hl8/nestjs-fastify';
+import { CorsModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
     CorsModule.forRoot({
-      origin: ['https://app.example.com', 'https://admin.example.com'],
+      origin: ["https://app.example.com", "https://admin.example.com"],
       credentials: true, // 允许凭证
-      allowedHeaders: ['Content-Type', 'Authorization'],
-      exposedHeaders: ['X-Total-Count'],
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      exposedHeaders: ["X-Total-Count"],
+      methods: ["GET", "POST", "PUT", "DELETE"],
       maxAge: 3600, // 预检缓存时间
     }),
   ],
@@ -651,10 +651,10 @@ export class AppModule {}
 CorsModule.forRoot({
   origin: (origin, callback) => {
     // 动态判断是否允许
-    if (!origin || origin.endsWith('.example.com')) {
+    if (!origin || origin.endsWith(".example.com")) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
@@ -669,8 +669,8 @@ CorsModule.forRoot({
 
 ```typescript
 // app.module.ts
-import { Module } from '@nestjs/common';
-import { TypedConfigModule, dotenvLoader } from '@hl8/config';
+import { Module } from "@nestjs/common";
+import { TypedConfigModule, dotenvLoader } from "@hl8/config";
 import {
   FastifyExceptionModule,
   FastifyLoggingModule,
@@ -679,9 +679,9 @@ import {
   CompressionModule,
   MetricsModule,
   RateLimitModule,
-} from '@hl8/nestjs-fastify';
-import { IsolationModule } from '@hl8/nestjs-isolation';
-import { AppConfig } from './config/app.config.js';
+} from "@hl8/nestjs-fastify/index.js";
+import { IsolationModule } from "@hl8/nestjs-isolation";
+import { AppConfig } from "./config/app.config.js";
 
 @Module({
   imports: [
@@ -691,7 +691,7 @@ import { AppConfig } from './config/app.config.js';
       isGlobal: true,
       load: [
         dotenvLoader({
-          envFilePath: ['.env.local', '.env'],
+          envFilePath: [".env.local", ".env"],
         }),
       ],
     }),
@@ -701,14 +701,14 @@ import { AppConfig } from './config/app.config.js';
 
     // 3. 异常处理（必需）
     FastifyExceptionModule.forRoot({
-      isProduction: process.env.NODE_ENV === 'production',
+      isProduction: process.env.NODE_ENV === "production",
     }),
 
     // 4. 日志（必需）
     FastifyLoggingModule.forRoot({
       config: {
-        level: process.env.LOG_LEVEL || 'info',
-        prettyPrint: process.env.NODE_ENV === 'development',
+        level: process.env.LOG_LEVEL || "info",
+        prettyPrint: process.env.NODE_ENV === "development",
         includeIsolationContext: true,
       },
     }),
@@ -726,7 +726,7 @@ import { AppConfig } from './config/app.config.js';
 
     // 6. CORS（按需）
     CorsModule.forRoot({
-      origin: process.env.CORS_ORIGIN?.split(',') || [],
+      origin: process.env.CORS_ORIGIN?.split(",") || [],
       credentials: true,
     }),
 
@@ -734,14 +734,14 @@ import { AppConfig } from './config/app.config.js';
     CompressionModule.forRoot({
       global: true,
       threshold: 1024,
-      encodings: ['br', 'gzip', 'deflate'],
+      encodings: ["br", "gzip", "deflate"],
     }),
 
     // 8. Metrics（推荐）
     MetricsModule.forRoot({
-      path: '/metrics',
+      path: "/metrics",
       defaultLabels: {
-        app: 'my-app',
+        app: "my-app",
         environment: process.env.NODE_ENV,
       },
       includeTenantMetrics: true,
@@ -751,7 +751,7 @@ import { AppConfig } from './config/app.config.js';
     RateLimitModule.forRoot({
       max: 1000,
       timeWindow: 60000,
-      strategy: 'tenant',
+      strategy: "tenant",
     }),
   ],
   controllers: [AppController],
@@ -810,17 +810,17 @@ export class AppModule {}
 
 ```typescript
 // apps/fastify-api/src/config/app.config.ts
-import { Type } from 'class-transformer';
-import { IsString, IsNumber, ValidateNested } from 'class-validator';
+import { Type } from "class-transformer";
+import { IsString, IsNumber, ValidateNested } from "class-validator";
 import {
   LoggingConfig,
   MetricsModuleConfig,
   RateLimitModuleConfig,
-} from '@hl8/nestjs-fastify';
+} from "@hl8/nestjs-fastify/index.js";
 
 export class AppConfig {
   @IsString()
-  NODE_ENV: string = 'development';
+  NODE_ENV: string = "development";
 
   @IsNumber()
   @Type(() => Number)
@@ -840,7 +840,7 @@ export class AppConfig {
   rateLimit?: RateLimitModuleConfig;
 
   get isProduction(): boolean {
-    return this.NODE_ENV === 'production';
+    return this.NODE_ENV === "production";
   }
 }
 ```
@@ -854,8 +854,8 @@ export class AppConfig {
 ### 与 @hl8/isolation 集成
 
 ```typescript
-import { IsolationModule } from '@hl8/nestjs-isolation';
-import { FastifyLoggingModule } from '@hl8/nestjs-fastify';
+import { IsolationModule } from "@hl8/nestjs-isolation";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 
 @Module({
   imports: [
@@ -952,7 +952,7 @@ RateLimitModule.forRootAsync({
 
 ```typescript
 MetricsModule.forRoot({
-  excludeRoutes: ['/health', '/metrics', '/internal/*'],
+  excludeRoutes: ["/health", "/metrics", "/internal/*"],
 });
 ```
 
@@ -965,7 +965,7 @@ MetricsModule.forRoot({
 ```typescript
 FastifyLoggingModule.forRoot({
   config: {
-    level: 'warn', // 只记录 warn 和 error
+    level: "warn", // 只记录 warn 和 error
   },
 });
 ```
@@ -981,9 +981,9 @@ FastifyLoggingModule.forRoot({
 ```typescript
 CorsModule.forRoot({
   origin:
-    process.env.NODE_ENV === 'development'
+    process.env.NODE_ENV === "development"
       ? true // 开发：允许所有
-      : ['https://app.example.com'], // 生产：指定域名
+      : ["https://app.example.com"], // 生产：指定域名
   credentials: true,
 });
 ```
@@ -1073,14 +1073,14 @@ RateLimitModule.forRoot({
   imports: [
     RateLimitModule.forRoot({
       // 公开 API：按 IP 限制
-      strategy: 'ip',
+      strategy: "ip",
       max: 100,
       timeWindow: 60000,
     }),
   ],
 })
 // 在控制器中可以覆盖
-@Controller('premium-api')
+@Controller("premium-api")
 @RateLimitByTenant({ max: 10000, timeWindow: 60000 }) // 按租户限制
 export class PremiumApiController {
   // 高级客户有更高的限额
@@ -1094,9 +1094,9 @@ export class PremiumApiController {
 ```typescript
 // ✅ 好的做法：使用有意义的标签
 this.metrics.httpRequestCounter.inc({
-  method: 'POST',
-  path: '/users',
-  status: '201',
+  method: "POST",
+  path: "/users",
+  status: "201",
   tenant: context.tenantId?.value,
 });
 

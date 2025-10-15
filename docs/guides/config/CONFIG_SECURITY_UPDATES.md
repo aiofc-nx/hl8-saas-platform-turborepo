@@ -71,10 +71,10 @@ TypedConfigModule.forRoot({
   schema: AppConfig,
   load: [
     // 1. 配置文件（基础配置，可版本控制）
-    fileLoader({ path: './config/app.yml' }),
+    fileLoader({ path: "./config/app.yml" }),
 
     // 2. 环境变量（敏感配置 + 覆盖）
-    dotenvLoader({ envFilePath: ['.env.local', '.env'] }),
+    dotenvLoader({ envFilePath: [".env.local", ".env"] }),
   ],
 });
 
@@ -189,7 +189,7 @@ cleanupSensitiveEnvVars();
 
 // ✅ 4. 混合策略（可选）
 load: [
-  fileLoader({ path: './config/app.yml' }), // 基础配置
+  fileLoader({ path: "./config/app.yml" }), // 基础配置
   dotenvLoader(), // 敏感配置
 ];
 ```

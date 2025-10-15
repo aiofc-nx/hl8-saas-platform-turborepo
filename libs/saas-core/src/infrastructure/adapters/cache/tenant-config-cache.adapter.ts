@@ -13,9 +13,9 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { CacheService, Cacheable, CacheEvict } from '@hl8/cache';
-import { TENANT_CACHE_CONFIG } from '../../../constants/tenant.constants';
+import { Injectable } from "@nestjs/common";
+import { CacheService, Cacheable, CacheEvict } from "@hl8/hybrid-archi";
+import { TENANT_CACHE_CONFIG } from "../../../constants/tenant.constants.js";
 
 export interface ITenantConfig {
   maxUsers: number;
@@ -48,7 +48,7 @@ export class TenantConfigCacheAdapter {
    * @param {string} tenantId - 租户ID
    * @returns {Promise<ITenantConfig | null>} 租户配置
    */
-  @Cacheable('tenant:config', TENANT_CACHE_CONFIG.CONFIG_TTL)
+  @Cacheable("tenant:config", TENANT_CACHE_CONFIG.CONFIG_TTL)
   async get(tenantId: string): Promise<ITenantConfig | null> {
     const key = this.getCacheKey(tenantId);
     return await this.cacheService.get<ITenantConfig>(key);
@@ -74,7 +74,7 @@ export class TenantConfigCacheAdapter {
    * @param {string} tenantId - 租户ID
    * @returns {Promise<void>}
    */
-  @CacheEvict('tenant:config')
+  @CacheEvict("tenant:config")
   async invalidate(tenantId: string): Promise<void> {
     const key = this.getCacheKey(tenantId);
     await this.cacheService.delete(key);
@@ -88,8 +88,8 @@ export class TenantConfigCacheAdapter {
    * @returns {Promise<void>}
    */
   async invalidateMany(tenantIds: string[]): Promise<void> {
-    const keys = tenantIds.map(id => this.getCacheKey(id));
+    const keys = tenantIds.map((id) => this.getCacheKey(id));
     // 逐个删除缓存（CacheService 不提供 deleteMany 方法）
-    await Promise.all(keys.map(key => this.cacheService.delete(key)));
+    await Promise.all(keys.map((key) => this.cacheService.delete(key)));
   }
 }

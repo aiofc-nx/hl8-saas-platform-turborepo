@@ -6,4 +6,4 @@
  * @packageDocumentation
  */
 
-export * from './exception.config.js';
+export * from "./exception.config.js";

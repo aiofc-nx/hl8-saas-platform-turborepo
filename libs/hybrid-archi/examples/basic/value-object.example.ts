@@ -1,13 +1,13 @@
 /**
  * 值对象示例
- * 
+ *
  * 本示例展示如何创建和使用值对象（Value Object）
- * 
+ *
  * @description 值对象是没有概念标识的不可变对象，相等性基于属性值
  * @example
  */
 
-import { BaseValueObject } from '../../src/domain/value-objects/base-value-object';
+import { BaseValueObject } from "../../src/domain/value-objects/base-value-object.js";
 
 // ============================================================================
 // 示例 1: 简单值对象 - Email
@@ -15,7 +15,7 @@ import { BaseValueObject } from '../../src/domain/value-objects/base-value-objec
 
 /**
  * Email 值对象
- * 
+ *
  * 特点：
  * - 不可变：创建后不能修改
  * - 验证：创建时自动验证格式
@@ -71,7 +71,7 @@ export class Email extends BaseValueObject {
    */
   override toJSON(): Record<string, unknown> {
     return {
-      type: 'Email',
+      type: "Email",
       value: this._value,
     };
   }
@@ -83,7 +83,7 @@ export class Email extends BaseValueObject {
 
 /**
  * Money 值对象
- * 
+ *
  * 特点：
  * - 包含多个属性（金额、货币）
  * - 提供业务操作方法（加、减、乘）
@@ -92,7 +92,7 @@ export class Email extends BaseValueObject {
 export class Money extends BaseValueObject {
   private constructor(
     private readonly _amount: number,
-    private readonly _currency: string
+    private readonly _currency: string,
   ) {
     super();
     this.validate();
@@ -112,10 +112,10 @@ export class Money extends BaseValueObject {
 
   protected validate(): void {
     if (this._amount < 0) {
-      throw new Error('Amount cannot be negative');
+      throw new Error("Amount cannot be negative");
     }
     if (!this._currency || this._currency.length !== 3) {
-      throw new Error('Currency must be 3-letter code (e.g., USD, CNY)');
+      throw new Error("Currency must be 3-letter code (e.g., USD, CNY)");
     }
   }
 
@@ -134,7 +134,7 @@ export class Money extends BaseValueObject {
     this.ensureSameCurrency(other);
     const newAmount = this._amount - other._amount;
     if (newAmount < 0) {
-      throw new Error('Result amount cannot be negative');
+      throw new Error("Result amount cannot be negative");
     }
     return new Money(newAmount, this._currency);
   }
@@ -144,7 +144,7 @@ export class Money extends BaseValueObject {
    */
   multiply(factor: number): Money {
     if (factor < 0) {
-      throw new Error('Factor cannot be negative');
+      throw new Error("Factor cannot be negative");
     }
     return new Money(this._amount * factor, this._currency);
   }
@@ -154,7 +154,9 @@ export class Money extends BaseValueObject {
    */
   private ensureSameCurrency(other: Money): void {
     if (this._currency !== other._currency) {
-      throw new Error(`Currency mismatch: ${this._currency} vs ${other._currency}`);
+      throw new Error(
+        `Currency mismatch: ${this._currency} vs ${other._currency}`,
+      );
     }
   }
 
@@ -173,7 +175,7 @@ export class Money extends BaseValueObject {
 
   override toJSON(): Record<string, unknown> {
     return {
-      type: 'Money',
+      type: "Money",
       amount: this._amount,
       currency: this._currency,
     };
@@ -194,7 +196,7 @@ export class Money extends BaseValueObject {
 
 /**
  * Address 值对象
- * 
+ *
  * 展示包含多个字段的复杂值对象
  */
 export class Address extends BaseValueObject {
@@ -203,7 +205,7 @@ export class Address extends BaseValueObject {
     private readonly _city: string,
     private readonly _province: string,
     private readonly _postalCode: string,
-    private readonly _country: string
+    private readonly _country: string,
   ) {
     super();
     this.validate();
@@ -214,7 +216,7 @@ export class Address extends BaseValueObject {
     city: string,
     province: string,
     postalCode: string,
-    country: string
+    country: string,
   ): Address {
     return new Address(street, city, province, postalCode, country);
   }
@@ -241,13 +243,13 @@ export class Address extends BaseValueObject {
 
   protected validate(): void {
     if (!this._street || this._street.trim().length === 0) {
-      throw new Error('Street is required');
+      throw new Error("Street is required");
     }
     if (!this._city || this._city.trim().length === 0) {
-      throw new Error('City is required');
+      throw new Error("City is required");
     }
     if (!this._country || this._country.trim().length === 0) {
-      throw new Error('Country is required');
+      throw new Error("Country is required");
     }
   }
 
@@ -276,7 +278,7 @@ export class Address extends BaseValueObject {
 
   override toJSON(): Record<string, unknown> {
     return {
-      type: 'Address',
+      type: "Address",
       street: this._street,
       city: this._city,
       province: this._province,
@@ -302,71 +304,71 @@ export class Address extends BaseValueObject {
 // ============================================================================
 
 function runExamples() {
-  console.log('='.repeat(80));
-  console.log('值对象示例');
-  console.log('='.repeat(80));
+  console.log("=".repeat(80));
+  console.log("值对象示例");
+  console.log("=".repeat(80));
 
   // 示例 1: Email 值对象
-  console.log('\n【示例 1】Email 值对象');
-  console.log('-'.repeat(80));
-  
-  const email1 = Email.create('user@example.com');
-  const email2 = Email.create('user@example.com');
-  const email3 = Email.create('admin@example.com');
+  console.log("\n【示例 1】Email 值对象");
+  console.log("-".repeat(80));
 
-  console.log('Email 1:', email1.value);
-  console.log('Email 2:', email2.value);
-  console.log('Email 3:', email3.value);
-  console.log('email1 equals email2:', email1.equals(email2)); // true
-  console.log('email1 equals email3:', email1.equals(email3)); // false
+  const email1 = Email.create("user@example.com");
+  const email2 = Email.create("user@example.com");
+  const email3 = Email.create("admin@example.com");
+
+  console.log("Email 1:", email1.value);
+  console.log("Email 2:", email2.value);
+  console.log("Email 3:", email3.value);
+  console.log("email1 equals email2:", email1.equals(email2)); // true
+  console.log("email1 equals email3:", email1.equals(email3)); // false
 
   try {
-    Email.create('invalid-email');
+    Email.create("invalid-email");
   } catch (error) {
-    console.log('验证失败:', (error as Error).message);
+    console.log("验证失败:", (error as Error).message);
   }
 
   // 示例 2: Money 值对象
-  console.log('\n【示例 2】Money 值对象');
-  console.log('-'.repeat(80));
+  console.log("\n【示例 2】Money 值对象");
+  console.log("-".repeat(80));
 
-  const price1 = Money.create(100, 'USD');
-  const price2 = Money.create(50, 'USD');
+  const price1 = Money.create(100, "USD");
+  const price2 = Money.create(50, "USD");
   const total = price1.add(price2);
   const doubled = price1.multiply(2);
 
-  console.log('Price 1:', price1.toString());
-  console.log('Price 2:', price2.toString());
-  console.log('Total:', total.toString());
-  console.log('Doubled:', doubled.toString());
+  console.log("Price 1:", price1.toString());
+  console.log("Price 2:", price2.toString());
+  console.log("Total:", total.toString());
+  console.log("Doubled:", doubled.toString());
 
   try {
-    const priceInCNY = Money.create(100, 'CNY');
+    const priceInCNY = Money.create(100, "CNY");
     price1.add(priceInCNY); // 货币不一致，抛出异常
   } catch (error) {
-    console.log('货币不一致错误:', (error as Error).message);
+    console.log("货币不一致错误:", (error as Error).message);
   }
 
   // 示例 3: Address 值对象
-  console.log('\n【示例 3】Address 值对象');
-  console.log('-'.repeat(80));
+  console.log("\n【示例 3】Address 值对象");
+  console.log("-".repeat(80));
 
   const address = Address.create(
-    '123 Main Street',
-    'San Francisco',
-    'CA',
-    '94102',
-    'USA'
+    "123 Main Street",
+    "San Francisco",
+    "CA",
+    "94102",
+    "USA",
   );
 
-  console.log('完整地址:', address.getFullAddress());
-  console.log('城市:', address.city);
-  console.log('国家:', address.country);
-  console.log('JSON:', JSON.stringify(address.toJSON(), null, 2));
+  console.log("完整地址:", address.getFullAddress());
+  console.log("城市:", address.city);
+  console.log("国家:", address.country);
+  console.log("JSON:", JSON.stringify(address.toJSON(), null, 2));
 
-  console.log('\n' + '='.repeat(80));
-  console.log('✅ 值对象示例运行完成');
-  console.log('='.repeat(80));
+  console.log("\n" + "=".repeat(80));
+  console.log("✅ 值对象示例运行完成");
+  console.log("=".repeat(80));
 }
 
 // 如果直接运行此文件，则执行示例
@@ -375,4 +377,3 @@ if (require.main === module) {
 }
 
 export { runExamples };
-

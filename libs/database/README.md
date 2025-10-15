@@ -42,9 +42,9 @@ DB_SLOW_QUERY_THRESHOLD=1000
 ### 2. 配置模块
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { TypedConfigModule, dotenvLoader } from '@hl8/config';
-import { DatabaseModule, DatabaseConfig } from '@hl8/database';
+import { Module } from "@nestjs/common";
+import { TypedConfigModule, dotenvLoader } from "@hl8/config";
+import { DatabaseModule, DatabaseConfig } from "@hl8/database";
 
 @Module({
   imports: [
@@ -56,7 +56,7 @@ import { DatabaseModule, DatabaseConfig } from '@hl8/database';
     DatabaseModule.forRootAsync({
       useFactory: (config: DatabaseConfig) => ({
         connection: {
-          type: 'postgresql',
+          type: "postgresql",
           host: config.host,
           port: config.port,
           database: config.database,
@@ -79,8 +79,8 @@ export class AppModule {}
 ### 3. 使用事务
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { Transactional } from '@hl8/database';
+import { Injectable } from "@nestjs/common";
+import { Transactional } from "@hl8/database";
 
 @Injectable()
 export class UserService {

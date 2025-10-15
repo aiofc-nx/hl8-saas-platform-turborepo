@@ -28,15 +28,15 @@
  */
 export class ConfigLogger {
   private static instance: ConfigLogger;
-  private readonly level: 'error' | 'warn' | 'info' | 'debug';
-  private readonly prefix: string = '[CONFIG]';
+  private readonly level: "error" | "warn" | "info" | "debug";
+  private readonly prefix: string = "[CONFIG]";
 
   /**
    * 私有构造函数
    *
    * @param level 日志级别
    */
-  private constructor(level: 'error' | 'warn' | 'info' | 'debug' = 'info') {
+  private constructor(level: "error" | "warn" | "info" | "debug" = "info") {
     this.level = level;
   }
 
@@ -47,7 +47,7 @@ export class ConfigLogger {
    * @returns ConfigLogger 实例
    */
   static getInstance(
-    level?: 'error' | 'warn' | 'info' | 'debug',
+    level?: "error" | "warn" | "info" | "debug",
   ): ConfigLogger {
     if (!this.instance) {
       this.instance = new ConfigLogger(level);
@@ -62,8 +62,8 @@ export class ConfigLogger {
    * @param context 日志上下文
    */
   error(message: string, context?: Record<string, any>): void {
-    if (this.shouldLog('error')) {
-      this.log('ERROR', message, context);
+    if (this.shouldLog("error")) {
+      this.log("ERROR", message, context);
     }
   }
 
@@ -74,8 +74,8 @@ export class ConfigLogger {
    * @param context 日志上下文
    */
   warn(message: string, context?: Record<string, any>): void {
-    if (this.shouldLog('warn')) {
-      this.log('WARN', message, context);
+    if (this.shouldLog("warn")) {
+      this.log("WARN", message, context);
     }
   }
 
@@ -86,8 +86,8 @@ export class ConfigLogger {
    * @param context 日志上下文
    */
   info(message: string, context?: Record<string, any>): void {
-    if (this.shouldLog('info')) {
-      this.log('INFO', message, context);
+    if (this.shouldLog("info")) {
+      this.log("INFO", message, context);
     }
   }
 
@@ -98,8 +98,8 @@ export class ConfigLogger {
    * @param context 日志上下文
    */
   debug(message: string, context?: Record<string, any>): void {
-    if (this.shouldLog('debug')) {
-      this.log('DEBUG', message, context);
+    if (this.shouldLog("debug")) {
+      this.log("DEBUG", message, context);
     }
   }
 
@@ -136,7 +136,7 @@ export class ConfigLogger {
    * @returns 是否应该记录
    * @private
    */
-  private shouldLog(level: 'error' | 'warn' | 'info' | 'debug'): boolean {
+  private shouldLog(level: "error" | "warn" | "info" | "debug"): boolean {
     const levels = { error: 0, warn: 1, info: 2, debug: 3 };
     return levels[level] <= levels[this.level];
   }

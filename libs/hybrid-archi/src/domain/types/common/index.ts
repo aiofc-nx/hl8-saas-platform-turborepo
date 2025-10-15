@@ -6,7 +6,7 @@
  */
 
 // 通知设置接口
-export * from './notification-settings.interface';
+export * from "./notification-settings.interface.js";
 
 // 隐私设置接口
-export * from './privacy-settings.interface';
+export * from "./privacy-settings.interface.js";

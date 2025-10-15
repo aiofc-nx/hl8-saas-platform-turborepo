@@ -1,33 +1,32 @@
 /**
  * 租户聚合根仓储接口
  *
- * @description 定义租户聚合根的持久化操作契约
+ * @description 定义租户聚合根的数据访问接口
  *
  * ## 业务规则
  *
- * ### 仓储职责
- * - 保存和加载租户聚合根
- * - 查询租户（按ID、代码、域名）
- * - 保证事务一致性
- * - 发布领域事件
+ * ### 租户唯一性
+ * - 租户代码全局唯一
+ * - 租户域名全局唯一
+ * - 支持按代码和域名查询
  *
- * ### 实现要求
- * - 在基础设施层实现此接口
- * - 使用 MikroORM 进行持久化
- * - 使用映射器转换领域模型和ORM实体
- * - 保存时发布所有未提交的领域事件
+ * ### 查询功能
+ * - 支持按ID查询
+ * - 支持按代码查询
+ * - 支持按域名查询
+ * - 支持分页列表查询
+ * - 支持按状态筛选
+ *
+ * ### 事务支持
+ * - 支持事务性操作
+ * - 支持批量操作
+ * - 支持并发控制
  *
  * @example
  * ```typescript
- * // 应用层使用
- * class CreateTenantUseCase {
- *   constructor(
- *     private readonly tenantRepository: ITenantAggregateRepository
- *   ) {}
- *
- *   async execute(command: CreateTenantCommand): Promise<void> {
- *     const aggregate = TenantAggregate.create(...);
- *     await this.tenantRepository.save(aggregate);
+ * class TenantRepository implements ITenantAggregateRepository {
+ *   async findById(id: EntityId): Promise<TenantAggregate | null> {
+ *     // 实现
  *   }
  * }
  * ```
@@ -36,123 +35,189 @@
  * @since 1.0.0
  */
 
-import { TenantAggregate } from '../aggregates/tenant.aggregate';
-import { TenantCode } from '../value-objects/tenant-code.vo';
-import { TenantDomain } from '../value-objects/tenant-domain.vo';
-import { EntityId } from '@hl8/hybrid-archi';
+import { IRepository } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model/index.js";
+import { TenantAggregate } from "../aggregates/tenant.aggregate.js";
+import { TenantCode } from "../value-objects/tenant-code.vo.js";
+import { TenantDomain } from "../value-objects/tenant-domain.vo.js";
+import { TenantType } from "../value-objects/tenant-type.enum.js";
+
+/**
+ * 租户查询条件
+ */
+export interface TenantQueryConditions {
+  /** 租户状态 */
+  status?: string;
+  /** 租户类型 */
+  type?: TenantType;
+  /** 创建时间范围 */
+  createdAtRange?: {
+    from: Date;
+    to: Date;
+  };
+  /** 是否包含已删除 */
+  includeDeleted?: boolean;
+}
+
+/**
+ * 租户列表查询参数
+ */
+export interface TenantListQuery {
+  /** 分页参数 */
+  page: number;
+  pageSize: number;
+  /** 排序字段 */
+  sortBy?: "createdAt" | "updatedAt" | "name" | "code";
+  /** 排序方向 */
+  sortOrder?: "asc" | "desc";
+  /** 查询条件 */
+  conditions?: TenantQueryConditions;
+  /** 关键词搜索 */
+  keyword?: string;
+}
+
+/**
+ * 租户列表查询结果
+ */
+export interface TenantListResult {
+  /** 租户列表 */
+  items: TenantAggregate[];
+  /** 总数 */
+  total: number;
+  /** 当前页 */
+  page: number;
+  /** 每页大小 */
+  pageSize: number;
+  /** 总页数 */
+  totalPages: number;
+}
 
 /**
  * 租户聚合根仓储接口
- *
- * @interface ITenantAggregateRepository
  */
-export interface ITenantAggregateRepository {
+export interface ITenantAggregateRepository
+  extends IRepository<TenantAggregate, EntityId> {
   /**
-   * 保存租户聚合根
+   * 根据租户代码查找租户
    *
-   * @description 持久化租户聚合根及其内部实体
-   *
-   * ## 业务规则
-   * 1. 在事务中保存所有实体
-   * 2. 发布聚合根的所有领域事件
-   * 3. 更新版本号（乐观锁）
-   * 4. 保存成功后清空事件队列
-   *
-   * @async
-   * @param {TenantAggregate} aggregate - 租户聚合根
-   * @returns {Promise<void>}
-   * @throws {Error} 当保存失败或版本冲突时抛出错误
-   */
-  save(aggregate: TenantAggregate): Promise<void>;
-
-  /**
-   * 根据ID查找租户聚合根
-   *
-   * @description 从数据库加载租户聚合根
-   *
-   * @async
-   * @param {EntityId} id - 租户ID
-   * @returns {Promise<TenantAggregate | null>} 租户聚合根或null
-   */
-  findById(id: EntityId): Promise<TenantAggregate | null>;
-
-  /**
-   * 根据租户代码查找
-   *
-   * @description 通过租户代码查找租户（用于唯一性验证）
-   *
-   * @async
-   * @param {TenantCode} code - 租户代码
-   * @returns {Promise<TenantAggregate | null>} 租户聚合根或null
+   * @description 根据租户代码查找唯一的租户聚合根
+   * @param code - 租户代码
+   * @returns 租户聚合根，如果不存在则返回 null
    */
   findByCode(code: TenantCode): Promise<TenantAggregate | null>;
 
   /**
-   * 根据租户域名查找
+   * 根据租户域名查找租户
    *
-   * @description 通过租户域名查找租户（用于唯一性验证）
-   *
-   * @async
-   * @param {TenantDomain} domain - 租户域名
-   * @returns {Promise<TenantAggregate | null>} 租户聚合根或null
+   * @description 根据租户域名查找唯一的租户聚合根
+   * @param domain - 租户域名
+   * @returns 租户聚合根，如果不存在则返回 null
    */
   findByDomain(domain: TenantDomain): Promise<TenantAggregate | null>;
 
   /**
-   * 查找所有租户
+   * 检查租户代码是否已存在
    *
-   * @description 获取租户列表（支持分页）
-   *
-   * @async
-   * @param {number} offset - 偏移量
-   * @param {number} limit - 限制数量
-   * @returns {Promise<TenantAggregate[]>} 租户聚合根数组
+   * @description 检查指定的租户代码是否已被使用
+   * @param code - 租户代码
+   * @param excludeId - 排除的租户ID（用于更新时检查）
+   * @returns 是否存在
    */
-  findAll(offset?: number, limit?: number): Promise<TenantAggregate[]>;
+  existsByCode(code: TenantCode, excludeId?: EntityId): Promise<boolean>;
 
   /**
-   * 删除租户聚合根
+   * 检查租户域名是否已存在
    *
-   * @description 软删除租户（实际是更新 deletedAt 字段）
-   *
-   * @async
-   * @param {EntityId} id - 租户ID
-   * @param {string} deletedBy - 删除人ID
-   * @param {string} reason - 删除原因
-   * @returns {Promise<void>}
+   * @description 检查指定的租户域名是否已被使用
+   * @param domain - 租户域名
+   * @param excludeId - 排除的租户ID（用于更新时检查）
+   * @returns 是否存在
    */
-  delete(id: EntityId, deletedBy: string, reason: string): Promise<void>;
+  existsByDomain(domain: TenantDomain, excludeId?: EntityId): Promise<boolean>;
 
   /**
-   * 检查租户代码是否存在
+   * 分页查询租户列表
    *
-   * @description 用于创建租户前的唯一性验证
-   *
-   * @async
-   * @param {TenantCode} code - 租户代码
-   * @returns {Promise<boolean>} 是否存在
+   * @description 根据查询条件分页获取租户列表
+   * @param query - 查询参数
+   * @returns 查询结果
    */
-  existsByCode(code: TenantCode): Promise<boolean>;
+  findList(query: TenantListQuery): Promise<TenantListResult>;
 
   /**
-   * 检查租户域名是否存在
+   * 根据状态查询租户列表
    *
-   * @description 用于创建租户前的唯一性验证
-   *
-   * @async
-   * @param {TenantDomain} domain - 租户域名
-   * @returns {Promise<boolean>} 是否存在
+   * @description 根据租户状态查询租户列表
+   * @param status - 租户状态
+   * @returns 租户列表
    */
-  existsByDomain(domain: TenantDomain): Promise<boolean>;
+  findByStatus(status: string): Promise<TenantAggregate[]>;
+
+  /**
+   * 根据类型查询租户列表
+   *
+   * @description 根据租户类型查询租户列表
+   * @param type - 租户类型
+   * @returns 租户列表
+   */
+  findByType(type: TenantType): Promise<TenantAggregate[]>;
 
   /**
    * 统计租户数量
    *
-   * @description 获取租户总数（用于监控）
-   *
-   * @async
-   * @returns {Promise<number>} 租户总数
+   * @description 根据条件统计租户数量
+   * @param conditions - 查询条件
+   * @returns 租户数量
    */
-  count(): Promise<number>;
-}
+  count(conditions?: TenantQueryConditions): Promise<number>;
 
+  /**
+   * 批量保存租户
+   *
+   * @description 批量保存多个租户聚合根
+   * @param tenants - 租户列表
+   */
+  saveBatch(tenants: TenantAggregate[]): Promise<void>;
+
+  /**
+   * 批量删除租户
+   *
+   * @description 批量删除多个租户（软删除）
+   * @param ids - 租户ID列表
+   * @param deletedBy - 删除操作者
+   */
+  deleteBatch(ids: EntityId[], deletedBy: string): Promise<void>;
+
+  /**
+   * 恢复已删除的租户
+   *
+   * @description 恢复软删除的租户
+   * @param id - 租户ID
+   * @param restoredBy - 恢复操作者
+   */
+  restore(id: EntityId, restoredBy: string): Promise<void>;
+
+  /**
+   * 物理删除租户
+   *
+   * @description 从数据库中物理删除租户（谨慎使用）
+   * @param id - 租户ID
+   */
+  hardDelete(id: EntityId): Promise<void>;
+
+  /**
+   * 获取租户统计信息
+   *
+   * @description 获取租户相关的统计信息
+   * @returns 统计信息
+   */
+  getStatistics(): Promise<{
+    total: number;
+    active: number;
+    trial: number;
+    basic: number;
+    professional: number;
+    enterprise: number;
+    deleted: number;
+  }>;
+}

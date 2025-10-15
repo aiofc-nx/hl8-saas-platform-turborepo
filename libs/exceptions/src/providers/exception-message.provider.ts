@@ -75,7 +75,7 @@ export interface ExceptionMessageProvider {
    */
   getMessage(
     errorCode: string,
-    messageType: 'title' | 'detail',
+    messageType: "title" | "detail",
     params?: Record<string, any>,
   ): string | undefined;
 
@@ -93,7 +93,7 @@ export interface ExceptionMessageProvider {
    * }
    * ```
    */
-  hasMessage(errorCode: string, messageType: 'title' | 'detail'): boolean;
+  hasMessage(errorCode: string, messageType: "title" | "detail"): boolean;
 
   /**
    * 获取所有可用的错误代码列表

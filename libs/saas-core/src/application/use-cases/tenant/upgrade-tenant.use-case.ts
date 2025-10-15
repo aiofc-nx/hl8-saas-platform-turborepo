@@ -7,12 +7,12 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { ITenantAggregateRepository } from '../../../domain/tenant/repositories/tenant-aggregate.repository.interface';
-import { TenantUpgradeService } from '../../../domain/tenant/services/tenant-upgrade.service';
-import { TenantType } from '../../../domain/tenant/value-objects/tenant-type.enum';
+import { Injectable } from "@nestjs/common";
+import { TenantId } from "@hl8/isolation-model/index.js";
+import { ICommandUseCase } from "../base/use-case.interface.js";
+import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
+import { TenantUpgradeService } from "../../../domain/tenant/services/tenant-upgrade.service.js";
+import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum.js";
 
 export interface IUpgradeTenantCommand {
   tenantId: string;
@@ -32,8 +32,8 @@ export class UpgradeTenantUseCase
 
   async execute(command: IUpgradeTenantCommand): Promise<void> {
     // 加载租户聚合根
-    const tenantId = EntityId.fromString(command.tenantId);
-    const aggregate = await this.tenantRepository.findById(tenantId);
+    const tenantId = TenantId.create(command.tenantId);
+    const aggregate = await (this.tenantRepository as any).findById(tenantId);
 
     if (!aggregate) {
       throw new Error(`租户不存在: ${command.tenantId}`);
@@ -43,7 +43,6 @@ export class UpgradeTenantUseCase
     aggregate.upgrade(command.targetType, command.upgradedBy);
 
     // 保存
-    await this.tenantRepository.save(aggregate);
+    await (this.tenantRepository as any).save(aggregate);
   }
 }
-

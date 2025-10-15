@@ -4,27 +4,27 @@
  * @description 测试隔离上下文实体的所有业务逻辑
  */
 
-import { IsolationLevel } from '../enums/isolation-level.enum.js';
-import { SharingLevel } from '../enums/sharing-level.enum.js';
-import { IsolationValidationError } from '../errors/isolation-validation.error.js';
-import { DepartmentId } from '../value-objects/department-id.vo.js';
-import { OrganizationId } from '../value-objects/organization-id.vo.js';
-import { TenantId } from '../value-objects/tenant-id.vo.js';
-import { UserId } from '../value-objects/user-id.vo.js';
-import { IsolationContext } from './isolation-context.entity.js';
+import { IsolationLevel } from "../enums/isolation-level.enum.js";
+import { SharingLevel } from "../enums/sharing-level.enum.js";
+import { IsolationValidationError } from "../errors/isolation-validation.error.js";
+import { DepartmentId } from "../value-objects/department-id.vo.js";
+import { OrganizationId } from "../value-objects/organization-id.vo.js";
+import { TenantId } from "../value-objects/tenant-id.vo.js";
+import { UserId } from "../value-objects/user-id.vo.js";
+import { IsolationContext } from "./isolation-context.entity.js";
 
-describe('IsolationContext', () => {
+describe("IsolationContext", () => {
   // 测试数据 - 使用 UUID v4 格式
-  const UUID_TENANT = '550e8400-e29b-41d4-a716-446655440000';
-  const UUID_ORG = '6ba7b810-9dad-41d1-80b4-00c04fd430c8';
-  const UUID_DEPT = '7c9e6679-7425-40de-944b-e07fc1f90ae7';
-  const UUID_USER = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+  const UUID_TENANT = "550e8400-e29b-41d4-a716-446655440000";
+  const UUID_ORG = "6ba7b810-9dad-41d1-80b4-00c04fd430c8";
+  const UUID_DEPT = "7c9e6679-7425-40de-944b-e07fc1f90ae7";
+  const UUID_USER = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
   // 用于测试不同数据的额外 UUID
-  const UUID_TENANT_2 = '123e4567-e89b-42d3-a456-426614174000';
-  const UUID_ORG_2 = '123e4567-e89b-42d3-a456-426614174001';
-  const UUID_DEPT_2 = '123e4567-e89b-42d3-a456-426614174002';
-  const UUID_USER_2 = '123e4567-e89b-42d3-a456-426614174003';
+  const UUID_TENANT_2 = "123e4567-e89b-42d3-a456-426614174000";
+  const UUID_ORG_2 = "123e4567-e89b-42d3-a456-426614174001";
+  const UUID_DEPT_2 = "123e4567-e89b-42d3-a456-426614174002";
+  const UUID_USER_2 = "123e4567-e89b-42d3-a456-426614174003";
 
   const t123 = TenantId.create(UUID_TENANT);
   const o456 = OrganizationId.create(UUID_ORG);
@@ -39,9 +39,9 @@ describe('IsolationContext', () => {
     UserId.clearCache();
   });
 
-  describe('静态工厂方法', () => {
-    describe('platform()', () => {
-      it('应该创建平台级上下文', () => {
+  describe("静态工厂方法", () => {
+    describe("platform()", () => {
+      it("应该创建平台级上下文", () => {
         const context = IsolationContext.platform();
 
         expect(context.tenantId).toBeUndefined();
@@ -50,14 +50,14 @@ describe('IsolationContext', () => {
         expect(context.userId).toBeUndefined();
       });
 
-      it('应该是空上下文', () => {
+      it("应该是空上下文", () => {
         const context = IsolationContext.platform();
         expect(context.isEmpty()).toBe(true);
       });
     });
 
-    describe('tenant()', () => {
-      it('应该创建租户级上下文', () => {
+    describe("tenant()", () => {
+      it("应该创建租户级上下文", () => {
         const context = IsolationContext.tenant(TenantId.create(UUID_TENANT));
 
         expect(context.tenantId).toBeDefined();
@@ -67,8 +67,8 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('organization()', () => {
-      it('应该创建组织级上下文', () => {
+    describe("organization()", () => {
+      it("应该创建组织级上下文", () => {
         const context = IsolationContext.organization(
           TenantId.create(UUID_TENANT),
           OrganizationId.create(UUID_ORG),
@@ -79,15 +79,15 @@ describe('IsolationContext', () => {
         expect(context.departmentId).toBeUndefined();
       });
 
-      it('应该验证组织上下文必须有租户', () => {
+      it("应该验证组织上下文必须有租户", () => {
         // 这个测试通过静态工厂方法无法触发，因为 TypeScript 类型要求传入 tenantId
         // 但如果绕过类型系统，应该抛出异常
         // 此测试用例在实际使用中由 TypeScript 类型系统保证
       });
     });
 
-    describe('department()', () => {
-      it('应该创建部门级上下文', () => {
+    describe("department()", () => {
+      it("应该创建部门级上下文", () => {
         const context = IsolationContext.department(
           TenantId.create(UUID_TENANT),
           OrganizationId.create(UUID_ORG),
@@ -100,15 +100,15 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('user()', () => {
-      it('应该创建用户级上下文（无租户）', () => {
+    describe("user()", () => {
+      it("应该创建用户级上下文（无租户）", () => {
         const context = IsolationContext.user(UserId.create(UUID_USER));
 
         expect(context.userId?.getValue()).toBe(UUID_USER);
         expect(context.tenantId).toBeUndefined();
       });
 
-      it('应该创建用户级上下文（有租户）', () => {
+      it("应该创建用户级上下文（有租户）", () => {
         const context = IsolationContext.user(
           UserId.create(UUID_USER),
           TenantId.create(UUID_TENANT),
@@ -120,33 +120,33 @@ describe('IsolationContext', () => {
     });
   });
 
-  describe('getIsolationLevel()', () => {
-    it('应该返回 PLATFORM 级别（空上下文）', () => {
+  describe("getIsolationLevel()", () => {
+    it("应该返回 PLATFORM 级别（空上下文）", () => {
       const context = IsolationContext.platform();
       expect(context.getIsolationLevel()).toBe(IsolationLevel.PLATFORM);
     });
 
-    it('应该返回 TENANT 级别', () => {
+    it("应该返回 TENANT 级别", () => {
       const context = IsolationContext.tenant(t123);
       expect(context.getIsolationLevel()).toBe(IsolationLevel.TENANT);
     });
 
-    it('应该返回 ORGANIZATION 级别', () => {
+    it("应该返回 ORGANIZATION 级别", () => {
       const context = IsolationContext.organization(t123, o456);
       expect(context.getIsolationLevel()).toBe(IsolationLevel.ORGANIZATION);
     });
 
-    it('应该返回 DEPARTMENT 级别', () => {
+    it("应该返回 DEPARTMENT 级别", () => {
       const context = IsolationContext.department(t123, o456, d789);
       expect(context.getIsolationLevel()).toBe(IsolationLevel.DEPARTMENT);
     });
 
-    it('应该返回 USER 级别', () => {
+    it("应该返回 USER 级别", () => {
       const context = IsolationContext.user(u999);
       expect(context.getIsolationLevel()).toBe(IsolationLevel.USER);
     });
 
-    it('应该缓存计算结果（性能优化）', () => {
+    it("应该缓存计算结果（性能优化）", () => {
       const context = IsolationContext.tenant(t123);
 
       // 第一次调用计算
@@ -159,37 +159,37 @@ describe('IsolationContext', () => {
     });
   });
 
-  describe('isEmpty()', () => {
-    it('应该返回 true（平台级）', () => {
+  describe("isEmpty()", () => {
+    it("应该返回 true（平台级）", () => {
       const context = IsolationContext.platform();
       expect(context.isEmpty()).toBe(true);
     });
 
-    it('应该返回 false（租户级）', () => {
+    it("应该返回 false（租户级）", () => {
       const context = IsolationContext.tenant(t123);
       expect(context.isEmpty()).toBe(false);
     });
 
-    it('应该返回 false（组织级）', () => {
+    it("应该返回 false（组织级）", () => {
       const context = IsolationContext.organization(t123, o456);
       expect(context.isEmpty()).toBe(false);
     });
   });
 
-  describe('级别判断方法', () => {
-    it('isTenantLevel() 应该正确判断', () => {
+  describe("级别判断方法", () => {
+    it("isTenantLevel() 应该正确判断", () => {
       expect(IsolationContext.tenant(t123).isTenantLevel()).toBe(true);
       expect(IsolationContext.platform().isTenantLevel()).toBe(false);
     });
 
-    it('isOrganizationLevel() 应该正确判断', () => {
+    it("isOrganizationLevel() 应该正确判断", () => {
       expect(
         IsolationContext.organization(t123, o456).isOrganizationLevel(),
       ).toBe(true);
       expect(IsolationContext.tenant(t123).isOrganizationLevel()).toBe(false);
     });
 
-    it('isDepartmentLevel() 应该正确判断', () => {
+    it("isDepartmentLevel() 应该正确判断", () => {
       expect(
         IsolationContext.department(t123, o456, d789).isDepartmentLevel(),
       ).toBe(true);
@@ -198,53 +198,53 @@ describe('IsolationContext', () => {
       ).toBe(false);
     });
 
-    it('isUserLevel() 应该正确判断', () => {
+    it("isUserLevel() 应该正确判断", () => {
       expect(IsolationContext.user(u999).isUserLevel()).toBe(true);
       expect(IsolationContext.platform().isUserLevel()).toBe(false);
     });
   });
 
-  describe('buildCacheKey()', () => {
-    it('应该为平台级生成正确的键', () => {
+  describe("buildCacheKey()", () => {
+    it("应该为平台级生成正确的键", () => {
       const context = IsolationContext.platform();
-      const key = context.buildCacheKey('user', 'list');
+      const key = context.buildCacheKey("user", "list");
 
-      expect(key).toBe('platform:user:list');
+      expect(key).toBe("platform:user:list");
     });
 
-    it('应该为租户级生成正确的键', () => {
+    it("应该为租户级生成正确的键", () => {
       const context = IsolationContext.tenant(t123);
-      const key = context.buildCacheKey('user', 'list');
+      const key = context.buildCacheKey("user", "list");
 
       expect(key).toBe(`tenant:${UUID_TENANT}:user:list`);
     });
 
-    it('应该为组织级生成正确的键', () => {
+    it("应该为组织级生成正确的键", () => {
       const context = IsolationContext.organization(t123, o456);
-      const key = context.buildCacheKey('user', 'list');
+      const key = context.buildCacheKey("user", "list");
 
       expect(key).toBe(`tenant:${UUID_TENANT}:org:${UUID_ORG}:user:list`);
     });
 
-    it('应该为部门级生成正确的键', () => {
+    it("应该为部门级生成正确的键", () => {
       const context = IsolationContext.department(t123, o456, d789);
-      const key = context.buildCacheKey('user', 'list');
+      const key = context.buildCacheKey("user", "list");
 
       expect(key).toBe(
         `tenant:${UUID_TENANT}:org:${UUID_ORG}:dept:${UUID_DEPT}:user:list`,
       );
     });
 
-    it('应该为用户级生成正确的键（无租户）', () => {
+    it("应该为用户级生成正确的键（无租户）", () => {
       const context = IsolationContext.user(u999);
-      const key = context.buildCacheKey('preferences', 'theme');
+      const key = context.buildCacheKey("preferences", "theme");
 
       expect(key).toBe(`user:${UUID_USER}:preferences:theme`);
     });
 
-    it('应该为用户级生成正确的键（有租户）', () => {
+    it("应该为用户级生成正确的键（有租户）", () => {
       const context = IsolationContext.user(u999, t123);
-      const key = context.buildCacheKey('preferences', 'theme');
+      const key = context.buildCacheKey("preferences", "theme");
 
       expect(key).toBe(
         `tenant:${UUID_TENANT}:user:${UUID_USER}:preferences:theme`,
@@ -252,22 +252,22 @@ describe('IsolationContext', () => {
     });
   });
 
-  describe('buildLogContext()', () => {
-    it('应该为平台级返回空对象', () => {
+  describe("buildLogContext()", () => {
+    it("应该为平台级返回空对象", () => {
       const context = IsolationContext.platform();
       const logContext = context.buildLogContext();
 
       expect(logContext).toEqual({});
     });
 
-    it('应该为租户级返回租户 ID', () => {
+    it("应该为租户级返回租户 ID", () => {
       const context = IsolationContext.tenant(t123);
       const logContext = context.buildLogContext();
 
       expect(logContext).toEqual({ tenantId: UUID_TENANT });
     });
 
-    it('应该为组织级返回租户和组织 ID', () => {
+    it("应该为组织级返回租户和组织 ID", () => {
       const context = IsolationContext.organization(t123, o456);
       const logContext = context.buildLogContext();
 
@@ -277,7 +277,7 @@ describe('IsolationContext', () => {
       });
     });
 
-    it('应该为部门级返回完整信息', () => {
+    it("应该为部门级返回完整信息", () => {
       const context = IsolationContext.department(t123, o456, d789);
       const logContext = context.buildLogContext();
 
@@ -288,7 +288,7 @@ describe('IsolationContext', () => {
       });
     });
 
-    it('应该为用户级返回用户 ID', () => {
+    it("应该为用户级返回用户 ID", () => {
       const context = IsolationContext.user(u999);
       const logContext = context.buildLogContext();
 
@@ -296,22 +296,22 @@ describe('IsolationContext', () => {
     });
   });
 
-  describe('buildWhereClause()', () => {
-    it('应该为平台级返回空对象', () => {
+  describe("buildWhereClause()", () => {
+    it("应该为平台级返回空对象", () => {
       const context = IsolationContext.platform();
       const where = context.buildWhereClause();
 
       expect(where).toEqual({});
     });
 
-    it('应该为租户级返回租户条件', () => {
+    it("应该为租户级返回租户条件", () => {
       const context = IsolationContext.tenant(t123);
       const where = context.buildWhereClause();
 
       expect(where).toEqual({ tenantId: UUID_TENANT });
     });
 
-    it('应该为组织级返回组织条件', () => {
+    it("应该为组织级返回组织条件", () => {
       const context = IsolationContext.organization(t123, o456);
       const where = context.buildWhereClause();
 
@@ -321,7 +321,7 @@ describe('IsolationContext', () => {
       });
     });
 
-    it('应该为部门级返回部门条件', () => {
+    it("应该为部门级返回部门条件", () => {
       const context = IsolationContext.department(t123, o456, d789);
       const where = context.buildWhereClause();
 
@@ -333,9 +333,9 @@ describe('IsolationContext', () => {
     });
   });
 
-  describe('canAccess() - 核心业务逻辑', () => {
-    describe('平台级上下文访问', () => {
-      it('应该可以访问所有数据', () => {
+  describe("canAccess() - 核心业务逻辑", () => {
+    describe("平台级上下文访问", () => {
+      it("应该可以访问所有数据", () => {
         const platformContext = IsolationContext.platform();
         const dataContext = IsolationContext.department(t123, o456, d789);
 
@@ -346,15 +346,15 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('非共享数据访问', () => {
-      it('应该允许访问完全匹配的数据', () => {
+    describe("非共享数据访问", () => {
+      it("应该允许访问完全匹配的数据", () => {
         const userContext = IsolationContext.tenant(t123);
         const dataContext = IsolationContext.tenant(t123);
 
         expect(userContext.canAccess(dataContext, false)).toBe(true);
       });
 
-      it('应该拒绝访问不匹配的租户数据', () => {
+      it("应该拒绝访问不匹配的租户数据", () => {
         const userContext = IsolationContext.tenant(t123);
         const dataContext = IsolationContext.tenant(
           TenantId.create(UUID_TENANT_2),
@@ -363,7 +363,7 @@ describe('IsolationContext', () => {
         expect(userContext.canAccess(dataContext, false)).toBe(false);
       });
 
-      it('应该拒绝访问不匹配的组织数据', () => {
+      it("应该拒绝访问不匹配的组织数据", () => {
         const userContext = IsolationContext.organization(t123, o456);
         const dataContext = IsolationContext.organization(
           t123,
@@ -373,7 +373,7 @@ describe('IsolationContext', () => {
         expect(userContext.canAccess(dataContext, false)).toBe(false);
       });
 
-      it('应该拒绝访问不匹配的部门数据', () => {
+      it("应该拒绝访问不匹配的部门数据", () => {
         const userContext = IsolationContext.department(t123, o456, d789);
         const dataContext = IsolationContext.department(
           t123,
@@ -385,8 +385,8 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('共享数据访问 - PLATFORM 级别', () => {
-      it('应该允许所有用户访问平台共享数据', () => {
+    describe("共享数据访问 - PLATFORM 级别", () => {
+      it("应该允许所有用户访问平台共享数据", () => {
         const userContext = IsolationContext.tenant(t123);
         const dataContext = IsolationContext.platform();
 
@@ -396,8 +396,8 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('共享数据访问 - TENANT 级别', () => {
-      it('应该允许同租户用户访问租户共享数据', () => {
+    describe("共享数据访问 - TENANT 级别", () => {
+      it("应该允许同租户用户访问租户共享数据", () => {
         const userContext = IsolationContext.department(t123, o456, d789);
         const dataContext = IsolationContext.tenant(t123);
 
@@ -406,7 +406,7 @@ describe('IsolationContext', () => {
         ).toBe(true);
       });
 
-      it('应该拒绝不同租户用户访问', () => {
+      it("应该拒绝不同租户用户访问", () => {
         const userContext = IsolationContext.tenant(
           TenantId.create(UUID_TENANT_2),
         );
@@ -418,8 +418,8 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('共享数据访问 - ORGANIZATION 级别', () => {
-      it('应该允许同组织用户访问组织共享数据', () => {
+    describe("共享数据访问 - ORGANIZATION 级别", () => {
+      it("应该允许同组织用户访问组织共享数据", () => {
         const userContext = IsolationContext.department(t123, o456, d789);
         const dataContext = IsolationContext.organization(t123, o456);
 
@@ -428,7 +428,7 @@ describe('IsolationContext', () => {
         ).toBe(true);
       });
 
-      it('应该拒绝不同组织用户访问', () => {
+      it("应该拒绝不同组织用户访问", () => {
         const userContext = IsolationContext.organization(
           t123,
           OrganizationId.create(UUID_ORG_2),
@@ -441,8 +441,8 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('共享数据访问 - DEPARTMENT 级别', () => {
-      it('应该允许同部门用户访问部门共享数据', () => {
+    describe("共享数据访问 - DEPARTMENT 级别", () => {
+      it("应该允许同部门用户访问部门共享数据", () => {
         const userContext = IsolationContext.department(t123, o456, d789);
         const dataContext = IsolationContext.department(t123, o456, d789);
 
@@ -451,7 +451,7 @@ describe('IsolationContext', () => {
         ).toBe(true);
       });
 
-      it('应该拒绝不同部门用户访问', () => {
+      it("应该拒绝不同部门用户访问", () => {
         const userContext = IsolationContext.department(
           t123,
           o456,
@@ -465,8 +465,8 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('共享数据访问 - USER 级别', () => {
-      it('应该允许同一用户访问', () => {
+    describe("共享数据访问 - USER 级别", () => {
+      it("应该允许同一用户访问", () => {
         const userContext = IsolationContext.user(u999);
         const dataContext = IsolationContext.user(u999);
 
@@ -475,7 +475,7 @@ describe('IsolationContext', () => {
         ).toBe(true);
       });
 
-      it('应该拒绝不同用户访问', () => {
+      it("应该拒绝不同用户访问", () => {
         const userContext = IsolationContext.user(UserId.create(UUID_USER_2));
         const dataContext = IsolationContext.user(u999);
 
@@ -485,8 +485,8 @@ describe('IsolationContext', () => {
       });
     });
 
-    describe('边界情况', () => {
-      it('应该拒绝无共享级别的共享数据', () => {
+    describe("边界情况", () => {
+      it("应该拒绝无共享级别的共享数据", () => {
         const userContext = IsolationContext.tenant(t123);
         const dataContext = IsolationContext.tenant(t123);
 
@@ -495,8 +495,8 @@ describe('IsolationContext', () => {
     });
   });
 
-  describe('switchOrganization()', () => {
-    it('应该创建新的上下文（不可变性）', () => {
+  describe("switchOrganization()", () => {
+    it("应该创建新的上下文（不可变性）", () => {
       const original = IsolationContext.organization(t123, o456);
       const newContext = original.switchOrganization(
         OrganizationId.create(UUID_ORG_2),
@@ -504,13 +504,13 @@ describe('IsolationContext', () => {
 
       expect(newContext).not.toBe(original);
       const newOrg = OrganizationId.create(
-        '123e4567-e89b-42d3-a456-426614174001',
+        "123e4567-e89b-42d3-a456-426614174001",
       );
       expect(newContext.organizationId?.getValue()).toBe(newOrg.getValue());
       expect(original.organizationId?.getValue()).toBe(UUID_ORG);
     });
 
-    it('应该保持租户不变', () => {
+    it("应该保持租户不变", () => {
       const original = IsolationContext.organization(t123, o456);
       const newContext = original.switchOrganization(
         OrganizationId.create(UUID_ORG_2),
@@ -519,20 +519,20 @@ describe('IsolationContext', () => {
       expect(newContext.tenantId).toBe(original.tenantId);
     });
 
-    it('应该要求租户上下文', () => {
+    it("应该要求租户上下文", () => {
       const userContext = IsolationContext.user(u999);
 
       expect(() => userContext.switchOrganization(o456)).toThrow(
         IsolationValidationError,
       );
       expect(() => userContext.switchOrganization(o456)).toThrow(
-        '切换组织需要租户上下文',
+        "切换组织需要租户上下文",
       );
     });
   });
 
-  describe('switchDepartment()', () => {
-    it('应该创建新的上下文', () => {
+  describe("switchDepartment()", () => {
+    it("应该创建新的上下文", () => {
       const original = IsolationContext.department(t123, o456, d789);
       const newContext = original.switchDepartment(
         DepartmentId.create(UUID_DEPT_2),
@@ -540,13 +540,13 @@ describe('IsolationContext', () => {
 
       expect(newContext).not.toBe(original);
       const newDept = DepartmentId.create(
-        '123e4567-e89b-42d3-a456-426614174002',
+        "123e4567-e89b-42d3-a456-426614174002",
       );
       expect(newContext.departmentId?.getValue()).toBe(newDept.getValue());
       expect(original.departmentId?.getValue()).toBe(UUID_DEPT);
     });
 
-    it('应该保持租户和组织不变', () => {
+    it("应该保持租户和组织不变", () => {
       const original = IsolationContext.department(t123, o456, d789);
       const newContext = original.switchDepartment(
         DepartmentId.create(UUID_DEPT_2),
@@ -556,7 +556,7 @@ describe('IsolationContext', () => {
       expect(newContext.organizationId).toBe(original.organizationId);
     });
 
-    it('应该要求租户和组织上下文', () => {
+    it("应该要求租户和组织上下文", () => {
       const tenantContext = IsolationContext.tenant(t123);
 
       expect(() => tenantContext.switchDepartment(d789)).toThrow(
@@ -565,8 +565,8 @@ describe('IsolationContext', () => {
     });
   });
 
-  describe('不可变性', () => {
-    it('所有属性应该是只读的（TypeScript 保证）', () => {
+  describe("不可变性", () => {
+    it("所有属性应该是只读的（TypeScript 保证）", () => {
       const context = IsolationContext.tenant(t123);
 
       // TypeScript 编译时会阻止修改

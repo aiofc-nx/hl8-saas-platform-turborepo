@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 /**
  * 缓存序列化异常
@@ -45,7 +45,7 @@ export class CacheSerializationException extends HttpException {
     super(
       {
         message,
-        error: 'Cache Serialization Error',
+        error: "Cache Serialization Error",
         statusCode: HttpStatus.BAD_REQUEST,
         cause: cause?.message,
       },

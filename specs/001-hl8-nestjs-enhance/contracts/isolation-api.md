@@ -27,30 +27,30 @@
 
 ```typescript
 // 实体
-export { IsolationContext } from './entities/isolation-context.entity.js';
+export { IsolationContext } from "./entities/isolation-context.entity.js";
 
 // 值对象
-export { TenantId } from './value-objects/tenant-id.vo.js';
-export { OrganizationId } from './value-objects/organization-id.vo.js';
-export { DepartmentId } from './value-objects/department-id.vo.js';
-export { UserId } from './value-objects/user-id.vo.js';
+export { TenantId } from "./value-objects/tenant-id.vo.js";
+export { OrganizationId } from "./value-objects/organization-id.vo.js";
+export { DepartmentId } from "./value-objects/department-id.vo.js";
+export { UserId } from "./value-objects/user-id.vo.js";
 
 // 枚举
-export { IsolationLevel } from './enums/isolation-level.enum.js';
-export { SharingLevel } from './enums/sharing-level.enum.js';
+export { IsolationLevel } from "./enums/isolation-level.enum.js";
+export { SharingLevel } from "./enums/sharing-level.enum.js";
 
 // 接口
-export type { IIsolationContextProvider } from './interfaces/isolation-context-provider.interface.js';
-export type { IIsolationValidator } from './interfaces/isolation-validator.interface.js';
-export type { DataAccessContext } from './interfaces/data-access-context.interface.js';
+export type { IIsolationContextProvider } from "./interfaces/isolation-context-provider.interface.js";
+export type { IIsolationValidator } from "./interfaces/isolation-validator.interface.js";
+export type { DataAccessContext } from "./interfaces/data-access-context.interface.js";
 
 // 事件
-export { IsolationContextCreatedEvent } from './events/context-created.event.js';
-export { IsolationContextSwitchedEvent } from './events/context-switched.event.js';
-export { DataAccessDeniedEvent } from './events/access-denied.event.js';
+export { IsolationContextCreatedEvent } from "./events/context-created.event.js";
+export { IsolationContextSwitchedEvent } from "./events/context-switched.event.js";
+export { DataAccessDeniedEvent } from "./events/access-denied.event.js";
 
 // 异常
-export { IsolationValidationError } from './errors/isolation-validation.error.js';
+export { IsolationValidationError } from "./errors/isolation-validation.error.js";
 ```
 
 ---
@@ -92,11 +92,11 @@ static tenant(tenantId: TenantId): IsolationContext
 **使用示例**:
 
 ```typescript
-const tenantId = TenantId.create('t123');
+const tenantId = TenantId.create("t123");
 const context = IsolationContext.tenant(tenantId);
 
 console.log(context.getIsolationLevel()); // IsolationLevel.TENANT
-console.log(context.buildCacheKey('user', 'list')); // tenant:t123:user:list
+console.log(context.buildCacheKey("user", "list")); // tenant:t123:user:list
 ```
 
 ---
@@ -121,8 +121,8 @@ static organization(
 
 ```typescript
 const context = IsolationContext.organization(
-  TenantId.create('t123'),
-  OrganizationId.create('o456'),
+  TenantId.create("t123"),
+  OrganizationId.create("o456"),
 );
 
 console.log(context.buildLogContext());
@@ -185,7 +185,7 @@ const level = context.getIsolationLevel();
 
 switch (level) {
   case IsolationLevel.TENANT:
-    console.log('租户级隔离');
+    console.log("租户级隔离");
     break;
   // ...
 }
@@ -207,7 +207,7 @@ isEmpty(): boolean
 
 ```typescript
 if (context.isEmpty()) {
-  console.log('平台级上下文，可访问所有数据');
+  console.log("平台级上下文，可访问所有数据");
 }
 ```
 
@@ -231,8 +231,8 @@ buildCacheKey(namespace: string, key: string): string
 **使用示例**:
 
 ```typescript
-const context = IsolationContext.tenant(TenantId.create('t123'));
-const cacheKey = context.buildCacheKey('user', 'profile:u999');
+const context = IsolationContext.tenant(TenantId.create("t123"));
+const cacheKey = context.buildCacheKey("user", "profile:u999");
 // 返回: tenant:t123:user:profile:u999
 ```
 
@@ -252,9 +252,9 @@ buildLogContext(): Record<string, string>
 
 ```typescript
 const context = IsolationContext.department(
-  TenantId.create('t123'),
-  OrganizationId.create('o456'),
-  DepartmentId.create('d789'),
+  TenantId.create("t123"),
+  OrganizationId.create("o456"),
+  DepartmentId.create("d789"),
 );
 
 const logContext = context.buildLogContext();
@@ -322,7 +322,7 @@ const canAccess = userContext.canAccess(
 if (canAccess) {
   // 执行数据操作
 } else {
-  throw new ForbiddenException('无权访问此数据');
+  throw new ForbiddenException("无权访问此数据");
 }
 ```
 
@@ -351,8 +351,8 @@ toString(): string           // 字符串表示
 **使用示例**:
 
 ```typescript
-const id1 = TenantId.create('t123');
-const id2 = TenantId.create('t123');
+const id1 = TenantId.create("t123");
+const id2 = TenantId.create("t123");
 
 console.log(id1.equals(id2)); // true
 console.log(id1 === id2); // true (Flyweight 模式，相同值返回相同实例)
@@ -383,7 +383,7 @@ interface IsolationModuleOptions {
   autoRegisterMiddleware?: boolean;
 
   /** 提取策略，默认 'header' */
-  extractionStrategy?: 'header' | 'jwt' | 'custom';
+  extractionStrategy?: "header" | "jwt" | "custom";
 
   /** 自定义提取器（如果 strategy 为 'custom'） */
   customExtractor?: IExtractionStrategy;
@@ -398,7 +398,7 @@ interface IsolationModuleOptions {
     IsolationModule.forRoot({
       global: true,
       autoRegisterMiddleware: true,
-      extractionStrategy: 'header',
+      extractionStrategy: "header",
     }),
   ],
 })
@@ -430,7 +430,7 @@ export class UserService {
     const context = this.isolationService.getIsolationContext();
 
     if (!context) {
-      throw new BadRequestException('隔离上下文缺失');
+      throw new BadRequestException("隔离上下文缺失");
     }
 
     // 使用上下文
@@ -486,7 +486,7 @@ export class TenantService {
     if (
       !this.isolationValidator.validateIsolationLevel(IsolationLevel.PLATFORM)
     ) {
-      throw new ForbiddenException('只有平台管理员可以创建租户');
+      throw new ForbiddenException("只有平台管理员可以创建租户");
     }
 
     // 创建租户
@@ -524,13 +524,13 @@ checkDataAccess(
 **使用示例**:
 
 ```typescript
-@Controller('tenants')
+@Controller("tenants")
 export class TenantController {
   @Get()
   @RequireTenant() // 必须有租户上下文
   async getTenantInfo() {
     // 自动验证隔离上下文
-    return { message: '租户信息' };
+    return { message: "租户信息" };
   }
 }
 ```
@@ -568,7 +568,7 @@ export class TenantController {
 **使用示例**:
 
 ```typescript
-@Controller('users')
+@Controller("users")
 export class UserController {
   @Get()
   async getUsers(@CurrentContext() context: IsolationContext) {
@@ -612,14 +612,14 @@ export class UserController {
 
 ```typescript
 // libs/nestjs-caching/src/cache.service.ts
-import { Injectable, Inject } from '@nestjs/common';
-import { IsolationContext } from '@hl8/isolation-model';
-import type { IIsolationContextProvider } from '@hl8/isolation-model';
+import { Injectable, Inject } from "@nestjs/common";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
+import type { IIsolationContextProvider } from "@hl8/isolation-model/index.js";
 
 @Injectable()
 export class CacheService {
   constructor(
-    @Inject('ISOLATION_CONTEXT_PROVIDER')
+    @Inject("ISOLATION_CONTEXT_PROVIDER")
     private readonly contextProvider: IIsolationContextProvider,
   ) {}
 
@@ -642,14 +642,14 @@ export class CacheService {
 
 ```typescript
 // libs/nestjs-logging/src/logger.service.ts
-import { Injectable, Inject } from '@nestjs/common';
-import { IsolationContext } from '@hl8/isolation-model';
-import type { IIsolationContextProvider } from '@hl8/isolation-model';
+import { Injectable, Inject } from "@nestjs/common";
+import { IsolationContext } from "@hl8/isolation-model/index.js";
+import type { IIsolationContextProvider } from "@hl8/isolation-model/index.js";
 
 @Injectable()
 export class LoggerService {
   constructor(
-    @Inject('ISOLATION_CONTEXT_PROVIDER')
+    @Inject("ISOLATION_CONTEXT_PROVIDER")
     private readonly contextProvider: IIsolationContextProvider,
   ) {}
 
@@ -677,12 +677,12 @@ export class LoggerService {
 
 ```typescript
 // libs/nestjs-database/src/repository.base.ts
-import { IsolationContext } from '@hl8/isolation-model';
-import type { IIsolationContextProvider } from '@hl8/isolation-model';
+import { IsolationContext } from "@hl8/isolation-model/index.js";
+import type { IIsolationContextProvider } from "@hl8/isolation-model/index.js";
 
 export abstract class BaseRepository<T> {
   constructor(
-    @Inject('ISOLATION_CONTEXT_PROVIDER')
+    @Inject("ISOLATION_CONTEXT_PROVIDER")
     protected readonly contextProvider: IIsolationContextProvider,
   ) {}
 
@@ -706,8 +706,8 @@ export abstract class BaseRepository<T> {
 
 ```typescript
 // apps/api/src/app.module.ts
-import { Module } from '@nestjs/common';
-import { IsolationModule } from '@hl8/nestjs-isolation';
+import { Module } from "@nestjs/common";
+import { IsolationModule } from "@hl8/nestjs-isolation";
 
 @Module({
   imports: [
@@ -715,7 +715,7 @@ import { IsolationModule } from '@hl8/nestjs-isolation';
     IsolationModule.forRoot({
       global: true,
       autoRegisterMiddleware: true,
-      extractionStrategy: 'header',
+      extractionStrategy: "header",
     }),
   ],
   providers: [
@@ -820,13 +820,13 @@ context.buildCacheKey(...); // 可能抛出异常
 
 ```typescript
 // ✅ 推荐：复用值对象（Flyweight）
-const tenantId = TenantId.create('t123');
+const tenantId = TenantId.create("t123");
 const context1 = IsolationContext.tenant(tenantId);
 const context2 = IsolationContext.organization(tenantId, orgId);
 
 // ❌ 避免：重复创建
-const context1 = IsolationContext.tenant(TenantId.create('t123'));
-const context2 = IsolationContext.organization(TenantId.create('t123'), orgId);
+const context1 = IsolationContext.tenant(TenantId.create("t123"));
+const context2 = IsolationContext.organization(TenantId.create("t123"), orgId);
 ```
 
 ---

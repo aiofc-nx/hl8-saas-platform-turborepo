@@ -45,7 +45,7 @@
  *   constructor(private userRepository: IUserRepository) {}
  *
  *   async createUser(name: string, email: string): Promise<UserAggregate> {
- *     const user = UserAggregate.create(EntityId.generate(), name, email);
+ *     const user = UserAggregate.create(TenantId.generate(), name, email);
  *
  *     // 保存聚合根和事件
  *     await this.userRepository.saveWithEvents(user);
@@ -58,14 +58,15 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
-import { IAggregateRoot } from '../../aggregates/base/aggregate-root.interface';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import {
+import { EntityId } from "@hl8/isolation-model";
+import { IAggregateRoot } from "../../aggregates/base/aggregate-root.interface.js";
+import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
+import type {
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
-} from './base-repository.interface';
+} from "./base-repository.interface.js";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 聚合根仓储接口
@@ -92,7 +93,7 @@ export interface IAggregateRepository<
    *
    * @example
    * ```typescript
-   * const user = UserAggregate.create(EntityId.generate(), '张三', 'zhangsan@example.com');
+   * const user = UserAggregate.create(TenantId.generate(), '张三', 'zhangsan@example.com');
    * user.updateEmail('newemail@example.com'); // 产生领域事件
    *
    * await userRepository.saveWithEvents(user); // 保存聚合根和事件

@@ -4,12 +4,12 @@
  * @description 测试 HealthCheckService 的健康检查功能
  */
 
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConnectionManager } from '../connection/connection.manager.js';
-import { HealthCheckService } from './health-check.service.js';
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { Test, TestingModule } from "@nestjs/testing";
+import { ConnectionManager } from "../connection/connection.manager.js";
+import { HealthCheckService } from "./health-check.service.js";
 
-describe('HealthCheckService', () => {
+describe("HealthCheckService", () => {
   let service: HealthCheckService;
   let mockConnectionManager: jest.Mocked<ConnectionManager>;
   let mockLogger: jest.Mocked<FastifyLoggerService>;
@@ -51,11 +51,11 @@ describe('HealthCheckService', () => {
     service = module.get<HealthCheckService>(HealthCheckService);
   });
 
-  describe('check', () => {
-    it('应该返回健康状态', async () => {
+  describe("check", () => {
+    it("应该返回健康状态", async () => {
       const result = await service.check();
 
-      expect(result.status).toBe('healthy');
+      expect(result.status).toBe("healthy");
       expect(result.connection.isConnected).toBe(true);
       expect(result.pool).toEqual({
         total: 10,
@@ -68,16 +68,16 @@ describe('HealthCheckService', () => {
       expect(result.responseTime).toBeGreaterThanOrEqual(0);
     });
 
-    it('应该在连接失败时返回不健康状态', async () => {
+    it("应该在连接失败时返回不健康状态", async () => {
       mockConnectionManager.isConnected.mockResolvedValue(false);
 
       const result = await service.check();
 
-      expect(result.status).toBe('unhealthy');
+      expect(result.status).toBe("unhealthy");
       expect(result.connection.isConnected).toBe(false);
     });
 
-    it('应该在连接池接近上限时返回降级状态', async () => {
+    it("应该在连接池接近上限时返回降级状态", async () => {
       mockConnectionManager.getPoolStats.mockResolvedValue({
         total: 19,
         active: 18,
@@ -89,23 +89,23 @@ describe('HealthCheckService', () => {
 
       const result = await service.check();
 
-      expect(result.status).toBe('degraded');
+      expect(result.status).toBe("degraded");
     });
 
-    it('应该处理检查异常', async () => {
+    it("应该处理检查异常", async () => {
       mockConnectionManager.isConnected.mockRejectedValue(
-        new Error('Check failed'),
+        new Error("Check failed"),
       );
 
       const result = await service.check();
 
-      expect(result.status).toBe('unhealthy');
-      expect(result.connection.error).toBe('Check failed');
+      expect(result.status).toBe("unhealthy");
+      expect(result.connection.error).toBe("Check failed");
     });
   });
 
-  describe('getPoolStats', () => {
-    it('应该返回连接池统计', async () => {
+  describe("getPoolStats", () => {
+    it("应该返回连接池统计", async () => {
       const stats = await service.getPoolStats();
 
       expect(stats).toEqual({

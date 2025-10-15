@@ -12,18 +12,18 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { TenantStatus } from '../../domain/tenant/value-objects/tenant-status.vo';
-import { TenantAggregate } from '../../domain/tenant/aggregates/tenant.aggregate';
-import { Tenant } from '../../domain/tenant/entities/tenant.entity';
-import { TenantConfiguration } from '../../domain/tenant/entities/tenant-configuration.entity';
-import { TenantCode } from '../../domain/tenant/value-objects/tenant-code.vo';
-import { TenantDomain } from '../../domain/tenant/value-objects/tenant-domain.vo';
-import { TenantQuota } from '../../domain/tenant/value-objects/tenant-quota.vo';
-import { TenantType } from '../../domain/tenant/value-objects/tenant-type.enum';
-import { TenantOrmEntity } from '../persistence/entities/tenant.orm-entity';
-import { TenantConfigurationOrmEntity } from '../persistence/entities/tenant-configuration.orm-entity';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/hybrid-archi";
+import { TenantStatus } from "../../domain/tenant/value-objects/tenant-status.vo.js";
+import { TenantAggregate } from "../../domain/tenant/aggregates/tenant.aggregate.js";
+import { Tenant } from "../../domain/tenant/entities/tenant.entity.js";
+import { TenantConfiguration } from "../../domain/tenant/entities/tenant-configuration.entity.js";
+import { TenantCode } from "../../domain/tenant/value-objects/tenant-code.vo.js";
+import { TenantDomain } from "../../domain/tenant/value-objects/tenant-domain.vo.js";
+import { TenantQuota } from "../../domain/tenant/value-objects/tenant-quota.vo.js";
+import { TenantType } from "../../domain/tenant/value-objects/tenant-type.enum.js";
+import { TenantOrmEntity } from "../persistence/entities/tenant.orm-entity.js";
+import { TenantConfigurationOrmEntity } from "../persistence/entities/tenant-configuration.orm-entity.js";
 
 @Injectable()
 export class TenantMapper {
@@ -89,7 +89,7 @@ export class TenantMapper {
     configOrm: TenantConfigurationOrmEntity,
   ): TenantAggregate {
     const tenant = new Tenant(
-      EntityId.fromString(tenantOrm.id),
+      EntityId.create(tenantOrm.id),
       TenantCode.create(tenantOrm.code),
       tenantOrm.name,
       TenantDomain.create(tenantOrm.domain),
@@ -100,7 +100,7 @@ export class TenantMapper {
       {
         createdBy: tenantOrm.createdBy,
         updatedBy: tenantOrm.updatedBy,
-        tenantId: EntityId.fromString(tenantOrm.tenantId),
+        tenantId: EntityId.create(tenantOrm.tenantId),
         version: tenantOrm.version,
       },
     );
@@ -114,29 +114,28 @@ export class TenantMapper {
     });
 
     const configuration = new TenantConfiguration(
-      EntityId.fromString(configOrm.id),
+      EntityId.create(configOrm.id),
       quota,
       configOrm.enabledFeatures,
       configOrm.customSettings || {},
       {
         createdBy: configOrm.createdBy,
         updatedBy: configOrm.updatedBy,
-        tenantId: EntityId.fromString(configOrm.tenant.id),
+        tenantId: EntityId.create(configOrm.tenant.id),
         version: configOrm.version,
       },
     );
 
     return new TenantAggregate(
-      EntityId.fromString(tenantOrm.id),
+      EntityId.create(tenantOrm.id),
       tenant,
       configuration,
       {
         createdBy: tenantOrm.createdBy,
         updatedBy: tenantOrm.updatedBy,
-        tenantId: EntityId.fromString(tenantOrm.tenantId),
+        tenantId: EntityId.create(tenantOrm.tenantId),
         version: tenantOrm.version,
       },
     );
   }
 }
-

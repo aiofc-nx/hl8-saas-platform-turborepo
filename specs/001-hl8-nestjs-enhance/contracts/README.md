@@ -49,12 +49,12 @@ import {
   CachingModule,
   type CachingModuleOptions,
   type ICacheService,
-} from '@hl8/nestjs-infra';
+} from "@hl8/nestjs-infra";
 
 // 使用类型安全的配置
 const options: CachingModuleOptions = {
   redis: {
-    host: 'localhost',
+    host: "localhost",
     port: 6379,
   },
   defaultTTL: 3600,

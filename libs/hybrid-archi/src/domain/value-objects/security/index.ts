@@ -7,6 +7,6 @@
  * @since 1.0.0
  */
 
-export * from './mfa-type.vo';
-export * from './mfa-status.vo';
-export * from './password-policy.vo';
+export * from "./mfa-type.vo.js";
+export * from "./mfa-status.vo.js";
+export * from "./password-policy.vo.js";

@@ -43,14 +43,14 @@ GeneralInternalServerException (现在在 @hl8/nestjs-fastify)
 
 ```typescript
 // @hl8/nestjs-infra/cache.service.ts
-import { GeneralInternalServerException } from '@hl8/nestjs-fastify'; // ❌ 上层包！
+import { GeneralInternalServerException } from "@hl8/nestjs-fastify/index.js"; // ❌ 上层包！
 
 export class CacheService {
   async get(key: string) {
     try {
       // ...
     } catch (error) {
-      throw new GeneralInternalServerException('缓存读取失败'); // ❌ 依赖上层
+      throw new GeneralInternalServerException("缓存读取失败"); // ❌ 依赖上层
     }
   }
 }

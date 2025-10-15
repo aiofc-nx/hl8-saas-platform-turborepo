@@ -40,9 +40,9 @@ afterEach(() => {
   wait: (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)),
 
   // 创建临时目录
-  createTempDir: (prefix: string = 'test') => {
-    const os = require('os');
-    const path = require('path');
+  createTempDir: (prefix: string = "test") => {
+    const os = require("os");
+    const path = require("path");
     return path.join(
       os.tmpdir(),
       `${prefix}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -51,8 +51,8 @@ afterEach(() => {
 
   // 清理临时文件
   cleanupTempFiles: async (paths: string[]) => {
-    const fs = require('fs').promises;
-    const path = require('path');
+    const fs = require("fs").promises;
+    const path = require("path");
 
     for (const filePath of paths) {
       try {

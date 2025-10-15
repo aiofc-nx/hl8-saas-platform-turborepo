@@ -22,16 +22,16 @@
  */
 export enum Gender {
   /** 男性 */
-  MALE = 'MALE',
+  MALE = "MALE",
 
   /** 女性 */
-  FEMALE = 'FEMALE',
+  FEMALE = "FEMALE",
 
   /** 其他 */
-  OTHER = 'OTHER',
+  OTHER = "OTHER",
 
   /** 不愿透露 */
-  PREFER_NOT_TO_SAY = 'PREFER_NOT_TO_SAY',
+  PREFER_NOT_TO_SAY = "PREFER_NOT_TO_SAY",
 }
 
 /**
@@ -85,12 +85,11 @@ export class GenderUtils {
    */
   public static getDisplayName(gender: Gender): string {
     const names: Record<Gender, string> = {
-      [Gender.MALE]: '男',
-      [Gender.FEMALE]: '女',
-      [Gender.OTHER]: '其他',
-      [Gender.PREFER_NOT_TO_SAY]: '不愿透露',
+      [Gender.MALE]: "男",
+      [Gender.FEMALE]: "女",
+      [Gender.OTHER]: "其他",
+      [Gender.PREFER_NOT_TO_SAY]: "不愿透露",
     };
     return names[gender];
   }
 }
-

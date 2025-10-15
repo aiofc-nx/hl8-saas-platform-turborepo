@@ -6,13 +6,13 @@
  * @since 1.0.0
  */
 
-import { EntityId } from './entity-id.vo.js';
+import { EntityId } from "./entity-id.vo.js";
 
-export class DepartmentId extends EntityId<'DepartmentId'> {
+export class DepartmentId extends EntityId<"DepartmentId"> {
   private static cache = new Map<string, DepartmentId>();
 
   private constructor(value: string) {
-    super(value, 'DepartmentId');
+    super(value, "DepartmentId");
   }
 
   static create(value: string): DepartmentId {

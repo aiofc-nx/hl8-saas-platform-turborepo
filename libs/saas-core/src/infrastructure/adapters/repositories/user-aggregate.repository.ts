@@ -2,10 +2,10 @@
  * 用户聚合根仓储适配器（简化版本）
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityManager } from '@hl8/database';
-import { IUserAggregateRepository } from '../../../domain/user/repositories/user-aggregate.repository.interface';
-import { UserMapper } from '../../mappers/user.mapper';
+import { Injectable } from "@nestjs/common";
+import { EntityManager } from "@hl8/hybrid-archi";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
+import { UserMapper } from "../../mappers/user.mapper.js";
 
 @Injectable()
 export class UserAggregateRepository implements IUserAggregateRepository {
@@ -16,7 +16,7 @@ export class UserAggregateRepository implements IUserAggregateRepository {
 
   // TODO: 实现所有仓储方法
   async save(aggregate: any): Promise<void> {
-    throw new Error('Not implemented');
+    throw new Error("Not implemented");
   }
 
   async findById(id: any): Promise<any> {
@@ -37,7 +37,7 @@ export class UserAggregateRepository implements IUserAggregateRepository {
 
   async delete(id: any, deletedBy: string, reason: string): Promise<void> {
     // TODO: 实现用户删除逻辑
-    throw new Error('User deletion not implemented yet');
+    throw new Error("User deletion not implemented yet");
   }
 
   async existsByUsername(username: any): Promise<boolean> {
@@ -52,4 +52,3 @@ export class UserAggregateRepository implements IUserAggregateRepository {
     return 0;
   }
 }
-

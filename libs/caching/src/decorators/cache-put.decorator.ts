@@ -44,12 +44,12 @@
  * @since 1.0.0
  */
 
-import { SetMetadata, UseInterceptors, applyDecorators } from '@nestjs/common';
+import { SetMetadata, UseInterceptors, applyDecorators } from "@nestjs/common";
 import {
   CACHE_PUT_KEY,
   CacheInterceptor,
   CachePutMetadata,
-} from '../interceptors/cache.interceptor.js';
+} from "../interceptors/cache.interceptor.js";
 
 export interface CachePutOptions {
   /**

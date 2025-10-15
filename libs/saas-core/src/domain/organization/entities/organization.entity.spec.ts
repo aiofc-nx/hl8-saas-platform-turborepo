@@ -1,20 +1,19 @@
-import { EntityId } from '@hl8/hybrid-archi';
-import { OrganizationStatus } from '../value-objects/organization-status.vo';
-import { Organization } from './organization.entity';
-import { OrganizationType } from '../value-objects/organization-type.vo';
+import { EntityId } from "@hl8/hybrid-archi";
+import { OrganizationStatus } from "../value-objects/organization-status.vo";
+import { Organization } from "./organization.entity";
+import { OrganizationType } from "../value-objects/organization-type.vo";
 
-describe('Organization Entity', () => {
-  it('应该创建组织', () => {
+describe("Organization Entity", () => {
+  it("应该创建组织", () => {
     const org = Organization.create(
       EntityId.generate(),
-      'tech',
-      '技术委员会',
+      "tech",
+      "技术委员会",
       OrganizationType.professionalCommittee(),
-      { createdBy: 'system' },
+      { createdBy: "system" },
     );
 
-    expect(org.getName()).toBe('技术委员会');
+    expect(org.getName()).toBe("技术委员会");
     expect(org.getStatus()).toBe(OrganizationStatus.ACTIVE);
   });
 });
-

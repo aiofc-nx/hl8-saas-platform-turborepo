@@ -51,15 +51,16 @@
  * @since 1.0.0
  */
 
-import { SetMetadata, applyDecorators } from '@nestjs/common';
+import { SetMetadata, applyDecorators } from "@nestjs/common";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 租户隔离元数据键
  */
-export const TENANT_ISOLATION_KEY = 'tenant_isolation';
-export const AUTO_SET_TENANT_KEY = 'auto_set_tenant';
-export const TENANT_OWNERSHIP_KEY = 'tenant_ownership';
-export const CROSS_TENANT_KEY = 'cross_tenant';
+export const TENANT_ISOLATION_KEY = "tenant_isolation";
+export const AUTO_SET_TENANT_KEY = "auto_set_tenant";
+export const TENANT_OWNERSHIP_KEY = "tenant_ownership";
+export const CROSS_TENANT_KEY = "cross_tenant";
 
 /**
  * 租户隔离配置接口
@@ -82,7 +83,7 @@ export interface TenantIsolationConfig {
  * @returns 装饰器
  */
 export function RequireTenantIsolation(
-  config: Partial<TenantIsolationConfig> = {}
+  config: Partial<TenantIsolationConfig> = {},
 ): MethodDecorator {
   const defaultConfig: TenantIsolationConfig = {
     enabled: true,
@@ -103,7 +104,7 @@ export function RequireTenantIsolation(
  * @param field - 租户ID字段名，默认为'tenantId'
  * @returns 装饰器
  */
-export function AutoSetTenantId(field = 'tenantId'): MethodDecorator {
+export function AutoSetTenantId(field = "tenantId"): MethodDecorator {
   return SetMetadata(AUTO_SET_TENANT_KEY, { field });
 }
 
@@ -118,7 +119,7 @@ export function AutoSetTenantId(field = 'tenantId'): MethodDecorator {
  */
 export function ValidateTenantOwnership(
   resourceField: string,
-  tenantField = 'tenantId'
+  tenantField = "tenantId",
 ): MethodDecorator {
   return SetMetadata(TENANT_OWNERSHIP_KEY, {
     resourceField,
@@ -135,11 +136,11 @@ export function ValidateTenantOwnership(
  * @returns 装饰器
  */
 export function AllowCrossTenant(
-  permissions: string[] = ['cross_tenant:access']
+  permissions: string[] = ["cross_tenant:access"],
 ): MethodDecorator {
   return applyDecorators(
     SetMetadata(CROSS_TENANT_KEY, { enabled: true }),
-    SetMetadata('cross_tenant_permissions', permissions)
+    SetMetadata("cross_tenant_permissions", permissions),
   );
 }
 
@@ -152,9 +153,9 @@ export function AllowCrossTenant(
  * @returns 装饰器
  */
 export function RequireTenantLevel(
-  level: 'owner' | 'admin' | 'member' | 'guest'
+  level: "owner" | "admin" | "member" | "guest",
 ): MethodDecorator {
-  return SetMetadata('tenant_level', level);
+  return SetMetadata("tenant_level", level);
 }
 
 /**
@@ -165,8 +166,8 @@ export function RequireTenantLevel(
  * @param tenantField - 租户字段名，默认为'tenantId'
  * @returns 装饰器
  */
-export function FilterByTenant(tenantField = 'tenantId'): MethodDecorator {
-  return SetMetadata('filter_by_tenant', { tenantField });
+export function FilterByTenant(tenantField = "tenantId"): MethodDecorator {
+  return SetMetadata("filter_by_tenant", { tenantField });
 }
 
 /**
@@ -178,9 +179,9 @@ export function FilterByTenant(tenantField = 'tenantId'): MethodDecorator {
  * @returns 装饰器
  */
 export function ExtractTenantContext(
-  sources: ('header' | 'param' | 'body' | 'token')[] = ['header', 'token']
+  sources: ("header" | "param" | "body" | "token")[] = ["header", "token"],
 ): MethodDecorator {
-  return SetMetadata('tenant_context_sources', sources);
+  return SetMetadata("tenant_context_sources", sources);
 }
 
 /**
@@ -194,9 +195,9 @@ export function ExtractTenantContext(
  */
 export function ValidateTenant(
   validateStatus = true,
-  allowedStatuses: string[] = ['active']
+  allowedStatuses: string[] = ["active"],
 ): MethodDecorator {
-  return SetMetadata('validate_tenant', {
+  return SetMetadata("validate_tenant", {
     validateStatus,
     allowedStatuses,
   });
@@ -211,14 +212,14 @@ export function ValidateTenant(
  * @returns 装饰器
  */
 export function IsolateTenantData(
-  operations: ('create' | 'read' | 'update' | 'delete')[] = [
-    'create',
-    'read',
-    'update',
-    'delete',
-  ]
+  operations: ("create" | "read" | "update" | "delete")[] = [
+    "create",
+    "read",
+    "update",
+    "delete",
+  ],
 ): MethodDecorator {
-  return SetMetadata('isolate_tenant_data', { operations });
+  return SetMetadata("isolate_tenant_data", { operations });
 }
 
 /**
@@ -236,12 +237,12 @@ export function TenantIsolation(
     validateOwnership?: boolean;
     allowCrossTenant?: boolean;
     crossTenantPermissions?: string[];
-    tenantLevel?: 'owner' | 'admin' | 'member' | 'guest';
+    tenantLevel?: "owner" | "admin" | "member" | "guest";
     filterByTenant?: boolean;
-    extractContext?: ('header' | 'param' | 'body' | 'token')[];
+    extractContext?: ("header" | "param" | "body" | "token")[];
     validateTenant?: boolean;
-    isolateData?: ('create' | 'read' | 'update' | 'delete')[];
-  } = {}
+    isolateData?: ("create" | "read" | "update" | "delete")[];
+  } = {},
 ): MethodDecorator {
   const decorators: MethodDecorator[] = [];
 
@@ -254,7 +255,7 @@ export function TenantIsolation(
   }
 
   if (config.validateOwnership !== false) {
-    decorators.push(ValidateTenantOwnership('id'));
+    decorators.push(ValidateTenantOwnership("id"));
   }
 
   if (config.allowCrossTenant) {

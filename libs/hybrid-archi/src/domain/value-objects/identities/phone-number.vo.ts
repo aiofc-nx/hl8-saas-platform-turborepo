@@ -21,7 +21,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object.js";
 
 export class PhoneNumber extends BaseValueObject<string> {
   /**
@@ -31,14 +31,14 @@ export class PhoneNumber extends BaseValueObject<string> {
    * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, '电话号码');
-    
+    this.validateNotEmpty(value, "电话号码");
+
     // 移除空格和连字符后的长度验证
-    const cleanValue = value.replace(/[\s-]/g, '');
+    const cleanValue = value.replace(/[\s-]/g, "");
     if (cleanValue.length < 8 || cleanValue.length > 16) {
-      throw new Error('电话号码长度必须在8-16个字符之间');
+      throw new Error("电话号码长度必须在8-16个字符之间");
     }
-    
+
     // 格式验证（支持国际格式）
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     if (!phoneRegex.test(cleanValue)) {
@@ -53,7 +53,7 @@ export class PhoneNumber extends BaseValueObject<string> {
    * @override
    */
   protected override transform(value: string): string {
-    return value.replace(/[\s-]/g, '').trim();
+    return value.replace(/[\s-]/g, "").trim();
   }
 
   /**
@@ -62,7 +62,7 @@ export class PhoneNumber extends BaseValueObject<string> {
    * @returns {string | null} 国家代码，如果没有则返回 null
    */
   public getCountryCode(): string | null {
-    if (!this.value.startsWith('+')) {
+    if (!this.value.startsWith("+")) {
       return null;
     }
     // 提取 + 后的1-3位数字作为国家代码

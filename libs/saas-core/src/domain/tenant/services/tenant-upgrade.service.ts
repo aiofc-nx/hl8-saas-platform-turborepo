@@ -37,13 +37,16 @@
  * @since 1.0.0
  */
 
-import { TenantType } from '../value-objects/tenant-type.enum';
-import { TenantQuota } from '../value-objects/tenant-quota.vo';
-import { TenantQuotaRule, IDowngradeValidation } from '../rules/tenant-quota.rule';
+import { TenantType } from "../value-objects/tenant-type.enum.js";
+import { TenantQuota } from "../value-objects/tenant-quota.vo.js";
+import {
+  TenantQuotaRule,
+  IDowngradeValidation,
+} from "../rules/tenant-quota.rule.js";
 import {
   TENANT_UPGRADE_PATHS,
   TENANT_DOWNGRADE_PATHS,
-} from '../../../constants/tenant.constants';
+} from "../../../constants/tenant.constants.js";
 
 /**
  * 升级计划
@@ -105,7 +108,7 @@ export class TenantUpgradeService {
    * @returns {boolean} 是否可以升级
    */
   public canUpgrade(currentType: TenantType, targetType: TenantType): boolean {
-    const allowedPaths = TENANT_UPGRADE_PATHS[currentType];
+    const allowedPaths = (TENANT_UPGRADE_PATHS as any)[currentType];
     return allowedPaths?.includes(targetType) || false;
   }
 
@@ -116,8 +119,11 @@ export class TenantUpgradeService {
    * @param {TenantType} targetType - 目标类型
    * @returns {boolean} 是否可以降级
    */
-  public canDowngrade(currentType: TenantType, targetType: TenantType): boolean {
-    const allowedPaths = TENANT_DOWNGRADE_PATHS[currentType];
+  public canDowngrade(
+    currentType: TenantType,
+    targetType: TenantType,
+  ): boolean {
+    const allowedPaths = (TENANT_DOWNGRADE_PATHS as any)[currentType];
     return allowedPaths?.includes(targetType) || false;
   }
 
@@ -131,7 +137,10 @@ export class TenantUpgradeService {
    * @returns {IUpgradePlan} 升级计划
    * @throws {Error} 当升级路径不允许时抛出错误
    */
-  public planUpgrade(currentType: TenantType, targetType: TenantType): IUpgradePlan {
+  public planUpgrade(
+    currentType: TenantType,
+    targetType: TenantType,
+  ): IUpgradePlan {
     if (!this.canUpgrade(currentType, targetType)) {
       throw new Error(`不支持从 ${currentType} 升级到 ${targetType}`);
     }
@@ -174,7 +183,7 @@ export class TenantUpgradeService {
 
     const currentQuota = TenantQuota.fromTenantType(currentType);
     const newQuota = TenantQuota.fromTenantType(targetType);
-    
+
     const validation = this.quotaRule.validateDowngrade(
       currentQuota,
       newQuota,
@@ -201,40 +210,33 @@ export class TenantUpgradeService {
    * @param {TenantType} targetType - 目标类型
    * @returns {string[]} 新增功能列表
    */
-  private getNewFeatures(currentType: TenantType, targetType: TenantType): string[] {
+  private getNewFeatures(
+    currentType: TenantType,
+    targetType: TenantType,
+  ): string[] {
     const featureMap: Record<TenantType, string[]> = {
-      FREE: ['basic_features'],
-      BASIC: ['basic_features', 'advanced_auth'],
+      TRIAL: ["basic_features"],
+      BASIC: ["basic_features", "advanced_auth"],
       PROFESSIONAL: [
-        'basic_features',
-        'advanced_auth',
-        'advanced_reporting',
-        'api_access',
+        "basic_features",
+        "advanced_auth",
+        "advanced_reporting",
+        "api_access",
       ],
       ENTERPRISE: [
-        'basic_features',
-        'advanced_auth',
-        'advanced_reporting',
-        'api_access',
-        'sso',
-        'audit_logs',
-      ],
-      CUSTOM: [
-        'basic_features',
-        'advanced_auth',
-        'advanced_reporting',
-        'api_access',
-        'sso',
-        'audit_logs',
-        'custom_branding',
-        'dedicated_support',
+        "basic_features",
+        "advanced_auth",
+        "advanced_reporting",
+        "api_access",
+        "sso",
+        "audit_logs",
       ],
     };
 
     const currentFeatures = featureMap[currentType] || [];
     const targetFeatures = featureMap[targetType] || [];
 
-    return targetFeatures.filter(f => !currentFeatures.includes(f));
+    return targetFeatures.filter((f) => !currentFeatures.includes(f));
   }
 
   /**
@@ -245,8 +247,10 @@ export class TenantUpgradeService {
    * @param {TenantType} targetType - 目标类型
    * @returns {string[]} 移除功能列表
    */
-  private getRemovedFeatures(currentType: TenantType, targetType: TenantType): string[] {
+  private getRemovedFeatures(
+    currentType: TenantType,
+    targetType: TenantType,
+  ): string[] {
     return this.getNewFeatures(targetType, currentType);
   }
 }
-

@@ -1,33 +1,33 @@
-import type { Config } from 'jest';
+import type { Config } from "jest";
 
 const config: Config = {
-  displayName: '@hl8/caching',
-  preset: 'ts-jest/presets/default-esm',
-  testEnvironment: 'node',
-  extensionsToTreatAsEsm: ['.ts'],
+  displayName: "@hl8/hybrid-archi",
+  preset: "ts-jest/presets/default-esm",
+  testEnvironment: "node",
+  extensionsToTreatAsEsm: [".ts"],
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
-    '^@/(.*)$': '<rootDir>/src/$1',
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
   transform: {
-    '^.+\\.ts$': [
-      'ts-jest',
+    "^.+\\.ts$": [
+      "ts-jest",
       {
         useESM: true,
         tsconfig: {
-          module: 'NodeNext',
-          moduleResolution: 'NodeNext',
+          module: "NodeNext",
+          moduleResolution: "NodeNext",
         },
       },
     ],
   },
-  roots: ['<rootDir>/src', '<rootDir>/__tests__'],
-  testMatch: ['<rootDir>/src/**/*.spec.ts', '<rootDir>/__tests__/**/*.spec.ts'],
+  roots: ["<rootDir>/src", "<rootDir>/__tests__"],
+  testMatch: ["<rootDir>/src/**/*.spec.ts", "<rootDir>/__tests__/**/*.spec.ts"],
   collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.spec.ts',
-    '!src/**/*.d.ts',
-    '!src/index.ts',
+    "src/**/*.ts",
+    "!src/**/*.spec.ts",
+    "!src/**/*.d.ts",
+    "!src/index.ts",
   ],
   coverageThreshold: {
     global: {
@@ -37,8 +37,8 @@ const config: Config = {
       statements: 46,
     },
   },
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "html"],
 };
 
 export default config;

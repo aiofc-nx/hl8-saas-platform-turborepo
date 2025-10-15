@@ -5,12 +5,12 @@
  * @since 1.0.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { SagaManager } from './saga-manager';
-import { TestSaga } from './base-saga.spec';
-import { SagaStatus } from './saga.interface';
+import { Test, TestingModule } from "@nestjs/testing";
+import { SagaManager } from "./saga-manager.js";
+import { TestSaga } from "./base-saga.spec.js";
+import { SagaStatus } from "./saga.interface.js";
 
-describe('SagaManager', () => {
+describe("SagaManager", () => {
   let sagaManager: SagaManager;
   let testSaga: TestSaga;
 
@@ -40,7 +40,7 @@ describe('SagaManager', () => {
       providers: [
         SagaManager,
         {
-          provide: 'ILoggerService',
+          provide: "ILoggerService",
           useValue: mockLogger,
         },
       ],
@@ -50,73 +50,73 @@ describe('SagaManager', () => {
     testSaga = new TestSaga();
   });
 
-  describe('初始化', () => {
-    it('应该正确初始化 Saga 管理器', () => {
+  describe("初始化", () => {
+    it("应该正确初始化 Saga 管理器", () => {
       expect(sagaManager).toBeDefined();
       expect(sagaManager.isStarted()).toBe(false);
     });
 
-    it('应该能够启动 Saga 管理器', async () => {
+    it("应该能够启动 Saga 管理器", async () => {
       await sagaManager.start();
       expect(sagaManager.isStarted()).toBe(true);
     });
 
-    it('应该能够停止 Saga 管理器', async () => {
+    it("应该能够停止 Saga 管理器", async () => {
       await sagaManager.start();
       await sagaManager.stop();
       expect(sagaManager.isStarted()).toBe(false);
     });
   });
 
-  describe('Saga 注册', () => {
+  describe("Saga 注册", () => {
     beforeEach(async () => {
       await sagaManager.start();
     });
 
-    it('应该能够注册 Saga', () => {
+    it("应该能够注册 Saga", () => {
       sagaManager.registerSaga(testSaga);
       const registeredSagas = sagaManager.getAllSagas();
       expect(registeredSagas).toContain(testSaga);
     });
 
-    it('应该能够注销 Saga', () => {
+    it("应该能够注销 Saga", () => {
       sagaManager.registerSaga(testSaga);
-      sagaManager.unregisterSaga('TestSaga');
+      sagaManager.unregisterSaga("TestSaga");
       const registeredSagas = sagaManager.getAllSagas();
       expect(registeredSagas).not.toContain(testSaga);
     });
 
-    it('应该能够检查 Saga 是否已注册', () => {
+    it("应该能够检查 Saga 是否已注册", () => {
       sagaManager.registerSaga(testSaga);
-      expect(sagaManager.getSaga('TestSaga') !== undefined).toBe(true);
-      expect(sagaManager.getSaga('NonExistentSaga') !== undefined).toBe(false);
+      expect(sagaManager.getSaga("TestSaga") !== undefined).toBe(true);
+      expect(sagaManager.getSaga("NonExistentSaga") !== undefined).toBe(false);
     });
   });
 
-  describe('Saga 执行', () => {
+  describe("Saga 执行", () => {
     beforeEach(async () => {
       await sagaManager.start();
       sagaManager.registerSaga(testSaga);
     });
 
-    it('应该能够启动 Saga', async () => {
+    it("应该能够启动 Saga", async () => {
       const context = await sagaManager
-        .startSaga('TestSaga', {
-          testData: 'test-value',
+        .startSaga("TestSaga", {
+          testData: "test-value",
         })
         .toPromise();
 
       expect(context).toBeDefined();
       expect(context).not.toBeNull();
       expect(context?.sagaId).toBeDefined();
-      expect(context?.sagaType).toBe('TestSaga');
+      expect(context?.sagaType).toBe("TestSaga");
       expect(context?.status).toBe(SagaStatus.RUNNING);
     });
 
-    it('应该能够获取 Saga 状态', async () => {
+    it("应该能够获取 Saga 状态", async () => {
       const context = await sagaManager
-        .startSaga('TestSaga', {
-          testData: 'test-value',
+        .startSaga("TestSaga", {
+          testData: "test-value",
         })
         .toPromise();
 
@@ -131,10 +131,10 @@ describe('SagaManager', () => {
       expect(status?.status).toBe(SagaStatus.RUNNING);
     });
 
-    it('应该能够停止 Saga', async () => {
+    it("应该能够停止 Saga", async () => {
       const context = await sagaManager
-        .startSaga('TestSaga', {
-          testData: 'test-value',
+        .startSaga("TestSaga", {
+          testData: "test-value",
         })
         .toPromise();
 
@@ -148,10 +148,10 @@ describe('SagaManager', () => {
       expect(status?.status).toBe(SagaStatus.CANCELLED);
     });
 
-    it('应该能够取消 Saga', async () => {
+    it("应该能够取消 Saga", async () => {
       const context = await sagaManager
-        .startSaga('TestSaga', {
-          testData: 'test-value',
+        .startSaga("TestSaga", {
+          testData: "test-value",
         })
         .toPromise();
 
@@ -166,13 +166,13 @@ describe('SagaManager', () => {
     });
   });
 
-  describe('统计信息', () => {
+  describe("统计信息", () => {
     beforeEach(async () => {
       await sagaManager.start();
       sagaManager.registerSaga(testSaga);
     });
 
-    it('应该能够获取 Saga 统计信息', () => {
+    it("应该能够获取 Saga 统计信息", () => {
       const stats = sagaManager.getStatistics();
       expect(stats).toBeDefined();
       expect(stats.totalSagas).toBe(0);
@@ -181,87 +181,87 @@ describe('SagaManager', () => {
       expect(stats.failedSagas).toBe(0);
     });
 
-    it('应该能够获取健康状态', async () => {
+    it("应该能够获取健康状态", async () => {
       const health = await sagaManager.healthCheck();
       expect(health).toBe(true);
     });
   });
 
-  describe('错误处理', () => {
+  describe("错误处理", () => {
     beforeEach(async () => {
       await sagaManager.start();
     });
 
-    it('应该处理未注册的 Saga 启动请求', async () => {
+    it("应该处理未注册的 Saga 启动请求", async () => {
       await expect(
-        sagaManager.startSaga('NonExistentSaga', {}).toPromise(),
+        sagaManager.startSaga("NonExistentSaga", {}).toPromise(),
       ).rejects.toThrow();
     });
 
-    it('应该处理无效的 Saga ID', () => {
-      const status = sagaManager.getSagaStatus('invalid-id');
+    it("应该处理无效的 Saga ID", () => {
+      const status = sagaManager.getSagaStatus("invalid-id");
       expect(status).toBeUndefined();
     });
 
-    it('应该处理停止不存在的 Saga', async () => {
+    it("应该处理停止不存在的 Saga", async () => {
       const result = await sagaManager
-        .stopSaga('non-existent-saga')
+        .stopSaga("non-existent-saga")
         .toPromise();
       expect(result).toBe(false);
     });
 
-    it('应该处理取消不存在的 Saga', async () => {
+    it("应该处理取消不存在的 Saga", async () => {
       const result = await sagaManager
-        .cancelSaga('non-existent-saga')
+        .cancelSaga("non-existent-saga")
         .toPromise();
       expect(result).toBe(false);
     });
   });
 
-  describe('边界情况', () => {
+  describe("边界情况", () => {
     beforeEach(async () => {
       await sagaManager.start();
     });
 
-    it('应该处理空的 Saga 数据', async () => {
+    it("应该处理空的 Saga 数据", async () => {
       sagaManager.registerSaga(testSaga);
 
-      const context = await sagaManager.startSaga('TestSaga', {}).toPromise();
+      const context = await sagaManager.startSaga("TestSaga", {}).toPromise();
 
       expect(context).toBeDefined();
       expect(context!.data).toBeDefined();
     });
 
-    it('应该处理基本的 Saga 注册', () => {
+    it("应该处理基本的 Saga 注册", () => {
       const initialCount = sagaManager.getAllSagas().length;
       sagaManager.registerSaga(testSaga);
       expect(sagaManager.getAllSagas().length).toBeGreaterThan(initialCount);
     });
 
-    it('应该处理复杂的 Saga 数据结构', async () => {
+    it("应该处理复杂的 Saga 数据结构", async () => {
       sagaManager.registerSaga(testSaga);
 
       const complexData = {
         nested: {
           array: [1, 2, 3],
-          object: { key: 'value' },
+          object: { key: "value" },
           null: null,
           undefined: undefined,
         },
         date: new Date(),
-        string: 'test string',
+        string: "test string",
       };
 
       const context = await sagaManager
-        .startSaga('TestSaga', complexData)
+        .startSaga("TestSaga", complexData)
         .toPromise();
 
       expect(context!.data).toEqual(complexData);
     });
   });
 
-  describe('生命周期管理', () => {
-    it('应该正确处理管理器重启', async () => {
+  describe("生命周期管理", () => {
+    it("应该正确处理管理器重启", async () => {
       await sagaManager.start();
       sagaManager.registerSaga(testSaga);
 
@@ -269,14 +269,14 @@ describe('SagaManager', () => {
       await sagaManager.start();
 
       // Saga 注册应该被保持
-      expect(sagaManager.getSaga('TestSaga')).toBeDefined();
+      expect(sagaManager.getSaga("TestSaga")).toBeDefined();
     });
 
-    it('应该在停止时清理资源', async () => {
+    it("应该在停止时清理资源", async () => {
       await sagaManager.start();
       sagaManager.registerSaga(testSaga);
 
-      await sagaManager.startSaga('TestSaga', {}).toPromise();
+      await sagaManager.startSaga("TestSaga", {}).toPromise();
 
       await sagaManager.stop();
 
@@ -284,14 +284,14 @@ describe('SagaManager', () => {
       expect(health).toBe(false);
     });
 
-    it('应该处理多次启动调用', async () => {
+    it("应该处理多次启动调用", async () => {
       await sagaManager.start();
       await sagaManager.start(); // 第二次调用应该安全
 
       expect(sagaManager.isStarted()).toBe(true);
     });
 
-    it('应该处理多次停止调用', async () => {
+    it("应该处理多次停止调用", async () => {
       await sagaManager.start();
 
       await sagaManager.stop();
@@ -301,13 +301,13 @@ describe('SagaManager', () => {
     });
   });
 
-  describe('健康检查', () => {
-    it('应该在管理器未启动时返回不健康', async () => {
+  describe("健康检查", () => {
+    it("应该在管理器未启动时返回不健康", async () => {
       const health = await sagaManager.healthCheck();
       expect(health).toBe(false);
     });
 
-    it('应该在管理器启动后返回健康', async () => {
+    it("应该在管理器启动后返回健康", async () => {
       await sagaManager.start();
       const health = await sagaManager.healthCheck();
       expect(health).toBe(true);

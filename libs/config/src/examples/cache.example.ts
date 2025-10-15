@@ -6,9 +6,9 @@
  * @since 1.0.0
  */
 
-import { CacheManager, CacheStrategy } from '../lib/cache/index.js';
-import { dotenvLoader, fileLoader } from '../lib/loader/index.js';
-import { TypedConfigModule } from '../lib/typed-config.module.js';
+import { CacheManager, CacheStrategy } from "../lib/cache/index.js";
+import { dotenvLoader, fileLoader } from "../lib/loader/index.js";
+import { TypedConfigModule } from "../lib/typed-config.module.js";
 
 /**
  * 数据库配置类
@@ -47,8 +47,8 @@ export function basicCacheExample() {
   return TypedConfigModule.forRoot({
     schema: AppConfig,
     load: [
-      fileLoader({ path: './config/app.yml' }),
-      dotenvLoader({ separator: '__' }),
+      fileLoader({ path: "./config/app.yml" }),
+      dotenvLoader({ separator: "__" }),
     ],
     cacheOptions: {
       strategy: CacheStrategy.MEMORY,
@@ -69,12 +69,12 @@ export function fileCacheExample() {
   return TypedConfigModule.forRoot({
     schema: AppConfig,
     load: [
-      fileLoader({ path: './config/app.yml' }),
-      dotenvLoader({ separator: '__' }),
+      fileLoader({ path: "./config/app.yml" }),
+      dotenvLoader({ separator: "__" }),
     ],
     cacheOptions: {
       strategy: CacheStrategy.FILE,
-      cacheDir: './.cache/config',
+      cacheDir: "./.cache/config",
       ttl: 600000, // 10 分钟
       // compress: true, // 暂时注释掉，因为 CacheOptions 中没有这个属性
       enabled: true,
@@ -99,34 +99,34 @@ export async function cacheManagerExample() {
 
   // 添加事件监听器
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 事件对象类型未明确定义（示例代码）
-  cacheManager.on('hit', (event: any) => {
+  cacheManager.on("hit", (event: any) => {
     console.log(`Cache hit: ${event.key}`);
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 事件对象类型未明确定义（示例代码）
-  cacheManager.on('miss', (event: any) => {
+  cacheManager.on("miss", (event: any) => {
     console.log(`Cache miss: ${event.key}`);
   });
 
   // 设置缓存
-  await cacheManager.set('app.config', {
-    name: 'My App',
-    version: '1.0.0',
+  await cacheManager.set("app.config", {
+    name: "My App",
+    version: "1.0.0",
     database: {
-      host: 'localhost',
+      host: "localhost",
       port: 5432,
-      username: 'user',
-      password: 'password',
+      username: "user",
+      password: "password",
     },
   });
 
   // 获取缓存
-  const config = await cacheManager.get('app.config');
-  console.log('Cached config:', config);
+  const config = await cacheManager.get("app.config");
+  console.log("Cached config:", config);
 
   // 获取统计信息
   const stats = await cacheManager.getStats();
-  console.log('Cache stats:', stats);
+  console.log("Cache stats:", stats);
 
   // 清理资源
   cacheManager.destroy();
@@ -142,12 +142,12 @@ export function advancedCacheExample() {
   return TypedConfigModule.forRoot({
     schema: AppConfig,
     load: [
-      fileLoader({ path: './config/app.yml' }),
-      dotenvLoader({ separator: '__' }),
+      fileLoader({ path: "./config/app.yml" }),
+      dotenvLoader({ separator: "__" }),
     ],
     cacheOptions: {
       strategy: CacheStrategy.MEMORY,
-      keyPrefix: 'myapp',
+      keyPrefix: "myapp",
       ttl: 300000,
       maxSize: 5000,
       // maxMemory: 50 * 1024 * 1024, // 50MB - 暂时注释掉，因为 CacheOptions 中没有这个属性
@@ -174,12 +174,12 @@ export async function cacheMonitoringExample() {
 
   // 监控所有缓存事件
   const eventTypes = [
-    'hit',
-    'miss',
-    'set',
-    'delete',
-    'expire',
-    'clear',
+    "hit",
+    "miss",
+    "set",
+    "delete",
+    "expire",
+    "clear",
   ] as const;
 
   for (const eventType of eventTypes) {
@@ -191,7 +191,7 @@ export async function cacheMonitoringExample() {
         }`,
       );
       if (event.data) {
-        console.log('Event data:', event.data);
+        console.log("Event data:", event.data);
       }
     });
   }
@@ -199,7 +199,7 @@ export async function cacheMonitoringExample() {
   // 定期输出统计信息
   setInterval(async () => {
     const stats = await cacheManager.getStats();
-    console.log('Cache Performance:', {
+    console.log("Cache Performance:", {
       hitRate: `${(stats.hitRate * 100).toFixed(2)}%`,
       totalEntries: stats.totalEntries,
       totalSize: `${(stats.totalSize / 1024).toFixed(2)} KB`,

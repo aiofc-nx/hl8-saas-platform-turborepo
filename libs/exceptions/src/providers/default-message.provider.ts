@@ -31,8 +31,8 @@
  * @since 0.1.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { ExceptionMessageProvider } from './exception-message.provider.js';
+import { Injectable } from "@nestjs/common";
+import { ExceptionMessageProvider } from "./exception-message.provider.js";
 
 /**
  * 默认消息提供者
@@ -49,16 +49,16 @@ export class DefaultMessageProvider implements ExceptionMessageProvider {
   private readonly messages: Record<string, { title: string; detail: string }> =
     {
       NOT_FOUND: {
-        title: '资源未找到',
-        detail: '请求的{{resource}}不存在',
+        title: "资源未找到",
+        detail: "请求的{{resource}}不存在",
       },
       BAD_REQUEST: {
-        title: '错误的请求',
-        detail: '请求参数不符合要求',
+        title: "错误的请求",
+        detail: "请求参数不符合要求",
       },
       INTERNAL_SERVER_ERROR: {
-        title: '服务器内部错误',
-        detail: '处理请求时发生未预期的错误',
+        title: "服务器内部错误",
+        detail: "处理请求时发生未预期的错误",
       },
     };
 
@@ -72,7 +72,7 @@ export class DefaultMessageProvider implements ExceptionMessageProvider {
    */
   getMessage(
     errorCode: string,
-    messageType: 'title' | 'detail',
+    messageType: "title" | "detail",
     params?: Record<string, any>,
   ): string | undefined {
     const message = this.messages[errorCode]?.[messageType];
@@ -90,7 +90,7 @@ export class DefaultMessageProvider implements ExceptionMessageProvider {
    * @param messageType - 消息类型
    * @returns 如果有消息则返回 true
    */
-  hasMessage(errorCode: string, messageType: 'title' | 'detail'): boolean {
+  hasMessage(errorCode: string, messageType: "title" | "detail"): boolean {
     return this.messages[errorCode]?.[messageType] !== undefined;
   }
 
@@ -144,7 +144,7 @@ export class DefaultMessageProvider implements ExceptionMessageProvider {
    * @private
    */
   private getNestedValue(obj: any, path: string): any {
-    const keys = path.split('.');
+    const keys = path.split(".");
     let value = obj;
 
     for (const key of keys) {

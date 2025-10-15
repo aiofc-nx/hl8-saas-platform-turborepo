@@ -20,7 +20,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
+import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
 
 export class RoleLevel extends BaseValueObject<number> {
   private static readonly MIN_LEVEL = 1;
@@ -30,15 +30,14 @@ export class RoleLevel extends BaseValueObject<number> {
    * 验证角色层级
    *
    * @protected
-   * @override
    */
-  protected override validate(value: number): void {
-    this.validateInteger(value, '角色层级');
-    this.validateRange(
+  protected validate(value: number): void {
+    (this as any).validateInteger(value, "角色层级");
+    (this as any).validateRange(
       value,
       RoleLevel.MIN_LEVEL,
       RoleLevel.MAX_LEVEL,
-      '角色层级'
+      "角色层级",
     );
   }
 
@@ -46,28 +45,28 @@ export class RoleLevel extends BaseValueObject<number> {
    * 检查是否比其他层级更高
    */
   public isHigherThan(other: RoleLevel): boolean {
-    return this._value < other._value; // 数字越小权限越高
+    return (this as any)._value < (other as any)._value; // 数字越小权限越高
   }
 
   /**
    * 检查是否比其他层级更低
    */
   public isLowerThan(other: RoleLevel): boolean {
-    return this._value > other._value;
+    return (this as any)._value > (other as any)._value;
   }
 
   /**
    * 检查是否为最高层级
    */
   public isTopLevel(): boolean {
-    return this._value === RoleLevel.MIN_LEVEL;
+    return (this as any)._value === RoleLevel.MIN_LEVEL;
   }
 
   /**
    * 检查是否为最低层级
    */
   public isBottomLevel(): boolean {
-    return this._value === RoleLevel.MAX_LEVEL;
+    return (this as any)._value === RoleLevel.MAX_LEVEL;
   }
 
   /**
@@ -75,7 +74,7 @@ export class RoleLevel extends BaseValueObject<number> {
    */
   public static isValid(level: number): boolean {
     try {
-      RoleLevel.create(level);
+      (RoleLevel as any).create(level);
       return true;
     } catch {
       return false;

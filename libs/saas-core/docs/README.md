@@ -26,26 +26,26 @@ pnpm add @hl8/saas-core
 在你的 NestJS 应用中导入 `SaasCoreModule`：
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { SaasCoreModule } from '@hl8/saas-core';
+import { Module } from "@nestjs/common";
+import { SaasCoreModule } from "@hl8/saas-core";
 
 @Module({
   imports: [
     SaasCoreModule.forRoot({
       database: {
-        host: process.env.DB_HOST || 'localhost',
-        port: parseInt(process.env.DB_PORT || '5432'),
-        database: process.env.DB_NAME || 'saas_platform',
-        username: process.env.DB_USER || 'postgres',
-        password: process.env.DB_PASSWORD || 'postgres',
+        host: process.env.DB_HOST || "localhost",
+        port: parseInt(process.env.DB_PORT || "5432"),
+        database: process.env.DB_NAME || "saas_platform",
+        username: process.env.DB_USER || "postgres",
+        password: process.env.DB_PASSWORD || "postgres",
       },
       redis: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379'),
+        host: process.env.REDIS_HOST || "localhost",
+        port: parseInt(process.env.REDIS_PORT || "6379"),
       },
       jwt: {
-        secret: process.env.JWT_SECRET || 'your-secret-key',
-        expiresIn: '7d',
+        secret: process.env.JWT_SECRET || "your-secret-key",
+        expiresIn: "7d",
       },
     }),
   ],
@@ -63,19 +63,19 @@ import {
   TenantModule,
   TenantAggregate,
   TenantType,
-  
+
   // 用户模块
   UserModule,
   UserAggregate,
-  
+
   // 组织模块
   OrganizationModule,
   DepartmentModule,
-  
+
   // 权限模块
   RoleModule,
   PermissionModule,
-} from '@hl8/saas-core';
+} from "@hl8/saas-core";
 ```
 
 ## 🏢 租户管理API
@@ -83,7 +83,7 @@ import {
 ### 创建租户
 
 ```typescript
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   ITenantAggregateRepository,
   TenantAggregate,
@@ -91,13 +91,11 @@ import {
   TenantDomain,
   TenantType,
   EntityId,
-} from '@hl8/saas-core';
+} from "@hl8/saas-core";
 
 @Injectable()
 export class TenantService {
-  constructor(
-    private readonly tenantRepository: ITenantAggregateRepository,
-  ) {}
+  constructor(private readonly tenantRepository: ITenantAggregateRepository) {}
 
   async createTenant(data: CreateTenantDto) {
     // 创建租户聚合根
@@ -124,11 +122,11 @@ export class TenantService {
 async getTenant(id: string) {
   const entityId = EntityId.fromString(id);
   const tenant = await this.tenantRepository.findById(entityId);
-  
+
   if (!tenant) {
     throw new NotFoundException('租户不存在');
   }
-  
+
   return tenant;
 }
 
@@ -147,35 +145,35 @@ async listTenants(offset = 0, limit = 20) {
 ```typescript
 async activateTenant(id: string, operatorId: string) {
   const tenant = await this.getTenant(id);
-  
+
   // 激活租户
   tenant.activate(operatorId);
-  
+
   // 保存更改
   await this.tenantRepository.save(tenant);
-  
+
   return tenant;
 }
 
 async suspendTenant(id: string, reason: string, operatorId: string) {
   const tenant = await this.getTenant(id);
-  
+
   // 暂停租户
   tenant.suspend(reason, operatorId);
-  
+
   await this.tenantRepository.save(tenant);
-  
+
   return tenant;
 }
 
 async resumeTenant(id: string, operatorId: string) {
   const tenant = await this.getTenant(id);
-  
+
   // 恢复租户
   tenant.resume(operatorId);
-  
+
   await this.tenantRepository.save(tenant);
-  
+
   return tenant;
 }
 ```
@@ -189,12 +187,12 @@ async upgradeTenant(
   operatorId: string,
 ) {
   const tenant = await this.getTenant(id);
-  
+
   // 升级租户类型
   tenant.upgrade(newType, operatorId);
-  
+
   await this.tenantRepository.save(tenant);
-  
+
   return tenant;
 }
 
@@ -204,12 +202,12 @@ async downgradeTenant(
   operatorId: string,
 ) {
   const tenant = await this.getTenant(id);
-  
+
   // 降级租户类型
   tenant.downgrade(newType, operatorId);
-  
+
   await this.tenantRepository.save(tenant);
-  
+
   return tenant;
 }
 ```
@@ -226,13 +224,11 @@ import {
   Email,
   PhoneNumber,
   EntityId,
-} from '@hl8/saas-core';
+} from "@hl8/saas-core";
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepository: IUserAggregateRepository,
-  ) {}
+  constructor(private readonly userRepository: IUserAggregateRepository) {}
 
   async registerUser(data: RegisterUserDto) {
     // 创建用户聚合根
@@ -241,7 +237,7 @@ export class UserService {
       Username.create(data.username),
       Email.create(data.email),
       PhoneNumber.create(data.phone),
-      { createdBy: 'system' },
+      { createdBy: "system" },
     );
 
     // 设置密码
@@ -270,7 +266,7 @@ async login(username: string, password: string) {
 
   // 验证密码
   const isValid = await user.verifyPassword(password);
-  
+
   if (!isValid) {
     throw new UnauthorizedException('用户名或密码错误');
   }
@@ -320,14 +316,14 @@ async changePassword(
 
   // 验证旧密码
   const isValid = await user.verifyPassword(oldPassword);
-  
+
   if (!isValid) {
     throw new BadRequestException('原密码错误');
   }
 
   // 设置新密码
   await user.setPassword(newPassword);
-  
+
   await this.userRepository.save(user);
 }
 ```
@@ -342,7 +338,7 @@ import {
   OrganizationAggregate,
   OrganizationType,
   EntityId,
-} from '@hl8/saas-core';
+} from "@hl8/saas-core";
 
 @Injectable()
 export class OrganizationService {
@@ -373,7 +369,7 @@ import {
   IDepartmentAggregateRepository,
   DepartmentAggregate,
   EntityId,
-} from '@hl8/saas-core';
+} from "@hl8/saas-core";
 
 @Injectable()
 export class DepartmentService {
@@ -402,10 +398,10 @@ export class DepartmentService {
 ```typescript
 async getDepartmentTree(organizationId: string) {
   const orgId = EntityId.fromString(organizationId);
-  
+
   // 获取组织下的所有部门
   const departments = await this.deptRepository.findByOrganization(orgId);
-  
+
   // 构建树形结构
   return this.buildDepartmentTree(departments);
 }
@@ -421,7 +417,7 @@ private buildDepartmentTree(departments: DepartmentAggregate[]) {
   departments.forEach(dept => {
     const node = map.get(dept.id.toString());
     const parentId = dept.getParentId()?.toString();
-    
+
     if (parentId && map.has(parentId)) {
       map.get(parentId).children.push(node);
     } else {
@@ -444,13 +440,11 @@ import {
   RoleName,
   RoleLevel,
   EntityId,
-} from '@hl8/saas-core';
+} from "@hl8/saas-core";
 
 @Injectable()
 export class RoleService {
-  constructor(
-    private readonly roleRepository: IRoleAggregateRepository,
-  ) {}
+  constructor(private readonly roleRepository: IRoleAggregateRepository) {}
 
   async createRole(data: CreateRoleDto) {
     const role = RoleAggregate.create(
@@ -472,7 +466,7 @@ export class RoleService {
 ### 权限验证
 
 ```typescript
-import { Ability, AbilityBuilder } from '@casl/ability';
+import { Ability, AbilityBuilder } from "@casl/ability";
 
 @Injectable()
 export class PermissionService {
@@ -480,12 +474,9 @@ export class PermissionService {
     const { can, cannot, build } = new AbilityBuilder(Ability);
 
     // 基于角色构建权限
-    roles.forEach(role => {
-      role.getPermissions().forEach(permission => {
-        can(
-          permission.getAction().value,
-          permission.getResource(),
-        );
+    roles.forEach((role) => {
+      role.getPermissions().forEach((permission) => {
+        can(permission.getAction().value, permission.getResource());
       });
     });
 
@@ -499,7 +490,7 @@ export class PermissionService {
   ): Promise<boolean> {
     // 获取用户和角色
     const user = await this.userRepository.findById(
-      EntityId.fromString(userId)
+      EntityId.fromString(userId),
     );
     const roles = await this.getUserRoles(userId);
 
@@ -518,10 +509,10 @@ export class PermissionService {
 
 ```typescript
 // ✅ 好的做法：使用值对象
-const code = TenantCode.create('mycompany'); // 自动验证格式
+const code = TenantCode.create("mycompany"); // 自动验证格式
 
 // ❌ 不好的做法：直接使用字符串
-const code = 'mycompany'; // 没有验证
+const code = "mycompany"; // 没有验证
 ```
 
 ### 2. 使用聚合根管理业务逻辑
@@ -553,7 +544,7 @@ export class TenantCreatedHandler {
   async handle(event: TenantCreatedEvent) {
     // 发送欢迎邮件
     await this.emailService.sendWelcomeEmail(event.tenantId);
-    
+
     // 初始化默认配置
     await this.setupDefaultConfiguration(event.tenantId);
   }
@@ -589,7 +580,7 @@ async createTenantWithAdmin(data: CreateTenantWithAdminDto) {
 A: 使用 `@TenantContext` 装饰器自动注入租户上下文：
 
 ```typescript
-@Controller('api/data')
+@Controller("api/data")
 @TenantContext()
 export class DataController {
   @Get()
@@ -607,7 +598,7 @@ A: 在业务操作前检查配额：
 ```typescript
 async createUser(tenantId: string, data: CreateUserDto) {
   const tenant = await this.tenantRepository.findById(tenantId);
-  
+
   // 检查用户数配额
   const currentUserCount = await this.userRepository.countByTenant(tenantId);
   if (currentUserCount >= tenant.getQuota().maxUsers) {
@@ -625,20 +616,17 @@ async createUser(tenantId: string, data: CreateUserDto) {
 A: 使用 CASL Ability 和守卫：
 
 ```typescript
-@Controller('api/users')
+@Controller("api/users")
 export class UserController {
-  @Get(':id')
-  @CheckAbility({ action: 'read', subject: 'User' })
-  async getUser(@Param('id') id: string) {
+  @Get(":id")
+  @CheckAbility({ action: "read", subject: "User" })
+  async getUser(@Param("id") id: string) {
     return await this.userService.getUser(id);
   }
 
-  @Put(':id')
-  @CheckAbility({ action: 'update', subject: 'User' })
-  async updateUser(
-    @Param('id') id: string,
-    @Body() data: UpdateUserDto,
-  ) {
+  @Put(":id")
+  @CheckAbility({ action: "update", subject: "User" })
+  async updateUser(@Param("id") id: string, @Body() data: UpdateUserDto) {
     return await this.userService.updateUser(id, data);
   }
 }
@@ -652,9 +640,9 @@ A: 使用单元测试测试聚合根，使用集成测试测试仓储：
 describe('TenantAggregate', () => {
   it('should activate tenant', () => {
     const tenant = TenantAggregate.create(...);
-    
+
     tenant.activate('admin');
-    
+
     expect(tenant.getStatus()).toBe(TenantStatus.ACTIVE);
     expect(tenant.getActivatedAt()).toBeDefined();
   });

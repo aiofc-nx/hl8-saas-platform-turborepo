@@ -88,15 +88,18 @@
  *
  * @since 1.0.0
  */
-import { BaseEntity } from '../../entities/base/base-entity';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import { EntityId } from '../../value-objects/entity-id';
-import { IPartialAuditInfo } from '../../entities/base/audit-info';
-import { ITenantContext } from '@hl8/multi-tenancy';
-import { PinoLogger } from '@hl8/logger';
-import { IAggregateRoot } from './aggregate-root.interface';
+import { BaseEntity } from "../../entities/base/base-entity.js";
+import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
+import { EntityId } from "@hl8/isolation-model";
+import { IPartialAuditInfo } from "../../entities/base/audit-info.js";
+// import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现
+import type { IPureLogger } from "@hl8/pure-logger";
+import { IAggregateRoot } from "./aggregate-root.interface.js";
 
-export abstract class BaseAggregateRoot extends BaseEntity implements IAggregateRoot {
+export abstract class BaseAggregateRoot
+  extends BaseEntity
+  implements IAggregateRoot
+{
   private _domainEvents: BaseDomainEvent[] = [];
   private _uncommittedEvents: BaseDomainEvent[] = [];
 
@@ -110,7 +113,7 @@ export abstract class BaseAggregateRoot extends BaseEntity implements IAggregate
   protected constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger
+    logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
   }
@@ -144,24 +147,24 @@ export abstract class BaseAggregateRoot extends BaseEntity implements IAggregate
    */
   public addDomainEvent(event: BaseDomainEvent): void {
     if (!event) {
-      throw new Error('Domain event cannot be null or undefined');
+      throw new Error("Domain event cannot be null or undefined");
     }
 
     // 尝试绑定多租户上下文信息
     try {
       const tenantContext = (this as any).getTenantContext?.() || {
-        tenantId: 'default',
+        tenantId: "default",
       };
       if (tenantContext) {
         // 如果事件支持租户上下文，则绑定相关信息
-        if ('tenantId' in event && !event.tenantId) {
+        if ("tenantId" in event && !event.tenantId) {
           (event as any).tenantId = tenantContext.tenantId;
         }
-        if ('userId' in event && !event.userId && tenantContext.userId) {
+        if ("userId" in event && !event.userId && tenantContext.userId) {
           (event as any).userId = tenantContext.userId;
         }
         if (
-          'requestId' in event &&
+          "requestId" in event &&
           !event.requestId &&
           tenantContext.requestId
         ) {
@@ -170,14 +173,14 @@ export abstract class BaseAggregateRoot extends BaseEntity implements IAggregate
       }
     } catch (error) {
       // 如果绑定上下文失败，记录警告但不影响事件添加
-      console.warn('Failed to bind tenant context to domain event:', error);
+      console.warn("Failed to bind tenant context to domain event:", error);
     }
 
     this._domainEvents.push(event);
     this._uncommittedEvents.push(event);
 
     // 记录事件添加日志
-    (this as any).logOperation?.('DomainEventAdded', {
+    (this as any).logOperation?.("DomainEventAdded", {
       eventType: event.constructor.name,
       eventId: event.eventId.toString(),
       aggregateId: this.id.toString(),

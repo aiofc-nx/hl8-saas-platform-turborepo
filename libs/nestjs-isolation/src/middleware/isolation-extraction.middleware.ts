@@ -32,10 +32,10 @@ import {
   OrganizationId,
   TenantId,
   UserId,
-} from '@hl8/isolation-model';
-import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
-import { NextFunction, Request, Response } from 'express';
-import { IsolationContextService } from '../services/isolation-context.service.js';
+} from "@hl8/isolation-model";
+import { Injectable, Logger, NestMiddleware } from "@nestjs/common";
+import { NextFunction, Request, Response } from "express";
+import { IsolationContextService } from "../services/isolation-context.service.js";
 
 @Injectable()
 export class IsolationExtractionMiddleware implements NestMiddleware {
@@ -46,10 +46,10 @@ export class IsolationExtractionMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     try {
       // 提取请求头中的标识符
-      const tenantId = this.extractHeader(req, 'x-tenant-id');
-      const orgId = this.extractHeader(req, 'x-organization-id');
-      const deptId = this.extractHeader(req, 'x-department-id');
-      const userId = this.extractHeader(req, 'x-user-id');
+      const tenantId = this.extractHeader(req, "x-tenant-id");
+      const orgId = this.extractHeader(req, "x-organization-id");
+      const deptId = this.extractHeader(req, "x-department-id");
+      const userId = this.extractHeader(req, "x-user-id");
 
       // 创建隔离上下文
       const context = this.createIsolationContext(
@@ -63,7 +63,7 @@ export class IsolationExtractionMiddleware implements NestMiddleware {
       this.contextService.setIsolationContext(context);
 
       // 记录日志（仅在开发环境）
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         this.logger.debug(
           `Isolation context created: ${context.getIsolationLevel()}`,
           context.buildLogContext(),

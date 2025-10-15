@@ -156,26 +156,26 @@ equals(other: CacheKey): boolean
 
 ```typescript
 // 示例 1: 平台级缓存键
-const platformKey = CacheKey.forPlatform('system', 'version', 'hl8:cache:');
+const platformKey = CacheKey.forPlatform("system", "version", "hl8:cache:");
 console.log(platformKey.toString());
 // 输出: hl8:cache:platform:system:version
 
 // 示例 2: 租户级缓存键
-const context = { tenantId: 't123' };
+const context = { tenantId: "t123" };
 const tenantKey = CacheKey.forTenant(
-  'config',
-  'feature-flags',
-  'hl8:cache:',
+  "config",
+  "feature-flags",
+  "hl8:cache:",
   context,
 );
 console.log(tenantKey.toString());
 // 输出: hl8:cache:tenant:t123:config:feature-flags
 
 // 示例 3: 自动判断层级
-const autoKey = CacheKey.fromContext('user-list', 'active', 'hl8:cache:', {
-  tenantId: 't123',
-  organizationId: 'o456',
-  departmentId: 'd789',
+const autoKey = CacheKey.fromContext("user-list", "active", "hl8:cache:", {
+  tenantId: "t123",
+  organizationId: "o456",
+  departmentId: "d789",
 });
 console.log(autoKey.toString());
 // 输出: hl8:cache:tenant:t123:org:o456:dept:d789:user-list:active
@@ -271,10 +271,10 @@ isExpired(currentTime?: Date): boolean
 
 ```typescript
 // 示例 1: 创建缓存条目
-const key = CacheKey.forTenant('user', 'profile', 'hl8:cache:', {
-  tenantId: 't123',
+const key = CacheKey.forTenant("user", "profile", "hl8:cache:", {
+  tenantId: "t123",
 });
-const value = { id: 'u999', name: '张三', email: 'zhangsan@example.com' };
+const value = { id: "u999", name: "张三", email: "zhangsan@example.com" };
 const entry = CacheEntry.create(key, value, 3600, logger);
 
 console.log(entry.getSize()); // 输出: 值的字节大小
@@ -286,20 +286,20 @@ const serialized = entry.getSerializedValue();
 
 // 示例 3: 检查过期状态
 if (entry.isExpiringSoon()) {
-  console.log('缓存即将过期，考虑刷新');
+  console.log("缓存即将过期，考虑刷新");
 }
 
 if (entry.isExpired()) {
-  console.log('缓存已过期，需要删除');
+  console.log("缓存已过期，需要删除");
 }
 
 // 示例 4: 处理特殊类型
 const complexValue = {
-  date: new Date('2025-10-12'),
-  tags: new Set(['tag1', 'tag2']),
+  date: new Date("2025-10-12"),
+  tags: new Set(["tag1", "tag2"]),
   metadata: new Map([
-    ['key1', 'value1'],
-    ['key2', 'value2'],
+    ["key1", "value1"],
+    ["key2", "value2"],
   ]),
 };
 const complexEntry = CacheEntry.create(key, complexValue, 1800);
@@ -332,19 +332,19 @@ const complexEntry = CacheEntry.create(key, complexValue, 1800);
  */
 export enum CacheLevel {
   /** 平台级缓存 */
-  PLATFORM = 'platform',
+  PLATFORM = "platform",
 
   /** 租户级缓存 */
-  TENANT = 'tenant',
+  TENANT = "tenant",
 
   /** 组织级缓存 */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
 
   /** 部门级缓存 */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
 
   /** 用户级缓存 */
-  USER = 'user',
+  USER = "user",
 }
 ```
 
@@ -353,7 +353,7 @@ export enum CacheLevel {
 ```typescript
 // 判断缓存层级
 if (key.getLevel() === CacheLevel.TENANT) {
-  console.log('这是租户级缓存');
+  console.log("这是租户级缓存");
 }
 
 // 根据层级生成键
@@ -557,7 +557,7 @@ export class CacheInvalidatedEvent {
     public readonly level: CacheLevel,
 
     /** 失效原因 */
-    public readonly reason: 'expired' | 'deleted' | 'evicted',
+    public readonly reason: "expired" | "deleted" | "evicted",
 
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
@@ -708,29 +708,29 @@ console.log(`总操作: ${metrics.totalOperations}`);
 // src/types/index.ts
 
 // 值对象
-export { CacheKey } from '../domain/value-objects/cache-key.vo.js';
-export { CacheEntry } from '../domain/value-objects/cache-entry.vo.js';
+export { CacheKey } from "../domain/value-objects/cache-key.vo.js";
+export { CacheEntry } from "../domain/value-objects/cache-entry.vo.js";
 
 // 枚举
-export { CacheLevel } from './cache-level.enum.js';
+export { CacheLevel } from "./cache-level.enum.js";
 
 // 接口
-export type { ICacheService } from './cache-service.interface.js';
-export type { IRedisService } from './redis-service.interface.js';
+export type { ICacheService } from "./cache-service.interface.js";
+export type { IRedisService } from "./redis-service.interface.js";
 
 // 配置
 export type {
   CachingModuleOptions,
   CachingModuleAsyncOptions,
-} from './cache-options.interface.js';
-export type { RedisOptions } from './redis-options.interface.js';
+} from "./cache-options.interface.js";
+export type { RedisOptions } from "./redis-options.interface.js";
 
 // 领域事件
-export { CacheInvalidatedEvent } from '../domain/events/cache-invalidated.event.js';
-export { CacheLevelInvalidatedEvent } from '../domain/events/cache-level-invalidated.event.js';
+export { CacheInvalidatedEvent } from "../domain/events/cache-invalidated.event.js";
+export { CacheLevelInvalidatedEvent } from "../domain/events/cache-level-invalidated.event.js";
 
 // 指标
-export type { CacheMetrics } from './cache-metrics.interface.js';
+export type { CacheMetrics } from "./cache-metrics.interface.js";
 ```
 
 ---

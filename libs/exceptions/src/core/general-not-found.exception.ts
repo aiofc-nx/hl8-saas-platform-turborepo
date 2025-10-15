@@ -53,7 +53,7 @@
  * @since 0.1.0
  */
 
-import { AbstractHttpException } from './abstract-http.exception.js';
+import { AbstractHttpException } from "./abstract-http.exception.js";
 
 /**
  * 通用 404 未找到异常
@@ -78,6 +78,6 @@ export class GeneralNotFoundException extends AbstractHttpException {
    * ```
    */
   constructor(title: string, detail: string, data?: any) {
-    super('NOT_FOUND', title, detail, 404, data);
+    super("NOT_FOUND", title, detail, 404, data);
   }
 }

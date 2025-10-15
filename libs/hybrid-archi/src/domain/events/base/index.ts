@@ -6,20 +6,20 @@
  */
 
 // 基础领域事件类
-export { BaseDomainEvent } from './base-domain-event';
+export { BaseDomainEvent } from "./base-domain-event.js";
 
 // 领域事件接口
-export {
+export type {
   IDomainEvent,
   IDomainEventHandler,
   IDomainEventBus,
   IDomainEventStore,
   EventMetadata,
-} from './domain-event.interface';
+} from "./domain-event.interface.js";
 
 // 重新导出常用类型 - 避免重复导出
 // export type { EntityId } from '../../value-objects/entity-id';
 
 // 领域事件类型别名 - 需要先导入IDomainEvent
-import { IDomainEvent } from './domain-event.interface';
+import { IDomainEvent } from "./domain-event.interface.js";
 export type DomainEvent = IDomainEvent;

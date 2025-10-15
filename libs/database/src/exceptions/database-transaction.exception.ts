@@ -33,7 +33,7 @@
  * @since 1.0.0
  */
 
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 
 export class DatabaseTransactionException extends AbstractHttpException {
   /**
@@ -44,8 +44,8 @@ export class DatabaseTransactionException extends AbstractHttpException {
    */
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_TRANSACTION_ERROR', // errorCode
-      '数据库事务错误', // title
+      "DATABASE_TRANSACTION_ERROR", // errorCode
+      "数据库事务错误", // title
       detail, // detail
       500, // status
       data, // data

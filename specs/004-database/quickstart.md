@@ -55,15 +55,15 @@ DB_SLOW_QUERY_THRESHOLD=1000
 
 ```typescript
 // src/config/app.config.ts
-import { DatabaseConfig } from '@hl8/database';
-import { IsString } from 'class-validator';
+import { DatabaseConfig } from "@hl8/database";
+import { IsString } from "class-validator";
 
 export class AppConfig {
   /**
    * 应用配置
    */
   @IsString()
-  appName: string = 'HL8 SAAS';
+  appName: string = "HL8 SAAS";
 
   /**
    * 数据库配置
@@ -80,10 +80,10 @@ export class AppConfig {
 
 ```typescript
 // src/entities/user.entity.ts
-import { Entity, PrimaryKey, Property } from '@hl8/database';
-import { v4 } from 'uuid';
+import { Entity, PrimaryKey, Property } from "@hl8/database";
+import { v4 } from "uuid";
 
-@Entity({ tableName: 'users' })
+@Entity({ tableName: "users" })
 export class User {
   @PrimaryKey()
   id: string = v4();
@@ -119,11 +119,11 @@ export class User {
 
 ```typescript
 // src/app.module.ts
-import { Module } from '@nestjs/common';
-import { TypedConfigModule, dotenvLoader } from '@hl8/config';
-import { DatabaseModule, DatabaseConfig } from '@hl8/database';
-import { IsolationModule } from '@hl8/nestjs-isolation';
-import { User } from './entities/user.entity';
+import { Module } from "@nestjs/common";
+import { TypedConfigModule, dotenvLoader } from "@hl8/config";
+import { DatabaseModule, DatabaseConfig } from "@hl8/database";
+import { IsolationModule } from "@hl8/nestjs-isolation";
+import { User } from "./entities/user.entity";
 
 @Module({
   imports: [
@@ -140,7 +140,7 @@ import { User } from './entities/user.entity';
     DatabaseModule.forRootAsync({
       useFactory: (config: DatabaseConfig) => ({
         connection: {
-          type: 'postgresql',
+          type: "postgresql",
           host: config.host,
           port: config.port,
           database: config.database,
@@ -154,7 +154,7 @@ import { User } from './entities/user.entity';
         },
         entities: [User], // 注册实体
         migrations: {
-          path: './migrations',
+          path: "./migrations",
         },
       }),
       inject: [DatabaseConfig],
@@ -172,11 +172,11 @@ export class AppModule {}
 
 ```typescript
 // src/repositories/user.repository.ts
-import { Injectable } from '@nestjs/common';
-import { EntityManager, EntityRepository } from '@hl8/database';
-import { InjectEntityManager } from '@mikro-orm/nestjs';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { User } from '../entities/user.entity';
+import { Injectable } from "@nestjs/common";
+import { EntityManager, EntityRepository } from "@hl8/database";
+import { InjectEntityManager } from "@mikro-orm/nestjs";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
+import { User } from "../entities/user.entity";
 
 @Injectable()
 export class UserRepository {
@@ -187,22 +187,22 @@ export class UserRepository {
   ) {}
 
   async findAll(): Promise<User[]> {
-    this.logger.log('查询所有用户');
+    this.logger.log("查询所有用户");
     return this.em.find(User, {});
   }
 
   async findById(id: string): Promise<User | null> {
-    this.logger.log('查询用户', { userId: id });
+    this.logger.log("查询用户", { userId: id });
     return this.em.findOne(User, { id });
   }
 
   async save(user: User): Promise<void> {
-    this.logger.log('保存用户', { userId: user.id });
+    this.logger.log("保存用户", { userId: user.id });
     await this.em.persistAndFlush(user);
   }
 
   async remove(user: User): Promise<void> {
-    this.logger.log('删除用户', { userId: user.id });
+    this.logger.log("删除用户", { userId: user.id });
     await this.em.removeAndFlush(user);
   }
 }
@@ -216,10 +216,10 @@ export class UserRepository {
 
 ```typescript
 // src/services/user.service.ts
-import { Injectable } from '@nestjs/common';
-import { Transactional } from '@hl8/database';
-import { UserRepository } from '../repositories/user.repository';
-import { User } from '../entities/user.entity';
+import { Injectable } from "@nestjs/common";
+import { Transactional } from "@hl8/database";
+import { UserRepository } from "../repositories/user.repository";
+import { User } from "../entities/user.entity";
 
 @Injectable()
 export class UserService {
@@ -242,9 +242,9 @@ export class UserService {
 #### 方式二：编程式事务
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { TransactionService } from '@hl8/database';
-import { User } from '../entities/user.entity';
+import { Injectable } from "@nestjs/common";
+import { TransactionService } from "@hl8/database";
+import { User } from "../entities/user.entity";
 
 @Injectable()
 export class UserService {
@@ -272,9 +272,9 @@ export class UserService {
 
 ```typescript
 // src/repositories/user.repository.ts
-import { Injectable } from '@nestjs/common';
-import { IsolationAware, IsolationLevel } from '@hl8/database';
-import { IsolationService } from '@hl8/nestjs-isolation';
+import { Injectable } from "@nestjs/common";
+import { IsolationAware, IsolationLevel } from "@hl8/database";
+import { IsolationService } from "@hl8/nestjs-isolation";
 
 @Injectable()
 export class UserRepository {
@@ -305,15 +305,15 @@ pnpm --filter your-app migration:create
 
 ```typescript
 // migrations/Migration20251013000000.ts
-import { Migration } from '@mikro-orm/migrations';
+import { Migration } from "@mikro-orm/migrations";
 
 export class Migration20251013000000 extends Migration {
   async up(): Promise<void> {
-    this.addSql('CREATE TABLE users (...);');
+    this.addSql("CREATE TABLE users (...);");
   }
 
   async down(): Promise<void> {
-    this.addSql('DROP TABLE users;');
+    this.addSql("DROP TABLE users;");
   }
 }
 ```
@@ -331,7 +331,7 @@ pnpm --filter your-app migration:up
 
 ```typescript
 // src/main.ts
-import { MigrationService } from '@hl8/database';
+import { MigrationService } from "@hl8/database";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -362,14 +362,14 @@ pnpm --filter your-app migration:down
 
 ```typescript
 // src/health/health.controller.ts
-import { Controller, Get } from '@nestjs/common';
-import { HealthCheckService } from '@hl8/database';
+import { Controller, Get } from "@nestjs/common";
+import { HealthCheckService } from "@hl8/database";
 
-@Controller('health')
+@Controller("health")
 export class HealthController {
   constructor(private readonly healthCheckService: HealthCheckService) {}
 
-  @Get('database')
+  @Get("database")
   async checkDatabase() {
     const result = await this.healthCheckService.check();
     return {
@@ -390,14 +390,14 @@ export class HealthController {
 
 ```typescript
 // src/monitoring/monitoring.controller.ts
-import { Controller, Get } from '@nestjs/common';
-import { MetricsService } from '@hl8/database';
+import { Controller, Get } from "@nestjs/common";
+import { MetricsService } from "@hl8/database";
 
-@Controller('monitoring')
+@Controller("monitoring")
 export class MonitoringController {
   constructor(private readonly metricsService: MetricsService) {}
 
-  @Get('slow-queries')
+  @Get("slow-queries")
   async getSlowQueries() {
     const slowQueries = await this.metricsService.getSlowQueries();
     return {
@@ -406,7 +406,7 @@ export class MonitoringController {
     };
   }
 
-  @Get('metrics')
+  @Get("metrics")
   async getMetrics() {
     const metrics = await this.metricsService.getDatabaseMetrics();
     return metrics;

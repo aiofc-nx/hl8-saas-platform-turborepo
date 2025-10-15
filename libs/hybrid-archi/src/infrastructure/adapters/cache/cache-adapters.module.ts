@@ -8,13 +8,13 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { CacheModule, CacheService } from '@hl8/cache';
-import { LoggerModule, PinoLogger } from '@hl8/logger';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { CacheModule, CacheService } from "@hl8/hybrid-archi";
+import { LoggerModule, Logger } from "@hl8/hybrid-archi";
 
-import { CacheAdapter } from './cache.adapter';
-import { CacheFactory } from './cache.factory';
-import { CacheManager } from './cache.manager';
+import { CacheAdapter } from "./cache.adapter.js";
+import { CacheFactory } from "./cache.factory.js";
+import { CacheManager } from "./cache.manager.js";
 
 /**
  * 缓存适配器模块选项
@@ -69,19 +69,19 @@ export class CacheAdaptersModule {
           enableStatistics: options.enableStatistics,
         });
       },
-      inject: [CacheService, PinoLogger, CacheFactory],
+      inject: [CacheService, Logger, CacheFactory],
     });
 
     // 根据选项动态添加提供者
     if (options.enableCache !== false) {
-      providers.push({ provide: 'ICache', useClass: CacheAdapter });
+      providers.push({ provide: "ICache", useClass: CacheAdapter });
     }
 
     return {
       module: CacheAdaptersModule,
       imports: [
         CacheModule.forRoot({ redis: {} as any }),
-        LoggerModule.forRoot({})
+        LoggerModule.forRoot({}),
       ],
       providers,
       exports: providers,
@@ -108,19 +108,19 @@ export class CacheAdaptersModule {
           enableStatistics: options.enableStatistics,
         });
       },
-      inject: [CacheService, PinoLogger, CacheFactory],
+      inject: [CacheService, Logger, CacheFactory],
     });
 
     // 根据选项动态添加提供者
     if (options.enableCache !== false) {
-      providers.push({ provide: 'ICache', useClass: CacheAdapter });
+      providers.push({ provide: "ICache", useClass: CacheAdapter });
     }
 
     return {
       module: CacheAdaptersModule,
       imports: [
         CacheModule.forRoot({ redis: {} as any }),
-        LoggerModule.forRoot({})
+        LoggerModule.forRoot({}),
       ],
       providers,
       exports: providers,

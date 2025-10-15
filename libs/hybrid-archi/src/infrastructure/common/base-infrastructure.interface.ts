@@ -8,24 +8,24 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../domain/value-objects/entity-id';
+import { EntityId } from "@hl8/isolation-model";
 
 /**
  * 基础设施服务状态
  */
 export enum InfrastructureServiceStatus {
   /** 未初始化 */
-  NOT_INITIALIZED = 'not_initialized',
+  NOT_INITIALIZED = "not_initialized",
   /** 初始化中 */
-  INITIALIZING = 'initializing',
+  INITIALIZING = "initializing",
   /** 运行中 */
-  RUNNING = 'running',
+  RUNNING = "running",
   /** 停止中 */
-  STOPPING = 'stopping',
+  STOPPING = "stopping",
   /** 已停止 */
-  STOPPED = 'stopped',
+  STOPPED = "stopped",
   /** 错误状态 */
-  ERROR = 'error',
+  ERROR = "error",
 }
 
 /**

@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { CACHE_KEYS, CacheEventType, CONFIG_DEFAULTS } from '../constants.js';
+import { CACHE_KEYS, CacheEventType, CONFIG_DEFAULTS } from "../constants.js";
 import {
   CacheEventListener,
   CacheOptions,
@@ -14,10 +14,10 @@ import {
   CacheStrategy,
   FileCacheOptions,
   MemoryCacheOptions,
-} from '../types/cache.types.js';
-import { ConfigRecord } from '../types/config.types.js';
-import { FileCacheProvider } from './file-cache.provider.js';
-import { MemoryCacheProvider } from './memory-cache.provider.js';
+} from "../types/cache.types.js";
+import { ConfigRecord } from "../types/config.types.js";
+import { FileCacheProvider } from "./file-cache.provider.js";
+import { MemoryCacheProvider } from "./memory-cache.provider.js";
 
 /**
  * 缓存管理器类
@@ -249,7 +249,7 @@ export class CacheManager {
    * @since 1.0.0
    */
   public destroy(): void {
-    if (this.provider && 'destroy' in this.provider) {
+    if (this.provider && "destroy" in this.provider) {
       (this.provider as any).destroy();
     }
     this.provider = null;
@@ -265,7 +265,7 @@ export class CacheManager {
    */
   private async initializeProvider(): Promise<void> {
     // 销毁现有提供者
-    if (this.provider && 'destroy' in this.provider) {
+    if (this.provider && "destroy" in this.provider) {
       (this.provider as any).destroy();
     }
 
@@ -283,7 +283,7 @@ export class CacheManager {
         break;
       case CacheStrategy.REDIS:
         // TODO: 实现 Redis 缓存提供者
-        throw new Error('Redis cache provider not implemented yet');
+        throw new Error("Redis cache provider not implemented yet");
       case CacheStrategy.NONE:
         this.provider = null;
         break;
@@ -311,7 +311,7 @@ export class CacheManager {
    * @since 1.0.0
    */
   private generateCacheKey(key: string): string {
-    const prefix = this.options.keyPrefix || 'config';
+    const prefix = this.options.keyPrefix || "config";
     const keyGenerator = this.options.keyGenerator;
 
     if (keyGenerator) {

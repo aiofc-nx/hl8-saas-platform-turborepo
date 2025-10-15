@@ -147,8 +147,8 @@ export class UserService {
 在子项目中创建 `eslint.config.mjs`：
 
 ```javascript
-import rootConfig from '../../eslint.config.mjs';
-import tseslint from 'typescript-eslint';
+import rootConfig from "../../eslint.config.mjs";
+import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   // 继承根配置
@@ -158,7 +158,7 @@ export default tseslint.config(
   {
     languageOptions: {
       parserOptions: {
-        project: './tsconfig.json',
+        project: "./tsconfig.json",
       },
     },
     rules: {

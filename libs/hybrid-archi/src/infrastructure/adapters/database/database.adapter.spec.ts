@@ -5,19 +5,19 @@
  * @since 1.0.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/logger';
+import { Test, TestingModule } from "@nestjs/testing";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import {
   DatabaseAdapter,
   IDatabaseConfig,
   DatabaseType,
-} from './database.adapter';
+} from "./database.adapter.js";
 
-describe('DatabaseAdapter', () => {
+describe("DatabaseAdapter", () => {
   let adapter: DatabaseAdapter;
   let mockDatabaseService: any;
-  let mockLogger: jest.Mocked<PinoLogger>;
+  let mockLogger: jest.Mocked<Logger>;
 
   beforeEach(async () => {
     const mockDatabaseServiceInstance = {
@@ -44,18 +44,18 @@ describe('DatabaseAdapter', () => {
           provide: DatabaseAdapter,
           useFactory: (
             databaseService: DatabaseService,
-            logger: PinoLogger
+            logger: FastifyLoggerService,
           ) => {
             return new DatabaseAdapter(databaseService, logger, {});
           },
-          inject: [DatabaseService, PinoLogger],
+          inject: [DatabaseService, Logger],
         },
         {
           provide: DatabaseService,
           useValue: mockDatabaseServiceInstance,
         },
         {
-          provide: PinoLogger,
+          provide: FastifyLoggerService,
           useValue: mockLoggerInstance,
         },
       ],
@@ -63,14 +63,14 @@ describe('DatabaseAdapter', () => {
 
     adapter = module.get<DatabaseAdapter>(DatabaseAdapter);
     mockDatabaseService = mockDatabaseServiceInstance;
-    mockLogger = module.get<PinoLogger>(PinoLogger) as jest.Mocked<PinoLogger>;
+    mockLogger = module.get<Logger>(Logger) as jest.Mocked<Logger>;
   });
 
-  describe('query', () => {
-    it('应该执行查询并返回结果', async () => {
-      const query = 'SELECT * FROM users WHERE id = ?';
-      const params = ['123'];
-      const expectedResult = [{ id: '123', name: 'John' }];
+  describe("query", () => {
+    it("应该执行查询并返回结果", async () => {
+      const query = "SELECT * FROM users WHERE id = ?";
+      const params = ["123"];
+      const expectedResult = [{ id: "123", name: "John" }];
 
       mockDatabaseService.query.mockResolvedValue(expectedResult);
 
@@ -80,18 +80,18 @@ describe('DatabaseAdapter', () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it('应该处理查询错误', async () => {
-      const query = 'SELECT * FROM users WHERE id = ?';
-      const params = ['123'];
-      const error = new Error('Database error');
+    it("应该处理查询错误", async () => {
+      const query = "SELECT * FROM users WHERE id = ?";
+      const params = ["123"];
+      const error = new Error("Database error");
 
       mockDatabaseService.query.mockRejectedValue(error);
 
       await expect(adapter.query(query, params)).rejects.toThrow(error);
     });
 
-    it('应该记录查询日志', async () => {
-      const query = 'SELECT * FROM users';
+    it("应该记录查询日志", async () => {
+      const query = "SELECT * FROM users";
       const params: any[] = [];
 
       mockDatabaseService.query.mockResolvedValue([]);
@@ -99,19 +99,19 @@ describe('DatabaseAdapter', () => {
       await adapter.query(query, params, { logQuery: true });
 
       expect(mockLogger.debug).toHaveBeenCalledWith(
-        expect.stringContaining('执行查询:'),
+        expect.stringContaining("执行查询:"),
         expect.objectContaining({
           query: query.substring(0, 100),
           params,
-        })
+        }),
       );
     });
   });
 
-  describe('transaction', () => {
-    it('应该执行事务', async () => {
-      const callback = jest.fn().mockResolvedValue('result');
-      const expectedResult = 'result';
+  describe("transaction", () => {
+    it("应该执行事务", async () => {
+      const callback = jest.fn().mockResolvedValue("result");
+      const expectedResult = "result";
 
       mockDatabaseService.transaction.mockResolvedValue(expectedResult);
 
@@ -119,46 +119,46 @@ describe('DatabaseAdapter', () => {
 
       expect(mockDatabaseService.transaction).toHaveBeenCalledWith(
         callback,
-        {}
+        {},
       );
       expect(result).toEqual(expectedResult);
     });
 
-    it('应该处理事务错误', async () => {
+    it("应该处理事务错误", async () => {
       const callback = jest
         .fn()
-        .mockRejectedValue(new Error('Transaction error'));
-      const error = new Error('Transaction error');
+        .mockRejectedValue(new Error("Transaction error"));
+      const error = new Error("Transaction error");
 
       mockDatabaseService.transaction.mockRejectedValue(error);
 
       await expect(adapter.transaction(callback)).rejects.toThrow(error);
     });
 
-    it('应该传递事务选项', async () => {
-      const callback = jest.fn().mockResolvedValue('result');
+    it("应该传递事务选项", async () => {
+      const callback = jest.fn().mockResolvedValue("result");
       const options = {
-        isolationLevel: 'READ_COMMITTED' as const,
+        isolationLevel: "READ_COMMITTED" as const,
         timeout: 30000,
         readOnly: false,
       };
 
-      mockDatabaseService.transaction.mockResolvedValue('result');
+      mockDatabaseService.transaction.mockResolvedValue("result");
 
       await adapter.transaction(callback, options);
 
       expect(mockDatabaseService.transaction).toHaveBeenCalledWith(
         callback,
-        options
+        options,
       );
     });
   });
 
-  describe('insert', () => {
-    it('应该插入数据', async () => {
-      const table = 'users';
-      const data = { name: 'John', email: 'john@example.com' };
-      const expectedResult = { id: '123', ...data };
+  describe("insert", () => {
+    it("应该插入数据", async () => {
+      const table = "users";
+      const data = { name: "John", email: "john@example.com" };
+      const expectedResult = { id: "123", ...data };
 
       mockDatabaseService.insert.mockResolvedValue(expectedResult);
 
@@ -168,15 +168,15 @@ describe('DatabaseAdapter', () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it('应该插入批量数据', async () => {
-      const table = 'users';
+    it("应该插入批量数据", async () => {
+      const table = "users";
       const data = [
-        { name: 'John', email: 'john@example.com' },
-        { name: 'Jane', email: 'jane@example.com' },
+        { name: "John", email: "john@example.com" },
+        { name: "Jane", email: "jane@example.com" },
       ];
       const expectedResult = [
-        { id: '123', ...data[0] },
-        { id: '124', ...data[1] },
+        { id: "123", ...data[0] },
+        { id: "124", ...data[1] },
       ];
 
       mockDatabaseService.insert.mockResolvedValue(expectedResult);
@@ -188,11 +188,11 @@ describe('DatabaseAdapter', () => {
     });
   });
 
-  describe('update', () => {
-    it('应该更新数据', async () => {
-      const table = 'users';
-      const data = { name: 'John Updated' };
-      const where = { id: '123' };
+  describe("update", () => {
+    it("应该更新数据", async () => {
+      const table = "users";
+      const data = { name: "John Updated" };
+      const where = { id: "123" };
       const expectedResult = { affectedRows: 1 };
 
       mockDatabaseService.update.mockResolvedValue(expectedResult);
@@ -202,16 +202,16 @@ describe('DatabaseAdapter', () => {
       expect(mockDatabaseService.update).toHaveBeenCalledWith(
         table,
         data,
-        where
+        where,
       );
       expect(result).toEqual(expectedResult);
     });
   });
 
-  describe('delete', () => {
-    it('应该删除数据', async () => {
-      const table = 'users';
-      const where = { id: '123' };
+  describe("delete", () => {
+    it("应该删除数据", async () => {
+      const table = "users";
+      const where = { id: "123" };
       const expectedResult = { affectedRows: 1 };
 
       mockDatabaseService.delete.mockResolvedValue(expectedResult);
@@ -223,13 +223,13 @@ describe('DatabaseAdapter', () => {
     });
   });
 
-  describe('find', () => {
-    it('应该查找数据', async () => {
-      const table = 'users';
+  describe("find", () => {
+    it("应该查找数据", async () => {
+      const table = "users";
       const where = { active: true };
       const expectedResult = [
-        { id: '123', name: 'John', active: true },
-        { id: '124', name: 'Jane', active: true },
+        { id: "123", name: "John", active: true },
+        { id: "124", name: "Jane", active: true },
       ];
 
       mockDatabaseService.find.mockResolvedValue(expectedResult);
@@ -240,9 +240,9 @@ describe('DatabaseAdapter', () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it('应该使用默认where条件', async () => {
-      const table = 'users';
-      const expectedResult = [{ id: '123', name: 'John' }];
+    it("应该使用默认where条件", async () => {
+      const table = "users";
+      const expectedResult = [{ id: "123", name: "John" }];
 
       mockDatabaseService.find.mockResolvedValue(expectedResult);
 
@@ -253,11 +253,11 @@ describe('DatabaseAdapter', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('应该查找单条数据', async () => {
-      const table = 'users';
-      const where = { id: '123' };
-      const expectedResult = { id: '123', name: 'John' };
+  describe("findOne", () => {
+    it("应该查找单条数据", async () => {
+      const table = "users";
+      const where = { id: "123" };
+      const expectedResult = { id: "123", name: "John" };
 
       mockDatabaseService.findOne.mockResolvedValue(expectedResult);
 
@@ -267,9 +267,9 @@ describe('DatabaseAdapter', () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it('应该返回null当数据不存在时', async () => {
-      const table = 'users';
-      const where = { id: 'non-existent' };
+    it("应该返回null当数据不存在时", async () => {
+      const table = "users";
+      const where = { id: "non-existent" };
 
       mockDatabaseService.findOne.mockResolvedValue(null);
 
@@ -279,9 +279,9 @@ describe('DatabaseAdapter', () => {
     });
   });
 
-  describe('count', () => {
-    it('应该计数数据', async () => {
-      const table = 'users';
+  describe("count", () => {
+    it("应该计数数据", async () => {
+      const table = "users";
       const where = { active: true };
       const expectedResult = 5;
 
@@ -293,8 +293,8 @@ describe('DatabaseAdapter', () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it('应该使用默认where条件', async () => {
-      const table = 'users';
+    it("应该使用默认where条件", async () => {
+      const table = "users";
       const expectedResult = 10;
 
       mockDatabaseService.count.mockResolvedValue(expectedResult);
@@ -306,21 +306,21 @@ describe('DatabaseAdapter', () => {
     });
   });
 
-  describe('getDatabaseStatistics', () => {
-    it('应该返回数据库统计信息', () => {
+  describe("getDatabaseStatistics", () => {
+    it("应该返回数据库统计信息", () => {
       const stats = adapter.getDatabaseStatistics();
 
-      expect(stats).toHaveProperty('totalQueries');
-      expect(stats).toHaveProperty('cachedQueries');
-      expect(stats).toHaveProperty('slowQueries');
-      expect(stats).toHaveProperty('averageQueryTime');
-      expect(stats).toHaveProperty('cacheHitRate');
-      expect(stats).toHaveProperty('slowQueryRate');
+      expect(stats).toHaveProperty("totalQueries");
+      expect(stats).toHaveProperty("cachedQueries");
+      expect(stats).toHaveProperty("slowQueries");
+      expect(stats).toHaveProperty("averageQueryTime");
+      expect(stats).toHaveProperty("cacheHitRate");
+      expect(stats).toHaveProperty("slowQueryRate");
     });
   });
 
-  describe('resetStatistics', () => {
-    it('应该重置统计信息', () => {
+  describe("resetStatistics", () => {
+    it("应该重置统计信息", () => {
       adapter.resetStatistics();
 
       const stats = adapter.getDatabaseStatistics();
@@ -331,8 +331,8 @@ describe('DatabaseAdapter', () => {
     });
   });
 
-  describe('clearQueryCache', () => {
-    it('应该清除查询缓存', () => {
+  describe("clearQueryCache", () => {
+    it("应该清除查询缓存", () => {
       adapter.clearQueryCache();
 
       // 验证缓存已清除（通过统计信息验证）

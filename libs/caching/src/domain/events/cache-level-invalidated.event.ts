@@ -25,7 +25,7 @@
  * @since 1.0.0
  */
 
-import { CacheLevel } from '../../types/cache-level.enum.js';
+import { CacheLevel } from "../../types/cache-level.enum.js";
 
 export class CacheLevelInvalidatedEvent {
   /** 事件发生时间 */
@@ -53,7 +53,7 @@ export class CacheLevelInvalidatedEvent {
    * @returns 事件名称
    */
   getEventName(): string {
-    return 'cache.level.invalidated';
+    return "cache.level.invalidated";
   }
 
   /**

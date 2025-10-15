@@ -11,12 +11,14 @@
 ## 前置条件
 
 ### 系统要求
+
 - Node.js >= 20
 - pnpm 10.11.0
 - TypeScript 5.9.2
 - Git
 
 ### 环境设置
+
 ```bash
 # 克隆项目
 git clone https://github.com/hl8/hl8-saas-platform-turborepo.git
@@ -53,6 +55,7 @@ pnpm build
 ### 基础设施模块
 
 新的基础设施模块包括：
+
 - `@hl8/database`: 数据库操作和 ORM 支持
 - `@hl8/caching`: 缓存管理和策略
 - `@hl8/nestjs-fastify/logging`: 基于 NestJS 和 Fastify 的日志服务
@@ -137,7 +140,7 @@ curl -X PUT https://api.hl8.com/v1/modules/saas-core/dependencies \
     "moduleName": "saas-core",
     "oldDependencies": [
       "@hl8/database",
-      "@hl8/cache", 
+      "@hl8/cache",
       "@hl8/logger",
       "@hl8/multi-tenancy"
     ],
@@ -183,32 +186,32 @@ curl -X POST https://api.hl8.com/v1/refactoring/validate \
 #### CommonJS 到 NodeNext 迁移示例
 
 **迁移前（CommonJS）**：
+
 ```typescript
 // 旧的 CommonJS 语法
-const { BaseEntity } = require('@hl8/hybrid-archi');
-const { UserService } = require('./user.service');
-const { DatabaseConfig } = require('./config/database');
+const { BaseEntity } = require("@hl8/hybrid-archi");
+const { UserService } = require("./user.service");
+const { DatabaseConfig } = require("./config/database");
 
 module.exports = {
   UserController,
-  UserService
+  UserService,
 };
 ```
 
 **迁移后（NodeNext）**：
+
 ```typescript
 // 新的 ES 模块语法
-import { BaseEntity, EntityId } from '@hl8/hybrid-archi';
-import { UserService } from './user.service.js';
-import { DatabaseConfig } from './config/database.js';
+import { BaseEntity, EntityId } from "@hl8/hybrid-archi";
+import { UserService } from "./user.service.js";
+import { DatabaseConfig } from "./config/database.js";
 
-export {
-  UserController,
-  UserService
-};
+export { UserController, UserService };
 ```
 
 **package.json 配置更新**：
+
 ```json
 {
   "name": "@hl8/hybrid-archi",
@@ -226,6 +229,7 @@ export {
 ```
 
 **tsconfig.json 配置更新**：
+
 ```json
 {
   "extends": "@repo/ts-config/nestjs.json",
@@ -248,12 +252,12 @@ import {
   QueryBus,
   EntityId,
   Email,
-  Username
-} from '@hl8/hybrid-archi';
+  Username,
+} from "@hl8/hybrid-archi";
 
 /**
  * 用户聚合根示例
- * 
+ *
  * @description 演示如何使用 hybrid-archi 的基础组件
  * 创建符合 DDD 和 Clean Architecture 的用户聚合根
  */
@@ -262,14 +266,14 @@ export class UserAggregate extends BaseAggregateRoot {
     id: EntityId,
     private username: Username,
     private email: Email,
-    auditInfo: IPartialAuditInfo
+    auditInfo: IPartialAuditInfo,
   ) {
     super(id, auditInfo);
   }
 
   /**
    * 创建用户聚合根
-   * 
+   *
    * @param username 用户名
    * @param email 邮箱地址
    * @param auditInfo 审计信息
@@ -278,25 +282,25 @@ export class UserAggregate extends BaseAggregateRoot {
   public static create(
     username: string,
     email: string,
-    auditInfo: IPartialAuditInfo
+    auditInfo: IPartialAuditInfo,
   ): UserAggregate {
     const id = EntityId.generate();
     const usernameVO = Username.create(username);
     const emailVO = Email.create(email);
-    
+
     return new UserAggregate(id, usernameVO, emailVO, auditInfo);
   }
 
   /**
    * 更新用户邮箱
-   * 
+   *
    * @param newEmail 新邮箱地址
    */
   public updateEmail(newEmail: string): void {
     const emailVO = Email.create(newEmail);
     this.email = emailVO;
     this.updateTimestamp();
-    
+
     // 发布领域事件
     this.addDomainEvent(new UserEmailUpdatedEvent(this.id, emailVO));
   }
@@ -311,12 +315,12 @@ import {
   OrganizationIsolation,
   DepartmentIsolation,
   UserIsolation,
-  AccessContext
-} from '@hl8/isolation-model';
+  AccessContext,
+} from "@hl8/isolation-model/index.js";
 
 /**
  * 数据隔离服务示例
- * 
+ *
  * @description 演示如何使用 isolation-model 实现多层级数据隔离
  */
 export class DataIsolationService {
@@ -324,12 +328,12 @@ export class DataIsolationService {
     private readonly tenantIsolation: TenantIsolation,
     private readonly organizationIsolation: OrganizationIsolation,
     private readonly departmentIsolation: DepartmentIsolation,
-    private readonly userIsolation: UserIsolation
+    private readonly userIsolation: UserIsolation,
   ) {}
 
   /**
    * 创建访问上下文
-   * 
+   *
    * @param tenantId 租户ID
    * @param organizationId 组织ID
    * @param departmentId 部门ID
@@ -340,21 +344,21 @@ export class DataIsolationService {
     tenantId: string,
     organizationId: string,
     departmentId: string,
-    userId: string
+    userId: string,
   ): AccessContext {
     return new AccessContext({
       tenantId,
       organizationId,
       departmentId,
       userId,
-      isolationLevel: 'department', // 部门级隔离
-      accessPermissions: ['read', 'write']
+      isolationLevel: "department", // 部门级隔离
+      accessPermissions: ["read", "write"],
     });
   }
 
   /**
    * 验证数据访问权限
-   * 
+   *
    * @param context 访问上下文
    * @param resourceId 资源ID
    * @returns 是否允许访问
@@ -375,12 +379,12 @@ import {
   OrganizationAggregate,
   DepartmentAggregate,
   RoleAggregate,
-  PermissionAggregate
-} from '@hl8/saas-core';
+  PermissionAggregate,
+} from "@hl8/saas-core";
 
 /**
  * SAAS 业务服务示例
- * 
+ *
  * @description 演示如何使用 saas-core 的业务组件
  * 实现完整的 SAAS 平台业务逻辑
  */
@@ -388,16 +392,18 @@ export class SaasBusinessService {
   constructor(
     private readonly tenantRepository: ITenantRepository,
     private readonly userRepository: IUserRepository,
-    private readonly organizationRepository: IOrganizationRepository
+    private readonly organizationRepository: IOrganizationRepository,
   ) {}
 
   /**
    * 创建租户
-   * 
+   *
    * @param tenantData 租户数据
    * @returns 租户聚合根
    */
-  public async createTenant(tenantData: CreateTenantDto): Promise<TenantAggregate> {
+  public async createTenant(
+    tenantData: CreateTenantDto,
+  ): Promise<TenantAggregate> {
     // 使用 saas-core 的租户聚合根
     const tenant = TenantAggregate.create(
       EntityId.generate(),
@@ -405,23 +411,26 @@ export class SaasBusinessService {
       tenantData.name,
       TenantDomain.create(tenantData.domain),
       TenantType[tenantData.type],
-      { createdBy: tenantData.createdBy }
+      { createdBy: tenantData.createdBy },
     );
 
     // 持久化到数据库
     await this.tenantRepository.save(tenant);
-    
+
     return tenant;
   }
 
   /**
    * 创建用户
-   * 
+   *
    * @param userData 用户数据
    * @param tenantId 租户ID
    * @returns 用户聚合根
    */
-  public async createUser(userData: CreateUserDto, tenantId: string): Promise<UserAggregate> {
+  public async createUser(
+    userData: CreateUserDto,
+    tenantId: string,
+  ): Promise<UserAggregate> {
     // 使用 hybrid-archi 的基础组件和 saas-core 的业务组件
     const user = UserAggregate.create(
       EntityId.generate(),
@@ -430,12 +439,12 @@ export class SaasBusinessService {
       PhoneNumber.create(userData.phoneNumber),
       userData.passwordHash,
       userData.passwordSalt,
-      { createdBy: userData.createdBy, tenantId }
+      { createdBy: userData.createdBy, tenantId },
     );
 
     // 持久化到数据库
     await this.userRepository.save(user);
-    
+
     return user;
   }
 }
@@ -467,36 +476,36 @@ pnpm test:coverage
 ### 测试示例
 
 ```typescript
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserAggregate } from '@hl8/saas-core';
-import { EntityId, Username, Email } from '@hl8/hybrid-archi';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UserAggregate } from "@hl8/saas-core";
+import { EntityId, Username, Email } from "@hl8/hybrid-archi";
 
-describe('UserAggregate', () => {
+describe("UserAggregate", () => {
   let user: UserAggregate;
 
   beforeEach(() => {
     const id = EntityId.generate();
-    const username = Username.create('testuser');
-    const email = Email.create('test@example.com');
-    
+    const username = Username.create("testuser");
+    const email = Email.create("test@example.com");
+
     user = UserAggregate.create(id, username, email, {
-      createdBy: 'system',
-      createdAt: new Date()
+      createdBy: "system",
+      createdAt: new Date(),
     });
   });
 
-  it('应该正确创建用户聚合根', () => {
+  it("应该正确创建用户聚合根", () => {
     expect(user).toBeDefined();
     expect(user.getId()).toBeDefined();
-    expect(user.getUsername().getValue()).toBe('testuser');
-    expect(user.getEmail().getValue()).toBe('test@example.com');
+    expect(user.getUsername().getValue()).toBe("testuser");
+    expect(user.getEmail().getValue()).toBe("test@example.com");
   });
 
-  it('应该能够更新用户邮箱', () => {
-    const newEmail = 'newemail@example.com';
-    
+  it("应该能够更新用户邮箱", () => {
+    const newEmail = "newemail@example.com";
+
     user.updateEmail(newEmail);
-    
+
     expect(user.getEmail().getValue()).toBe(newEmail);
     expect(user.getDomainEvents()).toHaveLength(1);
   });
@@ -543,28 +552,31 @@ pnpm monitor:report
 ### 常见问题
 
 1. **模块依赖冲突**
+
    ```bash
    # 检查依赖冲突
    pnpm list --depth=0
-   
+
    # 解决依赖冲突
    pnpm install --force
    ```
 
 2. **测试失败**
+
    ```bash
    # 运行特定测试
    pnpm test --testNamePattern="UserAggregate"
-   
+
    # 查看详细错误信息
    pnpm test --verbose
    ```
 
 3. **构建失败**
+
    ```bash
    # 清理构建缓存
    pnpm clean
-   
+
    # 重新构建
    pnpm build
    ```

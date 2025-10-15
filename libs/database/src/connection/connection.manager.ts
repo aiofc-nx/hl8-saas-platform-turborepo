@@ -39,16 +39,16 @@
  * @since 1.0.0
  */
 
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { MikroORM } from '@mikro-orm/core';
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { CONNECTION_DEFAULTS } from '../constants/defaults.js';
-import { DatabaseConnectionException } from '../exceptions/database-connection.exception.js';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { MikroORM } from "@mikro-orm/core";
+import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import { CONNECTION_DEFAULTS } from "../constants/defaults.js";
+import { DatabaseConnectionException } from "../exceptions/database-connection.exception.js";
 import {
   ConnectionStatus,
   type ConnectionInfo,
   type PoolStats,
-} from '../types/connection.types.js';
+} from "../types/connection.types.js";
 
 @Injectable()
 export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
@@ -61,7 +61,7 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
     private readonly orm: MikroORM,
     private readonly logger: FastifyLoggerService,
   ) {
-    this.logger.log('ConnectionManager 初始化');
+    this.logger.log("ConnectionManager 初始化");
   }
 
   /**
@@ -70,7 +70,7 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
    * @description 应用启动时自动建立数据库连接
    */
   async onModuleInit(): Promise<void> {
-    this.logger.log('正在建立数据库连接...');
+    this.logger.log("正在建立数据库连接...");
     await this.connect();
   }
 
@@ -80,7 +80,7 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
    * @description 应用关闭时优雅关闭数据库连接
    */
   async onModuleDestroy(): Promise<void> {
-    this.logger.log('正在关闭数据库连接...');
+    this.logger.log("正在关闭数据库连接...");
     await this.disconnect();
   }
 
@@ -108,14 +108,14 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
       this.lastActivityAt = new Date();
       this.reconnectAttempts = 0;
 
-      this.logger.log('数据库连接成功', {
+      this.logger.log("数据库连接成功", {
         host: this.getConnectionConfig().host,
         database: this.getConnectionConfig().database,
         connectedAt: this.connectedAt,
       });
     } catch (error) {
       this.connectionStatus = ConnectionStatus.FAILED;
-      this.logger.error('数据库连接失败', (error as Error).stack);
+      this.logger.error("数据库连接失败", (error as Error).stack);
 
       // 尝试重连
       if (this.reconnectAttempts < CONNECTION_DEFAULTS.MAX_RECONNECT_ATTEMPTS) {
@@ -149,7 +149,7 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
       await this.sleep(100);
     }
 
-    throw new Error('等待连接超时');
+    throw new Error("等待连接超时");
   }
 
   /**
@@ -190,11 +190,11 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
       if (await this.orm.isConnected()) {
         await this.orm.close(true); // force close
         this.connectionStatus = ConnectionStatus.DISCONNECTED;
-        this.logger.log('数据库连接已关闭');
+        this.logger.log("数据库连接已关闭");
       }
     } catch (error) {
-      this.logger.error('关闭数据库连接时发生错误', (error as Error).stack);
-      throw new DatabaseConnectionException('关闭数据库连接失败');
+      this.logger.error("关闭数据库连接时发生错误", (error as Error).stack);
+      throw new DatabaseConnectionException("关闭数据库连接失败");
     }
   }
 
@@ -279,10 +279,10 @@ export class ConnectionManager implements OnModuleInit, OnModuleDestroy {
   private getConnectionConfig() {
     const config = this.orm.config as any;
     return {
-      type: config.get('type'),
-      host: config.get('host'),
-      port: config.get('port'),
-      database: config.get('dbName'),
+      type: config.get("type"),
+      host: config.get("host"),
+      port: config.get("port"),
+      database: config.get("dbName"),
     };
   }
 

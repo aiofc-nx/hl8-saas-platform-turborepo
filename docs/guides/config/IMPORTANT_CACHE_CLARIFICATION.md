@@ -125,7 +125,7 @@
 {
   "dependencies": {
     "ioredis": "^5.4.2",
-    "@hl8/isolation-model": "workspace:*"
+    "@hl8/isolation-model/index.js": "workspace:*"
     // ...
     // ❌ 没有 @hl8/config
   }

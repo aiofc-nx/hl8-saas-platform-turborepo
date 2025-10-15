@@ -2,10 +2,10 @@
  * @fileoverview MetricsController 单元测试
  */
 
-import { MetricsController } from './metrics.controller';
-import { MetricsService } from './metrics.service';
+import { MetricsController } from "./metrics.controller";
+import { MetricsService } from "./metrics.service";
 
-describe('MetricsController', () => {
+describe("MetricsController", () => {
   let controller: MetricsController;
   let metricsService: MetricsService;
 
@@ -23,13 +23,13 @@ describe('MetricsController', () => {
     controller = new MetricsController(metricsService);
   });
 
-  describe('getMetrics()', () => {
-    it('应该返回 Prometheus 格式的指标', async () => {
+  describe("getMetrics()", () => {
+    it("应该返回 Prometheus 格式的指标", async () => {
       const metrics = await controller.getMetrics();
 
       expect(metrics).toBeDefined();
-      expect(typeof metrics).toBe('string');
-      expect(metrics).toContain('http_requests_total');
+      expect(typeof metrics).toBe("string");
+      expect(metrics).toContain("http_requests_total");
       expect((metricsService as any).getMetricsCalls.length).toBeGreaterThan(0); // eslint-disable-line @typescript-eslint/no-explicit-any
     });
   });

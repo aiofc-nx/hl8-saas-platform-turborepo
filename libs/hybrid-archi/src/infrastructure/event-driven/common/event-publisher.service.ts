@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { DomainEvent } from '../../../domain';
-import { IEventBus } from './event-bus.interface';
+import { Injectable } from "@nestjs/common";
+import { DomainEvent } from "../../../domain.js";
+import { IEventBus } from "./event-bus.interface.js";
 
 /**
  * 事件发布服务
@@ -42,7 +42,7 @@ export class EventPublisherService {
    */
   async publishUncommittedEvents(
     aggregateId: string,
-    events: any[]
+    events: any[],
   ): Promise<void> {
     if (!events || events.length === 0) {
       return;
@@ -157,7 +157,7 @@ export class EventPublisherService {
         lastEventProcessed: busStats.lastEventProcessed,
       };
     } catch (error) {
-      console.error('获取发布统计信息失败:', error);
+      console.error("获取发布统计信息失败:", error);
       throw error;
     }
   }
@@ -172,7 +172,7 @@ export class EventPublisherService {
     try {
       return await this.eventBus.isConnected();
     } catch (error) {
-      console.error('检查发布服务状态失败:', error);
+      console.error("检查发布服务状态失败:", error);
       return false;
     }
   }

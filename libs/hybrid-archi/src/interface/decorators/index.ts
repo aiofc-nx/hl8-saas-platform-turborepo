@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const INTERFACE_DECORATORS = 'Interface Decorators System';
+export const INTERFACE_DECORATORS = "Interface Decorators System";

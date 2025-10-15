@@ -42,7 +42,7 @@
  * @since 1.0.0
  */
 
-import type { CacheKey } from './cache-key.vo.js';
+import type { CacheKey } from "./cache-key.vo.js";
 
 /**
  * 日志服务接口（临时定义，后续会从 nestjs-infra 导入）
@@ -62,7 +62,7 @@ interface ILoggerService {
 class GeneralBadRequestException extends Error {
   constructor(message: string, detail?: string, context?: Record<string, any>) {
     super(detail || message);
-    this.name = 'GeneralBadRequestException';
+    this.name = "GeneralBadRequestException";
   }
 }
 
@@ -74,7 +74,7 @@ class GeneralInternalServerException extends Error {
     cause?: Error,
   ) {
     super(detail || message);
-    this.name = 'GeneralInternalServerException';
+    this.name = "GeneralInternalServerException";
     if (cause) {
       this.cause = cause;
     }
@@ -114,7 +114,7 @@ export class CacheEntry<T = any> {
   ) {
     this.validateTTL();
     this.serializedValue = this.serialize();
-    this.size = Buffer.byteLength(this.serializedValue, 'utf-8');
+    this.size = Buffer.byteLength(this.serializedValue, "utf-8");
     this.validateSize();
   }
 
@@ -150,7 +150,7 @@ export class CacheEntry<T = any> {
 
     // 记录警告（如果值过大）
     if (logger && entry.size > CacheEntry.WARN_SIZE) {
-      logger.warn('缓存值较大', {
+      logger.warn("缓存值较大", {
         key: key.toString(),
         size: entry.size,
         threshold: CacheEntry.WARN_SIZE,
@@ -168,14 +168,14 @@ export class CacheEntry<T = any> {
    */
   private validateTTL(): void {
     if (this.ttl < 0) {
-      throw new GeneralBadRequestException('TTL 无效', 'TTL 不能为负数', {
+      throw new GeneralBadRequestException("TTL 无效", "TTL 不能为负数", {
         ttl: this.ttl,
       });
     }
 
     if (this.ttl > CacheEntry.MAX_TTL) {
       throw new GeneralBadRequestException(
-        'TTL 过大',
+        "TTL 过大",
         `TTL 不能超过 ${CacheEntry.MAX_TTL} 秒（30 天）`,
         { ttl: this.ttl, max: CacheEntry.MAX_TTL },
       );
@@ -194,8 +194,8 @@ export class CacheEntry<T = any> {
       return JSON.stringify(this.value, this.getReplacer());
     } catch (error) {
       throw new GeneralInternalServerException(
-        '缓存值序列化失败',
-        '无法序列化缓存值',
+        "缓存值序列化失败",
+        "无法序列化缓存值",
         { key: this.key.toString() },
         error instanceof Error ? error : undefined,
       );
@@ -223,25 +223,25 @@ export class CacheEntry<T = any> {
 
     return (key: string, value: any) => {
       // 处理循环引用
-      if (typeof value === 'object' && value !== null) {
+      if (typeof value === "object" && value !== null) {
         if (seen.has(value)) {
-          return '[Circular]';
+          return "[Circular]";
         }
         seen.add(value);
       }
 
       // 处理特殊类型
       if (value instanceof Date) {
-        return { __type: 'Date', value: value.toISOString() };
+        return { __type: "Date", value: value.toISOString() };
       }
       if (value instanceof Set) {
-        return { __type: 'Set', value: Array.from(value) };
+        return { __type: "Set", value: Array.from(value) };
       }
       if (value instanceof Map) {
-        return { __type: 'Map', value: Array.from(value.entries()) };
+        return { __type: "Map", value: Array.from(value.entries()) };
       }
       if (Buffer.isBuffer(value)) {
-        return { __type: 'Buffer', value: value.toString('base64') };
+        return { __type: "Buffer", value: value.toString("base64") };
       }
 
       return value;
@@ -257,7 +257,7 @@ export class CacheEntry<T = any> {
   private validateSize(): void {
     if (this.size > CacheEntry.MAX_SIZE) {
       throw new GeneralBadRequestException(
-        '缓存值过大',
+        "缓存值过大",
         `缓存值不能超过 ${CacheEntry.MAX_SIZE} 字节（1MB）`,
         {
           key: this.key.toString(),

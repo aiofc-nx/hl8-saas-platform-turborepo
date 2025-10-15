@@ -1,16 +1,16 @@
-import type { Config } from 'jest';
+import type { Config } from "jest";
 
 const config: Config = {
-  preset: 'ts-jest/presets/default-esm',
-  testEnvironment: 'node',
-  roots: ['<rootDir>/src'],
-  testMatch: ['<rootDir>/src/**/*.spec.ts', '<rootDir>/src/**/*.test.ts'],
+  preset: "ts-jest/presets/default-esm",
+  testEnvironment: "node",
+  roots: ["<rootDir>/src"],
+  testMatch: ["<rootDir>/src/**/*.spec.ts", "<rootDir>/src/**/*.test.ts"],
   collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.spec.ts',
-    '!src/**/*.test.ts',
-    '!src/index.ts',
-    '!src/**/index.ts',
+    "src/**/*.ts",
+    "!src/**/*.spec.ts",
+    "!src/**/*.test.ts",
+    "!src/index.ts",
+    "!src/**/index.ts",
   ],
   coverageThreshold: {
     global: {
@@ -21,23 +21,23 @@ const config: Config = {
     },
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '^(\\.{1,2}/.*)\\.js$': '$1',
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest',
+    "^.+\\.tsx?$": [
+      "ts-jest",
       {
         useESM: true,
         tsconfig: {
-          module: 'ESNext',
-          moduleResolution: 'node',
+          module: "ESNext",
+          moduleResolution: "node",
         },
       },
     ],
   },
-  extensionsToTreatAsEsm: ['.ts'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  extensionsToTreatAsEsm: [".ts"],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 };
 
 export default config;

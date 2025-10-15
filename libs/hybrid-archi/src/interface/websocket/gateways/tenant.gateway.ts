@@ -45,13 +45,13 @@
  * @since 1.0.0
  */
 
-import {
+import type {
   ILoggerService,
   IMetricsService,
   IWebSocketClient,
   IWebSocketContext,
-} from '../../shared/interfaces';
-import { BaseGateway } from './base-gateway';
+} from "../../shared/interfaces.js";
+import { BaseGateway } from "./base-gateway.js";
 import {
   SubscribeMessage,
   RequireRoles,
@@ -60,12 +60,12 @@ import {
   MonitorPerformance,
   MessageBody,
   WebSocketContext,
-} from '../decorators';
+} from "../decorators.js";
 import {
   IWebSocketMessage,
   IWebSocketResponse,
   WebSocketUtils,
-} from '../utils';
+} from "../utils.js";
 
 /**
  * 获取租户信息消息
@@ -73,7 +73,7 @@ import {
  * @description 定义获取租户信息的消息格式
  */
 export interface GetTenantInfoMessage extends IWebSocketMessage {
-  type: 'getTenantInfo';
+  type: "getTenantInfo";
   data: {
     tenantId: string;
   };
@@ -87,8 +87,8 @@ export interface GetTenantInfoMessage extends IWebSocketMessage {
 export interface TenantInfoData {
   id: string;
   name: string;
-  type: 'enterprise' | 'community' | 'team' | 'personal';
-  status: 'active' | 'inactive' | 'suspended' | 'pending';
+  type: "enterprise" | "community" | "team" | "personal";
+  status: "active" | "inactive" | "suspended" | "pending";
   createdAt: Date;
   updatedAt: Date;
   settings: {
@@ -110,7 +110,7 @@ export interface TenantInfoData {
  * @description 定义更新租户配置的消息格式
  */
 export interface UpdateTenantConfigMessage extends IWebSocketMessage {
-  type: 'updateTenantConfig';
+  type: "updateTenantConfig";
   data: {
     tenantId: string;
     config: {
@@ -127,10 +127,7 @@ export interface UpdateTenantConfigMessage extends IWebSocketMessage {
  * @description 提供租户相关的WebSocket功能
  */
 export class TenantGateway extends BaseGateway {
-  constructor(
-    logger: ILoggerService,
-    metricsService?: IMetricsService
-  ) {
+  constructor(logger: ILoggerService, metricsService?: IMetricsService) {
     super(logger, metricsService);
   }
 
@@ -143,43 +140,46 @@ export class TenantGateway extends BaseGateway {
    * @param context - WebSocket上下文
    * @returns 租户信息响应
    */
-  @SubscribeMessage('getTenantInfo')
-  @RequireRoles({ roles: ['tenant_admin', 'admin'] })
-  @RequireWebSocketPermissions({ permissions: ['tenant:read'] })
-  @ValidateMessage({ messageType: Object as unknown as new () => GetTenantInfoMessage })
+  @SubscribeMessage("getTenantInfo")
+  @RequireRoles({ roles: ["tenant_admin", "admin"] })
+  @RequireWebSocketPermissions({ permissions: ["tenant:read"] })
+  @ValidateMessage({
+    messageType: Object as unknown as new () => GetTenantInfoMessage,
+  })
   @MonitorPerformance({ threshold: 2000 })
   async handleGetTenantInfo(
     @MessageBody() data: GetTenantInfoMessage,
-    @WebSocketContext() context: IWebSocketContext
+    @WebSocketContext() context: IWebSocketContext,
   ): Promise<IWebSocketResponse<TenantInfoData>> {
-    return this.handleMessage(
-      async () => {
-        // 这里应该调用租户服务获取租户信息
-        // 实际实现中会调用GetTenantInfoUseCase
-        const tenantInfo: TenantInfoData = {
-          id: data.data.tenantId,
-          name: '示例租户',
-          type: 'enterprise',
-          status: 'active',
-          createdAt: new Date('2024-01-01'),
-          updatedAt: new Date(),
-          settings: {
-            maxUsers: 1000,
-            maxStorage: 100 * 1024 * 1024 * 1024, // 100GB
-            features: ['user_management', 'analytics', 'api_access'],
-          },
-          statistics: {
-            totalUsers: 150,
-            activeUsers: 120,
-            totalStorage: 100 * 1024 * 1024 * 1024,
-            usedStorage: 25 * 1024 * 1024 * 1024, // 25GB
-          },
-        };
+    return this.handleMessage(async () => {
+      // 这里应该调用租户服务获取租户信息
+      // 实际实现中会调用GetTenantInfoUseCase
+      const tenantInfo: TenantInfoData = {
+        id: data.data.tenantId,
+        name: "示例租户",
+        type: "enterprise",
+        status: "active",
+        createdAt: new Date("2024-01-01"),
+        updatedAt: new Date(),
+        settings: {
+          maxUsers: 1000,
+          maxStorage: 100 * 1024 * 1024 * 1024, // 100GB
+          features: ["user_management", "analytics", "api_access"],
+        },
+        statistics: {
+          totalUsers: 150,
+          activeUsers: 120,
+          totalStorage: 100 * 1024 * 1024 * 1024,
+          usedStorage: 25 * 1024 * 1024 * 1024, // 25GB
+        },
+      };
 
-        return WebSocketUtils.createSuccessResponse(tenantInfo, context.requestId, context.correlationId);
-      },
-      'getTenantInfo'
-    );
+      return WebSocketUtils.createSuccessResponse(
+        tenantInfo,
+        context.requestId,
+        context.correlationId,
+      );
+    }, "getTenantInfo");
   }
 
   /**
@@ -191,34 +191,29 @@ export class TenantGateway extends BaseGateway {
    * @param context - WebSocket上下文
    * @returns 更新结果响应
    */
-  @SubscribeMessage('updateTenantConfig')
-  @RequireRoles({ roles: ['tenant_admin', 'admin'] })
-  @RequireWebSocketPermissions({ permissions: ['tenant:write'] })
-  @ValidateMessage({ messageType: Object as unknown as new () => UpdateTenantConfigMessage })
+  @SubscribeMessage("updateTenantConfig")
+  @RequireRoles({ roles: ["tenant_admin", "admin"] })
+  @RequireWebSocketPermissions({ permissions: ["tenant:write"] })
+  @ValidateMessage({
+    messageType: Object as unknown as new () => UpdateTenantConfigMessage,
+  })
   @MonitorPerformance({ threshold: 1500 })
   async handleUpdateTenantConfig(
     @MessageBody() data: UpdateTenantConfigMessage,
-    @WebSocketContext() context: IWebSocketContext
+    @WebSocketContext() context: IWebSocketContext,
   ): Promise<IWebSocketResponse<{ success: boolean }>> {
-    return this.handleMessage(
-      async () => {
-        // 这里应该调用租户服务更新租户配置
-        // 实际实现中会调用UpdateTenantConfigUseCase
-        
-        this.logger.info('租户配置更新', {
-          tenantId: data.data.tenantId,
-          config: data.data.config,
-          updatedBy: context.userId,
-        });
+    return this.handleMessage(async () => {
+      // 这里应该调用租户服务更新租户配置
+      // 实际实现中会调用UpdateTenantConfigUseCase
 
-        return WebSocketUtils.createSuccessResponse(
-          { success: true },
-          context.requestId,
-          context.correlationId
-        );
-      },
-      'updateTenantConfig'
-    );
+      this.logger.log("租户配置更新");
+
+      return WebSocketUtils.createSuccessResponse(
+        { success: true },
+        context.requestId,
+        context.correlationId,
+      );
+    }, "updateTenantConfig");
   }
 
   /**
@@ -230,16 +225,13 @@ export class TenantGateway extends BaseGateway {
    */
   async handleConnection(client: IWebSocketClient): Promise<void> {
     const isAuthenticated = await this.authenticateConnection(client);
-    
+
     if (!isAuthenticated) {
       client.disconnect(true);
       return;
     }
 
-    this.logger.info('租户WebSocket连接建立', {
-      clientId: client.id,
-      tenantId: client.id, // 这里应该从认证信息中获取
-    });
+    this.logger.log("租户WebSocket连接建立");
   }
 
   /**
@@ -251,9 +243,7 @@ export class TenantGateway extends BaseGateway {
    */
   override handleDisconnection(client: IWebSocketClient): void {
     this.handleDisconnection(client);
-    
-    this.logger.info('租户WebSocket连接断开', {
-      clientId: client.id,
-    });
+
+    this.logger.log("租户WebSocket连接断开");
   }
 }

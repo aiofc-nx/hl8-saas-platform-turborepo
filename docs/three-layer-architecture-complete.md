@@ -110,17 +110,17 @@ import {
   EnterpriseFastifyAdapter,
   FastifyExceptionModule,
   FastifyLoggingModule,
-} from '@hl8/nestjs-fastify';
+} from "@hl8/nestjs-fastify/index.js";
 
 // ✅ NestJS 通用
 import {
   CachingModule,
   IsolationModule,
   TypedConfigModule,
-} from '@hl8/nestjs-infra';
+} from "@hl8/nestjs-infra";
 
 // ✅ 核心业务
-import { EntityId, IsolationContext, IsolationLevel } from '@hl8/platform';
+import { EntityId, IsolationContext, IsolationLevel } from "@hl8/platform";
 ```
 
 **无重新导出**:
@@ -242,7 +242,7 @@ sed -i "s|from '\.\./\.\./shared/|from '@hl8/platform'|g" src/**/*.ts
 ```typescript
 // 添加运行时类型检查
 const reply = response as any;
-if (typeof reply.code === 'function') {
+if (typeof reply.code === "function") {
   reply.code(status); // Fastify
 } else {
   reply.status(status); // 降级
@@ -360,7 +360,7 @@ libs/nestjs-infra (单体模块)
 const adapter = new EnterpriseFastifyAdapter({
   enablePerformanceMonitoring: true,
   enableSecurity: true,
-  enableRateLimit: process.env.NODE_ENV === 'production',
+  enableRateLimit: process.env.NODE_ENV === "production",
 });
 ```
 

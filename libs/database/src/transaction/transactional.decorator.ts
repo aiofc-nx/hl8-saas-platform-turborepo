@@ -42,7 +42,7 @@
  * @since 1.0.0
  */
 
-import type { TransactionOptions } from '../types/transaction.types.js';
+import type { TransactionOptions } from "../types/transaction.types.js";
 
 /**
  * 事务装饰器

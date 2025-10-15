@@ -13,13 +13,13 @@
  * @since 0.1.0
  */
 
-import { ConfigValidator } from '@hl8/config';
-import { IsolationContextService } from '@hl8/nestjs-isolation/index.js';
-import { DynamicModule, Global, Module } from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
-import pino from 'pino';
-import { LoggingConfig } from '../config/logging.config.js';
-import { FastifyLoggerService } from './fastify-logger.service.js';
+import { ConfigValidator } from "@hl8/config";
+import { IsolationContextService } from "@hl8/nestjs-isolation";
+import { DynamicModule, Global, Module } from "@nestjs/common";
+import { HttpAdapterHost } from "@nestjs/core";
+import pino from "pino";
+import { LoggingConfig } from "../config/logging.config.js";
+import { FastifyLoggerService } from "./fastify-logger.service.js";
 
 /**
  * 日志模块选项
@@ -90,7 +90,7 @@ export class FastifyLoggingModule {
             // 如果日志被禁用，返回静默日志实例
             if (!config.enabled) {
               return new FastifyLoggerService(
-                pino({ level: 'silent' }),
+                pino({ level: "silent" }),
                 isolationService,
               );
             }
@@ -101,8 +101,8 @@ export class FastifyLoggingModule {
 
             if (!fastifyInstance?.log) {
               throw new Error(
-                '无法获取 Fastify 实例。@hl8/nestjs-fastify 必须与 FastifyAdapter 一起使用。' +
-                  '请确保在 main.ts 中使用了 FastifyAdapter 或 EnterpriseFastifyAdapter。',
+                "无法获取 Fastify 实例。@hl8/nestjs-fastify 必须与 FastifyAdapter 一起使用。" +
+                  "请确保在 main.ts 中使用了 FastifyAdapter 或 EnterpriseFastifyAdapter。",
               );
             }
 

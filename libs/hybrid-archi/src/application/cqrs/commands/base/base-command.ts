@@ -62,9 +62,11 @@
  *
  * @since 1.0.0
  */
-import { EntityId } from '../../../../domain/value-objects/entity-id';
+import { EntityId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model";
+import { ICommand, ICommandValidationResult } from "./command.interface.js.js";
 
-export abstract class BaseCommand {
+export abstract class BaseCommand implements ICommand {
   private readonly _commandId: EntityId;
   private readonly _tenantId: string;
   private readonly _userId: string;
@@ -86,41 +88,23 @@ export abstract class BaseCommand {
     commandVersion = 1,
     metadata: Record<string, unknown> = {},
   ) {
-    this._commandId = EntityId.generate();
+    this._commandId = TenantId.generate();
     this._tenantId = tenantId;
     this._userId = userId;
     this._createdAt = new Date();
     this._commandVersion = commandVersion;
     this._metadata = { ...metadata };
 
-    this.validate();
+    this.validateInternal();
   }
 
   /**
-   * 获取命令标识符
+   * 获取命令标识符（EntityId 类型）
    *
    * @returns 命令唯一标识符
    */
-  public get commandId(): EntityId {
+  public get commandIdEntity(): EntityId {
     return this._commandId;
-  }
-
-  /**
-   * 获取租户标识符
-   *
-   * @returns 租户标识符
-   */
-  public get tenantId(): string {
-    return this._tenantId;
-  }
-
-  /**
-   * 获取用户标识符
-   *
-   * @returns 用户标识符
-   */
-  public get userId(): string {
-    return this._userId;
   }
 
   /**
@@ -158,6 +142,42 @@ export abstract class BaseCommand {
    * @returns 命令类型名称
    */
   public abstract get commandType(): string;
+
+  /**
+   * 获取命令标识符（ICommand 接口要求）
+   *
+   * @returns 命令标识符字符串
+   */
+  public get commandId(): string {
+    return this._commandId.toString();
+  }
+
+  /**
+   * 获取命令时间戳（ICommand 接口要求）
+   *
+   * @returns 命令时间戳
+   */
+  public get timestamp(): Date {
+    return this._createdAt;
+  }
+
+  /**
+   * 获取用户ID（ICommand 接口要求）
+   *
+   * @returns 用户ID
+   */
+  public get userId(): string | undefined {
+    return this._userId;
+  }
+
+  /**
+   * 获取租户ID（ICommand 接口要求）
+   *
+   * @returns 租户ID
+   */
+  public get tenantId(): string | undefined {
+    return this._tenantId;
+  }
 
   /**
    * 获取命令的业务数据
@@ -313,28 +333,120 @@ export abstract class BaseCommand {
   }
 
   /**
-   * 验证命令的有效性
+   * 验证命令的有效性（ICommand 接口要求）
+   *
+   * @returns 验证结果
+   */
+  public validate(): ICommandValidationResult {
+    const errors: Array<{ field: string; message: string; code?: string }> = [];
+
+    if (!this._commandId || this._commandId.isEmpty()) {
+      errors.push({
+        field: "commandId",
+        message: "Command ID cannot be null or empty",
+      });
+    }
+
+    if (!this._tenantId) {
+      errors.push({
+        field: "tenantId",
+        message: "Tenant ID cannot be null or empty",
+      });
+    }
+
+    if (!this._userId) {
+      errors.push({
+        field: "userId",
+        message: "User ID cannot be null or empty",
+      });
+    }
+
+    if (this._commandVersion < 1) {
+      errors.push({
+        field: "commandVersion",
+        message: "Command version must be greater than 0",
+      });
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+
+  /**
+   * 获取命令的业务标识符（ICommand 接口要求）
+   *
+   * @returns 业务标识符字符串
+   */
+  public getBusinessIdentifier(): string {
+    return `${this.commandType}(${this._commandId.toString()})`;
+  }
+
+  /**
+   * 转换为纯数据对象（ICommand 接口要求）
+   *
+   * @returns 包含所有命令数据的纯对象
+   */
+  public toData(): Record<string, unknown> {
+    return {
+      commandId: this._commandId.toString(),
+      commandType: this.commandType,
+      timestamp: this._createdAt,
+      userId: this._userId,
+      tenantId: this._tenantId,
+      commandVersion: this._commandVersion,
+      commandData: this.commandData,
+      metadata: this._metadata,
+    };
+  }
+
+  /**
+   * 获取命令版本（ICommand 接口要求）
+   *
+   * @returns 命令版本号
+   */
+  public getVersion(): string {
+    return this._commandVersion.toString();
+  }
+
+  /**
+   * 获取命令优先级（ICommand 接口要求）
+   *
+   * @returns 优先级（数字越大优先级越高）
+   */
+  public getPriority(): number {
+    return 0; // 默认优先级
+  }
+
+  /**
+   * 检查命令是否过期（ICommand 接口要求）
+   *
+   * @param expirationTime - 过期时间（可选，使用默认过期策略）
+   * @returns 如果已过期返回true，否则返回false
+   */
+  public isExpired(expirationTime?: number): boolean {
+    const defaultExpirationTime = 24 * 60 * 60 * 1000; // 24小时
+    const expiration = expirationTime || defaultExpirationTime;
+    const now = new Date().getTime();
+    return now - this._createdAt.getTime() > expiration;
+  }
+
+  /**
+   * 验证命令的有效性（内部方法）
    *
    * 子类应该重写此方法以实现具体的验证逻辑。
    *
    * @throws {Error} 当命令无效时
    * @protected
    */
-  protected validate(): void {
-    if (!this._commandId || this._commandId.isEmpty()) {
-      throw new Error('Command ID cannot be null or empty');
-    }
-
-    if (!this._tenantId) {
-      throw new Error('Tenant ID cannot be null or empty');
-    }
-
-    if (!this._userId) {
-      throw new Error('User ID cannot be null or empty');
-    }
-
-    if (this._commandVersion < 1) {
-      throw new Error('Command version must be greater than 0');
+  protected validateInternal(): void {
+    const validation = this.validate();
+    if (!validation.isValid) {
+      const errorMessages = validation.errors
+        .map((error) => `${error.field}: ${error.message}`)
+        .join(", ");
+      throw new Error(`Command validation failed: ${errorMessages}`);
     }
   }
 }

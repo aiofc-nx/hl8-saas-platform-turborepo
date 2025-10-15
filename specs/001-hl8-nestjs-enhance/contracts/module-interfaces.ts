@@ -18,7 +18,7 @@ export interface ExceptionModuleOptions {
   /** 消息提供者 */
   messageProvider?: ExceptionMessageProvider;
   /** 日志级别 */
-  logLevel?: 'error' | 'warn' | 'info' | 'debug';
+  logLevel?: "error" | "warn" | "info" | "debug";
   /** 是否启用堆栈跟踪 */
   enableStackTrace?: boolean;
   /** 是否启用请求日志记录 */
@@ -43,7 +43,7 @@ export interface ExceptionMessageProvider {
    */
   getMessage(
     errorCode: string,
-    messageType: 'title' | 'detail',
+    messageType: "title" | "detail",
     params?: Record<string, any>,
   ): string | undefined;
 
@@ -54,7 +54,7 @@ export interface ExceptionMessageProvider {
    * @param messageType - 消息类型
    * @returns 是否存在消息
    */
-  hasMessage(errorCode: string, messageType: 'title' | 'detail'): boolean;
+  hasMessage(errorCode: string, messageType: "title" | "detail"): boolean;
 
   /**
    * 获取所有可用的错误码
@@ -242,7 +242,7 @@ export interface LoggingModuleOptions {
 /**
  * 日志级别
  */
-export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
+export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "fatal";
 
 /**
  * 日志服务接口
@@ -301,7 +301,7 @@ export interface IsolationModuleOptions {
 /**
  * 租户提取策略
  */
-export type TenantExtractionStrategy = 'header' | 'subdomain' | 'custom';
+export type TenantExtractionStrategy = "header" | "subdomain" | "custom";
 
 /**
  * 租户上下文服务接口
@@ -364,15 +364,15 @@ export interface IsolationContext {
  */
 export enum IsolationLevel {
   /** 平台级（无隔离标识） */
-  PLATFORM = 'platform',
+  PLATFORM = "platform",
   /** 租户级 */
-  TENANT = 'tenant',
+  TENANT = "tenant",
   /** 组织级 */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
   /** 部门级 */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
   /** 用户级 */
-  USER = 'user',
+  USER = "user",
 }
 
 /**
@@ -380,15 +380,15 @@ export enum IsolationLevel {
  */
 export enum DataSharingLevel {
   /** 平台级共享（所有租户可见） */
-  PLATFORM = 'platform',
+  PLATFORM = "platform",
   /** 租户级共享（租户内可见） */
-  TENANT = 'tenant',
+  TENANT = "tenant",
   /** 组织级共享（组织内可见） */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
   /** 部门级共享（部门内可见） */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
   /** 私有（仅所有者可见） */
-  PRIVATE = 'private',
+  PRIVATE = "private",
 }
 
 /**

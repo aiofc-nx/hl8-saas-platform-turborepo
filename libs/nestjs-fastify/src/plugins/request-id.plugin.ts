@@ -29,11 +29,11 @@
  *
  * @since 1.0.0
  */
-import { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyPluginAsync, FastifyReply, FastifyRequest } from "fastify";
 import {
   RequestIdGenerator,
   RequestIdGeneratorOptions,
-} from '../utils/request-id.generator.js';
+} from "../utils/request-id.generator.js";
 
 /**
  * 请求 ID 插件选项
@@ -60,7 +60,7 @@ export const requestIdPlugin: FastifyPluginAsync<
   RequestIdPluginOptions
 > = async (fastify, options = {}) => {
   const {
-    headerName = 'X-Request-Id',
+    headerName = "X-Request-Id",
     generateOnMissing = true,
     includeInResponse = true,
     includeInLogs = true,
@@ -69,7 +69,7 @@ export const requestIdPlugin: FastifyPluginAsync<
 
   // 添加请求 ID 到请求对象
   fastify.addHook(
-    'onRequest',
+    "onRequest",
     async (request: FastifyRequest, reply: FastifyReply) => {
       // 尝试从请求头中提取现有 ID
       let requestId = RequestIdGenerator.extractFromHeaders(request.headers);
@@ -94,7 +94,7 @@ export const requestIdPlugin: FastifyPluginAsync<
   // 在响应头中添加请求 ID
   if (includeInResponse) {
     fastify.addHook(
-      'onSend',
+      "onSend",
       async (request: FastifyRequest, reply: FastifyReply, payload) => {
         const requestId = (request as any).requestId;
         if (requestId) {
@@ -107,14 +107,14 @@ export const requestIdPlugin: FastifyPluginAsync<
 
   // 添加装饰器方法
   fastify.decorate(
-    'generateRequestId',
+    "generateRequestId",
     (options?: RequestIdGeneratorOptions) => {
       return RequestIdGenerator.generate(options);
     },
   );
 
   // 添加验证方法
-  fastify.decorate('validateRequestId', (id: string) => {
+  fastify.decorate("validateRequestId", (id: string) => {
     return RequestIdGenerator.isValid(id);
   });
 };
@@ -122,7 +122,7 @@ export const requestIdPlugin: FastifyPluginAsync<
 /**
  * 请求 ID 装饰器类型
  */
-declare module 'fastify' {
+declare module "fastify" {
   interface FastifyInstance {
     generateRequestId(options?: RequestIdGeneratorOptions): string;
     validateRequestId(id: string): boolean;

@@ -26,4 +26,4 @@
  *
  * @since 1.0.0
  */
-export type { IsolationContext } from '@hl8/isolation-model';
+export type { IsolationContext } from "@hl8/isolation-model";

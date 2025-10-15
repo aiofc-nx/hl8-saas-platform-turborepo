@@ -58,7 +58,7 @@ ExceptionModule.forRoot({
 // 这是应用配置类
 export class AppConfig {
   @IsString()
-  NODE_ENV: string = 'development';
+  NODE_ENV: string = "development";
 
   @IsNumber()
   PORT: number = 3000;
@@ -332,7 +332,7 @@ EXCEPTION__ENABLE_LOGGING = true;
 // 方式1：直接传入（简单配置）
 ExceptionModule.forRoot({
   enableLogging: true,
-  isProduction: process.env.NODE_ENV === 'production',
+  isProduction: process.env.NODE_ENV === "production",
 });
 
 // 方式2：从 AppConfig 获取（复杂配置）
@@ -364,7 +364,7 @@ ExceptionModule.forRootAsync({
 
    ```typescript
    LoggingModule.forRoot({
-     config: { level: 'info' },
+     config: { level: "info" },
    });
    ```
 

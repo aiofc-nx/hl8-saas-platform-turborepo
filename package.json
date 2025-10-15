@@ -9,7 +9,6 @@
     "add:web": "pnpm add --filter=web",
     "build": "turbo build",
     "build:fastify-api": "pnpm build --filter=fastify-api",
-    "build:swc": "turbo build:swc",
     "build:web": "pnpm build --filter=web",
     "changeset": "changeset",
     "clean": "turbo clean",

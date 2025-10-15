@@ -8,16 +8,16 @@
  * @since 1.0.0
  */
 
-import { Module } from '@nestjs/common';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
-import { TypedConfigModule } from '@hl8/config';
-import { MessagingModule } from '@hl8/messaging';
-import { MultiTenancyModule } from '@hl8/multi-tenancy';
-import { DatabaseModule } from '@hl8/database';
-import { FastifyProModule } from '@hl8/fastify-pro';
+import { Module } from "@nestjs/common";
+import { CacheModule } from "@hl8/hybrid-archi";
+import { LoggerModule } from "@hl8/hybrid-archi";
+// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
+import { MessagingModule } from "@hl8/hybrid-archi";
+import { MultiTenancyModule } from "@hl8/hybrid-archi";
+import { DatabaseModule } from "@hl8/hybrid-archi";
+import { FastifyProModule } from "@hl8/hybrid-archi";
 
-import { InfrastructureServiceManager } from './base-infrastructure.adapter';
+import { InfrastructureServiceManager } from "./base-infrastructure.adapter.js";
 
 /**
  * 基础设施模块

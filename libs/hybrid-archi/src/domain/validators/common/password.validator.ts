@@ -35,7 +35,7 @@ export class PasswordValidator {
    */
   public static validateStrength(
     password: string,
-    options: PasswordValidationOptions = {}
+    options: PasswordValidationOptions = {},
   ): PasswordValidationResult {
     const {
       minLength = 8,
@@ -61,15 +61,15 @@ export class PasswordValidator {
 
     // 字符复杂度验证
     if (requireUppercase && !/[A-Z]/.test(password)) {
-      errors.push('密码必须包含大写字母');
+      errors.push("密码必须包含大写字母");
     }
 
     if (requireLowercase && !/[a-z]/.test(password)) {
-      errors.push('密码必须包含小写字母');
+      errors.push("密码必须包含小写字母");
     }
 
     if (requireNumbers && !/\d/.test(password)) {
-      errors.push('密码必须包含数字');
+      errors.push("密码必须包含数字");
     }
 
     if (requireSpecialChars) {
@@ -108,26 +108,26 @@ export class PasswordValidator {
     error?: string;
   } {
     const commonPasswords = [
-      'password',
-      '123456',
-      '123456789',
-      'qwerty',
-      'abc123',
-      'password123',
-      'admin',
-      'letmein',
-      'welcome',
-      'monkey',
-      '12345678',
-      'password1',
-      'qwerty123',
-      'admin123',
-      'root',
+      "password",
+      "123456",
+      "123456789",
+      "qwerty",
+      "abc123",
+      "password123",
+      "admin",
+      "letmein",
+      "welcome",
+      "monkey",
+      "12345678",
+      "password1",
+      "qwerty123",
+      "admin123",
+      "root",
     ];
 
     const lowerCasePassword = password.toLowerCase();
     if (commonPasswords.includes(lowerCasePassword)) {
-      return { isValid: false, error: '密码不能使用常见弱密码' };
+      return { isValid: false, error: "密码不能使用常见弱密码" };
     }
 
     return { isValid: true };
@@ -175,13 +175,13 @@ export class PasswordValidator {
   public static validatePasswordHistory(
     password: string,
     passwordHistory: string[],
-    maxHistoryCount = 5
+    maxHistoryCount = 5,
   ): { isValid: boolean; error?: string } {
     const recentPasswords = passwordHistory.slice(-maxHistoryCount);
 
     for (const historyPassword of recentPasswords) {
       if (password === historyPassword) {
-        return { isValid: false, error: '密码不能与最近使用的密码相同' };
+        return { isValid: false, error: "密码不能与最近使用的密码相同" };
       }
     }
 
@@ -198,7 +198,7 @@ export class PasswordValidator {
    */
   public static validatePasswordPolicy(
     password: string,
-    policy: PasswordPolicy
+    policy: PasswordPolicy,
   ): PasswordValidationResult {
     const options: PasswordValidationOptions = {
       minLength: policy.minLength,

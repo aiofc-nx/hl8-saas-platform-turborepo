@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { TenantResponseDto } from './tenant-response.dto';
+import { TenantResponseDto } from "./tenant-response.dto.js";
 
 export class TenantListResponseDto {
   items!: TenantResponseDto[];
@@ -27,4 +27,3 @@ export class TenantListResponseDto {
     return dto;
   }
 }
-

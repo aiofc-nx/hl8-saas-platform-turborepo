@@ -7,4 +7,4 @@
  */
 
 // 基础验证接口
-export * from './base-validator.interface';
+export * from "./base-validator.interface.js";

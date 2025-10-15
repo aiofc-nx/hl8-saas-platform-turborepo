@@ -12,21 +12,21 @@ export type {
   IAggregateMapper,
   IValueObjectMapper,
   IDtoMapper,
-} from './mapper.interface';
+} from "./mapper.interface.js";
 
 // 基础映射器类
 export {
   BaseDomainMapper,
   MappingError,
   type IMappingValidationResult,
-} from './base-domain-mapper';
+} from "./base-domain-mapper.js";
 
 export {
   BaseAggregateMapper,
   type IAggregateRootMappingResult,
   type IEventMappingResult,
-} from './base-aggregate-mapper';
+} from "./base-aggregate-mapper.js";
 
-export { BaseValueObjectMapper } from './base-value-object-mapper';
+export { BaseValueObjectMapper } from "./base-value-object-mapper.js";
 
-export { BaseDtoMapper, type IDtoMappingOptions } from './base-dto-mapper';
+export { BaseDtoMapper, type IDtoMappingOptions } from "./base-dto-mapper.js";

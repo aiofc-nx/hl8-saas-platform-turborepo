@@ -1,12 +1,13 @@
 /**
  * 组织成员实体
  *
- * @class OrganizationMember  
+ * @class OrganizationMember
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 
 export class OrganizationMember extends BaseEntity {
   constructor(
@@ -17,7 +18,7 @@ export class OrganizationMember extends BaseEntity {
     private _joinedAt: Date,
     private _leftAt: Date | null,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -49,12 +50,11 @@ export class OrganizationMember extends BaseEntity {
 
   public setPosition(position: string, updatedBy?: string): void {
     this._position = position;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public leave(updatedBy?: string): void {
     this._leftAt = new Date();
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 }
-

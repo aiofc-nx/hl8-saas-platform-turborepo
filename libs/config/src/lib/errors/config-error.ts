@@ -15,25 +15,25 @@
  */
 export enum ConfigErrorType {
   /** 文件加载错误 */
-  FILE_LOAD_ERROR = 'FILE_LOAD_ERROR',
+  FILE_LOAD_ERROR = "FILE_LOAD_ERROR",
   /** 文件格式错误 */
-  FILE_FORMAT_ERROR = 'FILE_FORMAT_ERROR',
+  FILE_FORMAT_ERROR = "FILE_FORMAT_ERROR",
   /** 文件不存在错误 */
-  FILE_NOT_FOUND = 'FILE_NOT_FOUND',
+  FILE_NOT_FOUND = "FILE_NOT_FOUND",
   /** 目录不存在错误 */
-  DIRECTORY_NOT_FOUND = 'DIRECTORY_NOT_FOUND',
+  DIRECTORY_NOT_FOUND = "DIRECTORY_NOT_FOUND",
   /** 网络请求错误 */
-  NETWORK_ERROR = 'NETWORK_ERROR',
+  NETWORK_ERROR = "NETWORK_ERROR",
   /** 配置验证错误 */
-  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  VALIDATION_ERROR = "VALIDATION_ERROR",
   /** 环境变量错误 */
-  ENV_VAR_ERROR = 'ENV_VAR_ERROR',
+  ENV_VAR_ERROR = "ENV_VAR_ERROR",
   /** 变量展开错误 */
-  VARIABLE_EXPANSION_ERROR = 'VARIABLE_EXPANSION_ERROR',
+  VARIABLE_EXPANSION_ERROR = "VARIABLE_EXPANSION_ERROR",
   /** 配置解析错误 */
-  PARSE_ERROR = 'PARSE_ERROR',
+  PARSE_ERROR = "PARSE_ERROR",
   /** 未知错误 */
-  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+  UNKNOWN_ERROR = "UNKNOWN_ERROR",
 }
 
 /**
@@ -92,7 +92,7 @@ export class ConfigError extends Error {
     originalError?: Error,
   ) {
     super(message);
-    this.name = 'ConfigError';
+    this.name = "ConfigError";
     this.type = type;
     this.code = `${type}_${Date.now()}`;
     this.context = context;
@@ -130,7 +130,7 @@ export class ConfigError extends Error {
       }
     }
 
-    return parts.join('\n');
+    return parts.join("\n");
   }
 
   /**

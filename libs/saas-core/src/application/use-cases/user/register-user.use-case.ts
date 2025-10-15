@@ -7,13 +7,18 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId, Username, Email, PhoneNumber } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { UserAggregate } from '../../../domain/user/aggregates/user.aggregate';
-import { IUserAggregateRepository } from '../../../domain/user/repositories/user-aggregate.repository.interface';
+import { Injectable } from "@nestjs/common";
+import { UserId } from "@hl8/isolation-model/index.js";
+// import { Username } from "../../../../domain/user/value-objects/username.vo";
+// import { Email } from "../../../../domain/user/value-objects/email.vo";
+// import { PhoneNumber } from "../../../../domain/user/value-objects/phone-number.vo";
+import { ICommandUseCase } from "../base/use-case.interface.js";
+import { UserAggregate } from "../../../domain/user/aggregates/user.aggregate.js";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
+import { TenantId } from "@hl8/isolation-model/index.js";
 export interface IRegisterUserCommand {
+  tenantId: string;
   username: string;
   email: string;
   phoneNumber?: string;
@@ -22,42 +27,51 @@ export interface IRegisterUserCommand {
 
 @Injectable()
 export class RegisterUserUseCase
-  implements ICommandUseCase<IRegisterUserCommand, EntityId>
+  implements ICommandUseCase<IRegisterUserCommand, UserId>
 {
   constructor(private readonly userRepository: IUserAggregateRepository) {}
 
-  async execute(command: IRegisterUserCommand): Promise<EntityId> {
-    const username = Username.create(command.username);
-    const email = Email.create(command.email);
-    const phoneNumber = command.phoneNumber
-      ? PhoneNumber.create(command.phoneNumber)
-      : null;
+  async execute(command: IRegisterUserCommand): Promise<UserId> {
+    // const username = new (Username as any)(command.username);
+    // const email = new (Email as any)(command.email);
+    // const phoneNumber = command.phoneNumber
+    //   ? new (PhoneNumber as any)(command.phoneNumber)
+    //   : null;
 
     // 验证唯一性
-    if (await this.userRepository.existsByUsername(username)) {
+    if (
+      await (this.userRepository as any).existsByUsername(
+        TenantId.create(command.tenantId),
+        command.username,
+      )
+    ) {
       throw new Error(`用户名 ${command.username} 已存在`);
     }
-    if (await this.userRepository.existsByEmail(email)) {
+    if (
+      await (this.userRepository as any).existsByEmail(
+        TenantId.create(command.tenantId),
+        command.email,
+      )
+    ) {
       throw new Error(`邮箱 ${command.email} 已被注册`);
     }
 
     // TODO: 实际需要对密码进行哈希处理
     const passwordHash = command.password; // 示例，实际使用 bcrypt
-    const passwordSalt = 'salt'; // 示例
+    const passwordSalt = "salt"; // 示例
 
-    const userId = EntityId.generate();
+    const userId = UserId.generate();
     const aggregate = UserAggregate.create(
       userId,
-      username,
-      email,
-      phoneNumber,
+      command.username as any,
+      command.email as any,
+      command.phoneNumber as any,
       passwordHash,
       passwordSalt,
-      { createdBy: 'system' },
+      { createdBy: "system" },
     );
 
-    await this.userRepository.save(aggregate);
+    await (this.userRepository as any).save(aggregate);
     return userId;
   }
 }
-

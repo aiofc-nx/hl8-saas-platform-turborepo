@@ -39,58 +39,58 @@
 // ============================================================================
 // 主模块导出
 // ============================================================================
-export * from './saas-core.module';
+export * from "./saas-core.module";
 
 // ============================================================================
 // 常量导出
 // ============================================================================
-export * from './constants';
+export * from "./constants.js";
 
 // ============================================================================
 // 领域层导出 - Tenant 子领域
 // ============================================================================
-export * from './domain/tenant/value-objects/tenant-code.vo';
-export * from './domain/tenant/value-objects/tenant-domain.vo';
-export * from './domain/tenant/value-objects/tenant-quota.vo';
-export * from './domain/tenant/value-objects/tenant-type.enum';
+export * from "./domain/tenant/value-objects/tenant-code.vo";
+export * from "./domain/tenant/value-objects/tenant-domain.vo";
+export * from "./domain/tenant/value-objects/tenant-quota.vo";
+export * from "./domain/tenant/value-objects/tenant-type.enum";
 
 // ============================================================================
 // 领域层导出 - User 子领域
 // ============================================================================
-export * from './domain/user/value-objects/gender.enum';
+export * from "./domain/user/value-objects/gender.enum";
 
 // ============================================================================
 // 领域层导出 - Organization 子领域
 // ============================================================================
-export * from './domain/organization/value-objects/organization-type.vo';
+export * from "./domain/organization/value-objects/organization-type.vo";
 
 // ============================================================================
 // 领域层导出 - Department 子领域
 // ============================================================================
-export * from './domain/department/value-objects/department-level.vo';
-export * from './domain/department/value-objects/department-path.vo';
-export * from './domain/department/value-objects/department-status.enum';
+export * from "./domain/department/value-objects/department-level.vo";
+export * from "./domain/department/value-objects/department-path.vo";
+export * from "./domain/department/value-objects/department-status.enum";
 
 // ============================================================================
 // 领域层导出 - Role 子领域
 // ============================================================================
-export * from './domain/role/value-objects/role-level.vo';
-export * from './domain/role/value-objects/role-name.vo';
-export * from './domain/role/value-objects/role-status.enum';
+export * from "./domain/role/value-objects/role-level.vo";
+export * from "./domain/role/value-objects/role-name.vo";
+export * from "./domain/role/value-objects/role-status.enum";
 
 // ============================================================================
 // 领域层导出 - Permission 子领域
 // ============================================================================
-export * from './domain/permission/value-objects/permission-action.vo';
-export * from './domain/permission/value-objects/permission-status.enum';
+export * from "./domain/permission/value-objects/permission-action.vo";
+export * from "./domain/permission/value-objects/permission-status.enum";
 
 // ============================================================================
 // 基础设施层导出
 // ============================================================================
 // 注意：不再导出 mikro-orm.config，使用 @hl8/database 统一管理
-export * from './infrastructure/persistence/filters/tenant.filter';
-export * from './infrastructure/event-sourcing/event-store.adapter';
-export * from './infrastructure/event-sourcing/snapshot-store.adapter';
+export * from "./infrastructure/persistence/filters/tenant.filter";
+export * from "./infrastructure/event-sourcing/event-store.adapter";
+export * from "./infrastructure/event-sourcing/snapshot-store.adapter";
 
 // ============================================================================
 // 注意事项

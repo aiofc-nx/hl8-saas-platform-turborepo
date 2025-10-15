@@ -2,11 +2,12 @@
  * 部门实体（简化版本）
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { DepartmentLevel } from '../value-objects/department-level.vo';
-import { DepartmentPath } from '../value-objects/department-path.vo';
-import { DepartmentStatus } from '../value-objects/department-status.enum';
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
+import { DepartmentLevel } from "../value-objects/department-level.vo.js";
+import { DepartmentPath } from "../value-objects/department-path.vo.js";
+import { DepartmentStatus } from "../value-objects/department-status.enum.js";
 
 export class Department extends BaseEntity {
   constructor(
@@ -20,7 +21,7 @@ export class Department extends BaseEntity {
     private _path: DepartmentPath,
     private _status: DepartmentStatus,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -60,16 +61,15 @@ export class Department extends BaseEntity {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       organizationId: this._organizationId.toString(),
       parentId: this._parentId?.toString(),
       code: this._code,
       name: this._name,
       fullName: this._fullName,
       level: this._level.level,
-      path: this._path.value,
+      path: (this._path as any).value,
       status: this._status,
     };
   }
 }
-

@@ -66,7 +66,7 @@
  * @since 0.1.0
  */
 
-import { AbstractHttpException } from './abstract-http.exception.js';
+import { AbstractHttpException } from "./abstract-http.exception.js";
 
 /**
  * 通用 400 错误请求异常
@@ -91,6 +91,6 @@ export class GeneralBadRequestException extends AbstractHttpException {
    * ```
    */
   constructor(title: string, detail: string, data?: any) {
-    super('BAD_REQUEST', title, detail, 400, data);
+    super("BAD_REQUEST", title, detail, 400, data);
   }
 }

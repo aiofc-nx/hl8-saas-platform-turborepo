@@ -1,18 +1,18 @@
-import { CachingModule } from '@hl8/caching/index.js';
-import { TypedConfigModule, dotenvLoader } from '@hl8/config/index.js';
-import { DatabaseModule, DatabaseConfig } from '@hl8/database/index.js';
+import { CachingModule } from "@hl8/caching";
+import { TypedConfigModule, dotenvLoader } from "@hl8/config";
+import { DatabaseModule, DatabaseConfig } from "@hl8/database";
 import {
   CompressionModule,
   FastifyExceptionModule,
   FastifyLoggingModule,
   MetricsModule,
-} from '@hl8/nestjs-fastify/index.js';
-import { IsolationModule } from '@hl8/nestjs-isolation';
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller.js';
-import { AppConfig } from './config/app.config.js';
-import { User } from './entities/user.entity.js';
-import { UserModule } from './modules/user.module.js';
+} from "@hl8/nestjs-fastify";
+import { IsolationModule } from "@hl8/nestjs-isolation";
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller.js";
+import { AppConfig } from "./config/app.config.js";
+import { User } from "./entities/user.entity.js";
+import { UserModule } from "./modules/user.module.js";
 
 /**
  * HL8 SAAS 平台应用根模块
@@ -78,8 +78,8 @@ import { UserModule } from './modules/user.module.js';
       isGlobal: true,
       load: [
         dotenvLoader({
-          separator: '__', // 支持嵌套配置：REDIS__HOST
-          envFilePath: '.env', // 使用单个文件路径
+          separator: "__", // 支持嵌套配置：REDIS__HOST
+          envFilePath: ".env", // 使用单个文件路径
           enableExpandVariables: true, // 支持 ${VAR} 语法
         }),
       ],
@@ -88,7 +88,7 @@ import { UserModule } from './modules/user.module.js';
     // Fastify 专用异常处理模块（RFC7807 统一格式）
     // 注意：配置通过 AppConfig 类管理，在服务中可注入 AppConfig
     FastifyExceptionModule.forRoot({
-      isProduction: process.env.NODE_ENV === 'production',
+      isProduction: process.env.NODE_ENV === "production",
     }),
 
     // Fastify 专用日志模块（零开销，复用 Fastify Pino）
@@ -96,10 +96,10 @@ import { UserModule } from './modules/user.module.js';
     // 环境变量格式：LOGGING__LEVEL=info, LOGGING__PRETTY_PRINT=true
     FastifyLoggingModule.forRoot({
       config: {
-        level: (process.env.LOGGING__LEVEL as any) || 'info',
+        level: (process.env.LOGGING__LEVEL as any) || "info",
         prettyPrint:
-          process.env.NODE_ENV === 'development' ||
-          process.env.LOGGING__PRETTY_PRINT === 'true',
+          process.env.NODE_ENV === "development" ||
+          process.env.LOGGING__PRETTY_PRINT === "true",
         includeIsolationContext: true,
         timestamp: true,
         enabled: true,
@@ -116,7 +116,7 @@ import { UserModule } from './modules/user.module.js';
     CompressionModule.forRoot({
       global: true,
       threshold: 1024, // 1KB
-      encodings: ['br', 'gzip', 'deflate'],
+      encodings: ["br", "gzip", "deflate"],
     }),
 
     // Prometheus Metrics 模块 - 性能监控
@@ -124,11 +124,11 @@ import { UserModule } from './modules/user.module.js';
     // 环境变量格式：METRICS__PATH=/metrics, METRICS__INCLUDE_TENANT_METRICS=true
     MetricsModule.forRoot({
       defaultLabels: {
-        app: 'fastify-api',
-        environment: process.env.NODE_ENV || 'development',
+        app: "fastify-api",
+        environment: process.env.NODE_ENV || "development",
       },
       includeTenantMetrics: true,
-      path: process.env.METRICS__PATH || '/metrics',
+      path: process.env.METRICS__PATH || "/metrics",
       enableDefaultMetrics: true,
     }),
 
@@ -150,11 +150,11 @@ import { UserModule } from './modules/user.module.js';
         let dbConfig = config.database;
         if (!dbConfig) {
           dbConfig = new DatabaseConfig();
-          dbConfig.database = process.env.DB_DATABASE || 'aiofix_platform';
-          dbConfig.username = process.env.DB_USERNAME || 'aiofix_user';
-          dbConfig.password = process.env.DB_PASSWORD || 'aiofix_password';
+          dbConfig.database = process.env.DB_DATABASE || "aiofix_platform";
+          dbConfig.username = process.env.DB_USERNAME || "aiofix_user";
+          dbConfig.password = process.env.DB_PASSWORD || "aiofix_password";
         }
-        
+
         return {
           connection: dbConfig.getConnectionConfig(),
           pool: dbConfig.getPoolConfig(),
@@ -163,7 +163,7 @@ import { UserModule } from './modules/user.module.js';
           // 开发环境启用调试
           debug: config.isDevelopment,
           // 显式指定 driver 选项
-          driver: 'PostgreSqlDriver',
+          driver: "PostgreSqlDriver",
         };
       },
     }),

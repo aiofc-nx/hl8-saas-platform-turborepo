@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   IValidationPort,
   IValidationSchema,
@@ -16,26 +16,26 @@ import {
   IPasswordPolicy,
   IPasswordValidationResult,
   ISanitizationRules,
-} from '../../../application/ports/shared/shared-ports.interface';
+} from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
  * 验证规则类型枚举
  */
 export enum ValidationRuleType {
   /** 必填验证 */
-  REQUIRED = 'required',
+  REQUIRED = "required",
   /** 字符串长度验证 */
-  STRING_LENGTH = 'string_length',
+  STRING_LENGTH = "string_length",
   /** 数字范围验证 */
-  NUMBER_RANGE = 'number_range',
+  NUMBER_RANGE = "number_range",
   /** 邮箱验证 */
-  EMAIL = 'email',
+  EMAIL = "email",
   /** 手机号验证 */
-  PHONE = 'phone',
+  PHONE = "phone",
   /** 正则表达式验证 */
-  REGEX = 'regex',
+  REGEX = "regex",
   /** 自定义验证 */
-  CUSTOM = 'custom',
+  CUSTOM = "custom",
 }
 
 /**
@@ -68,7 +68,7 @@ export class ValidationPortAdapter implements IValidationPort {
    */
   async validate(
     data: unknown,
-    schema: IValidationSchema
+    schema: IValidationSchema,
   ): Promise<IValidationResult> {
     const errors: Array<{ field: string; message: string; code: string }> = [];
 
@@ -79,7 +79,7 @@ export class ValidationPortAdapter implements IValidationPort {
         const fieldErrors = await this.validateField(
           fieldName,
           fieldValue,
-          rules
+          rules,
         );
         errors.push(...fieldErrors);
       }
@@ -94,9 +94,9 @@ export class ValidationPortAdapter implements IValidationPort {
         isValid: false,
         errors: [
           {
-            field: 'system',
-            message: '验证过程中发生错误',
-            code: 'VALIDATION_ERROR',
+            field: "system",
+            message: "验证过程中发生错误",
+            code: "VALIDATION_ERROR",
             value: error instanceof Error ? error.message : String(error),
           },
         ],
@@ -116,7 +116,7 @@ export class ValidationPortAdapter implements IValidationPort {
   private async validateField(
     fieldName: string,
     value: unknown,
-    rules: IValidationRule[]
+    rules: IValidationRule[],
   ): Promise<Array<{ field: string; message: string; code: string }>> {
     const errors: Array<{ field: string; message: string; code: string }> = [];
 
@@ -143,7 +143,7 @@ export class ValidationPortAdapter implements IValidationPort {
    */
   private async validateRule(
     value: unknown,
-    rule: IValidationRule
+    rule: IValidationRule,
   ): Promise<boolean> {
     switch (rule.type) {
       case ValidationRuleType.REQUIRED:
@@ -173,7 +173,7 @@ export class ValidationPortAdapter implements IValidationPort {
    * @returns 字段值
    */
   private getFieldValue(data: unknown, fieldName: string): unknown {
-    if (typeof data === 'object' && data !== null) {
+    if (typeof data === "object" && data !== null) {
       return (data as Record<string, unknown>)[fieldName];
     }
     return undefined;
@@ -189,7 +189,7 @@ export class ValidationPortAdapter implements IValidationPort {
       return false;
     }
 
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       return value.trim().length > 0;
     }
 
@@ -201,9 +201,9 @@ export class ValidationPortAdapter implements IValidationPort {
    */
   private validateStringLength(
     value: unknown,
-    params?: Record<string, unknown>
+    params?: Record<string, unknown>,
   ): boolean {
-    if (typeof value !== 'string') {
+    if (typeof value !== "string") {
       return false;
     }
 
@@ -226,7 +226,7 @@ export class ValidationPortAdapter implements IValidationPort {
    */
   private validateNumberRange(
     value: unknown,
-    params?: Record<string, unknown>
+    params?: Record<string, unknown>,
   ): boolean {
     const numValue = Number(value);
     if (isNaN(numValue)) {
@@ -251,7 +251,7 @@ export class ValidationPortAdapter implements IValidationPort {
    * 邮箱验证（私有方法）
    */
   private validateEmailInternal(value: unknown): boolean {
-    if (typeof value !== 'string') {
+    if (typeof value !== "string") {
       return false;
     }
 
@@ -263,7 +263,7 @@ export class ValidationPortAdapter implements IValidationPort {
    * 手机号验证（私有方法）
    */
   private validatePhoneInternal(value: unknown): boolean {
-    if (typeof value !== 'string') {
+    if (typeof value !== "string") {
       return false;
     }
 
@@ -276,9 +276,9 @@ export class ValidationPortAdapter implements IValidationPort {
    */
   private validateRegex(
     value: unknown,
-    params?: Record<string, unknown>
+    params?: Record<string, unknown>,
   ): boolean {
-    if (typeof value !== 'string') {
+    if (typeof value !== "string") {
       return false;
     }
 
@@ -325,7 +325,7 @@ export class ValidationPortAdapter implements IValidationPort {
    */
   validatePassword(
     password: string,
-    policy?: IPasswordPolicy
+    policy?: IPasswordPolicy,
   ): IPasswordValidationResult {
     const errors: string[] = [];
     const suggestions: string[] = [];
@@ -333,8 +333,8 @@ export class ValidationPortAdapter implements IValidationPort {
 
     // 基础长度检查
     if (password.length < 8) {
-      errors.push('密码长度至少8位');
-      suggestions.push('增加密码长度');
+      errors.push("密码长度至少8位");
+      suggestions.push("增加密码长度");
     } else {
       strength += 20;
     }
@@ -358,8 +358,8 @@ export class ValidationPortAdapter implements IValidationPort {
     ].filter(Boolean).length;
 
     if (typeCount < 3) {
-      errors.push('密码应包含至少3种字符类型（大小写字母、数字、特殊字符）');
-      suggestions.push('添加大写字母、小写字母、数字或特殊字符');
+      errors.push("密码应包含至少3种字符类型（大小写字母、数字、特殊字符）");
+      suggestions.push("添加大写字母、小写字母、数字或特殊字符");
     }
 
     return {
@@ -378,7 +378,7 @@ export class ValidationPortAdapter implements IValidationPort {
    * @returns 脱敏后的数据
    */
   sanitize<T>(data: T, rules: ISanitizationRules): T {
-    if (typeof data === 'string') {
+    if (typeof data === "string") {
       return data.trim() as T;
     }
 
@@ -386,22 +386,22 @@ export class ValidationPortAdapter implements IValidationPort {
       return data.map((item) => this.sanitize(item, rules)) as T;
     }
 
-    if (typeof data === 'object' && data !== null) {
+    if (typeof data === "object" && data !== null) {
       const sanitized: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(data)) {
         const fieldRule = rules.fields[key];
         if (fieldRule) {
           switch (fieldRule.type) {
-            case 'mask':
+            case "mask":
               sanitized[key] = this.maskValue(value);
               break;
-            case 'remove':
+            case "remove":
               // 不添加该字段
               break;
-            case 'hash':
+            case "hash":
               sanitized[key] = this.hashValue(value);
               break;
-            case 'encrypt':
+            case "encrypt":
               sanitized[key] = this.encryptValue(value);
               break;
             default:
@@ -409,16 +409,16 @@ export class ValidationPortAdapter implements IValidationPort {
           }
         } else if (rules.defaultRule) {
           switch (rules.defaultRule.type) {
-            case 'mask':
+            case "mask":
               sanitized[key] = this.maskValue(value);
               break;
-            case 'remove':
+            case "remove":
               // 不添加该字段
               break;
-            case 'hash':
+            case "hash":
               sanitized[key] = this.hashValue(value);
               break;
-            case 'encrypt':
+            case "encrypt":
               sanitized[key] = this.encryptValue(value);
               break;
             default:
@@ -438,17 +438,17 @@ export class ValidationPortAdapter implements IValidationPort {
    * 掩码处理
    */
   private maskValue(value: unknown): string {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       if (value.length <= 2) {
-        return '*'.repeat(value.length);
+        return "*".repeat(value.length);
       }
       return (
         value.charAt(0) +
-        '*'.repeat(value.length - 2) +
+        "*".repeat(value.length - 2) +
         value.charAt(value.length - 1)
       );
     }
-    return '***';
+    return "***";
   }
 
   /**
@@ -471,7 +471,7 @@ export class ValidationPortAdapter implements IValidationPort {
    */
   private encryptValue(value: unknown): string {
     // 简单的Base64编码作为示例
-    return Buffer.from(String(value)).toString('base64');
+    return Buffer.from(String(value)).toString("base64");
   }
 
   /**
@@ -497,7 +497,7 @@ export interface IValidationSchemaBuilder {
    */
   addField(
     fieldName: string,
-    rules: IValidationRule[]
+    rules: IValidationRule[],
   ): IValidationSchemaBuilder;
 
   /**
@@ -512,11 +512,11 @@ export interface IValidationSchemaBuilder {
  * 验证模式构建器
  */
 class ValidationSchemaBuilder implements IValidationSchemaBuilder {
-  private schema: IValidationSchema = { type: 'object' };
+  private schema: IValidationSchema = { type: "object" };
 
   addField(
     fieldName: string,
-    rules: IValidationRule[]
+    rules: IValidationRule[],
   ): IValidationSchemaBuilder {
     (this.schema as any)[fieldName] = rules;
     return this;

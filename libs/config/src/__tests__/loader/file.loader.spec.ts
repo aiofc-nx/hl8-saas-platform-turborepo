@@ -6,17 +6,17 @@
  * @since 1.0.0
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileLoader } from '../../lib/loader/file.loader';
+import * as fs from "fs";
+import * as path from "path";
+import { fileLoader } from "../../lib/loader/file.loader";
 import {
   cleanupTempFiles,
   createTempDir,
   createTestFileContent,
   testAssertions,
-} from '../test-utils';
+} from "../test-utils";
 
-describe('fileLoader', () => {
+describe("fileLoader", () => {
   let tempDir: string;
   let tempFiles: string[] = [];
 
@@ -29,10 +29,10 @@ describe('fileLoader', () => {
     await cleanupTempFiles(tempFiles);
   });
 
-  describe('JSON 文件加载', () => {
-    it('应该加载 JSON 配置文件', () => {
-      const jsonContent = createTestFileContent('json');
-      const filePath = path.join(tempDir, 'config.json');
+  describe("JSON 文件加载", () => {
+    it("应该加载 JSON 配置文件", () => {
+      const jsonContent = createTestFileContent("json");
+      const filePath = path.join(tempDir, "config.json");
       fs.writeFileSync(filePath, jsonContent);
       tempFiles.push(filePath);
 
@@ -41,15 +41,15 @@ describe('fileLoader', () => {
 
       expect(config).toBeDefined();
       testAssertions.assertConfigStructure(config, {
-        name: 'Test App',
-        version: '1.0.0',
+        name: "Test App",
+        version: "1.0.0",
         port: 3000,
       });
     });
 
-    it('应该处理嵌套的 JSON 配置', () => {
-      const jsonContent = createTestFileContent('json');
-      const filePath = path.join(tempDir, 'config.json');
+    it("应该处理嵌套的 JSON 配置", () => {
+      const jsonContent = createTestFileContent("json");
+      const filePath = path.join(tempDir, "config.json");
       fs.writeFileSync(filePath, jsonContent);
       tempFiles.push(filePath);
 
@@ -57,15 +57,15 @@ describe('fileLoader', () => {
       const config = loader();
 
       expect(config.database).toBeDefined();
-      expect(config.database.host).toBe('localhost');
+      expect(config.database.host).toBe("localhost");
       expect(config.database.port).toBe(5432);
     });
   });
 
-  describe('YAML 文件加载', () => {
-    it('应该加载 YAML 配置文件', () => {
-      const yamlContent = createTestFileContent('yaml');
-      const filePath = path.join(tempDir, 'config.yaml');
+  describe("YAML 文件加载", () => {
+    it("应该加载 YAML 配置文件", () => {
+      const yamlContent = createTestFileContent("yaml");
+      const filePath = path.join(tempDir, "config.yaml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -74,15 +74,15 @@ describe('fileLoader', () => {
 
       expect(config).toBeDefined();
       testAssertions.assertConfigStructure(config, {
-        name: 'Test App',
-        version: '1.0.0',
+        name: "Test App",
+        version: "1.0.0",
         port: 3000,
       });
     });
 
-    it('应该处理 YML 文件扩展名', () => {
-      const yamlContent = createTestFileContent('yaml');
-      const filePath = path.join(tempDir, 'config.yml');
+    it("应该处理 YML 文件扩展名", () => {
+      const yamlContent = createTestFileContent("yaml");
+      const filePath = path.join(tempDir, "config.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -90,33 +90,33 @@ describe('fileLoader', () => {
       const config = loader();
 
       expect(config).toBeDefined();
-      expect(config.name).toBe('Test App');
+      expect(config.name).toBe("Test App");
     });
   });
 
-  describe('文件搜索', () => {
-    it('应该从指定目录搜索配置文件', () => {
-      const jsonContent = createTestFileContent('json');
-      const configFile = path.join(tempDir, 'app.json');
+  describe("文件搜索", () => {
+    it("应该从指定目录搜索配置文件", () => {
+      const jsonContent = createTestFileContent("json");
+      const configFile = path.join(tempDir, "app.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
       const loader = fileLoader({
         searchFrom: tempDir,
-        basename: 'app',
+        basename: "app",
       });
       const config = loader();
 
       expect(config).toBeDefined();
-      expect(config.name).toBe('Test App');
+      expect(config.name).toBe("Test App");
     });
 
-    it('应该按优先级搜索文件格式', () => {
-      const jsonContent = createTestFileContent('json');
-      const yamlContent = createTestFileContent('yaml');
+    it("应该按优先级搜索文件格式", () => {
+      const jsonContent = createTestFileContent("json");
+      const yamlContent = createTestFileContent("yaml");
 
-      const jsonFile = path.join(tempDir, 'config.json');
-      const yamlFile = path.join(tempDir, 'config.yaml');
+      const jsonFile = path.join(tempDir, "config.json");
+      const yamlFile = path.join(tempDir, "config.yaml");
 
       fs.writeFileSync(jsonFile, jsonContent);
       fs.writeFileSync(yamlFile, yamlContent);
@@ -124,28 +124,28 @@ describe('fileLoader', () => {
 
       const loader = fileLoader({
         searchFrom: tempDir,
-        basename: 'config',
+        basename: "config",
       });
       const config = loader();
 
       expect(config).toBeDefined();
       // 应该优先加载 JSON 文件
-      expect(config.name).toBe('Test App');
+      expect(config.name).toBe("Test App");
     });
   });
 
-  describe('环境变量替换', () => {
-    it('应该替换配置中的环境变量', () => {
-      process.env['DB_HOST'] = 'production-db';
-      process.env['DB_PORT'] = '5432';
+  describe("环境变量替换", () => {
+    it("应该替换配置中的环境变量", () => {
+      process.env["DB_HOST"] = "production-db";
+      process.env["DB_PORT"] = "5432";
 
       const jsonContent = JSON.stringify({
         database: {
-          host: '${DB_HOST}',
-          port: '${DB_PORT}',
+          host: "${DB_HOST}",
+          port: "${DB_PORT}",
         },
       });
-      const filePath = path.join(tempDir, 'config.json');
+      const filePath = path.join(tempDir, "config.json");
       fs.writeFileSync(filePath, jsonContent);
       tempFiles.push(filePath);
 
@@ -153,16 +153,16 @@ describe('fileLoader', () => {
       const config = loader();
 
       expect(config).toBeDefined();
-      expect(config.database.host).toBe('production-db');
-      expect(config.database.port).toBe('5432');
+      expect(config.database.host).toBe("production-db");
+      expect(config.database.port).toBe("5432");
     });
 
-    it('应该处理默认值语法', () => {
+    it("应该处理默认值语法", () => {
       const jsonContent = JSON.stringify({
-        port: '${APP_PORT:-3000}',
-        host: '${APP_HOST:-localhost}',
+        port: "${APP_PORT:-3000}",
+        host: "${APP_HOST:-localhost}",
       });
-      const filePath = path.join(tempDir, 'config.json');
+      const filePath = path.join(tempDir, "config.json");
       fs.writeFileSync(filePath, jsonContent);
       tempFiles.push(filePath);
 
@@ -170,19 +170,19 @@ describe('fileLoader', () => {
       const config = loader();
 
       expect(config).toBeDefined();
-      expect(config.port).toBe('3000');
-      expect(config.host).toBe('localhost');
+      expect(config.port).toBe("3000");
+      expect(config.host).toBe("localhost");
     });
 
-    it('应该禁用环境变量替换', () => {
-      process.env['DB_HOST'] = 'production-db';
+    it("应该禁用环境变量替换", () => {
+      process.env["DB_HOST"] = "production-db";
 
       const jsonContent = JSON.stringify({
         database: {
-          host: '${DB_HOST}',
+          host: "${DB_HOST}",
         },
       });
-      const filePath = path.join(tempDir, 'config.json');
+      const filePath = path.join(tempDir, "config.json");
       fs.writeFileSync(filePath, jsonContent);
       tempFiles.push(filePath);
 
@@ -193,22 +193,22 @@ describe('fileLoader', () => {
       const config = loader();
 
       expect(config).toBeDefined();
-      expect(config.database.host).toBe('${DB_HOST}');
+      expect(config.database.host).toBe("${DB_HOST}");
     });
   });
 
-  describe('错误处理', () => {
-    it('应该处理文件不存在错误', () => {
+  describe("错误处理", () => {
+    it("应该处理文件不存在错误", () => {
       const loader = fileLoader({
-        path: '/nonexistent/config.json',
+        path: "/nonexistent/config.json",
       });
 
       expect(() => loader()).toThrow();
     });
 
-    it('应该处理无效的 JSON 格式', () => {
-      const invalidJson = '{ invalid json }';
-      const filePath = path.join(tempDir, 'invalid.json');
+    it("应该处理无效的 JSON 格式", () => {
+      const invalidJson = "{ invalid json }";
+      const filePath = path.join(tempDir, "invalid.json");
       fs.writeFileSync(filePath, invalidJson);
       tempFiles.push(filePath);
 
@@ -217,9 +217,9 @@ describe('fileLoader', () => {
       expect(() => loader()).toThrow();
     });
 
-    it('应该处理无效的 YAML 格式', () => {
-      const invalidYaml = 'invalid: yaml: content: [';
-      const filePath = path.join(tempDir, 'invalid.yaml');
+    it("应该处理无效的 YAML 格式", () => {
+      const invalidYaml = "invalid: yaml: content: [";
+      const filePath = path.join(tempDir, "invalid.yaml");
       fs.writeFileSync(filePath, invalidYaml);
       tempFiles.push(filePath);
 
@@ -228,9 +228,9 @@ describe('fileLoader', () => {
       expect(() => loader()).toThrow();
     });
 
-    it('应该处理不支持的文件格式', () => {
-      const filePath = path.join(tempDir, 'config.txt');
-      fs.writeFileSync(filePath, 'plain text');
+    it("应该处理不支持的文件格式", () => {
+      const filePath = path.join(tempDir, "config.txt");
+      fs.writeFileSync(filePath, "plain text");
       tempFiles.push(filePath);
 
       const loader = fileLoader({ path: filePath });
@@ -238,9 +238,9 @@ describe('fileLoader', () => {
       expect(() => loader()).toThrow();
     });
 
-    it('应该处理文件读取权限错误', () => {
-      const filePath = path.join(tempDir, 'config.json');
-      fs.writeFileSync(filePath, '{}');
+    it("应该处理文件读取权限错误", () => {
+      const filePath = path.join(tempDir, "config.json");
+      fs.writeFileSync(filePath, "{}");
       fs.chmodSync(filePath, 0o000); // 移除所有权限
       tempFiles.push(filePath);
 
@@ -250,10 +250,10 @@ describe('fileLoader', () => {
     });
   });
 
-  describe('性能测试', () => {
-    it('应该高效处理大型配置文件', () => {
+  describe("性能测试", () => {
+    it("应该高效处理大型配置文件", () => {
       const largeConfig = {
-        ...JSON.parse(createTestFileContent('json')),
+        ...JSON.parse(createTestFileContent("json")),
         largeArray: new Array(1000)
           .fill(0)
           .map((_, i) => ({ id: i, value: `item_${i}` })),
@@ -262,7 +262,7 @@ describe('fileLoader', () => {
         ),
       };
 
-      const filePath = path.join(tempDir, 'large-config.json');
+      const filePath = path.join(tempDir, "large-config.json");
       fs.writeFileSync(filePath, JSON.stringify(largeConfig));
       tempFiles.push(filePath);
 
@@ -278,10 +278,10 @@ describe('fileLoader', () => {
     });
   });
 
-  describe('并发测试', () => {
-    it('应该支持并发文件加载', async () => {
-      const jsonContent = createTestFileContent('json');
-      const filePath = path.join(tempDir, 'config.json');
+  describe("并发测试", () => {
+    it("应该支持并发文件加载", async () => {
+      const jsonContent = createTestFileContent("json");
+      const filePath = path.join(tempDir, "config.json");
       fs.writeFileSync(filePath, jsonContent);
       tempFiles.push(filePath);
 
@@ -296,7 +296,7 @@ describe('fileLoader', () => {
       expect(results).toHaveLength(10);
       results.forEach((config) => {
         expect(config).toBeDefined();
-        expect(config.name).toBe('Test App');
+        expect(config.name).toBe("Test App");
       });
     });
   });

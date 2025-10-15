@@ -49,7 +49,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
+import { EntityId } from "@hl8/isolation-model";
 
 /**
  * 领域事件接口

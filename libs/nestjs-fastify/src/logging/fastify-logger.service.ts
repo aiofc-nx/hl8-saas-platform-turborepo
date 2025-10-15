@@ -21,15 +21,15 @@
  * @since 0.1.0
  */
 
-import type { ILoggerService } from '@hl8/exceptions/index.js';
-import { IsolationContextService } from '@hl8/nestjs-isolation/index.js';
+import type { ILoggerService } from "@hl8/exceptions";
+import { IsolationContextService } from "@hl8/nestjs-isolation";
 import {
   Injectable,
   LoggerService as NestLoggerService,
   Optional,
   Scope,
-} from '@nestjs/common';
-import type { Logger as PinoLogger } from 'pino';
+} from "@nestjs/common";
+import type { Logger as PinoLogger } from "pino";
 
 /**
  * 日志上下文类型
@@ -130,13 +130,13 @@ export class FastifyLoggerService implements NestLoggerService, ILoggerService {
     } else {
       // 字符串消息的情况
       const enrichedContext = this.enrichContext(context);
-      if (typeof stackOrContext === 'string') {
+      if (typeof stackOrContext === "string") {
         // 有 stack 参数
         this.pinoLogger.error(
           {
             ...enrichedContext,
             err: {
-              type: 'Error',
+              type: "Error",
               message: message,
               stack: stackOrContext,
             },

@@ -30,10 +30,10 @@
  *   async handleMessage(message: UserMessage, context: IWebSocketContext): Promise<UserResponse> {
  *     // 验证消息
  *     this.validateMessage(message);
- *     
+ *
  *     // 执行业务逻辑
  *     const result = await this.processMessage(message, context);
- *     
+ *
  *     // 返回响应
  *     return this.createResponse(result);
  *   }
@@ -43,11 +43,11 @@
  * @since 1.0.0
  */
 
-import {
+import type {
   ILoggerService,
   IMetricsService,
   IWebSocketContext,
-} from '../../shared/interfaces';
+} from "../../shared/interfaces.js";
 
 /**
  * 消息处理器接口
@@ -67,7 +67,10 @@ export interface IMessageHandler<TMessage, TResponse> {
    * @param context - WebSocket上下文
    * @returns 处理结果
    */
-  handleMessage(message: TMessage, context: IWebSocketContext): Promise<TResponse>;
+  handleMessage(
+    message: TMessage,
+    context: IWebSocketContext,
+  ): Promise<TResponse>;
 
   /**
    * 验证消息
@@ -97,13 +100,15 @@ export interface IMessageHandler<TMessage, TResponse> {
  * @template TMessage - 输入消息类型
  * @template TResponse - 响应消息类型
  */
-export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessageHandler<TMessage, TResponse> {
+export abstract class BaseMessageHandler<TMessage, TResponse>
+  implements IMessageHandler<TMessage, TResponse>
+{
   protected readonly handlerName: string;
   protected readonly startTime: number;
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.handlerName = this.constructor.name;
     this.startTime = Date.now();
@@ -118,13 +123,11 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
    * @param context - WebSocket上下文
    * @returns 处理结果
    */
-  async handleMessage(message: TMessage, context: IWebSocketContext): Promise<TResponse> {
-    this.logger.info(`开始处理WebSocket消息: ${this.handlerName}`, {
-      requestId: context.requestId,
-      correlationId: context.correlationId,
-      handler: this.handlerName,
-      messageType: typeof message,
-    });
+  async handleMessage(
+    message: TMessage,
+    context: IWebSocketContext,
+  ): Promise<TResponse> {
+    this.logger.log(`开始处理WebSocket消息: ${this.handlerName}`);
 
     try {
       // 1. 验证消息
@@ -156,14 +159,11 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
    */
   validateMessage(message: TMessage): void {
     if (!message) {
-      throw new Error('消息不能为空');
+      throw new Error("消息不能为空");
     }
 
     // 基础验证通过，子类可以添加更多验证逻辑
-    this.logger.debug('消息验证通过', {
-      handler: this.handlerName,
-      messageType: typeof message,
-    });
+    this.logger.debug("消息验证通过");
   }
 
   /**
@@ -176,7 +176,10 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
    * @param context - WebSocket上下文
    * @returns 处理结果
    */
-  protected abstract processMessage(message: TMessage, context: IWebSocketContext): Promise<TResponse>;
+  protected abstract processMessage(
+    message: TMessage,
+    context: IWebSocketContext,
+  ): Promise<TResponse>;
 
   /**
    * 获取处理器名称
@@ -199,19 +202,15 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
   protected logSuccess(result: TResponse): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.info(`WebSocket消息处理成功: ${this.handlerName}`, {
-      handler: this.handlerName,
-      duration,
-      resultType: typeof result,
-    });
+    this.logger.log(`WebSocket消息处理成功: ${this.handlerName}`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(
-      `websocket_handler_${this.handlerName.toLowerCase()}_success_total`
+      `websocket_handler_${this.handlerName.toLowerCase()}_success_total`,
     );
     this.metricsService?.recordHistogram(
       `websocket_handler_${this.handlerName.toLowerCase()}_duration_ms`,
-      duration
+      duration,
     );
   }
 
@@ -225,19 +224,11 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
   protected logError(error: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.error(`WebSocket消息处理失败: ${this.handlerName}`, {
-      handler: this.handlerName,
-      duration,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    this.logger.error(`WebSocket消息处理失败: ${this.handlerName}`);
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
       `websocket_handler_${this.handlerName.toLowerCase()}_error_total`,
-      {
-        error_type: error instanceof Error ? error.constructor.name : 'UnknownError',
-      }
     );
   }
 }
@@ -248,7 +239,10 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
  * @description 管理所有消息处理器的注册和查找
  */
 export class MessageHandlerRegistry {
-  private readonly handlers = new Map<string, IMessageHandler<unknown, unknown>>();
+  private readonly handlers = new Map<
+    string,
+    IMessageHandler<unknown, unknown>
+  >();
 
   /**
    * 注册消息处理器
@@ -257,9 +251,14 @@ export class MessageHandlerRegistry {
    *
    * @param handler - 消息处理器
    */
-  register<TMessage, TResponse>(handler: IMessageHandler<TMessage, TResponse>): void {
+  register<TMessage, TResponse>(
+    handler: IMessageHandler<TMessage, TResponse>,
+  ): void {
     const handlerName = handler.getHandlerName();
-    this.handlers.set(handlerName, handler as IMessageHandler<unknown, unknown>);
+    this.handlers.set(
+      handlerName,
+      handler as IMessageHandler<unknown, unknown>,
+    );
   }
 
   /**
@@ -270,8 +269,12 @@ export class MessageHandlerRegistry {
    * @param handlerName - 处理器名称
    * @returns 消息处理器或undefined
    */
-  get<TMessage, TResponse>(handlerName: string): IMessageHandler<TMessage, TResponse> | undefined {
-    return this.handlers.get(handlerName) as IMessageHandler<TMessage, TResponse> | undefined;
+  get<TMessage, TResponse>(
+    handlerName: string,
+  ): IMessageHandler<TMessage, TResponse> | undefined {
+    return this.handlers.get(handlerName) as
+      | IMessageHandler<TMessage, TResponse>
+      | undefined;
   }
 
   /**

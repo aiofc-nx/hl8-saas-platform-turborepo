@@ -19,9 +19,9 @@ pnpm add ioredis nestjs-cls
 
 ```typescript
 // app.module.ts
-import { Module } from '@nestjs/common';
-import { IsolationModule } from '@hl8/nestjs-isolation';
-import { CachingModule } from '@hl8/nestjs-caching';
+import { Module } from "@nestjs/common";
+import { IsolationModule } from "@hl8/nestjs-isolation";
+import { CachingModule } from "@hl8/nestjs-caching";
 
 @Module({
   imports: [
@@ -31,11 +31,11 @@ import { CachingModule } from '@hl8/nestjs-caching';
     // 2. 配置缓存模块（自动多层级隔离）
     CachingModule.forRoot({
       redis: {
-        host: 'localhost',
+        host: "localhost",
         port: 6379,
       },
       ttl: 3600,
-      keyPrefix: 'myapp:cache:',
+      keyPrefix: "myapp:cache:",
     }),
   ],
 })
@@ -46,25 +46,25 @@ export class AppModule {}
 
 ```typescript
 // users.service.ts
-import { Injectable } from '@nestjs/common';
-import { Cacheable, CacheEvict, CachePut } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { Cacheable, CacheEvict, CachePut } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class UsersService {
   // 读操作：自动缓存
-  @Cacheable('users')
+  @Cacheable("users")
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
 
   // 更新操作：刷新缓存
-  @CachePut('users')
+  @CachePut("users")
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
 
   // 删除操作：清除缓存
-  @CacheEvict('users')
+  @CacheEvict("users")
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete(id);
   }

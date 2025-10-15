@@ -4,29 +4,29 @@
  * @description 测试框架配置
  */
 export default {
-  displayName: '@hl8/database',
-  testEnvironment: 'node',
+  displayName: "@hl8/database",
+  testEnvironment: "node",
   transform: {
-    '^.+\\.ts$': [
-      'ts-jest',
+    "^.+\\.ts$": [
+      "ts-jest",
       {
         useESM: false,
         tsconfig: {
-          module: 'commonjs',
+          module: "commonjs",
           esModuleInterop: true,
         },
       },
     ],
   },
-  moduleFileExtensions: ['ts', 'js'],
-  coverageDirectory: '../../coverage/libs/database',
+  moduleFileExtensions: ["ts", "js"],
+  coverageDirectory: "../../coverage/libs/database",
   coveragePathIgnorePatterns: [
-    '/node_modules/',
-    '/__tests__/',
-    '/dist/',
-    '.spec.ts$',
+    "/node_modules/",
+    "/__tests__/",
+    "/dist/",
+    ".spec.ts$",
   ],
-  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.spec.ts', '!src/**/index.ts'],
+  collectCoverageFrom: ["src/**/*.ts", "!src/**/*.spec.ts", "!src/**/index.ts"],
   coverageThreshold: {
     global: {
       branches: 70,
@@ -36,7 +36,7 @@ export default {
     },
   },
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1',
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   },
-  testMatch: ['**/*.spec.ts'],
+  testMatch: ["**/*.spec.ts"],
 };

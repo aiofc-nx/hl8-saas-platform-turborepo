@@ -14,7 +14,7 @@
  * @since 1.0.0
  */
 
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsString,
   IsNumber,
@@ -23,7 +23,7 @@ import {
   ValidateNested,
   Min,
   Max,
-} from 'class-validator';
+} from "class-validator";
 
 /**
  * 数据库配置
@@ -157,4 +157,3 @@ export class SaasCoreConfig {
   @IsOptional()
   public readonly isGlobal?: boolean;
 }
-

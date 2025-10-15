@@ -38,9 +38,9 @@
  * @since 1.0.0
  */
 
-import { MikroORM, EntityManager } from '@mikro-orm/core';
-import { SqlEntityManager } from '@mikro-orm/postgresql';
-import { getTestDatabaseConfig } from './test-database.config';
+import { MikroORM, EntityManager } from "@mikro-orm/core";
+import { SqlEntityManager } from "@mikro-orm/postgresql";
+import { getTestDatabaseConfig } from "./test-database.config";
 
 /**
  * 测试数据库辅助类
@@ -97,10 +97,10 @@ export class TestDatabaseHelper {
 
       // 同步 Schema（测试环境可以直接删除并重建）
       const generator = this.orm.getSchemaGenerator();
-      
+
       // 删除所有表（清理旧数据）
       await generator.dropSchema();
-      
+
       // 创建所有表
       await generator.createSchema();
 
@@ -109,9 +109,9 @@ export class TestDatabaseHelper {
       // await migrator.up();
 
       this.initialized = true;
-      console.log('✅ 测试数据库初始化完成');
+      console.log("✅ 测试数据库初始化完成");
     } catch (error) {
-      console.error('❌ 测试数据库初始化失败:', error);
+      console.error("❌ 测试数据库初始化失败:", error);
       throw error;
     }
   }
@@ -138,7 +138,7 @@ export class TestDatabaseHelper {
       this.orm = null;
       this.em = null;
       this.initialized = false;
-      console.log('✅ 测试数据库清理完成');
+      console.log("✅ 测试数据库清理完成");
     }
   }
 
@@ -170,12 +170,12 @@ export class TestDatabaseHelper {
    */
   static async clearDatabase(): Promise<void> {
     if (!this.orm) {
-      throw new Error('测试数据库未初始化，请先调用 setup()');
+      throw new Error("测试数据库未初始化，请先调用 setup()");
     }
 
     try {
       const connection = this.orm.em.getConnection();
-      
+
       // 获取所有表名
       const tables = await connection.execute(`
         SELECT tablename 
@@ -186,23 +186,25 @@ export class TestDatabaseHelper {
 
       if (tables.length > 0) {
         // 禁用外键约束
-        await connection.execute('SET session_replication_role = replica;');
+        await connection.execute("SET session_replication_role = replica;");
 
         // 清空所有表
         for (const table of tables) {
-          await connection.execute(`TRUNCATE TABLE "${table['tablename']}" CASCADE;`);
+          await connection.execute(
+            `TRUNCATE TABLE "${table["tablename"]}" CASCADE;`,
+          );
         }
 
         // 重新启用外键约束
-        await connection.execute('SET session_replication_role = DEFAULT;');
+        await connection.execute("SET session_replication_role = DEFAULT;");
       }
 
       // 清理 EntityManager 缓存
       this.orm.em.clear();
 
-      console.log('✅ 测试数据清理完成');
+      console.log("✅ 测试数据清理完成");
     } catch (error) {
-      console.error('❌ 清理数据失败:', error);
+      console.error("❌ 清理数据失败:", error);
       throw error;
     }
   }
@@ -215,7 +217,7 @@ export class TestDatabaseHelper {
    */
   static getOrm(): MikroORM {
     if (!this.orm) {
-      throw new Error('测试数据库未初始化，请先调用 setup()');
+      throw new Error("测试数据库未初始化，请先调用 setup()");
     }
     return this.orm;
   }
@@ -228,7 +230,7 @@ export class TestDatabaseHelper {
    */
   static getEntityManager(): SqlEntityManager {
     if (!this.em) {
-      throw new Error('测试数据库未初始化，请先调用 setup()');
+      throw new Error("测试数据库未初始化，请先调用 setup()");
     }
     return this.em;
   }
@@ -255,7 +257,7 @@ export class TestDatabaseHelper {
    */
   static fork(): SqlEntityManager {
     if (!this.em) {
-      throw new Error('测试数据库未初始化，请先调用 setup()');
+      throw new Error("测试数据库未初始化，请先调用 setup()");
     }
     return this.em.fork() as SqlEntityManager;
   }
@@ -290,11 +292,11 @@ export class TestDatabaseHelper {
     callback: (em: SqlEntityManager) => Promise<T>,
   ): Promise<T> {
     if (!this.orm) {
-      throw new Error('测试数据库未初始化，请先调用 setup()');
+      throw new Error("测试数据库未初始化，请先调用 setup()");
     }
 
     const em = this.fork();
-    
+
     try {
       return await em.transactional(callback);
     } finally {
@@ -322,7 +324,7 @@ export class TestDatabaseHelper {
    */
   static async executeQuery(sql: string, params: any[] = []): Promise<any> {
     if (!this.orm) {
-      throw new Error('测试数据库未初始化，请先调用 setup()');
+      throw new Error("测试数据库未初始化，请先调用 setup()");
     }
 
     const connection = this.orm.em.getConnection();
@@ -345,11 +347,10 @@ export class TestDatabaseHelper {
     }
 
     try {
-      await this.orm.em.getConnection().execute('SELECT 1');
+      await this.orm.em.getConnection().execute("SELECT 1");
       return true;
     } catch {
       return false;
     }
   }
 }
-

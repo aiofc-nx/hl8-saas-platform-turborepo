@@ -258,8 +258,8 @@ export class DatabaseIsolationService {
 ```typescript
 // database 模块使用 config
 
-import { DatabaseConfig } from '@hl8/database';
-import { TypedConfigModule } from '@hl8/config';
+import { DatabaseConfig } from "@hl8/database";
+import { TypedConfigModule } from "@hl8/config";
 
 @Module({
   imports: [
@@ -293,8 +293,8 @@ export class AppModule {}
 ```typescript
 // database 模块使用全局日志服务
 
-import { Injectable } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class ConnectionManager {
@@ -304,17 +304,17 @@ export class ConnectionManager {
 
   async connect(): Promise<void> {
     // 日志自动包含隔离上下文（租户、组织、部门、用户）
-    this.logger.log('正在连接数据库...', {
+    this.logger.log("正在连接数据库...", {
       host: this.config.host,
       port: this.config.port,
     });
 
     try {
       await this.orm.connect();
-      this.logger.log('数据库连接成功');
+      this.logger.log("数据库连接成功");
     } catch (error) {
-      this.logger.error('数据库连接失败', error.stack);
-      throw new DatabaseConnectionException('无法连接到数据库服务器');
+      this.logger.error("数据库连接失败", error.stack);
+      throw new DatabaseConnectionException("无法连接到数据库服务器");
     }
   }
 }
@@ -356,13 +356,13 @@ export class ConnectionManager {
 ```typescript
 // database 模块使用统一的异常类型
 
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 
 export class DatabaseConnectionException extends AbstractHttpException {
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_CONNECTION_ERROR', // errorCode
-      '数据库连接错误', // title
+      "DATABASE_CONNECTION_ERROR", // errorCode
+      "数据库连接错误", // title
       detail, // detail
       503, // status
       data, // data (可选)
@@ -493,11 +493,11 @@ export class MetricsService {
 
   async getQueryMetrics(): Promise<QueryMetrics> {
     // ❌ 不应该在 database 模块中使用 Redis
-    const cached = await this.redis.get('db:metrics');
+    const cached = await this.redis.get("db:metrics");
     if (cached) return cached;
 
     const metrics = this.calculateMetrics();
-    await this.redis.set('db:metrics', metrics, 60);
+    await this.redis.set("db:metrics", metrics, 60);
     return metrics;
   }
 }

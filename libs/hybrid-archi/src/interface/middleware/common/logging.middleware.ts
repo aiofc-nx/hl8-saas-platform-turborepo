@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/fastify-pro';
+import { Injectable, NestMiddleware } from "@nestjs/common";
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 
 /**
  * 日志中间件
@@ -37,16 +37,16 @@ export class LoggingMiddleware implements NestMiddleware {
    * @param res - Fastify响应
    * @param next - 下一个中间件
    */
-  use(req: FastifyRequest, res: FastifyReply, next: () => void): void {
+  use(req: any, res: any, next: () => void): void {
     const startTime = Date.now();
     const { method, url, headers, body } = req;
-    const userAgent = Array.isArray(headers['user-agent']) 
-      ? headers['user-agent'][0] 
-      : headers['user-agent'] || '';
+    const userAgent = Array.isArray(headers["user-agent"])
+      ? headers["user-agent"][0]
+      : headers["user-agent"] || "";
     const ip = this.getClientIp(req);
 
     // 记录请求开始
-    console.log('HTTP请求开始', {
+    console.log("HTTP请求开始", {
       method,
       url,
       ip,
@@ -56,13 +56,13 @@ export class LoggingMiddleware implements NestMiddleware {
 
     // 监听响应完成 - 重写 send 方法
     const originalSend = res.send;
-    res.send = function(payload: any) {
+    res.send = function (payload: any) {
       const endTime = Date.now();
       const duration = endTime - startTime;
       const statusCode = res.statusCode;
 
       // 记录请求完成
-      console.log('HTTP请求完成', {
+      console.log("HTTP请求完成", {
         method,
         url,
         ip,
@@ -73,12 +73,12 @@ export class LoggingMiddleware implements NestMiddleware {
 
       // 记录慢请求
       if (duration > 1000) {
-        console.warn('慢请求检测', {
+        console.warn("慢请求检测", {
           method,
           url,
           ip,
           duration: `${duration}ms`,
-          threshold: '1000ms',
+          threshold: "1000ms",
         });
       }
 
@@ -96,19 +96,20 @@ export class LoggingMiddleware implements NestMiddleware {
    * @returns 客户端IP地址
    * @private
    */
-  private getClientIp(req: FastifyRequest): string {
-    const forwarded = req.headers['x-forwarded-for'];
-    const realIp = req.headers['x-real-ip'];
-    const remoteAddress = (req as { connection?: { remoteAddress?: string } }).connection?.remoteAddress;
+  private getClientIp(req: any): string {
+    const forwarded = req.headers["x-forwarded-for"];
+    const realIp = req.headers["x-real-ip"];
+    const remoteAddress = (req as { connection?: { remoteAddress?: string } })
+      .connection?.remoteAddress;
 
     if (forwarded) {
-      return Array.isArray(forwarded) ? forwarded[0] : forwarded.split(',')[0];
+      return Array.isArray(forwarded) ? forwarded[0] : forwarded.split(",")[0];
     }
 
     if (realIp) {
       return Array.isArray(realIp) ? realIp[0] : realIp;
     }
 
-    return remoteAddress || 'unknown';
+    return remoteAddress || "unknown";
   }
 }

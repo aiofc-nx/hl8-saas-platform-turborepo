@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const REQUEST_VALIDATION_GUARD = 'Request Validation Guard';
+export const REQUEST_VALIDATION_GUARD = "Request Validation Guard";

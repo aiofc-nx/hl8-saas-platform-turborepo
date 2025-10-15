@@ -1,63 +1,63 @@
 /**
- * @hl8/caching
+ * @hl8/hybrid-archi
  *
  * 企业级 NestJS Redis 缓存模块
  * 支持多层级数据隔离（平台、租户、组织、部门、用户）
  *
- * @module @hl8/caching
+ * @module @hl8/hybrid-archi
  * @since 1.0.0
  */
 
 // 模块
-export { CachingModule } from './caching.module.js';
+export { CachingModule } from "./caching.module.js";
 
 // 服务
-export { CacheService } from './services/cache.service.js';
-export { RedisService } from './services/redis.service.js';
+export { CacheService } from "./services/cache.service.js";
+export { RedisService } from "./services/redis.service.js";
 
 // 值对象
-export { CacheEntry } from './domain/value-objects/cache-entry.vo.js';
-export { CacheKey } from './domain/value-objects/cache-key.vo.js';
+export { CacheEntry } from "./domain/value-objects/cache-entry.vo.js";
+export { CacheKey } from "./domain/value-objects/cache-key.vo.js";
 
 // 枚举
-export { CacheLevel } from './types/cache-level.enum.js';
+export { CacheLevel } from "./types/cache-level.enum.js";
 
 // 类型
 export type {
   CachingModuleAsyncOptions,
   CachingModuleOptions,
-} from './types/cache-options.interface.js';
-export type { RedisOptions } from './types/redis-options.interface.js';
+} from "./types/cache-options.interface.js";
+export type { RedisOptions } from "./types/redis-options.interface.js";
 
 // 配置
-export { CachingModuleConfig, RedisConfig } from './config/caching.config.js';
+export { CachingModuleConfig, RedisConfig } from "./config/caching.config.js";
 
 // 领域事件
-export { CacheInvalidatedEvent } from './domain/events/cache-invalidated.event.js';
-export { CacheLevelInvalidatedEvent } from './domain/events/cache-level-invalidated.event.js';
+export { CacheInvalidatedEvent } from "./domain/events/cache-invalidated.event.js";
+export { CacheLevelInvalidatedEvent } from "./domain/events/cache-level-invalidated.event.js";
 
 // 装饰器
 export {
   CacheEvict,
   type CacheEvictOptions,
-} from './decorators/cache-evict.decorator.js';
+} from "./decorators/cache-evict.decorator.js";
 export {
   CachePut,
   type CachePutOptions,
-} from './decorators/cache-put.decorator.js';
+} from "./decorators/cache-put.decorator.js";
 export {
   Cacheable,
   type CacheableOptions,
-} from './decorators/cacheable.decorator.js';
+} from "./decorators/cacheable.decorator.js";
 
 // 拦截器（通常不需要导出，装饰器内部使用）
-export { CacheInterceptor } from './interceptors/cache.interceptor.js';
+export { CacheInterceptor } from "./interceptors/cache.interceptor.js";
 
 // 监控服务
-export { CacheMetricsService } from './monitoring/cache-metrics.service.js';
+export { CacheMetricsService } from "./monitoring/cache-metrics.service.js";
 
 // 监控类型
-export type { CacheMetrics } from './types/cache-metrics.interface.js';
+export type { CacheMetrics } from "./types/cache-metrics.interface.js";
 
 // 工具函数
 export {
@@ -65,15 +65,15 @@ export {
   generatePattern,
   isValidKey,
   sanitizeKey,
-} from './utils/key-generator.util.js';
+} from "./utils/key-generator.util.js";
 export {
   deserialize,
   isSerializable,
   serialize,
-} from './utils/serializer.util.js';
+} from "./utils/serializer.util.js";
 
 // 异常类
 export {
   CacheSerializationException,
   RedisConnectionException,
-} from './exceptions/index.js';
+} from "./exceptions/index.js";

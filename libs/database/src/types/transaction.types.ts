@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import type { EntityManager } from '@mikro-orm/core';
+import type { EntityManager } from "@mikro-orm/core";
 
 /**
  * 事务选项接口

@@ -75,8 +75,8 @@
 ```typescript
 // 无需手动传递 tenantId！
 // CacheService 自动从 CLS 获取隔离上下文
-await cacheService.set('user', 'list', users);
-await cacheService.get<User[]>('user', 'list');
+await cacheService.set("user", "list", users);
+await cacheService.get<User[]>("user", "list");
 ```
 
 #### 4️⃣ CachingModule（T017）

@@ -27,13 +27,13 @@
  */
 export enum RoleStatus {
   /** 活跃 - 角色可正常使用 */
-  ACTIVE = 'ACTIVE',
+  ACTIVE = "ACTIVE",
 
   /** 停用 - 角色暂时停用 */
-  INACTIVE = 'INACTIVE',
+  INACTIVE = "INACTIVE",
 
   /** 已删除 - 软删除 */
-  DELETED = 'DELETED',
+  DELETED = "DELETED",
 }
 
 /**
@@ -87,9 +87,9 @@ export class RoleStatusUtils {
    */
   public static getDisplayName(status: RoleStatus): string {
     const names: Record<RoleStatus, string> = {
-      [RoleStatus.ACTIVE]: '活跃',
-      [RoleStatus.INACTIVE]: '停用',
-      [RoleStatus.DELETED]: '已删除',
+      [RoleStatus.ACTIVE]: "活跃",
+      [RoleStatus.INACTIVE]: "停用",
+      [RoleStatus.DELETED]: "已删除",
     };
     return names[status];
   }
@@ -102,7 +102,10 @@ export class RoleStatusUtils {
    * @param {RoleStatus} targetStatus - 目标状态
    * @returns {boolean}
    */
-  public static canTransitionTo(currentStatus: RoleStatus, targetStatus: RoleStatus): boolean {
+  public static canTransitionTo(
+    currentStatus: RoleStatus,
+    targetStatus: RoleStatus,
+  ): boolean {
     // 定义允许的状态转换
     const transitions: Record<RoleStatus, RoleStatus[]> = {
       [RoleStatus.ACTIVE]: [RoleStatus.INACTIVE, RoleStatus.DELETED],
@@ -135,4 +138,3 @@ export class RoleStatusUtils {
     return status === RoleStatus.DELETED;
   }
 }
-

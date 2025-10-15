@@ -8,8 +8,8 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 /**
  * 转换配置接口
@@ -75,7 +75,7 @@ export interface TransformError {
   code: string;
   message: string;
   value?: any;
-  severity: 'error' | 'warning' | 'info';
+  severity: "error" | "warning" | "info";
   context?: Record<string, any>;
 }
 
@@ -100,7 +100,7 @@ export class EntityTransformer {
   private readonly configs = new Map<string, TransformConfig>();
   private readonly transformers = new Map<string, (value: any) => any>();
 
-  constructor(private readonly logger: PinoLogger) {
+  constructor(private readonly logger: FastifyLoggerService) {
     this.initializeDefaultTransformers();
   }
 
@@ -116,7 +116,7 @@ export class EntityTransformer {
   async transformDtoToEntity<T extends object>(
     dto: any,
     entityClass: new (...args: any[]) => T,
-    config?: Partial<TransformConfig>
+    config?: Partial<TransformConfig>,
   ): Promise<TransformResult<T>> {
     const startTime = Date.now();
     const errors: TransformError[] = [];
@@ -157,7 +157,7 @@ export class EntityTransformer {
           if (transformConfig.enableTypeConversion) {
             transformedValue = this.convertType(
               value,
-              transformConfig.typeConversions[key]
+              transformConfig.typeConversions[key],
             );
           }
 
@@ -172,7 +172,7 @@ export class EntityTransformer {
             transformedValue = this.cleanData(
               transformedValue,
               key,
-              transformConfig
+              transformConfig,
             );
           }
 
@@ -195,12 +195,12 @@ export class EntityTransformer {
         } catch (error) {
           const transformError: TransformError = {
             field: key,
-            code: 'TRANSFORM_ERROR',
+            code: "TRANSFORM_ERROR",
             message: `字段转换失败: ${
               error instanceof Error ? error.message : String(error)
             }`,
             value: value,
-            severity: 'error',
+            severity: "error",
             context: { targetField: key },
           };
           errors.push(transformError);
@@ -216,10 +216,10 @@ export class EntityTransformer {
         data: entity,
         metadata: {
           transformedAt: new Date(),
-          transformer: 'EntityTransformer',
-          version: '1.0.0',
+          transformer: "EntityTransformer",
+          version: "1.0.0",
           duration,
-          sourceType: 'DTO',
+          sourceType: "DTO",
           targetType: entityClass.name,
           fieldsTransformed,
           fieldsExcluded,
@@ -229,20 +229,11 @@ export class EntityTransformer {
         warnings,
       };
 
-      this.logger.debug('DTO到实体转换完成', {
-        sourceType: 'DTO',
-        targetType: entityClass.name,
-        fieldsTransformed,
-        fieldsExcluded,
-        fieldsMapped,
-        duration,
-        errorCount: errors.length,
-        warningCount: warnings.length,
-      });
+      this.logger.debug("DTO到实体转换完成");
 
       return result;
     } catch (error) {
-      this.logger.error('DTO到实体转换失败', error);
+      this.logger.error("DTO到实体转换失败", error);
       throw error;
     }
   }
@@ -259,7 +250,7 @@ export class EntityTransformer {
   async transformEntityToDto<T extends object>(
     entity: any,
     dtoClass: new (...args: any[]) => T,
-    config?: Partial<TransformConfig>
+    config?: Partial<TransformConfig>,
   ): Promise<TransformResult<T>> {
     const startTime = Date.now();
     const errors: TransformError[] = [];
@@ -301,7 +292,7 @@ export class EntityTransformer {
           if (transformConfig.enableTypeConversion) {
             transformedValue = this.convertType(
               value,
-              transformConfig.typeConversions[key]
+              transformConfig.typeConversions[key],
             );
           }
 
@@ -316,7 +307,7 @@ export class EntityTransformer {
             transformedValue = this.cleanData(
               transformedValue,
               key,
-              transformConfig
+              transformConfig,
             );
           }
 
@@ -339,12 +330,12 @@ export class EntityTransformer {
         } catch (error) {
           const transformError: TransformError = {
             field: key,
-            code: 'TRANSFORM_ERROR',
+            code: "TRANSFORM_ERROR",
             message: `字段转换失败: ${
               error instanceof Error ? error.message : String(error)
             }`,
             value: value,
-            severity: 'error',
+            severity: "error",
             context: { targetField: key },
           };
           errors.push(transformError);
@@ -360,8 +351,8 @@ export class EntityTransformer {
         data: dto,
         metadata: {
           transformedAt: new Date(),
-          transformer: 'EntityTransformer',
-          version: '1.0.0',
+          transformer: "EntityTransformer",
+          version: "1.0.0",
           duration,
           sourceType: entity.constructor.name,
           targetType: dtoClass.name,
@@ -373,20 +364,11 @@ export class EntityTransformer {
         warnings,
       };
 
-      this.logger.debug('实体到DTO转换完成', {
-        sourceType: entity.constructor.name,
-        targetType: dtoClass.name,
-        fieldsTransformed,
-        fieldsExcluded,
-        fieldsMapped,
-        duration,
-        errorCount: errors.length,
-        warningCount: warnings.length,
-      });
+      this.logger.debug("实体到DTO转换完成");
 
       return result;
     } catch (error) {
-      this.logger.error('实体到DTO转换失败', error);
+      this.logger.error("实体到DTO转换失败", error);
       throw error;
     }
   }
@@ -403,7 +385,7 @@ export class EntityTransformer {
   async batchTransform<T, R>(
     items: T[],
     transformer: (item: T) => R,
-    config?: Partial<TransformConfig>
+    config?: Partial<TransformConfig>,
   ): Promise<TransformResult<R>[]> {
     const results: TransformResult<R>[] = [];
 
@@ -414,8 +396,8 @@ export class EntityTransformer {
           data: result,
           metadata: {
             transformedAt: new Date(),
-            transformer: 'EntityTransformer',
-            version: '1.0.0',
+            transformer: "EntityTransformer",
+            version: "1.0.0",
             duration: 0,
             sourceType: typeof item,
             targetType: typeof result,
@@ -431,24 +413,24 @@ export class EntityTransformer {
           data: null as any,
           metadata: {
             transformedAt: new Date(),
-            transformer: 'EntityTransformer',
-            version: '1.0.0',
+            transformer: "EntityTransformer",
+            version: "1.0.0",
             duration: 0,
             sourceType: typeof item,
-            targetType: 'unknown',
+            targetType: "unknown",
             fieldsTransformed: 0,
             fieldsExcluded: 0,
             fieldsMapped: 0,
           },
           errors: [
             {
-              field: 'item',
-              code: 'BATCH_TRANSFORM_ERROR',
+              field: "item",
+              code: "BATCH_TRANSFORM_ERROR",
               message: `批量转换失败: ${
                 error instanceof Error ? error.message : String(error)
               }`,
               value: item,
-              severity: 'error',
+              severity: "error",
             },
           ],
           warnings: [],
@@ -468,10 +450,10 @@ export class EntityTransformer {
    */
   addCustomTransformer(
     name: string,
-    transformer: (...args: any[]) => any
+    transformer: (...args: any[]) => any,
   ): void {
     this.transformers.set(name, transformer);
-    this.logger.info('自定义转换器已添加', { name });
+    this.logger.log("自定义转换器已添加");
   }
 
   /**
@@ -482,7 +464,7 @@ export class EntityTransformer {
    */
   removeCustomTransformer(name: string): void {
     this.transformers.delete(name);
-    this.logger.info('自定义转换器已移除', { name });
+    this.logger.log("自定义转换器已移除");
   }
 
   // ==================== 私有方法 ====================
@@ -491,7 +473,7 @@ export class EntityTransformer {
    * 获取转换配置
    */
   private getTransformConfig(
-    config?: Partial<TransformConfig>
+    config?: Partial<TransformConfig>,
   ): TransformConfig {
     const defaultConfig: TransformConfig = {
       enableFieldMapping: false,
@@ -518,18 +500,18 @@ export class EntityTransformer {
     if (!targetType) return value;
 
     switch (targetType.toLowerCase()) {
-      case 'string':
+      case "string":
         return String(value);
-      case 'number':
+      case "number":
         return Number(value);
-      case 'boolean':
+      case "boolean":
         return Boolean(value);
-      case 'date':
+      case "date":
         return new Date(value);
-      case 'array':
+      case "array":
         return Array.isArray(value) ? value : [value];
-      case 'object':
-        return typeof value === 'object' ? value : { value };
+      case "object":
+        return typeof value === "object" ? value : { value };
       default:
         return value;
     }
@@ -539,15 +521,15 @@ export class EntityTransformer {
    * 数据清理
    */
   private cleanData(value: any, field: string, config: TransformConfig): any {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       // 去除首尾空格
       value = value.trim();
 
       // 去除HTML标签
-      value = value.replace(/<[^>]*>/g, '');
+      value = value.replace(/<[^>]*>/g, "");
 
       // 去除特殊字符
-      value = value.replace(/[^\w\s\u4e00-\u9fa5]/g, '');
+      value = value.replace(/[^\w\s\u4e00-\u9fa5]/g, "");
     }
 
     return value;
@@ -568,8 +550,8 @@ export class EntityTransformer {
   private async decryptData(value: any): Promise<any> {
     // 这里应该实现具体的解密逻辑
     // 实际实现中会使用解密算法
-    if (typeof value === 'string' && value.startsWith('encrypted_')) {
-      return value.replace('encrypted_', '');
+    if (typeof value === "string" && value.startsWith("encrypted_")) {
+      return value.replace("encrypted_", "");
     }
     return value;
   }
@@ -589,8 +571,8 @@ export class EntityTransformer {
   private async decompressData(value: any): Promise<any> {
     // 这里应该实现具体的解压缩逻辑
     // 实际实现中会使用解压缩算法
-    if (typeof value === 'string' && value.startsWith('compressed_')) {
-      return JSON.parse(value.replace('compressed_', ''));
+    if (typeof value === "string" && value.startsWith("compressed_")) {
+      return JSON.parse(value.replace("compressed_", ""));
     }
     return value;
   }
@@ -600,7 +582,7 @@ export class EntityTransformer {
    */
   private getReverseFieldMapping(
     field: string,
-    mappings: Record<string, string>
+    mappings: Record<string, string>,
   ): string | null {
     for (const [source, target] of Object.entries(mappings)) {
       if (target === field) {
@@ -615,59 +597,59 @@ export class EntityTransformer {
    */
   private initializeDefaultTransformers(): void {
     // 字符串转换器
-    this.addCustomTransformer('toUpperCase', (value: any) =>
-      typeof value === 'string' ? value.toUpperCase() : value
+    this.addCustomTransformer("toUpperCase", (value: any) =>
+      typeof value === "string" ? value.toUpperCase() : value,
     );
 
-    this.addCustomTransformer('toLowerCase', (value: any) =>
-      typeof value === 'string' ? value.toLowerCase() : value
+    this.addCustomTransformer("toLowerCase", (value: any) =>
+      typeof value === "string" ? value.toLowerCase() : value,
     );
 
-    this.addCustomTransformer('trim', (value: any) =>
-      typeof value === 'string' ? value.trim() : value
+    this.addCustomTransformer("trim", (value: any) =>
+      typeof value === "string" ? value.trim() : value,
     );
 
     // 数字转换器
-    this.addCustomTransformer('toInteger', (value: any) =>
-      typeof value === 'number'
+    this.addCustomTransformer("toInteger", (value: any) =>
+      typeof value === "number"
         ? Math.floor(value)
-        : parseInt(String(value), 10)
+        : parseInt(String(value), 10),
     );
 
-    this.addCustomTransformer('toFloat', (value: any) =>
-      typeof value === 'number' ? value : parseFloat(String(value))
+    this.addCustomTransformer("toFloat", (value: any) =>
+      typeof value === "number" ? value : parseFloat(String(value)),
     );
 
     // 日期转换器
-    this.addCustomTransformer('toDate', (value: any) =>
-      value instanceof Date ? value : new Date(value)
+    this.addCustomTransformer("toDate", (value: any) =>
+      value instanceof Date ? value : new Date(value),
     );
 
-    this.addCustomTransformer('toISOString', (value: any) =>
+    this.addCustomTransformer("toISOString", (value: any) =>
       value instanceof Date
         ? value.toISOString()
-        : new Date(value).toISOString()
+        : new Date(value).toISOString(),
     );
 
     // 布尔转换器
-    this.addCustomTransformer('toBoolean', (value: any) => Boolean(value));
+    this.addCustomTransformer("toBoolean", (value: any) => Boolean(value));
 
     // 数组转换器
-    this.addCustomTransformer('toArray', (value: any) =>
-      Array.isArray(value) ? value : [value]
+    this.addCustomTransformer("toArray", (value: any) =>
+      Array.isArray(value) ? value : [value],
     );
 
-    this.addCustomTransformer('flatten', (value: any) =>
-      Array.isArray(value) ? value.flat() : value
+    this.addCustomTransformer("flatten", (value: any) =>
+      Array.isArray(value) ? value.flat() : value,
     );
 
     // 对象转换器
-    this.addCustomTransformer('toObject', (value: any) =>
-      typeof value === 'object' ? value : { value }
+    this.addCustomTransformer("toObject", (value: any) =>
+      typeof value === "object" ? value : { value },
     );
 
-    this.addCustomTransformer('pick', (value: any, fields: string[]) => {
-      if (typeof value !== 'object' || value === null) return value;
+    this.addCustomTransformer("pick", (value: any, fields: string[]) => {
+      if (typeof value !== "object" || value === null) return value;
       const result: any = {};
       for (const field of fields) {
         if (field in value) {
@@ -677,8 +659,8 @@ export class EntityTransformer {
       return result;
     });
 
-    this.addCustomTransformer('omit', (value: any, fields: string[]) => {
-      if (typeof value !== 'object' || value === null) return value;
+    this.addCustomTransformer("omit", (value: any, fields: string[]) => {
+      if (typeof value !== "object" || value === null) return value;
       const result: any = {};
       for (const [key, val] of Object.entries(value)) {
         if (!fields.includes(key)) {

@@ -36,7 +36,7 @@
  * @since 1.0.0
  */
 
-import { IQuery, IQueryMetadata } from '../base/query.interface';
+import { IQuery, IQueryMetadata } from "../base/query.interface.js";
 
 /**
  * 构造函数类型定义
@@ -46,7 +46,9 @@ type Constructor<T = Record<string, unknown>> = new (...args: unknown[]) => T;
 /**
  * 类装饰器类型定义
  */
-type ClassDecorator = <TFunction extends Constructor>(target: TFunction) => TFunction | void;
+type ClassDecorator = <TFunction extends Constructor>(
+  target: TFunction,
+) => TFunction | void;
 
 /**
  * 查询处理器选项接口
@@ -115,7 +117,7 @@ export interface IQueryHandlerOptions {
 /**
  * 查询处理器元数据键
  */
-export const QUERY_HANDLER_METADATA_KEY = Symbol('queryHandler');
+export const QUERY_HANDLER_METADATA_KEY = Symbol("queryHandler");
 
 /**
  * 查询处理器装饰器
@@ -139,7 +141,7 @@ export const QUERY_HANDLER_METADATA_KEY = Symbol('queryHandler');
  */
 export function QueryHandler<TQuery extends IQuery>(
   queryClass: new (...args: unknown[]) => TQuery,
-  options: IQueryHandlerOptions = {}
+  options: IQueryHandlerOptions = {},
 ): ClassDecorator {
   return function <T extends Constructor>(target: T): T {
     // 获取查询类型
@@ -150,14 +152,14 @@ export function QueryHandler<TQuery extends IQuery>(
     const metadata: IQueryMetadata = {
       queryType,
       description: options.description || `${target.name} 查询处理器`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       requiredPermissions: options.requiredPermissions || [],
       category: options.category,
       tags: options.tags,
       cache: options.cache
         ? {
             ...options.cache,
-            keyPrefix: options.cache.keyPrefix || 'query',
+            keyPrefix: options.cache.keyPrefix || "query",
           }
         : undefined,
       timeout: options.timeout
@@ -178,7 +180,7 @@ export function QueryHandler<TQuery extends IQuery>(
     Reflect.defineMetadata(QUERY_HANDLER_METADATA_KEY, metadata, target);
 
     // 设置查询类型属性
-    Object.defineProperty(target.prototype, 'queryType', {
+    Object.defineProperty(target.prototype, "queryType", {
       value: queryType,
       writable: false,
       enumerable: true,
@@ -196,7 +198,7 @@ export function QueryHandler<TQuery extends IQuery>(
  * @returns 查询处理器元数据
  */
 export function getQueryHandlerMetadata(
-  target: unknown
+  target: unknown,
 ): IQueryMetadata | undefined {
   return Reflect.getMetadata(QUERY_HANDLER_METADATA_KEY, target as Object);
 }
@@ -214,7 +216,7 @@ export function isQueryHandler(target: unknown): boolean {
 /**
  * 查询装饰器元数据键
  */
-export const QUERY_METADATA_KEY = Symbol('query');
+export const QUERY_METADATA_KEY = Symbol("query");
 
 /**
  * 查询装饰器
@@ -253,14 +255,14 @@ export function Query(options: {
     const metadata: IQueryMetadata = {
       queryType: options.type,
       description: options.description || `${options.type} 查询`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       requiredPermissions: options.requiredPermissions || [],
       category: options.category,
       tags: options.tags,
       cache: options.cache
         ? {
             ...options.cache,
-            keyPrefix: options.cache.keyPrefix || 'query',
+            keyPrefix: options.cache.keyPrefix || "query",
           }
         : undefined,
     };
@@ -269,7 +271,7 @@ export function Query(options: {
     Reflect.defineMetadata(QUERY_METADATA_KEY, metadata, target);
 
     // 设置查询类型属性
-    Object.defineProperty(target.prototype, 'queryType', {
+    Object.defineProperty(target.prototype, "queryType", {
       value: options.type,
       writable: false,
       enumerable: true,

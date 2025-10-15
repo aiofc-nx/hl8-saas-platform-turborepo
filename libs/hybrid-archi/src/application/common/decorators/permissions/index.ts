@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-export type { IRequirePermissionsOptions } from './permissions.decorator';
+export type { IRequirePermissionsOptions } from "./permissions.decorator.js";
 export {
   RequirePermissions,
   getRequirePermissionsMetadata,
   REQUIRE_PERMISSIONS_METADATA_KEY,
-} from './permissions.decorator';
+} from "./permissions.decorator.js";

@@ -26,10 +26,10 @@
 ### 基本使用
 
 ```typescript
-import { NestFactory } from '@nestjs/core';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
-import { AppModule } from './app.module';
+import { NestFactory } from "@nestjs/core";
+import { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify/index.js";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   // 使用默认配置，自动启用请求 ID
@@ -46,13 +46,13 @@ bootstrap();
 ### 自定义配置
 
 ```typescript
-import { NestFactory } from '@nestjs/core';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { NestFactory } from "@nestjs/core";
+import { NestFastifyApplication } from "@nestjs/platform-fastify";
 import {
   EnterpriseFastifyAdapter,
   RequestIdStrategy,
-} from '@hl8/nestjs-fastify';
-import { AppModule } from './app.module';
+} from "@hl8/nestjs-fastify/index.js";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -63,11 +63,11 @@ async function bootstrap() {
       // 自定义请求 ID 配置
       requestIdOptions: {
         strategy: RequestIdStrategy.ULID,
-        headerName: 'X-Request-Id',
+        headerName: "X-Request-Id",
         generateOnMissing: true,
         includeInResponse: true,
         includeInLogs: true,
-        prefix: 'api',
+        prefix: "api",
       },
     }),
   );
@@ -102,13 +102,13 @@ bootstrap();
 ```typescript
 enum RequestIdStrategy {
   /** UUID v4 格式 */
-  UUID = 'uuid',
+  UUID = "uuid",
   /** ULID 格式 */
-  ULID = 'ulid',
+  ULID = "ulid",
   /** 时间戳 + 随机数 */
-  TIMESTAMP = 'timestamp',
+  TIMESTAMP = "timestamp",
   /** 自定义前缀 + UUID */
-  PREFIXED = 'prefixed',
+  PREFIXED = "prefixed",
 }
 ```
 
@@ -194,7 +194,7 @@ requestIdOptions: {
 ### 手动生成请求 ID
 
 ```typescript
-import { RequestIdGenerator, RequestIdStrategy } from '@hl8/nestjs-fastify';
+import { RequestIdGenerator, RequestIdStrategy } from "@hl8/nestjs-fastify/index.js";
 
 // 快速生成（使用默认配置）
 const requestId = RequestIdGenerator.quick();
@@ -203,12 +203,12 @@ const requestId = RequestIdGenerator.quick();
 const ulid = RequestIdGenerator.ulid();
 
 // 生成带前缀的 ID
-const prefixedId = RequestIdGenerator.withPrefix('user');
+const prefixedId = RequestIdGenerator.withPrefix("user");
 
 // 自定义配置生成
 const customId = RequestIdGenerator.generate({
   strategy: RequestIdStrategy.TIMESTAMP,
-  prefix: 'order',
+  prefix: "order",
   includeTimestamp: true,
 });
 ```
@@ -216,24 +216,24 @@ const customId = RequestIdGenerator.generate({
 ### 验证请求 ID
 
 ```typescript
-import { RequestIdGenerator } from '@hl8/nestjs-fastify';
+import { RequestIdGenerator } from "@hl8/nestjs-fastify/index.js";
 
 // 验证 ID 格式
 const isValid = RequestIdGenerator.isValid(
-  '550e8400-e29b-41d4-a716-446655440000',
+  "550e8400-e29b-41d4-a716-446655440000",
 );
 
 // 从请求头中提取和验证
 const requestId = RequestIdGenerator.extractFromHeaders({
-  'x-request-id': '550e8400-e29b-41d4-a716-446655440000',
+  "x-request-id": "550e8400-e29b-41d4-a716-446655440000",
 });
 ```
 
 ### 在服务中使用
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
+import { Injectable } from "@nestjs/common";
+import { FastifyRequest } from "fastify";
 
 @Injectable()
 export class UserService {
@@ -245,7 +245,7 @@ export class UserService {
     console.log(`[${requestId}] 获取用户信息: ${userId}`);
 
     // 业务逻辑...
-    return { id: userId, name: 'John Doe' };
+    return { id: userId, name: "John Doe" };
   }
 }
 ```
@@ -269,15 +269,15 @@ export class UserService {
 ### 手动日志集成
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 
 @Injectable()
 export class OrderService {
   constructor(private readonly logger: FastifyLoggerService) {}
 
   async createOrder(requestId: string, orderData: any) {
-    this.logger.info('创建订单', {
+    this.logger.info("创建订单", {
       requestId,
       orderId: orderData.id,
       amount: orderData.amount,
@@ -291,8 +291,8 @@ export class OrderService {
 ### 发送请求时传递 ID
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
+import { Injectable } from "@nestjs/common";
+import { HttpService } from "@nestjs/axios";
 
 @Injectable()
 export class ExternalApiService {
@@ -300,11 +300,11 @@ export class ExternalApiService {
 
   async callExternalApi(requestId: string, data: any) {
     const response = await this.httpService.post(
-      'https://api.example.com/endpoint',
+      "https://api.example.com/endpoint",
       data,
       {
         headers: {
-          'X-Request-Id': requestId,
+          "X-Request-Id": requestId,
         },
       },
     );
@@ -317,10 +317,10 @@ export class ExternalApiService {
 ### 接收请求时提取 ID
 
 ```typescript
-import { Controller, Get, Req } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
+import { Controller, Get, Req } from "@nestjs/common";
+import { FastifyRequest } from "fastify";
 
-@Controller('webhook')
+@Controller("webhook")
 export class WebhookController {
   @Get()
   async handleWebhook(@Req() request: FastifyRequest) {
@@ -345,7 +345,7 @@ const app = await NestFactory.create<NestFastifyApplication>(
   new EnterpriseFastifyAdapter({
     requestIdOptions: {
       strategy: RequestIdStrategy.ULID,
-      headerName: 'X-Request-Id',
+      headerName: "X-Request-Id",
       generateOnMissing: true,
       includeInResponse: true,
       includeInLogs: true,
@@ -363,8 +363,8 @@ const app = await NestFactory.create<NestFastifyApplication>(
   new EnterpriseFastifyAdapter({
     requestIdOptions: {
       strategy: RequestIdStrategy.PREFIXED,
-      prefix: 'dev',
-      headerName: 'X-Request-Id',
+      prefix: "dev",
+      headerName: "X-Request-Id",
       generateOnMissing: true,
       includeInResponse: true,
       includeInLogs: true,
@@ -382,8 +382,8 @@ const app = await NestFactory.create<NestFastifyApplication>(
   new EnterpriseFastifyAdapter({
     requestIdOptions: {
       strategy: RequestIdStrategy.TIMESTAMP,
-      prefix: 'test',
-      headerName: 'X-Request-Id',
+      prefix: "test",
+      headerName: "X-Request-Id",
       generateOnMissing: true,
       includeInResponse: false, // 测试环境可能不需要响应头
       includeInLogs: true,
@@ -447,9 +447,9 @@ requestIdOptions: {
 app
   .getHttpAdapter()
   .getInstance()
-  .addHook('onRequest', (request, reply) => {
-    console.log('Request ID:', request.requestId);
-    console.log('Headers:', request.headers);
+  .addHook("onRequest", (request, reply) => {
+    console.log("Request ID:", request.requestId);
+    console.log("Headers:", request.headers);
   });
 ```
 
@@ -460,8 +460,8 @@ app
 app
   .getHttpAdapter()
   .getInstance()
-  .addHook('onRequest', (request, reply) => {
-    request.log.info('请求开始', { requestId: request.requestId });
+  .addHook("onRequest", (request, reply) => {
+    request.log.info("请求开始", { requestId: request.requestId });
   });
 ```
 

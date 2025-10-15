@@ -37,8 +37,8 @@
  * @since 1.0.0
  */
 
-import { plainToClass } from 'class-transformer';
-import { validateSync, ValidationError } from 'class-validator';
+import { plainToClass } from "class-transformer";
+import { validateSync, ValidationError } from "class-validator";
 
 /**
  * 配置验证器类
@@ -102,10 +102,10 @@ export class ConfigValidator {
     return errors
       .map((error) => {
         const constraints = error.constraints
-          ? Object.values(error.constraints).join(', ')
-          : '';
+          ? Object.values(error.constraints).join(", ")
+          : "";
         return `  - ${error.property}: ${constraints}`;
       })
-      .join('\n');
+      .join("\n");
   }
 }

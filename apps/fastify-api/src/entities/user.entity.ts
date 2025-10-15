@@ -37,17 +37,17 @@
  * ```
  */
 
-import { Entity, Index, PrimaryKey, Property, Unique } from '@mikro-orm/core';
-import { v4 as uuid } from 'uuid';
+import { Entity, Index, PrimaryKey, Property, Unique } from "@mikro-orm/core";
+import { v4 as uuid } from "uuid";
 
-@Entity({ tableName: 'users' })
-@Unique({ properties: ['tenantId', 'email'] })
-@Unique({ properties: ['tenantId', 'username'] })
+@Entity({ tableName: "users" })
+@Unique({ properties: ["tenantId", "email"] })
+@Unique({ properties: ["tenantId", "username"] })
 export class User {
   /**
    * 用户主键 ID
    */
-  @PrimaryKey({ type: 'uuid' })
+  @PrimaryKey({ type: "uuid" })
   id: string = uuid();
 
   /**
@@ -55,7 +55,7 @@ export class User {
    *
    * @description 必填字段，用于数据隔离
    */
-  @Property({ type: 'uuid' })
+  @Property({ type: "uuid" })
   @Index()
   tenantId!: string;
 
@@ -64,7 +64,7 @@ export class User {
    *
    * @description 可选字段，用于组织级数据隔离
    */
-  @Property({ type: 'uuid', nullable: true })
+  @Property({ type: "uuid", nullable: true })
   @Index()
   organizationId?: string;
 
@@ -73,7 +73,7 @@ export class User {
    *
    * @description 可选字段，用于部门级数据隔离
    */
-  @Property({ type: 'uuid', nullable: true })
+  @Property({ type: "uuid", nullable: true })
   @Index()
   departmentId?: string;
 
@@ -82,7 +82,7 @@ export class User {
    *
    * @description 在租户内唯一
    */
-  @Property({ type: 'varchar', length: 100 })
+  @Property({ type: "varchar", length: 100 })
   username!: string;
 
   /**
@@ -90,43 +90,43 @@ export class User {
    *
    * @description 在租户内唯一
    */
-  @Property({ type: 'varchar', length: 255 })
+  @Property({ type: "varchar", length: 255 })
   email!: string;
 
   /**
    * 名
    */
-  @Property({ type: 'varchar', length: 100 })
+  @Property({ type: "varchar", length: 100 })
   firstName!: string;
 
   /**
    * 姓
    */
-  @Property({ type: 'varchar', length: 100 })
+  @Property({ type: "varchar", length: 100 })
   lastName!: string;
 
   /**
    * 是否激活
    */
-  @Property({ type: 'boolean', default: true })
+  @Property({ type: "boolean", default: true })
   isActive: boolean = true;
 
   /**
    * 创建时间
    */
-  @Property({ type: 'timestamptz', onCreate: () => new Date() })
+  @Property({ type: "timestamptz", onCreate: () => new Date() })
   createdAt: Date = new Date();
 
   /**
    * 更新时间
    */
-  @Property({ type: 'timestamptz', onUpdate: () => new Date() })
+  @Property({ type: "timestamptz", onUpdate: () => new Date() })
   updatedAt: Date = new Date();
 
   /**
    * 删除时间（软删除）
    */
-  @Property({ type: 'timestamptz', nullable: true })
+  @Property({ type: "timestamptz", nullable: true })
   deletedAt?: Date;
 
   /**

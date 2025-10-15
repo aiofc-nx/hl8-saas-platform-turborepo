@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-export * from './cqrs-bus.interface';
-export * from './command-bus';
-export * from './query-bus';
-export * from './event-bus';
-export * from './cqrs-bus';
+export * from "./cqrs-bus.interface.js";
+export * from "./command-bus.js";
+export * from "./query-bus.js";
+export * from "./event-bus.js";
+export * from "./cqrs-bus.js";

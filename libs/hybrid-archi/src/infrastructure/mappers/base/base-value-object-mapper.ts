@@ -55,8 +55,8 @@
  * @since 1.0.0
  */
 
-import type { IValueObjectMapper } from './mapper.interface';
-import { MappingError } from './base-domain-mapper';
+import type { IValueObjectMapper } from "./mapper.interface.js";
+import { MappingError } from "./base-domain-mapper.js";
 
 /**
  * 基础值对象映射器抽象类
@@ -94,8 +94,8 @@ export abstract class BaseValueObjectMapper<TValueObject, TPrimitive>
     } catch (error) {
       throw new MappingError(
         `值对象映射到原始值失败: ${error instanceof Error ? error.message : String(error)}`,
-        'ValueObject',
-        'Primitive',
+        "ValueObject",
+        "Primitive",
         error instanceof Error ? error : undefined,
       );
     }
@@ -117,8 +117,8 @@ export abstract class BaseValueObjectMapper<TValueObject, TPrimitive>
     } catch (error) {
       throw new MappingError(
         `原始值映射到值对象失败: ${error instanceof Error ? error.message : String(error)}`,
-        'Primitive',
-        'ValueObject',
+        "Primitive",
+        "ValueObject",
         error instanceof Error ? error : undefined,
       );
     }
@@ -205,7 +205,7 @@ export abstract class BaseValueObjectMapper<TValueObject, TPrimitive>
    */
   protected validateValueObject(valueObject: TValueObject): void {
     if (valueObject === null || valueObject === undefined) {
-      throw new Error('值对象不能为空');
+      throw new Error("值对象不能为空");
     }
   }
 
@@ -218,7 +218,7 @@ export abstract class BaseValueObjectMapper<TValueObject, TPrimitive>
    */
   protected validatePrimitive(primitive: TPrimitive): void {
     if (primitive === null || primitive === undefined) {
-      throw new Error('原始值不能为空');
+      throw new Error("原始值不能为空");
     }
   }
 

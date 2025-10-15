@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const PAGINATION_PIPE = 'Pagination Pipe';
+export const PAGINATION_PIPE = "Pagination Pipe";

@@ -6,10 +6,10 @@
  */
 
 // 基础查询类
-export { BaseQuery } from './base-query';
+export { BaseQuery } from "./base-query.js";
 
 // 基础查询结果类
-export { BaseQueryResult } from './base-query-result';
+export { BaseQueryResult } from "./base-query-result.js";
 
 // 查询接口
 export type {
@@ -17,7 +17,7 @@ export type {
   IQueryValidationResult,
   IQueryMetadata,
   IQueryFactory,
-} from './query.interface';
+} from "./query.interface.js";
 
 // 查询处理器接口
-export * from './query-handler.interface';
+export * from "./query-handler.interface.js";

@@ -314,7 +314,7 @@ export interface IUseCaseRegistry {
    * @param type - 用例类型（'command' | 'query'）
    * @returns 该类型的所有用例
    */
-  getByType(type: 'command' | 'query'): Map<string, IUseCase<any, any>>;
+  getByType(type: "command" | "query"): Map<string, IUseCase<any, any>>;
 }
 
 /**

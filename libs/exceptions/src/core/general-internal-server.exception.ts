@@ -86,7 +86,7 @@
  * @since 0.1.0
  */
 
-import { AbstractHttpException } from './abstract-http.exception.js';
+import { AbstractHttpException } from "./abstract-http.exception.js";
 
 /**
  * 通用 500 内部服务器错误异常
@@ -118,7 +118,7 @@ export class GeneralInternalServerException extends AbstractHttpException {
    */
   constructor(title: string, detail: string, data?: any, rootCause?: Error) {
     super(
-      'INTERNAL_SERVER_ERROR',
+      "INTERNAL_SERVER_ERROR",
       title,
       detail,
       500,

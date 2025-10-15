@@ -7,8 +7,8 @@
  */
 
 // 基础设施工厂
-export * from './infrastructure.factory';
-export * from './infrastructure.manager';
+export * from "./infrastructure.factory.js";
+export * from "./infrastructure.manager.js";
 
 // 基础设施工厂模块
-export * from './infrastructure-factories.module';
+export * from "./infrastructure-factories.module.js";

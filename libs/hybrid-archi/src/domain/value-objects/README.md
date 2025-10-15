@@ -39,7 +39,9 @@ export abstract class BaseValueObject<T = any> {
   }
 
   protected abstract validate(value: T): void;
-  protected transform(value: T): T { return value; }
+  protected transform(value: T): T {
+    return value;
+  }
 }
 ```
 
@@ -98,19 +100,19 @@ export abstract class Description extends BaseValueObject<string> {
 // 继承通用基类，只添加业务特定规则
 export class TenantCode extends Code {
   protected override validate(value: string): void {
-    super.validate(value);  // 通用验证
-    this.validateLength(value, 3, 20, '租户代码');
-    
+    super.validate(value); // 通用验证
+    this.validateLength(value, 3, 20, "租户代码");
+
     // 业务特定验证
-    const reserved = ['admin', 'api', 'www'];
+    const reserved = ["admin", "api", "www"];
     if (reserved.includes(value)) {
-      throw new Error('不能使用保留词');
+      throw new Error("不能使用保留词");
     }
   }
 }
 
 // 使用
-const code = TenantCode.create('my-tenant');
+const code = TenantCode.create("my-tenant");
 console.log(code.value); // 'my-tenant'
 ```
 
@@ -160,32 +162,32 @@ packages/hybrid-archi/src/domain/value-objects/
 **基础用法**：
 
 ```typescript
-import { BaseValueObject } from '@hl8/hybrid-archi';
+import { BaseValueObject } from "@hl8/hybrid-archi";
 
 // 简单值对象
 export class ProductCode extends BaseValueObject<string> {
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '产品代码');
-    this.validateLength(value, 5, 20, '产品代码');
-    this.validatePattern(value, /^PROD-[0-9]+$/, '格式：PROD-数字');
+    this.validateNotEmpty(value, "产品代码");
+    this.validateLength(value, 5, 20, "产品代码");
+    this.validatePattern(value, /^PROD-[0-9]+$/, "格式：PROD-数字");
   }
 }
 
 // 复杂值对象
 export class Address extends BaseValueObject<AddressProps> {
   protected override validate(props: AddressProps): void {
-    this.validateNotEmpty(props.street, '街道');
-    this.validateNotEmpty(props.city, '城市');
+    this.validateNotEmpty(props.street, "街道");
+    this.validateNotEmpty(props.city, "城市");
   }
 }
 
 // 使用
-const code = ProductCode.create('PROD-12345');
+const code = ProductCode.create("PROD-12345");
 console.log(code.value); // 'PROD-12345'
 
 const address = Address.create({
-  street: '123 Main St',
-  city: 'Beijing'
+  street: "123 Main St",
+  city: "Beijing",
 });
 console.log(address.value.city); // 'Beijing'
 ```
@@ -195,7 +197,7 @@ console.log(address.value.city); // 'Beijing'
 **推荐方式**：
 
 ```typescript
-import { Code, Domain, Level, Name, Description } from '@hl8/hybrid-archi';
+import { Code, Domain, Level, Name, Description } from "@hl8/hybrid-archi";
 
 // 1. 直接使用（无额外验证）
 export class ProductCode extends Code {
@@ -205,24 +207,24 @@ export class ProductCode extends Code {
 // 2. 添加业务规则
 export class TenantCode extends Code {
   protected override validate(value: string): void {
-    super.validate(value);  // 通用验证
-    this.validateLength(value, 3, 20, '租户代码');
+    super.validate(value); // 通用验证
+    this.validateLength(value, 3, 20, "租户代码");
   }
 }
 
 // 3. 配置参数
 export class DepartmentLevel extends Level {
   constructor(value: number) {
-    super(value, 1, 6);  // 范围 1-6
+    super(value, 1, 6); // 范围 1-6
   }
 }
 
 // 4. 组合使用
 export class ProductName extends Name {
   constructor(value: string) {
-    super(value, 3, 100);  // 长度 3-100
+    super(value, 3, 100); // 长度 3-100
   }
-  
+
   protected override validate(value: string): void {
     super.validate(value);
     // 添加特定规则
@@ -233,22 +235,22 @@ export class ProductName extends Name {
 ### 3. 使用内置值对象
 
 ```typescript
-import { Email, Username, PhoneNumber, Password } from '@hl8/hybrid-archi';
+import { Email, Username, PhoneNumber, Password } from "@hl8/hybrid-archi";
 
 // 邮箱验证
-const email = Email.create('user@example.com');
+const email = Email.create("user@example.com");
 console.log(email.getDomain()); // 'example.com'
 
 // 用户名验证
-const username = Username.create('john-doe');
+const username = Username.create("john-doe");
 console.log(username.value); // 'john-doe'
 
 // 电话号码
-const phone = PhoneNumber.create('+86-13800138000');
+const phone = PhoneNumber.create("+86-13800138000");
 console.log(phone.getCountryCode()); // '+86'
 
 // 密码强度验证
-const password = Password.create('SecurePass123!');
+const password = Password.create("SecurePass123!");
 ```
 
 ---
@@ -263,12 +265,12 @@ protected override validate(value: any): void {
   this.validateNotEmpty(value, '字段名');
   this.validateLength(value, min, max, '字段名');
   this.validatePattern(value, regex, '错误消息');
-  
+
   // 数值验证
   this.validateRange(value, min, max, '字段名');
   this.validateInteger(value, '字段名');
   this.validatePositive(value, '字段名');
-  
+
   // 枚举验证
   this.validateEnum(value, allowedValues, '字段名');
 }
@@ -280,21 +282,24 @@ protected override validate(value: any): void {
 
 ### 通用值对象（可复用）
 
-| 类别 | 值对象 | 用途 |
-|------|--------|------|
-| **抽象基类** | Code, Domain, Level, Name, Description | 业务值对象继承 |
-| **身份** | Email, Username, PhoneNumber, Password | 用户身份验证 |
-| **状态** | UserStatus | 通用用户状态 |
-| **安全** | PasswordPolicy, MfaType, MfaStatus | 安全策略 |
-| **审计** | AuditEventType | 审计日志 |
-| **权限** | PermissionDefinitions | 权限定义 |
+| 类别         | 值对象                                 | 用途                               |
+| ------------ | -------------------------------------- | ---------------------------------- |
+| **抽象基类** | Code, Domain, Level, Name, Description | 业务值对象继承                     |
+| **身份**     | Email, Username, PhoneNumber, Password | 用户身份验证                       |
+| **状态**     | UserStatus                             | 通用用户状态 (domain/enums/common) |
+| **安全**     | PasswordPolicy, MfaType, MfaStatus     | 安全策略                           |
+| **审计**     | AuditEventType                         | 审计日志                           |
 
-### 业务值对象（业务模块实现）
+### 业务值对象（已移除）
 
-**不再包含在 hybrid-archi 中** (OPT-004):
+**已从 hybrid-archi 中移除** (重构 v1.1.0):
 
 - ❌ ~~TenantStatus~~ → 已移至 saas-core
 - ❌ ~~OrganizationStatus~~ → 已移至 saas-core
+- ❌ ~~TenantType~~ → 已移至 saas-core
+- ❌ ~~UserRole~~ → 已移至 saas-core
+- ❌ ~~PermissionDefinitions~~ → 已移至 saas-core
+- ❌ ~~UserStatus~~ → 已移至通用枚举 (domain/enums/common/user-status.enum.ts)
 
 **原因**: hybrid-archi 是架构基础库，不应包含业务特定概念
 
@@ -318,7 +323,7 @@ export class ApiDomain extends Domain {
 // 场景3: 层级类字段 → 继承 Level
 export class MemberLevel extends Level {
   constructor(value: number) {
-    super(value, 1, 5);  // VIP1-VIP5
+    super(value, 1, 5); // VIP1-VIP5
   }
 }
 
@@ -339,14 +344,14 @@ export class Address extends BaseValueObject<AddressProps> {
 export class Email extends BaseValueObject<string> {
   protected override validate(value: string): void {
     // 使用辅助方法，避免重复代码
-    this.validateNotEmpty(value, '邮箱');
-    this.validateLength(value, 5, 254, '邮箱');
-    this.validatePattern(value, EMAIL_REGEX, '邮箱格式不正确');
-    
+    this.validateNotEmpty(value, "邮箱");
+    this.validateLength(value, 5, 254, "邮箱");
+    this.validatePattern(value, EMAIL_REGEX, "邮箱格式不正确");
+
     // 业务特定规则
-    const [local, domain] = value.split('@');
+    const [local, domain] = value.split("@");
     if (local.length > 64) {
-      throw new Error('邮箱本地部分不能超过64字符');
+      throw new Error("邮箱本地部分不能超过64字符");
     }
   }
 }
@@ -360,10 +365,10 @@ export class Email extends BaseValueObject<string> {
   protected override transform(value: string): string {
     return value.toLowerCase().trim();
   }
-  
+
   protected override validate(value: string): void {
     // 验证已转换后的值
-    this.validatePattern(value, EMAIL_REGEX, '邮箱格式不正确');
+    this.validatePattern(value, EMAIL_REGEX, "邮箱格式不正确");
   }
 }
 ```
@@ -379,17 +384,17 @@ export class Email extends BaseValueObject<string> {
 ```typescript
 export class TenantCode extends BaseValueObject {
   private readonly _value: string;
-  
+
   get value(): string {
     return this._value;
   }
-  
+
   static create(code: string): TenantCode {
     // 手动验证
-    if (!code) throw new Error('不能为空');
+    if (!code) throw new Error("不能为空");
     return new TenantCode(code);
   }
-  
+
   private constructor(value: string) {
     super();
     this._value = value;
@@ -402,11 +407,11 @@ export class TenantCode extends BaseValueObject {
 ```typescript
 export class TenantCode extends BaseValueObject<string> {
   // value 和 create 自动继承
-  
+
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '租户代码');
-    this.validateLength(value, 3, 20, '租户代码');
-    this.validatePattern(value, /^[a-z0-9-]+$/, '格式不正确');
+    this.validateNotEmpty(value, "租户代码");
+    this.validateLength(value, 3, 20, "租户代码");
+    this.validatePattern(value, /^[a-z0-9-]+$/, "格式不正确");
   }
 }
 ```
@@ -423,10 +428,10 @@ export class TenantCode extends BaseValueObject<string> {
 // Before: 独立实现
 export class ProductCode extends BaseValueObject<string> {
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '产品代码');
-    this.validatePattern(value, /^[a-z0-9-]+$/, '...');
+    this.validateNotEmpty(value, "产品代码");
+    this.validatePattern(value, /^[a-z0-9-]+$/, "...");
   }
-  
+
   protected override transform(value: string): string {
     return value.toLowerCase().trim();
   }
@@ -445,45 +450,45 @@ export class ProductCode extends Code {
 
 ### 核心组件
 
-| 组件 | 类型 | 状态 | 说明 |
-|------|------|------|------|
+| 组件                | 类型     | 状态    | 说明           |
+| ------------------- | -------- | ------- | -------------- |
 | **BaseValueObject** | 泛型基类 | ✅ v1.1 | 支持泛型 `<T>` |
-| **EntityId** | 实体ID | ✅ | 全局唯一标识符 |
+| **EntityId**        | 实体ID   | ✅      | 全局唯一标识符 |
 
 ### 通用抽象基类 (NEW v1.1)
 
-| 组件 | 用途 | 示例 |
-|------|------|------|
-| **Code** | 代码字段 | TenantCode, ProductCode |
-| **Domain** | 域名字段 | TenantDomain, ApiDomain |
-| **Level** | 层级字段 | UserLevel, DepartmentLevel |
-| **Name** | 名称字段 | RoleName, CategoryName |
-| **Description** | 描述字段 | RoleDescription |
+| 组件            | 用途     | 示例                       |
+| --------------- | -------- | -------------------------- |
+| **Code**        | 代码字段 | TenantCode, ProductCode    |
+| **Domain**      | 域名字段 | TenantDomain, ApiDomain    |
+| **Level**       | 层级字段 | UserLevel, DepartmentLevel |
+| **Name**        | 名称字段 | RoleName, CategoryName     |
+| **Description** | 描述字段 | RoleDescription            |
 
 ### 身份值对象
 
-| 组件 | 说明 | API版本 |
-|------|------|---------|
-| **Email** | 邮箱验证 | v1.1 (泛型) |
-| **Username** | 用户名验证 | v1.1 (泛型) |
+| 组件            | 说明         | API版本     |
+| --------------- | ------------ | ----------- |
+| **Email**       | 邮箱验证     | v1.1 (泛型) |
+| **Username**    | 用户名验证   | v1.1 (泛型) |
 | **PhoneNumber** | 电话号码验证 | v1.1 (泛型) |
-| **Password** | 密码验证 | v1.1 (泛型) |
+| **Password**    | 密码验证     | v1.1 (泛型) |
 
 ### 状态值对象
 
-| 组件 | 说明 | 备注 |
-|------|------|------|
-| **UserStatus** | 用户状态 | 通用，保留 |
-| ~~TenantStatus~~ | 租户状态 | 已移至 saas-core (OPT-004) |
+| 组件                   | 说明     | 备注                       |
+| ---------------------- | -------- | -------------------------- |
+| **UserStatus**         | 用户状态 | 通用，保留                 |
+| ~~TenantStatus~~       | 租户状态 | 已移至 saas-core (OPT-004) |
 | ~~OrganizationStatus~~ | 组织状态 | 已移至 saas-core (OPT-004) |
 
 ### 安全值对象
 
-| 组件 | 说明 | API版本 |
-|------|------|---------|
+| 组件               | 说明     | API版本     |
+| ------------------ | -------- | ----------- |
 | **PasswordPolicy** | 密码策略 | v1.1 (泛型) |
-| **MfaType** | MFA 类型 | v1.0 |
-| **MfaStatus** | MFA 状态 | v1.0 |
+| **MfaType**        | MFA 类型 | v1.0        |
+| **MfaStatus**      | MFA 状态 | v1.0        |
 
 ---
 
@@ -493,31 +498,31 @@ export class ProductCode extends Code {
 
 ```typescript
 // 基础值对象
-import { BaseValueObject, EntityId } from '@hl8/hybrid-archi';
+import { BaseValueObject, EntityId } from "@hl8/hybrid-archi";
 
 // 通用抽象基类
-import { Code, Domain, Level, Name, Description } from '@hl8/hybrid-archi';
+import { Code, Domain, Level, Name, Description } from "@hl8/hybrid-archi";
 
 // 身份值对象
-import { Email, Username, PhoneNumber, Password } from '@hl8/hybrid-archi';
+import { Email, Username, PhoneNumber, Password } from "@hl8/hybrid-archi";
 
 // 状态值对象
-import { UserStatus, UserStatusUtils } from '@hl8/hybrid-archi';
+import { UserStatus, UserStatusUtils } from "@hl8/hybrid-archi";
 
 // 安全值对象
-import { PasswordPolicy, MfaType, MfaStatus } from '@hl8/hybrid-archi';
+import { PasswordPolicy, MfaType, MfaStatus } from "@hl8/hybrid-archi";
 ```
 
 ### 不再支持的导入 (v1.1)
 
 ```typescript
 // ❌ 不再支持（已移除）
-import { TenantStatus } from '@hl8/hybrid-archi';  // 请从 @hl8/saas-core 导入
-import { OrganizationStatus } from '@hl8/hybrid-archi';  // 请从 @hl8/saas-core 导入
+import { TenantStatus } from "@hl8/hybrid-archi"; // 请从 @hl8/saas-core 导入
+import { OrganizationStatus } from "@hl8/hybrid-archi"; // 请从 @hl8/saas-core 导入
 
 // ✅ 新的导入方式
-import { TenantStatus } from '@hl8/saas-core';
-import { OrganizationStatus } from '@hl8/saas-core';
+import { TenantStatus } from "@hl8/saas-core";
+import { OrganizationStatus } from "@hl8/saas-core";
 ```
 
 ---

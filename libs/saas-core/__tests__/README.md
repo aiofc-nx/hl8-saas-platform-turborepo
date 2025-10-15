@@ -6,14 +6,14 @@
 
 ### 为什么使用真实数据库？
 
-| 优势 | 说明 |
-|-----|------|
+| 优势             | 说明                           |
+| ---------------- | ------------------------------ |
 | **ORM 映射验证** | 验证 MikroORM 实体映射的正确性 |
-| **数据库约束** | 测试唯一约束、外键、检查约束 |
-| **查询性能** | 发现 N+1 查询、索引问题 |
-| **事务处理** | 测试真实的事务隔离级别 |
-| **多租户隔离** | 验证租户数据隔离的正确性 |
-| **并发问题** | 发现锁、死锁等并发问题 |
+| **数据库约束**   | 测试唯一约束、外键、检查约束   |
+| **查询性能**     | 发现 N+1 查询、索引问题        |
+| **事务处理**     | 测试真实的事务隔离级别         |
+| **多租户隔离**   | 验证租户数据隔离的正确性       |
+| **并发问题**     | 发现锁、死锁等并发问题         |
 
 ## 🚀 快速开始
 
@@ -103,9 +103,9 @@ __tests__/
 #### 基础使用
 
 ```typescript
-import { TestDatabaseHelper } from '../setup/test-database.helper';
+import { TestDatabaseHelper } from "../setup/test-database.helper";
 
-describe('我的数据库测试', () => {
+describe("我的数据库测试", () => {
   // 全局设置：初始化数据库
   beforeAll(async () => {
     await TestDatabaseHelper.setup();
@@ -121,7 +121,7 @@ describe('我的数据库测试', () => {
     await TestDatabaseHelper.clearDatabase();
   });
 
-  it('应该执行数据库操作', async () => {
+  it("应该执行数据库操作", async () => {
     const em = TestDatabaseHelper.fork();
     // 执行测试...
   });
@@ -138,10 +138,10 @@ it('应该在事务中测试', async () => {
     // 在事务中执行操作
     const user = new User(...);
     await em.persistAndFlush(user);
-    
+
     // 测试断言
     expect(user.id).toBeDefined();
-    
+
     // 测试结束后自动回滚，不污染数据库
   });
 });
@@ -151,8 +151,8 @@ it('应该在事务中测试', async () => {
 
 ```typescript
 const result = await TestDatabaseHelper.executeQuery(
-  'SELECT * FROM tenants WHERE type = $1',
-  ['FREE']
+  "SELECT * FROM tenants WHERE type = $1",
+  ["FREE"],
 );
 ```
 
@@ -184,12 +184,12 @@ beforeAll(async () => {
 function createTestTenant(overrides = {}) {
   return TenantAggregate.create(
     EntityId.generate(),
-    TenantCode.create('test001'),
-    '测试租户',
-    TenantDomain.create('test.example.com'),
+    TenantCode.create("test001"),
+    "测试租户",
+    TenantDomain.create("test.example.com"),
     TenantType.FREE,
-    { createdBy: 'system' },
-    ...overrides
+    { createdBy: "system" },
+    ...overrides,
   );
 }
 ```
@@ -197,14 +197,14 @@ function createTestTenant(overrides = {}) {
 ### 3. 测试数据库约束
 
 ```typescript
-it('应该拒绝重复的租户代码', async () => {
+it("应该拒绝重复的租户代码", async () => {
   // 创建第一个租户
-  const tenant1 = createTestTenant({ code: 'duplicate' });
+  const tenant1 = createTestTenant({ code: "duplicate" });
   await repository.save(tenant1);
   await em.flush();
 
   // 尝试创建相同代码的租户
-  const tenant2 = createTestTenant({ code: 'duplicate' });
+  const tenant2 = createTestTenant({ code: "duplicate" });
   await repository.save(tenant2);
 
   // 应该抛出唯一约束错误
@@ -215,13 +215,13 @@ it('应该拒绝重复的租户代码', async () => {
 ### 4. 测试事务
 
 ```typescript
-it('应该在失败时回滚事务', async () => {
+it("应该在失败时回滚事务", async () => {
   await expect(
     em.transactional(async (txEm) => {
       const tenant = createTestTenant();
       await repository.save(tenant);
-      throw new Error('模拟失败');
-    })
+      throw new Error("模拟失败");
+    }),
   ).rejects.toThrow();
 
   // 验证数据已回滚
@@ -233,7 +233,7 @@ it('应该在失败时回滚事务', async () => {
 ### 5. 测试查询性能
 
 ```typescript
-it('应该快速查询（验证索引）', async () => {
+it("应该快速查询（验证索引）", async () => {
   // 创建大量数据
   for (let i = 0; i < 100; i++) {
     await repository.save(createTestTenant({ code: `perf${i}` }));
@@ -242,9 +242,7 @@ it('应该快速查询（验证索引）', async () => {
 
   // 测试查询速度
   const startTime = Date.now();
-  const tenant = await repository.findByCode(
-    TenantCode.create('perf50')
-  );
+  const tenant = await repository.findByCode(TenantCode.create("perf50"));
   const queryTime = Date.now() - startTime;
 
   expect(tenant).toBeDefined();
@@ -299,8 +297,8 @@ TEST_DB_DEBUG=true TEST_DB_LOG=true pnpm test
 或者在测试代码中：
 
 ```typescript
-process.env['TEST_DB_DEBUG'] = 'true';
-process.env['TEST_DB_LOG'] = 'true';
+process.env["TEST_DB_DEBUG"] = "true";
+process.env["TEST_DB_LOG"] = "true";
 ```
 
 ### Q: 如何在测试中使用真实的租户过滤器？
@@ -327,14 +325,14 @@ process.env['TEST_DB_LOG'] = 'true';
 
 ## 🎯 测试覆盖目标
 
-| 组件 | 目标覆盖率 | 当前状态 |
-|-----|----------|---------|
-| 租户仓储 | 80%+ | ✅ 已实现 |
-| 用户仓储 | 80%+ | ⏳ 待实现 |
-| 组织仓储 | 80%+ | ⏳ 待实现 |
-| 部门仓储 | 80%+ | ⏳ 待实现 |
-| 角色仓储 | 80%+ | ⏳ 待实现 |
-| 权限仓储 | 80%+ | ⏳ 待实现 |
+| 组件     | 目标覆盖率 | 当前状态  |
+| -------- | ---------- | --------- |
+| 租户仓储 | 80%+       | ✅ 已实现 |
+| 用户仓储 | 80%+       | ⏳ 待实现 |
+| 组织仓储 | 80%+       | ⏳ 待实现 |
+| 部门仓储 | 80%+       | ⏳ 待实现 |
+| 角色仓储 | 80%+       | ⏳ 待实现 |
+| 权限仓储 | 80%+       | ⏳ 待实现 |
 
 ---
 

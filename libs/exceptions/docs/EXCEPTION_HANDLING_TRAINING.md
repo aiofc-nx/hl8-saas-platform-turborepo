@@ -142,7 +142,7 @@ async getUser(@Param('id') id: string) {
 ```typescript
 // 好的异常就是好的文档
 throw new GeneralNotFoundException(
-  '用户未找到', // title - 简短说明
+  "用户未找到", // title - 简短说明
   `ID 为 "${userId}" 的用户不存在`, // detail - 详细描述
   { userId, searchedAt: new Date() }, // data - 上下文信息
 );
@@ -321,9 +321,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     // 4. 记录日志
     if (problemDetails.status >= 500) {
-      this.logger.error('HTTP 5xx Error', exception.stack);
+      this.logger.error("HTTP 5xx Error", exception.stack);
     } else {
-      this.logger.warn('HTTP 4xx Error', problemDetails);
+      this.logger.warn("HTTP 4xx Error", problemDetails);
     }
 
     // 5. 发送响应
@@ -351,17 +351,17 @@ export class AnyExceptionFilter implements ExceptionFilter {
 
     // 所有未知异常都转换为 500 错误
     const problemDetails = {
-      type: 'https://docs.hl8.com/errors#INTERNAL_SERVER_ERROR',
-      title: '服务器内部错误',
+      type: "https://docs.hl8.com/errors#INTERNAL_SERVER_ERROR",
+      title: "服务器内部错误",
       detail: this.isProduction
-        ? '服务器发生错误，请稍后重试' // 生产：隐藏细节
+        ? "服务器发生错误，请稍后重试" // 生产：隐藏细节
         : exception.message, // 开发：显示详情
       status: 500,
-      errorCode: 'INTERNAL_SERVER_ERROR',
+      errorCode: "INTERNAL_SERVER_ERROR",
     };
 
     // 记录完整错误
-    this.logger.error('Unhandled Exception', exception.stack);
+    this.logger.error("Unhandled Exception", exception.stack);
 
     response.status(500).send(problemDetails);
   }
@@ -574,7 +574,7 @@ app.useGlobalFilters(
 ````typescript
 // libs/order/src/exceptions/order-not-found.exception.ts
 
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 
 /**
  * 订单未找到异常
@@ -597,8 +597,8 @@ import { AbstractHttpException } from '@hl8/exceptions';
 export class OrderNotFoundException extends AbstractHttpException {
   constructor(orderId: string) {
     super(
-      'ORDER_NOT_FOUND', // errorCode
-      '订单未找到', // title
+      "ORDER_NOT_FOUND", // errorCode
+      "订单未找到", // title
       `ID 为 "${orderId}" 的订单不存在`, // detail
       404, // status
       { orderId }, // data
@@ -611,17 +611,17 @@ export class OrderNotFoundException extends AbstractHttpException {
 
 ```typescript
 // libs/order/src/exceptions/index.ts
-export { OrderNotFoundException } from './order-not-found.exception.js';
+export { OrderNotFoundException } from "./order-not-found.exception.js";
 
 // libs/order/src/index.ts
-export * from './exceptions/index.js';
+export * from "./exceptions/index.js";
 ```
 
 #### 步骤4：使用异常
 
 ```typescript
 // 在服务中使用
-import { OrderNotFoundException } from '@hl8/order';
+import { OrderNotFoundException } from "@hl8/order";
 
 @Injectable()
 export class OrderService {
@@ -656,8 +656,8 @@ export class ProductOutOfStockException extends AbstractHttpException {
     availableStock: number,
   ) {
     super(
-      'PRODUCT_OUT_OF_STOCK',
-      '商品库存不足',
+      "PRODUCT_OUT_OF_STOCK",
+      "商品库存不足",
       `商品 ${productId} 库存不足。请求数量：${requestedQuantity}，可用库存：${availableStock}`,
       400,
       {
@@ -671,7 +671,7 @@ export class ProductOutOfStockException extends AbstractHttpException {
 }
 
 // 使用
-throw new ProductOutOfStockException('prod-123', 10, 5);
+throw new ProductOutOfStockException("prod-123", 10, 5);
 
 // 响应
 // {
@@ -697,8 +697,8 @@ throw new ProductOutOfStockException('prod-123', 10, 5);
 export class ExternalServiceException extends AbstractHttpException {
   constructor(serviceName: string, operation: string, rootCause: Error) {
     super(
-      'EXTERNAL_SERVICE_ERROR',
-      '外部服务调用失败',
+      "EXTERNAL_SERVICE_ERROR",
+      "外部服务调用失败",
       `调用 ${serviceName} 服务的 ${operation} 操作失败`,
       500,
       { serviceName, operation },
@@ -711,7 +711,7 @@ export class ExternalServiceException extends AbstractHttpException {
 try {
   await this.paymentService.charge(amount);
 } catch (error) {
-  throw new ExternalServiceException('payment', 'charge', error);
+  throw new ExternalServiceException("payment", "charge", error);
 }
 
 // 日志中会包含完整的错误链
@@ -730,10 +730,10 @@ try {
 export class UserEmailAlreadyExistsException extends AbstractHttpException {}
 
 // 2. 清晰的错误代码
-errorCode: 'USER_EMAIL_ALREADY_EXISTS'; // 大写，下划线分隔
+errorCode: "USER_EMAIL_ALREADY_EXISTS"; // 大写，下划线分隔
 
 // 3. 友好的错误消息
-title: '邮箱已存在';
+title: "邮箱已存在";
 detail: `邮箱地址 "${email}" 已被其他用户使用`;
 
 // 4. 有用的上下文数据
@@ -765,10 +765,10 @@ data: {
 export class Exception1 extends AbstractHttpException {}
 
 // ❌ 2. 模糊的错误代码
-errorCode: 'ERROR'; // 太模糊
+errorCode: "ERROR"; // 太模糊
 
 // ❌ 3. 无用的错误消息
-detail: 'Error occurred'; // 没说明什么错误
+detail: "Error occurred"; // 没说明什么错误
 
 // ❌ 4. 缺少上下文数据
 data: {
@@ -809,7 +809,7 @@ detail: `SQL Error: SELECT * FROM users WHERE password='${password}'`;
 ```typescript
 // app.module.ts
 ExceptionModule.forRoot({
-  isProduction: process.env.NODE_ENV === 'production', // ← 环境标识
+  isProduction: process.env.NODE_ENV === "production", // ← 环境标识
 });
 ```
 
@@ -914,7 +914,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
       // 简化 detail（对于 5xx 错误）
       if (problemDetails.status >= 500) {
-        problemDetails.detail = '服务器内部错误，请稍后重试';
+        problemDetails.detail = "服务器内部错误，请稍后重试";
       }
 
       // 过滤 data 中的敏感字段
@@ -948,15 +948,15 @@ export class AnyExceptionFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {
     // 生产环境：通用错误消息
     const detail = this.isProduction
-      ? '服务器发生错误，请稍后重试'
+      ? "服务器发生错误，请稍后重试"
       : `${exception.message}\n${exception.stack}`;
 
     const problemDetails = {
-      type: 'https://docs.hl8.com/errors#INTERNAL_SERVER_ERROR',
-      title: '服务器内部错误',
+      type: "https://docs.hl8.com/errors#INTERNAL_SERVER_ERROR",
+      title: "服务器内部错误",
       detail: detail,
       status: 500,
-      errorCode: 'INTERNAL_SERVER_ERROR',
+      errorCode: "INTERNAL_SERVER_ERROR",
       instance: this.getRequestId(host),
     };
 
@@ -966,7 +966,7 @@ export class AnyExceptionFilter implements ExceptionFilter {
     }
 
     // 记录完整错误
-    this.logger.error('Unhandled Exception', exception.stack, {
+    this.logger.error("Unhandled Exception", exception.stack, {
       type: exception.constructor.name,
     });
 
@@ -986,9 +986,9 @@ export class AnyExceptionFilter implements ExceptionFilter {
 export class MyException extends AbstractHttpException {
   constructor() {
     const detail =
-      process.env.NODE_ENV === 'production' ? '简化消息' : '详细消息';
+      process.env.NODE_ENV === "production" ? "简化消息" : "详细消息";
 
-    super('MY_ERROR', 'title', detail, 400);
+    super("MY_ERROR", "title", detail, 400);
   }
 }
 ```
@@ -1001,11 +1001,11 @@ export class MyException extends AbstractHttpException {
   constructor() {
     // 总是提供完整信息
     super(
-      'MY_ERROR',
-      'title',
-      '完整的详细信息，包括技术细节', // ← 详细版本
+      "MY_ERROR",
+      "title",
+      "完整的详细信息，包括技术细节", // ← 详细版本
       400,
-      { technicalDetails: '...' },
+      { technicalDetails: "..." },
     );
   }
 }
@@ -1082,8 +1082,8 @@ ExceptionModule.forRoot({
 export class InsufficientBalanceException extends AbstractHttpException {
   constructor(userId: string, currentBalance: number, requiredAmount: number) {
     super(
-      'INSUFFICIENT_BALANCE',
-      '余额不足',
+      "INSUFFICIENT_BALANCE",
+      "余额不足",
       `用户 ${userId} 余额不足。当前余额：${currentBalance}，需要金额：${requiredAmount}`,
       400,
       {
@@ -1133,9 +1133,9 @@ export class TransferService {
 
 ```typescript
 // app.module.ts
-import { TypedConfigModule, dotenvLoader } from '@hl8/config';
-import { ExceptionModule } from '@hl8/exceptions';
-import { AppConfig } from './config/app.config.js';
+import { TypedConfigModule, dotenvLoader } from "@hl8/config";
+import { ExceptionModule } from "@hl8/exceptions";
+import { AppConfig } from "./config/app.config.js";
 
 @Module({
   imports: [
@@ -1254,11 +1254,11 @@ throw new UnauthorizedOrganizationException(orgId);
 
 ```typescript
 new AbstractHttpException(
-  'ERROR_CODE', // 错误代码（大写下划线）
-  '简短标题', // title
-  '详细说明', // detail
+  "ERROR_CODE", // 错误代码（大写下划线）
+  "简短标题", // title
+  "详细说明", // detail
   404, // HTTP 状态码
-  { key: 'value' }, // 上下文数据（可选）
+  { key: "value" }, // 上下文数据（可选）
   rootCause, // 根因（可选）
 );
 ```
@@ -1268,7 +1268,7 @@ new AbstractHttpException(
 ```typescript
 // 简单方式
 ExceptionModule.forRoot({
-  isProduction: process.env.NODE_ENV === 'production',
+  isProduction: process.env.NODE_ENV === "production",
 });
 
 // 推荐方式

@@ -220,12 +220,12 @@ libs/nestjs-caching/
 **eslint.config.mjs**:
 
 ```javascript
-import baseConfig from '@repo/eslint-config/nestjs.js';
+import baseConfig from "@repo/eslint-config/nestjs.js";
 
 export default [
   ...baseConfig,
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**'],
+    ignores: ["dist/**", "coverage/**", "node_modules/**"],
   },
 ];
 ```
@@ -233,18 +233,18 @@ export default [
 **jest.config.ts**:
 
 ```typescript
-import type { Config } from 'jest';
+import type { Config } from "jest";
 
 const config: Config = {
-  preset: '@swc/jest',
-  testEnvironment: 'node',
-  roots: ['<rootDir>/src', '<rootDir>/__tests__'],
-  testMatch: ['**/*.spec.ts', '**/*.test.ts'],
+  preset: "@swc/jest",
+  testEnvironment: "node",
+  roots: ["<rootDir>/src", "<rootDir>/__tests__"],
+  testMatch: ["**/*.spec.ts", "**/*.test.ts"],
   collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.spec.ts',
-    '!src/**/*.test.ts',
-    '!src/index.ts',
+    "src/**/*.ts",
+    "!src/**/*.spec.ts",
+    "!src/**/*.test.ts",
+    "!src/index.ts",
   ],
   coverageThreshold: {
     global: {
@@ -255,7 +255,7 @@ const config: Config = {
     },
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
 };
 
@@ -408,7 +408,7 @@ export enum CacheLevel {
  *
  * @since 1.0.0
  */
-export type { IsolationContext } from '@hl8/platform';
+export type { IsolationContext } from "@hl8/platform";
 ```
 
 **验收标准**:
@@ -589,7 +589,7 @@ export class CacheInvalidatedEvent {
     public readonly level: CacheLevel,
 
     /** 失效原因 */
-    public readonly reason: 'expired' | 'deleted' | 'evicted',
+    public readonly reason: "expired" | "deleted" | "evicted",
 
     /** 发生时间 */
     public readonly occurredAt: Date = new Date(),
@@ -708,8 +708,8 @@ import {
   Min,
   Max,
   ValidateNested,
-} from 'class-validator';
-import { Type } from 'class-transformer';
+} from "class-validator";
+import { Type } from "class-transformer";
 
 /**
  * Redis 配置类
@@ -1355,14 +1355,14 @@ interface CachePutOptions {
  */
 
 // 重新导出所有内容
-export * from '@hl8/nestjs-caching';
+export * from "@hl8/nestjs-caching";
 
 // 打印迁移提示（仅在开发环境）
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   console.warn(
-    '[DEPRECATION WARNING] 您正在使用 @hl8/nestjs-infra 的缓存模块兼容层。' +
-      '请迁移到 @hl8/nestjs-caching。' +
-      '兼容层将在 v2.0.0 移除。',
+    "[DEPRECATION WARNING] 您正在使用 @hl8/nestjs-infra 的缓存模块兼容层。" +
+      "请迁移到 @hl8/nestjs-caching。" +
+      "兼容层将在 v2.0.0 移除。",
   );
 }
 ````
@@ -1389,7 +1389,7 @@ if (process.env.NODE_ENV !== 'production') {
 ```typescript
 // 缓存模块（兼容层）
 // @deprecated 请直接使用 @hl8/nestjs-caching
-export * from './caching/index.js';
+export * from "./caching/index.js";
 ```
 
 **验收标准**:

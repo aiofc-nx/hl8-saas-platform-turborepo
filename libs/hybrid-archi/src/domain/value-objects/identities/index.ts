@@ -6,7 +6,7 @@
  */
 
 // 通用值对象
-export * from './email.vo';
-export * from './password.vo';
-export * from './username.vo';
-export * from './phone-number.vo';
+export * from "./email.vo.js";
+export * from "./password.vo.js";
+export * from "./username.vo.js";
+export * from "./phone-number.vo.js";

@@ -7,25 +7,26 @@
  * @since 1.0.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
-import { DatabaseService } from '@hl8/database';
-import { TenantContextService } from '@hl8/multi-tenancy';
-// import { EventBus } from '@hl8/messaging';
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication, Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { DatabaseService } from "@hl8/hybrid-archi";
+// // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
+// import { EventBus } from '@hl8/nestjs-fastify/messaging';
 
 // 导入混合架构组件
-import { BaseEntity, EntityId } from '../../domain';
-import { BaseUseCase } from '../../application';
-import { BaseController } from '../../interface';
-import { CacheStrategy } from '../../infrastructure/performance/cache-strategy';
-import { ConnectionPoolManager } from '../../infrastructure/performance/connection-pool';
-import { AsyncProcessor } from '../../infrastructure/performance/async-processor';
-import { EventMonitor } from '../../infrastructure/event-driven/event-monitor';
-import { DeadLetterQueueProcessor } from '../../infrastructure/event-driven/dead-letter-queue';
+import { BaseEntity, EntityId } from "../../domain.js";
+import { BaseUseCase } from "../../application.js";
+import { BaseController } from "../../interface.js";
+import { CacheStrategy } from "../../infrastructure/performance/cache-strategy.js";
+import { ConnectionPoolManager } from "../../infrastructure/performance/connection-pool.js";
+import { AsyncProcessor } from "../../infrastructure/performance/async-processor.js";
+import { EventMonitor } from "../../infrastructure/event-driven/event-monitor.js";
+import { DeadLetterQueueProcessor } from "../../infrastructure/event-driven/dead-letter-queue.js";
+import { TenantId } from "@hl8/isolation-model";
 
-describe('用户管理集成测试', () => {
+describe("用户管理集成测试", () => {
   let app: INestApplication;
   let userController: UserController;
   let userService: UserService;
@@ -41,11 +42,10 @@ describe('用户管理集成测试', () => {
       id: EntityId,
       private name: string,
       private email: string,
-      private status: UserStatus = UserStatus.ACTIVE
+      private status: UserStatus = UserStatus.ACTIVE,
     ) {
-      super(id, { tenantId: EntityId.generate() });
+      super(id, { tenantId: TenantId.generate() });
     }
-
 
     getName(): string {
       return this.name;
@@ -85,9 +85,9 @@ describe('用户管理集成测试', () => {
   }
 
   enum UserStatus {
-    ACTIVE = 'active',
-    INACTIVE = 'inactive',
-    PENDING = 'pending',
+    ACTIVE = "active",
+    INACTIVE = "inactive",
+    PENDING = "pending",
   }
 
   // 模拟用户服务
@@ -98,15 +98,15 @@ describe('用户管理集成测试', () => {
       private readonly connectionPool: ConnectionPoolManager,
       private readonly asyncProcessor: AsyncProcessor,
       private readonly eventMonitor: EventMonitor,
-      private readonly deadLetterQueue: DeadLetterQueueProcessor
+      private readonly deadLetterQueue: DeadLetterQueueProcessor,
     ) {}
 
     async createUser(userData: CreateUserRequest): Promise<CreateUserResponse> {
       const user = new User(
-        EntityId.generate(),
+        TenantId.generate(),
         userData.name,
         userData.email,
-        UserStatus.PENDING
+        UserStatus.PENDING,
       );
 
       // 保存到数据库
@@ -116,7 +116,7 @@ describe('用户管理集成测试', () => {
       await this.cacheStrategy.set(`user:${user.id}`, user, 3600);
 
       // 异步处理后续任务
-      await this.asyncProcessor.submitTask('sendWelcomeEmail', {
+      await this.asyncProcessor.submitTask("sendWelcomeEmail", {
         userId: user.id.toString(),
         email: user.getEmail(),
       });
@@ -139,7 +139,7 @@ describe('用户管理集成测试', () => {
       // 从数据库获取
       const user = await this.loadUser(userId);
       if (!user) {
-        throw new Error('用户不存在');
+        throw new Error("用户不存在");
       }
 
       // 缓存用户数据
@@ -150,7 +150,7 @@ describe('用户管理集成测试', () => {
 
     async updateUser(
       userId: string,
-      userData: UpdateUserRequest
+      userData: UpdateUserRequest,
     ): Promise<UpdateUserResponse> {
       const user = await this.getUser(userId);
 
@@ -169,7 +169,7 @@ describe('用户管理集成测试', () => {
       await this.cacheStrategy.set(`user:${user.id}`, user, 3600);
 
       // 异步处理后续任务
-      await this.asyncProcessor.submitTask('sendUpdateNotification', {
+      await this.asyncProcessor.submitTask("sendUpdateNotification", {
         userId: user.id.toString(),
         email: user.getEmail(),
       });
@@ -190,7 +190,7 @@ describe('用户管理集成测试', () => {
       await this.cacheStrategy.delete(`user:${userId}`);
 
       // 异步处理后续任务
-      await this.asyncProcessor.submitTask('cleanupUserData', {
+      await this.asyncProcessor.submitTask("cleanupUserData", {
         userId,
       });
     }
@@ -229,7 +229,7 @@ describe('用户管理集成测试', () => {
 
     async updateUser(
       userId: string,
-      request: UpdateUserRequest
+      request: UpdateUserRequest,
     ): Promise<UpdateUserResponse> {
       return await this.userService.updateUser(userId, request);
     }
@@ -275,7 +275,7 @@ describe('用户管理集成测试', () => {
         EventMonitor,
         DeadLetterQueueProcessor,
         {
-          provide: PinoLogger,
+          provide: FastifyLoggerService,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),
@@ -293,10 +293,10 @@ describe('用户管理集成测试', () => {
           },
         },
         {
-          provide: 'CacheStrategyConfig',
+          provide: "CacheStrategyConfig",
           useValue: {
             enabled: true,
-            level: 'L1' as const,
+            level: "L1" as const,
             defaultTtl: 3600,
             maxSize: 1000,
             preload: false,
@@ -317,7 +317,7 @@ describe('用户管理集成测试', () => {
           },
         },
         {
-          provide: 'ConnectionPoolConfig',
+          provide: "ConnectionPoolConfig",
           useValue: {
             minConnections: 1,
             maxConnections: 10,
@@ -333,7 +333,7 @@ describe('用户管理集成测试', () => {
           },
         },
         {
-          provide: 'AsyncProcessorConfig',
+          provide: "AsyncProcessorConfig",
           useValue: {
             enabled: true,
             maxConcurrency: 10,
@@ -348,7 +348,7 @@ describe('用户管理集成测试', () => {
           },
         },
         {
-          provide: 'EventAlertConfig',
+          provide: "EventAlertConfig",
           useValue: {
             enabled: true,
             alertThresholds: {
@@ -356,17 +356,17 @@ describe('用户管理集成测试', () => {
               processingTime: 5000,
               queueSize: 100,
             },
-            alertChannels: ['log'],
+            alertChannels: ["log"],
             alertInterval: 60000,
           },
         },
         {
-          provide: 'DeadLetterQueueConfig',
+          provide: "DeadLetterQueueConfig",
           useValue: {
             enabled: true,
             maxRetries: 3,
             retryInterval: 1000,
-            retryBackoff: 'exponential',
+            retryBackoff: "exponential",
             maxRetryDelay: 30000,
             deadLetterTimeout: 86400000,
             monitoring: true,
@@ -375,14 +375,14 @@ describe('用户管理集成测试', () => {
           },
         },
         {
-          provide: TenantContextService,
+          provide: any,
           useValue: {
-            getCurrentTenantId: jest.fn().mockReturnValue('tenant-123'),
-            getCurrentUserId: jest.fn().mockReturnValue('user-123'),
+            getCurrentTenantId: jest.fn().mockReturnValue("tenant-123"),
+            getCurrentUserId: jest.fn().mockReturnValue("user-123"),
           },
         },
         {
-          provide: 'EventBus',
+          provide: "EventBus",
           useValue: {
             publish: jest.fn(),
             subscribe: jest.fn(),
@@ -401,7 +401,7 @@ describe('用户管理集成测试', () => {
     asyncProcessor = module.get<AsyncProcessor>(AsyncProcessor);
     eventMonitor = module.get<EventMonitor>(EventMonitor);
     deadLetterQueue = module.get<DeadLetterQueueProcessor>(
-      DeadLetterQueueProcessor
+      DeadLetterQueueProcessor,
     );
 
     // 验证服务是否正确初始化
@@ -414,31 +414,31 @@ describe('用户管理集成测试', () => {
     if (asyncProcessor) {
       asyncProcessor.stopProcessor();
     }
-    
+
     if (app) {
       await app.close();
     }
   });
 
-  describe('用户创建流程', () => {
-    it('应该成功创建用户', async () => {
+  describe("用户创建流程", () => {
+    it("应该成功创建用户", async () => {
       const userData: CreateUserRequest = {
-        name: '张三',
-        email: 'zhangsan@example.com',
+        name: "张三",
+        email: "zhangsan@example.com",
       };
 
       const result = await userController.createUser(userData);
 
       expect(result).toBeDefined();
-      expect(result.name).toBe('张三');
-      expect(result.email).toBe('zhangsan@example.com');
+      expect(result.name).toBe("张三");
+      expect(result.email).toBe("zhangsan@example.com");
       expect(result.status).toBe(UserStatus.PENDING);
     });
 
-    it('应该缓存用户数据', async () => {
+    it("应该缓存用户数据", async () => {
       const userData: CreateUserRequest = {
-        name: '李四',
-        email: 'lisi@example.com',
+        name: "李四",
+        email: "lisi@example.com",
       };
 
       await userController.createUser(userData);
@@ -447,33 +447,33 @@ describe('用户管理集成测试', () => {
       expect(cacheStrategy.set).toHaveBeenCalled();
     });
 
-    it('应该提交异步任务', async () => {
+    it("应该提交异步任务", async () => {
       const userData: CreateUserRequest = {
-        name: '王五',
-        email: 'wangwu@example.com',
+        name: "王五",
+        email: "wangwu@example.com",
       };
 
       await userController.createUser(userData);
 
       // 验证异步处理器被调用
       expect(asyncProcessor.submitTask).toHaveBeenCalledWith(
-        'sendWelcomeEmail',
+        "sendWelcomeEmail",
         expect.objectContaining({
-          email: 'wangwu@example.com',
-        })
+          email: "wangwu@example.com",
+        }),
       );
     });
   });
 
-  describe('用户查询流程', () => {
-    it('应该从缓存获取用户', async () => {
-      const userId = 'user-123';
+  describe("用户查询流程", () => {
+    it("应该从缓存获取用户", async () => {
+      const userId = "user-123";
 
       // 模拟缓存命中
       (cacheStrategy.get as jest.Mock).mockResolvedValue({
         id: userId,
-        name: '张三',
-        email: 'zhangsan@example.com',
+        name: "张三",
+        email: "zhangsan@example.com",
         status: UserStatus.ACTIVE,
       });
 
@@ -483,50 +483,50 @@ describe('用户管理集成测试', () => {
       expect(cacheStrategy.get).toHaveBeenCalledWith(`user:${userId}`);
     });
 
-    it('应该从数据库加载用户当缓存未命中', async () => {
-      const userId = 'user-123';
+    it("应该从数据库加载用户当缓存未命中", async () => {
+      const userId = "user-123";
 
       // 模拟缓存未命中
       (cacheStrategy.get as jest.Mock).mockResolvedValue(null);
 
       await expect(userController.getUser(userId)).rejects.toThrow(
-        '用户不存在'
+        "用户不存在",
       );
     });
   });
 
-  describe('用户更新流程', () => {
-    it('应该成功更新用户', async () => {
-      const userId = 'user-123';
+  describe("用户更新流程", () => {
+    it("应该成功更新用户", async () => {
+      const userId = "user-123";
       const updateData: UpdateUserRequest = {
-        name: '张三（更新）',
-        email: 'zhangsan-updated@example.com',
+        name: "张三（更新）",
+        email: "zhangsan-updated@example.com",
       };
 
       // 模拟现有用户
       (cacheStrategy.get as jest.Mock).mockResolvedValue({
         id: userId,
-        name: '张三',
-        email: 'zhangsan@example.com',
+        name: "张三",
+        email: "zhangsan@example.com",
         status: UserStatus.ACTIVE,
       });
 
       const result = await userController.updateUser(userId, updateData);
 
-      expect(result.name).toBe('张三（更新）');
-      expect(result.email).toBe('zhangsan-updated@example.com');
+      expect(result.name).toBe("张三（更新）");
+      expect(result.email).toBe("zhangsan-updated@example.com");
     });
 
-    it('应该更新缓存', async () => {
-      const userId = 'user-123';
+    it("应该更新缓存", async () => {
+      const userId = "user-123";
       const updateData: UpdateUserRequest = {
-        name: '张三（更新）',
+        name: "张三（更新）",
       };
 
       (cacheStrategy.get as jest.Mock).mockResolvedValue({
         id: userId,
-        name: '张三',
-        email: 'zhangsan@example.com',
+        name: "张三",
+        email: "zhangsan@example.com",
         status: UserStatus.ACTIVE,
       });
 
@@ -536,29 +536,29 @@ describe('用户管理集成测试', () => {
     });
   });
 
-  describe('用户删除流程', () => {
-    it('应该成功删除用户', async () => {
-      const userId = 'user-123';
+  describe("用户删除流程", () => {
+    it("应该成功删除用户", async () => {
+      const userId = "user-123";
 
       await userController.deleteUser(userId);
 
       expect(cacheStrategy.delete).toHaveBeenCalledWith(`user:${userId}`);
     });
 
-    it('应该提交清理任务', async () => {
-      const userId = 'user-123';
+    it("应该提交清理任务", async () => {
+      const userId = "user-123";
 
       await userController.deleteUser(userId);
 
       expect(asyncProcessor.submitTask).toHaveBeenCalledWith(
-        'cleanupUserData',
-        { userId }
+        "cleanupUserData",
+        { userId },
       );
     });
   });
 
-  describe('性能测试', () => {
-    it('应该高效处理大量用户操作', async () => {
+  describe("性能测试", () => {
+    it("应该高效处理大量用户操作", async () => {
       const startTime = Date.now();
       const promises = [];
 
@@ -579,19 +579,19 @@ describe('用户管理集成测试', () => {
     });
   });
 
-  describe('错误处理', () => {
-    it('应该处理缓存错误', async () => {
-      (cacheStrategy.get as jest.Mock).mockRejectedValue(new Error('缓存错误'));
+  describe("错误处理", () => {
+    it("应该处理缓存错误", async () => {
+      (cacheStrategy.get as jest.Mock).mockRejectedValue(new Error("缓存错误"));
 
-      await expect(userController.getUser('user-123')).rejects.toThrow(
-        '缓存错误'
+      await expect(userController.getUser("user-123")).rejects.toThrow(
+        "缓存错误",
       );
     });
 
-    it('应该处理数据库错误', async () => {
+    it("应该处理数据库错误", async () => {
       const userData: CreateUserRequest = {
-        name: '测试用户',
-        email: 'test@example.com',
+        name: "测试用户",
+        email: "test@example.com",
       };
 
       // 模拟数据库错误
@@ -605,11 +605,11 @@ describe('用户管理集成测试', () => {
     });
   });
 
-  describe('监控和统计', () => {
-    it('应该记录事件监控', async () => {
+  describe("监控和统计", () => {
+    it("应该记录事件监控", async () => {
       const userData: CreateUserRequest = {
-        name: '监控用户',
-        email: 'monitor@example.com',
+        name: "监控用户",
+        email: "monitor@example.com",
       };
 
       await userController.createUser(userData);
@@ -618,15 +618,15 @@ describe('用户管理集成测试', () => {
       expect(eventMonitor.recordEventStart).toHaveBeenCalled();
     });
 
-    it('应该记录死信队列', async () => {
+    it("应该记录死信队列", async () => {
       const userData: CreateUserRequest = {
-        name: '死信用户',
-        email: 'deadletter@example.com',
+        name: "死信用户",
+        email: "deadletter@example.com",
       };
 
       // 模拟处理失败
       (asyncProcessor.submitTask as jest.Mock).mockRejectedValue(
-        new Error('处理失败')
+        new Error("处理失败"),
       );
 
       await userController.createUser(userData);
@@ -636,40 +636,40 @@ describe('用户管理集成测试', () => {
     });
   });
 
-  describe('连接池管理', () => {
-    it('应该管理数据库连接', async () => {
+  describe("连接池管理", () => {
+    it("应该管理数据库连接", async () => {
       const health = await connectionPool.checkHealth();
 
-      expect(health).toHaveProperty('healthy');
-      expect(health).toHaveProperty('issues');
-      expect(health).toHaveProperty('recommendations');
+      expect(health).toHaveProperty("healthy");
+      expect(health).toHaveProperty("issues");
+      expect(health).toHaveProperty("recommendations");
     });
 
-    it('应该获取连接池统计信息', () => {
+    it("应该获取连接池统计信息", () => {
       const stats = connectionPool.getStats();
 
-      expect(stats).toHaveProperty('totalConnections');
-      expect(stats).toHaveProperty('activeConnections');
-      expect(stats).toHaveProperty('idleConnections');
+      expect(stats).toHaveProperty("totalConnections");
+      expect(stats).toHaveProperty("activeConnections");
+      expect(stats).toHaveProperty("idleConnections");
     });
   });
 
-  describe('异步处理', () => {
-    it('应该处理异步任务', async () => {
-      const taskId = await asyncProcessor.submitTask('testTask', {
-        data: 'test',
+  describe("异步处理", () => {
+    it("应该处理异步任务", async () => {
+      const taskId = await asyncProcessor.submitTask("testTask", {
+        data: "test",
       });
 
       expect(taskId).toBeDefined();
       expect(asyncProcessor.getTaskStatus(taskId)).toBeDefined();
     });
 
-    it('应该获取异步处理器统计信息', () => {
+    it("应该获取异步处理器统计信息", () => {
       const stats = asyncProcessor.getStats();
 
-      expect(stats).toHaveProperty('totalTasks');
-      expect(stats).toHaveProperty('pendingTasks');
-      expect(stats).toHaveProperty('runningTasks');
+      expect(stats).toHaveProperty("totalTasks");
+      expect(stats).toHaveProperty("pendingTasks");
+      expect(stats).toHaveProperty("runningTasks");
     });
   });
 });

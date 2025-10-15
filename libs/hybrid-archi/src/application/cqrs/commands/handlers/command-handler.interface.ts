@@ -41,7 +41,7 @@
  *
  *     // 2. 创建聚合根
  *     const user = UserAggregate.create(
- *       EntityId.generate(),
+ *       TenantId.generate(),
  *       command.name,
  *       command.email
  *     );
@@ -62,7 +62,8 @@
  * @since 1.0.0
  */
 
-import { ICommand } from '../base/command.interface';
+import { ICommand } from "../base/command.interface.js";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 命令处理器接口
@@ -157,7 +158,7 @@ export interface ICommandHandler<TCommand extends ICommand, TResult = void> {
  * 命令处理器工厂接口
  */
 export interface ICommandHandlerFactory<
-  THandler extends ICommandHandler<ICommand, unknown>
+  THandler extends ICommandHandler<ICommand, unknown>,
 > {
   /**
    * 创建命令处理器实例
@@ -187,7 +188,7 @@ export interface ICommandHandlerRegistry {
    */
   register<TCommand extends ICommand, TResult>(
     commandType: string,
-    handlerFactory: ICommandHandlerFactory<ICommandHandler<TCommand, TResult>>
+    handlerFactory: ICommandHandlerFactory<ICommandHandler<TCommand, TResult>>,
   ): void;
 
   /**
@@ -197,7 +198,7 @@ export interface ICommandHandlerRegistry {
    * @returns 处理器实例
    */
   get<TCommand extends ICommand, TResult>(
-    commandType: string
+    commandType: string,
   ): ICommandHandler<TCommand, TResult> | undefined;
 
   /**

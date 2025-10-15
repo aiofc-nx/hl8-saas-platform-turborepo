@@ -35,16 +35,16 @@
  * - 提供缓存统计和监控功能
  */
 
-import type { ClassConstructor } from 'class-transformer';
-import type { ValidatorOptions } from 'class-validator';
-import { CacheOptions } from '../types/cache.types.js';
+import type { ClassConstructor } from "class-transformer";
+import type { ValidatorOptions } from "class-validator";
+import { CacheOptions } from "../types/cache.types.js";
 import {
   AsyncConfigLoader,
   ConfigLoader,
   ConfigNormalizer,
   ConfigRecord,
   ConfigValidator,
-} from '../types/index.js';
+} from "../types/index.js";
 
 // 重新导出类型以保持向后兼容
 export type {
@@ -53,7 +53,7 @@ export type {
   ConfigNormalizer,
   ConfigRecord,
   ConfigValidator,
-} from '../types/index.js';
+} from "../types/index.js";
 
 /**
  * 类型化配置模块选项接口

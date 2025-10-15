@@ -17,7 +17,7 @@ import {
   HttpStatus,
   HttpCode,
   HttpException,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
 /**
  * 通用响应接口
@@ -42,7 +42,7 @@ export interface IPaginationQuery {
   limit?: number;
   search?: string;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 /**
@@ -91,7 +91,7 @@ export abstract class BaseController {
    */
   protected createSuccessResponse<T>(
     data: T,
-    message = '操作成功'
+    message = "操作成功",
   ): IApiResponse<T> {
     return {
       success: true,
@@ -111,7 +111,7 @@ export abstract class BaseController {
    */
   protected createErrorResponse(
     error: string,
-    statusCode: HttpStatus = HttpStatus.BAD_REQUEST
+    statusCode: HttpStatus = HttpStatus.BAD_REQUEST,
   ): IApiResponse {
     return {
       success: false,
@@ -134,7 +134,7 @@ export abstract class BaseController {
     items: T[],
     total: number,
     page: number,
-    limit: number
+    limit: number,
   ): IPaginationResponse<T> {
     const totalPages = Math.ceil(total / limit);
     const hasNext = page < totalPages;
@@ -160,7 +160,7 @@ export abstract class BaseController {
    */
   protected throwBusinessException(
     message: string,
-    statusCode: HttpStatus = HttpStatus.BAD_REQUEST
+    statusCode: HttpStatus = HttpStatus.BAD_REQUEST,
   ): never {
     throw new HttpException(message, statusCode);
   }
@@ -177,11 +177,11 @@ export abstract class BaseController {
     limit: number;
     search?: string;
     sortBy?: string;
-    sortOrder: 'asc' | 'desc';
+    sortOrder: "asc" | "desc";
   } {
     const page = Math.max(1, query.page || 1);
     const limit = Math.min(100, Math.max(1, query.limit || 10));
-    const sortOrder = query.sortOrder === 'desc' ? 'desc' : 'asc';
+    const sortOrder = query.sortOrder === "desc" ? "desc" : "asc";
 
     return {
       page,

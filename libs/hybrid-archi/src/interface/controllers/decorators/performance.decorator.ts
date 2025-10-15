@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from "@nestjs/common";
 
 /**
  * 性能监控装饰器
@@ -30,7 +30,7 @@ export function PerformanceMonitoring(
       memoryUsage?: number;
       cpuUsage?: number;
     };
-  } = {}
+  } = {},
 ): MethodDecorator {
   const defaultConfig = {
     enabled: true,
@@ -47,7 +47,7 @@ export function PerformanceMonitoring(
     ...config,
   };
 
-  return SetMetadata('performance_monitoring', defaultConfig);
+  return SetMetadata("performance_monitoring", defaultConfig);
 }
 
 /**
@@ -63,7 +63,7 @@ export function PerformanceThresholds(thresholds: {
   memoryUsage?: number;
   cpuUsage?: number;
 }): MethodDecorator {
-  return SetMetadata('performance_thresholds', thresholds);
+  return SetMetadata("performance_thresholds", thresholds);
 }
 
 /**
@@ -79,5 +79,5 @@ export function PerformanceAlerting(config: {
   channels?: string[];
   thresholds?: Record<string, number>;
 }): MethodDecorator {
-  return SetMetadata('performance_alerting', config);
+  return SetMetadata("performance_alerting", config);
 }

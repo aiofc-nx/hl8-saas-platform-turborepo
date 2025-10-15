@@ -4,6 +4,7 @@
     "allowJs": true,
     "esModuleInterop": true,
     "incremental": false,
+    "isolatedModules": false,
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./dist",
@@ -11,10 +12,11 @@
       "@hl8/hybrid-archi": ["node_modules/@hl8/hybrid-archi"],
       "@hl8/database": ["node_modules/@hl8/database"],
       "@hl8/caching": ["node_modules/@hl8/caching"],
-      "@hl8/nestjs-fastify": ["node_modules/@hl8/nestjs-fastify"],
+      "@hl8/nestjs-fastify/index.js": ["node_modules/@hl8/nestjs-fastify"],
       "@hl8/nestjs-isolation": ["node_modules/@hl8/nestjs-isolation"],
       "@hl8/exceptions": ["node_modules/@hl8/exceptions"],
-      "@hl8/isolation-model": ["node_modules/@hl8/isolation-model"]
+      "@hl8/isolation-model/index.js": ["node_modules/@hl8/isolation-model"],
+      "@hl8/pure-logger": ["node_modules/@hl8/pure-logger"]
     }
   },
   "include": ["src"],

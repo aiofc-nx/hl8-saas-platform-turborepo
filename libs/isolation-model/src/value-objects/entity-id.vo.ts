@@ -45,7 +45,7 @@
  * @since 1.0.0
  */
 
-import { IsolationValidationError } from '../errors/isolation-validation.error.js';
+import { IsolationValidationError } from "../errors/isolation-validation.error.js";
 
 /**
  * UUID v4 正则表达式
@@ -79,7 +79,7 @@ export abstract class EntityId<TType extends string = string> {
    * @private
    */
   private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+    if (!this.value || typeof this.value !== "string") {
       throw new IsolationValidationError(
         `${this.typeName} 必须是非空字符串`,
         `INVALID_${this.typeName.toUpperCase()}`,
@@ -123,5 +123,34 @@ export abstract class EntityId<TType extends string = string> {
    */
   toString(): string {
     return this.value;
+  }
+
+  /**
+   * 获取哈希码
+   *
+   * @returns 哈希码字符串
+   */
+  getHashCode(): string {
+    return this.value;
+  }
+
+  /**
+   * 比较方法
+   *
+   * @param other - 另一个实体 ID
+   * @returns 比较结果：负数表示小于，0表示等于，正数表示大于
+   */
+  compareTo(other?: EntityId<TType>): number {
+    if (!other) return 1;
+    return this.value.localeCompare(other.value);
+  }
+
+  /**
+   * 检查是否为空
+   *
+   * @returns 如果为空返回 true
+   */
+  isEmpty(): boolean {
+    return !this.value || this.value.trim().length === 0;
   }
 }

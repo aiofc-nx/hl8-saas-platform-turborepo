@@ -8,13 +8,13 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@hl8/database';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { EntityId } from '../../../domain/value-objects/entity-id';
-import { IEntity } from '../../../domain/entities/base/entity.interface';
-import {
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model";
+import { IEntity } from "../../../domain/entities/base/entity.interface.js";
+import type {
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
@@ -22,7 +22,7 @@ import {
   ConcurrencyError,
   EntityNotFoundError,
   ValidationError,
-} from '../../../domain/repositories/base/base-repository.interface';
+} from "../../../domain/repositories/base/base-repository.interface.js";
 
 /**
  * 仓储配置接口
@@ -56,9 +56,9 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   constructor(
     protected readonly databaseService: DatabaseService,
     protected readonly cacheService: CacheService,
-    protected readonly logger: PinoLogger,
+    protected readonly logger: FastifyLoggerService,
     protected readonly entityName: string,
-    config: Partial<IRepositoryConfig> = {}
+    config: Partial<IRepositoryConfig> = {},
   ) {
     this.config = {
       enableCache: config.enableCache ?? true,
@@ -82,7 +82,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
       if (this.config.enableCache) {
         const cached = await this.getFromCache(id);
         if (cached) {
-          this.logger.debug(`从缓存获取实体: ${this.entityName}`, { id });
+          this.logger.debug(`从缓存获取实体: ${this.entityName}`);
           return cached;
         }
       }
@@ -98,7 +98,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         await this.setCache(id, entity);
       }
 
-      this.logger.debug(`从数据库获取实体: ${this.entityName}`, { id });
+      this.logger.debug(`从数据库获取实体: ${this.entityName}`);
       return entity;
     } catch (error) {
       this.logger.error(`查找实体失败: ${this.entityName}`, error, { id });
@@ -106,7 +106,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         `实体不存在: ${this.entityName}`,
         this.entityName,
         String(id),
-        this.entityName
+        this.entityName,
       );
     }
   }
@@ -132,9 +132,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
           await this.setCache((entity as any).getId(), entity);
         }
 
-        this.logger.debug(`保存实体成功: ${this.entityName}`, {
-          id: (entity as any).getId(),
-        });
+        this.logger.debug(`保存实体成功: ${this.entityName}`);
       });
     } catch (error) {
       this.logger.error(`保存实体失败: ${this.entityName}`, error, {
@@ -159,7 +157,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
             `实体不存在: ${this.entityName}`,
             this.entityName,
             String(id),
-            this.entityName
+            this.entityName,
           );
         }
 
@@ -171,7 +169,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
           await this.removeFromCache(id);
         }
 
-        this.logger.debug(`删除实体成功: ${this.entityName}`, { id });
+        this.logger.debug(`删除实体成功: ${this.entityName}`);
       });
     } catch (error) {
       this.logger.error(`删除实体失败: ${this.entityName}`, error, { id });
@@ -244,13 +242,13 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
     try {
       if (this.config.enableTransaction) {
         // 使用兼容性检查调用 transaction 方法
-        if (typeof (this.databaseService as any).transaction === 'function') {
+        if (typeof (this.databaseService as any).transaction === "function") {
           await (this.databaseService as any).transaction(
             async (transaction: any) => {
               for (const entity of entities) {
                 await this.saveToDatabase(entity, transaction);
               }
-            }
+            },
           );
         } else {
           for (const entity of entities) {
@@ -270,9 +268,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         }
       }
 
-      this.logger.debug(`批量保存实体成功: ${this.entityName}`, {
-        count: entities.length,
-      });
+      this.logger.debug(`批量保存实体成功: ${this.entityName}`);
     } catch (error) {
       this.logger.error(`批量保存实体失败: ${this.entityName}`, error);
       throw error;
@@ -288,13 +284,13 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
     try {
       if (this.config.enableTransaction) {
         // 使用兼容性检查调用 transaction 方法
-        if (typeof (this.databaseService as any).transaction === 'function') {
+        if (typeof (this.databaseService as any).transaction === "function") {
           await (this.databaseService as any).transaction(
             async (transaction: any) => {
               for (const id of ids) {
                 await this.deleteFromDatabase(id, transaction);
               }
-            }
+            },
           );
         } else {
           for (const id of ids) {
@@ -314,9 +310,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         }
       }
 
-      this.logger.debug(`批量删除实体成功: ${this.entityName}`, {
-        count: ids.length,
-      });
+      this.logger.debug(`批量删除实体成功: ${this.entityName}`);
     } catch (error) {
       this.logger.error(`批量删除实体失败: ${this.entityName}`, error);
       throw error;
@@ -340,16 +334,13 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         if (attempt < this.config.maxRetries) {
           this.logger.warn(
             `操作失败，重试中 (${attempt}/${this.config.maxRetries})`,
-            {
-              error: lastError.message,
-            }
           );
           await this.delay(this.config.retryDelay * attempt);
         }
       }
     }
 
-    throw lastError || new Error('操作失败');
+    throw lastError || new Error("操作失败");
   }
 
   /**
@@ -404,7 +395,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   protected async getFromDatabase(id: TId): Promise<TEntity | null> {
     // 实现具体的数据库查询逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库查询逻辑');
+    throw new Error("需要实现具体的数据库查询逻辑");
   }
 
   /**
@@ -412,11 +403,11 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   private async saveToDatabase(
     entity: TEntity,
-    transaction?: any
+    transaction?: any,
   ): Promise<void> {
     // 实现具体的数据库保存逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库保存逻辑');
+    throw new Error("需要实现具体的数据库保存逻辑");
   }
 
   /**
@@ -424,11 +415,11 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   protected async deleteFromDatabase(
     id: TId,
-    transaction?: any
+    transaction?: any,
   ): Promise<void> {
     // 实现具体的数据库删除逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库删除逻辑');
+    throw new Error("需要实现具体的数据库删除逻辑");
   }
 
   /**
@@ -437,7 +428,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   private async existsInDatabase(id: TId): Promise<boolean> {
     // 实现具体的数据库存在性检查逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库存在性检查逻辑');
+    throw new Error("需要实现具体的数据库存在性检查逻辑");
   }
 
   /**
@@ -446,17 +437,17 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   private async countInDatabase(): Promise<number> {
     // 实现具体的数据库计数逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库计数逻辑');
+    throw new Error("需要实现具体的数据库计数逻辑");
   }
 
   /**
    * 从数据库查找所有实体
    */
   private async findAllFromDatabase(
-    options?: IRepositoryQueryOptions
+    options?: IRepositoryQueryOptions,
   ): Promise<TEntity[]> {
     // 实现具体的数据库查询逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库查询逻辑');
+    throw new Error("需要实现具体的数据库查询逻辑");
   }
 }

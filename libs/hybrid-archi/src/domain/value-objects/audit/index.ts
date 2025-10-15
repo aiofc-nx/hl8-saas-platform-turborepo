@@ -7,4 +7,4 @@
  * @since 1.0.0
  */
 
-export * from './audit-event-type.vo';
+export * from "./audit-event-type.vo.js";

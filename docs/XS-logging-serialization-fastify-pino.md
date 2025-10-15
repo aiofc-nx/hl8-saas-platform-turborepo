@@ -45,13 +45,13 @@ ERROR: Unhandled Exception: 服务器内部错误
 
 ```ts
 // 将以前的：
-this.logger.error('事务执行失败，已回滚', (error as Error).stack, {
+this.logger.error("事务执行失败，已回滚", (error as Error).stack, {
   transactionId,
   duration,
 });
 
 // 改为：
-this.logger.error('事务执行失败，已回滚', {
+this.logger.error("事务执行失败，已回滚", {
   transactionId,
   duration,
   err:

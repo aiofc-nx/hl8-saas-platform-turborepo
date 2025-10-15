@@ -53,15 +53,15 @@
  *
  * @since 1.0.0
  */
-import 'reflect-metadata';
-import { BaseQuery } from '../../application/cqrs/queries/base/base-query';
-import { IQueryHandler } from '../../application/cqrs/queries/base/query-handler.interface';
-import { IQueryResult } from '../../application/cqrs/queries/base/base-query';
+import "reflect-metadata";
+import { BaseQuery } from "../../application/cqrs/queries/base/base-query.js";
+import type { IQueryHandler } from "../../application/cqrs/queries/base/query-handler.interface.js";
+import { IQueryResult } from "../../application/cqrs/queries/base/base-query.js";
 import {
   setQueryHandlerMetadata,
   getQueryHandlerMetadata as getMetadata,
-} from './metadata.utils';
-import {
+} from "./metadata.utils.js";
+import type {
   IQueryHandlerMetadata,
   IRetryConfig,
   ICacheConfig,
@@ -70,7 +70,7 @@ import {
   IMultiTenantConfig,
   IDataIsolationConfig,
   IPerformanceMonitorConfig,
-} from './metadata.interfaces';
+} from "./metadata.interfaces.js";
 
 /**
  * 查询处理器装饰器选项
@@ -158,7 +158,7 @@ export function QueryHandler<
   ) {
     // 验证目标类实现了 IQueryHandler 接口
     const prototype = target.prototype;
-    if (typeof prototype.execute !== 'function') {
+    if (typeof prototype.execute !== "function") {
       throw new Error(
         `Query handler ${target.name} must implement execute method`,
       );
@@ -168,7 +168,7 @@ export function QueryHandler<
     setQueryHandlerMetadata(target, queryType, options);
 
     // 添加静态方法用于获取查询类型
-    Object.defineProperty(target, 'queryType', {
+    Object.defineProperty(target, "queryType", {
       value: queryType,
       writable: false,
       enumerable: true,
@@ -176,7 +176,7 @@ export function QueryHandler<
     });
 
     // 添加静态方法用于获取处理器优先级
-    Object.defineProperty(target, 'priority', {
+    Object.defineProperty(target, "priority", {
       value: options.priority || 0,
       writable: false,
       enumerable: true,
@@ -184,7 +184,7 @@ export function QueryHandler<
     });
 
     // 添加静态方法用于检查是否支持指定查询类型
-    Object.defineProperty(target, 'supports', {
+    Object.defineProperty(target, "supports", {
       value: function (qryType: string): boolean {
         return qryType === queryType;
       },
@@ -194,7 +194,7 @@ export function QueryHandler<
     });
 
     // 添加静态方法用于获取元数据
-    Object.defineProperty(target, 'getMetadata', {
+    Object.defineProperty(target, "getMetadata", {
       value: function (): IQueryHandlerMetadata | undefined {
         return getMetadata(target);
       },

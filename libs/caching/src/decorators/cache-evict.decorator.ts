@@ -42,12 +42,12 @@
  * @since 1.0.0
  */
 
-import { SetMetadata, UseInterceptors, applyDecorators } from '@nestjs/common';
+import { SetMetadata, UseInterceptors, applyDecorators } from "@nestjs/common";
 import {
   CACHE_EVICT_KEY,
   CacheEvictMetadata,
   CacheInterceptor,
-} from '../interceptors/cache.interceptor.js';
+} from "../interceptors/cache.interceptor.js";
 
 export interface CacheEvictOptions {
   /**

@@ -6,8 +6,8 @@
  * @since 0.2.0
  */
 
-import type { EnterpriseFastifyAdapterOptions } from '../fastify/enterprise-fastify.adapter.js';
-import { createFastifyLoggerConfig } from '../logging/pino-config.factory.js';
+import type { EnterpriseFastifyAdapterOptions } from "../fastify/enterprise-fastify.adapter.js";
+import { createFastifyLoggerConfig } from "../logging/pino-config.factory.js";
 
 /**
  * 默认 Fastify 配置
@@ -26,17 +26,17 @@ export const DEFAULT_FASTIFY_CONFIG: EnterpriseFastifyAdapterOptions = {
   corsOptions: {
     origin: true,
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'X-Tenant-Id',
-      'X-Organization-Id',
-      'X-Department-Id',
-      'X-User-Id',
-      'X-Request-Id',
+      "Content-Type",
+      "Authorization",
+      "X-Tenant-Id",
+      "X-Organization-Id",
+      "X-Department-Id",
+      "X-User-Id",
+      "X-Request-Id",
     ],
-    exposedHeaders: ['X-Request-Id'],
+    exposedHeaders: ["X-Request-Id"],
     maxAge: 86400, // 24小时
   },
   enableSecurity: true,
@@ -47,7 +47,7 @@ export const DEFAULT_FASTIFY_CONFIG: EnterpriseFastifyAdapterOptions = {
   },
   enablePerformanceMonitoring: true,
   enableHealthCheck: true,
-  healthCheckPath: '/health',
+  healthCheckPath: "/health",
   enableRateLimit: false, // 默认禁用，按需启用
   enableCircuitBreaker: false, // 默认禁用，按需启用
 };
@@ -60,11 +60,11 @@ export const DEV_FASTIFY_CONFIG: EnterpriseFastifyAdapterOptions = {
   fastifyOptions: {
     ...DEFAULT_FASTIFY_CONFIG.fastifyOptions,
     logger: createFastifyLoggerConfig({
-      level: 'debug',
+      level: "debug",
       prettyPrint: true,
       colorize: true,
-      translateTime: 'SYS:standard',
-      ignore: 'pid,hostname',
+      translateTime: "SYS:standard",
+      ignore: "pid,hostname",
     }),
   },
 };
@@ -77,7 +77,7 @@ export const PROD_FASTIFY_CONFIG: EnterpriseFastifyAdapterOptions = {
   fastifyOptions: {
     ...DEFAULT_FASTIFY_CONFIG.fastifyOptions,
     logger: createFastifyLoggerConfig({
-      level: 'info',
+      level: "info",
     }),
   },
   enableRateLimit: true,

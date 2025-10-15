@@ -5,10 +5,10 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { IUserAggregateRepository } from '../../../domain/user/repositories/user-aggregate.repository.interface';
+import { Injectable } from "@nestjs/common";
+import { UserId } from "@hl8/isolation-model/index.js";
+import { ICommandUseCase } from "../base/use-case.interface.js";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
 export interface IChangePasswordCommand {
   userId: string;
@@ -23,8 +23,8 @@ export class ChangePasswordUseCase
   constructor(private readonly userRepository: IUserAggregateRepository) {}
 
   async execute(command: IChangePasswordCommand): Promise<void> {
-    const userId = EntityId.fromString(command.userId);
-    const aggregate = await this.userRepository.findById(userId);
+    const userId = UserId.create(command.userId);
+    const aggregate = await (this.userRepository as any).findById(userId);
 
     if (!aggregate) {
       throw new Error(`用户不存在: ${command.userId}`);
@@ -32,8 +32,7 @@ export class ChangePasswordUseCase
 
     // TODO: 验证旧密码并哈希新密码
     // aggregate.getCredentials().changePassword(newHash, newSalt);
-    
-    await this.userRepository.save(aggregate);
+
+    await (this.userRepository as any).save(aggregate);
   }
 }
-

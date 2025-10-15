@@ -59,7 +59,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent } from '../../../../domain/events/base/base-domain-event';
+import { BaseDomainEvent } from "../../../../domain/events/base/base-domain-event.js";
 
 /**
  * 事件投射器接口
@@ -159,8 +159,10 @@ export interface IEventProjector<TEvent extends BaseDomainEvent> {
  * @template TEvent - 事件类型
  * @template TReadModel - 读模型类型
  */
-export interface IReadModelProjector<TEvent extends BaseDomainEvent, _TReadModel>
-  extends IEventProjector<TEvent> {
+export interface IReadModelProjector<
+  TEvent extends BaseDomainEvent,
+  _TReadModel,
+> extends IEventProjector<TEvent> {
   /**
    * 重建读模型
    *

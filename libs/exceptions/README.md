@@ -96,14 +96,14 @@ pnpm add @hl8/exceptions
 ### 1. 导入模块
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { ExceptionModule } from '@hl8/exceptions';
+import { Module } from "@nestjs/common";
+import { ExceptionModule } from "@hl8/exceptions";
 
 @Module({
   imports: [
     ExceptionModule.forRoot({
       enableLogging: true,
-      isProduction: process.env.NODE_ENV === 'production',
+      isProduction: process.env.NODE_ENV === "production",
     }),
   ],
 })
@@ -116,7 +116,7 @@ export class AppModule {}
 import {
   GeneralNotFoundException,
   GeneralBadRequestException,
-} from '@hl8/exceptions';
+} from "@hl8/exceptions";
 
 @Injectable()
 export class UserService {
@@ -125,7 +125,7 @@ export class UserService {
 
     if (!user) {
       throw new GeneralNotFoundException(
-        '用户未找到',
+        "用户未找到",
         `ID 为 "${userId}" 的用户不存在`,
         { userId },
       );
@@ -143,13 +143,13 @@ export class UserService {
 所有自定义异常都继承自 `AbstractHttpException`：
 
 ```typescript
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 
 export class CustomException extends AbstractHttpException {
   constructor(message: string) {
     super(
-      'CUSTOM_ERROR', // 错误代码
-      '自定义错误', // 简短标题
+      "CUSTOM_ERROR", // 错误代码
+      "自定义错误", // 简短标题
       message, // 详细说明
       400, // HTTP 状态码
       { timestamp: Date.now() }, // 附加数据（可选）
@@ -184,9 +184,9 @@ export class CustomException extends AbstractHttpException {
 
 ```typescript
 throw new GeneralBadRequestException(
-  '邮箱格式错误',
+  "邮箱格式错误",
   `邮箱地址 "${email}" 格式不正确`,
-  { email, expectedFormat: 'user@example.com' },
+  { email, expectedFormat: "user@example.com" },
 );
 ```
 
@@ -194,7 +194,7 @@ throw new GeneralBadRequestException(
 
 ```typescript
 throw new GeneralNotFoundException(
-  '用户未找到',
+  "用户未找到",
   `ID 为 "${userId}" 的用户不存在`,
   { userId },
 );
@@ -207,9 +207,9 @@ try {
   await this.externalService.call();
 } catch (error) {
   throw new GeneralInternalServerException(
-    '外部服务调用失败',
-    '调用支付服务时发生错误',
-    { service: 'payment' },
+    "外部服务调用失败",
+    "调用支付服务时发生错误",
+    { service: "payment" },
     error, // rootCause
   );
 }
@@ -220,7 +220,7 @@ try {
 #### InvalidIsolationContextException
 
 ```typescript
-throw new InvalidIsolationContextException('隔离上下文无效');
+throw new InvalidIsolationContextException("隔离上下文无效");
 ```
 
 #### TenantNotFoundException
@@ -258,7 +258,7 @@ throw new UnauthorizedOrganizationException(orgId);
 ### 方式1：同步配置（简单场景）
 
 ```typescript
-import { ExceptionModule } from '@hl8/exceptions';
+import { ExceptionModule } from "@hl8/exceptions";
 
 @Module({
   imports: [
@@ -273,7 +273,7 @@ import { ExceptionModule } from '@hl8/exceptions';
       messageProvider: customMessageProvider,
 
       // 是否为生产环境
-      isProduction: process.env.NODE_ENV === 'production',
+      isProduction: process.env.NODE_ENV === "production",
 
       // 是否注册全局过滤器
       registerGlobalFilters: true,
@@ -288,8 +288,8 @@ export class AppModule {}
 ### 方式2：异步配置（使用 @nestjs/config）
 
 ```typescript
-import { ExceptionModule } from '@hl8/exceptions';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ExceptionModule } from "@hl8/exceptions";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 
 @Module({
   imports: [
@@ -298,8 +298,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     ExceptionModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
-        enableLogging: config.get('LOGGING_ENABLED', true),
-        isProduction: config.get('NODE_ENV') === 'production',
+        enableLogging: config.get("LOGGING_ENABLED", true),
+        isProduction: config.get("NODE_ENV") === "production",
       }),
       inject: [ConfigService],
     }),
@@ -313,9 +313,9 @@ export class AppModule {}
 ### 方式3：异步配置（使用 @hl8/config）推荐 ⭐
 
 ```typescript
-import { TypedConfigModule, dotenvLoader } from '@hl8/config';
-import { ExceptionModule } from '@hl8/exceptions';
-import { AppConfig } from './config/app.config.js';
+import { TypedConfigModule, dotenvLoader } from "@hl8/config";
+import { ExceptionModule } from "@hl8/exceptions";
+import { AppConfig } from "./config/app.config.js";
 
 @Module({
   imports: [
@@ -354,7 +354,7 @@ export class AppModule {}
 实现 `ExceptionMessageProvider` 接口：
 
 ```typescript
-import { ExceptionMessageProvider } from '@hl8/exceptions';
+import { ExceptionMessageProvider } from "@hl8/exceptions";
 
 @Injectable()
 export class I18nMessageProvider implements ExceptionMessageProvider {
@@ -362,7 +362,7 @@ export class I18nMessageProvider implements ExceptionMessageProvider {
 
   getMessage(
     errorCode: string,
-    field: 'title' | 'detail',
+    field: "title" | "detail",
     data?: any,
   ): string | undefined {
     return this.i18n.t(`errors.${errorCode}.${field}`, data);
@@ -540,8 +540,8 @@ ExceptionModule.forRootAsync({
 export class ProductOutOfStockException extends AbstractHttpException {
   constructor(productId: string, requested: number, available: number) {
     super(
-      'PRODUCT_OUT_OF_STOCK',
-      '商品库存不足',
+      "PRODUCT_OUT_OF_STOCK",
+      "商品库存不足",
       `商品 ${productId} 库存不足，请求 ${requested}，可用 ${available}`,
       400,
       { productId, requested, available },
@@ -576,14 +576,14 @@ export class ProductOutOfStockException extends AbstractHttpException {
 // 好
 export class OrderNotFoundException extends AbstractHttpException {
   constructor(orderId: string) {
-    super('ORDER_NOT_FOUND', '订单未找到', `订单 ${orderId} 不存在`, 404, {
+    super("ORDER_NOT_FOUND", "订单未找到", `订单 ${orderId} 不存在`, 404, {
       orderId,
     });
   }
 }
 
 // 不好
-throw new Error('Not found');
+throw new Error("Not found");
 ```
 
 ### 2. 提供有用的上下文数据
@@ -591,13 +591,13 @@ throw new Error('Not found');
 ```typescript
 // 好
 throw new GeneralBadRequestException(
-  '库存不足',
+  "库存不足",
   `请求数量 ${quantity} 超过可用库存 ${stock}`,
   { requestedQuantity: quantity, availableStock: stock },
 );
 
 // 不好
-throw new GeneralBadRequestException('库存不足', '库存不足');
+throw new GeneralBadRequestException("库存不足", "库存不足");
 ```
 
 ### 3. 链式追踪错误
@@ -607,9 +607,9 @@ try {
   await this.externalService.call();
 } catch (error) {
   throw new GeneralInternalServerException(
-    '服务调用失败',
-    '调用外部服务时发生错误',
-    { service: 'external' },
+    "服务调用失败",
+    "调用外部服务时发生错误",
+    { service: "external" },
     error, // 保留原始错误作为 rootCause
   );
 }
@@ -620,14 +620,14 @@ try {
 ```typescript
 // 好
 throw new GeneralInternalServerException(
-  '数据库操作失败',
-  '保存用户数据时发生错误',
-  { operation: 'saveUser' },
+  "数据库操作失败",
+  "保存用户数据时发生错误",
+  { operation: "saveUser" },
 );
 
 // 不好（暴露了数据库信息）
 throw new GeneralInternalServerException(
-  '数据库错误',
+  "数据库错误",
   `Connection to postgres://admin:password@localhost:5432/db failed`,
 );
 ```
@@ -683,13 +683,13 @@ libs/exceptions/
 
 ```typescript
 // app.module.ts
-import { Module } from '@nestjs/common';
-import { TypedConfigModule, dotenvLoader } from '@hl8/config';
+import { Module } from "@nestjs/common";
+import { TypedConfigModule, dotenvLoader } from "@hl8/config";
 import {
   FastifyExceptionModule,
   FastifyLoggingModule,
-} from '@hl8/nestjs-fastify';
-import { AppConfig } from './config/app.config.js';
+} from "@hl8/nestjs-fastify/index.js";
+import { AppConfig } from "./config/app.config.js";
 
 @Module({
   imports: [
@@ -703,14 +703,14 @@ import { AppConfig } from './config/app.config.js';
     // 2. 日志模块
     FastifyLoggingModule.forRoot({
       config: {
-        level: process.env.LOG_LEVEL || 'info',
-        prettyPrint: process.env.NODE_ENV === 'development',
+        level: process.env.LOG_LEVEL || "info",
+        prettyPrint: process.env.NODE_ENV === "development",
       },
     }),
 
     // 3. 异常模块（Fastify 专用）
     FastifyExceptionModule.forRoot({
-      isProduction: process.env.NODE_ENV === 'production',
+      isProduction: process.env.NODE_ENV === "production",
     }),
   ],
 })
@@ -721,12 +721,12 @@ export class AppModule {}
 
 ```typescript
 // user.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   GeneralNotFoundException,
   GeneralBadRequestException,
   GeneralInternalServerException,
-} from '@hl8/exceptions';
+} from "@hl8/exceptions";
 
 @Injectable()
 export class UserService {
@@ -736,7 +736,7 @@ export class UserService {
 
     if (!user) {
       throw new GeneralNotFoundException(
-        '用户未找到',
+        "用户未找到",
         `ID 为 "${id}" 的用户不存在`,
         { userId: id },
       );
@@ -749,9 +749,9 @@ export class UserService {
   async updateEmail(id: string, email: string) {
     if (!this.isValidEmail(email)) {
       throw new GeneralBadRequestException(
-        '邮箱格式错误',
+        "邮箱格式错误",
         `邮箱地址 "${email}" 格式不正确`,
-        { email, expectedFormat: 'user@example.com' },
+        { email, expectedFormat: "user@example.com" },
       );
     }
 
@@ -764,9 +764,9 @@ export class UserService {
       await this.emailService.send(userId);
     } catch (error) {
       throw new GeneralInternalServerException(
-        '发送邮件失败',
-        '调用邮件服务时发生错误',
-        { userId, service: 'email' },
+        "发送邮件失败",
+        "调用邮件服务时发生错误",
+        { userId, service: "email" },
         error, // rootCause
       );
     }
@@ -778,15 +778,15 @@ export class UserService {
 
 ```typescript
 // user.controller.ts
-import { Controller, Get, Param } from '@nestjs/common';
-import { UserService } from './user.service.js';
+import { Controller, Get, Param } from "@nestjs/common";
+import { UserService } from "./user.service.js";
 
-@Controller('users')
+@Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(':id')
-  async getUser(@Param('id') id: string) {
+  @Get(":id")
+  async getUser(@Param("id") id: string) {
     // 异常会被全局过滤器自动捕获和转换
     return this.userService.findById(id);
   }
@@ -838,14 +838,14 @@ ExceptionModule.forRoot({
 ```typescript
 // ✅ 好的做法
 throw new GeneralInternalServerException(
-  '数据库操作失败',
-  '保存数据时发生错误',
-  { operation: 'save' },
+  "数据库操作失败",
+  "保存数据时发生错误",
+  { operation: "save" },
 );
 
 // ❌ 避免暴露
 throw new GeneralInternalServerException(
-  '数据库错误',
+  "数据库错误",
   `Error: Connection failed to postgres://user:pass@host:5432/db`,
 );
 ```

@@ -20,7 +20,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from '@hl8/hybrid-archi';
+import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi/index.js";
 
 /**
  * 租户暂停事件
@@ -47,7 +47,7 @@ export class TenantSuspendedEvent extends BaseDomainEvent {
   }
 
   get eventType(): string {
-    return 'TenantSuspended';
+    return "TenantSuspended";
   }
 
   /**
@@ -55,11 +55,10 @@ export class TenantSuspendedEvent extends BaseDomainEvent {
    *
    * @returns {object} 事件数据对象
    */
-  public override toJSON(): Record<string, unknown> {
+  public toJSON(): Record<string, unknown> {
     return {
       ...super.toJSON(),
       reason: this.reason,
     };
   }
 }
-

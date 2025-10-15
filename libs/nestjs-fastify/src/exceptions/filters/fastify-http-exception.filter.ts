@@ -19,8 +19,8 @@
  * @since 0.1.0
  */
 
-import type { ILoggerService } from "@hl8/exceptions/index.js";
-import { AbstractHttpException } from "@hl8/exceptions/index.js";
+import type { ILoggerService } from "@hl8/exceptions";
+import { AbstractHttpException } from "@hl8/exceptions";
 import {
   ArgumentsHost,
   Catch,

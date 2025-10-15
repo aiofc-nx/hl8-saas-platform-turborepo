@@ -8,16 +8,16 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
-import { TypedConfigModule } from '@hl8/config';
-import { EventService } from '@hl8/messaging';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
+import { EventService } from "@hl8/hybrid-archi";
 import {
   PortAdaptersFactory,
   PortAdapterType,
   IPortAdapterRegistration,
-} from './port-adapters.factory';
+} from "./port-adapters.factory.js";
 
 /**
  * 端口适配器管理器配置
@@ -47,12 +47,12 @@ export class PortAdaptersManager {
   private healthCheckTimer?: NodeJS.Timeout;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly configService: TypedConfigModule,
     private readonly eventService: EventService,
     private readonly adaptersFactory: PortAdaptersFactory,
-    config: Partial<IPortAdaptersManagerConfig> = {}
+    config: Partial<IPortAdaptersManagerConfig> = {},
   ) {
     this.config = {
       enableAutoCleanup: config.enableAutoCleanup ?? true,
@@ -72,9 +72,7 @@ export class PortAdaptersManager {
    * @returns 端口适配器实例
    */
   createAdapter(adapterType: PortAdapterType): any {
-    this.logger.debug(`创建端口适配器: ${adapterType}`, {
-      adapterType,
-    });
+    this.logger.debug(`创建端口适配器: ${adapterType}`);
 
     return this.adaptersFactory.createAdapter(adapterType);
   }
@@ -125,7 +123,7 @@ export class PortAdaptersManager {
    * @returns 适配器注册信息
    */
   getAdapterRegistration(
-    adapterType: PortAdapterType
+    adapterType: PortAdapterType,
   ): IPortAdapterRegistration | null {
     return this.adaptersFactory.getAdapterRegistration(adapterType);
   }
@@ -152,7 +150,7 @@ export class PortAdaptersManager {
    * @returns 健康检查结果
    */
   async healthCheckAllAdapters(): Promise<Record<PortAdapterType, any>> {
-    this.logger.debug('开始健康检查所有端口适配器');
+    this.logger.debug("开始健康检查所有端口适配器");
     return await this.adaptersFactory.healthCheckAllAdapters();
   }
 
@@ -162,9 +160,9 @@ export class PortAdaptersManager {
    * @returns 清理的适配器数量
    */
   async cleanupExpiredAdapters(): Promise<number> {
-    this.logger.debug('开始清理过期端口适配器');
+    this.logger.debug("开始清理过期端口适配器");
     return await this.adaptersFactory.cleanupExpiredAdapters(
-      this.config.maxAdapterAge
+      this.config.maxAdapterAge,
     );
   }
 
@@ -194,7 +192,7 @@ export class PortAdaptersManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动端口适配器管理器');
+    this.logger.log("启动端口适配器管理器");
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -211,7 +209,7 @@ export class PortAdaptersManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止端口适配器管理器');
+    this.logger.log("停止端口适配器管理器");
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -230,7 +228,7 @@ export class PortAdaptersManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁端口适配器管理器');
+    this.logger.log("销毁端口适配器管理器");
 
     // 停止管理器
     this.stop();
@@ -248,9 +246,7 @@ export class PortAdaptersManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化端口适配器管理器', {
-      config: this.config,
-    });
+    this.logger.debug("初始化端口适配器管理器");
   }
 
   /**
@@ -264,7 +260,7 @@ export class PortAdaptersManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个适配器`);
         }
       } catch (error) {
-        this.logger.error('自动清理失败', error);
+        this.logger.error("自动清理失败", error);
       }
     }, this.config.cleanupInterval);
   }
@@ -277,16 +273,14 @@ export class PortAdaptersManager {
       try {
         const healthResults = await this.healthCheckAllAdapters();
         const unhealthyAdapters = Object.entries(healthResults).filter(
-          ([, result]) => !result.healthy
+          ([, result]) => !result.healthy,
         );
 
         if (unhealthyAdapters.length > 0) {
-          this.logger.warn('发现不健康的端口适配器', {
-            unhealthyAdapters: unhealthyAdapters.map(([type]) => type),
-          });
+          this.logger.warn("发现不健康的端口适配器");
         }
       } catch (error) {
-        this.logger.error('健康检查失败', error);
+        this.logger.error("健康检查失败", error);
       }
     }, this.config.healthCheckInterval);
   }

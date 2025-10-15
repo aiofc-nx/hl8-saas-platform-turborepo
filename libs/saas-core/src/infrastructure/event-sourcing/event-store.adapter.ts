@@ -24,9 +24,9 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityManager } from '@hl8/database';
-import { BaseDomainEvent } from '@hl8/hybrid-archi';
+import { Injectable } from "@nestjs/common";
+import { EntityManager } from "@hl8/hybrid-archi";
+import { BaseDomainEvent } from "@hl8/hybrid-archi";
 
 /**
  * 事件存储记录接口
@@ -119,7 +119,7 @@ export class EventStoreAdapter {
         eventData: this.serializeEvent(event),
         metadata: this.extractMetadata(event),
         version: expectedVersion + index + 1,
-        tenantId: event.tenantId?.toString() || '',
+        tenantId: event.tenantId?.toString() || "",
         occurredAt: event.occurredAt,
         createdAt: new Date(),
       }));
@@ -130,7 +130,7 @@ export class EventStoreAdapter {
         // 当前只是示例代码，实际需要创建对应的 ORM 实体
         // TODO: MikroORM 6.x API 变更 - 使用 em.insert() 或创建 ORM 实体
         // await em.nativeInsert('event_store', record);
-        console.log('TODO: 保存事件到事件存储', record);
+        console.log("TODO: 保存事件到事件存储", record);
       }
     });
   }
@@ -154,13 +154,17 @@ export class EventStoreAdapter {
     streamId: string,
     fromVersion = 0,
   ): Promise<BaseDomainEvent[]> {
-    const records = await this.em.find<IEventStoreRecord>('event_store', {
-      aggregateType: this.extractAggregateType(streamId),
-      aggregateId: this.extractAggregateId(streamId),
-      version: { $gte: fromVersion },
-    }, {
-      orderBy: { version: 'ASC' },
-    });
+    const records = await this.em.find<IEventStoreRecord>(
+      "event_store",
+      {
+        aggregateType: this.extractAggregateType(streamId),
+        aggregateId: this.extractAggregateId(streamId),
+        version: { $gte: fromVersion },
+      },
+      {
+        orderBy: { version: "ASC" },
+      },
+    );
 
     return records.map((record: any) => this.deserializeEvent(record));
   }
@@ -186,8 +190,8 @@ export class EventStoreAdapter {
     //   },
     // );
     // return result?.version || 0;
-    
-    console.log('TODO: 获取流的当前版本', streamId);
+
+    console.log("TODO: 获取流的当前版本", streamId);
     return 0;
   }
 
@@ -209,7 +213,7 @@ export class EventStoreAdapter {
    * @returns {string} 聚合根类型
    */
   private extractAggregateType(streamId: string): string {
-    return streamId.split('-')[0];
+    return streamId.split("-")[0];
   }
 
   /**
@@ -220,7 +224,7 @@ export class EventStoreAdapter {
    * @returns {string} 聚合根ID
    */
   private extractAggregateId(streamId: string): string {
-    return streamId.substring(streamId.indexOf('-') + 1);
+    return streamId.substring(streamId.indexOf("-") + 1);
   }
 
   /**
@@ -250,7 +254,7 @@ export class EventStoreAdapter {
   private deserializeEvent(record: IEventStoreRecord): BaseDomainEvent {
     // 注意：实际实现需要根据 eventType 动态创建对应的事件类实例
     // 这里只是示例，需要事件注册表来完成反序列化
-    throw new Error('Event deserialization not implemented');
+    throw new Error("Event deserialization not implemented");
   }
 
   /**
@@ -269,4 +273,3 @@ export class EventStoreAdapter {
     };
   }
 }
-

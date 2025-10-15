@@ -12,7 +12,7 @@
  * @since 1.0.0
  */
 
-import type { IsolationContext } from '../entities/isolation-context.entity.js';
+import type { IsolationContext } from "../entities/isolation-context.entity.js";
 
 export class IsolationContextSwitchedEvent {
   constructor(

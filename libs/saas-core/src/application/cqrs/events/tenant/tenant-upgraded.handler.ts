@@ -13,18 +13,19 @@
  * @since 1.0.0
  */
 
-import { EventHandler, IEventHandler } from '@hl8/hybrid-archi';
-import { TenantUpgradedEvent } from '../../../../domain/tenant/events/tenant-upgraded.event';
+import { EventHandler, IEventHandler } from "@hl8/hybrid-archi";
+import { TenantUpgradedEvent } from "../../../../domain/tenant/events/tenant-upgraded.event.js";
 
 // @EventHandler('TenantUpgraded') // TODO: 修复装饰器类型问题
-export class TenantUpgradedHandler implements IEventHandler<TenantUpgradedEvent> {
+export class TenantUpgradedHandler
+  implements IEventHandler<TenantUpgradedEvent>
+{
   async handle(event: TenantUpgradedEvent): Promise<void> {
     // TODO: 实现事件处理逻辑
     // - 发送升级确认邮件
     // - 更新计费系统
     // - 记录升级历史
-    
-    console.log('租户升级事件:', event.toJSON());
+
+    console.log("租户升级事件:", event.toJSON());
   }
 }
-

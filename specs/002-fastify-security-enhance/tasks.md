@@ -132,7 +132,7 @@ export interface RateLimitOptions {
 **用法**:
 
 ```typescript
-@Controller('users')
+@Controller("users")
 @RateLimit({ max: 1000, timeWindow: 60000 })
 export class UserController {
   @Get()
@@ -335,9 +335,9 @@ export class UserController {
 
 ```typescript
 CorsModule.forRoot({
-  origin: ['https://app.example.com', 'https://admin.example.com'],
+  origin: ["https://app.example.com", "https://admin.example.com"],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ["GET", "POST", "PUT", "DELETE"],
 });
 ```
 

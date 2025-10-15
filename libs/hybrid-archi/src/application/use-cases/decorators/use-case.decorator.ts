@@ -50,14 +50,14 @@
  * @since 1.0.0
  */
 
-import 'reflect-metadata';
+import "reflect-metadata";
 
 /**
  * 用例类型枚举
  */
 export enum UseCaseType {
-  COMMAND = 'command',
-  QUERY = 'query',
+  COMMAND = "command",
+  QUERY = "query",
 }
 
 /**
@@ -99,7 +99,7 @@ export interface IUseCaseOptions {
    *
    * @example 'command', 'query'
    */
-  type: UseCaseType | 'command' | 'query';
+  type: UseCaseType | "command" | "query";
 
   /**
    * 用例版本
@@ -216,7 +216,7 @@ export interface IUseCaseOptions {
 /**
  * 用例元数据键
  */
-export const USE_CASE_METADATA_KEY = Symbol('useCase');
+export const USE_CASE_METADATA_KEY = Symbol("useCase");
 
 /**
  * 用例装饰器
@@ -255,9 +255,9 @@ export function UseCase(options: IUseCaseOptions): ClassDecorator {
       name: options.name,
       description: options.description,
       type: options.type as UseCaseType,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       permissions: options.permissions || [],
-      category: options.category || 'general',
+      category: options.category || "general",
       tags: options.tags || [],
       critical: options.critical || false,
       monitored: options.monitored !== false, // 默认启用监控
@@ -297,7 +297,7 @@ export function getUseCaseMetadata(
   target: any,
 ): Required<IUseCaseOptions> | undefined {
   const targetClass =
-    typeof target === 'function' ? target : target.constructor;
+    typeof target === "function" ? target : target.constructor;
   return Reflect.getMetadata(USE_CASE_METADATA_KEY, targetClass);
 }
 
@@ -329,59 +329,59 @@ export function isUseCase(target: unknown): boolean {
 function validateUseCaseOptions(options: IUseCaseOptions): void {
   if (
     !options.name ||
-    typeof options.name !== 'string' ||
+    typeof options.name !== "string" ||
     options.name.trim().length === 0
   ) {
-    throw new Error('用例名称不能为空');
+    throw new Error("用例名称不能为空");
   }
 
-  if (!options.description || typeof options.description !== 'string') {
-    throw new Error('用例描述不能为空');
+  if (!options.description || typeof options.description !== "string") {
+    throw new Error("用例描述不能为空");
   }
 
-  if (!options.type || !['command', 'query'].includes(options.type as string)) {
+  if (!options.type || !["command", "query"].includes(options.type as string)) {
     throw new Error('用例类型必须是 "command" 或 "query"');
   }
 
-  if (options.version && typeof options.version !== 'string') {
-    throw new Error('用例版本必须是字符串');
+  if (options.version && typeof options.version !== "string") {
+    throw new Error("用例版本必须是字符串");
   }
 
   if (options.permissions && !Array.isArray(options.permissions)) {
-    throw new Error('用例权限必须是字符串数组');
+    throw new Error("用例权限必须是字符串数组");
   }
 
   if (
     options.permissions &&
-    options.permissions.some((p) => typeof p !== 'string')
+    options.permissions.some((p) => typeof p !== "string")
   ) {
-    throw new Error('用例权限必须都是字符串');
+    throw new Error("用例权限必须都是字符串");
   }
 
-  if (options.category && typeof options.category !== 'string') {
-    throw new Error('用例分类必须是字符串');
+  if (options.category && typeof options.category !== "string") {
+    throw new Error("用例分类必须是字符串");
   }
 
   if (options.tags && !Array.isArray(options.tags)) {
-    throw new Error('用例标签必须是字符串数组');
+    throw new Error("用例标签必须是字符串数组");
   }
 
-  if (options.tags && options.tags.some((tag) => typeof tag !== 'string')) {
-    throw new Error('用例标签必须都是字符串');
+  if (options.tags && options.tags.some((tag) => typeof tag !== "string")) {
+    throw new Error("用例标签必须都是字符串");
   }
 
   if (
     options.timeout?.execution &&
-    (typeof options.timeout.execution !== 'number' ||
+    (typeof options.timeout.execution !== "number" ||
       options.timeout.execution <= 0)
   ) {
-    throw new Error('用例超时时间必须是正整数');
+    throw new Error("用例超时时间必须是正整数");
   }
 
   if (
     options.cache?.ttl &&
-    (typeof options.cache.ttl !== 'number' || options.cache.ttl <= 0)
+    (typeof options.cache.ttl !== "number" || options.cache.ttl <= 0)
   ) {
-    throw new Error('缓存TTL必须是正整数');
+    throw new Error("缓存TTL必须是正整数");
   }
 }

@@ -7,16 +7,16 @@
  */
 
 // WebSocket网关
-export * from './gateways';
+export * from "./gateways.js";
 
 // WebSocket处理器
-export * from './handlers';
+export * from "./handlers.js";
 
 // WebSocket中间件
-export * from './middleware';
+export * from "./middleware.js";
 
 // WebSocket装饰器
-export * from './decorators';
+export * from "./decorators.js";
 
 // WebSocket工具
-export * from './utils';
+export * from "./utils.js";

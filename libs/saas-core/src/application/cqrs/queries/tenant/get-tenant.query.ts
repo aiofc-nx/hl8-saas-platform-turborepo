@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { BaseQuery } from '@hl8/hybrid-archi';
+import { BaseQuery } from "@hl8/hybrid-archi";
 
 export class GetTenantQuery extends BaseQuery {
   constructor(
@@ -17,16 +17,15 @@ export class GetTenantQuery extends BaseQuery {
   }
 
   get queryType(): string {
-    return 'GetTenantQuery';
+    return "GetTenantQuery";
   }
 
   protected createCopyWithSortRules(sortRules: any[]): this {
     const copy = new GetTenantQuery(
-      this.tenantId,
-      this.userId,
+      (this as any).tenantId,
+      (this as any).userId,
       this.targetTenantId,
     );
     return copy as this;
   }
 }
-

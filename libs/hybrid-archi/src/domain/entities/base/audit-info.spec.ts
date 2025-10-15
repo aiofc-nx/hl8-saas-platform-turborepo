@@ -7,61 +7,62 @@
  * @since 1.0.0
  */
 
-import { IAuditInfo, IPartialAuditInfo, AuditInfoBuilder } from './audit-info';
-import { EntityId } from '../../value-objects/entity-id';
+import { IAuditInfo, IPartialAuditInfo, AuditInfoBuilder } from "./audit-info.js";
+import { EntityId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model";
 
-describe('AuditInfo', () => {
-  describe('IAuditInfo 接口', () => {
-    it('应该正确定义审计信息结构', () => {
-      const tenantId = EntityId.generate();
+describe("AuditInfo", () => {
+  describe("IAuditInfo 接口", () => {
+    it("应该正确定义审计信息结构", () => {
+      const tenantId = TenantId.generate();
       const auditInfo: IAuditInfo = {
-        createdBy: 'user-123',
-        updatedBy: 'user-123',
+        createdBy: "user-123",
+        updatedBy: "user-123",
         deletedBy: null,
-        createdAt: new Date('2024-01-01T00:00:00Z'),
-        updatedAt: new Date('2024-01-01T00:00:00Z'),
+        createdAt: new Date("2024-01-01T00:00:00Z"),
+        updatedAt: new Date("2024-01-01T00:00:00Z"),
         deletedAt: null,
         tenantId: tenantId,
         version: 1,
-        lastOperation: 'CREATE',
-        lastOperationIp: '192.168.1.1',
-        lastOperationUserAgent: 'Mozilla/5.0',
-        lastOperationSource: 'WEB',
+        lastOperation: "CREATE",
+        lastOperationIp: "192.168.1.1",
+        lastOperationUserAgent: "Mozilla/5.0",
+        lastOperationSource: "WEB",
         deleteReason: null,
       };
 
-      expect(auditInfo.createdBy).toBe('user-123');
-      expect(auditInfo.updatedBy).toBe('user-123');
+      expect(auditInfo.createdBy).toBe("user-123");
+      expect(auditInfo.updatedBy).toBe("user-123");
       expect(auditInfo.deletedBy).toBeNull();
       expect(auditInfo.createdAt).toBeInstanceOf(Date);
       expect(auditInfo.updatedAt).toBeInstanceOf(Date);
       expect(auditInfo.deletedAt).toBeNull();
       expect(auditInfo.tenantId.equals(tenantId)).toBe(true);
       expect(auditInfo.version).toBe(1);
-      expect(auditInfo.lastOperation).toBe('CREATE');
-      expect(auditInfo.lastOperationIp).toBe('192.168.1.1');
-      expect(auditInfo.lastOperationUserAgent).toBe('Mozilla/5.0');
-      expect(auditInfo.lastOperationSource).toBe('WEB');
+      expect(auditInfo.lastOperation).toBe("CREATE");
+      expect(auditInfo.lastOperationIp).toBe("192.168.1.1");
+      expect(auditInfo.lastOperationUserAgent).toBe("Mozilla/5.0");
+      expect(auditInfo.lastOperationSource).toBe("WEB");
       expect(auditInfo.deleteReason).toBeNull();
     });
 
-    it('应该支持所有操作类型', () => {
-      const operations: Array<IAuditInfo['lastOperation']> = [
-        'CREATE',
-        'UPDATE',
-        'DELETE',
-        'RESTORE',
+    it("应该支持所有操作类型", () => {
+      const operations: Array<IAuditInfo["lastOperation"]> = [
+        "CREATE",
+        "UPDATE",
+        "DELETE",
+        "RESTORE",
       ];
 
       operations.forEach((operation) => {
         const auditInfo: IAuditInfo = {
-          createdBy: 'user',
-          updatedBy: 'user',
+          createdBy: "user",
+          updatedBy: "user",
           deletedBy: null,
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
-          tenantId: EntityId.generate(),
+          tenantId: TenantId.generate(),
           version: 1,
           lastOperation: operation,
           lastOperationIp: null,
@@ -74,26 +75,26 @@ describe('AuditInfo', () => {
       });
     });
 
-    it('应该支持所有操作来源', () => {
-      const sources: Array<IAuditInfo['lastOperationSource']> = [
-        'WEB',
-        'API',
-        'CLI',
-        'SYSTEM',
+    it("应该支持所有操作来源", () => {
+      const sources: Array<IAuditInfo["lastOperationSource"]> = [
+        "WEB",
+        "API",
+        "CLI",
+        "SYSTEM",
         null,
       ];
 
       sources.forEach((source) => {
         const auditInfo: IAuditInfo = {
-          createdBy: 'user',
-          updatedBy: 'user',
+          createdBy: "user",
+          updatedBy: "user",
           deletedBy: null,
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
-          tenantId: EntityId.generate(),
+          tenantId: TenantId.generate(),
           version: 1,
-          lastOperation: 'CREATE',
+          lastOperation: "CREATE",
           lastOperationIp: null,
           lastOperationUserAgent: null,
           lastOperationSource: source,
@@ -105,55 +106,55 @@ describe('AuditInfo', () => {
     });
   });
 
-  describe('IPartialAuditInfo 接口', () => {
-    it('应该支持部分审计信息', () => {
-      const tenantId = EntityId.generate();
+  describe("IPartialAuditInfo 接口", () => {
+    it("应该支持部分审计信息", () => {
+      const tenantId = TenantId.generate();
       const partialAuditInfo: IPartialAuditInfo = {
-        createdBy: 'user-123',
+        createdBy: "user-123",
         tenantId: tenantId,
         version: 1,
       };
 
-      expect(partialAuditInfo.createdBy).toBe('user-123');
+      expect(partialAuditInfo.createdBy).toBe("user-123");
       expect(partialAuditInfo.tenantId?.equals(tenantId)).toBe(true);
       expect(partialAuditInfo.version).toBe(1);
       expect(partialAuditInfo.updatedBy).toBeUndefined();
     });
 
-    it('应该支持空的部分审计信息', () => {
+    it("应该支持空的部分审计信息", () => {
       const emptyAuditInfo: IPartialAuditInfo = {};
       expect(emptyAuditInfo.createdBy).toBeUndefined();
       expect(emptyAuditInfo.tenantId).toBeUndefined();
     });
   });
 
-  describe('AuditInfoBuilder', () => {
+  describe("AuditInfoBuilder", () => {
     let builder: AuditInfoBuilder;
 
     beforeEach(() => {
       builder = new AuditInfoBuilder();
     });
 
-    describe('基本构建', () => {
-      it('应该构建基本的审计信息', () => {
+    describe("基本构建", () => {
+      it("应该构建基本的审计信息", () => {
         const auditInfo = builder.build();
 
-        expect(auditInfo.createdBy).toBe('system');
-        expect(auditInfo.updatedBy).toBe('system');
+        expect(auditInfo.createdBy).toBe("system");
+        expect(auditInfo.updatedBy).toBe("system");
         expect(auditInfo.deletedBy).toBeNull();
         expect(auditInfo.createdAt).toBeInstanceOf(Date);
         expect(auditInfo.updatedAt).toBeInstanceOf(Date);
         expect(auditInfo.deletedAt).toBeNull();
         expect(auditInfo.tenantId).toBeInstanceOf(EntityId);
         expect(auditInfo.version).toBe(1);
-        expect(auditInfo.lastOperation).toBe('CREATE');
+        expect(auditInfo.lastOperation).toBe("CREATE");
         expect(auditInfo.lastOperationIp).toBeNull();
         expect(auditInfo.lastOperationUserAgent).toBeNull();
         expect(auditInfo.lastOperationSource).toBeNull();
         expect(auditInfo.deleteReason).toBeNull();
       });
 
-      it('应该使用当前时间作为时间戳', () => {
+      it("应该使用当前时间作为时间戳", () => {
         const before = new Date();
         const auditInfo = builder.build();
         const after = new Date();
@@ -173,25 +174,25 @@ describe('AuditInfo', () => {
       });
     });
 
-    describe('链式调用', () => {
-      it('应该支持链式调用', () => {
-        const tenantId = EntityId.generate();
+    describe("链式调用", () => {
+      it("应该支持链式调用", () => {
+        const tenantId = TenantId.generate();
         const auditInfo = builder
-          .withCreatedBy('user-123')
-          .withUpdatedBy('user-456')
+          .withCreatedBy("user-123")
+          .withUpdatedBy("user-456")
           .withTenantId(tenantId)
           .withVersion(5)
           .build();
 
-        expect(auditInfo.createdBy).toBe('user-123');
-        expect(auditInfo.updatedBy).toBe('user-456');
+        expect(auditInfo.createdBy).toBe("user-123");
+        expect(auditInfo.updatedBy).toBe("user-456");
         expect(auditInfo.tenantId?.equals(tenantId)).toBe(true);
         expect(auditInfo.version).toBe(5);
       });
 
-      it('应该返回构建器实例', () => {
-        const tenantId = EntityId.generate();
-        const result1 = builder.withCreatedBy('user');
+      it("应该返回构建器实例", () => {
+        const tenantId = TenantId.generate();
+        const result1 = builder.withCreatedBy("user");
         const result2 = builder.withTenantId(tenantId);
         const result3 = builder.withVersion(2);
 
@@ -201,83 +202,83 @@ describe('AuditInfo', () => {
       });
     });
 
-    describe('withCreatedBy', () => {
-      it('应该设置创建者', () => {
-        const auditInfo = builder.withCreatedBy('creator').build();
-        expect(auditInfo.createdBy).toBe('creator');
+    describe("withCreatedBy", () => {
+      it("应该设置创建者", () => {
+        const auditInfo = builder.withCreatedBy("creator").build();
+        expect(auditInfo.createdBy).toBe("creator");
       });
 
-      it('应该覆盖之前的设置', () => {
+      it("应该覆盖之前的设置", () => {
         const auditInfo = builder
-          .withCreatedBy('first')
-          .withCreatedBy('second')
+          .withCreatedBy("first")
+          .withCreatedBy("second")
           .build();
-        expect(auditInfo.createdBy).toBe('second');
+        expect(auditInfo.createdBy).toBe("second");
       });
     });
 
-    describe('withUpdatedBy', () => {
-      it('应该设置更新者', () => {
-        const auditInfo = builder.withUpdatedBy('updater').build();
-        expect(auditInfo.updatedBy).toBe('updater');
+    describe("withUpdatedBy", () => {
+      it("应该设置更新者", () => {
+        const auditInfo = builder.withUpdatedBy("updater").build();
+        expect(auditInfo.updatedBy).toBe("updater");
       });
 
-      it('应该使用创建者作为默认更新者', () => {
-        const auditInfo = builder.withCreatedBy('creator').build();
-        expect(auditInfo.updatedBy).toBe('creator');
+      it("应该使用创建者作为默认更新者", () => {
+        const auditInfo = builder.withCreatedBy("creator").build();
+        expect(auditInfo.updatedBy).toBe("creator");
       });
 
-      it('应该优先使用显式设置的更新者', () => {
+      it("应该优先使用显式设置的更新者", () => {
         const auditInfo = builder
-          .withCreatedBy('creator')
-          .withUpdatedBy('updater')
+          .withCreatedBy("creator")
+          .withUpdatedBy("updater")
           .build();
-        expect(auditInfo.updatedBy).toBe('updater');
+        expect(auditInfo.updatedBy).toBe("updater");
       });
     });
 
-    describe('withTenantId', () => {
-      it('应该设置租户标识符', () => {
-        const tenantId = EntityId.generate();
+    describe("withTenantId", () => {
+      it("应该设置租户标识符", () => {
+        const tenantId = TenantId.generate();
         const auditInfo = builder.withTenantId(tenantId).build();
         expect(auditInfo.tenantId?.equals(tenantId)).toBe(true);
       });
     });
 
-    describe('withVersion', () => {
-      it('应该设置版本号', () => {
+    describe("withVersion", () => {
+      it("应该设置版本号", () => {
         const auditInfo = builder.withVersion(10).build();
         expect(auditInfo.version).toBe(10);
       });
     });
 
-    describe('withLastOperation', () => {
-      it('应该设置最后操作信息', () => {
+    describe("withLastOperation", () => {
+      it("应该设置最后操作信息", () => {
         const auditInfo = builder
-          .withLastOperation('UPDATE', '192.168.1.1', 'Mozilla/5.0', 'WEB')
+          .withLastOperation("UPDATE", "192.168.1.1", "Mozilla/5.0", "WEB")
           .build();
 
-        expect(auditInfo.lastOperation).toBe('UPDATE');
-        expect(auditInfo.lastOperationIp).toBe('192.168.1.1');
-        expect(auditInfo.lastOperationUserAgent).toBe('Mozilla/5.0');
-        expect(auditInfo.lastOperationSource).toBe('WEB');
+        expect(auditInfo.lastOperation).toBe("UPDATE");
+        expect(auditInfo.lastOperationIp).toBe("192.168.1.1");
+        expect(auditInfo.lastOperationUserAgent).toBe("Mozilla/5.0");
+        expect(auditInfo.lastOperationSource).toBe("WEB");
       });
 
-      it('应该支持部分操作信息', () => {
-        const auditInfo = builder.withLastOperation('DELETE').build();
+      it("应该支持部分操作信息", () => {
+        const auditInfo = builder.withLastOperation("DELETE").build();
 
-        expect(auditInfo.lastOperation).toBe('DELETE');
+        expect(auditInfo.lastOperation).toBe("DELETE");
         expect(auditInfo.lastOperationIp).toBeNull();
         expect(auditInfo.lastOperationUserAgent).toBeNull();
         expect(auditInfo.lastOperationSource).toBeNull();
       });
 
-      it('应该支持所有操作类型', () => {
-        const operations: Array<'CREATE' | 'UPDATE' | 'DELETE' | 'RESTORE'> = [
-          'CREATE',
-          'UPDATE',
-          'DELETE',
-          'RESTORE',
+      it("应该支持所有操作类型", () => {
+        const operations: Array<"CREATE" | "UPDATE" | "DELETE" | "RESTORE"> = [
+          "CREATE",
+          "UPDATE",
+          "DELETE",
+          "RESTORE",
         ];
 
         operations.forEach((operation) => {
@@ -286,60 +287,60 @@ describe('AuditInfo', () => {
         });
       });
 
-      it('应该支持所有操作来源', () => {
-        const sources: Array<'WEB' | 'API' | 'CLI' | 'SYSTEM' | null> = [
-          'WEB',
-          'API',
-          'CLI',
-          'SYSTEM',
+      it("应该支持所有操作来源", () => {
+        const sources: Array<"WEB" | "API" | "CLI" | "SYSTEM" | null> = [
+          "WEB",
+          "API",
+          "CLI",
+          "SYSTEM",
           null,
         ];
 
         sources.forEach((source) => {
           const auditInfo = builder
-            .withLastOperation('CREATE', null, null, source)
+            .withLastOperation("CREATE", null, null, source)
             .build();
           expect(auditInfo.lastOperationSource).toBe(source);
         });
       });
     });
 
-    describe('withDeleteReason', () => {
-      it('应该设置删除原因', () => {
+    describe("withDeleteReason", () => {
+      it("应该设置删除原因", () => {
         const auditInfo = builder
-          .withDeleteReason('User requested deletion')
+          .withDeleteReason("User requested deletion")
           .build();
-        expect(auditInfo.deleteReason).toBe('User requested deletion');
+        expect(auditInfo.deleteReason).toBe("User requested deletion");
       });
     });
 
-    describe('复杂场景', () => {
-      it('应该构建完整的审计信息', () => {
-        const tenantId = EntityId.generate();
+    describe("复杂场景", () => {
+      it("应该构建完整的审计信息", () => {
+        const tenantId = TenantId.generate();
         const auditInfo = builder
-          .withCreatedBy('admin')
-          .withUpdatedBy('user')
+          .withCreatedBy("admin")
+          .withUpdatedBy("user")
           .withTenantId(tenantId)
           .withVersion(5)
-          .withLastOperation('UPDATE', '192.168.1.100', 'Chrome/91.0', 'WEB')
-          .withDeleteReason('Data cleanup')
+          .withLastOperation("UPDATE", "192.168.1.100", "Chrome/91.0", "WEB")
+          .withDeleteReason("Data cleanup")
           .build();
 
-        expect(auditInfo.createdBy).toBe('admin');
-        expect(auditInfo.updatedBy).toBe('user');
+        expect(auditInfo.createdBy).toBe("admin");
+        expect(auditInfo.updatedBy).toBe("user");
         expect(auditInfo.deletedBy).toBeNull();
         expect(auditInfo.tenantId?.equals(tenantId)).toBe(true);
         expect(auditInfo.version).toBe(5);
-        expect(auditInfo.lastOperation).toBe('UPDATE');
-        expect(auditInfo.lastOperationIp).toBe('192.168.1.100');
-        expect(auditInfo.lastOperationUserAgent).toBe('Chrome/91.0');
-        expect(auditInfo.lastOperationSource).toBe('WEB');
-        expect(auditInfo.deleteReason).toBe('Data cleanup');
+        expect(auditInfo.lastOperation).toBe("UPDATE");
+        expect(auditInfo.lastOperationIp).toBe("192.168.1.100");
+        expect(auditInfo.lastOperationUserAgent).toBe("Chrome/91.0");
+        expect(auditInfo.lastOperationSource).toBe("WEB");
+        expect(auditInfo.deleteReason).toBe("Data cleanup");
       });
 
-      it('应该处理空值和默认值', () => {
+      it("应该处理空值和默认值", () => {
         const auditInfo = builder
-          .withLastOperation('CREATE', null, null, null)
+          .withLastOperation("CREATE", null, null, null)
           .build();
 
         expect(auditInfo.lastOperationIp).toBeNull();
@@ -348,43 +349,46 @@ describe('AuditInfo', () => {
         expect(auditInfo.deleteReason).toBeNull();
       });
 
-      it('应该重用构建器实例', () => {
-        const auditInfo1 = builder.withCreatedBy('user1').build();
-        const auditInfo2 = builder.withCreatedBy('user2').build();
+      it("应该重用构建器实例", () => {
+        const auditInfo1 = builder.withCreatedBy("user1").build();
+        const auditInfo2 = builder.withCreatedBy("user2").build();
 
-        expect(auditInfo1.createdBy).toBe('user1');
-        expect(auditInfo2.createdBy).toBe('user2');
+        expect(auditInfo1.createdBy).toBe("user1");
+        expect(auditInfo2.createdBy).toBe("user2");
       });
     });
 
-    describe('边界情况', () => {
-      it('应该处理空字符串', () => {
-        const tenantId = EntityId.generate();
-        const auditInfo = builder.withCreatedBy('').withTenantId(tenantId).build();
-
-        expect(auditInfo.createdBy).toBe(''); // 空字符串应该被保留
-        expect(auditInfo.tenantId?.equals(tenantId)).toBe(true);
-      });
-
-      it('应该处理特殊字符', () => {
-        const tenantId = EntityId.generate();
+    describe("边界情况", () => {
+      it("应该处理空字符串", () => {
+        const tenantId = TenantId.generate();
         const auditInfo = builder
-          .withCreatedBy('user@domain.com')
+          .withCreatedBy("")
           .withTenantId(tenantId)
-          .withDeleteReason('Reason with special chars: @#$%')
           .build();
 
-        expect(auditInfo.createdBy).toBe('user@domain.com');
+        expect(auditInfo.createdBy).toBe(""); // 空字符串应该被保留
         expect(auditInfo.tenantId?.equals(tenantId)).toBe(true);
-        expect(auditInfo.deleteReason).toBe('Reason with special chars: @#$%');
       });
 
-      it('应该处理大版本号', () => {
+      it("应该处理特殊字符", () => {
+        const tenantId = TenantId.generate();
+        const auditInfo = builder
+          .withCreatedBy("user@domain.com")
+          .withTenantId(tenantId)
+          .withDeleteReason("Reason with special chars: @#$%")
+          .build();
+
+        expect(auditInfo.createdBy).toBe("user@domain.com");
+        expect(auditInfo.tenantId?.equals(tenantId)).toBe(true);
+        expect(auditInfo.deleteReason).toBe("Reason with special chars: @#$%");
+      });
+
+      it("应该处理大版本号", () => {
         const auditInfo = builder.withVersion(Number.MAX_SAFE_INTEGER).build();
         expect(auditInfo.version).toBe(Number.MAX_SAFE_INTEGER);
       });
 
-      it('应该处理零版本号', () => {
+      it("应该处理零版本号", () => {
         const auditInfo = builder.withVersion(0).build();
         expect(auditInfo.version).toBe(0); // 零版本号应该被保留
       });

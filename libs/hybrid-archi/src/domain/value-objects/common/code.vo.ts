@@ -28,10 +28,10 @@
  * export class TenantCode extends Code {
  *   protected override validate(value: string): void {
  *     super.validate(value);  // 通用验证
- *     
+ *
  *     // 租户特定验证
  *     this.validateLength(value, 3, 20, '租户代码');
- *     
+ *
  *     const reserved = ['admin', 'api', 'www', 'system'];
  *     if (reserved.includes(value)) {
  *       throw new Error('租户代码不能使用保留词');
@@ -50,7 +50,7 @@
  * @since 1.1.0
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object.js";
 
 export abstract class Code extends BaseValueObject<string> {
   /**
@@ -61,11 +61,11 @@ export abstract class Code extends BaseValueObject<string> {
    * @override
    */
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '代码');
+    this.validateNotEmpty(value, "代码");
     this.validatePattern(
       value,
       /^[a-z0-9-]+$/,
-      '代码只能包含小写字母、数字和连字符'
+      "代码只能包含小写字母、数字和连字符",
     );
   }
 
@@ -80,4 +80,3 @@ export abstract class Code extends BaseValueObject<string> {
     return value.toLowerCase().trim();
   }
 }
-

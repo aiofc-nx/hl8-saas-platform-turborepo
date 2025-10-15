@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { TenantType } from '../../../domain/tenant/value-objects/tenant-type.enum';
-import { TenantStatus } from '../../../domain/tenant/value-objects/tenant-status.vo';
+import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum.js";
+import { TenantStatus } from "../../../domain/tenant/value-objects/tenant-status.vo.js";
 
 export class TenantResponseDto {
   id!: string;
@@ -23,7 +23,7 @@ export class TenantResponseDto {
   static fromAggregate(aggregate: any): TenantResponseDto {
     const dto = new TenantResponseDto();
     const tenant = aggregate.getTenant();
-    
+
     dto.id = tenant.id.toString();
     dto.code = tenant.getCode().value;
     dto.name = tenant.getName();
@@ -34,8 +34,7 @@ export class TenantResponseDto {
     dto.activatedAt = tenant.getActivatedAt()?.toISOString();
     dto.createdAt = tenant.createdAt.toISOString();
     dto.updatedAt = tenant.updatedAt.toISOString();
-    
+
     return dto;
   }
 }
-

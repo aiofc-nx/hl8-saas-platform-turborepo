@@ -14,7 +14,7 @@ export {
   getEventHandlers,
   DomainEventRegistry,
   DOMAIN_EVENT_METADATA_KEY,
-} from './domain-event.decorator';
+} from "./domain-event.decorator.js";
 
 // 领域事件配置类型
-export type { DomainEventOptions } from './domain-event.decorator';
+export type { DomainEventOptions } from "./domain-event.decorator.js";

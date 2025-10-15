@@ -5,15 +5,18 @@
  * @since 1.0.0
  */
 
-import { DomainEvent } from '../../../domain';
+import { DomainEvent } from "../../../domain.js";
 
 /**
  * 事件存储异常类
  */
 export class EventStoreException extends Error {
-  constructor(message: string, public readonly code: string) {
+  constructor(
+    message: string,
+    public readonly code: string,
+  ) {
     super(message);
-    this.name = 'EventStoreException';
+    this.name = "EventStoreException";
   }
 }
 
@@ -24,11 +27,11 @@ export class ConcurrencyException extends EventStoreException {
   constructor(
     aggregateId: string,
     expectedVersion: number,
-    actualVersion: number
+    actualVersion: number,
   ) {
     super(
       `聚合 ${aggregateId} 版本冲突: 期望版本 ${expectedVersion}, 实际版本 ${actualVersion}`,
-      'CONCURRENCY_CONFLICT'
+      "CONCURRENCY_CONFLICT",
     );
   }
 }
@@ -71,7 +74,7 @@ export interface IEventStore {
   saveEvents(
     aggregateId: string,
     events: unknown[],
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void>;
 
   /**
@@ -93,7 +96,7 @@ export interface IEventStore {
    */
   getEventsFromVersion(
     aggregateId: string,
-    fromVersion: number
+    fromVersion: number,
   ): Promise<unknown[]>;
 
   /**
@@ -108,7 +111,7 @@ export interface IEventStore {
   getEventsByType(
     eventType: string,
     fromDate?: Date,
-    toDate?: Date
+    toDate?: Date,
   ): Promise<unknown[]>;
 
   /**
@@ -123,7 +126,7 @@ export interface IEventStore {
   getEventsByTenant(
     tenantId: string,
     fromDate?: Date,
-    toDate?: Date
+    toDate?: Date,
   ): Promise<unknown[]>;
 
   /**
@@ -179,7 +182,7 @@ export interface EventStoreStats {
  * 事件存储配置接口
  */
 export interface EventStoreConfig {
-  provider: 'postgresql' | 'mysql' | 'mongodb' | 'inmemory';
+  provider: "postgresql" | "mysql" | "mongodb" | "inmemory";
   connectionString?: string;
   tableName?: string;
   batchSize?: number;

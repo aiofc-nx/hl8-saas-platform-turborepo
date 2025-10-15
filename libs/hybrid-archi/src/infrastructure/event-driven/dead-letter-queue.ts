@@ -8,11 +8,11 @@
  * @since 1.0.0
  */
 
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject } from "@nestjs/common";
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
-import { DatabaseService } from '@hl8/database';
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { DatabaseService } from "@hl8/hybrid-archi";
 
 /**
  * 死信队列配置
@@ -43,7 +43,7 @@ export interface DeadLetterQueueEntry {
   errorMessage: string;
   errorStack: string;
   createdAt: Date;
-  status: 'pending' | 'retrying' | 'failed' | 'recovered';
+  status: "pending" | "retrying" | "failed" | "recovered";
 }
 
 /**
@@ -69,10 +69,11 @@ export class DeadLetterQueueProcessor {
   private processingTimer: NodeJS.Timeout | null = null;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
-    @Inject('DeadLetterQueueConfig') private readonly config: DeadLetterQueueConfig
+    @Inject("DeadLetterQueueConfig")
+    private readonly config: DeadLetterQueueConfig,
   ) {
     this.initializeRetryStrategies();
     this.startProcessing();
@@ -89,7 +90,7 @@ export class DeadLetterQueueProcessor {
   async addToDeadLetterQueue(
     event: any,
     error: Error,
-    retryStrategy?: RetryStrategy
+    retryStrategy?: RetryStrategy,
   ): Promise<string> {
     try {
       const entryId = this.generateEntryId();
@@ -105,9 +106,9 @@ export class DeadLetterQueueProcessor {
         lastRetryAt: new Date(),
         nextRetryAt: this.calculateNextRetryTime(strategy, 0),
         errorMessage: error.message,
-        errorStack: error.stack || '',
+        errorStack: error.stack || "",
         createdAt: new Date(),
-        status: 'pending',
+        status: "pending",
       };
 
       // 保存到内存
@@ -119,17 +120,11 @@ export class DeadLetterQueueProcessor {
       // 缓存条目
       await this.cacheEntry(entry);
 
-      this.logger.warn('事件添加到死信队列', {
-        entryId,
-        eventType: event.eventType,
-        eventId: event.eventId.toString(),
-        error: error.message,
-        retryStrategy: strategy,
-      });
+      this.logger.warn("事件添加到死信队列");
 
       return entryId;
     } catch (error) {
-      this.logger.error('添加事件到死信队列失败', error, {
+      this.logger.error("添加事件到死信队列失败", error, {
         eventType: event.eventType,
         eventId: event.eventId.toString(),
       });
@@ -147,45 +142,35 @@ export class DeadLetterQueueProcessor {
    */
   async retryEntry(
     entryId: string,
-    eventHandler: (event: any) => Promise<void>
+    eventHandler: (event: any) => Promise<void>,
   ): Promise<boolean> {
     try {
       const entry = this.entries.get(entryId);
       if (!entry) {
-        this.logger.warn('死信队列条目不存在', { entryId });
+        this.logger.warn("死信队列条目不存在");
         return false;
       }
 
-      if (entry.status !== 'pending' && entry.status !== 'retrying') {
-        this.logger.warn('死信队列条目状态不允许重试', {
-          entryId,
-          status: entry.status,
-        });
+      if (entry.status !== "pending" && entry.status !== "retrying") {
+        this.logger.warn("死信队列条目状态不允许重试");
         return false;
       }
 
       if (entry.retryCount >= entry.maxRetries) {
-        this.logger.warn('死信队列条目已达到最大重试次数', {
-          entryId,
-          retryCount: entry.retryCount,
-        });
+        this.logger.warn("死信队列条目已达到最大重试次数");
         await this.markEntryAsFailed(entryId);
         return false;
       }
 
       // 更新状态为重试中
-      entry.status = 'retrying';
+      entry.status = "retrying";
       entry.retryCount++;
       entry.lastRetryAt = new Date();
 
       // 更新数据库
       await this.updateEntryInDatabase(entry);
 
-      this.logger.info('开始重试死信队列条目', {
-        entryId,
-        retryCount: entry.retryCount,
-        maxRetries: entry.maxRetries,
-      });
+      this.logger.log("开始重试死信队列条目");
 
       try {
         // 重试事件处理
@@ -194,34 +179,27 @@ export class DeadLetterQueueProcessor {
         // 重试成功
         await this.markEntryAsRecovered(entryId);
 
-        this.logger.info('死信队列条目重试成功', {
-          entryId,
-          retryCount: entry.retryCount,
-        });
+        this.logger.log("死信队列条目重试成功");
 
         return true;
       } catch (error) {
         // 重试失败
         entry.errorMessage =
           error instanceof Error ? error.message : String(error);
-        entry.errorStack = error instanceof Error ? error.stack || '' : '';
+        entry.errorStack = error instanceof Error ? error.stack || "" : "";
         entry.nextRetryAt = this.calculateNextRetryTime(
           this.getRetryStrategy(entry.event.eventType),
-          entry.retryCount
+          entry.retryCount,
         );
 
         await this.updateEntryInDatabase(entry);
 
-        this.logger.warn('死信队列条目重试失败', {
-          entryId,
-          retryCount: entry.retryCount,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        this.logger.warn("死信队列条目重试失败");
 
         return false;
       }
     } catch (error) {
-      this.logger.error('重试死信队列条目失败', error, { entryId });
+      this.logger.error("重试死信队列条目失败", error, { entryId });
       return false;
     }
   }
@@ -261,9 +239,9 @@ export class DeadLetterQueueProcessor {
     const now = new Date();
     return Array.from(this.entries.values()).filter(
       (entry) =>
-        entry.status === 'pending' &&
+        entry.status === "pending" &&
         entry.nextRetryAt <= now &&
-        entry.retryCount < entry.maxRetries
+        entry.retryCount < entry.maxRetries,
     );
   }
 
@@ -289,10 +267,10 @@ export class DeadLetterQueueProcessor {
       // 从缓存删除
       await this.cacheService.delete(`dlq:${entryId}`);
 
-      this.logger.info('死信队列条目已删除', { entryId });
+      this.logger.log("死信队列条目已删除");
       return true;
     } catch (error) {
-      this.logger.error('删除死信队列条目失败', error, { entryId });
+      this.logger.error("删除死信队列条目失败", error, { entryId });
       return false;
     }
   }
@@ -319,14 +297,11 @@ export class DeadLetterQueueProcessor {
         await this.deleteEntry(entryId);
       }
 
-      this.logger.info('清理过期死信队列条目', {
-        expiredCount: expiredEntries.length,
-        retentionPeriod: this.config.retentionPeriod,
-      });
+      this.logger.log("清理过期死信队列条目");
 
       return expiredEntries.length;
     } catch (error) {
-      this.logger.error('清理过期死信队列条目失败', error);
+      this.logger.error("清理过期死信队列条目失败", error);
       return 0;
     }
   }
@@ -349,13 +324,13 @@ export class DeadLetterQueueProcessor {
   } {
     const entries = Array.from(this.entries.values());
     const totalEntries = entries.length;
-    const pendingEntries = entries.filter((e) => e.status === 'pending').length;
+    const pendingEntries = entries.filter((e) => e.status === "pending").length;
     const retryingEntries = entries.filter(
-      (e) => e.status === 'retrying'
+      (e) => e.status === "retrying",
     ).length;
-    const failedEntries = entries.filter((e) => e.status === 'failed').length;
+    const failedEntries = entries.filter((e) => e.status === "failed").length;
     const recoveredEntries = entries.filter(
-      (e) => e.status === 'recovered'
+      (e) => e.status === "recovered",
     ).length;
 
     const averageRetryCount =
@@ -389,7 +364,7 @@ export class DeadLetterQueueProcessor {
       clearInterval(this.processingTimer);
       this.processingTimer = null;
     }
-    this.logger.info('死信队列处理已停止');
+    this.logger.log("死信队列处理已停止");
   }
 
   // ==================== 私有方法 ====================
@@ -399,31 +374,13 @@ export class DeadLetterQueueProcessor {
    */
   private initializeRetryStrategies(): void {
     // 默认重试策略
-    this.retryStrategies.set('default', {
-      maxRetries: this.config.maxRetries,
-      initialDelay: this.config.retryDelay,
-      backoffMultiplier: this.config.backoffMultiplier,
-      maxDelay: this.config.maxRetryDelay,
-      jitter: true,
-    });
+    this.retryStrategies.set("default");
 
     // 快速重试策略（用于临时错误）
-    this.retryStrategies.set('fast', {
-      maxRetries: 3,
-      initialDelay: 1000, // 1秒
-      backoffMultiplier: 2,
-      maxDelay: 10000, // 10秒
-      jitter: true,
-    });
+    this.retryStrategies.set("fast");
 
     // 慢速重试策略（用于系统错误）
-    this.retryStrategies.set('slow', {
-      maxRetries: 10,
-      initialDelay: 30000, // 30秒
-      backoffMultiplier: 1.5,
-      maxDelay: 3600000, // 1小时
-      jitter: true,
-    });
+    this.retryStrategies.set("slow");
   }
 
   /**
@@ -431,8 +388,8 @@ export class DeadLetterQueueProcessor {
    */
   private getDefaultRetryStrategy(eventType: string): RetryStrategy {
     return (
-      this.retryStrategies.get('default') ||
-      this.retryStrategies.get('default')!
+      this.retryStrategies.get("default") ||
+      this.retryStrategies.get("default")!
     );
   }
 
@@ -451,11 +408,11 @@ export class DeadLetterQueueProcessor {
    */
   private calculateNextRetryTime(
     strategy: RetryStrategy,
-    retryCount: number
+    retryCount: number,
   ): Date {
     const delay = Math.min(
       strategy.initialDelay * Math.pow(strategy.backoffMultiplier, retryCount),
-      strategy.maxDelay
+      strategy.maxDelay,
     );
 
     // 添加抖动
@@ -484,9 +441,7 @@ export class DeadLetterQueueProcessor {
       await this.processPendingEntries();
     }, this.config.processingInterval);
 
-    this.logger.info('死信队列处理已启动', {
-      processingInterval: this.config.processingInterval,
-    });
+    this.logger.log("死信队列处理已启动");
   }
 
   /**
@@ -499,9 +454,7 @@ export class DeadLetterQueueProcessor {
         return;
       }
 
-      this.logger.debug('处理待重试的死信队列条目', {
-        count: pendingEntries.length,
-      });
+      this.logger.debug("处理待重试的死信队列条目");
 
       // 批量处理
       const batchSize = Math.min(this.config.batchSize, pendingEntries.length);
@@ -513,7 +466,7 @@ export class DeadLetterQueueProcessor {
         console.log(`处理死信队列条目: ${entry.id}`);
       }
     } catch (error) {
-      this.logger.error('处理待重试条目失败', error);
+      this.logger.error("处理待重试条目失败", error);
     }
   }
 
@@ -523,7 +476,7 @@ export class DeadLetterQueueProcessor {
   private async markEntryAsFailed(entryId: string): Promise<void> {
     const entry = this.entries.get(entryId);
     if (entry) {
-      entry.status = 'failed';
+      entry.status = "failed";
       await this.updateEntryInDatabase(entry);
     }
   }
@@ -534,7 +487,7 @@ export class DeadLetterQueueProcessor {
   private async markEntryAsRecovered(entryId: string): Promise<void> {
     const entry = this.entries.get(entryId);
     if (entry) {
-      entry.status = 'recovered';
+      entry.status = "recovered";
       await this.updateEntryInDatabase(entry);
     }
   }
@@ -543,20 +496,20 @@ export class DeadLetterQueueProcessor {
    * 保存条目到数据库
    */
   private async saveEntryToDatabase(
-    entry: DeadLetterQueueEntry
+    entry: DeadLetterQueueEntry,
   ): Promise<void> {
     // 这里应该实现具体的数据库保存逻辑
-    console.log('保存死信队列条目到数据库', { entryId: entry.id });
+    console.log("保存死信队列条目到数据库", { entryId: entry.id });
   }
 
   /**
    * 更新数据库中的条目
    */
   private async updateEntryInDatabase(
-    entry: DeadLetterQueueEntry
+    entry: DeadLetterQueueEntry,
   ): Promise<void> {
     // 这里应该实现具体的数据库更新逻辑
-    console.log('更新数据库中的死信队列条目', { entryId: entry.id });
+    console.log("更新数据库中的死信队列条目", { entryId: entry.id });
   }
 
   /**
@@ -564,7 +517,7 @@ export class DeadLetterQueueProcessor {
    */
   private async deleteEntryFromDatabase(entryId: string): Promise<void> {
     // 这里应该实现具体的数据库删除逻辑
-    console.log('从数据库删除死信队列条目', { entryId });
+    console.log("从数据库删除死信队列条目", { entryId });
   }
 
   /**
@@ -576,7 +529,7 @@ export class DeadLetterQueueProcessor {
       const ttl = this.config.retentionPeriod * 60 * 60; // 转换为秒
       await this.cacheService.set(cacheKey, JSON.stringify(entry), ttl);
     } catch (error) {
-      this.logger.warn('缓存死信队列条目失败', error);
+      this.logger.warn("缓存死信队列条目失败", error);
     }
   }
 }

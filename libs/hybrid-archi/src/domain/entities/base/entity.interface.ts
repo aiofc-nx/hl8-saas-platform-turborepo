@@ -63,8 +63,8 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
-import { IBaseEntity } from './base-entity.interface';
+import { EntityId, TenantId } from "@hl8/isolation-model";
+import { IBaseEntity } from "./base-entity.interface.js";
 
 /**
  * 实体接口
@@ -121,8 +121,8 @@ export interface IEntity extends IBaseEntity {
    *
    * @example
    * ```typescript
-   * const user1 = new User(EntityId.fromString('user-123'), '张三', 'zhangsan@example.com');
-   * const user2 = new User(EntityId.fromString('user-123'), '李四', 'lisi@example.com');
+   * const user1 = new User(TenantId.create('user-123'), '张三', 'zhangsan@example.com');
+   * const user2 = new User(TenantId.create('user-123'), '李四', 'lisi@example.com');
    *
    * console.log(user1.equals(user2)); // true - 相同ID，相同类型
    * ```

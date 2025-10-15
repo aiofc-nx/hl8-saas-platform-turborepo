@@ -29,9 +29,8 @@
  * @since 1.1.0
  */
 
-export { Code } from './code.vo';
-export { Domain } from './domain.vo';
-export { Level } from './level.vo';
-export { Name } from './name.vo';
-export { Description } from './description.vo';
-
+export { Code } from "./code.vo.js";
+export { Domain } from "./domain.vo.js";
+export { Level } from "./level.vo.js";
+export { Name } from "./name.vo.js";
+export { Description } from "./description.vo.js";

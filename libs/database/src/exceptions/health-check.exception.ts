@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 /**
  * 健康检查异常
@@ -17,7 +17,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 export class HealthCheckException extends HttpException {
   constructor(
     message: string,
-    public readonly healthStatus: 'unhealthy' | 'degraded',
+    public readonly healthStatus: "unhealthy" | "degraded",
     public readonly details?: any,
   ) {
     super(
@@ -27,7 +27,7 @@ export class HealthCheckException extends HttpException {
         details,
         timestamp: new Date().toISOString(),
       },
-      healthStatus === 'unhealthy'
+      healthStatus === "unhealthy"
         ? HttpStatus.SERVICE_UNAVAILABLE
         : HttpStatus.OK,
     );

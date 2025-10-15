@@ -31,7 +31,7 @@
  * @since 1.0.0
  */
 
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 
 export class DatabaseQueryException extends AbstractHttpException {
   /**
@@ -42,8 +42,8 @@ export class DatabaseQueryException extends AbstractHttpException {
    */
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_QUERY_ERROR', // errorCode
-      '数据库查询错误', // title
+      "DATABASE_QUERY_ERROR", // errorCode
+      "数据库查询错误", // title
       detail, // detail
       500, // status
       data, // data

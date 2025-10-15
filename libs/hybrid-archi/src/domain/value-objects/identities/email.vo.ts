@@ -22,7 +22,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object.js";
 
 export class Email extends BaseValueObject<string> {
   /**
@@ -32,15 +32,15 @@ export class Email extends BaseValueObject<string> {
    * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, '邮箱');
-    this.validateLength(value, 1, 254, '邮箱');
-    
+    this.validateNotEmpty(value, "邮箱");
+    this.validateLength(value, 1, 254, "邮箱");
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     this.validatePattern(value, emailRegex, `邮箱格式无效: ${value}`);
-    
-    const [localPart] = value.split('@');
+
+    const [localPart] = value.split("@");
     if (localPart.length > 64) {
-      throw new Error('邮箱本地部分长度不能超过64个字符');
+      throw new Error("邮箱本地部分长度不能超过64个字符");
     }
   }
 
@@ -60,7 +60,7 @@ export class Email extends BaseValueObject<string> {
    * @returns {string} 域名
    */
   public getDomain(): string {
-    return this.value.split('@')[1];
+    return this.value.split("@")[1];
   }
 
   /**
@@ -69,6 +69,6 @@ export class Email extends BaseValueObject<string> {
    * @returns {string} 本地部分
    */
   public getLocalPart(): string {
-    return this.value.split('@')[0];
+    return this.value.split("@")[0];
   }
 }

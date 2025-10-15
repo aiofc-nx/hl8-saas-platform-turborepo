@@ -50,7 +50,7 @@
  *       throw new Error('邮箱已存在');
  *     }
  *
- *     const user = User.create(EntityId.generate(), name, email);
+ *     const user = User.create(TenantId.generate(), name, email);
  *     await this.userRepository.save(user);
  *     return user;
  *   }
@@ -60,8 +60,9 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
-import { IEntity } from '../../entities/base/entity.interface';
+import { EntityId } from "@hl8/isolation-model";
+import { IEntity } from "../../entities/base/entity.interface.js";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 基础仓储接口
@@ -106,7 +107,7 @@ export interface IRepository<TEntity extends IEntity, TId = EntityId> {
    *
    * @example
    * ```typescript
-   * const user = User.create(EntityId.generate(), '张三', 'zhangsan@example.com');
+   * const user = User.create(TenantId.generate(), '张三', 'zhangsan@example.com');
    * await userRepository.save(user);
    * console.log('用户保存成功');
    * ```
@@ -244,7 +245,7 @@ export interface IRepositoryQueryOptions {
   /**
    * 排序方向
    */
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 
   /**
    * 过滤条件
@@ -323,8 +324,8 @@ export abstract class BaseRepositoryError extends Error {
  * 并发冲突异常
  */
 export class ConcurrencyError extends BaseRepositoryError {
-  readonly errorCode = 'CONCURRENCY_ERROR';
-  readonly errorType = 'concurrency';
+  readonly errorCode = "CONCURRENCY_ERROR";
+  readonly errorType = "concurrency";
 
   constructor(
     message: string,
@@ -341,8 +342,8 @@ export class ConcurrencyError extends BaseRepositoryError {
  * 实体未找到异常
  */
 export class EntityNotFoundError extends BaseRepositoryError {
-  readonly errorCode = 'ENTITY_NOT_FOUND';
-  readonly errorType = 'notFound';
+  readonly errorCode = "ENTITY_NOT_FOUND";
+  readonly errorType = "notFound";
 
   constructor(
     message: string,
@@ -358,8 +359,8 @@ export class EntityNotFoundError extends BaseRepositoryError {
  * 数据验证异常
  */
 export class ValidationError extends BaseRepositoryError {
-  readonly errorCode = 'VALIDATION_ERROR';
-  readonly errorType = 'validation';
+  readonly errorCode = "VALIDATION_ERROR";
+  readonly errorType = "validation";
 
   constructor(
     message: string,

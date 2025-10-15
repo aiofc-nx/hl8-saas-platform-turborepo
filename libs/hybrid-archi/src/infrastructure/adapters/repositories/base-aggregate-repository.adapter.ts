@@ -8,21 +8,21 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@hl8/database';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { EventService } from '@hl8/messaging';
-import { EntityId } from '../../../domain/value-objects/entity-id';
-import { BaseAggregateRoot } from '../../../domain/aggregates/base/base-aggregate-root';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import { IEntity } from '../../../domain/entities/base/entity.interface';
-import {
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { EventService } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model";
+import { BaseAggregateRoot } from "../../../domain/aggregates/base/base-aggregate-root.js";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
+import { IEntity } from "../../../domain/entities/base/entity.interface.js";
+import type {
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
-} from '../../../domain/repositories/base/base-repository.interface';
-import { BaseRepositoryAdapter } from './base-repository.adapter';
+} from "../../../domain/repositories/base/base-repository.interface.js";
+import { BaseRepositoryAdapter } from "./base-repository.adapter.js";
 
 /**
  * 聚合根仓储配置接口
@@ -48,7 +48,7 @@ export interface IAggregateRepositoryConfig {
 @Injectable()
 export class BaseAggregateRepositoryAdapter<
     T extends BaseAggregateRoot & IEntity,
-    TId = EntityId
+    TId = EntityId,
   >
   extends BaseRepositoryAdapter<T, TId>
   implements IRepository<T, TId>
@@ -58,10 +58,10 @@ export class BaseAggregateRepositoryAdapter<
   constructor(
     databaseService: DatabaseService,
     cacheService: CacheService,
-    logger: PinoLogger,
+    logger: FastifyLoggerService,
     private readonly eventService: EventService,
     entityName: string,
-    aggregateConfig: Partial<IAggregateRepositoryConfig> = {}
+    aggregateConfig: Partial<IAggregateRepositoryConfig> = {},
   ) {
     super(databaseService, cacheService, logger, entityName);
 
@@ -113,11 +113,7 @@ export class BaseAggregateRepositoryAdapter<
           await this.setCache((aggregate as any).getId(), aggregate);
         }
 
-        this.logger.debug(`保存聚合根成功: ${this.entityName}`, {
-          id: (aggregate as any).getId(),
-          version: aggregate.getVersion(),
-          eventsCount: aggregate.uncommittedEvents.length,
-        });
+        this.logger.debug(`保存聚合根成功: ${this.entityName}`);
       });
     } catch (error) {
       this.logger.error(`保存聚合根失败: ${this.entityName}`, error, {
@@ -139,7 +135,7 @@ export class BaseAggregateRepositoryAdapter<
       if (this.config.enableCache) {
         const cached = await this.getFromCache(id);
         if (cached) {
-          this.logger.debug(`从缓存获取聚合根: ${this.entityName}`, { id });
+          this.logger.debug(`从缓存获取聚合根: ${this.entityName}`);
           return cached;
         }
       }
@@ -158,7 +154,7 @@ export class BaseAggregateRepositoryAdapter<
               await this.setCache(id, aggregate);
             }
 
-            this.logger.debug(`从快照恢复聚合根: ${this.entityName}`, { id });
+            this.logger.debug(`从快照恢复聚合根: ${this.entityName}`);
             return aggregate;
           }
         }
@@ -173,7 +169,7 @@ export class BaseAggregateRepositoryAdapter<
             await this.setCache(id, aggregate);
           }
 
-          this.logger.debug(`从事件重建聚合根: ${this.entityName}`, { id });
+          this.logger.debug(`从事件重建聚合根: ${this.entityName}`);
           return aggregate;
         }
       }
@@ -189,7 +185,7 @@ export class BaseAggregateRepositoryAdapter<
         await this.setCache(id, aggregate);
       }
 
-      this.logger.debug(`从数据库获取聚合根: ${this.entityName}`, { id });
+      this.logger.debug(`从数据库获取聚合根: ${this.entityName}`);
       return aggregate;
     } catch (error) {
       this.logger.error(`查找聚合根失败: ${this.entityName}`, error, { id });
@@ -230,7 +226,7 @@ export class BaseAggregateRepositoryAdapter<
   async getEvents(
     id: TId,
     fromVersion?: number,
-    toVersion?: number
+    toVersion?: number,
   ): Promise<BaseDomainEvent[]> {
     try {
       if (this.aggregateConfig.enableEventStore) {
@@ -276,13 +272,13 @@ export class BaseAggregateRepositoryAdapter<
     try {
       if (this.config.enableTransaction) {
         // 使用兼容性检查调用 transaction 方法
-        if (typeof (this.databaseService as any).transaction === 'function') {
+        if (typeof (this.databaseService as any).transaction === "function") {
           await (this.databaseService as any).transaction(
             async (transaction: any) => {
               for (const id of ids) {
                 await this.deleteFromDatabase(id, transaction);
               }
-            }
+            },
           );
         } else {
           for (const id of ids) {
@@ -302,9 +298,7 @@ export class BaseAggregateRepositoryAdapter<
         }
       }
 
-      this.logger.debug(`批量删除聚合根成功: ${this.entityName}`, {
-        count: ids.length,
-      });
+      this.logger.debug(`批量删除聚合根成功: ${this.entityName}`);
     } catch (error) {
       this.logger.error(`批量删除聚合根失败: ${this.entityName}`, error);
       throw error;
@@ -319,7 +313,7 @@ export class BaseAggregateRepositoryAdapter<
   private async saveAggregateState(aggregate: T): Promise<void> {
     // 实现具体的聚合根状态保存逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的聚合根状态保存逻辑');
+    throw new Error("需要实现具体的聚合根状态保存逻辑");
   }
 
   /**
@@ -350,10 +344,10 @@ export class BaseAggregateRepositoryAdapter<
 
     for (const event of events) {
       // 使用兼容性检查调用 publish 方法
-      if (typeof (this.eventService as any).publish === 'function') {
+      if (typeof (this.eventService as any).publish === "function") {
         await (this.eventService as any).publish(event);
       } else {
-        console.warn('EventService不支持publish方法');
+        console.warn("EventService不支持publish方法");
       }
     }
   }
@@ -385,7 +379,7 @@ export class BaseAggregateRepositoryAdapter<
   private async restoreFromSnapshot(snapshot: any): Promise<T | null> {
     // 实现具体的快照恢复逻辑
     // 这里需要根据具体的聚合根类型来实现
-    throw new Error('需要实现具体的快照恢复逻辑');
+    throw new Error("需要实现具体的快照恢复逻辑");
   }
 
   /**
@@ -393,11 +387,11 @@ export class BaseAggregateRepositoryAdapter<
    */
   private async applyEventsAfterSnapshot(
     aggregate: T,
-    fromVersion: number
+    fromVersion: number,
   ): Promise<void> {
     const events = await this.getEvents(
       (aggregate as any).getId(),
-      fromVersion + 1
+      fromVersion + 1,
     );
     for (const event of events) {
       // 由于applyEvent是protected方法，我们需要通过类型断言来访问
@@ -411,7 +405,7 @@ export class BaseAggregateRepositoryAdapter<
   private async rebuildFromEvents(id: TId): Promise<T | null> {
     // 实现具体的事件重建逻辑
     // 这里需要根据具体的聚合根类型来实现
-    throw new Error('需要实现具体的事件重建逻辑');
+    throw new Error("需要实现具体的事件重建逻辑");
   }
 
   /**
@@ -420,7 +414,7 @@ export class BaseAggregateRepositoryAdapter<
   private async storeEvent(event: BaseDomainEvent): Promise<void> {
     // 实现具体的事件存储逻辑
     // 这里需要根据具体的事件存储服务来实现
-    throw new Error('需要实现具体的事件存储逻辑');
+    throw new Error("需要实现具体的事件存储逻辑");
   }
 
   /**
@@ -429,7 +423,7 @@ export class BaseAggregateRepositoryAdapter<
   private async getVersionFromEventStore(id: TId): Promise<number> {
     // 实现具体的事件存储版本获取逻辑
     // 这里需要根据具体的事件存储服务来实现
-    throw new Error('需要实现具体的事件存储版本获取逻辑');
+    throw new Error("需要实现具体的事件存储版本获取逻辑");
   }
 
   /**
@@ -438,11 +432,11 @@ export class BaseAggregateRepositoryAdapter<
   private async getEventsFromEventStore(
     id: TId,
     fromVersion?: number,
-    toVersion?: number
+    toVersion?: number,
   ): Promise<BaseDomainEvent[]> {
     // 实现具体的事件存储事件获取逻辑
     // 这里需要根据具体的事件存储服务来实现
-    throw new Error('需要实现具体的事件存储事件获取逻辑');
+    throw new Error("需要实现具体的事件存储事件获取逻辑");
   }
 
   /**
@@ -451,7 +445,7 @@ export class BaseAggregateRepositoryAdapter<
   private async getSnapshotFromStore(id: TId): Promise<any> {
     // 实现具体的快照存储获取逻辑
     // 这里需要根据具体的快照存储服务来实现
-    throw new Error('需要实现具体的快照存储获取逻辑');
+    throw new Error("需要实现具体的快照存储获取逻辑");
   }
 
   /**
@@ -460,6 +454,6 @@ export class BaseAggregateRepositoryAdapter<
   private async storeSnapshot(snapshot: any): Promise<void> {
     // 实现具体的快照存储逻辑
     // 这里需要根据具体的快照存储服务来实现
-    throw new Error('需要实现具体的快照存储逻辑');
+    throw new Error("需要实现具体的快照存储逻辑");
   }
 }

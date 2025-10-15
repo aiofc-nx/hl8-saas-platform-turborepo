@@ -31,28 +31,28 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
-import { ORGANIZATION_TYPE_CONFIG } from '../../../constants/organization.constants';
+import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
+import { ORGANIZATION_TYPE_CONFIG } from "../../../constants/organization.constants.js";
 
 /**
  * 组织类型枚举
  */
 export type OrganizationTypeValue =
-  | 'PROFESSIONAL_COMMITTEE'
-  | 'PROJECT_TEAM'
-  | 'QUALITY_CONTROL'
-  | 'PERFORMANCE_TEAM'
-  | 'CUSTOM';
+  | "PROFESSIONAL_COMMITTEE"
+  | "PROJECT_TEAM"
+  | "QUALITY_CONTROL"
+  | "PERFORMANCE_TEAM"
+  | "CUSTOM";
 
 /**
  * 所有允许的组织类型
  */
 const ALLOWED_TYPES: readonly OrganizationTypeValue[] = [
-  'PROFESSIONAL_COMMITTEE',
-  'PROJECT_TEAM',
-  'QUALITY_CONTROL',
-  'PERFORMANCE_TEAM',
-  'CUSTOM',
+  "PROFESSIONAL_COMMITTEE",
+  "PROJECT_TEAM",
+  "QUALITY_CONTROL",
+  "PERFORMANCE_TEAM",
+  "CUSTOM",
 ] as const;
 
 export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
@@ -60,14 +60,13 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    * 验证组织类型
    *
    * @protected
-   * @override
    */
-  protected override validate(value: OrganizationTypeValue): void {
-    this.validateNotEmpty(value, '组织类型');
-    this.validateEnum(
+  protected validate(value: OrganizationTypeValue): void {
+    (this as any).validateNotEmpty(value, "组织类型");
+    (this as any).validateEnum(
       value,
       ALLOWED_TYPES as unknown as string[],
-      '组织类型'
+      "组织类型",
     );
   }
 
@@ -77,35 +76,35 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    * 创建专业委员会类型
    */
   public static professionalCommittee(): OrganizationType {
-    return OrganizationType.create('PROFESSIONAL_COMMITTEE');
+    return (OrganizationType as any).create("PROFESSIONAL_COMMITTEE");
   }
 
   /**
    * 创建项目团队类型
    */
   public static projectTeam(): OrganizationType {
-    return OrganizationType.create('PROJECT_TEAM');
+    return (OrganizationType as any).create("PROJECT_TEAM");
   }
 
   /**
    * 创建质量控制类型
    */
   public static qualityControl(): OrganizationType {
-    return OrganizationType.create('QUALITY_CONTROL');
+    return (OrganizationType as any).create("QUALITY_CONTROL");
   }
 
   /**
    * 创建绩效管理类型
    */
   public static performanceTeam(): OrganizationType {
-    return OrganizationType.create('PERFORMANCE_TEAM');
+    return (OrganizationType as any).create("PERFORMANCE_TEAM");
   }
 
   /**
    * 创建自定义类型
    */
   public static custom(): OrganizationType {
-    return OrganizationType.create('CUSTOM');
+    return (OrganizationType as any).create("CUSTOM");
   }
 
   // ============ 类型检查方法 ============
@@ -114,35 +113,35 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    * 是否为专业委员会
    */
   public isProfessionalCommittee(): boolean {
-    return this._value === 'PROFESSIONAL_COMMITTEE';
+    return (this as any)._value === "PROFESSIONAL_COMMITTEE";
   }
 
   /**
    * 是否为项目团队
    */
   public isProjectTeam(): boolean {
-    return this._value === 'PROJECT_TEAM';
+    return (this as any)._value === "PROJECT_TEAM";
   }
 
   /**
    * 是否为质量控制
    */
   public isQualityControl(): boolean {
-    return this._value === 'QUALITY_CONTROL';
+    return (this as any)._value === "QUALITY_CONTROL";
   }
 
   /**
    * 是否为绩效管理
    */
   public isPerformanceTeam(): boolean {
-    return this._value === 'PERFORMANCE_TEAM';
+    return (this as any)._value === "PERFORMANCE_TEAM";
   }
 
   /**
    * 是否为自定义类型
    */
   public isCustom(): boolean {
-    return this._value === 'CUSTOM';
+    return (this as any)._value === "CUSTOM";
   }
 
   // ============ 辅助方法 ============
@@ -151,8 +150,8 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    * 获取组织类型的显示名称
    */
   public getDisplayName(): string {
-    const config = ORGANIZATION_TYPE_CONFIG[this._value];
-    return config?.name || this._value;
+    const config = ORGANIZATION_TYPE_CONFIG[(this as any)._value];
+    return config?.name || (this as any)._value;
   }
 
   /**
@@ -166,8 +165,8 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    * 获取组织类型的描述
    */
   public getDescription(): string {
-    const config = ORGANIZATION_TYPE_CONFIG[this._value];
-    return config?.description || '';
+    const config = ORGANIZATION_TYPE_CONFIG[(this as any)._value];
+    return config?.description || "";
   }
 
   /**
@@ -175,7 +174,7 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    */
   public static isValid(type: string): boolean {
     try {
-      OrganizationType.create(type as OrganizationTypeValue);
+      (OrganizationType as any).create(type as OrganizationTypeValue);
       return true;
     } catch {
       return false;

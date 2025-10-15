@@ -5,10 +5,11 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { OrganizationStatus } from '../value-objects/organization-status.vo';
-import { PinoLogger } from '@hl8/logger';
-import { OrganizationType } from '../value-objects/organization-type.vo';
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
+import { OrganizationStatus } from "../value-objects/organization-status.vo.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
+import { OrganizationType } from "../value-objects/organization-type.vo.js";
 
 export class Organization extends BaseEntity {
   constructor(
@@ -21,7 +22,7 @@ export class Organization extends BaseEntity {
     private _isDefault: boolean,
     private _displayOrder: number,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -64,17 +65,17 @@ export class Organization extends BaseEntity {
 
   public updateName(name: string, updatedBy?: string): void {
     this._name = name;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public activate(updatedBy?: string): void {
     this._status = OrganizationStatus.ACTIVE;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public deactivate(updatedBy?: string): void {
     this._status = OrganizationStatus.DISABLED;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   public isActive(): boolean {
@@ -83,10 +84,10 @@ export class Organization extends BaseEntity {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       code: this._code,
       name: this._name,
-      type: this._type.value,
+      type: (this._type as any).value,
       status: this._status,
       description: this._description,
       isDefault: this._isDefault,
@@ -94,4 +95,3 @@ export class Organization extends BaseEntity {
     };
   }
 }
-

@@ -31,7 +31,7 @@
  * @since 1.0.0
  */
 
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 
 export class IsolationContextMissingException extends AbstractHttpException {
   /**
@@ -42,8 +42,8 @@ export class IsolationContextMissingException extends AbstractHttpException {
    */
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'ISOLATION_CONTEXT_MISSING', // errorCode
-      '隔离上下文缺失', // title
+      "ISOLATION_CONTEXT_MISSING", // errorCode
+      "隔离上下文缺失", // title
       detail, // detail
       400, // status
       data, // data

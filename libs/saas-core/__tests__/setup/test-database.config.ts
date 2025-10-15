@@ -15,9 +15,9 @@
  * @since 1.0.0
  */
 
-import { Options } from '@hl8/database';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql'; // devDependency，用于测试
-import { join } from 'path';
+import { Options } from "@hl8/hybrid-archi";
+import { PostgreSqlDriver } from "@mikro-orm/postgresql"; // devDependency，用于测试
+import { join } from "path";
 
 /**
  * 测试数据库配置
@@ -34,11 +34,11 @@ export const testDatabaseConfig: Options = {
    * 测试数据库连接配置
    * 使用 docker-compose 中的 PostgreSQL
    */
-  host: process.env['TEST_DB_HOST'] || 'localhost',
-  port: parseInt(process.env['TEST_DB_PORT'] || '5432', 10),
-  dbName: process.env['TEST_DB_NAME'] || 'saas_core_test',
-  user: process.env['TEST_DB_USER'] || 'aiofix_user',
-  password: process.env['TEST_DB_PASSWORD'] || 'aiofix_password',
+  host: process.env["TEST_DB_HOST"] || "localhost",
+  port: parseInt(process.env["TEST_DB_PORT"] || "5432", 10),
+  dbName: process.env["TEST_DB_NAME"] || "saas_core_test",
+  user: process.env["TEST_DB_USER"] || "aiofix_user",
+  password: process.env["TEST_DB_PASSWORD"] || "aiofix_password",
 
   /**
    * 连接池配置（测试环境使用较小的连接池）
@@ -53,24 +53,27 @@ export const testDatabaseConfig: Options = {
    */
   entities: [],
   entitiesTs: [
-    join(__dirname, '../../src/infrastructure/persistence/entities/**/*.orm-entity.ts'),
+    join(
+      __dirname,
+      "../../src/infrastructure/persistence/entities/**/*.orm-entity.ts",
+    ),
   ],
 
   /**
    * 迁移配置
    */
   migrations: {
-    tableName: 'mikro_orm_migrations',
-    path: join(__dirname, '../../src/infrastructure/persistence/migrations'),
-    pathTs: join(__dirname, '../../src/infrastructure/persistence/migrations'),
-    glob: '!(*.d).{js,ts}',
+    tableName: "mikro_orm_migrations",
+    path: join(__dirname, "../../src/infrastructure/persistence/migrations"),
+    pathTs: join(__dirname, "../../src/infrastructure/persistence/migrations"),
+    glob: "!(*.d).{js,ts}",
     transactional: true,
     disableForeignKeys: false,
     allOrNothing: true,
     dropTables: false,
     safe: false, // 测试环境允许不安全操作
     snapshot: false,
-    emit: 'ts',
+    emit: "ts",
   },
 
   /**
@@ -83,14 +86,15 @@ export const testDatabaseConfig: Options = {
   /**
    * 调试配置（可选）
    */
-  debug: process.env['TEST_DB_DEBUG'] === 'true',
+  debug: process.env["TEST_DB_DEBUG"] === "true",
 
   /**
    * 日志配置（测试环境静默）
    */
-  logger: process.env['TEST_DB_LOG'] === 'true' 
-    ? (message: string) => console.log('[Test DB]', message)
-    : undefined,
+  logger:
+    process.env["TEST_DB_LOG"] === "true"
+      ? (message: string) => console.log("[Test DB]", message)
+      : undefined,
 
   /**
    * 严格模式
@@ -114,7 +118,7 @@ export const testDatabaseConfig: Options = {
   /**
    * 时区配置
    */
-  timezone: 'UTC',
+  timezone: "UTC",
   forceUtcTimezone: true,
 
   /**
@@ -136,4 +140,3 @@ export const testDatabaseConfig: Options = {
 export function getTestDatabaseConfig(): Options {
   return testDatabaseConfig;
 }
-

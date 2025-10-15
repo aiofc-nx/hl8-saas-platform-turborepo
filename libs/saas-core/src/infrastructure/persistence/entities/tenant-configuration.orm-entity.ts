@@ -7,60 +7,57 @@
  * @since 1.0.0
  */
 
-import {
-  Entity,
-  PrimaryKey,
-  Property,
-  Index,
-  OneToOne,
-} from '@hl8/database';
-import { TenantOrmEntity } from './tenant.orm-entity';
+import { Entity, PrimaryKey, Property, Index, OneToOne } from "@hl8/hybrid-archi";
+import { TenantOrmEntity } from "./tenant.orm-entity.js";
 
-@Entity({ tableName: 'tenant_configurations' })
+@Entity({ tableName: "tenant_configurations" })
 export class TenantConfigurationOrmEntity {
-  @PrimaryKey({ type: 'uuid' })
+  @PrimaryKey({ type: "uuid" })
   id!: string;
 
-  @OneToOne(() => TenantOrmEntity, { nullable: false, owner: true, fieldName: 'tenant_id' })
+  @OneToOne(() => TenantOrmEntity, {
+    nullable: false,
+    owner: true,
+    fieldName: "tenant_id",
+  })
   @Index()
   tenant!: TenantOrmEntity;
 
   // 配额字段
-  @Property({ type: 'int' })
+  @Property({ type: "int" })
   maxUsers!: number;
 
-  @Property({ type: 'int' })
+  @Property({ type: "int" })
   maxStorageMB!: number;
 
-  @Property({ type: 'int' })
+  @Property({ type: "int" })
   maxOrganizations!: number;
 
-  @Property({ type: 'int' })
+  @Property({ type: "int" })
   maxDepartmentLevels!: number;
 
-  @Property({ type: 'int' })
+  @Property({ type: "int" })
   maxApiCallsPerDay!: number;
 
-  @Property({ type: 'json' })
+  @Property({ type: "json" })
   enabledFeatures!: string[];
 
-  @Property({ type: 'json', nullable: true })
+  @Property({ type: "json", nullable: true })
   customSettings?: Record<string, any>;
 
   // 审计字段
-  @Property({ type: 'timestamp' })
+  @Property({ type: "timestamp" })
   createdAt!: Date;
 
-  @Property({ type: 'timestamp' })
+  @Property({ type: "timestamp" })
   updatedAt!: Date;
 
-  @Property({ type: 'varchar', length: 50 })
+  @Property({ type: "varchar", length: 50 })
   createdBy!: string;
 
-  @Property({ type: 'varchar', length: 50 })
+  @Property({ type: "varchar", length: 50 })
   updatedBy!: string;
 
-  @Property({ type: 'int', default: 1 })
+  @Property({ type: "int", default: 1 })
   version!: number;
 }
-

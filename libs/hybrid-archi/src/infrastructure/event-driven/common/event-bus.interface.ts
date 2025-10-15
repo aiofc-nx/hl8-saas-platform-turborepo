@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { DomainEvent } from '../../../domain';
-import { IEventHandler } from '../../../application/interfaces/common';
+import { DomainEvent } from "../../../domain.js";
+import type { IEventHandler } from "../../../application/interfaces/common.js";
 
 /**
  * 事件订阅选项接口
@@ -78,7 +78,7 @@ export interface IEventBus {
   subscribe<T>(
     eventType: string,
     handler: IEventHandler<T>,
-    options?: EventSubscriptionOptions
+    options?: EventSubscriptionOptions,
   ): void;
 
   /**
@@ -89,10 +89,7 @@ export interface IEventBus {
    * @param handler - 事件处理器
    * @returns 取消订阅结果
    */
-  unsubscribe<T>(
-    eventType: string,
-    handler: IEventHandler<T>
-  ): void;
+  unsubscribe<T>(eventType: string, handler: IEventHandler<T>): void;
 
   /**
    * 获取订阅者
@@ -155,7 +152,7 @@ export interface EventBusStats {
  * 事件总线配置接口
  */
 export interface EventBusConfig {
-  provider: 'inmemory' | 'redis' | 'kafka' | 'rabbitmq';
+  provider: "inmemory" | "redis" | "kafka" | "rabbitmq";
   connectionString?: string;
   maxRetries?: number;
   retryDelay?: number;

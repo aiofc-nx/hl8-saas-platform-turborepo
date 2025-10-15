@@ -29,7 +29,7 @@
  * const quota = TenantQuota.fromTenantType('FREE');
  *
  * // 创建自定义配额（使用继承的 create 方法）
- * const customQuota = TenantQuota.create({
+ * const customQuota = (TenantQuota as any).create({
  *   maxUsers: 100,
  *   maxStorageMB: 5120,
  *   maxOrganizations: 5,
@@ -52,9 +52,9 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
-import { TENANT_TYPE_QUOTAS } from '../../../constants/tenant.constants';
-import { TenantType } from './tenant-type.enum';
+import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
+import { TENANT_TYPE_QUOTAS } from "../../../constants/tenant.constants.js";
+import { TenantType } from "./tenant-type.enum.js";
 
 /**
  * 租户配额属性
@@ -81,20 +81,20 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @protected
    * @override
    */
-  protected override validate(props: ITenantQuotaProps): void {
+  protected validate(props: ITenantQuotaProps): void {
     // 验证所有配额值都是正数
-    this.validatePositive(props.maxUsers, '最大用户数');
-    this.validatePositive(props.maxStorageMB, '最大存储空间');
-    this.validatePositive(props.maxOrganizations, '最大组织数');
-    this.validatePositive(props.maxDepartmentLevels, '最大部门层级');
-    this.validatePositive(props.maxApiCallsPerDay, '每日API调用限制');
+    (this as any).validatePositive(props.maxUsers, "最大用户数");
+    (this as any).validatePositive(props.maxStorageMB, "最大存储空间");
+    (this as any).validatePositive(props.maxOrganizations, "最大组织数");
+    (this as any).validatePositive(props.maxDepartmentLevels, "最大部门层级");
+    (this as any).validatePositive(props.maxApiCallsPerDay, "每日API调用限制");
 
     // 验证所有配额值都是整数
-    this.validateInteger(props.maxUsers, '最大用户数');
-    this.validateInteger(props.maxStorageMB, '最大存储空间');
-    this.validateInteger(props.maxOrganizations, '最大组织数');
-    this.validateInteger(props.maxDepartmentLevels, '最大部门层级');
-    this.validateInteger(props.maxApiCallsPerDay, '每日API调用限制');
+    (this as any).validateInteger(props.maxUsers, "最大用户数");
+    (this as any).validateInteger(props.maxStorageMB, "最大存储空间");
+    (this as any).validateInteger(props.maxOrganizations, "最大组织数");
+    (this as any).validateInteger(props.maxDepartmentLevels, "最大部门层级");
+    (this as any).validateInteger(props.maxApiCallsPerDay, "每日API调用限制");
   }
 
   /**
@@ -109,7 +109,7 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
     if (!quotaConfig) {
       throw new Error(`未找到租户类型 ${tenantType} 的配额配置`);
     }
-    return TenantQuota.create(quotaConfig);
+    return (TenantQuota as any).create(quotaConfig);
   }
 
   // ============ 便捷访问属性（向后兼容） ============
@@ -118,35 +118,35 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * 获取最大用户数（属性访问）
    */
   public get maxUsers(): number {
-    return this._value.maxUsers;
+    return (this as any)._value.maxUsers;
   }
 
   /**
    * 获取最大存储空间（属性访问）
    */
   public get maxStorageMB(): number {
-    return this._value.maxStorageMB;
+    return (this as any)._value.maxStorageMB;
   }
 
   /**
    * 获取最大组织数（属性访问）
    */
   public get maxOrganizations(): number {
-    return this._value.maxOrganizations;
+    return (this as any)._value.maxOrganizations;
   }
 
   /**
    * 获取最大部门层级（属性访问）
    */
   public get maxDepartmentLevels(): number {
-    return this._value.maxDepartmentLevels;
+    return (this as any)._value.maxDepartmentLevels;
   }
 
   /**
    * 获取每日API调用限制（属性访问）
    */
   public get maxApiCallsPerDay(): number {
-    return this._value.maxApiCallsPerDay;
+    return (this as any)._value.maxApiCallsPerDay;
   }
 
   // ============ 便捷访问方法 ============
@@ -155,35 +155,35 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * 获取最大用户数
    */
   public getMaxUsers(): number {
-    return this._value.maxUsers;
+    return (this as any)._value.maxUsers;
   }
 
   /**
    * 获取最大存储空间（MB）
    */
   public getMaxStorageMB(): number {
-    return this._value.maxStorageMB;
+    return (this as any)._value.maxStorageMB;
   }
 
   /**
    * 获取最大组织数
    */
   public getMaxOrganizations(): number {
-    return this._value.maxOrganizations;
+    return (this as any)._value.maxOrganizations;
   }
 
   /**
    * 获取最大部门层级
    */
   public getMaxDepartmentLevels(): number {
-    return this._value.maxDepartmentLevels;
+    return (this as any)._value.maxDepartmentLevels;
   }
 
   /**
    * 获取每日API调用限制
    */
   public getMaxApiCallsPerDay(): number {
-    return this._value.maxApiCallsPerDay;
+    return (this as any)._value.maxApiCallsPerDay;
   }
 
   // ============ 配额检查方法 ============
@@ -195,7 +195,7 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {boolean} 是否达到配额
    */
   public isUserQuotaReached(currentUserCount: number): boolean {
-    return currentUserCount >= this._value.maxUsers;
+    return currentUserCount >= (this as any)._value.maxUsers;
   }
 
   /**
@@ -205,7 +205,7 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {boolean} 是否达到配额
    */
   public isStorageQuotaReached(currentStorageMB: number): boolean {
-    return currentStorageMB >= this._value.maxStorageMB;
+    return currentStorageMB >= (this as any)._value.maxStorageMB;
   }
 
   /**
@@ -215,7 +215,7 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {boolean} 是否达到配额
    */
   public isOrganizationQuotaReached(currentOrgCount: number): boolean {
-    return currentOrgCount >= this._value.maxOrganizations;
+    return currentOrgCount >= (this as any)._value.maxOrganizations;
   }
 
   /**
@@ -225,7 +225,7 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {boolean} 是否达到配额
    */
   public isApiQuotaReached(currentApiCalls: number): boolean {
-    return currentApiCalls >= this._value.maxApiCallsPerDay;
+    return currentApiCalls >= (this as any)._value.maxApiCallsPerDay;
   }
 
   // ============ 配额使用率方法 ============
@@ -237,7 +237,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 使用率（0-100）
    */
   public getUserQuotaUsage(currentUserCount: number): number {
-    return Math.min((currentUserCount / this._value.maxUsers) * 100, 100);
+    return Math.min(
+      (currentUserCount / (this as any)._value.maxUsers) * 100,
+      100,
+    );
   }
 
   /**
@@ -247,7 +250,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 使用率（0-100）
    */
   public getStorageQuotaUsage(currentStorageMB: number): number {
-    return Math.min((currentStorageMB / this._value.maxStorageMB) * 100, 100);
+    return Math.min(
+      (currentStorageMB / (this as any)._value.maxStorageMB) * 100,
+      100,
+    );
   }
 
   /**
@@ -257,7 +263,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 使用率（0-100）
    */
   public getOrganizationQuotaUsage(currentOrgCount: number): number {
-    return Math.min((currentOrgCount / this._value.maxOrganizations) * 100, 100);
+    return Math.min(
+      (currentOrgCount / (this as any)._value.maxOrganizations) * 100,
+      100,
+    );
   }
 
   /**
@@ -267,7 +276,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 使用率（0-100）
    */
   public getApiQuotaUsage(currentApiCalls: number): number {
-    return Math.min((currentApiCalls / this._value.maxApiCallsPerDay) * 100, 100);
+    return Math.min(
+      (currentApiCalls / (this as any)._value.maxApiCallsPerDay) * 100,
+      100,
+    );
   }
 
   // ============ 配额剩余量方法 ============
@@ -279,7 +291,7 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 剩余配额
    */
   public getRemainingUsers(currentUserCount: number): number {
-    return Math.max(this._value.maxUsers - currentUserCount, 0);
+    return Math.max((this as any)._value.maxUsers - currentUserCount, 0);
   }
 
   /**
@@ -289,7 +301,7 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 剩余配额
    */
   public getRemainingStorageMB(currentStorageMB: number): number {
-    return Math.max(this._value.maxStorageMB - currentStorageMB, 0);
+    return Math.max((this as any)._value.maxStorageMB - currentStorageMB, 0);
   }
 
   /**
@@ -299,7 +311,7 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 剩余配额
    */
   public getRemainingOrganizations(currentOrgCount: number): number {
-    return Math.max(this._value.maxOrganizations - currentOrgCount, 0);
+    return Math.max((this as any)._value.maxOrganizations - currentOrgCount, 0);
   }
 
   /**
@@ -309,7 +321,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 剩余配额
    */
   public getRemainingApiCalls(currentApiCalls: number): number {
-    return Math.max(this._value.maxApiCallsPerDay - currentApiCalls, 0);
+    return Math.max(
+      (this as any)._value.maxApiCallsPerDay - currentApiCalls,
+      0,
+    );
   }
 
   // ============ 配额修改方法 ============
@@ -321,9 +336,9 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {TenantQuota} 新的配额对象
    */
   public increaseUserQuota(increment: number): TenantQuota {
-    return TenantQuota.create({
+    return (TenantQuota as any).create({
       ...this._value,
-      maxUsers: this._value.maxUsers + increment,
+      maxUsers: (this as any)._value.maxUsers + increment,
     });
   }
 
@@ -334,9 +349,9 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {TenantQuota} 新的配额对象
    */
   public increaseStorageQuota(incrementMB: number): TenantQuota {
-    return TenantQuota.create({
+    return (TenantQuota as any).create({
       ...this._value,
-      maxStorageMB: this._value.maxStorageMB + incrementMB,
+      maxStorageMB: (this as any)._value.maxStorageMB + incrementMB,
     });
   }
 
@@ -347,9 +362,9 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {TenantQuota} 新的配额对象
    */
   public increaseOrganizationQuota(increment: number): TenantQuota {
-    return TenantQuota.create({
+    return (TenantQuota as any).create({
       ...this._value,
-      maxOrganizations: this._value.maxOrganizations + increment,
+      maxOrganizations: (this as any)._value.maxOrganizations + increment,
     });
   }
 
@@ -360,9 +375,9 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {TenantQuota} 新的配额对象
    */
   public increaseApiQuota(increment: number): TenantQuota {
-    return TenantQuota.create({
+    return (TenantQuota as any).create({
       ...this._value,
-      maxApiCallsPerDay: this._value.maxApiCallsPerDay + increment,
+      maxApiCallsPerDay: (this as any)._value.maxApiCallsPerDay + increment,
     });
   }
 }

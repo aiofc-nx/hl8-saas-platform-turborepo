@@ -41,14 +41,17 @@
  * @since 1.0.0
  */
 
-import { Module, DynamicModule, Global } from '@nestjs/common';
-import { DatabaseModule } from '@hl8/database';
-import { CacheModule } from '@hl8/cache';
-import { TypedConfigModule, dotenvLoader } from '@hl8/config';
-import { CommandBus, QueryBus, EventBus } from '@hl8/hybrid-archi';
-import { SaasCoreConfig } from './config/saas-core.config';
-import { EventStoreAdapter } from './infrastructure/event-sourcing/event-store.adapter';
-import { SnapshotStoreAdapter } from './infrastructure/event-sourcing/snapshot-store.adapter';
+import { Module, DynamicModule, Global } from "@nestjs/common";
+import { 
+  DatabaseModule, 
+  CacheModule, 
+  TypedConfigModule, 
+  dotenvLoader 
+} from "@hl8/hybrid-archi";
+import { CommandBus, QueryBus, EventBus } from "@hl8/hybrid-archi";
+import { SaasCoreConfig } from "./config/saas-core.config.js";
+import { EventStoreAdapter } from "./infrastructure/event-sourcing/event-store.adapter.js";
+import { SnapshotStoreAdapter } from "./infrastructure/event-sourcing/snapshot-store.adapter.js";
 
 /**
  * SAAS Core 模块配置选项
@@ -119,7 +122,7 @@ export class SaasCoreModule {
           schema: SaasCoreConfig,
           load: [
             dotenvLoader({
-              separator: '__',
+              separator: "__",
             }),
           ],
           isGlobal: true,
@@ -141,7 +144,7 @@ export class SaasCoreModule {
               db: config.redis.db || 0,
             },
             defaultTTL: config.cache?.defaultTTL || 3600,
-            keyPrefix: config.cache?.keyPrefix || 'hl8:saas-core:',
+            keyPrefix: config.cache?.keyPrefix || "hl8:saas-core:",
             cls: {
               global: true,
               middleware: { mount: true, generateId: true },
@@ -233,4 +236,3 @@ export class SaasCoreModule {
     };
   }
 }
-

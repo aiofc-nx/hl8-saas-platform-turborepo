@@ -8,10 +8,10 @@
  * @since 1.0.0
  */
 
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject } from "@nestjs/common";
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
 
 /**
  * 事件监控统计信息
@@ -81,9 +81,9 @@ export class EventMonitor {
   private readonly successCounts = new Map<string, number>();
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
-    @Inject('EventAlertConfig') private readonly alertConfig: EventAlertConfig
+    @Inject("EventAlertConfig") private readonly alertConfig: EventAlertConfig,
   ) {}
 
   /**
@@ -101,7 +101,7 @@ export class EventMonitor {
     this.cacheService.set(
       `event:processing:${processingId}`,
       JSON.stringify({ startTime, eventType: event.eventType }),
-      300 // 5分钟TTL
+      300, // 5分钟TTL
     );
 
     return processingId;
@@ -118,12 +118,12 @@ export class EventMonitor {
   recordEventComplete(
     processingId: string,
     success: boolean,
-    error?: Error
+    error?: Error,
   ): void {
     try {
       const cached = this.cacheService.get(`event:processing:${processingId}`);
       if (!cached) {
-        this.logger.warn('未找到处理记录', { processingId });
+        this.logger.warn("未找到处理记录");
         return;
       }
 
@@ -143,14 +143,9 @@ export class EventMonitor {
       // 清理缓存
       this.cacheService.delete(`event:processing:${processingId}`);
 
-      this.logger.debug('事件处理完成', {
-        processingId,
-        eventType,
-        processingTime,
-        success,
-      });
+      this.logger.debug("事件处理完成");
     } catch (error) {
-      this.logger.error('记录事件处理完成失败', error, { processingId });
+      this.logger.error("记录事件处理完成失败", error, { processingId });
     }
   }
 
@@ -166,7 +161,7 @@ export class EventMonitor {
     const errorCount = this.errorCounts.get(eventType) || 0;
     this.errorCounts.set(eventType, errorCount + 1);
 
-    this.logger.error('事件处理错误', error, {
+    this.logger.error("事件处理错误", error, {
       eventType,
       eventId: event.eventId.toString(),
       aggregateId: event.aggregateId.toString(),
@@ -229,7 +224,7 @@ export class EventMonitor {
     this.errorCounts.clear();
     this.successCounts.clear();
 
-    this.logger.info('事件监控统计信息已重置');
+    this.logger.log("事件监控统计信息已重置");
   }
 
   /**
@@ -245,7 +240,7 @@ export class EventMonitor {
     this.alertConfig.eventsPerSecondThreshold = config.eventsPerSecondThreshold;
     this.alertConfig.alertChannels = config.alertChannels;
 
-    this.logger.info('事件监控告警配置已更新', { config });
+    this.logger.log("事件监控告警配置已更新");
   }
 
   // ==================== 私有方法 ====================
@@ -263,7 +258,7 @@ export class EventMonitor {
   private updateStats(
     eventType: string,
     processingTime: number,
-    success: boolean
+    success: boolean,
   ): void {
     // 更新总数
     this.stats.totalEvents++;
@@ -286,7 +281,7 @@ export class EventMonitor {
     // 更新错误率
     const totalErrors = Array.from(this.errorCounts.values()).reduce(
       (sum, count) => sum + count,
-      0
+      0,
     );
     this.stats.errorRate = (totalErrors / this.stats.totalEvents) * 100;
     this.stats.successRate = 100 - this.stats.errorRate;
@@ -304,7 +299,7 @@ export class EventMonitor {
   private updatePerformanceMetrics(
     eventType: string,
     processingTime: number,
-    success: boolean
+    success: boolean,
   ): void {
     let metrics = this.performanceMetrics.get(eventType);
     if (!metrics) {
@@ -332,11 +327,11 @@ export class EventMonitor {
     // 更新处理时间统计
     metrics.minProcessingTime = Math.min(
       metrics.minProcessingTime,
-      processingTime
+      processingTime,
     );
     metrics.maxProcessingTime = Math.max(
       metrics.maxProcessingTime,
-      processingTime
+      processingTime,
     );
     metrics.averageProcessingTime =
       (metrics.averageProcessingTime * (metrics.totalProcessed - 1) +
@@ -353,7 +348,7 @@ export class EventMonitor {
     eventType: string,
     processingTime: number,
     success: boolean,
-    error?: Error
+    error?: Error,
   ): void {
     if (!this.alertConfig.enabled) {
       return;
@@ -361,7 +356,7 @@ export class EventMonitor {
 
     // 检查处理时间告警
     if (processingTime > this.alertConfig.processingTimeThreshold) {
-      this.triggerAlert('processing_time', {
+      this.triggerAlert("processing_time", {
         eventType,
         processingTime,
         threshold: this.alertConfig.processingTimeThreshold,
@@ -378,7 +373,7 @@ export class EventMonitor {
       this.stats.currentEventsPerSecond >
       this.alertConfig.eventsPerSecondThreshold
     ) {
-      this.triggerAlert('high_event_rate', {
+      this.triggerAlert("high_event_rate", {
         currentRate: this.stats.currentEventsPerSecond,
         threshold: this.alertConfig.eventsPerSecondThreshold,
       });
@@ -396,7 +391,7 @@ export class EventMonitor {
 
     const errorRate = (metrics.errorCount / metrics.totalProcessed) * 100;
     if (errorRate > this.alertConfig.errorRateThreshold) {
-      this.triggerAlert('high_error_rate', {
+      this.triggerAlert("high_error_rate", {
         eventType,
         errorRate,
         threshold: this.alertConfig.errorRateThreshold,
@@ -410,11 +405,7 @@ export class EventMonitor {
    * 触发告警
    */
   private triggerAlert(alertType: string, data: any): void {
-    this.logger.warn('事件监控告警', {
-      alertType,
-      data,
-      timestamp: new Date(),
-    });
+    this.logger.warn("事件监控告警");
 
     // 这里可以集成具体的告警系统
     // 例如：发送邮件、短信、Slack通知等

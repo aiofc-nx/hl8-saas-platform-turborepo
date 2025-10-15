@@ -102,24 +102,24 @@ export class TenantId {
   }
 
   private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+    if (!this.value || typeof this.value !== "string") {
       throw new IsolationValidationError(
-        '租户 ID 必须是非空字符串',
-        'INVALID_TENANT_ID',
+        "租户 ID 必须是非空字符串",
+        "INVALID_TENANT_ID",
       );
     }
 
     if (this.value.length > 50) {
       throw new IsolationValidationError(
-        '租户 ID 长度不能超过 50 字符',
-        'TENANT_ID_TOO_LONG',
+        "租户 ID 长度不能超过 50 字符",
+        "TENANT_ID_TOO_LONG",
       );
     }
 
     if (!/^[a-zA-Z0-9_-]+$/.test(this.value)) {
       throw new IsolationValidationError(
-        '租户 ID 只能包含字母、数字、下划线和连字符',
-        'INVALID_TENANT_ID_FORMAT',
+        "租户 ID 只能包含字母、数字、下划线和连字符",
+        "INVALID_TENANT_ID_FORMAT",
       );
     }
   }
@@ -258,16 +258,16 @@ switchDepartment(newDepartmentId: DepartmentId): IsolationContext
 
 ```typescript
 // 示例 1: 创建租户级上下文
-const tenantId = TenantId.create('t123');
+const tenantId = TenantId.create("t123");
 const context = IsolationContext.tenant(tenantId);
 
 console.log(context.getIsolationLevel()); // IsolationLevel.TENANT
-console.log(context.buildCacheKey('user', 'list'));
+console.log(context.buildCacheKey("user", "list"));
 // 输出: tenant:t123:user:list
 
 // 示例 2: 创建部门级上下文
-const orgId = OrganizationId.create('o456');
-const deptId = DepartmentId.create('d789');
+const orgId = OrganizationId.create("o456");
+const deptId = DepartmentId.create("d789");
 const deptContext = IsolationContext.department(tenantId, orgId, deptId);
 
 console.log(deptContext.buildLogContext());
@@ -301,19 +301,19 @@ console.log(canAccess); // true（用户在组织内，可访问组织共享数�
  */
 export enum IsolationLevel {
   /** 平台级 - 跨租户 */
-  PLATFORM = 'platform',
+  PLATFORM = "platform",
 
   /** 租户级 - 租户内 */
-  TENANT = 'tenant',
+  TENANT = "tenant",
 
   /** 组织级 - 组织内 */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
 
   /** 部门级 - 部门内 */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
 
   /** 用户级 - 用户私有 */
-  USER = 'user',
+  USER = "user",
 }
 ```
 
@@ -331,19 +331,19 @@ export enum IsolationLevel {
  */
 export enum SharingLevel {
   /** 平台共享 - 所有租户可访问 */
-  PLATFORM = 'platform',
+  PLATFORM = "platform",
 
   /** 租户共享 - 租户内所有用户可访问 */
-  TENANT = 'tenant',
+  TENANT = "tenant",
 
   /** 组织共享 - 组织内所有用户可访问 */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
 
   /** 部门共享 - 部门内所有用户可访问 */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
 
   /** 用户私有 - 仅用户本人可访问 */
-  USER = 'user',
+  USER = "user",
 }
 ```
 
@@ -583,7 +583,7 @@ export class IsolationValidationError extends Error {
     public readonly context?: Record<string, any>,
   ) {
     super(message);
-    this.name = 'IsolationValidationError';
+    this.name = "IsolationValidationError";
   }
 }
 ```
@@ -620,7 +620,7 @@ export interface IsolationModuleOptions {
   autoRegisterMiddleware?: boolean;
 
   /** 提取策略，默认 'header' */
-  extractionStrategy?: 'header' | 'jwt' | 'custom';
+  extractionStrategy?: "header" | "jwt" | "custom";
 
   /** 自定义提取器（如果 strategy 为 'custom'） */
   customExtractor?: IExtractionStrategy;
@@ -702,30 +702,30 @@ export interface IExtractionStrategy {
 // libs/isolation-model/src/index.ts
 
 // 实体
-export { IsolationContext } from './entities/isolation-context.entity.js';
+export { IsolationContext } from "./entities/isolation-context.entity.js";
 
 // 值对象
-export { TenantId } from './value-objects/tenant-id.vo.js';
-export { OrganizationId } from './value-objects/organization-id.vo.js';
-export { DepartmentId } from './value-objects/department-id.vo.js';
-export { UserId } from './value-objects/user-id.vo.js';
+export { TenantId } from "./value-objects/tenant-id.vo.js";
+export { OrganizationId } from "./value-objects/organization-id.vo.js";
+export { DepartmentId } from "./value-objects/department-id.vo.js";
+export { UserId } from "./value-objects/user-id.vo.js";
 
 // 枚举
-export { IsolationLevel } from './enums/isolation-level.enum.js';
-export { SharingLevel } from './enums/sharing-level.enum.js';
+export { IsolationLevel } from "./enums/isolation-level.enum.js";
+export { SharingLevel } from "./enums/sharing-level.enum.js";
 
 // 接口
-export type { IIsolationContextProvider } from './interfaces/isolation-context-provider.interface.js';
-export type { IIsolationValidator } from './interfaces/isolation-validator.interface.js';
-export type { DataAccessContext } from './interfaces/data-access-context.interface.js';
+export type { IIsolationContextProvider } from "./interfaces/isolation-context-provider.interface.js";
+export type { IIsolationValidator } from "./interfaces/isolation-validator.interface.js";
+export type { DataAccessContext } from "./interfaces/data-access-context.interface.js";
 
 // 事件
-export { IsolationContextCreatedEvent } from './events/context-created.event.js';
-export { IsolationContextSwitchedEvent } from './events/context-switched.event.js';
-export { DataAccessDeniedEvent } from './events/access-denied.event.js';
+export { IsolationContextCreatedEvent } from "./events/context-created.event.js";
+export { IsolationContextSwitchedEvent } from "./events/context-switched.event.js";
+export { DataAccessDeniedEvent } from "./events/access-denied.event.js";
 
 // 异常
-export { IsolationValidationError } from './errors/isolation-validation.error.js';
+export { IsolationValidationError } from "./errors/isolation-validation.error.js";
 ```
 
 ### 实现库导出
@@ -734,29 +734,29 @@ export { IsolationValidationError } from './errors/isolation-validation.error.js
 // libs/nestjs-isolation/src/index.ts
 
 // 重新导出领域模型
-export * from '@hl8/isolation-model';
+export * from "@hl8/isolation-model/index.js";
 
 // NestJS 模块
-export { IsolationModule } from './isolation.module.js';
+export { IsolationModule } from "./isolation.module.js";
 
 // 服务实现
-export { IsolationContextService } from './services/isolation-context.service.js';
-export { MultiLevelIsolationService } from './services/multi-level-isolation.service.js';
+export { IsolationContextService } from "./services/isolation-context.service.js";
+export { MultiLevelIsolationService } from "./services/multi-level-isolation.service.js";
 
 // 中间件
-export { IsolationExtractionMiddleware } from './middleware/isolation-extraction.middleware.js';
+export { IsolationExtractionMiddleware } from "./middleware/isolation-extraction.middleware.js";
 
 // 守卫
-export { IsolationGuard } from './guards/isolation.guard.js';
+export { IsolationGuard } from "./guards/isolation.guard.js";
 
 // 装饰器
-export { RequireTenant } from './decorators/require-tenant.decorator.js';
-export { RequireOrganization } from './decorators/require-organization.decorator.js';
-export { RequireDepartment } from './decorators/require-department.decorator.js';
-export { CurrentContext } from './decorators/current-context.decorator.js';
+export { RequireTenant } from "./decorators/require-tenant.decorator.js";
+export { RequireOrganization } from "./decorators/require-organization.decorator.js";
+export { RequireDepartment } from "./decorators/require-department.decorator.js";
+export { CurrentContext } from "./decorators/current-context.decorator.js";
 
 // 类型
-export type { IsolationModuleOptions } from './types/module-options.interface.js';
+export type { IsolationModuleOptions } from "./types/module-options.interface.js";
 ```
 
 ---
@@ -900,15 +900,15 @@ export class LoggerService {
 
 ```typescript
 // apps/api/src/app.module.ts
-import { Module } from '@nestjs/common';
-import { IsolationModule } from '@hl8/nestjs-isolation-impl'; // 使用实现
+import { Module } from "@nestjs/common";
+import { IsolationModule } from "@hl8/nestjs-isolation-impl"; // 使用实现
 
 @Module({
   imports: [
     IsolationModule.forRoot({
       global: true,
       autoRegisterMiddleware: true,
-      extractionStrategy: 'header',
+      extractionStrategy: "header",
     }),
   ],
 })

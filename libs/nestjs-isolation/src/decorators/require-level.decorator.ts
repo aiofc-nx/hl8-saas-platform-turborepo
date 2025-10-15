@@ -12,10 +12,10 @@
  * @since 1.0.0
  */
 
-import { IsolationLevel } from '@hl8/isolation-model';
-import { SetMetadata } from '@nestjs/common';
+import { IsolationLevel } from "@hl8/isolation-model";
+import { SetMetadata } from "@nestjs/common";
 
-export const REQUIRED_ISOLATION_LEVEL_KEY = 'requiredIsolationLevel';
+export const REQUIRED_ISOLATION_LEVEL_KEY = "requiredIsolationLevel";
 
 /**
  * 要求租户级或更高层级的隔离上下文

@@ -1,4 +1,4 @@
-import { BaseDomainEvent, EntityId } from '@hl8/hybrid-archi';
+import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi/index.js";
 
 export class OrganizationCreatedEvent extends BaseDomainEvent {
   constructor(
@@ -12,10 +12,10 @@ export class OrganizationCreatedEvent extends BaseDomainEvent {
   }
 
   get eventType(): string {
-    return 'OrganizationCreated';
+    return "OrganizationCreated";
   }
 
-  public override toJSON(): Record<string, unknown> {
+  public toJSON(): Record<string, unknown> {
     return {
       ...super.toJSON(),
       code: this.code,
@@ -23,4 +23,3 @@ export class OrganizationCreatedEvent extends BaseDomainEvent {
     };
   }
 }
-

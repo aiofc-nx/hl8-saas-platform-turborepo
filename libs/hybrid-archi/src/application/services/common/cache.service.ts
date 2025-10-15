@@ -5,12 +5,12 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import {
+import { Injectable } from "@nestjs/common";
+import type {
   ICacheService,
   CacheStats,
   CacheConfig,
-} from './cache.service.interface';
+} from "./cache.service.interface.js";
 
 /**
  * 通用缓存服务
@@ -80,7 +80,7 @@ export class CacheService implements ICacheService {
       this.missCount++;
       return null;
     } catch (error) {
-      console.error('缓存获取失败:', error);
+      console.error("缓存获取失败:", error);
       return null;
     }
   }
@@ -102,7 +102,7 @@ export class CacheService implements ICacheService {
       await this.setToRedisCache(key, value, expirationTime);
       await this.setToDatabaseCache(key, value, expirationTime);
     } catch (error) {
-      console.error('缓存设置失败:', error);
+      console.error("缓存设置失败:", error);
     }
   }
 
@@ -118,7 +118,7 @@ export class CacheService implements ICacheService {
       await this.deleteFromRedisCache(key);
       await this.deleteFromDatabaseCache(key);
     } catch (error) {
-      console.error('缓存删除失败:', error);
+      console.error("缓存删除失败:", error);
     }
   }
 
@@ -133,7 +133,7 @@ export class CacheService implements ICacheService {
       await this.clearRedisCache();
       await this.clearDatabaseCache();
     } catch (error) {
-      console.error('缓存清空失败:', error);
+      console.error("缓存清空失败:", error);
     }
   }
 
@@ -164,7 +164,7 @@ export class CacheService implements ICacheService {
       const databaseExists = await this.hasInDatabaseCache(key);
       return databaseExists;
     } catch (error) {
-      console.error('缓存检查失败:', error);
+      console.error("缓存检查失败:", error);
       return false;
     }
   }
@@ -198,7 +198,7 @@ export class CacheService implements ICacheService {
    */
   async setMany<T>(entries: Map<string, T>, ttl?: number): Promise<void> {
     const promises = Array.from(entries.entries()).map(([key, value]) =>
-      this.set(key, value, ttl)
+      this.set(key, value, ttl),
     );
     await Promise.all(promises);
   }
@@ -294,7 +294,7 @@ export class CacheService implements ICacheService {
   private async setToRedisCache<T>(
     _key: string,
     _value: T,
-    _ttl: number
+    _ttl: number,
   ): Promise<void> {
     // TODO: 实现Redis缓存设置逻辑
   }
@@ -324,7 +324,7 @@ export class CacheService implements ICacheService {
   private async setToDatabaseCache<T>(
     _key: string,
     _value: T,
-    _ttl: number
+    _ttl: number,
   ): Promise<void> {
     // TODO: 实现数据库缓存设置逻辑
   }

@@ -4,12 +4,13 @@
  * @description 测试事件总线的功能
  * @since 1.0.0
  */
-import { Test, TestingModule } from '@nestjs/testing';
-import { EventBus } from './event-bus';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import { IEventHandler } from '../events/base/event-handler.interface';
-import { IMiddleware, IMessageContext } from './cqrs-bus.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { Test, TestingModule } from "@nestjs/testing";
+import { EventBus } from "./event-bus.js";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
+import type { IEventHandler } from "../events/base/event-handler.interface.js";
+import { IMiddleware, IMessageContext } from "./cqrs-bus.interface.js";
+import { EntityId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 测试事件类
@@ -19,13 +20,13 @@ class TestEvent extends BaseDomainEvent {
     aggregateId: EntityId,
     aggregateVersion: number,
     tenantId: EntityId,
-    public readonly data: string
+    public readonly data: string,
   ) {
     super(aggregateId, aggregateVersion, tenantId);
   }
 
   get eventType(): string {
-    return 'TestEvent';
+    return "TestEvent";
   }
 
   override get eventData(): Record<string, unknown> {
@@ -46,16 +47,16 @@ class TestEventHandler implements IEventHandler<TestEvent> {
   }
 
   getSupportedEventType(): string {
-    return 'TestEvent';
+    return "TestEvent";
   }
 
   supports(eventType: string): boolean {
-    return eventType === 'TestEvent';
+    return eventType === "TestEvent";
   }
 
   validateEvent(event: TestEvent): void {
     if (!event.data) {
-      throw new Error('Event data is required');
+      throw new Error("Event data is required");
     }
   }
 
@@ -100,11 +101,14 @@ class TestMiddleware implements IMiddleware {
   public executedCount = 0;
   public context: IMessageContext | null = null;
 
-  constructor(public name: string, public priority = 0) {}
+  constructor(
+    public name: string,
+    public priority = 0,
+  ) {}
 
   async execute(
     context: IMessageContext,
-    next: () => Promise<unknown>
+    next: () => Promise<unknown>,
   ): Promise<unknown> {
     this.executedCount++;
     this.context = context;
@@ -112,7 +116,7 @@ class TestMiddleware implements IMiddleware {
   }
 }
 
-describe('EventBus', () => {
+describe("EventBus", () => {
   let eventBus: EventBus;
   let testHandler: TestEventHandler;
 
@@ -125,14 +129,19 @@ describe('EventBus', () => {
     testHandler = new TestEventHandler();
   });
 
-  describe('事件发布', () => {
-    it('应该能够发布事件到注册的处理器', async () => {
+  describe("事件发布", () => {
+    it("应该能够发布事件到注册的处理器", async () => {
       // 注册处理器
-      eventBus.registerHandler('TestEvent', testHandler);
+      eventBus.registerHandler("TestEvent", testHandler);
 
       // 创建事件
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       // 发布事件
       await eventBus.publish(event);
@@ -142,14 +151,14 @@ describe('EventBus', () => {
       expect(testHandler.handledEvents[0]).toBe(event);
     });
 
-    it('应该能够批量发布事件', async () => {
-      eventBus.registerHandler('TestEvent', testHandler);
+    it("应该能够批量发布事件", async () => {
+      eventBus.registerHandler("TestEvent", testHandler);
 
-      const aggregateId = EntityId.generate();
+      const aggregateId = TenantId.generate();
       const events = [
-        new TestEvent(aggregateId, 1, EntityId.generate(), 'data1'),
-        new TestEvent(aggregateId, 2, EntityId.generate(), 'data2'),
-        new TestEvent(aggregateId, 3, EntityId.generate(), 'data3'),
+        new TestEvent(aggregateId, 1, TenantId.generate(), "data1"),
+        new TestEvent(aggregateId, 2, TenantId.generate(), "data2"),
+        new TestEvent(aggregateId, 3, TenantId.generate(), "data3"),
       ];
 
       await eventBus.publishAll(events);
@@ -158,23 +167,28 @@ describe('EventBus', () => {
       expect(testHandler.handledEvents).toEqual(events);
     });
 
-    it('应该验证事件的有效性', async () => {
-      eventBus.registerHandler('TestEvent', testHandler);
+    it("应该验证事件的有效性", async () => {
+      eventBus.registerHandler("TestEvent", testHandler);
 
       // 创建无效事件
-      const aggregateId = EntityId.generate();
-      const invalidEvent = new TestEvent(aggregateId, 1, EntityId.generate(), '');
+      const aggregateId = TenantId.generate();
+      const invalidEvent = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "",
+      );
 
       // 事件发布不会抛出错误，而是记录错误
       await eventBus.publish(invalidEvent);
       expect(testHandler.handledEvents).toHaveLength(0);
     });
 
-    it('应该检查处理器是否可以处理事件', async () => {
+    it("应该检查处理器是否可以处理事件", async () => {
       // 创建不支持事件的处理器
       const unsupportedHandler = {
         ...testHandler,
-        supports: (type: string) => type === 'TestEvent',
+        supports: (type: string) => type === "TestEvent",
         validateEvent: () => {
           // 测试用的空验证函数
         },
@@ -197,29 +211,34 @@ describe('EventBus', () => {
         handle: async () => {
           return Promise.resolve();
         },
-        getSupportedEventType: () => 'TestEvent',
+        getSupportedEventType: () => "TestEvent",
       };
 
-      eventBus.registerHandler('TestEvent', unsupportedHandler);
+      eventBus.registerHandler("TestEvent", unsupportedHandler);
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       // 事件应该被忽略，不会抛出错误
       await eventBus.publish(event);
       expect(testHandler.handledEvents).toHaveLength(0);
     });
 
-    it('应该处理处理器异常', async () => {
+    it("应该处理处理器异常", async () => {
       const errorHandler = {
         ...testHandler,
-        supports: (type: string) => type === 'TestEvent',
+        supports: (type: string) => type === "TestEvent",
         validateEvent: () => {
           // 测试用的空验证函数
         },
         getPriority: () => 0,
         handle: async () => {
-          throw new Error('Handler error');
+          throw new Error("Handler error");
         },
         getMaxRetries: () => 3,
         getRetryDelay: () => 1000,
@@ -238,13 +257,18 @@ describe('EventBus', () => {
         async markEventAsProcessed() {
           return Promise.resolve();
         },
-        getSupportedEventType: () => 'TestEvent',
+        getSupportedEventType: () => "TestEvent",
       };
 
-      eventBus.registerHandler('TestEvent', errorHandler);
+      eventBus.registerHandler("TestEvent", errorHandler);
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       // 应该不抛出错误，而是记录错误
       await eventBus.publish(event);
@@ -252,62 +276,77 @@ describe('EventBus', () => {
     });
   });
 
-  describe('事件订阅', () => {
-    it('应该能够订阅事件', async () => {
+  describe("事件订阅", () => {
+    it("应该能够订阅事件", async () => {
       let handledEvent: TestEvent | null = null;
 
       const subscriptionId = eventBus.subscribe<TestEvent>(
-        'TestEvent',
+        "TestEvent",
         async (event) => {
           handledEvent = event;
-        }
+        },
       );
 
       expect(subscriptionId).toBeDefined();
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       await eventBus.publish(event);
 
       expect(handledEvent).toBe(event);
     });
 
-    it('应该能够取消订阅事件', async () => {
+    it("应该能够取消订阅事件", async () => {
       let handledEvent: TestEvent | null = null;
 
       const subscriptionId = eventBus.subscribe<TestEvent>(
-        'TestEvent',
+        "TestEvent",
         async (event) => {
           handledEvent = event;
-        }
+        },
       );
 
       // 取消订阅
       eventBus.unsubscribe(subscriptionId);
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       await eventBus.publish(event);
 
       expect(handledEvent).toBeNull();
     });
 
-    it('应该支持多个订阅者', async () => {
+    it("应该支持多个订阅者", async () => {
       const handledEvents1: TestEvent[] = [];
       const handledEvents2: TestEvent[] = [];
 
-      eventBus.subscribe<TestEvent>('TestEvent', async (event) => {
+      eventBus.subscribe<TestEvent>("TestEvent", async (event) => {
         handledEvents1.push(event);
       });
 
-      eventBus.subscribe<TestEvent>('TestEvent', async (event) => {
+      eventBus.subscribe<TestEvent>("TestEvent", async (event) => {
         handledEvents2.push(event);
       });
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       await eventBus.publish(event);
 
@@ -318,37 +357,37 @@ describe('EventBus', () => {
     });
   });
 
-  describe('处理器管理', () => {
-    it('应该能够注册事件处理器', () => {
-      eventBus.registerHandler('TestEvent', testHandler);
+  describe("处理器管理", () => {
+    it("应该能够注册事件处理器", () => {
+      eventBus.registerHandler("TestEvent", testHandler);
 
-      expect(eventBus.supports('TestEvent')).toBe(true);
-      expect(eventBus.getRegisteredEventTypes()).toContain('TestEvent');
-      expect(eventBus.getHandlerCount('TestEvent')).toBe(1);
+      expect(eventBus.supports("TestEvent")).toBe(true);
+      expect(eventBus.getRegisteredEventTypes()).toContain("TestEvent");
+      expect(eventBus.getHandlerCount("TestEvent")).toBe(1);
     });
 
-    it('应该能够取消注册事件处理器', () => {
-      eventBus.registerHandler('TestEvent', testHandler);
-      expect(eventBus.supports('TestEvent')).toBe(true);
+    it("应该能够取消注册事件处理器", () => {
+      eventBus.registerHandler("TestEvent", testHandler);
+      expect(eventBus.supports("TestEvent")).toBe(true);
 
-      eventBus.unregisterHandler('TestEvent');
-      expect(eventBus.supports('TestEvent')).toBe(false);
+      eventBus.unregisterHandler("TestEvent");
+      expect(eventBus.supports("TestEvent")).toBe(false);
     });
 
-    it('应该支持多个处理器处理同一事件类型', () => {
+    it("应该支持多个处理器处理同一事件类型", () => {
       const handler1 = new TestEventHandler();
       const handler2 = new TestEventHandler();
 
-      eventBus.registerHandler('TestEvent', handler1);
-      eventBus.registerHandler('TestEvent', handler2);
+      eventBus.registerHandler("TestEvent", handler1);
+      eventBus.registerHandler("TestEvent", handler2);
 
-      expect(eventBus.getHandlerCount('TestEvent')).toBe(2);
+      expect(eventBus.getHandlerCount("TestEvent")).toBe(2);
     });
   });
 
-  describe('中间件管理', () => {
-    it('应该能够添加中间件', () => {
-      const middleware = new TestMiddleware('TestMiddleware', 1);
+  describe("中间件管理", () => {
+    it("应该能够添加中间件", () => {
+      const middleware = new TestMiddleware("TestMiddleware", 1);
 
       eventBus.addMiddleware(middleware);
 
@@ -356,10 +395,10 @@ describe('EventBus', () => {
       expect(eventBus.getMiddlewares()).toContain(middleware);
     });
 
-    it('应该按优先级排序中间件', () => {
-      const middleware1 = new TestMiddleware('Middleware1', 2);
-      const middleware2 = new TestMiddleware('Middleware2', 1);
-      const middleware3 = new TestMiddleware('Middleware3', 3);
+    it("应该按优先级排序中间件", () => {
+      const middleware1 = new TestMiddleware("Middleware1", 2);
+      const middleware2 = new TestMiddleware("Middleware2", 1);
+      const middleware3 = new TestMiddleware("Middleware3", 3);
 
       eventBus.addMiddleware(middleware1);
       eventBus.addMiddleware(middleware2);
@@ -371,9 +410,9 @@ describe('EventBus', () => {
       expect(middlewares[2]).toBe(middleware3); // 优先级 3
     });
 
-    it('应该能够替换同名中间件', () => {
-      const middleware1 = new TestMiddleware('TestMiddleware', 1);
-      const middleware2 = new TestMiddleware('TestMiddleware', 2);
+    it("应该能够替换同名中间件", () => {
+      const middleware1 = new TestMiddleware("TestMiddleware", 1);
+      const middleware2 = new TestMiddleware("TestMiddleware", 2);
 
       eventBus.addMiddleware(middleware1);
       eventBus.addMiddleware(middleware2);
@@ -382,19 +421,19 @@ describe('EventBus', () => {
       expect(eventBus.getMiddlewares()[0]).toBe(middleware2);
     });
 
-    it('应该能够移除中间件', () => {
-      const middleware = new TestMiddleware('TestMiddleware');
+    it("应该能够移除中间件", () => {
+      const middleware = new TestMiddleware("TestMiddleware");
 
       eventBus.addMiddleware(middleware);
       expect(eventBus.getMiddlewareCount()).toBe(1);
 
-      eventBus.removeMiddleware('TestMiddleware');
+      eventBus.removeMiddleware("TestMiddleware");
       expect(eventBus.getMiddlewareCount()).toBe(0);
     });
 
-    it('应该能够清除所有中间件', () => {
-      eventBus.addMiddleware(new TestMiddleware('Middleware1'));
-      eventBus.addMiddleware(new TestMiddleware('Middleware2'));
+    it("应该能够清除所有中间件", () => {
+      eventBus.addMiddleware(new TestMiddleware("Middleware1"));
+      eventBus.addMiddleware(new TestMiddleware("Middleware2"));
 
       expect(eventBus.getMiddlewareCount()).toBe(2);
 
@@ -403,17 +442,22 @@ describe('EventBus', () => {
     });
   });
 
-  describe('中间件执行', () => {
-    it('应该按顺序执行中间件', async () => {
-      const middleware1 = new TestMiddleware('Middleware1', 1);
-      const middleware2 = new TestMiddleware('Middleware2', 2);
+  describe("中间件执行", () => {
+    it("应该按顺序执行中间件", async () => {
+      const middleware1 = new TestMiddleware("Middleware1", 1);
+      const middleware2 = new TestMiddleware("Middleware2", 2);
 
       eventBus.addMiddleware(middleware1);
       eventBus.addMiddleware(middleware2);
-      eventBus.registerHandler('TestEvent', testHandler);
+      eventBus.registerHandler("TestEvent", testHandler);
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
       await eventBus.publish(event);
 
       expect(middleware1.executedCount).toBe(1);
@@ -421,46 +465,51 @@ describe('EventBus', () => {
       expect(testHandler.handledEvents).toHaveLength(1);
     });
 
-    it('应该传递正确的消息上下文给中间件', async () => {
-      const middleware = new TestMiddleware('TestMiddleware');
+    it("应该传递正确的消息上下文给中间件", async () => {
+      const middleware = new TestMiddleware("TestMiddleware");
 
       eventBus.addMiddleware(middleware);
-      eventBus.registerHandler('TestEvent', testHandler);
+      eventBus.registerHandler("TestEvent", testHandler);
 
-      const aggregateId = EntityId.generate();
-      const tenantId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, tenantId, 'test-data');
+      const aggregateId = TenantId.generate();
+      const tenantId = TenantId.generate();
+      const event = new TestEvent(aggregateId, 1, tenantId, "test-data");
       await eventBus.publish(event);
 
       expect(middleware.context).toBeDefined();
       expect(middleware.context?.messageId).toBe(event.eventId.toString());
       expect(middleware.context?.tenantId.toString()).toBe(tenantId.toString());
-      expect(middleware.context?.messageType).toBe('TestEvent');
+      expect(middleware.context?.messageType).toBe("TestEvent");
     });
 
-    it('应该处理中间件异常', async () => {
-      const errorMiddleware = new TestMiddleware('ErrorMiddleware');
+    it("应该处理中间件异常", async () => {
+      const errorMiddleware = new TestMiddleware("ErrorMiddleware");
       errorMiddleware.execute = async () => {
-        throw new Error('Middleware error');
+        throw new Error("Middleware error");
       };
 
       eventBus.addMiddleware(errorMiddleware);
-      eventBus.registerHandler('TestEvent', testHandler);
+      eventBus.registerHandler("TestEvent", testHandler);
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
-      await expect(eventBus.publish(event)).rejects.toThrow('Middleware error');
+      await expect(eventBus.publish(event)).rejects.toThrow("Middleware error");
       expect(testHandler.handledEvents).toHaveLength(0);
     });
   });
 
-  describe('重试机制', () => {
-    it('应该支持事件处理重试', async () => {
+  describe("重试机制", () => {
+    it("应该支持事件处理重试", async () => {
       let attemptCount = 0;
       const retryHandler = {
         ...testHandler,
-        supports: (type: string) => type === 'TestEvent',
+        supports: (type: string) => type === "TestEvent",
         validateEvent: () => {
           // 测试用的空验证函数
         },
@@ -468,7 +517,7 @@ describe('EventBus', () => {
         handle: async () => {
           attemptCount++;
           if (attemptCount < 3) {
-            throw new Error('Temporary error');
+            throw new Error("Temporary error");
           }
         },
         getMaxRetries: () => 3,
@@ -488,30 +537,35 @@ describe('EventBus', () => {
         async markEventAsProcessed() {
           return Promise.resolve();
         },
-        getSupportedEventType: () => 'TestEvent',
+        getSupportedEventType: () => "TestEvent",
       };
 
-      eventBus.registerHandler('TestEvent', retryHandler);
+      eventBus.registerHandler("TestEvent", retryHandler);
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       await eventBus.publish(event);
 
       expect(attemptCount).toBe(3);
     });
 
-    it('应该在达到最大重试次数后调用失败处理', async () => {
+    it("应该在达到最大重试次数后调用失败处理", async () => {
       let failureHandled = false;
       const retryHandler = {
         ...testHandler,
-        supports: (type: string) => type === 'TestEvent',
+        supports: (type: string) => type === "TestEvent",
         validateEvent: () => {
           // 测试用的空验证函数
         },
         getPriority: () => 0,
         handle: async () => {
-          throw new Error('Permanent error');
+          throw new Error("Permanent error");
         },
         getMaxRetries: () => 2,
         getRetryDelay: () => 10,
@@ -530,13 +584,18 @@ describe('EventBus', () => {
         async markEventAsProcessed() {
           return Promise.resolve();
         },
-        getSupportedEventType: () => 'TestEvent',
+        getSupportedEventType: () => "TestEvent",
       };
 
-      eventBus.registerHandler('TestEvent', retryHandler);
+      eventBus.registerHandler("TestEvent", retryHandler);
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       await eventBus.publish(event);
 
@@ -544,11 +603,11 @@ describe('EventBus', () => {
     });
   });
 
-  describe('幂等性', () => {
-    it('应该支持事件幂等性检查', async () => {
+  describe("幂等性", () => {
+    it("应该支持事件幂等性检查", async () => {
       const idempotentHandler = {
         ...testHandler,
-        supports: (type: string) => type === 'TestEvent',
+        supports: (type: string) => type === "TestEvent",
         validateEvent: () => {
           // 测试用的空验证函数
         },
@@ -573,13 +632,18 @@ describe('EventBus', () => {
         markEventAsProcessed: async (event: TestEvent) => {
           testHandler.processedEvents.add(event.eventId.toString());
         },
-        getSupportedEventType: () => 'TestEvent',
+        getSupportedEventType: () => "TestEvent",
       };
 
-      eventBus.registerHandler('TestEvent', idempotentHandler);
+      eventBus.registerHandler("TestEvent", idempotentHandler);
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       // 第一次发布
       await eventBus.publish(event);
@@ -591,21 +655,21 @@ describe('EventBus', () => {
     });
   });
 
-  describe('统计信息', () => {
-    it('应该返回正确的统计信息', () => {
-      eventBus.registerHandler('TestEvent', testHandler);
-      eventBus.addMiddleware(new TestMiddleware('TestMiddleware'));
+  describe("统计信息", () => {
+    it("应该返回正确的统计信息", () => {
+      eventBus.registerHandler("TestEvent", testHandler);
+      eventBus.addMiddleware(new TestMiddleware("TestMiddleware"));
 
-      expect(eventBus.getHandlerCount('TestEvent')).toBe(1);
+      expect(eventBus.getHandlerCount("TestEvent")).toBe(1);
       expect(eventBus.getMiddlewareCount()).toBe(1);
-      expect(eventBus.getRegisteredEventTypes()).toContain('TestEvent');
+      expect(eventBus.getRegisteredEventTypes()).toContain("TestEvent");
     });
 
-    it('应该支持多个事件类型', () => {
+    it("应该支持多个事件类型", () => {
       const handler1 = {
         ...new TestEventHandler(),
-        getSupportedEventType: () => 'Event1',
-        supports: (type: string) => type === 'Event1',
+        getSupportedEventType: () => "Event1",
+        supports: (type: string) => type === "Event1",
         validateEvent: () => {
           // 测试用的空验证函数
         },
@@ -633,8 +697,8 @@ describe('EventBus', () => {
       };
       const handler2 = {
         ...new TestEventHandler(),
-        getSupportedEventType: () => 'Event2',
-        supports: (type: string) => type === 'Event2',
+        getSupportedEventType: () => "Event2",
+        supports: (type: string) => type === "Event2",
         validateEvent: () => {
           // 测试用的空验证函数
         },
@@ -661,36 +725,41 @@ describe('EventBus', () => {
         },
       };
 
-      eventBus.registerHandler('Event1', handler1);
-      eventBus.registerHandler('Event2', handler2);
+      eventBus.registerHandler("Event1", handler1);
+      eventBus.registerHandler("Event2", handler2);
 
-      expect(eventBus.getRegisteredEventTypes()).toContain('Event1');
-      expect(eventBus.getRegisteredEventTypes()).toContain('Event2');
+      expect(eventBus.getRegisteredEventTypes()).toContain("Event1");
+      expect(eventBus.getRegisteredEventTypes()).toContain("Event2");
     });
   });
 
-  describe('清理操作', () => {
-    it('应该能够清除所有处理器', () => {
-      eventBus.registerHandler('TestEvent', testHandler);
-      expect(eventBus.getHandlerCount('TestEvent')).toBe(1);
+  describe("清理操作", () => {
+    it("应该能够清除所有处理器", () => {
+      eventBus.registerHandler("TestEvent", testHandler);
+      expect(eventBus.getHandlerCount("TestEvent")).toBe(1);
 
       eventBus.clearHandlers();
-      expect(eventBus.getHandlerCount('TestEvent')).toBe(0);
-      expect(eventBus.supports('TestEvent')).toBe(false);
+      expect(eventBus.getHandlerCount("TestEvent")).toBe(0);
+      expect(eventBus.supports("TestEvent")).toBe(false);
     });
 
-    it('应该能够清除所有订阅', () => {
-      eventBus.subscribe('TestEvent', async () => {
+    it("应该能够清除所有订阅", () => {
+      eventBus.subscribe("TestEvent", async () => {
         return Promise.resolve();
       });
-      eventBus.subscribe('TestEvent', async () => {
+      eventBus.subscribe("TestEvent", async () => {
         return Promise.resolve();
       });
 
       eventBus.clearSubscriptions();
       // 订阅数量无法直接获取，但可以通过发布事件验证
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(
+        aggregateId,
+        1,
+        TenantId.generate(),
+        "test-data",
+      );
 
       // 应该不会抛出错误，但也不会有订阅者处理
       expect(async () => await eventBus.publish(event)).not.toThrow();

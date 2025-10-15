@@ -29,7 +29,7 @@
  * export class RoleName extends Name {
  *   protected override validate(value: string): void {
  *     super.validate(value);  // 通用验证
- *     
+ *
  *     // 角色特定验证
  *     this.validatePattern(
  *       value,
@@ -50,7 +50,7 @@
  * @since 1.1.0
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object.js";
 
 export abstract class Name extends BaseValueObject<string> {
   /**
@@ -84,8 +84,8 @@ export abstract class Name extends BaseValueObject<string> {
    * @override
    */
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '名称');
-    this.validateLength(value, this.minLength, this.maxLength, '名称');
+    this.validateNotEmpty(value, "名称");
+    this.validateLength(value, this.minLength, this.maxLength, "名称");
   }
 
   /**
@@ -99,4 +99,3 @@ export abstract class Name extends BaseValueObject<string> {
     return value.trim();
   }
 }
-

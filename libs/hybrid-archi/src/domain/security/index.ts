@@ -7,4 +7,4 @@
  */
 
 // 基础权限接口
-export * from './base-permission.interface';
+export * from "./base-permission.interface.js";

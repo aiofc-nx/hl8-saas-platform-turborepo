@@ -8,10 +8,10 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { MessagingService } from '@hl8/messaging';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
+import { Injectable } from "@nestjs/common";
+import { MessagingService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 /**
  * 消息队列配置接口
@@ -108,8 +108,8 @@ export class MessageQueueAdapter {
   constructor(
     private readonly messagingService: MessagingService,
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger,
-    config: Partial<IMessageQueueConfig> = {}
+    private readonly logger: FastifyLoggerService,
+    config: Partial<IMessageQueueConfig> = {},
   ) {
     this.config = {
       enableCache: config.enableCache ?? true,
@@ -141,12 +141,12 @@ export class MessageQueueAdapter {
       tenantId?: string;
       userId?: string;
       ttl?: number;
-    } = {}
+    } = {},
   ): Promise<void> {
     try {
       const messageId = this.generateMessageId();
       const messageType =
-        options.messageType || message.constructor?.name || 'Unknown';
+        options.messageType || message.constructor?.name || "Unknown";
 
       const messageData: IMessage = {
         messageId,
@@ -173,11 +173,7 @@ export class MessageQueueAdapter {
         await this.cacheMessage(messageId, messageData);
       }
 
-      this.logger.debug(`发布消息成功: ${topic}`, {
-        messageId,
-        messageType,
-        topic,
-      });
+      this.logger.debug(`发布消息成功: ${topic}`);
     } catch (error) {
       this.logger.error(`发布消息失败: ${topic}`, error, {
         messageType: options.messageType,
@@ -203,13 +199,13 @@ export class MessageQueueAdapter {
       tenantId?: string;
       userId?: string;
       ttl?: number;
-    } = {}
+    } = {},
   ): Promise<void> {
     try {
       const messageDataList: IMessage[] = messages.map((message, index) => {
         const messageId = this.generateMessageId();
         const messageType =
-          options.messageType || message.constructor?.name || 'Unknown';
+          options.messageType || message.constructor?.name || "Unknown";
 
         return {
           messageId,
@@ -245,10 +241,7 @@ export class MessageQueueAdapter {
         }
       }
 
-      this.logger.debug(`批量发布消息成功: ${topic}`, {
-        messageCount: messages.length,
-        topic,
-      });
+      this.logger.debug(`批量发布消息成功: ${topic}`);
     } catch (error) {
       this.logger.error(`批量发布消息失败: ${topic}`, error, {
         messageCount: messages.length,
@@ -275,7 +268,7 @@ export class MessageQueueAdapter {
       durable: true,
       prefetchCount: 1,
       messageTtl: this.config.messageTtl,
-    }
+    },
   ): Promise<void> {
     try {
       // 注册处理器
@@ -288,10 +281,7 @@ export class MessageQueueAdapter {
           try {
             // 检查消息是否过期
             if (message.expiresAt && message.expiresAt < new Date()) {
-              this.logger.warn(`消息已过期: ${message.messageId}`, {
-                messageId: message.messageId,
-                expiresAt: message.expiresAt,
-              });
+              this.logger.warn(`消息已过期: ${message.messageId}`);
               return;
             }
 
@@ -303,11 +293,7 @@ export class MessageQueueAdapter {
               await this.ackMessage(message.messageId);
             }
 
-            this.logger.debug(`处理消息成功: ${message.messageId}`, {
-              messageId: message.messageId,
-              messageType: message.messageType,
-              handlerName: handler.handlerName,
-            });
+            this.logger.debug(`处理消息成功: ${message.messageId}`);
           } catch (error) {
             this.logger.error(`处理消息失败: ${message.messageId}`, error, {
               messageId: message.messageId,
@@ -333,14 +319,10 @@ export class MessageQueueAdapter {
               }
             }
           }
-        }
+        },
       );
 
-      this.logger.debug(`订阅消息成功: ${topic}`, {
-        topic,
-        handlerName: handler.handlerName,
-        options,
-      });
+      this.logger.debug(`订阅消息成功: ${topic}`);
     } catch (error) {
       this.logger.error(`订阅消息失败: ${topic}`, error, {
         topic,
@@ -364,10 +346,7 @@ export class MessageQueueAdapter {
       // 取消订阅
       await this.messagingService.unsubscribe(topic);
 
-      this.logger.debug(`取消订阅成功: ${topic}`, {
-        topic,
-        handlerName,
-      });
+      this.logger.debug(`取消订阅成功: ${topic}`);
     } catch (error) {
       this.logger.error(`取消订阅失败: ${topic}`, error, {
         topic,
@@ -385,10 +364,10 @@ export class MessageQueueAdapter {
   async ackMessage(messageId: string): Promise<void> {
     try {
       // 确认消息 - 使用兼容性检查
-      if (typeof (this.messagingService as any).ack === 'function') {
+      if (typeof (this.messagingService as any).ack === "function") {
         await (this.messagingService as any).ack(messageId);
       } else {
-        console.warn('MessagingService不支持ack方法');
+        console.warn("MessagingService不支持ack方法");
       }
 
       // 清除缓存
@@ -412,16 +391,13 @@ export class MessageQueueAdapter {
   async nackMessage(messageId: string, requeue = false): Promise<void> {
     try {
       // 拒绝消息 - 使用兼容性检查
-      if (typeof (this.messagingService as any).nack === 'function') {
+      if (typeof (this.messagingService as any).nack === "function") {
         await (this.messagingService as any).nack(messageId, requeue);
       } else {
-        console.warn('MessagingService不支持nack方法');
+        console.warn("MessagingService不支持nack方法");
       }
 
-      this.logger.debug(`拒绝消息成功: ${messageId}`, {
-        messageId,
-        requeue,
-      });
+      this.logger.debug(`拒绝消息成功: ${messageId}`);
     } catch (error) {
       this.logger.error(`拒绝消息失败: ${messageId}`, error);
       throw error;
@@ -443,10 +419,10 @@ export class MessageQueueAdapter {
   }> {
     try {
       // 获取队列统计信息 - 使用兼容性检查
-      if (typeof (this.messagingService as any).getQueueStats === 'function') {
+      if (typeof (this.messagingService as any).getQueueStats === "function") {
         return await (this.messagingService as any).getQueueStats(topic);
       } else {
-        console.warn('MessagingService不支持getQueueStats方法');
+        console.warn("MessagingService不支持getQueueStats方法");
         return {
           messageCount: 0,
           consumerCount: 0,
@@ -472,7 +448,7 @@ export class MessageQueueAdapter {
       // 实际实现中需要调用消息队列服务的清理方法
       return 0;
     } catch (error) {
-      this.logger.error('清理过期消息失败', error);
+      this.logger.error("清理过期消息失败", error);
       throw error;
     }
   }
@@ -557,7 +533,7 @@ export class MessageQueueAdapter {
    */
   private async retryMessage(
     message: IMessage,
-    options: IMessageSubscriptionOptions
+    options: IMessageSubscriptionOptions,
   ): Promise<void> {
     const retryMessage = {
       ...message,
@@ -575,10 +551,7 @@ export class MessageQueueAdapter {
       userId: message.userId,
     });
 
-    this.logger.debug(`重试消息: ${message.messageId}`, {
-      messageId: message.messageId,
-      retryCount: retryMessage.retryCount,
-    });
+    this.logger.debug(`重试消息: ${message.messageId}`);
   }
 
   /**
@@ -586,7 +559,7 @@ export class MessageQueueAdapter {
    */
   private async sendToDeadLetterQueue(
     message: IMessage,
-    error: Error
+    error: Error,
   ): Promise<void> {
     const deadLetterMessage = {
       ...message,
@@ -597,17 +570,14 @@ export class MessageQueueAdapter {
       },
     };
 
-    await this.publish('dead-letter-queue', deadLetterMessage.payload, {
+    await this.publish("dead-letter-queue", deadLetterMessage.payload, {
       messageType: `DeadLetter:${message.messageType}`,
       metadata: deadLetterMessage.metadata,
       tenantId: message.tenantId,
       userId: message.userId,
     });
 
-    this.logger.warn(`发送到死信队列: ${message.messageId}`, {
-      messageId: message.messageId,
-      error: error.message,
-    });
+    this.logger.warn(`发送到死信队列: ${message.messageId}`);
   }
 
   /**
@@ -622,7 +592,7 @@ export class MessageQueueAdapter {
    */
   private async cacheMessage(
     messageId: string,
-    message: IMessage
+    message: IMessage,
   ): Promise<void> {
     const cacheKey = this.getMessageCacheKey(messageId);
     await this.cacheService.set(cacheKey, message, this.config.cacheTtl);

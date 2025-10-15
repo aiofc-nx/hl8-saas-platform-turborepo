@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { ConfigRecord } from './config.types.js';
+import { ConfigRecord } from "./config.types.js";
 
 /**
  * 缓存策略枚举
@@ -17,13 +17,13 @@ import { ConfigRecord } from './config.types.js';
  */
 export enum CacheStrategy {
   /** 内存缓存 */
-  MEMORY = 'memory',
+  MEMORY = "memory",
   /** 文件缓存 */
-  FILE = 'file',
+  FILE = "file",
   /** Redis 缓存 */
-  REDIS = 'redis',
+  REDIS = "redis",
   /** 无缓存 */
-  NONE = 'none',
+  NONE = "none",
 }
 
 /**

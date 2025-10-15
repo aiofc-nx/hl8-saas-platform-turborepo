@@ -75,7 +75,7 @@ export function deepFreeze<T>(obj: T): T {
     const value = (obj as any)[prop];
 
     // 如果属性是对象且未冻结，递归冻结
-    if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+    if (value && typeof value === "object" && !Object.isFrozen(value)) {
       deepFreeze(value);
     }
   });
@@ -95,15 +95,15 @@ export function deepFreeze<T>(obj: T): T {
  * - 生产环境强制清理
  */
 const SENSITIVE_ENV_VARS = [
-  'DATABASE_PASSWORD',
-  'DATABASE__PASSWORD',
-  'CACHING__REDIS__PASSWORD',
-  'REDIS__PASSWORD',
-  'API_SECRET_KEY',
-  'API__SECRET_KEY',
-  'JWT_SECRET',
-  'JWT__SECRET',
-  'ENCRYPTION_KEY',
+  "DATABASE_PASSWORD",
+  "DATABASE__PASSWORD",
+  "CACHING__REDIS__PASSWORD",
+  "REDIS__PASSWORD",
+  "API_SECRET_KEY",
+  "API__SECRET_KEY",
+  "JWT_SECRET",
+  "JWT__SECRET",
+  "ENCRYPTION_KEY",
 ] as const;
 
 /**
@@ -195,7 +195,7 @@ export function isFrozen(obj: any, deep: boolean = true): boolean {
   // 深度检查所有属性
   return Object.getOwnPropertyNames(obj).every((prop) => {
     const value = obj[prop];
-    if (value && typeof value === 'object') {
+    if (value && typeof value === "object") {
       return isFrozen(value, true);
     }
     return true;
@@ -240,9 +240,9 @@ export function isFrozen(obj: any, deep: boolean = true): boolean {
  */
 export function getSafeConfigCopy(
   obj: any,
-  sensitiveKeys: string[] = ['password', 'secret', 'key', 'token'],
+  sensitiveKeys: string[] = ["password", "secret", "key", "token"],
 ): any {
-  if (!obj || typeof obj !== 'object') {
+  if (!obj || typeof obj !== "object") {
     return obj;
   }
 
@@ -259,9 +259,9 @@ export function getSafeConfigCopy(
         key.toLowerCase().includes(sensitive.toLowerCase()),
       );
 
-      if (isSensitive && typeof obj[key] === 'string') {
-        copy[key] = '***';
-      } else if (obj[key] && typeof obj[key] === 'object') {
+      if (isSensitive && typeof obj[key] === "string") {
+        copy[key] = "***";
+      } else if (obj[key] && typeof obj[key] === "object") {
         copy[key] = getSafeConfigCopy(obj[key], sensitiveKeys);
       } else {
         copy[key] = obj[key];

@@ -27,15 +27,15 @@
 export const forEachDeep = (
   obj: any,
   callback: (value: any, key: string, path: string) => void,
-  path: string = '',
+  path: string = "",
 ): void => {
-  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
+  if (obj && typeof obj === "object" && !Array.isArray(obj)) {
     for (const [key, value] of Object.entries(obj)) {
       const currentPath = path ? `${path}.${key}` : key;
 
       if (
         value &&
-        typeof value === 'object' &&
+        typeof value === "object" &&
         !Array.isArray(value) &&
         value.constructor !== Object
       ) {

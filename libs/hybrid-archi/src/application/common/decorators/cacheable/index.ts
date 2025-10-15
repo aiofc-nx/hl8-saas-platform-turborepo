@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-export type { ICacheableOptions } from './cacheable.decorator';
+export type { ICacheableOptions } from "./cacheable.decorator.js";
 export {
   Cacheable,
   getCacheableMetadata,
   CACHEABLE_METADATA_KEY,
-} from './cacheable.decorator';
+} from "./cacheable.decorator.js";

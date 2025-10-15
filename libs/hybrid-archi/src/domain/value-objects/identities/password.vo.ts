@@ -21,17 +21,17 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object.js";
 
 export class Password extends BaseValueObject<string> {
   /**
    * 常见弱密码列表
    */
   private static readonly WEAK_PASSWORDS = [
-    'password',
-    '12345678',
-    'qwerty123',
-    'abc123456',
+    "password",
+    "12345678",
+    "qwerty123",
+    "abc123456",
   ];
 
   /**
@@ -41,31 +41,31 @@ export class Password extends BaseValueObject<string> {
    * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, '密码');
-    this.validateLength(value, 8, 128, '密码');
-    
+    this.validateNotEmpty(value, "密码");
+    this.validateLength(value, 8, 128, "密码");
+
     // 强度验证
     const hasUpper = /[A-Z]/.test(value);
     const hasLower = /[a-z]/.test(value);
     const hasNumber = /[0-9]/.test(value);
     const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
-    
+
     if (!hasUpper) {
-      throw new Error('密码必须包含大写字母');
+      throw new Error("密码必须包含大写字母");
     }
     if (!hasLower) {
-      throw new Error('密码必须包含小写字母');
+      throw new Error("密码必须包含小写字母");
     }
     if (!hasNumber) {
-      throw new Error('密码必须包含数字');
+      throw new Error("密码必须包含数字");
     }
     if (!hasSpecial) {
-      throw new Error('密码必须包含特殊字符');
+      throw new Error("密码必须包含特殊字符");
     }
-    
+
     // 弱密码检查
     if (Password.WEAK_PASSWORDS.includes(value.toLowerCase())) {
-      throw new Error('不能使用常见弱密码');
+      throw new Error("不能使用常见弱密码");
     }
   }
 

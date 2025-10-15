@@ -36,7 +36,7 @@
  * @since 1.0.0
  */
 
-import { ICommand, ICommandMetadata } from '../base/command.interface';
+import { ICommand, ICommandMetadata } from "../base/command.interface.js";
 
 /**
  * 命令处理器选项接口
@@ -85,7 +85,7 @@ export interface ICommandHandlerOptions {
    */
   retry?: {
     maxAttempts: number;
-    backoffStrategy: 'fixed' | 'exponential' | 'linear';
+    backoffStrategy: "fixed" | "exponential" | "linear";
     baseDelay: number;
   };
 
@@ -111,7 +111,7 @@ export interface ICommandHandlerOptions {
 /**
  * 命令处理器元数据键
  */
-export const COMMAND_HANDLER_METADATA_KEY = Symbol('commandHandler');
+export const COMMAND_HANDLER_METADATA_KEY = Symbol("commandHandler");
 
 /**
  * 命令处理器装饰器
@@ -147,7 +147,7 @@ export function CommandHandler<TCommand extends ICommand>(
     const metadata: ICommandMetadata = {
       commandType,
       description: options.description || `${target.name} 命令处理器`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       requiredPermissions: options.requiredPermissions || [],
       category: options.category,
       tags: options.tags,
@@ -165,7 +165,7 @@ export function CommandHandler<TCommand extends ICommand>(
     Reflect.defineMetadata(COMMAND_HANDLER_METADATA_KEY, metadata, target);
 
     // 设置命令类型属性
-    Object.defineProperty(target.prototype, 'commandType', {
+    Object.defineProperty(target.prototype, "commandType", {
       value: commandType,
       writable: false,
       enumerable: true,
@@ -205,7 +205,7 @@ export function isCommandHandler(
 /**
  * 命令装饰器元数据键
  */
-export const COMMAND_METADATA_KEY = Symbol('command');
+export const COMMAND_METADATA_KEY = Symbol("command");
 
 /**
  * 命令装饰器
@@ -240,7 +240,7 @@ export function Command(options: {
     const metadata: ICommandMetadata = {
       commandType: options.type,
       description: options.description || `${options.type} 命令`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       requiredPermissions: options.requiredPermissions || [],
       category: options.category,
       tags: options.tags,
@@ -250,7 +250,7 @@ export function Command(options: {
     Reflect.defineMetadata(COMMAND_METADATA_KEY, metadata, target);
 
     // 设置命令类型属性
-    Object.defineProperty(target.prototype, 'commandType', {
+    Object.defineProperty(target.prototype, "commandType", {
       value: options.type,
       writable: false,
       enumerable: true,

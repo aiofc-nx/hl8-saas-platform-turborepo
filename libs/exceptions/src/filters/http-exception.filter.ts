@@ -63,11 +63,11 @@ import {
   ExceptionFilter,
   Injectable,
   Optional,
-} from '@nestjs/common';
+} from "@nestjs/common";
 import {
   AbstractHttpException,
   ProblemDetails,
-} from '../core/abstract-http.exception.js';
+} from "../core/abstract-http.exception.js";
 
 /**
  * 日志服务接口
@@ -117,7 +117,7 @@ export interface IExceptionMessageProvider {
    */
   getMessage(
     errorCode: string,
-    messageType: 'title' | 'detail',
+    messageType: "title" | "detail",
     params?: Record<string, any>,
   ): string | undefined;
 
@@ -128,7 +128,7 @@ export interface IExceptionMessageProvider {
    * @param messageType - 消息类型
    * @returns 如果有消息则返回 true
    */
-  hasMessage(errorCode: string, messageType: 'title' | 'detail'): boolean;
+  hasMessage(errorCode: string, messageType: "title" | "detail"): boolean;
 }
 
 /**
@@ -172,12 +172,12 @@ export class HttpExceptionFilter
     if (this.messageProvider) {
       const customTitle = this.messageProvider.getMessage(
         exception.errorCode,
-        'title',
+        "title",
         exception.data,
       );
       const customDetail = this.messageProvider.getMessage(
         exception.errorCode,
-        'detail',
+        "detail",
         exception.data,
       );
 
@@ -189,7 +189,7 @@ export class HttpExceptionFilter
     }
 
     // 填充 instance 字段（请求 ID）
-    problemDetails.instance = request.id || request.headers?.['x-request-id'];
+    problemDetails.instance = request.id || request.headers?.["x-request-id"];
 
     // 记录日志
     this.logException(exception, problemDetails, request);
@@ -197,7 +197,7 @@ export class HttpExceptionFilter
     // 设置响应头并发送响应（Fastify 使用 .code() 方法）
     response
       .code(problemDetails.status)
-      .header('Content-Type', 'application/problem+json; charset=utf-8')
+      .header("Content-Type", "application/problem+json; charset=utf-8")
       .send(problemDetails);
   }
 
@@ -218,11 +218,11 @@ export class HttpExceptionFilter
     const logContext = {
       exception: problemDetails,
       request: {
-        id: request.id || request.headers?.['x-request-id'],
+        id: request.id || request.headers?.["x-request-id"],
         method: request.method,
         url: request.url,
         ip: request.ip,
-        userAgent: request.headers?.['user-agent'],
+        userAgent: request.headers?.["user-agent"],
       },
       rootCause: exception.rootCause?.message,
     };

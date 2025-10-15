@@ -8,22 +8,23 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '../../../domain/value-objects/entity-id';
-import { IIdGeneratorPort } from '../../../application/ports/shared/shared-ports.interface';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/isolation-model";
+import { IIdGeneratorPort } from "../../../application/ports/shared/shared-ports.interface.js";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * ID生成策略枚举
  */
 export enum IdGenerationStrategy {
   /** UUID策略 */
-  UUID = 'uuid',
+  UUID = "uuid",
   /** 雪花算法策略 */
-  SNOWFLAKE = 'snowflake',
+  SNOWFLAKE = "snowflake",
   /** 自增ID策略 */
-  AUTO_INCREMENT = 'auto_increment',
+  AUTO_INCREMENT = "auto_increment",
   /** 自定义策略 */
-  CUSTOM = 'custom',
+  CUSTOM = "custom",
 }
 
 /**
@@ -50,7 +51,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
   private readonly config: IIdGeneratorConfig;
 
   constructor(
-    config: IIdGeneratorConfig = { strategy: IdGenerationStrategy.UUID }
+    config: IIdGeneratorConfig = { strategy: IdGenerationStrategy.UUID },
   ) {
     this.config = config;
   }
@@ -81,7 +82,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
    * @returns 实体ID实例
    */
   generateEntityId(): EntityId {
-    return EntityId.generate();
+    return TenantId.generate();
   }
 
   /**
@@ -142,7 +143,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
    * @returns 是否有效
    */
   validate(id: string): boolean {
-    if (!id || typeof id !== 'string') {
+    if (!id || typeof id !== "string") {
       return false;
     }
 
@@ -184,16 +185,16 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
    * 生成UUID
    */
   private generateUUID(): EntityId {
-    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+    const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
       (c) => {
         const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
-      }
+      },
     );
 
-    return EntityId.fromString(this.formatId(uuid));
+    return TenantId.create(this.formatId(uuid));
   }
 
   /**
@@ -206,7 +207,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
     const sequence = Math.floor(Math.random() * 4096);
 
     const snowflakeId = (timestamp << 22) | (machineId << 12) | sequence;
-    return EntityId.fromString(this.formatId(snowflakeId.toString()));
+    return TenantId.create(this.formatId(snowflakeId.toString()));
   }
 
   /**
@@ -215,7 +216,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
   private generateAutoIncrement(): EntityId {
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 10000);
-    return EntityId.fromString(this.formatId(`${timestamp}${random}`));
+    return TenantId.create(this.formatId(`${timestamp}${random}`));
   }
 
   /**
@@ -224,11 +225,11 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
   private generateCustom(): EntityId {
     // 使用自定义配置生成ID
     const customConfig = this.config.customConfig || {};
-    const prefix = (customConfig as { prefix?: string }).prefix || '';
-    const suffix = (customConfig as { suffix?: string }).suffix || '';
+    const prefix = (customConfig as { prefix?: string }).prefix || "";
+    const suffix = (customConfig as { suffix?: string }).suffix || "";
     const baseId = this.generateUUID();
 
-    return EntityId.fromString(`${prefix}${baseId}${suffix}`);
+    return TenantId.create(`${prefix}${baseId}${suffix}`);
   }
 
   /**

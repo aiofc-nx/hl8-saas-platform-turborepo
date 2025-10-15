@@ -18,16 +18,16 @@
  * @since 1.0.0
  */
 
-import { IsolationContext, IsolationLevel } from '@hl8/isolation-model';
+import { IsolationContext, IsolationLevel } from "@hl8/isolation-model";
 import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
   Injectable,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { REQUIRED_ISOLATION_LEVEL_KEY } from '../decorators/require-level.decorator.js';
-import { IsolationContextService } from '../services/isolation-context.service.js';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { REQUIRED_ISOLATION_LEVEL_KEY } from "../decorators/require-level.decorator.js";
+import { IsolationContextService } from "../services/isolation-context.service.js";
 
 @Injectable()
 export class IsolationGuard implements CanActivate {

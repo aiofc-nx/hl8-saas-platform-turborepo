@@ -1,4 +1,4 @@
-import type { MethodDecoratorTarget } from '../types';
+import type { MethodDecoratorTarget } from "../types.js";
 
 /**
  * 权限验证装饰器
@@ -54,7 +54,7 @@ export interface IRequirePermissionsOptions {
   /**
    * 权限验证失败时的行为
    */
-  onFailure?: 'throw' | 'return_null' | 'return_empty';
+  onFailure?: "throw" | "return_null" | "return_empty";
 
   /**
    * 自定义错误消息
@@ -65,7 +65,7 @@ export interface IRequirePermissionsOptions {
 /**
  * 权限验证装饰器元数据键
  */
-export const REQUIRE_PERMISSIONS_METADATA_KEY = Symbol('requirePermissions');
+export const REQUIRE_PERMISSIONS_METADATA_KEY = Symbol("requirePermissions");
 
 /**
  * 权限验证装饰器

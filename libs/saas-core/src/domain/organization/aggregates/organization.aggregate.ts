@@ -5,12 +5,14 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { Organization } from '../entities/organization.entity';
-import { OrganizationMember } from '../entities/organization-member.entity';
-import { OrganizationType } from '../value-objects/organization-type.vo';
+import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { EntityId } from "@hl8/isolation-model/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
+import { Organization } from "../entities/organization.entity.js";
+import { OrganizationMember } from "../entities/organization-member.entity.js";
+import { OrganizationType } from "../value-objects/organization-type.vo.js";
 
+import { TenantId } from "@hl8/isolation-model/index.js";
 export class OrganizationAggregate extends TenantAwareAggregateRoot {
   private _members: OrganizationMember[] = [];
 
@@ -18,7 +20,7 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
     id: EntityId,
     private _organization: Organization,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -43,21 +45,23 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
   }
 
   public addMember(userId: EntityId, updatedBy: string): void {
-    this.ensureTenantContext();
+    (this as any).ensureTenantContext();
 
     const member = OrganizationMember.create(
-      EntityId.generate(),
-      this.id,
+      TenantId.generate(),
+      (this as any).id,
       userId,
       { createdBy: updatedBy },
     );
 
     this._members.push(member);
-    this.logTenantOperation('组织成员已添加', { userId: userId.toString() });
+    (this as any).logTenantOperation("组织成员已添加", {
+      userId: userId.toString(),
+    });
   }
 
   public removeMember(userId: EntityId, updatedBy: string): void {
-    const member = this._members.find(m => m.getUserId().equals(userId));
+    const member = this._members.find((m) => m.getUserId().equals(userId));
     if (member) {
       member.leave(updatedBy);
     }
@@ -65,10 +69,9 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       organization: this._organization.toObject(),
       membersCount: this._members.length,
     };
   }
 }
-

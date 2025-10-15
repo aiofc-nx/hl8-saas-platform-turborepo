@@ -70,10 +70,10 @@ export class NotificationSettingsUtils {
    */
   public static validate(settings: NotificationSettings): boolean {
     return (
-      typeof settings.email === 'boolean' &&
-      typeof settings.push === 'boolean' &&
-      typeof settings.sms === 'boolean' &&
-      typeof settings.marketing === 'boolean'
+      typeof settings.email === "boolean" &&
+      typeof settings.push === "boolean" &&
+      typeof settings.sms === "boolean" &&
+      typeof settings.marketing === "boolean"
     );
   }
 
@@ -87,7 +87,7 @@ export class NotificationSettingsUtils {
    */
   public static merge(
     base: NotificationSettings,
-    override: Partial<NotificationSettings>
+    override: Partial<NotificationSettings>,
   ): NotificationSettings {
     return {
       email: override.email ?? base.email,

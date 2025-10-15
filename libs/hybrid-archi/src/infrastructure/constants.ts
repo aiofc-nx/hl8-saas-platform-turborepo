@@ -57,18 +57,18 @@ export const INFRASTRUCTURE_CONSTANTS = {
     /** 默认 Redis 缓存大小限制 */
     DEFAULT_REDIS_CACHE_SIZE: 10000,
     /** 缓存键前缀 */
-    KEY_PREFIX: 'hybrid_archi',
+    KEY_PREFIX: "hybrid_archi",
     /** 缓存统计键 */
-    STATS_KEY: 'cache_stats',
+    STATS_KEY: "cache_stats",
     /** 缓存清理间隔（毫秒） */
     CLEANUP_INTERVAL: 300000, // 5分钟
     /** 缓存命中率阈值 */
     HIT_RATE_THRESHOLD: 0.8,
     /** 缓存级别 */
     LEVEL: {
-      MEMORY: 'memory',
-      REDIS: 'redis',
-      DISTRIBUTED: 'distributed',
+      MEMORY: "memory",
+      REDIS: "redis",
+      DISTRIBUTED: "distributed",
     } as const,
   },
 
@@ -94,17 +94,17 @@ export const INFRASTRUCTURE_CONSTANTS = {
     SLOW_QUERY_THRESHOLD: 1000,
     /** 数据库类型 */
     TYPE: {
-      POSTGRESQL: 'postgresql',
-      MYSQL: 'mysql',
-      SQLITE: 'sqlite',
-      MONGODB: 'mongodb',
+      POSTGRESQL: "postgresql",
+      MYSQL: "mysql",
+      SQLITE: "sqlite",
+      MONGODB: "mongodb",
     } as const,
     /** 事务隔离级别 */
     ISOLATION_LEVEL: {
-      READ_UNCOMMITTED: 'read_uncommitted',
-      READ_COMMITTED: 'read_committed',
-      REPEATABLE_READ: 'repeatable_read',
-      SERIALIZABLE: 'serializable',
+      READ_UNCOMMITTED: "read_uncommitted",
+      READ_COMMITTED: "read_committed",
+      REPEATABLE_READ: "repeatable_read",
+      SERIALIZABLE: "serializable",
     } as const,
   },
 
@@ -131,9 +131,9 @@ export const INFRASTRUCTURE_CONSTANTS = {
     } as const,
     /** 队列状态 */
     STATUS: {
-      ACTIVE: 'active',
-      PAUSED: 'paused',
-      STOPPED: 'stopped',
+      ACTIVE: "active",
+      PAUSED: "paused",
+      STOPPED: "stopped",
     } as const,
   },
 
@@ -149,15 +149,15 @@ export const INFRASTRUCTURE_CONSTANTS = {
     DEFAULT_BATCH_SIZE: 1000,
     /** 事件存储类型 */
     TYPE: {
-      IN_MEMORY: 'in_memory',
-      DATABASE: 'database',
-      FILE: 'file',
+      IN_MEMORY: "in_memory",
+      DATABASE: "database",
+      FILE: "file",
     } as const,
     /** 事件状态 */
     STATUS: {
-      PENDING: 'pending',
-      PROCESSED: 'processed',
-      FAILED: 'failed',
+      PENDING: "pending",
+      PROCESSED: "processed",
+      FAILED: "failed",
     } as const,
   },
 
@@ -173,18 +173,18 @@ export const INFRASTRUCTURE_CONSTANTS = {
     DEFAULT_TIMEOUT: 5000,
     /** 适配器类型 */
     TYPE: {
-      LOGGER: 'logger',
-      CONFIGURATION: 'configuration',
-      ID_GENERATOR: 'id_generator',
-      TIME_PROVIDER: 'time_provider',
-      VALIDATION: 'validation',
-      EVENT_BUS: 'event_bus',
+      LOGGER: "logger",
+      CONFIGURATION: "configuration",
+      ID_GENERATOR: "id_generator",
+      TIME_PROVIDER: "time_provider",
+      VALIDATION: "validation",
+      EVENT_BUS: "event_bus",
     } as const,
     /** 健康状态 */
     HEALTH_STATUS: {
-      HEALTHY: 'healthy',
-      UNHEALTHY: 'unhealthy',
-      UNKNOWN: 'unknown',
+      HEALTHY: "healthy",
+      UNHEALTHY: "unhealthy",
+      UNKNOWN: "unknown",
     } as const,
   },
 
@@ -198,16 +198,16 @@ export const INFRASTRUCTURE_CONSTANTS = {
     DEFAULT_TTL: 3600000, // 1小时
     /** 映射器类型 */
     TYPE: {
-      DOMAIN: 'domain',
-      AGGREGATE: 'aggregate',
-      VALUE_OBJECT: 'value_object',
-      DTO: 'dto',
+      DOMAIN: "domain",
+      AGGREGATE: "aggregate",
+      VALUE_OBJECT: "value_object",
+      DTO: "dto",
     } as const,
     /** 映射器状态 */
     STATUS: {
-      ACTIVE: 'active',
-      INACTIVE: 'inactive',
-      ERROR: 'error',
+      ACTIVE: "active",
+      INACTIVE: "inactive",
+      ERROR: "error",
     } as const,
   },
 
@@ -223,11 +223,11 @@ export const INFRASTRUCTURE_CONSTANTS = {
     DEFAULT_HEALTH_CHECK_TIMEOUT: 5000,
     /** 工厂类型 */
     TYPE: {
-      CACHE: 'cache',
-      DATABASE: 'database',
-      MESSAGE_QUEUE: 'message_queue',
-      EVENT_STORE: 'event_store',
-      DOMAIN_SERVICE: 'domain_service',
+      CACHE: "cache",
+      DATABASE: "database",
+      MESSAGE_QUEUE: "message_queue",
+      EVENT_STORE: "event_store",
+      DOMAIN_SERVICE: "domain_service",
     } as const,
   },
 
@@ -237,28 +237,28 @@ export const INFRASTRUCTURE_CONSTANTS = {
   ERROR_CODES: {
     /** 缓存错误码 */
     CACHE: {
-      KEY_NOT_FOUND: 'CACHE_KEY_NOT_FOUND',
-      CONNECTION_FAILED: 'CACHE_CONNECTION_FAILED',
-      OPERATION_FAILED: 'CACHE_OPERATION_FAILED',
+      KEY_NOT_FOUND: "CACHE_KEY_NOT_FOUND",
+      CONNECTION_FAILED: "CACHE_CONNECTION_FAILED",
+      OPERATION_FAILED: "CACHE_OPERATION_FAILED",
     } as const,
     /** 数据库错误码 */
     DATABASE: {
-      CONNECTION_FAILED: 'DATABASE_CONNECTION_FAILED',
-      QUERY_FAILED: 'DATABASE_QUERY_FAILED',
-      TRANSACTION_FAILED: 'DATABASE_TRANSACTION_FAILED',
-      CONSTRAINT_VIOLATION: 'DATABASE_CONSTRAINT_VIOLATION',
+      CONNECTION_FAILED: "DATABASE_CONNECTION_FAILED",
+      QUERY_FAILED: "DATABASE_QUERY_FAILED",
+      TRANSACTION_FAILED: "DATABASE_TRANSACTION_FAILED",
+      CONSTRAINT_VIOLATION: "DATABASE_CONSTRAINT_VIOLATION",
     } as const,
     /** 消息队列错误码 */
     MESSAGE_QUEUE: {
-      PUBLISH_FAILED: 'MESSAGE_QUEUE_PUBLISH_FAILED',
-      CONSUME_FAILED: 'MESSAGE_QUEUE_CONSUME_FAILED',
-      CONNECTION_FAILED: 'MESSAGE_QUEUE_CONNECTION_FAILED',
+      PUBLISH_FAILED: "MESSAGE_QUEUE_PUBLISH_FAILED",
+      CONSUME_FAILED: "MESSAGE_QUEUE_CONSUME_FAILED",
+      CONNECTION_FAILED: "MESSAGE_QUEUE_CONNECTION_FAILED",
     } as const,
     /** 事件存储错误码 */
     EVENT_STORE: {
-      STORE_FAILED: 'EVENT_STORE_STORE_FAILED',
-      RETRIEVE_FAILED: 'EVENT_STORE_RETRIEVE_FAILED',
-      SNAPSHOT_FAILED: 'EVENT_STORE_SNAPSHOT_FAILED',
+      STORE_FAILED: "EVENT_STORE_STORE_FAILED",
+      RETRIEVE_FAILED: "EVENT_STORE_RETRIEVE_FAILED",
+      SNAPSHOT_FAILED: "EVENT_STORE_SNAPSHOT_FAILED",
     } as const,
   },
 
@@ -267,23 +267,23 @@ export const INFRASTRUCTURE_CONSTANTS = {
    */
   LOGGING: {
     /** 默认日志级别 */
-    DEFAULT_LEVEL: 'info',
+    DEFAULT_LEVEL: "info",
     /** 日志级别 */
     LEVEL: {
-      DEBUG: 'debug',
-      INFO: 'info',
-      WARN: 'warn',
-      ERROR: 'error',
+      DEBUG: "debug",
+      INFO: "info",
+      WARN: "warn",
+      ERROR: "error",
     } as const,
     /** 日志上下文 */
     CONTEXT: {
-      CACHE: 'cache',
-      DATABASE: 'database',
-      MESSAGE_QUEUE: 'message_queue',
-      EVENT_STORE: 'event_store',
-      PORT_ADAPTER: 'port_adapter',
-      MAPPER: 'mapper',
-      FACTORY: 'factory',
+      CACHE: "cache",
+      DATABASE: "database",
+      MESSAGE_QUEUE: "message_queue",
+      EVENT_STORE: "event_store",
+      PORT_ADAPTER: "port_adapter",
+      MAPPER: "mapper",
+      FACTORY: "factory",
     } as const,
   },
 
@@ -297,10 +297,10 @@ export const INFRASTRUCTURE_CONSTANTS = {
     DEFAULT_PERFORMANCE_THRESHOLD: 1000,
     /** 指标类型 */
     METRICS_TYPE: {
-      RESPONSE_TIME: 'response_time',
-      THROUGHPUT: 'throughput',
-      ERROR_RATE: 'error_rate',
-      MEMORY_USAGE: 'memory_usage',
+      RESPONSE_TIME: "response_time",
+      THROUGHPUT: "throughput",
+      ERROR_RATE: "error_rate",
+      MEMORY_USAGE: "memory_usage",
     } as const,
   },
 
@@ -309,15 +309,15 @@ export const INFRASTRUCTURE_CONSTANTS = {
    */
   CONFIG: {
     /** 默认配置前缀 */
-    DEFAULT_PREFIX: 'HYBRID_ARCHI',
+    DEFAULT_PREFIX: "HYBRID_ARCHI",
     /** 默认环境 */
-    DEFAULT_ENVIRONMENT: 'development',
+    DEFAULT_ENVIRONMENT: "development",
     /** 环境类型 */
     ENVIRONMENT: {
-      DEVELOPMENT: 'development',
-      TESTING: 'testing',
-      STAGING: 'staging',
-      PRODUCTION: 'production',
+      DEVELOPMENT: "development",
+      TESTING: "testing",
+      STAGING: "staging",
+      PRODUCTION: "production",
     } as const,
   },
 } as const;
@@ -328,63 +328,63 @@ export const INFRASTRUCTURE_CONSTANTS = {
 export const INFRASTRUCTURE_ERROR_MESSAGES = {
   /** 缓存错误消息 */
   CACHE: {
-    KEY_NOT_FOUND: '缓存键未找到',
-    CONNECTION_FAILED: '缓存连接失败',
-    OPERATION_FAILED: '缓存操作失败',
-    INVALID_KEY: '无效的缓存键',
-    TTL_EXPIRED: '缓存生存时间已过期',
+    KEY_NOT_FOUND: "缓存键未找到",
+    CONNECTION_FAILED: "缓存连接失败",
+    OPERATION_FAILED: "缓存操作失败",
+    INVALID_KEY: "无效的缓存键",
+    TTL_EXPIRED: "缓存生存时间已过期",
   } as const,
 
   /** 数据库错误消息 */
   DATABASE: {
-    CONNECTION_FAILED: '数据库连接失败',
-    QUERY_FAILED: '数据库查询失败',
-    TRANSACTION_FAILED: '数据库事务失败',
-    CONSTRAINT_VIOLATION: '数据库约束违反',
-    TIMEOUT: '数据库操作超时',
-    INVALID_QUERY: '无效的数据库查询',
+    CONNECTION_FAILED: "数据库连接失败",
+    QUERY_FAILED: "数据库查询失败",
+    TRANSACTION_FAILED: "数据库事务失败",
+    CONSTRAINT_VIOLATION: "数据库约束违反",
+    TIMEOUT: "数据库操作超时",
+    INVALID_QUERY: "无效的数据库查询",
   } as const,
 
   /** 消息队列错误消息 */
   MESSAGE_QUEUE: {
-    PUBLISH_FAILED: '消息发布失败',
-    CONSUME_FAILED: '消息消费失败',
-    CONNECTION_FAILED: '消息队列连接失败',
-    QUEUE_FULL: '消息队列已满',
-    MESSAGE_EXPIRED: '消息已过期',
+    PUBLISH_FAILED: "消息发布失败",
+    CONSUME_FAILED: "消息消费失败",
+    CONNECTION_FAILED: "消息队列连接失败",
+    QUEUE_FULL: "消息队列已满",
+    MESSAGE_EXPIRED: "消息已过期",
   } as const,
 
   /** 事件存储错误消息 */
   EVENT_STORE: {
-    STORE_FAILED: '事件存储失败',
-    RETRIEVE_FAILED: '事件检索失败',
-    SNAPSHOT_FAILED: '快照创建失败',
-    EVENT_NOT_FOUND: '事件未找到',
-    INVALID_EVENT: '无效的事件',
+    STORE_FAILED: "事件存储失败",
+    RETRIEVE_FAILED: "事件检索失败",
+    SNAPSHOT_FAILED: "快照创建失败",
+    EVENT_NOT_FOUND: "事件未找到",
+    INVALID_EVENT: "无效的事件",
   } as const,
 
   /** 端口适配器错误消息 */
   PORT_ADAPTER: {
-    INITIALIZATION_FAILED: '端口适配器初始化失败',
-    HEALTH_CHECK_FAILED: '端口适配器健康检查失败',
-    OPERATION_FAILED: '端口适配器操作失败',
-    TIMEOUT: '端口适配器操作超时',
+    INITIALIZATION_FAILED: "端口适配器初始化失败",
+    HEALTH_CHECK_FAILED: "端口适配器健康检查失败",
+    OPERATION_FAILED: "端口适配器操作失败",
+    TIMEOUT: "端口适配器操作超时",
   } as const,
 
   /** 映射器错误消息 */
   MAPPER: {
-    MAPPING_FAILED: '映射失败',
-    INVALID_SOURCE: '无效的源对象',
-    INVALID_TARGET: '无效的目标对象',
-    REGISTRATION_FAILED: '映射器注册失败',
+    MAPPING_FAILED: "映射失败",
+    INVALID_SOURCE: "无效的源对象",
+    INVALID_TARGET: "无效的目标对象",
+    REGISTRATION_FAILED: "映射器注册失败",
   } as const,
 
   /** 工厂错误消息 */
   FACTORY: {
-    CREATION_FAILED: '对象创建失败',
-    INVALID_CONFIG: '无效的配置',
-    SERVICE_START_FAILED: '服务启动失败',
-    SERVICE_STOP_FAILED: '服务停止失败',
+    CREATION_FAILED: "对象创建失败",
+    INVALID_CONFIG: "无效的配置",
+    SERVICE_START_FAILED: "服务启动失败",
+    SERVICE_STOP_FAILED: "服务停止失败",
   } as const,
 } as const;
 

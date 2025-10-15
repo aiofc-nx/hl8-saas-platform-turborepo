@@ -6,7 +6,7 @@
  *
  * @since 1.0.0
  */
-import { ILoggerService, IMetricsService } from '../../shared/interfaces';
+import type { ILoggerService, IMetricsService } from "../../shared/interfaces.js";
 
 export abstract class CliBaseCommand {
   protected readonly requestId: string;
@@ -15,7 +15,7 @@ export abstract class CliBaseCommand {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.requestId = this.generateRequestId();
     this.correlationId = this.generateCorrelationId();
@@ -33,13 +33,9 @@ export abstract class CliBaseCommand {
    */
   protected async handleCommand<TResult>(
     commandExecutor: () => Promise<TResult>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TResult> {
-    this.logger.info(`开始执行CLI命令: ${operationName}`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-    });
+    this.logger.log(`开始执行CLI命令: ${operationName}`);
 
     try {
       // 执行命令
@@ -68,19 +64,13 @@ export abstract class CliBaseCommand {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.info(`CLI ${operationName}命令执行成功`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      resultType: typeof result,
-    });
+    this.logger.log(`CLI ${operationName}命令执行成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(`cli_${operationName}_success_total`);
     this.metricsService?.recordHistogram(
       `cli_${operationName}_duration_ms`,
-      duration
+      duration,
     );
   }
 
@@ -95,20 +85,10 @@ export abstract class CliBaseCommand {
   protected logError(operationName: string, error: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.error(`CLI ${operationName}命令执行失败`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    this.logger.error(`CLI ${operationName}命令执行失败`);
 
     // 记录错误指标
-    this.metricsService?.incrementCounter(`cli_${operationName}_error_total`, {
-      error_type:
-        error instanceof Error ? error.constructor.name : 'UnknownError',
-    });
+    this.metricsService?.incrementCounter(`cli_${operationName}_error_total`);
   }
 
   /**

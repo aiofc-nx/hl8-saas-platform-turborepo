@@ -14,11 +14,11 @@ export {
   getMapperMetadata,
   isMapper,
   isMapperOfType,
-} from './mapper.decorator';
+} from "./mapper.decorator.js";
 
 export type {
   IMapperMetadata,
   IDomainMapperOptions,
   IValueObjectMapperOptions,
   IDtoMapperOptions,
-} from './mapper.decorator';
+} from "./mapper.decorator.js";

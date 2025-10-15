@@ -6,11 +6,11 @@
  * @since 1.0.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { TypedConfigModule } from '../lib/typed-config.module';
-import { TestConfig, createTestConfig } from './test-utils';
+import { Test, TestingModule } from "@nestjs/testing";
+import { TypedConfigModule } from "../lib/typed-config.module";
+import { TestConfig, createTestConfig } from "./test-utils";
 
-describe('TypedConfigModule', () => {
+describe("TypedConfigModule", () => {
   let module: TestingModule;
 
   afterEach(async () => {
@@ -19,8 +19,8 @@ describe('TypedConfigModule', () => {
     }
   });
 
-  describe('forRoot', () => {
-    it('应该创建配置模块', () => {
+  describe("forRoot", () => {
+    it("应该创建配置模块", () => {
       const configModule = TypedConfigModule.forRoot({
         schema: TestConfig,
         load: () => createTestConfig(),
@@ -33,7 +33,7 @@ describe('TypedConfigModule', () => {
       expect(configModule.exports).toBeDefined();
     });
 
-    it('应该支持自定义配置加载器', () => {
+    it("应该支持自定义配置加载器", () => {
       const customLoader = jest.fn().mockReturnValue(createTestConfig());
 
       const configModule = TypedConfigModule.forRoot({
@@ -45,7 +45,7 @@ describe('TypedConfigModule', () => {
       expect(customLoader).toHaveBeenCalled();
     });
 
-    it('应该支持配置标准化', () => {
+    it("应该支持配置标准化", () => {
       const normalize = jest.fn().mockImplementation((config) => ({
         ...config,
         normalized: true,
@@ -60,12 +60,12 @@ describe('TypedConfigModule', () => {
       expect(configModule).toBeDefined();
     });
 
-    it('应该支持缓存选项', () => {
+    it("应该支持缓存选项", () => {
       const configModule = TypedConfigModule.forRoot({
         schema: TestConfig,
         load: () => createTestConfig(),
         cacheOptions: {
-          strategy: 'memory' as any,
+          strategy: "memory" as any,
           ttl: 300000,
           enabled: true,
         },
@@ -75,18 +75,18 @@ describe('TypedConfigModule', () => {
       expect(configModule.providers).toHaveLength(2); // Config + CacheManager
     });
 
-    it('应该处理无效配置', () => {
+    it("应该处理无效配置", () => {
       expect(() => {
         TypedConfigModule.forRoot({
           schema: TestConfig,
-          load: () => 'invalid config' as any,
+          load: () => "invalid config" as any,
         });
       }).toThrow();
     });
   });
 
-  describe('forRootAsync', () => {
-    it('应该支持异步配置加载', async () => {
+  describe("forRootAsync", () => {
+    it("应该支持异步配置加载", async () => {
       const asyncLoader = jest.fn().mockResolvedValue(createTestConfig());
 
       const configModule = await TypedConfigModule.forRootAsync({
@@ -98,23 +98,23 @@ describe('TypedConfigModule', () => {
       expect(asyncLoader).toHaveBeenCalled();
     });
 
-    it('应该处理异步加载错误', async () => {
+    it("应该处理异步加载错误", async () => {
       const asyncLoader = jest
         .fn()
-        .mockRejectedValue(new Error('Async load failed'));
+        .mockRejectedValue(new Error("Async load failed"));
 
       await expect(
         TypedConfigModule.forRootAsync({
           schema: TestConfig,
           load: asyncLoader,
         }),
-      ).rejects.toThrow('Async load failed');
+      ).rejects.toThrow("Async load failed");
     });
   });
 
-  describe('配置验证', () => {
-    it('应该验证配置结构', () => {
-      const invalidConfig = { invalid: 'config' };
+  describe("配置验证", () => {
+    it("应该验证配置结构", () => {
+      const invalidConfig = { invalid: "config" };
 
       expect(() => {
         TypedConfigModule.forRoot({
@@ -124,7 +124,7 @@ describe('TypedConfigModule', () => {
       }).toThrow();
     });
 
-    it('应该支持自定义验证器', () => {
+    it("应该支持自定义验证器", () => {
       const customValidator = jest.fn().mockImplementation((config) => config);
 
       const configModule = TypedConfigModule.forRoot({
@@ -138,8 +138,8 @@ describe('TypedConfigModule', () => {
     });
   });
 
-  describe('模块集成', () => {
-    it('应该正确注入配置', async () => {
+  describe("模块集成", () => {
+    it("应该正确注入配置", async () => {
       module = await Test.createTestingModule({
         imports: [
           TypedConfigModule.forRoot({
@@ -151,12 +151,12 @@ describe('TypedConfigModule', () => {
 
       const config = module.get<TestConfig>(TestConfig);
       expect(config).toBeDefined();
-      expect(config.name).toBe('Test App');
-      expect(config.version).toBe('1.0.0');
+      expect(config.name).toBe("Test App");
+      expect(config.version).toBe("1.0.0");
       expect(config.port).toBe(3000);
     });
 
-    it('应该支持非全局模块', async () => {
+    it("应该支持非全局模块", async () => {
       const configModule = TypedConfigModule.forRoot({
         schema: TestConfig,
         load: () => createTestConfig(),

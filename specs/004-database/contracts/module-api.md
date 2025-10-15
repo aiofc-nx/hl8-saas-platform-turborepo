@@ -10,7 +10,7 @@
 ### 主模块: DatabaseModule
 
 ```typescript
-import { DatabaseModule } from '@hl8/database';
+import { DatabaseModule } from "@hl8/database";
 ```
 
 **用途**: NestJS 数据库管理模块，提供数据库连接、事务管理、多租户隔离等功能
@@ -42,12 +42,12 @@ static forRoot(options: DatabaseModuleOptions): DynamicModule
   imports: [
     DatabaseModule.forRoot({
       connection: {
-        type: 'postgresql',
-        host: 'localhost',
+        type: "postgresql",
+        host: "localhost",
         port: 5432,
-        database: 'hl8_saas',
-        username: 'postgres',
-        password: 'password',
+        database: "hl8_saas",
+        username: "postgres",
+        password: "password",
       },
       pool: {
         min: 5,
@@ -86,7 +86,7 @@ static forRootAsync(options: DatabaseModuleAsyncOptions): DynamicModule
     DatabaseModule.forRootAsync({
       useFactory: async (config: DatabaseConfig) => ({
         connection: {
-          type: 'postgresql',
+          type: "postgresql",
           host: config.host,
           port: config.port,
           database: config.database,
@@ -314,7 +314,7 @@ export {
   QueryOrderMap,
   FindOptions,
   wrap,
-} from '@mikro-orm/core';
+} from "@mikro-orm/core";
 
 export {
   Entity,
@@ -328,7 +328,7 @@ export {
   ManyToMany,
   Embedded,
   Enum,
-} from '@mikro-orm/core';
+} from "@mikro-orm/core";
 ```
 
 ---
@@ -338,7 +338,7 @@ export {
 ### DatabaseConfig
 
 ```typescript
-import { DatabaseConfig } from '@hl8/database';
+import { DatabaseConfig } from "@hl8/database";
 ```
 
 **用途**: 类型安全的数据库配置类，集成 @hl8/config
@@ -346,8 +346,8 @@ import { DatabaseConfig } from '@hl8/database';
 **示例**:
 
 ```typescript
-import { TypedConfigModule } from '@hl8/config';
-import { DatabaseConfig } from '@hl8/database';
+import { TypedConfigModule } from "@hl8/config";
+import { DatabaseConfig } from "@hl8/database";
 
 @Module({
   imports: [
@@ -372,7 +372,7 @@ import {
   DatabaseQueryException,
   DatabaseTransactionException,
   DatabaseMigrationException,
-} from '@hl8/database';
+} from "@hl8/database";
 ```
 
 **用途**: 数据库操作的标准异常类型，遵循 RFC7807
@@ -396,7 +396,7 @@ try {
 ### 依赖注入令牌
 
 ```typescript
-import { DI_TOKENS } from '@hl8/database';
+import { DI_TOKENS } from "@hl8/database";
 ```
 
 **用途**: 模块内部使用的依赖注入令牌

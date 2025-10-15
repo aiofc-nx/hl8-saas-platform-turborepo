@@ -7,13 +7,13 @@
  */
 
 // API文档系统
-export * from './documentation';
+export * from "./documentation.js";
 
 // 接口版本控制
-export * from './versioning';
+export * from "./versioning.js";
 
 // 接口测试
-export * from './testing';
+export * from "./testing.js";
 
 // 接口监控
-export * from './monitoring';
+export * from "./monitoring.js";

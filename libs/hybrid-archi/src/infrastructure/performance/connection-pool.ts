@@ -8,9 +8,9 @@
  * @since 1.0.0
  */
 
-import { Injectable, Inject } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { DatabaseService } from '@hl8/database';
+import { Injectable, Inject } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { DatabaseService } from "@hl8/hybrid-archi";
 
 /**
  * 连接池配置
@@ -44,11 +44,11 @@ export interface ConnectionPoolConfig {
  * 连接状态
  */
 export type ConnectionStatus =
-  | 'idle'
-  | 'active'
-  | 'connecting'
-  | 'disconnected'
-  | 'error';
+  | "idle"
+  | "active"
+  | "connecting"
+  | "disconnected"
+  | "error";
 
 /**
  * 连接信息
@@ -113,9 +113,10 @@ export class ConnectionPoolManager {
   private validationTimer: NodeJS.Timeout | null = null;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: FastifyLoggerService,
     private readonly databaseService: DatabaseService,
-    @Inject('ConnectionPoolConfig') private readonly config: ConnectionPoolConfig
+    @Inject("ConnectionPoolConfig")
+    private readonly config: ConnectionPoolConfig,
   ) {
     this.initializePool();
     this.startHealthCheck();
@@ -141,7 +142,7 @@ export class ConnectionPoolManager {
       }
 
       // 更新连接状态
-      connection.status = 'active';
+      connection.status = "active";
       connection.lastUsedAt = new Date();
       connection.useCount++;
 
@@ -154,18 +155,14 @@ export class ConnectionPoolManager {
       this.responseTimes.push(responseTime);
       this.updateStats();
 
-      this.logger.debug('连接获取成功', {
-        connectionId: connection.id,
-        responseTime,
-        activeConnections: this.stats.activeConnections,
-      });
+      this.logger.debug("连接获取成功");
 
       return connection;
     } catch (error) {
       this.stats.failedRequests++;
       this.updateStats();
 
-      this.logger.error('获取连接失败', error);
+      this.logger.error("获取连接失败", error);
       throw error;
     }
   }
@@ -180,12 +177,12 @@ export class ConnectionPoolManager {
     try {
       const connection = this.connections.get(connectionId);
       if (!connection) {
-        this.logger.warn('连接不存在', { connectionId });
+        this.logger.warn("连接不存在");
         return;
       }
 
       // 更新连接状态
-      connection.status = 'idle';
+      connection.status = "idle";
       connection.lastUsedAt = new Date();
 
       // 更新统计信息
@@ -194,12 +191,9 @@ export class ConnectionPoolManager {
       this.stats.successfulRequests++;
       this.updateStats();
 
-      this.logger.debug('连接释放成功', {
-        connectionId,
-        idleConnections: this.stats.idleConnections,
-      });
+      this.logger.debug("连接释放成功");
     } catch (error) {
-      this.logger.error('释放连接失败', error, { connectionId });
+      this.logger.error("释放连接失败", error, { connectionId });
       throw error;
     }
   }
@@ -214,26 +208,26 @@ export class ConnectionPoolManager {
     try {
       const connection = this.connections.get(connectionId);
       if (!connection) {
-        this.logger.warn('连接不存在', { connectionId });
+        this.logger.warn("连接不存在");
         return;
       }
 
       // 更新统计信息
       this.stats.totalConnections--;
-      if (connection.status === 'active') {
+      if (connection.status === "active") {
         this.stats.activeConnections--;
-      } else if (connection.status === 'idle') {
+      } else if (connection.status === "idle") {
         this.stats.idleConnections--;
       }
 
       // 更新连接状态
-      connection.status = 'disconnected';
+      connection.status = "disconnected";
       this.connections.delete(connectionId);
       this.updateStats();
 
-      this.logger.info('连接关闭成功', { connectionId });
+      this.logger.log("连接关闭成功");
     } catch (error) {
-      this.logger.error('关闭连接失败', error, { connectionId });
+      this.logger.error("关闭连接失败", error, { connectionId });
       throw error;
     }
   }
@@ -251,11 +245,9 @@ export class ConnectionPoolManager {
         await this.closeConnection(connectionId);
       }
 
-      this.logger.info('所有连接已关闭', {
-        connectionCount: connectionIds.length,
-      });
+      this.logger.log("所有连接已关闭");
     } catch (error) {
-      this.logger.error('关闭所有连接失败', error);
+      this.logger.error("关闭所有连接失败", error);
       throw error;
     }
   }
@@ -329,28 +321,28 @@ export class ConnectionPoolManager {
       // 检查连接数量
       if (this.stats.totalConnections < this.config.minConnections) {
         issues.push(
-          `连接数量不足: ${this.stats.totalConnections}/${this.config.minConnections}`
+          `连接数量不足: ${this.stats.totalConnections}/${this.config.minConnections}`,
         );
-        recommendations.push('增加连接数量');
+        recommendations.push("增加连接数量");
       }
 
       if (this.stats.totalConnections > this.config.maxConnections) {
         issues.push(
-          `连接数量过多: ${this.stats.totalConnections}/${this.config.maxConnections}`
+          `连接数量过多: ${this.stats.totalConnections}/${this.config.maxConnections}`,
         );
-        recommendations.push('减少连接数量');
+        recommendations.push("减少连接数量");
       }
 
       // 检查连接利用率
       const utilization = this.stats.connectionUtilization;
       if (utilization > 0.9) {
         issues.push(`连接利用率过高: ${(utilization * 100).toFixed(1)}%`);
-        recommendations.push('考虑增加最大连接数');
+        recommendations.push("考虑增加最大连接数");
       }
 
       if (utilization < 0.1) {
         issues.push(`连接利用率过低: ${(utilization * 100).toFixed(1)}%`);
-        recommendations.push('考虑减少最大连接数');
+        recommendations.push("考虑减少最大连接数");
       }
 
       // 检查错误率
@@ -361,30 +353,26 @@ export class ConnectionPoolManager {
 
       if (errorRate > 5) {
         issues.push(`错误率过高: ${errorRate.toFixed(1)}%`);
-        recommendations.push('检查连接配置和网络状态');
+        recommendations.push("检查连接配置和网络状态");
       }
 
       // 检查响应时间
       if (this.stats.averageResponseTime > 1000) {
         issues.push(`平均响应时间过长: ${this.stats.averageResponseTime}ms`);
-        recommendations.push('优化数据库查询和网络配置');
+        recommendations.push("优化数据库查询和网络配置");
       }
 
       const healthy = issues.length === 0;
 
-      this.logger.debug('连接池健康检查完成', {
-        healthy,
-        issueCount: issues.length,
-        recommendationCount: recommendations.length,
-      });
+      this.logger.debug("连接池健康检查完成");
 
       return { healthy, issues, recommendations };
     } catch (error) {
-      this.logger.error('连接池健康检查失败', error);
+      this.logger.error("连接池健康检查失败", error);
       return {
         healthy: false,
-        issues: ['健康检查失败'],
-        recommendations: ['检查连接池配置'],
+        issues: ["健康检查失败"],
+        recommendations: ["检查连接池配置"],
       };
     }
   }
@@ -410,7 +398,7 @@ export class ConnectionPoolManager {
 
     this.responseTimes.length = 0;
 
-    this.logger.info('连接池统计信息已重置');
+    this.logger.log("连接池统计信息已重置");
   }
 
   // ==================== 私有方法 ====================
@@ -425,12 +413,9 @@ export class ConnectionPoolManager {
         await this.createConnection();
       }
 
-      this.logger.info('连接池初始化完成', {
-        minConnections: this.config.minConnections,
-        maxConnections: this.config.maxConnections,
-      });
+      this.logger.log("连接池初始化完成");
     } catch (error) {
-      this.logger.error('连接池初始化失败', error);
+      this.logger.error("连接池初始化失败", error);
       throw error;
     }
   }
@@ -442,7 +427,7 @@ export class ConnectionPoolManager {
     const connectionId = this.generateConnectionId();
     const connection: ConnectionInfo = {
       id: connectionId,
-      status: 'connecting',
+      status: "connecting",
       createdAt: new Date(),
       lastUsedAt: new Date(),
       useCount: 0,
@@ -457,17 +442,17 @@ export class ConnectionPoolManager {
       // 这里应该实现具体的连接创建逻辑
       // await this.databaseService.connect();
 
-      connection.status = 'idle';
+      connection.status = "idle";
       this.connections.set(connectionId, connection);
 
       this.stats.totalConnections++;
       this.stats.idleConnections++;
       this.updateStats();
 
-      this.logger.debug('连接创建成功', { connectionId });
+      this.logger.debug("连接创建成功");
       return connection;
     } catch (error) {
-      connection.status = 'error';
+      connection.status = "error";
       connection.lastError =
         error instanceof Error ? error : new Error(String(error));
       connection.errorCount++;
@@ -475,7 +460,7 @@ export class ConnectionPoolManager {
       this.stats.errorConnections++;
       this.updateStats();
 
-      this.logger.error('连接创建失败', error, { connectionId });
+      this.logger.error("连接创建失败", error, { connectionId });
       throw error;
     }
   }
@@ -485,7 +470,7 @@ export class ConnectionPoolManager {
    */
   private findIdleConnection(): ConnectionInfo | null {
     for (const connection of this.connections.values()) {
-      if (connection.status === 'idle') {
+      if (connection.status === "idle") {
         return connection;
       }
     }
@@ -537,13 +522,11 @@ export class ConnectionPoolManager {
       try {
         await this.performHealthCheck();
       } catch (error) {
-        this.logger.error('健康检查失败', error);
+        this.logger.error("健康检查失败", error);
       }
     }, this.config.healthCheckInterval);
 
-    this.logger.info('连接池健康检查已启动', {
-      interval: this.config.healthCheckInterval,
-    });
+    this.logger.log("连接池健康检查已启动");
   }
 
   /**
@@ -554,13 +537,11 @@ export class ConnectionPoolManager {
       try {
         await this.validateConnections();
       } catch (error) {
-        this.logger.error('连接验证失败', error);
+        this.logger.error("连接验证失败", error);
       }
     }, this.config.validationInterval);
 
-    this.logger.info('连接池验证已启动', {
-      interval: this.config.validationInterval,
-    });
+    this.logger.log("连接池验证已启动");
   }
 
   /**
@@ -570,10 +551,7 @@ export class ConnectionPoolManager {
     const health = await this.checkHealth();
 
     if (!health.healthy) {
-      this.logger.warn('连接池健康检查发现问题', {
-        issues: health.issues,
-        recommendations: health.recommendations,
-      });
+      this.logger.warn("连接池健康检查发现问题");
     }
   }
 
@@ -587,11 +565,11 @@ export class ConnectionPoolManager {
       try {
         // 这里应该实现具体的连接验证逻辑
         // 实际实现中会测试连接是否可用
-        if (connection.status === 'error') {
+        if (connection.status === "error") {
           await this.closeConnection(connection.id);
         }
       } catch (error) {
-        this.logger.warn('连接验证失败', error, {
+        this.logger.warn("连接验证失败", error, {
           connectionId: connection.id,
         });
       }

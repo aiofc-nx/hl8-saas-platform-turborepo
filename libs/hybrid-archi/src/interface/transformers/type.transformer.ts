@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const TYPE_TRANSFORMER = 'Type Transformer';
+export const TYPE_TRANSFORMER = "Type Transformer";

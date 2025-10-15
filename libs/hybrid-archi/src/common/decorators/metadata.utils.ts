@@ -24,15 +24,15 @@
  * @description 装饰器元数据工具函数
  * @since 1.0.0
  */
-import 'reflect-metadata';
-import { METADATA_VERSION, DecoratorType } from './metadata.constants';
-import {
+import "reflect-metadata";
+import { METADATA_VERSION, DecoratorType } from "./metadata.constants.js";
+import type {
   IMetadata,
   ICommandHandlerMetadata,
   IQueryHandlerMetadata,
   IEventHandlerMetadata,
   ISagaMetadata,
-} from './metadata.interfaces';
+} from "./metadata.interfaces.js";
 
 /**
  * 设置元数据
@@ -108,20 +108,20 @@ export function setCommandHandlerMetadata(
   metadata: Partial<ICommandHandlerMetadata> = {},
 ): void {
   const fullMetadata: ICommandHandlerMetadata = {
-    decoratorType: 'CommandHandler' as DecoratorType,
+    decoratorType: "CommandHandler" as DecoratorType,
     version: METADATA_VERSION,
     createdAt: new Date(),
     enabled: true,
     priority: 0,
     commandType,
-    handlerType: 'Command' as any,
+    handlerType: "Command" as any,
     enableLogging: true,
     enableAudit: true,
     enablePerformanceMonitor: true,
     ...metadata,
   };
 
-  setMetadata(target, 'aiofix:core:CommandHandlerMetadata', fullMetadata);
+  setMetadata(target, "aiofix:core:CommandHandlerMetadata", fullMetadata);
 }
 
 /**
@@ -135,7 +135,7 @@ export function getCommandHandlerMetadata(
 ): ICommandHandlerMetadata | undefined {
   return getMetadata<ICommandHandlerMetadata>(
     target,
-    'aiofix:core:CommandHandlerMetadata',
+    "aiofix:core:CommandHandlerMetadata",
   );
 }
 
@@ -152,20 +152,20 @@ export function setQueryHandlerMetadata(
   metadata: Partial<IQueryHandlerMetadata> = {},
 ): void {
   const fullMetadata: IQueryHandlerMetadata = {
-    decoratorType: 'QueryHandler' as DecoratorType,
+    decoratorType: "QueryHandler" as DecoratorType,
     version: METADATA_VERSION,
     createdAt: new Date(),
     enabled: true,
     priority: 0,
     queryType,
-    handlerType: 'Query' as any,
+    handlerType: "Query" as any,
     enableLogging: true,
     enableAudit: false,
     enablePerformanceMonitor: true,
     ...metadata,
   };
 
-  setMetadata(target, 'aiofix:core:QueryHandlerMetadata', fullMetadata);
+  setMetadata(target, "aiofix:core:QueryHandlerMetadata", fullMetadata);
 }
 
 /**
@@ -179,7 +179,7 @@ export function getQueryHandlerMetadata(
 ): IQueryHandlerMetadata | undefined {
   return getMetadata<IQueryHandlerMetadata>(
     target,
-    'aiofix:core:QueryHandlerMetadata',
+    "aiofix:core:QueryHandlerMetadata",
   );
 }
 
@@ -196,13 +196,13 @@ export function setEventHandlerMetadata(
   metadata: Partial<IEventHandlerMetadata> = {},
 ): void {
   const fullMetadata: IEventHandlerMetadata = {
-    decoratorType: 'EventHandler' as DecoratorType,
+    decoratorType: "EventHandler" as DecoratorType,
     version: METADATA_VERSION,
     createdAt: new Date(),
     enabled: true,
     priority: 0,
     eventType,
-    handlerType: 'Event' as any,
+    handlerType: "Event" as any,
     enableLogging: true,
     enableAudit: true,
     enablePerformanceMonitor: true,
@@ -211,7 +211,7 @@ export function setEventHandlerMetadata(
     ...metadata,
   };
 
-  setMetadata(target, 'aiofix:core:EventHandlerMetadata', fullMetadata);
+  setMetadata(target, "aiofix:core:EventHandlerMetadata", fullMetadata);
 }
 
 /**
@@ -225,7 +225,7 @@ export function getEventHandlerMetadata(
 ): IEventHandlerMetadata | undefined {
   return getMetadata<IEventHandlerMetadata>(
     target,
-    'aiofix:core:EventHandlerMetadata',
+    "aiofix:core:EventHandlerMetadata",
   );
 }
 
@@ -242,13 +242,13 @@ export function setSagaMetadata(
   metadata: Partial<ISagaMetadata> = {},
 ): void {
   const fullMetadata: ISagaMetadata = {
-    decoratorType: 'Saga' as DecoratorType,
+    decoratorType: "Saga" as DecoratorType,
     version: METADATA_VERSION,
     createdAt: new Date(),
     enabled: true,
     priority: 0,
     sagaType,
-    handlerType: 'Saga' as any,
+    handlerType: "Saga" as any,
     enableLogging: true,
     enableAudit: true,
     enablePerformanceMonitor: true,
@@ -257,7 +257,7 @@ export function setSagaMetadata(
     ...metadata,
   };
 
-  setMetadata(target, 'aiofix:core:SagaMetadata', fullMetadata);
+  setMetadata(target, "aiofix:core:SagaMetadata", fullMetadata);
 }
 
 /**
@@ -267,7 +267,7 @@ export function setSagaMetadata(
  * @returns Saga 元数据，如果不存在则返回 undefined
  */
 export function getSagaMetadata(target: object): ISagaMetadata | undefined {
-  return getMetadata<ISagaMetadata>(target, 'aiofix:core:SagaMetadata');
+  return getMetadata<ISagaMetadata>(target, "aiofix:core:SagaMetadata");
 }
 
 /**
@@ -281,7 +281,7 @@ export function getAllHandlerMetadata(target: object): IMetadata[] {
   const handlerMetadata: IMetadata[] = [];
 
   for (const key of metadataKeys) {
-    if (key.startsWith('aiofix:core:') && key.endsWith('Metadata')) {
+    if (key.startsWith("aiofix:core:") && key.endsWith("Metadata")) {
       const metadata = getMetadata<IMetadata>(target, key);
       if (metadata) {
         handlerMetadata.push(metadata);
@@ -311,7 +311,7 @@ export function isHandlerType(target: object, handlerType: string): boolean {
  * @returns 如果是命令处理器则返回 true，否则返回 false
  */
 export function isCommandHandler(target: object): boolean {
-  return isHandlerType(target, 'Command');
+  return isHandlerType(target, "Command");
 }
 
 /**
@@ -321,7 +321,7 @@ export function isCommandHandler(target: object): boolean {
  * @returns 如果是查询处理器则返回 true，否则返回 false
  */
 export function isQueryHandler(target: object): boolean {
-  return isHandlerType(target, 'Query');
+  return isHandlerType(target, "Query");
 }
 
 /**
@@ -331,7 +331,7 @@ export function isQueryHandler(target: object): boolean {
  * @returns 如果是事件处理器则返回 true，否则返回 false
  */
 export function isEventHandler(target: object): boolean {
-  return isHandlerType(target, 'Event');
+  return isHandlerType(target, "Event");
 }
 
 /**
@@ -341,7 +341,7 @@ export function isEventHandler(target: object): boolean {
  * @returns 如果是 Saga 则返回 true，否则返回 false
  */
 export function isSaga(target: object): boolean {
-  return isHandlerType(target, 'Saga');
+  return isHandlerType(target, "Saga");
 }
 
 /**
@@ -441,17 +441,17 @@ export function validateMetadata(metadata: IMetadata): boolean {
     return false;
   }
 
-  if (typeof metadata.enabled !== 'boolean') {
+  if (typeof metadata.enabled !== "boolean") {
     return false;
   }
 
-  if (typeof metadata.priority !== 'number' || metadata.priority < 0) {
+  if (typeof metadata.priority !== "number" || metadata.priority < 0) {
     return false;
   }
 
   if (
     metadata.timeout !== undefined &&
-    (typeof metadata.timeout !== 'number' || metadata.timeout <= 0)
+    (typeof metadata.timeout !== "number" || metadata.timeout <= 0)
   ) {
     return false;
   }

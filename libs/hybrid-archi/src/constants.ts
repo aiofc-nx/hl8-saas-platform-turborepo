@@ -56,20 +56,20 @@
  * 实体操作类型常量
  */
 export const ENTITY_OPERATIONS = {
-  CREATE: 'CREATE',
-  UPDATE: 'UPDATE',
-  DELETE: 'DELETE',
-  RESTORE: 'RESTORE',
+  CREATE: "CREATE",
+  UPDATE: "UPDATE",
+  DELETE: "DELETE",
+  RESTORE: "RESTORE",
 } as const;
 
 /**
  * 实体操作来源常量
  */
 export const ENTITY_OPERATION_SOURCES = {
-  WEB: 'WEB',
-  API: 'API',
-  CLI: 'CLI',
-  SYSTEM: 'SYSTEM',
+  WEB: "WEB",
+  API: "API",
+  CLI: "CLI",
+  SYSTEM: "SYSTEM",
 } as const;
 
 // ==================== 错误码常量 ====================
@@ -78,31 +78,31 @@ export const ENTITY_OPERATION_SOURCES = {
  * 实体相关错误码
  */
 export const ENTITY_ERROR_CODES = {
-  VALIDATION_ERROR: 'INVALID_ENTITY_ID',
-  TENANT_VALIDATION_ERROR: 'INVALID_TENANT_ID',
-  CONCURRENCY_ERROR: 'CONCURRENCY_ERROR',
-  NOT_FOUND: 'ENTITY_NOT_FOUND',
-  VALIDATION_FAILED: 'VALIDATION_ERROR',
-  ALREADY_DELETED: 'ENTITY_ALREADY_DELETED',
-  NOT_DELETED: 'ENTITY_NOT_DELETED',
+  VALIDATION_ERROR: "INVALID_ENTITY_ID",
+  TENANT_VALIDATION_ERROR: "INVALID_TENANT_ID",
+  CONCURRENCY_ERROR: "CONCURRENCY_ERROR",
+  NOT_FOUND: "ENTITY_NOT_FOUND",
+  VALIDATION_FAILED: "VALIDATION_ERROR",
+  ALREADY_DELETED: "ENTITY_ALREADY_DELETED",
+  NOT_DELETED: "ENTITY_NOT_DELETED",
 } as const;
 
 /**
  * 用例相关错误码
  */
 export const USE_CASE_ERROR_CODES = {
-  VALIDATION_ERROR: 'USE_CASE_VALIDATION_ERROR',
-  EXECUTION_ERROR: 'USE_CASE_EXECUTION_ERROR',
-  PERMISSION_ERROR: 'PERMISSION_DENIED_ERROR',
+  VALIDATION_ERROR: "USE_CASE_VALIDATION_ERROR",
+  EXECUTION_ERROR: "USE_CASE_EXECUTION_ERROR",
+  PERMISSION_ERROR: "PERMISSION_DENIED_ERROR",
 } as const;
 
 /**
  * 租户相关错误码
  */
 export const TENANT_ERROR_CODES = {
-  CONTEXT_NOT_FOUND: 'TENANT_CONTEXT_NOT_FOUND',
-  ID_NOT_FOUND: 'TENANT_ID_NOT_FOUND',
-  INACTIVE: 'TENANT_INACTIVE',
+  CONTEXT_NOT_FOUND: "TENANT_CONTEXT_NOT_FOUND",
+  ID_NOT_FOUND: "TENANT_ID_NOT_FOUND",
+  INACTIVE: "TENANT_INACTIVE",
 } as const;
 
 // ==================== Saga状态常量 ====================
@@ -111,14 +111,14 @@ export const TENANT_ERROR_CODES = {
  * Saga执行状态常量
  */
 export const SAGA_STATUSES = {
-  NOT_STARTED: 'NOT_STARTED',
-  RUNNING: 'RUNNING',
-  COMPLETED: 'COMPLETED',
-  FAILED: 'FAILED',
-  CANCELLED: 'CANCELLED',
-  COMPENSATING: 'COMPENSATING',
-  COMPENSATED: 'COMPENSATED',
-  TIMEOUT: 'TIMEOUT',
+  NOT_STARTED: "NOT_STARTED",
+  RUNNING: "RUNNING",
+  COMPLETED: "COMPLETED",
+  FAILED: "FAILED",
+  CANCELLED: "CANCELLED",
+  COMPENSATING: "COMPENSATING",
+  COMPENSATED: "COMPENSATED",
+  TIMEOUT: "TIMEOUT",
 } as const;
 
 // ==================== 元数据键常量 ====================
@@ -128,25 +128,25 @@ export const SAGA_STATUSES = {
  */
 export const METADATA_KEYS = {
   // 领域层元数据键
-  DOMAIN_EVENT: Symbol('domainEvent'),
-  AGGREGATE: Symbol('aggregate'),
+  DOMAIN_EVENT: Symbol("domainEvent"),
+  AGGREGATE: Symbol("aggregate"),
 
   // 应用层元数据键
-  USE_CASE: Symbol('useCase'),
-  COMMAND_HANDLER: Symbol('commandHandler'),
-  QUERY_HANDLER: Symbol('queryHandler'),
-  EVENT_PROJECTOR: Symbol('eventProjector'),
-  COMMAND: Symbol('command'),
-  QUERY: Symbol('query'),
+  USE_CASE: Symbol("useCase"),
+  COMMAND_HANDLER: Symbol("commandHandler"),
+  QUERY_HANDLER: Symbol("queryHandler"),
+  EVENT_PROJECTOR: Symbol("eventProjector"),
+  COMMAND: Symbol("command"),
+  QUERY: Symbol("query"),
 
   // 基础设施层元数据键
-  COMMAND_ENDPOINT: Symbol('commandEndpoint'),
-  QUERY_ENDPOINT: Symbol('queryEndpoint'),
-  MAPPER: Symbol('mapper'),
-  PERFORMANCE_MONITOR: Symbol('performanceMonitor'),
-  REQUIRE_PERMISSIONS: Symbol('requirePermissions'),
-  CACHEABLE: Symbol('cacheable'),
-  AUDIT_LOG: Symbol('auditLog'),
+  COMMAND_ENDPOINT: Symbol("commandEndpoint"),
+  QUERY_ENDPOINT: Symbol("queryEndpoint"),
+  MAPPER: Symbol("mapper"),
+  PERFORMANCE_MONITOR: Symbol("performanceMonitor"),
+  REQUIRE_PERMISSIONS: Symbol("requirePermissions"),
+  CACHEABLE: Symbol("cacheable"),
+  AUDIT_LOG: Symbol("auditLog"),
 } as const;
 
 // ==================== 模块常量 ====================
@@ -155,15 +155,15 @@ export const METADATA_KEYS = {
  * Fastify模块常量
  */
 export const FASTIFY_CONSTANTS = {
-  MODULE_OPTIONS: 'FASTIFY_MODULE_OPTIONS',
-  ADAPTER: 'FASTIFY_ADAPTER',
+  MODULE_OPTIONS: "FASTIFY_MODULE_OPTIONS",
+  ADAPTER: "FASTIFY_ADAPTER",
 } as const;
 
 /**
  * 性能监控常量
  */
 export const PERFORMANCE_CONSTANTS = {
-  METADATA_KEY: 'performance_monitor_metadata',
+  METADATA_KEY: "performance_monitor_metadata",
 } as const;
 
 // ==================== 环境常量 ====================
@@ -172,9 +172,9 @@ export const PERFORMANCE_CONSTANTS = {
  * 环境相关常量
  */
 export const ENVIRONMENT = {
-  DEVELOPMENT: 'development',
-  PRODUCTION: 'production',
-  TEST: 'test',
+  DEVELOPMENT: "development",
+  PRODUCTION: "production",
+  TEST: "test",
 } as const;
 
 /**
@@ -222,7 +222,7 @@ export const CACHE_CONSTANTS = {
  * 日志相关常量
  */
 export const LOG_CONSTANTS = {
-  DEFAULT_LEVEL: 'info',
+  DEFAULT_LEVEL: "info",
   MAX_LOG_SIZE: 10 * 1024 * 1024, // 10MB
   MAX_LOG_FILES: 5,
 } as const;
@@ -257,10 +257,10 @@ export type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
  * 检查是否为有效的实体操作
  */
 export function isValidEntityOperation(
-  operation: string
+  operation: string,
 ): operation is EntityOperation {
   return Object.values(ENTITY_OPERATIONS).includes(
-    operation as EntityOperation
+    operation as EntityOperation,
   );
 }
 

@@ -6,11 +6,11 @@
  * @since 1.0.0
  */
 
-import { CacheManager } from '../../lib/cache/cache.manager';
-import { CacheOptions, CacheStrategy } from '../../lib/types/cache.types';
-import { createTestConfig, wait } from '../test-utils';
+import { CacheManager } from "../../lib/cache/cache.manager";
+import { CacheOptions, CacheStrategy } from "../../lib/types/cache.types";
+import { createTestConfig, wait } from "../test-utils";
 
-describe('CacheManager', () => {
+describe("CacheManager", () => {
   let cacheManager: CacheManager;
   let options: CacheOptions;
 
@@ -28,10 +28,10 @@ describe('CacheManager', () => {
     cacheManager.destroy();
   });
 
-  describe('基本功能', () => {
-    it('应该设置和获取缓存值', async () => {
+  describe("基本功能", () => {
+    it("应该设置和获取缓存值", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       const result = await cacheManager.get(key);
@@ -40,14 +40,14 @@ describe('CacheManager', () => {
       expect(result).toEqual(config);
     });
 
-    it('应该返回 null 当键不存在时', async () => {
-      const result = await cacheManager.get('nonexistent-key');
+    it("应该返回 null 当键不存在时", async () => {
+      const result = await cacheManager.get("nonexistent-key");
       expect(result).toBeNull();
     });
 
-    it('应该检查缓存是否存在', async () => {
+    it("应该检查缓存是否存在", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       expect(await cacheManager.has(key)).toBe(false);
 
@@ -55,9 +55,9 @@ describe('CacheManager', () => {
       expect(await cacheManager.has(key)).toBe(true);
     });
 
-    it('应该删除缓存值', async () => {
+    it("应该删除缓存值", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       expect(await cacheManager.has(key)).toBe(true);
@@ -67,27 +67,27 @@ describe('CacheManager', () => {
       expect(await cacheManager.has(key)).toBe(false);
     });
 
-    it('应该清空所有缓存', async () => {
+    it("应该清空所有缓存", async () => {
       const config1 = createTestConfig();
-      const config2 = { ...createTestConfig(), name: 'Test App 2' };
+      const config2 = { ...createTestConfig(), name: "Test App 2" };
 
-      await cacheManager.set('key1', config1);
-      await cacheManager.set('key2', config2);
+      await cacheManager.set("key1", config1);
+      await cacheManager.set("key2", config2);
 
-      expect(await cacheManager.has('key1')).toBe(true);
-      expect(await cacheManager.has('key2')).toBe(true);
+      expect(await cacheManager.has("key1")).toBe(true);
+      expect(await cacheManager.has("key2")).toBe(true);
 
       await cacheManager.clear();
 
-      expect(await cacheManager.has('key1')).toBe(false);
-      expect(await cacheManager.has('key2')).toBe(false);
+      expect(await cacheManager.has("key1")).toBe(false);
+      expect(await cacheManager.has("key2")).toBe(false);
     });
   });
 
-  describe('缓存键生成', () => {
-    it('应该使用默认键前缀', async () => {
+  describe("缓存键生成", () => {
+    it("应该使用默认键前缀", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       const result = await cacheManager.get(key);
@@ -96,14 +96,14 @@ describe('CacheManager', () => {
       expect(result).toEqual(config);
     });
 
-    it('应该使用自定义键前缀', async () => {
+    it("应该使用自定义键前缀", async () => {
       const customManager = new CacheManager({
         ...options,
-        keyPrefix: 'custom',
+        keyPrefix: "custom",
       });
 
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await customManager.set(key, config);
       const result = await customManager.get(key);
@@ -114,14 +114,14 @@ describe('CacheManager', () => {
       customManager.destroy();
     });
 
-    it('应该使用自定义键生成器', async () => {
+    it("应该使用自定义键生成器", async () => {
       const customManager = new CacheManager({
         ...options,
         keyGenerator: (key: string) => `custom:${key}:${Date.now()}`,
       });
 
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await customManager.set(key, config);
       const result = await customManager.get(key);
@@ -133,10 +133,10 @@ describe('CacheManager', () => {
     });
   });
 
-  describe('TTL 处理', () => {
-    it('应该使用默认 TTL', async () => {
+  describe("TTL 处理", () => {
+    it("应该使用默认 TTL", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       expect(await cacheManager.get(key)).toEqual(config);
@@ -147,9 +147,9 @@ describe('CacheManager', () => {
       expect(result).toBeNull();
     });
 
-    it('应该使用自定义 TTL', async () => {
+    it("应该使用自定义 TTL", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config, 2000); // 2 秒 TTL
       expect(await cacheManager.get(key)).toEqual(config);
@@ -163,12 +163,12 @@ describe('CacheManager', () => {
     });
   });
 
-  describe('缓存禁用', () => {
-    it('应该在禁用时返回 null', async () => {
+  describe("缓存禁用", () => {
+    it("应该在禁用时返回 null", async () => {
       cacheManager.disable();
 
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       const result = await cacheManager.get(key);
@@ -176,20 +176,20 @@ describe('CacheManager', () => {
       expect(result).toBeNull();
     });
 
-    it('应该在禁用时忽略设置操作', async () => {
+    it("应该在禁用时忽略设置操作", async () => {
       cacheManager.disable();
 
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await expect(cacheManager.set(key, config)).resolves.not.toThrow();
     });
 
-    it('应该支持重新启用', async () => {
+    it("应该支持重新启用", async () => {
       cacheManager.disable();
 
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       expect(await cacheManager.get(key)).toBeNull();
@@ -200,10 +200,10 @@ describe('CacheManager', () => {
     });
   });
 
-  describe('统计信息', () => {
-    it('应该提供缓存统计信息', async () => {
+  describe("统计信息", () => {
+    it("应该提供缓存统计信息", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       // 初始统计
       let stats = await cacheManager.getStats();
@@ -225,9 +225,9 @@ describe('CacheManager', () => {
       expect(stats.hitRate).toBe(1);
     });
 
-    it('应该跟踪未命中', async () => {
+    it("应该跟踪未命中", async () => {
       // 获取不存在的缓存（未命中）
-      await cacheManager.get('nonexistent-key');
+      await cacheManager.get("nonexistent-key");
 
       const stats = await cacheManager.getStats();
       expect(stats.misses).toBe(1);
@@ -236,44 +236,44 @@ describe('CacheManager', () => {
     });
   });
 
-  describe('事件系统', () => {
-    it('应该代理缓存事件', async () => {
+  describe("事件系统", () => {
+    it("应该代理缓存事件", async () => {
       const events: any[] = [];
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
-      cacheManager.on('set', (event) => events.push(event));
-      cacheManager.on('hit', (event) => events.push(event));
+      cacheManager.on("set", (event) => events.push(event));
+      cacheManager.on("hit", (event) => events.push(event));
 
       await cacheManager.set(key, config);
       await cacheManager.get(key);
 
       expect(events).toHaveLength(2);
-      expect(events[0].type).toBe('set');
-      expect(events[1].type).toBe('hit');
+      expect(events[0].type).toBe("set");
+      expect(events[1].type).toBe("hit");
     });
 
-    it('应该支持移除事件监听器', async () => {
+    it("应该支持移除事件监听器", async () => {
       const events: any[] = [];
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       const listener = (event: any) => events.push(event);
-      cacheManager.on('set', listener);
+      cacheManager.on("set", listener);
 
       await cacheManager.set(key, config);
       expect(events).toHaveLength(1);
 
-      cacheManager.off('set', listener);
-      await cacheManager.set('key2', config);
+      cacheManager.off("set", listener);
+      await cacheManager.set("key2", config);
       expect(events).toHaveLength(1); // 不应该增加
     });
   });
 
-  describe('配置更新', () => {
-    it('应该支持更新缓存选项', async () => {
+  describe("配置更新", () => {
+    it("应该支持更新缓存选项", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       expect(await cacheManager.get(key)).toEqual(config);
@@ -286,9 +286,9 @@ describe('CacheManager', () => {
       expect(result).toBeNull();
     });
 
-    it('应该支持更新缓存策略', async () => {
+    it("应该支持更新缓存策略", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       expect(await cacheManager.get(key)).toEqual(config);
@@ -296,14 +296,14 @@ describe('CacheManager', () => {
       // 更新策略为文件缓存
       await cacheManager.updateOptions({
         strategy: CacheStrategy.FILE,
-        cacheDir: './test-cache',
+        cacheDir: "./test-cache",
       });
 
       // 应该仍然能获取到缓存
       expect(await cacheManager.get(key)).toEqual(config);
     });
 
-    it('应该获取当前选项', () => {
+    it("应该获取当前选项", () => {
       const currentOptions = cacheManager.getOptions();
 
       expect(currentOptions.strategy).toBe(CacheStrategy.MEMORY);
@@ -313,32 +313,32 @@ describe('CacheManager', () => {
     });
   });
 
-  describe('错误处理', () => {
-    it('应该处理提供者错误', async () => {
+  describe("错误处理", () => {
+    it("应该处理提供者错误", async () => {
       const events: any[] = [];
-      cacheManager.on('miss', (event) => events.push(event));
+      cacheManager.on("miss", (event) => events.push(event));
 
       // 模拟提供者错误
       const originalGet = cacheManager.get;
       cacheManager.get = jest
         .fn()
-        .mockRejectedValue(new Error('Provider error'));
+        .mockRejectedValue(new Error("Provider error"));
 
-      const result = await cacheManager.get('key');
+      const result = await cacheManager.get("key");
 
       expect(result).toBeNull();
       expect(events).toHaveLength(1);
-      expect(events[0].type).toBe('miss');
+      expect(events[0].type).toBe("miss");
 
       // 恢复原始方法
       cacheManager.get = originalGet;
     });
 
-    it('应该处理禁用状态下的错误', async () => {
+    it("应该处理禁用状态下的错误", async () => {
       cacheManager.disable();
 
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       // 在禁用状态下，操作应该不会抛出错误
       await expect(cacheManager.set(key, config)).resolves.not.toThrow();
@@ -348,8 +348,8 @@ describe('CacheManager', () => {
     });
   });
 
-  describe('性能测试', () => {
-    it('应该高效处理大量操作', async () => {
+  describe("性能测试", () => {
+    it("应该高效处理大量操作", async () => {
       const config = createTestConfig();
       const startTime = Date.now();
 
@@ -374,7 +374,7 @@ describe('CacheManager', () => {
       expect(stats.hitRate).toBe(1);
     });
 
-    it('应该高效处理并发操作', async () => {
+    it("应该高效处理并发操作", async () => {
       const config = createTestConfig();
       const operations = [];
 
@@ -401,10 +401,10 @@ describe('CacheManager', () => {
     });
   });
 
-  describe('资源清理', () => {
-    it('应该正确清理资源', async () => {
+  describe("资源清理", () => {
+    it("应该正确清理资源", async () => {
       const config = createTestConfig();
-      const key = 'test-config';
+      const key = "test-config";
 
       await cacheManager.set(key, config);
       expect(await cacheManager.has(key)).toBe(true);
@@ -415,7 +415,7 @@ describe('CacheManager', () => {
       expect(await cacheManager.get(key)).toBeNull();
     });
 
-    it('应该处理重复销毁', () => {
+    it("应该处理重复销毁", () => {
       expect(() => cacheManager.destroy()).not.toThrow();
       expect(() => cacheManager.destroy()).not.toThrow();
     });

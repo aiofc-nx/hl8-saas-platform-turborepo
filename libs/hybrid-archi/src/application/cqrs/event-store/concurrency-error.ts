@@ -53,7 +53,7 @@ export class ConcurrencyError extends Error {
     public readonly aggregateId?: string,
   ) {
     super(message);
-    this.name = 'ConcurrencyError';
+    this.name = "ConcurrencyError";
 
     // 确保错误堆栈跟踪正确
     if (Error.captureStackTrace) {

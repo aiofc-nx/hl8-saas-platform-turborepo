@@ -6,9 +6,9 @@
  * @since 1.0.0
  */
 
-import { ConfigLogger } from '../services/config-logger.service.js';
-import { ErrorContext } from '../types/index.js';
-import { ConfigError, ConfigErrorType } from './config-error.js';
+import { ConfigLogger } from "../services/config-logger.service.js";
+import { ErrorContext } from "../types/index.js";
+import { ConfigError, ConfigErrorType } from "./config-error.js";
 
 /**
  * 错误处理选项接口
@@ -262,7 +262,7 @@ export class ErrorHandler {
     return new ConfigError(
       ConfigErrorType.PARSE_ERROR,
       `Failed to parse configuration content`,
-      { content: content.substring(0, 100) + '...', ...context },
+      { content: content.substring(0, 100) + "...", ...context },
       error,
     );
   }
@@ -328,7 +328,7 @@ export class ErrorHandler {
 
         if (opts.logErrors) {
           const logger = ConfigLogger.getInstance();
-          logger.error('配置错误', {
+          logger.error("配置错误", {
             type: configError.type,
             code: configError.code,
             message: configError.message,
@@ -343,7 +343,7 @@ export class ErrorHandler {
 
     return new ConfigError(
       ConfigErrorType.UNKNOWN_ERROR,
-      'Unexpected error in safe execution',
+      "Unexpected error in safe execution",
       context,
     );
   }

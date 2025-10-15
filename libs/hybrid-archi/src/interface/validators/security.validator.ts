@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const SECURITY_VALIDATOR = 'Security Validator';
+export const SECURITY_VALIDATOR = "Security Validator";

@@ -8,18 +8,18 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@hl8/database';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { EventStoreAdapter, IEventStoreConfig } from './event-store.adapter';
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { EventStoreAdapter, IEventStoreConfig } from "./event-store.adapter.js";
 
 /**
  * 健康检查结果接口
  */
 interface IHealthCheckResult {
   healthy: boolean;
-  status: 'healthy' | 'unhealthy' | 'error';
+  status: "healthy" | "unhealthy" | "error";
   storeName: string;
   storeType?: string;
   createdAt?: Date;
@@ -59,7 +59,7 @@ export class EventStoreFactory {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger
+    private readonly logger: FastifyLoggerService,
   ) {}
 
   /**
@@ -73,7 +73,7 @@ export class EventStoreFactory {
   createStore(
     storeName: string,
     storeType: string,
-    config: Partial<IEventStoreConfig> = {}
+    config: Partial<IEventStoreConfig> = {},
   ): EventStoreAdapter {
     // 检查存储是否已存在
     if (this.stores.has(storeName)) {
@@ -90,7 +90,7 @@ export class EventStoreFactory {
       this.databaseService,
       this.cacheService,
       this.logger,
-      config
+      config,
     );
 
     // 注册存储
@@ -103,7 +103,7 @@ export class EventStoreFactory {
         enableCompression: config.enableCompression ?? false,
         enableEncryption: config.enableEncryption ?? false,
         enableSharding: config.enableSharding ?? false,
-        shardKey: config.shardKey ?? 'aggregateId',
+        shardKey: config.shardKey ?? "aggregateId",
         maxEvents: config.maxEvents ?? 10000,
         retentionDays: config.retentionDays ?? 365,
       },
@@ -115,10 +115,7 @@ export class EventStoreFactory {
 
     this.stores.set(storeName, registration);
 
-    this.logger.debug(`创建事件存储: ${storeName}`, {
-      storeType,
-      config: registration.config,
-    });
+    this.logger.debug(`创建事件存储: ${storeName}`);
 
     return store;
   }
@@ -150,7 +147,7 @@ export class EventStoreFactory {
   getOrCreateStore(
     storeName: string,
     storeType: string,
-    config: Partial<IEventStoreConfig> = {}
+    config: Partial<IEventStoreConfig> = {},
   ): EventStoreAdapter {
     const existingStore = this.getStore(storeName);
     if (existingStore) {
@@ -215,7 +212,7 @@ export class EventStoreFactory {
    */
   updateStoreConfiguration(
     storeName: string,
-    config: Partial<IEventStoreConfig>
+    config: Partial<IEventStoreConfig>,
   ): void {
     const registration = this.stores.get(storeName);
     if (!registration) {
@@ -224,9 +221,7 @@ export class EventStoreFactory {
 
     Object.assign(registration.config, config);
 
-    this.logger.debug(`更新事件存储配置: ${storeName}`, {
-      config: registration.config,
-    });
+    this.logger.debug(`更新事件存储配置: ${storeName}`);
   }
 
   /**
@@ -236,7 +231,7 @@ export class EventStoreFactory {
    * @returns 清理的存储数量
    */
   async cleanupExpiredStores(
-    maxAge: number = 24 * 60 * 60 * 1000
+    maxAge: number = 24 * 60 * 60 * 1000,
   ): Promise<number> {
     const now = new Date();
     const expiredStores: string[] = [];
@@ -252,9 +247,7 @@ export class EventStoreFactory {
       await this.destroyStore(storeName);
     }
 
-    this.logger.debug(`清理过期事件存储: ${expiredStores.length}`, {
-      expiredStores,
-    });
+    this.logger.debug(`清理过期事件存储: ${expiredStores.length}`);
 
     return expiredStores.length;
   }
@@ -326,20 +319,20 @@ export class EventStoreFactory {
         if (!registration.instance) {
           results[storeName] = {
             healthy: false,
-            status: 'error',
+            status: "error",
             storeName,
-            error: '存储实例不存在',
+            error: "存储实例不存在",
           };
           continue;
         }
 
         const isHealthy = await this.checkStoreHealth(
           storeName,
-          registration.instance
+          registration.instance,
         );
         results[storeName] = {
           healthy: isHealthy,
-          status: isHealthy ? 'healthy' : 'unhealthy',
+          status: isHealthy ? "healthy" : "unhealthy",
           storeName,
           storeType: registration.storeType,
           createdAt: registration.createdAt,
@@ -348,7 +341,7 @@ export class EventStoreFactory {
       } catch (error) {
         results[storeName] = {
           healthy: false,
-          status: 'error',
+          status: "error",
           error: error instanceof Error ? error.message : String(error),
           storeName,
         };
@@ -365,7 +358,7 @@ export class EventStoreFactory {
    */
   private async checkStoreHealth(
     storeName: string,
-    instance: EventStoreAdapter
+    instance: EventStoreAdapter,
   ): Promise<boolean> {
     try {
       // 检查存储是否可用
@@ -385,10 +378,10 @@ export class EventStoreFactory {
     const cacheServiceWithPattern = this.cacheService as CacheService & {
       deletePattern?: (pattern: string) => Promise<void>;
     };
-    if (typeof cacheServiceWithPattern.deletePattern === 'function') {
+    if (typeof cacheServiceWithPattern.deletePattern === "function") {
       await cacheServiceWithPattern.deletePattern(pattern);
     } else {
-      console.warn('CacheService不支持deletePattern方法');
+      console.warn("CacheService不支持deletePattern方法");
     }
   }
 }

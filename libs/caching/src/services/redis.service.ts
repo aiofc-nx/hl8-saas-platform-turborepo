@@ -27,12 +27,12 @@ import {
   Logger,
   OnModuleDestroy,
   OnModuleInit,
-} from '@nestjs/common';
-import { Redis } from 'ioredis';
-import { RedisConnectionException } from '../exceptions/redis-connection.exception.js';
-import type { RedisOptions } from '../types/redis-options.interface.js';
+} from "@nestjs/common";
+import { Redis } from "ioredis";
+import { RedisConnectionException } from "../exceptions/redis-connection.exception.js";
+import type { RedisOptions } from "../types/redis-options.interface.js";
 
-export const REDIS_OPTIONS = 'REDIS_OPTIONS';
+export const REDIS_OPTIONS = "REDIS_OPTIONS";
 
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
@@ -70,7 +70,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    */
   async connect(): Promise<void> {
     if (this.client) {
-      this.logger.warn('Redis 已连接，跳过重复连接');
+      this.logger.warn("Redis 已连接，跳过重复连接");
       return;
     }
 
@@ -86,24 +86,24 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       });
 
       // 监听连接事件
-      this.client.on('connect', () => {
+      this.client.on("connect", () => {
         this.isConnected = true;
-        this.logger.log('Redis 连接成功');
+        this.logger.log("Redis 连接成功");
       });
 
-      this.client.on('error', (error: Error) => {
+      this.client.on("error", (error: Error) => {
         this.logger.error(`Redis 错误: ${error.message}`, error.stack);
       });
 
-      this.client.on('close', () => {
+      this.client.on("close", () => {
         this.isConnected = false;
-        this.logger.warn('Redis 连接已关闭');
+        this.logger.warn("Redis 连接已关闭");
       });
 
       // 等待连接就绪
       await this.client.ping();
     } catch (error) {
-      this.logger.error('Redis 连接失败', undefined, {
+      this.logger.error("Redis 连接失败", undefined, {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
       });
@@ -123,9 +123,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       await this.client.quit();
       this.client = null;
       this.isConnected = false;
-      this.logger.log('Redis 连接已断开');
+      this.logger.log("Redis 连接已断开");
     } catch (error) {
-      this.logger.error('Redis 断开连接失败', undefined, {
+      this.logger.error("Redis 断开连接失败", undefined, {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
       });
@@ -146,12 +146,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    */
   getClient(): Redis {
     if (!this.client) {
-      this.logger.error('Redis 未连接，尝试获取客户端', undefined, {
+      this.logger.error("Redis 未连接，尝试获取客户端", undefined, {
         connectionState: this.isConnected,
         clientExists: !!this.client,
       });
       throw new RedisConnectionException(
-        'Redis 未连接，请确保模块已正确初始化',
+        "Redis 未连接，请确保模块已正确初始化",
       );
     }
 
@@ -170,9 +170,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
     try {
       const result = await this.client.ping();
-      return result === 'PONG';
+      return result === "PONG";
     } catch (error) {
-      this.logger.error('Redis 健康检查失败', undefined, {
+      this.logger.error("Redis 健康检查失败", undefined, {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
       });
@@ -200,7 +200,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    */
   private defaultRetryStrategy(times: number): number | null {
     if (times > 10) {
-      this.logger.error('Redis 重试次数超过限制，停止重试');
+      this.logger.error("Redis 重试次数超过限制，停止重试");
       return null;
     }
 

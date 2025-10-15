@@ -128,14 +128,14 @@ libs/caching 的业务数据缓存
 ```typescript
 // libs/nestjs-fastify/src/config/logging.config.ts
 export class LoggingConfig {
-  level: string = 'info';
+  level: string = "info";
   prettyPrint: boolean = false;
   // ...
 }
 
 // libs/nestjs-fastify/src/config/fastify-modules.config.ts
 export class MetricsModuleConfig {
-  path: string = '/metrics';
+  path: string = "/metrics";
   includeTenantMetrics: boolean = true;
   // ...
 }
@@ -203,22 +203,22 @@ export class CachingModuleConfig {
 
 ```typescript
 // 1. 导入配置框架
-import { Type } from 'class-transformer';
-import { ValidateNested } from 'class-validator';
+import { Type } from "class-transformer";
+import { ValidateNested } from "class-validator";
 
 // 2. 导入业务库的配置类（不重新定义！）
 import {
   LoggingConfig,
   MetricsModuleConfig,
   RateLimitModuleConfig,
-} from '@hl8/nestjs-fastify';
+} from "@hl8/nestjs-fastify/index.js";
 
-import { CachingModuleConfig } from '@hl8/caching';
+import { CachingModuleConfig } from "@hl8/caching";
 
 // 3. 定义应用配置类
 export class AppConfig {
   // 应用基础配置
-  NODE_ENV: string = 'development';
+  NODE_ENV: string = "development";
   PORT: number = 3000;
 
   // 组合使用库级配置（导入，不重新定义）
@@ -239,7 +239,7 @@ export class AppConfig {
 
   // 辅助方法
   get isProduction(): boolean {
-    return this.NODE_ENV === 'production';
+    return this.NODE_ENV === "production";
   }
 }
 ```
@@ -346,7 +346,7 @@ export class CachingModuleConfig {
 
 // ✅ 正确：在应用中导入使用
 // apps/fastify-api/src/config/app.config.ts
-import { CachingModuleConfig } from '@hl8/caching';
+import { CachingModuleConfig } from "@hl8/caching";
 
 // ❌ 错误：在应用中重新定义
 // apps/fastify-api/src/config/app.config.ts

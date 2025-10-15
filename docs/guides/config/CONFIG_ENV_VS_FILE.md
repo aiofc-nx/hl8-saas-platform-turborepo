@@ -63,7 +63,7 @@ delete process.env.DATABASE_PASSWORD;
 
 ```typescript
 // ⚠️ 文件可以被修改
-fs.writeFileSync('config/app.yml', 'malicious: true');
+fs.writeFileSync("config/app.yml", "malicious: true");
 
 // ✅ 但配置实例同样是安全的
 export class AppConfig {
@@ -314,7 +314,7 @@ if (config.isProduction) {
 
 // 6. 日志中隐藏敏感信息
 const safeConfig = getSafeConfigCopy(config);
-logger.info('Config loaded', safeConfig);
+logger.info("Config loaded", safeConfig);
 ```
 
 ### 高级防护（生产环境）
@@ -425,8 +425,8 @@ API__SECRET_KEY = xxxx;
 TypedConfigModule.forRoot({
   schema: AppConfig,
   load: [
-    fileLoader({ path: './config/app.yml' }),
-    dotenvLoader({ envFilePath: ['.env.local', '.env'] }),
+    fileLoader({ path: "./config/app.yml" }),
+    dotenvLoader({ envFilePath: [".env.local", ".env"] }),
   ],
 });
 
@@ -504,10 +504,10 @@ TypedConfigModule.forRoot({
   schema: AppConfig,
   load: [
     // 基础配置用文件（可版本控制）
-    fileLoader({ path: './config/app.yml' }),
+    fileLoader({ path: "./config/app.yml" }),
 
     // 敏感配置用环境变量（不提交）
-    dotenvLoader({ envFilePath: ['.env.local'] }),
+    dotenvLoader({ envFilePath: [".env.local"] }),
   ],
 });
 ```

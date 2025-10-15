@@ -8,17 +8,17 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/hybrid-archi";
 import {
   DomainServiceAdapter,
   IDomainServiceConfig,
-} from './domain-service.adapter';
+} from "./domain-service.adapter.js";
 import {
   DomainServiceFactory,
   IDomainServiceRegistration,
-} from './domain-service.factory';
+} from "./domain-service.factory.js";
 
 /**
  * 领域服务管理器配置
@@ -48,10 +48,10 @@ export class DomainServiceManager {
   private healthCheckTimer?: NodeJS.Timeout;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly serviceFactory: DomainServiceFactory,
-    config: Partial<IDomainServiceManagerConfig> = {}
+    config: Partial<IDomainServiceManagerConfig> = {},
   ) {
     this.config = {
       enableAutoCleanup: config.enableAutoCleanup ?? true,
@@ -75,12 +75,9 @@ export class DomainServiceManager {
   createService(
     serviceName: string,
     serviceType: string,
-    config: Partial<IDomainServiceConfig> = {}
+    config: Partial<IDomainServiceConfig> = {},
   ): DomainServiceAdapter {
-    this.logger.debug(`创建领域服务: ${serviceName}`, {
-      serviceType,
-      config,
-    });
+    this.logger.debug(`创建领域服务: ${serviceName}`);
 
     return this.serviceFactory.createService(serviceName, serviceType, config);
   }
@@ -106,12 +103,12 @@ export class DomainServiceManager {
   getOrCreateService(
     serviceName: string,
     serviceType: string,
-    config: Partial<IDomainServiceConfig> = {}
+    config: Partial<IDomainServiceConfig> = {},
   ): DomainServiceAdapter {
     return this.serviceFactory.getOrCreateService(
       serviceName,
       serviceType,
-      config
+      config,
     );
   }
 
@@ -141,7 +138,7 @@ export class DomainServiceManager {
    * @returns 服务注册信息
    */
   getServiceRegistration(
-    serviceName: string
+    serviceName: string,
   ): IDomainServiceRegistration | null {
     return this.serviceFactory.getServiceRegistration(serviceName);
   }
@@ -154,9 +151,9 @@ export class DomainServiceManager {
    */
   updateServiceConfiguration(
     serviceName: string,
-    config: Partial<IDomainServiceConfig>
+    config: Partial<IDomainServiceConfig>,
   ): void {
-    this.logger.debug(`更新领域服务配置: ${serviceName}`, { config });
+    this.logger.debug(`更新领域服务配置: ${serviceName}`);
     this.serviceFactory.updateServiceConfiguration(serviceName, config);
   }
 
@@ -182,7 +179,7 @@ export class DomainServiceManager {
    * @returns 健康检查结果
    */
   async healthCheckAllServices(): Promise<Record<string, any>> {
-    this.logger.debug('开始健康检查所有领域服务');
+    this.logger.debug("开始健康检查所有领域服务");
     return await this.serviceFactory.healthCheckAllServices();
   }
 
@@ -192,9 +189,9 @@ export class DomainServiceManager {
    * @returns 清理的服务数量
    */
   async cleanupExpiredServices(): Promise<number> {
-    this.logger.debug('开始清理过期领域服务');
+    this.logger.debug("开始清理过期领域服务");
     return await this.serviceFactory.cleanupExpiredServices(
-      this.config.maxServiceAge
+      this.config.maxServiceAge,
     );
   }
 
@@ -224,7 +221,7 @@ export class DomainServiceManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动领域服务管理器');
+    this.logger.log("启动领域服务管理器");
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -241,7 +238,7 @@ export class DomainServiceManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止领域服务管理器');
+    this.logger.log("停止领域服务管理器");
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -260,7 +257,7 @@ export class DomainServiceManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁领域服务管理器');
+    this.logger.log("销毁领域服务管理器");
 
     // 停止管理器
     this.stop();
@@ -278,9 +275,7 @@ export class DomainServiceManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化领域服务管理器', {
-      config: this.config,
-    });
+    this.logger.debug("初始化领域服务管理器");
   }
 
   /**
@@ -294,7 +289,7 @@ export class DomainServiceManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个服务`);
         }
       } catch (error) {
-        this.logger.error('自动清理失败', error);
+        this.logger.error("自动清理失败", error);
       }
     }, this.config.cleanupInterval);
   }
@@ -307,16 +302,14 @@ export class DomainServiceManager {
       try {
         const healthResults = await this.healthCheckAllServices();
         const unhealthyServices = Object.entries(healthResults).filter(
-          ([, result]) => !result.healthy
+          ([, result]) => !result.healthy,
         );
 
         if (unhealthyServices.length > 0) {
-          this.logger.warn('发现不健康的领域服务', {
-            unhealthyServices: unhealthyServices.map(([name]) => name),
-          });
+          this.logger.warn("发现不健康的领域服务");
         }
       } catch (error) {
-        this.logger.error('健康检查失败', error);
+        this.logger.error("健康检查失败", error);
       }
     }, this.config.healthCheckInterval);
   }

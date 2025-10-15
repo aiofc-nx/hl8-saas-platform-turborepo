@@ -12,7 +12,7 @@ export class UserResponseDto {
   static fromAggregate(aggregate: any): UserResponseDto {
     const dto = new UserResponseDto();
     const user = aggregate.getUser();
-    
+
     dto.id = user.id.toString();
     dto.username = user.getUsername().value;
     dto.email = user.getEmail().value;
@@ -22,8 +22,7 @@ export class UserResponseDto {
     dto.phoneVerified = user.isPhoneVerified();
     dto.lastLoginAt = user.getLastLoginAt()?.toISOString();
     dto.createdAt = user.createdAt.toISOString();
-    
+
     return dto;
   }
 }
-

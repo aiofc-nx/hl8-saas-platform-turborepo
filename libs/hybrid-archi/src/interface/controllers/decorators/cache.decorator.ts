@@ -51,21 +51,21 @@
  * @since 1.0.0
  */
 
-import { SetMetadata, applyDecorators } from '@nestjs/common';
+import { SetMetadata, applyDecorators } from "@nestjs/common";
 
 /**
  * 缓存控制元数据键
  */
-export const CACHE_TTL_KEY = 'cache_ttl';
-export const CACHE_KEY_KEY = 'cache_key';
-export const CACHE_STRATEGY_KEY = 'cache_strategy';
-export const CACHE_INVALIDATION_KEY = 'cache_invalidation';
-export const CACHE_CONDITION_KEY = 'cache_condition';
+export const CACHE_TTL_KEY = "cache_ttl";
+export const CACHE_KEY_KEY = "cache_key";
+export const CACHE_STRATEGY_KEY = "cache_strategy";
+export const CACHE_INVALIDATION_KEY = "cache_invalidation";
+export const CACHE_CONDITION_KEY = "cache_condition";
 
 /**
  * 缓存策略类型
  */
-export type CacheStrategy = 'memory' | 'redis' | 'http' | 'hybrid';
+export type CacheStrategy = "memory" | "redis" | "http" | "hybrid";
 
 /**
  * 缓存条件接口
@@ -123,8 +123,8 @@ export function CacheStrategy(strategy: CacheStrategy): MethodDecorator {
  */
 export function CacheByUser(ttl?: number): MethodDecorator {
   return applyDecorators(
-    SetMetadata('cache_by_user', true),
-    ...(ttl ? [CacheTTL(ttl)] : [])
+    SetMetadata("cache_by_user", true),
+    ...(ttl ? [CacheTTL(ttl)] : []),
   );
 }
 
@@ -138,8 +138,8 @@ export function CacheByUser(ttl?: number): MethodDecorator {
  */
 export function CacheByTenant(ttl?: number): MethodDecorator {
   return applyDecorators(
-    SetMetadata('cache_by_tenant', true),
-    ...(ttl ? [CacheTTL(ttl)] : [])
+    SetMetadata("cache_by_tenant", true),
+    ...(ttl ? [CacheTTL(ttl)] : []),
   );
 }
 
@@ -154,7 +154,7 @@ export function CacheByTenant(ttl?: number): MethodDecorator {
  */
 export function CacheIf(
   condition: (context: unknown) => boolean,
-  ttl: number
+  ttl: number,
 ): MethodDecorator {
   return SetMetadata(CACHE_CONDITION_KEY, { condition, ttl });
 }
@@ -170,7 +170,7 @@ export function CacheIf(
  */
 export function InvalidateCache(
   keys?: string[],
-  pattern?: string
+  pattern?: string,
 ): MethodDecorator {
   return SetMetadata(CACHE_INVALIDATION_KEY, { keys, pattern });
 }
@@ -184,7 +184,7 @@ export function InvalidateCache(
  * @returns 装饰器
  */
 export function CacheWarmup(priority = 0): MethodDecorator {
-  return SetMetadata('cache_warmup', { priority });
+  return SetMetadata("cache_warmup", { priority });
 }
 
 /**
@@ -196,9 +196,9 @@ export function CacheWarmup(priority = 0): MethodDecorator {
  * @returns 装饰器
  */
 export function CacheCompression(
-  algorithm: 'gzip' | 'deflate' | 'brotli' = 'gzip'
+  algorithm: "gzip" | "deflate" | "brotli" = "gzip",
 ): MethodDecorator {
-  return SetMetadata('cache_compression', { algorithm });
+  return SetMetadata("cache_compression", { algorithm });
 }
 
 /**
@@ -211,10 +211,10 @@ export function CacheCompression(
  * @returns 装饰器
  */
 export function CacheEncryption(
-  algorithm: 'aes-256-gcm' | 'aes-256-cbc' = 'aes-256-gcm',
-  key?: string
+  algorithm: "aes-256-gcm" | "aes-256-cbc" = "aes-256-gcm",
+  key?: string,
 ): MethodDecorator {
-  return SetMetadata('cache_encryption', { algorithm, key });
+  return SetMetadata("cache_encryption", { algorithm, key });
 }
 
 /**
@@ -226,7 +226,7 @@ export function CacheEncryption(
  * @returns 装饰器
  */
 export function CacheMonitoring(metrics = true): MethodDecorator {
-  return SetMetadata('cache_monitoring', { metrics });
+  return SetMetadata("cache_monitoring", { metrics });
 }
 
 /**
@@ -242,9 +242,9 @@ export function CacheMonitoring(metrics = true): MethodDecorator {
 export function HttpCache(
   maxAge: number,
   etag = true,
-  lastModified = true
+  lastModified = true,
 ): MethodDecorator {
-  return SetMetadata('http_cache', {
+  return SetMetadata("http_cache", {
     maxAge,
     etag,
     lastModified,
@@ -328,8 +328,8 @@ export function CacheControl(config: {
       HttpCache(
         config.httpCache.maxAge,
         config.httpCache.etag,
-        config.httpCache.lastModified
-      )
+        config.httpCache.lastModified,
+      ),
     );
   }
 

@@ -28,8 +28,8 @@
  * ```
  */
 
-import { HealthCheckService, MetricsService } from '@hl8/database/index.js';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify/index.js';
+import { HealthCheckService, MetricsService } from "@hl8/database";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   Body,
   Controller,
@@ -40,11 +40,11 @@ import {
   Param,
   Post,
   Put,
-} from '@nestjs/common';
-import type { CreateUserDto, UpdateUserDto } from '../services/user.service.js';
-import { UserService } from '../services/user.service.js';
+} from "@nestjs/common";
+import type { CreateUserDto, UpdateUserDto } from "../services/user.service.js";
+import { UserService } from "../services/user.service.js";
 
-@Controller('users')
+@Controller("users")
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -81,8 +81,8 @@ export class UserController {
    * @param id - 用户 ID
    * @returns 用户实体
    */
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
     return this.userService.findById(id);
   }
 
@@ -93,8 +93,8 @@ export class UserController {
    * @param dto - 更新数据
    * @returns 更新后的用户
    */
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+  @Put(":id")
+  async update(@Param("id") id: string, @Body() dto: UpdateUserDto) {
     return this.userService.updateUser(id, dto);
   }
 
@@ -104,9 +104,9 @@ export class UserController {
    * @param id - 用户 ID
    * @returns 删除结果
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
+  async remove(@Param("id") id: string) {
     await this.userService.softDelete(id);
   }
 
@@ -116,8 +116,8 @@ export class UserController {
    * @param id - 用户 ID
    * @returns 恢复结果
    */
-  @Post(':id/restore')
-  async restore(@Param('id') id: string) {
+  @Post(":id/restore")
+  async restore(@Param("id") id: string) {
     return this.userService.restore(id);
   }
 
@@ -128,7 +128,7 @@ export class UserController {
    *
    * @returns 健康检查结果
    */
-  @Get('db/health')
+  @Get("db/health")
   async healthCheck() {
     return this.healthCheckService.check();
   }
@@ -140,7 +140,7 @@ export class UserController {
    *
    * @returns 性能指标
    */
-  @Get('db/metrics')
+  @Get("db/metrics")
   async metrics() {
     const poolStats = await this.healthCheckService.getPoolStats();
     const metrics = this.metricsService.getDatabaseMetrics(poolStats);

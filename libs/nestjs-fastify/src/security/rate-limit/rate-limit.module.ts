@@ -56,11 +56,11 @@
  * @module security/rate-limit
  */
 
-import { DynamicModule, Global, Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
-import { RateLimitGuard } from './rate-limit.guard.js';
-import { RateLimitService } from './rate-limit.service.js';
-import type { RateLimitOptions } from './types/rate-limit-options.js';
+import { DynamicModule, Global, Module } from "@nestjs/common";
+import { APP_GUARD } from "@nestjs/core";
+import { RateLimitGuard } from "./rate-limit.guard.js";
+import { RateLimitService } from "./rate-limit.service.js";
+import type { RateLimitOptions } from "./types/rate-limit-options.js";
 
 /**
  * 异步配置选项
@@ -212,12 +212,12 @@ export class RateLimitModule {
   static forRoot(options: RateLimitOptions): DynamicModule {
     // 验证必需参数
     if (!options.max || options.max <= 0) {
-      throw new Error('RateLimitModule.forRoot() 必须指定 max 参数且 > 0');
+      throw new Error("RateLimitModule.forRoot() 必须指定 max 参数且 > 0");
     }
 
     if (!options.timeWindow || options.timeWindow <= 0) {
       throw new Error(
-        'RateLimitModule.forRoot() 必须指定 timeWindow 参数且 > 0',
+        "RateLimitModule.forRoot() 必须指定 timeWindow 参数且 > 0",
       );
     }
 
@@ -227,7 +227,7 @@ export class RateLimitModule {
       providers: [
         // 配置 provider
         {
-          provide: 'RATE_LIMIT_OPTIONS',
+          provide: "RATE_LIMIT_OPTIONS",
           useValue: options,
         },
         // 服务 provider
@@ -308,7 +308,7 @@ export class RateLimitModule {
    */
   static forRootAsync(options: RateLimitModuleAsyncOptions): DynamicModule {
     if (!options.useFactory) {
-      throw new Error('RateLimitModule.forRootAsync() 必须提供 useFactory');
+      throw new Error("RateLimitModule.forRootAsync() 必须提供 useFactory");
     }
 
     return {
@@ -318,7 +318,7 @@ export class RateLimitModule {
       providers: [
         // 异步配置 provider
         {
-          provide: 'RATE_LIMIT_OPTIONS',
+          provide: "RATE_LIMIT_OPTIONS",
           useFactory: options.useFactory || (() => ({})),
           inject: options.inject || [],
         },
@@ -326,7 +326,7 @@ export class RateLimitModule {
         {
           provide: RateLimitService,
           useFactory: (opts: RateLimitOptions) => new RateLimitService(opts),
-          inject: ['RATE_LIMIT_OPTIONS'],
+          inject: ["RATE_LIMIT_OPTIONS"],
         },
         // 全局守卫 provider
         {

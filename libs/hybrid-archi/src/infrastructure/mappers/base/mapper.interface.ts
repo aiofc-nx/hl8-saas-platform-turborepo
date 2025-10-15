@@ -1,3 +1,4 @@
+import { TenantId } from "@hl8/isolation-model";
 /**
  * 映射器接口定义
  *
@@ -41,7 +42,7 @@
  *
  *   toDomain(dbEntity: UserDbEntity): User {
  *     return new User(
- *       EntityId.fromString(dbEntity.id),
+ *       TenantId.create(dbEntity.id),
  *       dbEntity.name,
  *       dbEntity.email,
  *       dbEntity.createdAt,

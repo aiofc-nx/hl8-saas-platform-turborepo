@@ -7,10 +7,10 @@
  */
 
 // 基础基础设施接口
-export * from './base-infrastructure.interface';
+export * from "./base-infrastructure.interface.js";
 
 // 基础基础设施适配器
-export * from './base-infrastructure.adapter';
+export * from "./base-infrastructure.adapter.js";
 
 // 基础设施模块
-export * from './infrastructure.module';
+export * from "./infrastructure.module.js";

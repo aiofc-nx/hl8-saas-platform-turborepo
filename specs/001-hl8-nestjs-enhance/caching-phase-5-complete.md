@@ -110,16 +110,16 @@ console.log(`总操作数: ${metrics.totalOperations}`);
 ```typescript
 // 序列化对象
 const user = {
-  name: 'John',
+  name: "John",
   age: 30,
   createdAt: new Date(),
 };
 
 const serialized = serialize(user);
-await redis.set('user:123', serialized);
+await redis.set("user:123", serialized);
 
 // 反序列化
-const cached = await redis.get('user:123');
+const cached = await redis.get("user:123");
 if (cached) {
   const user = deserialize<User>(cached);
   console.log(user.name);
@@ -161,23 +161,23 @@ console.log(deserialized instanceof RegExp); // true
 
 ```typescript
 // 生成缓存键
-const key = generateKey(['user', 'profile', userId]);
+const key = generateKey(["user", "profile", userId]);
 // 结果: "user:profile:123"
 
 // 自动过滤空值
-const key = generateKey(['user', '', null, 'list']);
+const key = generateKey(["user", "", null, "list"]);
 // 结果: "user:list"
 
 // 清理非法字符
-const clean = sanitizeKey('user name @123');
+const clean = sanitizeKey("user name @123");
 // 结果: "username123"
 
 // 验证键
-isValidKey('user:profile:123'); // true
-isValidKey('user name'); // false
+isValidKey("user:profile:123"); // true
+isValidKey("user name"); // false
 
 // 生成模式
-const pattern = generatePattern('cache', 'user:*');
+const pattern = generatePattern("cache", "user:*");
 // 结果: "cache:user:*"
 ```
 
@@ -247,7 +247,7 @@ getAverageLatency(): number {
 **循环引用处理**：
 
 ```typescript
-const obj: any = { name: 'test' };
+const obj: any = { name: "test" };
 obj.self = obj;
 
 const serialized = serialize(obj);
@@ -274,18 +274,18 @@ restored instanceof Date; // true
 
 ```typescript
 // 输入：复杂的键
-generateKey(['user name', 'profile @123', '', null]);
+generateKey(["user name", "profile @123", "", null]);
 
 // 输出：清理后的键
-('username:profile123');
+("username:profile123");
 ```
 
 **验证规则**：
 
 ```typescript
-isValidKey('user:profile:123'); // ✅ true
-isValidKey('user name'); // ❌ false（包含空格）
-isValidKey('user\nprofile'); // ❌ false（包含换行符）
+isValidKey("user:profile:123"); // ✅ true
+isValidKey("user name"); // ❌ false（包含空格）
+isValidKey("user\nprofile"); // ❌ false（包含换行符）
 ```
 
 ---
@@ -341,19 +341,19 @@ export class CacheService {
 ### 性能监控端点
 
 ```typescript
-@Controller('cache')
+@Controller("cache")
 export class CacheController {
   constructor(private readonly metrics: CacheMetricsService) {}
 
-  @Get('metrics')
+  @Get("metrics")
   getMetrics() {
     return this.metrics.getMetrics();
   }
 
-  @Post('metrics/reset')
+  @Post("metrics/reset")
   resetMetrics() {
     this.metrics.reset();
-    return { message: 'Metrics reset successfully' };
+    return { message: "Metrics reset successfully" };
   }
 }
 ```
@@ -481,11 +481,11 @@ Phase 5: 监控和工具          ~650 行
 ### 场景 1：性能监控面板
 
 ```typescript
-@Controller('admin')
+@Controller("admin")
 export class AdminController {
   constructor(private readonly metrics: CacheMetricsService) {}
 
-  @Get('cache/dashboard')
+  @Get("cache/dashboard")
   getCacheDashboard() {
     const metrics = this.metrics.getMetrics();
 
@@ -500,7 +500,7 @@ export class AdminController {
         errors: metrics.errors,
         total: metrics.totalOperations,
       },
-      health: metrics.hitRate > 0.8 ? 'Excellent' : 'Needs Improvement',
+      health: metrics.hitRate > 0.8 ? "Excellent" : "Needs Improvement",
     };
   }
 }
@@ -516,11 +516,11 @@ export class CacheReportService {
     private readonly logger: Logger,
   ) {}
 
-  @Cron('0 0 * * *') // 每天午夜
+  @Cron("0 0 * * *") // 每天午夜
   generateDailyReport() {
     const metrics = this.metrics.getMetrics();
 
-    this.logger.log('=== 缓存日报 ===');
+    this.logger.log("=== 缓存日报 ===");
     this.logger.log(`命中率: ${(metrics.hitRate * 100).toFixed(2)}%`);
     this.logger.log(`平均延迟: ${metrics.averageLatency.toFixed(2)}ms`);
     this.logger.log(`总操作: ${metrics.totalOperations}`);

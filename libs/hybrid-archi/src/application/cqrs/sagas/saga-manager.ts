@@ -53,23 +53,23 @@
  *
  * @since 1.0.0
  */
-import { Injectable, Inject } from '@nestjs/common';
-import { Observable, of, throwError } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
-import type { PinoLogger } from '@hl8/logger';
+import { Injectable, Inject } from "@nestjs/common";
+import { Observable, of, throwError } from "rxjs";
+import { map, catchError, tap } from "rxjs/operators";
+import type { FastifyLoggerService } from "@hl8/hybrid-archi";
 
 // 定义 LogContext 枚举
 enum LogContext {
-  SYSTEM = 'SYSTEM',
-  BUSINESS = 'BUSINESS',
-  AUTH = 'AUTH',
-  DATABASE = 'DATABASE',
-  EXTERNAL = 'EXTERNAL',
-  CACHE = 'CACHE',
-  PERFORMANCE = 'PERFORMANCE',
-  HTTP_REQUEST = 'HTTP_REQUEST',
+  SYSTEM = "SYSTEM",
+  BUSINESS = "BUSINESS",
+  AUTH = "AUTH",
+  DATABASE = "DATABASE",
+  EXTERNAL = "EXTERNAL",
+  CACHE = "CACHE",
+  PERFORMANCE = "PERFORMANCE",
+  HTTP_REQUEST = "HTTP_REQUEST",
 }
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 // 简化的上下文类型定义
 interface IAsyncContext {
   getTenantId?(): string;
@@ -77,15 +77,16 @@ interface IAsyncContext {
   getOrganizationId?(): string;
   getDepartmentId?(): string;
 }
-import {
+import type {
   ISaga,
   ISagaManager,
   ISagaExecutionContext,
   ISagaStatistics,
   ISagaEvent,
   ISagaEventHandler,
-  SagaStatus,
-} from './saga.interface';
+} from "./saga.interface.js";
+import { SagaStatus } from "./saga.interface.js";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 核心 Saga 管理器
@@ -127,7 +128,9 @@ export class SagaManager implements ISagaManager {
   private _cleanupTimer?: ReturnType<typeof globalThis.setInterval>;
   private _monitoringTimer?: ReturnType<typeof globalThis.setInterval>;
 
-  constructor(@Inject('ILoggerService') private readonly logger: PinoLogger) {}
+  constructor(
+    @Inject("ILoggerService") private readonly logger: FastifyLoggerService,
+  ) {}
 
   /**
    * 启动 Saga
@@ -135,10 +138,10 @@ export class SagaManager implements ISagaManager {
   public startSaga(
     sagaType: string,
     data: Record<string, unknown>,
-    context?: IAsyncContext
+    context?: IAsyncContext,
   ): Observable<ISagaExecutionContext> {
     if (!this._isStarted) {
-      return throwError(() => new Error('Saga manager is not started'));
+      return throwError(() => new Error("Saga manager is not started"));
     }
 
     const saga = this.sagas.get(sagaType);
@@ -164,29 +167,32 @@ export class SagaManager implements ISagaManager {
     };
 
     this.executionContexts.set(sagaId, executionContext);
-    this.updateStatistics(executionContext, 'started');
+    this.updateStatistics(executionContext, "started");
 
-    this.logger.info(`Starting saga: ${sagaType}`, LogContext.SYSTEM, {
-      sagaId,
-      sagaType,
-      dataKeys: Object.keys(data),
+    this.logger.log(`Starting saga: ${sagaType}`, {
+      ...{
+        sagaId,
+        sagaType,
+        dataKeys: Object.keys(data),
+      },
+      context: "SYSTEM",
     });
 
     return saga.execute(executionContext).pipe(
       tap((updatedContext) => {
         this.executionContexts.set(sagaId, updatedContext);
-        this.updateStatistics(updatedContext, 'completed');
-        this.emitSagaEvent('saga.completed', updatedContext);
+        this.updateStatistics(updatedContext, "completed");
+        this.emitSagaEvent("saga.completed", updatedContext);
       }),
       catchError((error) => {
         executionContext.status = SagaStatus.FAILED;
         executionContext.error = (error as Error).message;
         executionContext.endTime = new Date();
         this.executionContexts.set(sagaId, executionContext);
-        this.updateStatistics(executionContext, 'failed');
-        this.emitSagaEvent('saga.failed', executionContext);
+        this.updateStatistics(executionContext, "failed");
+        this.emitSagaEvent("saga.failed", executionContext);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -203,12 +209,15 @@ export class SagaManager implements ISagaManager {
       context.status = SagaStatus.CANCELLED;
       context.endTime = new Date();
       this.executionContexts.set(sagaId, context);
-      this.updateStatistics(context, 'cancelled');
-      this.emitSagaEvent('saga.cancelled', context);
+      this.updateStatistics(context, "cancelled");
+      this.emitSagaEvent("saga.cancelled", context);
 
-      this.logger.info(`Saga stopped: ${context.sagaType}`, LogContext.SYSTEM, {
-        sagaId,
-        sagaType: context.sagaType,
+      this.logger.log(`Saga stopped: ${context.sagaType}`, {
+        ...{
+          sagaId,
+          sagaType: context.sagaType,
+        },
+        context: "SYSTEM",
       });
     }
 
@@ -236,32 +245,31 @@ export class SagaManager implements ISagaManager {
       return of(false);
     }
 
-    this.logger.info(
-      `Compensating saga: ${context.sagaType}`,
-      LogContext.SYSTEM,
-      { sagaId, sagaType: context.sagaType }
-    );
+    this.logger.log(`Compensating saga: ${context.sagaType}`, {
+      ...{ sagaId, sagaType: context.sagaType },
+      context: "SYSTEM",
+    });
 
     return saga.compensate(context).pipe(
       tap((updatedContext) => {
         this.executionContexts.set(sagaId, updatedContext);
-        this.updateStatistics(updatedContext, 'compensated');
-        this.emitSagaEvent('saga.compensated', updatedContext);
+        this.updateStatistics(updatedContext, "compensated");
+        this.emitSagaEvent("saga.compensated", updatedContext);
       }),
       map(() => true),
       catchError((error) => {
         this.logger.error(
           `Saga compensation failed: ${context.sagaType}`,
-          LogContext.SYSTEM,
+          { context: "SYSTEM" },
           {
             sagaId,
             sagaType: context.sagaType,
             error: (error as Error).message,
           },
-          error as Error
+          error as Error,
         );
         return of(false);
-      })
+      }),
     );
   }
 
@@ -288,11 +296,14 @@ export class SagaManager implements ISagaManager {
     }
 
     this.sagas.set(saga.sagaType, saga);
-    this.logger.info(`Registered saga: ${saga.sagaType}`, LogContext.SYSTEM, {
-      sagaType: saga.sagaType,
-      stepCount: saga.getSteps().length,
-      enableCompensation: saga.enableCompensation,
-      enableTimeout: saga.enableTimeout,
+    this.logger.log(`Registered saga: ${saga.sagaType}`, {
+      ...{
+        sagaType: saga.sagaType,
+        stepCount: saga.getSteps().length,
+        enableCompensation: saga.enableCompensation,
+        enableTimeout: saga.enableTimeout,
+      },
+      context: "SYSTEM",
     });
   }
 
@@ -302,8 +313,11 @@ export class SagaManager implements ISagaManager {
   public unregisterSaga(sagaType: string): boolean {
     const removed = this.sagas.delete(sagaType);
     if (removed) {
-      this.logger.info(`Unregistered saga: ${sagaType}`, LogContext.SYSTEM, {
-        sagaType,
+      this.logger.log(`Unregistered saga: ${sagaType}`, {
+        ...{
+          sagaType,
+        },
+        context: "SYSTEM",
       });
     }
     return removed;
@@ -336,11 +350,13 @@ export class SagaManager implements ISagaManager {
    */
   public async start(): Promise<void> {
     if (this._isStarted) {
-      this.logger.warn('Saga manager is already started', LogContext.SYSTEM);
+      this.logger.warn("Saga manager is already started", {
+        context: "SYSTEM",
+      });
       return;
     }
 
-    this.logger.info('Starting saga manager...', LogContext.SYSTEM);
+    this.logger.log("Starting saga manager...", { context: "SYSTEM" });
 
     // 启动清理定时器
     this._cleanupTimer = globalThis.setInterval(() => {
@@ -353,7 +369,7 @@ export class SagaManager implements ISagaManager {
     }, 30000); // 每30秒更新一次统计
 
     this._isStarted = true;
-    this.logger.info('Saga manager started successfully', LogContext.SYSTEM);
+    this.logger.log("Saga manager started successfully", { context: "SYSTEM" });
   }
 
   /**
@@ -361,11 +377,11 @@ export class SagaManager implements ISagaManager {
    */
   public async stop(): Promise<void> {
     if (!this._isStarted) {
-      this.logger.warn('Saga manager is not started', LogContext.SYSTEM);
+      this.logger.warn("Saga manager is not started", { context: "SYSTEM" });
       return;
     }
 
-    this.logger.info('Stopping saga manager...', LogContext.SYSTEM);
+    this.logger.log("Stopping saga manager...", { context: "SYSTEM" });
 
     // 停止定时器
     if (this._cleanupTimer) {
@@ -389,7 +405,7 @@ export class SagaManager implements ISagaManager {
     this.executionContexts.clear();
 
     this._isStarted = false;
-    this.logger.info('Saga manager stopped successfully', LogContext.SYSTEM);
+    this.logger.log("Saga manager stopped successfully", { context: "SYSTEM" });
   }
 
   /**
@@ -411,11 +427,10 @@ export class SagaManager implements ISagaManager {
    */
   public registerEventHandler(handler: ISagaEventHandler): void {
     this.eventHandlers.set(handler.name, handler);
-    this.logger.debug(
-      `Registered saga event handler: ${handler.name}`,
-      LogContext.SYSTEM,
-      { handlerName: handler.name, eventType: handler.eventType }
-    );
+    this.logger.debug(`Registered saga event handler: ${handler.name}`, {
+      ...{ handlerName: handler.name, eventType: handler.eventType },
+      context: "SYSTEM",
+    });
   }
 
   /**
@@ -424,11 +439,10 @@ export class SagaManager implements ISagaManager {
   public unregisterEventHandler(handlerName: string): boolean {
     const removed = this.eventHandlers.delete(handlerName);
     if (removed) {
-      this.logger.debug(
-        `Unregistered saga event handler: ${handlerName}`,
-        LogContext.SYSTEM,
-        { handlerName }
-      );
+      this.logger.debug(`Unregistered saga event handler: ${handlerName}`, {
+        ...{ handlerName },
+        context: "SYSTEM",
+      });
     }
     return removed;
   }
@@ -456,8 +470,7 @@ export class SagaManager implements ISagaManager {
     if (expiredContexts.length > 0) {
       this.logger.debug(
         `Cleaned up ${expiredContexts.length} expired saga contexts`,
-        LogContext.SYSTEM,
-        { expiredCount: expiredContexts.length }
+        { ...{ expiredCount: expiredContexts.length }, context: "SYSTEM" },
       );
     }
   }
@@ -467,7 +480,7 @@ export class SagaManager implements ISagaManager {
    */
   private updateStatistics(
     context?: ISagaExecutionContext,
-    action?: string
+    action?: string,
   ): void {
     if (context && action) {
       this.statistics.totalSagas++;
@@ -496,7 +509,7 @@ export class SagaManager implements ISagaManager {
         (this.statistics.byStatus[context.status] || 0) + 1;
 
       // 按租户统计
-      const tenantId = context.context?.getTenantId?.() || 'unknown';
+      const tenantId = context.context?.getTenantId?.() || "unknown";
       this.statistics.byTenant[tenantId] =
         (this.statistics.byTenant[tenantId] || 0) + 1;
 
@@ -531,14 +544,14 @@ export class SagaManager implements ISagaManager {
    */
   private emitSagaEvent(
     eventType: string,
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): void {
     const event: ISagaEvent = {
       eventType,
       sagaId: context.sagaId,
       data: context.data,
       timestamp: new Date(),
-      source: 'saga-manager',
+      source: "saga-manager",
       metadata: {
         sagaType: context.sagaType,
         status: context.status,
@@ -552,27 +565,26 @@ export class SagaManager implements ISagaManager {
       if (handler.shouldHandle(event)) {
         handler.handle(event).subscribe({
           next: () => {
-            this.logger.debug(
-              `Saga event handled: ${eventType}`,
-              LogContext.SYSTEM,
-              {
+            this.logger.debug(`Saga event handled: ${eventType}`, {
+              ...{
                 sagaId: context.sagaId,
                 eventType,
                 handlerName: handler.name,
-              }
-            );
+              },
+              context: "SYSTEM",
+            });
           },
           error: (error) => {
             this.logger.error(
               `Saga event handler failed: ${handler.name}`,
-              LogContext.SYSTEM,
+              { context: "SYSTEM" },
               {
                 sagaId: context.sagaId,
                 eventType,
                 handlerName: handler.name,
                 error: (error as Error).message,
               },
-              error as Error
+              error as Error,
             );
           },
         });

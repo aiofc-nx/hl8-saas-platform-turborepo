@@ -107,7 +107,7 @@ graph TD
 ```typescript
 @Injectable()
 export class UserService {
-  @Cacheable('user')
+  @Cacheable("user")
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
@@ -428,7 +428,7 @@ ClsService.set('ISOLATION_CONTEXT', context)
 class CacheService {
   async get<T>(namespace: string, key: string): Promise<T | undefined> {
     // 1. 从 CLS 读取隔离上下文
-    const context = this.cls.get('ISOLATION_CONTEXT');
+    const context = this.cls.get("ISOLATION_CONTEXT");
 
     // 2. 创建 CacheKey（自动组合隔离信息）
     const cacheKey = CacheKey.fromContext(namespace, key, this.prefix, context);
@@ -449,7 +449,7 @@ class CacheService {
 // 业务代码无需关心隔离
 @Injectable()
 export class UserService {
-  @Cacheable('user')
+  @Cacheable("user")
   async getUserById(id: string): Promise<User> {
     // 缓存自动隔离
     // 不同租户的相同 ID 不会冲突
@@ -555,7 +555,7 @@ async clearByPattern(pattern: string): Promise<number> {
 ```typescript
 CachingModule.forRoot({
   redis: {
-    host: 'localhost',
+    host: "localhost",
     port: 6379,
     maxRetriesPerRequest: 3,
     enableReadyCheck: true,
@@ -660,8 +660,8 @@ interface MetricsExporter {
 // Prometheus 导出器
 class PrometheusExporter implements MetricsExporter {
   export(metrics: CacheMetrics) {
-    prometheusClient.gauge('cache_hit_rate', metrics.hitRate);
-    prometheusClient.gauge('cache_latency', metrics.averageLatency);
+    prometheusClient.gauge("cache_hit_rate", metrics.hitRate);
+    prometheusClient.gauge("cache_latency", metrics.averageLatency);
   }
 }
 ```

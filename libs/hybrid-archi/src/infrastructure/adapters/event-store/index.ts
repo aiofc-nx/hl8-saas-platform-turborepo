@@ -7,9 +7,9 @@
  */
 
 // 事件存储适配器
-export * from './event-store.adapter';
-export * from './event-store.factory';
-export * from './event-store.manager';
+export * from "./event-store.adapter.js";
+export * from "./event-store.factory.js";
+export * from "./event-store.manager.js";
 
 // 事件存储适配器模块
-export * from './event-store-adapters.module';
+export * from "./event-store-adapters.module.js";

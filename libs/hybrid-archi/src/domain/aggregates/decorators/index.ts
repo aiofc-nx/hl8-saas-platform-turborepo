@@ -12,7 +12,7 @@ export {
   isAggregate,
   AggregateRegistry,
   AGGREGATE_METADATA_KEY,
-} from './aggregate.decorator';
+} from "./aggregate.decorator.js";
 
 // 聚合根配置类型
-export type { AggregateOptions } from './aggregate.decorator';
+export type { AggregateOptions } from "./aggregate.decorator.js";

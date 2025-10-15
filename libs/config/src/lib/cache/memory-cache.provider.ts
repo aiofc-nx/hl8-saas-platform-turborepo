@@ -6,8 +6,8 @@
  * @since 1.0.0
  */
 
-import { CacheEventType } from '../constants.js';
-import { ConfigLogger } from '../services/config-logger.service.js';
+import { CacheEventType } from "../constants.js";
+import { ConfigLogger } from "../services/config-logger.service.js";
 import {
   CacheEntry,
   CacheEvent,
@@ -15,8 +15,8 @@ import {
   CacheProvider,
   CacheStats,
   MemoryCacheOptions,
-} from '../types/cache.types.js';
-import { ConfigRecord } from '../types/config.types.js';
+} from "../types/cache.types.js";
+import { ConfigRecord } from "../types/config.types.js";
 
 /**
  * 内存缓存提供者类
@@ -61,7 +61,7 @@ export class MemoryCacheProvider implements CacheProvider {
       if (!entry) {
         this.stats.misses++;
         this.updateHitRate();
-        this.emitEvent('miss', key);
+        this.emitEvent("miss", key);
         return null;
       }
 
@@ -70,7 +70,7 @@ export class MemoryCacheProvider implements CacheProvider {
         this.cache.delete(key);
         this.stats.misses++;
         this.updateHitRate();
-        this.emitEvent('expire', key);
+        this.emitEvent("expire", key);
         return null;
       }
 
@@ -80,12 +80,12 @@ export class MemoryCacheProvider implements CacheProvider {
       this.stats.hits++;
       this.updateHitRate();
       this.updateAverageAccessTime(Date.now() - startTime);
-      this.emitEvent('hit', key);
+      this.emitEvent("hit", key);
 
       return entry.value;
     } catch (error) {
-      this.emitEvent('miss', key, {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      this.emitEvent("miss", key, {
+        error: error instanceof Error ? error.message : "Unknown error",
       });
       return null;
     }
@@ -131,10 +131,10 @@ export class MemoryCacheProvider implements CacheProvider {
       this.cache.set(key, entry);
       this.stats.totalEntries = this.cache.size;
       this.stats.totalSize += size;
-      this.emitEvent('set', key, { size, ttl });
+      this.emitEvent("set", key, { size, ttl });
     } catch (error) {
-      this.emitEvent('set', key, {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      this.emitEvent("set", key, {
+        error: error instanceof Error ? error.message : "Unknown error",
       });
       throw error;
     }
@@ -155,13 +155,13 @@ export class MemoryCacheProvider implements CacheProvider {
         this.stats.totalSize -= entry.size;
         this.cache.delete(key);
         this.stats.totalEntries = this.cache.size;
-        this.emitEvent('delete', key);
+        this.emitEvent("delete", key);
         return true;
       }
       return false;
     } catch (error) {
-      this.emitEvent('delete', key, {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      this.emitEvent("delete", key, {
+        error: error instanceof Error ? error.message : "Unknown error",
       });
       return false;
     }
@@ -185,10 +185,10 @@ export class MemoryCacheProvider implements CacheProvider {
         averageAccessTime: 0,
         topKeys: [],
       };
-      this.emitEvent('clear', 'all');
+      this.emitEvent("clear", "all");
     } catch (error) {
-      this.emitEvent('clear', 'all', {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      this.emitEvent("clear", "all", {
+        error: error instanceof Error ? error.message : "Unknown error",
       });
       throw error;
     }
@@ -292,7 +292,7 @@ export class MemoryCacheProvider implements CacheProvider {
 
     for (const key of expiredKeys) {
       this.cache.delete(key);
-      this.emitEvent('expire', key);
+      this.emitEvent("expire", key);
     }
 
     if (expiredKeys.length > 0) {
@@ -413,7 +413,7 @@ export class MemoryCacheProvider implements CacheProvider {
           listener(event);
         } catch (error) {
           const logger = ConfigLogger.getInstance();
-          logger.error('缓存事件监听器错误', {
+          logger.error("缓存事件监听器错误", {
             event: event.type,
             error: error instanceof Error ? error.message : String(error),
             stack: error instanceof Error ? error.stack : undefined,

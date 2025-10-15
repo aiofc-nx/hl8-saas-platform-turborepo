@@ -6,17 +6,17 @@
  */
 
 // 基础聚合根类
-export { BaseAggregateRoot } from './base-aggregate-root';
+export { BaseAggregateRoot } from "./base-aggregate-root.js";
 
 // 租户感知聚合根类
-export { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root';
+export { TenantAwareAggregateRoot } from "./tenant-aware-aggregate-root.js";
 
 // 聚合根接口
 export type {
   IAggregateRoot,
   IAggregateRootFactory,
-} from './aggregate-root.interface';
+} from "./aggregate-root.interface.js";
 
 // 重新导出常用类型
-export type { EntityId } from '../../value-objects/entity-id';
-export { BaseDomainEvent } from '../../events/base/base-domain-event';
+export type { EntityId } from "@hl8/isolation-model";
+export { BaseDomainEvent } from "../../events/base/base-domain-event.js";

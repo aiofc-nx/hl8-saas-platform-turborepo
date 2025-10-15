@@ -54,8 +54,8 @@
  * @since 1.0.0
  */
 
-import { Injectable, Logger } from '@nestjs/common';
-import type { CacheMetrics } from '../types/cache-metrics.interface.js';
+import { Injectable, Logger } from "@nestjs/common";
+import type { CacheMetrics } from "../types/cache-metrics.interface.js";
 
 @Injectable()
 export class CacheMetricsService {

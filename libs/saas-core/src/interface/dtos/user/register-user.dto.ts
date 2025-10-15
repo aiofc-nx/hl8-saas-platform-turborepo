@@ -1,5 +1,14 @@
-import { IsString, IsEmail, IsOptional, Length, Matches } from 'class-validator';
-import { USERNAME_VALIDATION, PASSWORD_VALIDATION } from '../../../constants/user.constants';
+import {
+  IsString,
+  IsEmail,
+  IsOptional,
+  Length,
+  Matches,
+} from "class-validator";
+import {
+  USERNAME_VALIDATION,
+  PASSWORD_VALIDATION,
+} from "../../../constants/user.constants";
 
 export class RegisterUserDto {
   @IsString()
@@ -18,4 +27,3 @@ export class RegisterUserDto {
   @IsOptional()
   phoneNumber?: string;
 }
-

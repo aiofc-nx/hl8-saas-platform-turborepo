@@ -6,9 +6,9 @@
  */
 
 // 事件存储
-export * from './event-store.interface';
-export { EventStoreImplementation } from '../event-store.implementation';
+export * from "./event-store.interface.js";
+export { EventStoreImplementation } from "../event-store.implementation.js";
 
 // 快照存储
-export * from './snapshot-store.interface';
-export { SnapshotStoreImplementation } from '../snapshot-store.implementation';
+export * from "./snapshot-store.interface.js";
+export { SnapshotStoreImplementation } from "../snapshot-store.implementation.js";

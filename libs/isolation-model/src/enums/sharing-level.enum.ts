@@ -30,17 +30,17 @@
  */
 export enum SharingLevel {
   /** 平台共享 - 所有租户可访问 */
-  PLATFORM = 'platform',
+  PLATFORM = "platform",
 
   /** 租户共享 - 租户内所有用户可访问 */
-  TENANT = 'tenant',
+  TENANT = "tenant",
 
   /** 组织共享 - 组织内所有用户可访问 */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
 
   /** 部门共享 - 部门内所有用户可访问 */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
 
   /** 用户私有 - 仅用户本人可访问 */
-  USER = 'user',
+  USER = "user",
 }

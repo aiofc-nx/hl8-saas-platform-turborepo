@@ -29,7 +29,7 @@
  * @since 1.0.0
  */
 
-import { IsolationLevel } from './isolation.service.js';
+import { IsolationLevel } from "./isolation.service.js";
 
 /**
  * 隔离感知装饰器

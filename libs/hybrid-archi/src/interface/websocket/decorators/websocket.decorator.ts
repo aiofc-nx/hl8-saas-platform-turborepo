@@ -46,7 +46,7 @@
  * @since 1.0.0
  */
 
-import { IWebSocketContext } from '../../shared/interfaces';
+import type { IWebSocketContext } from "../../shared/interfaces.js";
 
 /**
  * WebSocket消息订阅装饰器选项
@@ -119,25 +119,32 @@ export interface ValidateMessageOptions<T = unknown> {
  * @param options - 装饰器选项
  * @returns 方法装饰器
  */
-export function SubscribeMessage(event: string, options: SubscribeMessageOptions = {}): MethodDecorator {
-  return function (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+export function SubscribeMessage(
+  event: string,
+  options: SubscribeMessageOptions = {},
+): MethodDecorator {
+  return function (
+    target: unknown,
+    propertyKey: string | symbol,
+    descriptor: PropertyDescriptor,
+  ) {
     // 保存原始方法
     const originalMethod = descriptor.value;
 
     // 创建包装方法
     descriptor.value = async function (...args: unknown[]) {
       const startTime = Date.now();
-      
+
       try {
         // 执行原始方法
         const result = await originalMethod.apply(this, args);
-        
+
         // 记录性能指标
         if (options.recordMetrics !== false) {
           const duration = Date.now() - startTime;
           console.log(`WebSocket消息处理完成: ${event}, 耗时: ${duration}ms`);
         }
-        
+
         return result;
       } catch (error) {
         console.error(`WebSocket消息处理失败: ${event}`, error);
@@ -146,10 +153,15 @@ export function SubscribeMessage(event: string, options: SubscribeMessageOptions
     };
 
     // 添加元数据
-    Reflect.defineMetadata('websocket:subscribe', {
-      event,
-      options,
-    }, target as object, propertyKey);
+    Reflect.defineMetadata(
+      "websocket:subscribe",
+      {
+        event,
+        options,
+      },
+      target as object,
+      propertyKey,
+    );
 
     return descriptor;
   };
@@ -164,27 +176,32 @@ export function SubscribeMessage(event: string, options: SubscribeMessageOptions
  * @returns 方法装饰器
  */
 export function RequireRoles(options: RequireRolesOptions): MethodDecorator {
-  return function (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+  return function (
+    target: unknown,
+    propertyKey: string | symbol,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: unknown[]) {
       // 获取WebSocket上下文
-      const context = (this as { getWebSocketContext?: () => IWebSocketContext }).getWebSocketContext?.() as IWebSocketContext;
-      
+      const context = (
+        this as { getWebSocketContext?: () => IWebSocketContext }
+      ).getWebSocketContext?.() as IWebSocketContext;
+
       if (!context) {
-        throw new Error('无法获取WebSocket上下文');
+        throw new Error("无法获取WebSocket上下文");
       }
 
       // 验证角色权限
       const userRoles = context.userRoles || [];
       const hasRequiredRole = options.requireAll
-        ? options.roles.every(role => userRoles.includes(role))
-        : options.roles.some(role => userRoles.includes(role));
+        ? options.roles.every((role) => userRoles.includes(role))
+        : options.roles.some((role) => userRoles.includes(role));
 
       if (!hasRequiredRole) {
         throw new Error(
-          options.errorMessage || 
-          `需要角色权限: ${options.roles.join(', ')}`
+          options.errorMessage || `需要角色权限: ${options.roles.join(", ")}`,
         );
       }
 
@@ -192,7 +209,12 @@ export function RequireRoles(options: RequireRolesOptions): MethodDecorator {
     };
 
     // 添加元数据
-    Reflect.defineMetadata('websocket:requireRoles', options, target as object, propertyKey);
+    Reflect.defineMetadata(
+      "websocket:requireRoles",
+      options,
+      target as object,
+      propertyKey,
+    );
 
     return descriptor;
   };
@@ -206,28 +228,39 @@ export function RequireRoles(options: RequireRolesOptions): MethodDecorator {
  * @param options - 权限验证选项
  * @returns 方法装饰器
  */
-export function RequireWebSocketPermissions(options: RequirePermissionsOptions): MethodDecorator {
-  return function (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+export function RequireWebSocketPermissions(
+  options: RequirePermissionsOptions,
+): MethodDecorator {
+  return function (
+    target: unknown,
+    propertyKey: string | symbol,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: unknown[]) {
       // 获取WebSocket上下文
-      const context = (this as { getWebSocketContext?: () => IWebSocketContext }).getWebSocketContext?.() as IWebSocketContext;
-      
+      const context = (
+        this as { getWebSocketContext?: () => IWebSocketContext }
+      ).getWebSocketContext?.() as IWebSocketContext;
+
       if (!context) {
-        throw new Error('无法获取WebSocket上下文');
+        throw new Error("无法获取WebSocket上下文");
       }
 
       // 验证权限
       const userPermissions = context.userPermissions || [];
       const hasRequiredPermission = options.requireAll
-        ? options.permissions.every(permission => userPermissions.includes(permission))
-        : options.permissions.some(permission => userPermissions.includes(permission));
+        ? options.permissions.every((permission) =>
+            userPermissions.includes(permission),
+          )
+        : options.permissions.some((permission) =>
+            userPermissions.includes(permission),
+          );
 
       if (!hasRequiredPermission) {
         throw new Error(
-          options.errorMessage || 
-          `需要权限: ${options.permissions.join(', ')}`
+          options.errorMessage || `需要权限: ${options.permissions.join(", ")}`,
         );
       }
 
@@ -235,7 +268,12 @@ export function RequireWebSocketPermissions(options: RequirePermissionsOptions):
     };
 
     // 添加元数据
-    Reflect.defineMetadata('websocket:requirePermissions', options, target as object, propertyKey);
+    Reflect.defineMetadata(
+      "websocket:requirePermissions",
+      options,
+      target as object,
+      propertyKey,
+    );
 
     return descriptor;
   };
@@ -249,8 +287,14 @@ export function RequireWebSocketPermissions(options: RequirePermissionsOptions):
  * @param options - 消息验证选项
  * @returns 方法装饰器
  */
-export function ValidateMessage<T>(options: ValidateMessageOptions<T>): MethodDecorator {
-  return function (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+export function ValidateMessage<T>(
+  options: ValidateMessageOptions<T>,
+): MethodDecorator {
+  return function (
+    target: unknown,
+    propertyKey: string | symbol,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: unknown[]) {
@@ -258,30 +302,35 @@ export function ValidateMessage<T>(options: ValidateMessageOptions<T>): MethodDe
       const message = args[0];
 
       if (!message) {
-        throw new Error('消息不能为空');
+        throw new Error("消息不能为空");
       }
 
       // 类型验证
-      if (options.strict !== false && !(message instanceof options.messageType)) {
+      if (
+        options.strict !== false &&
+        !(message instanceof options.messageType)
+      ) {
         throw new Error(
-          options.errorMessage || 
-          `消息类型不匹配，期望: ${options.messageType.name}`
+          options.errorMessage ||
+            `消息类型不匹配，期望: ${options.messageType.name}`,
         );
       }
 
       // 自定义验证器
       if (options.validator && !options.validator(message as T)) {
-        throw new Error(
-          options.errorMessage || 
-          '消息验证失败'
-        );
+        throw new Error(options.errorMessage || "消息验证失败");
       }
 
       return originalMethod.apply(this, args);
     };
 
     // 添加元数据
-    Reflect.defineMetadata('websocket:validateMessage', options, target as object, propertyKey);
+    Reflect.defineMetadata(
+      "websocket:validateMessage",
+      options,
+      target as object,
+      propertyKey,
+    );
 
     return descriptor;
   };
@@ -295,30 +344,38 @@ export function ValidateMessage<T>(options: ValidateMessageOptions<T>): MethodDe
  * @param options - 监控选项
  * @returns 方法装饰器
  */
-export function MonitorPerformance(options: { 
-  threshold?: number; 
-  recordMetrics?: boolean; 
-} = {}): MethodDecorator {
-  return function (target: unknown, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+export function MonitorPerformance(
+  options: {
+    threshold?: number;
+    recordMetrics?: boolean;
+  } = {},
+): MethodDecorator {
+  return function (
+    target: unknown,
+    propertyKey: string | symbol,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: unknown[]) {
       const startTime = Date.now();
-      
+
       try {
         const result = await originalMethod.apply(this, args);
         const duration = Date.now() - startTime;
-        
+
         // 检查性能阈值
         if (options.threshold && duration > options.threshold) {
-          console.warn(`WebSocket消息处理耗时过长: ${duration}ms, 阈值: ${options.threshold}ms`);
+          console.warn(
+            `WebSocket消息处理耗时过长: ${duration}ms, 阈值: ${options.threshold}ms`,
+          );
         }
-        
+
         // 记录性能指标
         if (options.recordMetrics !== false) {
           console.log(`WebSocket消息处理性能: ${duration}ms`);
         }
-        
+
         return result;
       } catch (error) {
         const duration = Date.now() - startTime;
@@ -328,7 +385,12 @@ export function MonitorPerformance(options: {
     };
 
     // 添加元数据
-    Reflect.defineMetadata('websocket:monitorPerformance', options, target as object, propertyKey);
+    Reflect.defineMetadata(
+      "websocket:monitorPerformance",
+      options,
+      target as object,
+      propertyKey,
+    );
 
     return descriptor;
   };
@@ -342,10 +404,19 @@ export function MonitorPerformance(options: {
  * @returns 参数装饰器
  */
 export function WebSocketContext(): ParameterDecorator {
-  return function (target: unknown, propertyKey: string | symbol | undefined, parameterIndex: number) {
+  return function (
+    target: unknown,
+    propertyKey: string | symbol | undefined,
+    parameterIndex: number,
+  ) {
     // 添加元数据
     if (propertyKey) {
-      Reflect.defineMetadata('websocket:context', parameterIndex, target as object, propertyKey);
+      Reflect.defineMetadata(
+        "websocket:context",
+        parameterIndex,
+        target as object,
+        propertyKey,
+      );
     }
   };
 }
@@ -358,10 +429,19 @@ export function WebSocketContext(): ParameterDecorator {
  * @returns 参数装饰器
  */
 export function MessageBody(): ParameterDecorator {
-  return function (target: unknown, propertyKey: string | symbol | undefined, parameterIndex: number) {
+  return function (
+    target: unknown,
+    propertyKey: string | symbol | undefined,
+    parameterIndex: number,
+  ) {
     // 添加元数据
     if (propertyKey) {
-      Reflect.defineMetadata('websocket:messageBody', parameterIndex, target as object, propertyKey);
+      Reflect.defineMetadata(
+        "websocket:messageBody",
+        parameterIndex,
+        target as object,
+        propertyKey,
+      );
     }
   };
 }
@@ -374,10 +454,19 @@ export function MessageBody(): ParameterDecorator {
  * @returns 参数装饰器
  */
 export function WebSocketClient(): ParameterDecorator {
-  return function (target: unknown, propertyKey: string | symbol | undefined, parameterIndex: number) {
+  return function (
+    target: unknown,
+    propertyKey: string | symbol | undefined,
+    parameterIndex: number,
+  ) {
     // 添加元数据
     if (propertyKey) {
-      Reflect.defineMetadata('websocket:client', parameterIndex, target as object, propertyKey);
+      Reflect.defineMetadata(
+        "websocket:client",
+        parameterIndex,
+        target as object,
+        propertyKey,
+      );
     }
   };
 }

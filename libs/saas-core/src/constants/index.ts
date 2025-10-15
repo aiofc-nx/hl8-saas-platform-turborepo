@@ -30,34 +30,22 @@
  */
 
 // 租户常量
-export * from './tenant.constants';
+export * from "./tenant.constants.js";
 
 // 用户常量
-export * from './user.constants';
+export * from "./user.constants.js";
 
-// 组织常量（排除重复的权限定义）
-export {
-  ORGANIZATION_CODE_VALIDATION,
-  ORGANIZATION_NAME_VALIDATION,
-  ORGANIZATION_DESCRIPTION_VALIDATION,
-  ORGANIZATION_MEMBER_LIMITS,
-  ORGANIZATION_TYPE_CONFIG,
-} from './organization.constants';
+// 组织常量
+export * from "./organization.constants.js";
 
-// 部门常量（排除重复的权限定义）
-export {
-  DEPARTMENT_CODE_VALIDATION,
-  DEPARTMENT_NAME_VALIDATION,
-  DEPARTMENT_MEMBER_LIMITS,
-  DEPARTMENT_STATUS_TRANSITIONS,
-} from './department.constants';
+// 部门常量
+export * from "./department.constants.js";
 
 // 角色常量
-export * from './role.constants';
+export * from "./role.constants.js";
 
-// 权限常量（包含所有权限定义）
-export * from './permission.constants';
+// 权限常量
+export * from "./permission.constants.js";
 
 // 通用常量
-export * from './common.constants';
-
+export * from "./common.constants.js";

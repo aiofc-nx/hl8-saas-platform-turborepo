@@ -11,10 +11,10 @@ export type {
   IDomainServiceFactory,
   IDomainServiceRegistry,
   IDomainServiceContext,
-} from './domain-service.interface';
+} from "./domain-service.interface.js";
 
 // 领域服务基类
-export { BaseDomainService } from './domain-service.interface';
+export { BaseDomainService } from "./domain-service.interface.js";
 
 // 重新导出常用类型
-export type { EntityId } from '../../value-objects/entity-id';
+export type { EntityId } from "@hl8/isolation-model";

@@ -6,10 +6,10 @@
  * @since 1.0.0
  */
 
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
-import * as path from 'path';
-import { ConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
+import * as fs from "fs";
+import * as yaml from "js-yaml";
+import * as path from "path";
+import { ConfigLoader } from "../interfaces/typed-config-module-options.interface.js";
 
 /**
  * 目录加载器选项接口
@@ -86,18 +86,18 @@ export const directoryLoader = (
       if (include.test(file)) {
         const filePath = path.join(directory, file);
         const basename = path.basename(file, path.extname(file));
-        const content = fs.readFileSync(filePath, 'utf8');
+        const content = fs.readFileSync(filePath, "utf8");
         const ext = path.extname(file).toLowerCase();
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- JSON/YAML 解析结果类型未知（宪章 IX 允许场景：第三方库集成）
         let fileConfig: any;
 
         switch (ext) {
-          case '.json':
+          case ".json":
             fileConfig = JSON.parse(content);
             break;
-          case '.yml':
-          case '.yaml':
+          case ".yml":
+          case ".yaml":
             fileConfig = yaml.load(content);
             break;
           default:
@@ -137,7 +137,7 @@ function substituteEnvironmentVariables(
   config: any,
   disallowUndefined: boolean = true,
 ): any {
-  if (typeof config === 'string') {
+  if (typeof config === "string") {
     return config.replace(/\$\{([^}]+)\}/g, (match, key) => {
       const value = process.env[key];
       if (value === undefined && disallowUndefined) {
@@ -153,7 +153,7 @@ function substituteEnvironmentVariables(
     );
   }
 
-  if (config && typeof config === 'object') {
+  if (config && typeof config === "object") {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 结果对象结构与输入相同，使用 any 保持灵活性（宪章 IX 允许场景）
     const result: any = {};
     for (const [key, value] of Object.entries(config)) {

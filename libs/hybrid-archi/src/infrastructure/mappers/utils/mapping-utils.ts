@@ -59,12 +59,12 @@ export class MappingUtils {
       return false;
     }
 
-    if (typeof entity !== 'object') {
+    if (typeof entity !== "object") {
       return false;
     }
 
     // 检查是否有id属性
-    return 'id' in (entity as object);
+    return "id" in (entity as object);
   }
 
   /**
@@ -155,7 +155,7 @@ export class MappingUtils {
   ): boolean {
     return requiredFields.every((field) => {
       const value = obj[field];
-      return value !== null && value !== undefined && value !== '';
+      return value !== null && value !== undefined && value !== "";
     });
   }
 
@@ -172,7 +172,7 @@ export class MappingUtils {
   ): string[] {
     return requiredFields.filter((field) => {
       const value = obj[field];
-      return value === null || value === undefined || value === '';
+      return value === null || value === undefined || value === "";
     });
   }
 
@@ -183,7 +183,7 @@ export class MappingUtils {
    * @returns 克隆后的对象
    */
   public static deepClone<T>(obj: T): T {
-    if (obj === null || typeof obj !== 'object') {
+    if (obj === null || typeof obj !== "object") {
       return obj;
     }
 
@@ -228,7 +228,7 @@ export class MappingUtils {
       return false;
     }
 
-    if (typeof obj1 !== 'object') {
+    if (typeof obj1 !== "object") {
       return obj1 === obj2;
     }
 
@@ -258,9 +258,9 @@ export class MappingUtils {
     try {
       return JSON.stringify(obj, (key, value) => {
         // 处理循环引用
-        if (typeof value === 'object' && value !== null) {
+        if (typeof value === "object" && value !== null) {
           if (this.hasCircularReference(value)) {
-            return '[Circular Reference]';
+            return "[Circular Reference]";
           }
         }
         return value;
@@ -295,7 +295,7 @@ export class MappingUtils {
     const seen = new WeakSet();
 
     function detect(current: unknown): boolean {
-      if (typeof current === 'object' && current !== null) {
+      if (typeof current === "object" && current !== null) {
         if (seen.has(current as object)) {
           return true;
         }

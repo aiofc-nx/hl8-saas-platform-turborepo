@@ -29,11 +29,11 @@
  * // 消息序列化
  * const serializedMessage = WebSocketUtils.serializeMessage(message);
  * const deserializedMessage = WebSocketUtils.deserializeMessage(serializedMessage);
- * 
+ *
  * // 连接管理
  * const connectionManager = new WebSocketConnectionManager();
  * await connectionManager.addConnection(client);
- * 
+ *
  * // 错误处理
  * const errorResponse = WebSocketUtils.createErrorResponse(error);
  * ```
@@ -41,7 +41,7 @@
  * @since 1.0.0
  */
 
-import { IWebSocketClient } from '../../shared/interfaces';
+import { IWebSocketClient } from "../../shared/interfaces.js";
 
 /**
  * WebSocket消息类型
@@ -76,7 +76,7 @@ export interface IWebSocketResponse<T = unknown> {
   /** 响应数据 */
   data: T;
   /** 状态码 */
-  status: 'success' | 'error';
+  status: "success" | "error";
   /** 错误信息 */
   error?: string;
   /** 时间戳 */
@@ -125,7 +125,9 @@ export class WebSocketUtils {
     try {
       return JSON.stringify(message);
     } catch (error) {
-      throw new Error(`消息序列化失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `消息序列化失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -140,15 +142,17 @@ export class WebSocketUtils {
   static deserializeMessage(data: string): IWebSocketMessage {
     try {
       const message = JSON.parse(data) as IWebSocketMessage;
-      
+
       // 验证消息格式
       if (!message.id || !message.type || !message.data) {
-        throw new Error('消息格式无效');
+        throw new Error("消息格式无效");
       }
-      
+
       return message;
     } catch (error) {
-      throw new Error(`消息反序列化失败: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `消息反序列化失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -165,13 +169,13 @@ export class WebSocketUtils {
   static createSuccessResponse<T>(
     data: T,
     requestId?: string,
-    correlationId?: string
+    correlationId?: string,
   ): IWebSocketResponse<T> {
     return {
       id: this.generateMessageId(),
-      type: 'response',
+      type: "response",
       data,
-      status: 'success',
+      status: "success",
       timestamp: Date.now(),
       requestId,
       correlationId,
@@ -191,15 +195,15 @@ export class WebSocketUtils {
   static createErrorResponse(
     error: unknown,
     requestId?: string,
-    correlationId?: string
+    correlationId?: string,
   ): IWebSocketResponse {
     const errorMessage = error instanceof Error ? error.message : String(error);
 
     return {
       id: this.generateMessageId(),
-      type: 'error',
+      type: "error",
       data: null,
-      status: 'error',
+      status: "error",
       error: errorMessage,
       timestamp: Date.now(),
       requestId,
@@ -224,7 +228,7 @@ export class WebSocketUtils {
     message: string,
     details?: unknown,
     requestId?: string,
-    correlationId?: string
+    correlationId?: string,
   ): IWebSocketError {
     return {
       code,
@@ -256,8 +260,11 @@ export class WebSocketUtils {
    * @param expectedType - 期望的消息类型
    * @returns 是否有效
    */
-  static validateMessage(message: IWebSocketMessage, expectedType?: string): boolean {
-    if (!message || typeof message !== 'object') {
+  static validateMessage(
+    message: IWebSocketMessage,
+    expectedType?: string,
+  ): boolean {
+    if (!message || typeof message !== "object") {
       return false;
     }
 
@@ -338,12 +345,15 @@ export class WebSocketUtils {
  */
 export class WebSocketConnectionManager {
   private readonly connections = new Map<string, IWebSocketClient>();
-  private readonly connectionStats = new Map<string, {
-    connectedAt: Date;
-    lastActivity: Date;
-    messageCount: number;
-    errorCount: number;
-  }>();
+  private readonly connectionStats = new Map<
+    string,
+    {
+      connectedAt: Date;
+      lastActivity: Date;
+      messageCount: number;
+      errorCount: number;
+    }
+  >();
 
   /**
    * 添加连接
@@ -405,12 +415,14 @@ export class WebSocketConnectionManager {
    * @param clientId - 客户端ID
    * @returns 连接统计信息或undefined
    */
-  getConnectionStats(clientId: string): {
-    connectedAt: Date;
-    lastActivity: Date;
-    messageCount: number;
-    errorCount: number;
-  } | undefined {
+  getConnectionStats(clientId: string):
+    | {
+        connectedAt: Date;
+        lastActivity: Date;
+        messageCount: number;
+        errorCount: number;
+      }
+    | undefined {
     return this.connectionStats.get(clientId);
   }
 
@@ -503,7 +515,8 @@ export class WebSocketConnectionManager {
       totalConnections: this.connections.size,
       totalMessages,
       totalErrors,
-      averageUptime: this.connections.size > 0 ? totalUptime / this.connections.size : 0,
+      averageUptime:
+        this.connections.size > 0 ? totalUptime / this.connections.size : 0,
     };
   }
 }
@@ -523,7 +536,10 @@ export class WebSocketErrorHandler {
    * @param client - WebSocket客户端
    * @returns 错误响应
    */
-  static handleConnectionError(error: unknown, client: IWebSocketClient): IWebSocketError {
+  static handleConnectionError(
+    error: unknown,
+    client: IWebSocketClient,
+  ): IWebSocketError {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorCode = this.getErrorCode(error);
 
@@ -532,7 +548,7 @@ export class WebSocketErrorHandler {
       `连接错误: ${errorMessage}`,
       { clientId: client.id },
       undefined,
-      undefined
+      undefined,
     );
   }
 
@@ -545,7 +561,10 @@ export class WebSocketErrorHandler {
    * @param message - 原始消息
    * @returns 错误响应
    */
-  static handleMessageError(error: unknown, message: IWebSocketMessage): IWebSocketError {
+  static handleMessageError(
+    error: unknown,
+    message: IWebSocketMessage,
+  ): IWebSocketError {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorCode = this.getErrorCode(error);
 
@@ -554,7 +573,7 @@ export class WebSocketErrorHandler {
       `消息处理错误: ${errorMessage}`,
       { messageId: message.id, messageType: message.type },
       message.requestId,
-      message.correlationId
+      message.correlationId,
     );
   }
 
@@ -569,24 +588,24 @@ export class WebSocketErrorHandler {
   private static getErrorCode(error: unknown): string {
     if (error instanceof Error) {
       const errorName = error.constructor.name;
-      
+
       // 根据错误类型返回相应的错误代码
       switch (errorName) {
-        case 'ValidationError':
-          return 'VALIDATION_ERROR';
-        case 'AuthenticationError':
-          return 'AUTHENTICATION_ERROR';
-        case 'AuthorizationError':
-          return 'AUTHORIZATION_ERROR';
-        case 'NotFoundError':
-          return 'NOT_FOUND_ERROR';
-        case 'TimeoutError':
-          return 'TIMEOUT_ERROR';
+        case "ValidationError":
+          return "VALIDATION_ERROR";
+        case "AuthenticationError":
+          return "AUTHENTICATION_ERROR";
+        case "AuthorizationError":
+          return "AUTHORIZATION_ERROR";
+        case "NotFoundError":
+          return "NOT_FOUND_ERROR";
+        case "TimeoutError":
+          return "TIMEOUT_ERROR";
         default:
-          return 'INTERNAL_ERROR';
+          return "INTERNAL_ERROR";
       }
     }
-    
-    return 'UNKNOWN_ERROR';
+
+    return "UNKNOWN_ERROR";
   }
 }
