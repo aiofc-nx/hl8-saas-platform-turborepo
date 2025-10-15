@@ -5,8 +5,9 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { BaseEntity, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { EntityId } from '@hl8/isolation-model';
+import type { IPureLogger } from '@hl8/pure-logger';
 
 export class OrganizationMember extends BaseEntity {
   constructor(
@@ -17,7 +18,7 @@ export class OrganizationMember extends BaseEntity {
     private _joinedAt: Date,
     private _leftAt: Date | null,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
   }

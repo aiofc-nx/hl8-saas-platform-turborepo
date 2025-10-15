@@ -2,9 +2,10 @@
  * 部门聚合根（简化版本）
  */
 
-import { TenantAwareAggregateRoot, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { Department } from '../entities/department.entity';
-import { DepartmentClosure } from '../entities/department-closure.entity';
+import { TenantAwareAggregateRoot, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { EntityId } from '@hl8/isolation-model';
+import { Department } from '../entities/department.entity.js';
+import { DepartmentClosure } from '../entities/department-closure.entity.js';
 
 export class DepartmentAggregate extends TenantAwareAggregateRoot {
   private _closurePaths: DepartmentClosure[] = [];

@@ -5,10 +5,11 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { OrganizationStatus } from '../value-objects/organization-status.vo';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { OrganizationType } from '../value-objects/organization-type.vo';
+import { BaseEntity, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { EntityId } from '@hl8/isolation-model';
+import { OrganizationStatus } from '../value-objects/organization-status.vo.js';
+import type { IPureLogger } from '@hl8/pure-logger';
+import { OrganizationType } from '../value-objects/organization-type.vo.js';
 
 export class Organization extends BaseEntity {
   constructor(
@@ -21,7 +22,7 @@ export class Organization extends BaseEntity {
     private _isDefault: boolean,
     private _displayOrder: number,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
   }

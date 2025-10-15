@@ -20,8 +20,12 @@
  * @since 1.0.0
  */
 
-import type { IPureLogger, LogContext, LogLevel } from '../interfaces/pure-logger.interface.js';
-import { LogLevel as LogLevelEnum } from '../interfaces/pure-logger.interface.js';
+import type {
+  IPureLogger,
+  LogContext,
+  LogLevel,
+} from "../interfaces/pure-logger.interface.js";
+import { LogLevel as LogLevelEnum } from "../interfaces/pure-logger.interface.js";
 
 /**
  * 结构化日志配置接口
@@ -55,7 +59,7 @@ export class StructuredLogger implements IPureLogger {
   constructor(
     initialLevel: LogLevel = LogLevelEnum.INFO,
     defaultContext: LogContext = {},
-    config: StructuredLoggerConfig = {}
+    config: StructuredLoggerConfig = {},
   ) {
     this.currentLevel = initialLevel;
     this.defaultContext = { ...defaultContext };
@@ -72,7 +76,7 @@ export class StructuredLogger implements IPureLogger {
    */
   debug(message: string, context?: LogContext): void {
     if (this.shouldLog(LogLevelEnum.DEBUG)) {
-      this.log('debug', message, context);
+      this.log("debug", message, context);
     }
   }
 
@@ -81,7 +85,7 @@ export class StructuredLogger implements IPureLogger {
    */
   info(message: string, context?: LogContext): void {
     if (this.shouldLog(LogLevelEnum.INFO)) {
-      this.log('info', message, context);
+      this.log("info", message, context);
     }
   }
 
@@ -90,7 +94,7 @@ export class StructuredLogger implements IPureLogger {
    */
   warn(message: string, context?: LogContext): void {
     if (this.shouldLog(LogLevelEnum.WARN)) {
-      this.log('warn', message, context);
+      this.log("warn", message, context);
     }
   }
 
@@ -100,9 +104,9 @@ export class StructuredLogger implements IPureLogger {
   error(message: string | Error, context?: LogContext): void {
     if (this.shouldLog(LogLevelEnum.ERROR)) {
       if (message instanceof Error) {
-        this.logError('error', message, context);
+        this.logError("error", message, context);
       } else {
-        this.log('error', message, context);
+        this.log("error", message, context);
       }
     }
   }
@@ -187,7 +191,11 @@ export class StructuredLogger implements IPureLogger {
   /**
    * 创建日志条目
    */
-  private createLogEntry(level: string, message: string, context?: LogContext): Record<string, unknown> {
+  private createLogEntry(
+    level: string,
+    message: string,
+    context?: LogContext,
+  ): Record<string, unknown> {
     const timestamp = new Date().toISOString();
     const contextData = this.mergeContext(context);
 
@@ -214,8 +222,11 @@ export class StructuredLogger implements IPureLogger {
     const result: LogContext = {};
 
     for (const [key, value] of Object.entries(context)) {
-      if (typeof value === 'string' && value.length > this.config.maxFieldLength) {
-        result[key] = value.substring(0, this.config.maxFieldLength) + '...';
+      if (
+        typeof value === "string" &&
+        value.length > this.config.maxFieldLength
+      ) {
+        result[key] = value.substring(0, this.config.maxFieldLength) + "...";
       } else {
         result[key] = value;
       }
@@ -229,28 +240,28 @@ export class StructuredLogger implements IPureLogger {
    */
   private logFormatted(logEntry: Record<string, unknown>): void {
     const { timestamp, level, message, ...context } = logEntry;
-    
+
     let output = `[${timestamp}] ${String(level).toUpperCase()}: ${message}`;
-    
+
     if (Object.keys(context).length > 0) {
       const contextStr = Object.entries(context)
         .map(([key, value]) => `${key}=${this.formatValue(value)}`)
-        .join(' ');
+        .join(" ");
       output += ` | ${contextStr}`;
     }
 
     // 根据级别选择输出方法
     switch (level) {
-      case 'debug':
+      case "debug":
         console.debug(output);
         break;
-      case 'info':
+      case "info":
         console.info(output);
         break;
-      case 'warn':
+      case "warn":
         console.warn(output);
         break;
-      case 'error':
+      case "error":
         console.error(output);
         break;
       default:
@@ -262,10 +273,10 @@ export class StructuredLogger implements IPureLogger {
    * 格式化值用于显示
    */
   private formatValue(value: unknown): string {
-    if (value === null) return 'null';
-    if (value === undefined) return 'undefined';
-    if (typeof value === 'string') return `"${value}"`;
-    if (typeof value === 'object') return JSON.stringify(value);
+    if (value === null) return "null";
+    if (value === undefined) return "undefined";
+    if (typeof value === "string") return `"${value}"`;
+    if (typeof value === "object") return JSON.stringify(value);
     return String(value);
   }
 }

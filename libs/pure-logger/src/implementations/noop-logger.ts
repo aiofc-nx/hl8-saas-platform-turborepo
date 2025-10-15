@@ -19,8 +19,12 @@
  * @since 1.0.0
  */
 
-import type { IPureLogger, LogContext, LogLevel } from '../interfaces/pure-logger.interface.js';
-import { LogLevel as LogLevelEnum } from '../interfaces/pure-logger.interface.js';
+import type {
+  IPureLogger,
+  LogContext,
+  LogLevel,
+} from "../interfaces/pure-logger.interface.js";
+import { LogLevel as LogLevelEnum } from "../interfaces/pure-logger.interface.js";
 
 /**
  * 空操作日志实现类
@@ -35,7 +39,10 @@ export class NoOpLogger implements IPureLogger {
    * @param initialLevel - 初始日志级别，默认为 ERROR
    * @param defaultContext - 默认上下文信息
    */
-  constructor(initialLevel: LogLevel = LogLevelEnum.ERROR, defaultContext: LogContext = {}) {
+  constructor(
+    initialLevel: LogLevel = LogLevelEnum.ERROR,
+    defaultContext: LogContext = {},
+  ) {
     this.currentLevel = initialLevel;
     this.defaultContext = { ...defaultContext };
   }

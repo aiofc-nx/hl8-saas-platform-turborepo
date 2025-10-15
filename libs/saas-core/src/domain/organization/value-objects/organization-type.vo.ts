@@ -32,7 +32,7 @@
  */
 
 import { BaseValueObject } from '@hl8/hybrid-archi';
-import { ORGANIZATION_TYPE_CONFIG } from '../../../constants/organization.constants';
+import { ORGANIZATION_TYPE_CONFIG } from '../../../constants/organization.constants.js';
 
 /**
  * 组织类型枚举

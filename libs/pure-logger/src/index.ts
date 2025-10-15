@@ -39,53 +39,36 @@
 export type {
   IPureLogger,
   LogContext,
-} from './interfaces/pure-logger.interface.js';
+} from "./interfaces/pure-logger.interface.js";
 
-export {
-  LogLevel,
-} from './interfaces/pure-logger.interface.js';
+export { LogLevel } from "./interfaces/pure-logger.interface.js";
 
 // 实现类导出
-export {
-  ConsoleLogger,
-} from './implementations/console-logger.js';
+export { ConsoleLogger } from "./implementations/console-logger.js";
 
-export {
-  NoOpLogger,
-} from './implementations/noop-logger.js';
+export { NoOpLogger } from "./implementations/noop-logger.js";
 
-export {
-  StructuredLogger,
-} from './implementations/structured-logger.js';
+export { StructuredLogger } from "./implementations/structured-logger.js";
 
-export type {
-  StructuredLoggerConfig,
-} from './implementations/structured-logger.js';
+export type { StructuredLoggerConfig } from "./implementations/structured-logger.js";
 
 // 工厂类导出
-export {
-  LoggerFactory,
-  LoggerType,
-} from './factories/logger-factory.js';
+export { LoggerFactory, LoggerType } from "./factories/logger-factory.js";
 
-export type {
-  LoggerConfig,
-} from './factories/logger-factory.js';
+export type { LoggerConfig } from "./factories/logger-factory.js";
 
 // 适配器导出
 export {
   BaseLoggerAdapter,
   LoggerAdapterManager,
   loggerAdapterManager,
-} from './adapters/logger-adapter.js';
+} from "./adapters/logger-adapter.js";
 
-export type {
-  ILoggerAdapter,
-} from './adapters/logger-adapter.js';
+export type { ILoggerAdapter } from "./adapters/logger-adapter.js";
 
 // 便捷方法导出
-import { LoggerFactory, LoggerType } from './factories/logger-factory.js';
-import { LogLevel } from './interfaces/pure-logger.interface.js';
+import { LoggerFactory, LoggerType } from "./factories/logger-factory.js";
+import { LogLevel } from "./interfaces/pure-logger.interface.js";
 
 /**
  * 创建默认日志器
@@ -93,7 +76,9 @@ import { LogLevel } from './interfaces/pure-logger.interface.js';
  * @param context - 默认上下文
  * @returns 日志器实例
  */
-export function createLogger(context: Record<string, unknown> = {}): ReturnType<typeof LoggerFactory.create> {
+export function createLogger(
+  context: Record<string, unknown> = {},
+): ReturnType<typeof LoggerFactory.create> {
   return LoggerFactory.create({
     defaultContext: context,
   });
@@ -108,7 +93,7 @@ export function createLogger(context: Record<string, unknown> = {}): ReturnType<
  */
 export function createDomainLogger(
   domain: string,
-  level: LogLevel = LogLevel.INFO
+  level: LogLevel = LogLevel.INFO,
 ): ReturnType<typeof LoggerFactory.create> {
   return LoggerFactory.create({
     type: LoggerType.CONSOLE,
@@ -126,7 +111,9 @@ export function createDomainLogger(
  * @param context - 默认上下文
  * @returns 日志器实例
  */
-export function createProductionLogger(context: Record<string, unknown> = {}): ReturnType<typeof LoggerFactory.create> {
+export function createProductionLogger(
+  context: Record<string, unknown> = {},
+): ReturnType<typeof LoggerFactory.create> {
   return LoggerFactory.create({
     type: LoggerType.NOOP,
     level: LogLevel.ERROR,

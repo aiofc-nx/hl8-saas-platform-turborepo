@@ -26,13 +26,13 @@
  */
 export enum LogLevel {
   /** 调试信息 - 详细的调试信息，通常只在诊断问题时使用 */
-  DEBUG = 'debug',
+  DEBUG = "debug",
   /** 一般信息 - 一般性的信息记录 */
-  INFO = 'info',
+  INFO = "info",
   /** 警告信息 - 警告信息，表明可能的问题 */
-  WARN = 'warn',
+  WARN = "warn",
   /** 错误信息 - 错误信息，表明发生了错误 */
-  ERROR = 'error',
+  ERROR = "error",
 }
 
 /**

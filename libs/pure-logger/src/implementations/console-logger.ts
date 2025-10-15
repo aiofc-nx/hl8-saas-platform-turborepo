@@ -20,8 +20,12 @@
  * @since 1.0.0
  */
 
-import type { IPureLogger, LogContext, LogLevel } from '../interfaces/pure-logger.interface.js';
-import { LogLevel as LogLevelEnum } from '../interfaces/pure-logger.interface.js';
+import type {
+  IPureLogger,
+  LogContext,
+  LogLevel,
+} from "../interfaces/pure-logger.interface.js";
+import { LogLevel as LogLevelEnum } from "../interfaces/pure-logger.interface.js";
 
 /**
  * 控制台日志实现类
@@ -36,7 +40,10 @@ export class ConsoleLogger implements IPureLogger {
    * @param initialLevel - 初始日志级别，默认为 INFO
    * @param defaultContext - 默认上下文信息
    */
-  constructor(initialLevel: LogLevel = LogLevelEnum.INFO, defaultContext: LogContext = {}) {
+  constructor(
+    initialLevel: LogLevel = LogLevelEnum.INFO,
+    defaultContext: LogContext = {},
+  ) {
     this.currentLevel = initialLevel;
     this.defaultContext = { ...defaultContext };
   }
@@ -46,7 +53,7 @@ export class ConsoleLogger implements IPureLogger {
    */
   debug(message: string, context?: LogContext): void {
     if (this.shouldLog(LogLevelEnum.DEBUG)) {
-      this.log('DEBUG', message, context);
+      this.log("DEBUG", message, context);
     }
   }
 
@@ -55,7 +62,7 @@ export class ConsoleLogger implements IPureLogger {
    */
   info(message: string, context?: LogContext): void {
     if (this.shouldLog(LogLevelEnum.INFO)) {
-      this.log('INFO', message, context);
+      this.log("INFO", message, context);
     }
   }
 
@@ -64,7 +71,7 @@ export class ConsoleLogger implements IPureLogger {
    */
   warn(message: string, context?: LogContext): void {
     if (this.shouldLog(LogLevelEnum.WARN)) {
-      this.log('WARN', message, context);
+      this.log("WARN", message, context);
     }
   }
 
@@ -74,9 +81,9 @@ export class ConsoleLogger implements IPureLogger {
   error(message: string | Error, context?: LogContext): void {
     if (this.shouldLog(LogLevelEnum.ERROR)) {
       if (message instanceof Error) {
-        this.logError('ERROR', message, context);
+        this.logError("ERROR", message, context);
       } else {
-        this.log('ERROR', message, context);
+        this.log("ERROR", message, context);
       }
     }
   }
@@ -133,16 +140,16 @@ export class ConsoleLogger implements IPureLogger {
 
     // 根据级别选择不同的控制台方法
     switch (level) {
-      case 'DEBUG':
+      case "DEBUG":
         console.debug(logEntry);
         break;
-      case 'INFO':
+      case "INFO":
         console.info(logEntry);
         break;
-      case 'WARN':
+      case "WARN":
         console.warn(logEntry);
         break;
-      case 'ERROR':
+      case "ERROR":
         console.error(logEntry);
         break;
       default:

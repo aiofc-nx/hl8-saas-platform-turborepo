@@ -19,7 +19,11 @@
  * @since 1.0.0
  */
 
-import type { IPureLogger, LogContext, LogLevel } from '../interfaces/pure-logger.interface.js';
+import type {
+  IPureLogger,
+  LogContext,
+  LogLevel,
+} from "../interfaces/pure-logger.interface.js";
 
 /**
  * 日志适配器接口
@@ -104,7 +108,7 @@ export class LoggerAdapterManager {
    */
   register(name: string, adapter: ILoggerAdapter, isDefault = false): void {
     this.adapters.set(name, adapter);
-    
+
     if (isDefault || !this.defaultAdapter) {
       this.defaultAdapter = name;
     }
@@ -136,7 +140,9 @@ export class LoggerAdapterManager {
    * @returns 可用适配器列表
    */
   getAvailableAdapters(): ILoggerAdapter[] {
-    return Array.from(this.adapters.values()).filter(adapter => adapter.isAvailable());
+    return Array.from(this.adapters.values()).filter((adapter) =>
+      adapter.isAvailable(),
+    );
   }
 
   /**
@@ -144,8 +150,14 @@ export class LoggerAdapterManager {
    *
    * @returns 适配器信息列表
    */
-  getAdapterInfos(): Array<{ name: string; version: string; available: boolean }> {
-    return Array.from(this.adapters.values()).map(adapter => adapter.getInfo());
+  getAdapterInfos(): Array<{
+    name: string;
+    version: string;
+    available: boolean;
+  }> {
+    return Array.from(this.adapters.values()).map((adapter) =>
+      adapter.getInfo(),
+    );
   }
 
   /**
@@ -166,10 +178,11 @@ export class LoggerAdapterManager {
    */
   unregister(name: string): void {
     this.adapters.delete(name);
-    
+
     if (this.defaultAdapter === name) {
       const availableAdapters = this.getAvailableAdapters();
-      this.defaultAdapter = availableAdapters.length > 0 ? availableAdapters[0]?.name : undefined;
+      this.defaultAdapter =
+        availableAdapters.length > 0 ? availableAdapters[0]?.name : undefined;
     }
   }
 

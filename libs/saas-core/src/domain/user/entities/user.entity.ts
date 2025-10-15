@@ -43,10 +43,11 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { Username, Email, PhoneNumber, UserStatus } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { USER_STATUS_TRANSITIONS } from '../../../constants/user.constants';
+import { BaseEntity, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { EntityId } from '@hl8/isolation-model';
+import { Username, Email, PhoneNumber, UserStatus } from '../value-objects/index.js';
+import type { IPureLogger } from '@hl8/pure-logger';
+import { USER_STATUS_TRANSITIONS } from '../../../constants/user.constants.js';
 
 /**
  * 用户实体
@@ -67,7 +68,7 @@ export class User extends BaseEntity {
    * @param {boolean} phoneVerified - 手机已验证
    * @param {Date} [lastLoginAt] - 最后登录时间
    * @param {IPartialAuditInfo} auditInfo - 审计信息
-   * @param {PinoLogger} [logger] - 日志记录器
+   * @param {IPureLogger} [logger] - 日志记录器
    */
   constructor(
     id: EntityId,
@@ -79,7 +80,7 @@ export class User extends BaseEntity {
     private _phoneVerified: boolean,
     private _lastLoginAt: Date | null,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
   }
@@ -191,7 +192,7 @@ export class User extends BaseEntity {
     this._status = UserStatus.DISABLED;
     this.updateTimestamp();
     
-    this.logger.warn(`用户已禁用 - userId: ${this.id.toString()}, reason: ${reason}`);
+    this.logger?.warn(`用户已禁用 - userId: ${this.id.toString()}, reason: ${reason}`);
   }
 
   /**

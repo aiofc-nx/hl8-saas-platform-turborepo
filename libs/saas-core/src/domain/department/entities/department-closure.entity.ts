@@ -2,7 +2,8 @@
  * 部门闭包表实体
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { BaseEntity, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { EntityId } from '@hl8/isolation-model';
 
 export class DepartmentClosure extends BaseEntity {
   constructor(

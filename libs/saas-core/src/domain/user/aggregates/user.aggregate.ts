@@ -20,12 +20,13 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { Username, Email, PhoneNumber } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { User } from '../entities/user.entity';
-import { UserProfile } from '../entities/user-profile.entity';
-import { UserCredentials } from '../entities/user-credentials.entity';
+import { TenantAwareAggregateRoot, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { EntityId } from '@hl8/isolation-model';
+import { Username, Email, PhoneNumber } from '../value-objects/index.js';
+import type { IPureLogger } from '@hl8/pure-logger';
+import { User } from '../entities/user.entity.js';
+import { UserProfile } from '../entities/user-profile.entity.js';
+import { UserCredentials } from '../entities/user-credentials.entity.js';
 
 export class UserAggregate extends TenantAwareAggregateRoot {
   constructor(
@@ -34,7 +35,7 @@ export class UserAggregate extends TenantAwareAggregateRoot {
     private _profile: UserProfile,
     private _credentials: UserCredentials,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
   }

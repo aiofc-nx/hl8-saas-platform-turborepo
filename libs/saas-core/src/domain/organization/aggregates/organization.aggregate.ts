@@ -5,11 +5,12 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { Organization } from '../entities/organization.entity';
-import { OrganizationMember } from '../entities/organization-member.entity';
-import { OrganizationType } from '../value-objects/organization-type.vo';
+import { TenantAwareAggregateRoot, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { EntityId } from '@hl8/isolation-model';
+import type { IPureLogger } from '@hl8/pure-logger';
+import { Organization } from '../entities/organization.entity.js';
+import { OrganizationMember } from '../entities/organization-member.entity.js';
+import { OrganizationType } from '../value-objects/organization-type.vo.js';
 
 export class OrganizationAggregate extends TenantAwareAggregateRoot {
   private _members: OrganizationMember[] = [];
@@ -18,7 +19,7 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
     id: EntityId,
     private _organization: Organization,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
   }

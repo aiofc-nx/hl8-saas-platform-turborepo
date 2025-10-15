@@ -19,22 +19,28 @@
  * @since 1.0.0
  */
 
-import type { IPureLogger, LogLevel } from '../interfaces/pure-logger.interface.js';
-import { LogLevel as LogLevelEnum } from '../interfaces/pure-logger.interface.js';
-import { ConsoleLogger } from '../implementations/console-logger.js';
-import { NoOpLogger } from '../implementations/noop-logger.js';
-import { StructuredLogger, type StructuredLoggerConfig } from '../implementations/structured-logger.js';
+import type {
+  IPureLogger,
+  LogLevel,
+} from "../interfaces/pure-logger.interface.js";
+import { LogLevel as LogLevelEnum } from "../interfaces/pure-logger.interface.js";
+import { ConsoleLogger } from "../implementations/console-logger.js";
+import { NoOpLogger } from "../implementations/noop-logger.js";
+import {
+  StructuredLogger,
+  type StructuredLoggerConfig,
+} from "../implementations/structured-logger.js";
 
 /**
  * 日志类型枚举
  */
 export enum LoggerType {
   /** 控制台日志 */
-  CONSOLE = 'console',
+  CONSOLE = "console",
   /** 空操作日志 */
-  NOOP = 'noop',
+  NOOP = "noop",
   /** 结构化日志 */
-  STRUCTURED = 'structured',
+  STRUCTURED = "structured",
 }
 
 /**
@@ -76,7 +82,11 @@ export class LoggerFactory {
       case LoggerType.NOOP:
         return new NoOpLogger(level, defaultContext);
       case LoggerType.STRUCTURED:
-        return new StructuredLogger(level, defaultContext, config.structuredConfig || {});
+        return new StructuredLogger(
+          level,
+          defaultContext,
+          config.structuredConfig || {},
+        );
       default:
         throw new Error(`Unsupported logger type: ${type}`);
     }
@@ -89,7 +99,10 @@ export class LoggerFactory {
    * @param defaultContext - 默认上下文
    * @returns 控制台日志器实例
    */
-  static createConsoleLogger(level: LogLevel = LogLevelEnum.INFO, defaultContext: Record<string, unknown> = {}): IPureLogger {
+  static createConsoleLogger(
+    level: LogLevel = LogLevelEnum.INFO,
+    defaultContext: Record<string, unknown> = {},
+  ): IPureLogger {
     return new ConsoleLogger(level, defaultContext);
   }
 
@@ -100,7 +113,10 @@ export class LoggerFactory {
    * @param defaultContext - 默认上下文
    * @returns 空操作日志器实例
    */
-  static createNoOpLogger(level: LogLevel = LogLevelEnum.ERROR, defaultContext: Record<string, unknown> = {}): IPureLogger {
+  static createNoOpLogger(
+    level: LogLevel = LogLevelEnum.ERROR,
+    defaultContext: Record<string, unknown> = {},
+  ): IPureLogger {
     return new NoOpLogger(level, defaultContext);
   }
 
@@ -115,7 +131,7 @@ export class LoggerFactory {
   static createStructuredLogger(
     level: LogLevel = LogLevelEnum.INFO,
     defaultContext: Record<string, unknown> = {},
-    config: StructuredLoggerConfig = {}
+    config: StructuredLoggerConfig = {},
   ): IPureLogger {
     return new StructuredLogger(level, defaultContext, config);
   }
@@ -127,13 +143,14 @@ export class LoggerFactory {
    */
   private static getDefaultLoggerType(): LoggerType {
     // 可以根据环境变量或其他条件决定默认类型
-    const env = typeof process !== 'undefined' ? process.env.NODE_ENV : 'development';
-    
+    const env =
+      typeof process !== "undefined" ? process.env.NODE_ENV : "development";
+
     switch (env) {
-      case 'production':
-      case 'test':
+      case "production":
+      case "test":
         return LoggerType.NOOP;
-      case 'development':
+      case "development":
       default:
         return LoggerType.CONSOLE;
     }
