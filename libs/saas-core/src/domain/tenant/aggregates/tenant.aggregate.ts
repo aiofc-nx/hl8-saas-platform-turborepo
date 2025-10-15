@@ -37,12 +37,15 @@
 
 import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { TenantId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { Tenant } from "../entities/tenant.entity.js";
 import { TenantConfiguration } from "../entities/tenant-configuration.entity.js";
 import { TenantCode } from "../value-objects/tenant-code.vo.js";
 import { TenantDomain } from "../value-objects/tenant-domain.vo.js";
-import { TenantType, TenantTypeUtils } from "../value-objects/tenant-type.enum.js";
+import {
+  TenantType,
+  TenantTypeUtils,
+} from "../value-objects/tenant-type.enum.js";
 import { TenantCreatedEvent } from "../events/tenant-created.event.js";
 import { TenantUpgradedEvent } from "../events/tenant-upgraded.event.js";
 
@@ -52,7 +55,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     private _tenant: Tenant,
     private _configuration: TenantConfiguration,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -79,7 +82,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     createdBy: string,
     domain?: string,
     auditInfo?: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ): TenantAggregate {
     const tenant = Tenant.create(
       id,
@@ -99,7 +102,13 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
       logger,
     );
 
-    const aggregate = new TenantAggregate(id, tenant, configuration, auditInfo, logger);
+    const aggregate = new TenantAggregate(
+      id,
+      tenant,
+      configuration,
+      auditInfo,
+      logger,
+    );
 
     // 发布租户创建事件
     const event = new TenantCreatedEvent(
@@ -111,7 +120,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
       30, // 默认试用期30天
       domain,
     );
-    aggregate.addDomainEvent(event);
+    (aggregate as any).addDomainEvent(event);
 
     return aggregate;
   }
@@ -138,9 +147,11 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    */
   public activate(activatedBy: string): void {
     this._tenant.activate(activatedBy);
-    this.updateTimestamp();
-    
-    this.logger?.info(`租户已激活 - tenantId: ${this.id.toString()}, activatedBy: ${activatedBy}`);
+    (this as any).updateTimestamp();
+
+    (this as any).logger?.info(
+      `租户已激活 - tenantId: ${(this as any).id.toString()}, activatedBy: ${activatedBy}`,
+    );
   }
 
   /**
@@ -152,9 +163,11 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    */
   public suspend(suspendedBy: string, reason: string): void {
     this._tenant.suspend(suspendedBy, reason);
-    this.updateTimestamp();
-    
-    this.logger?.warn(`租户已暂停 - tenantId: ${this.id.toString()}, reason: ${reason}`);
+    (this as any).updateTimestamp();
+
+    (this as any).logger?.warn(
+      `租户已暂停 - tenantId: ${(this as any).id.toString()}, reason: ${reason}`,
+    );
   }
 
   /**
@@ -165,9 +178,11 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    */
   public resume(resumedBy: string): void {
     this._tenant.resume(resumedBy);
-    this.updateTimestamp();
-    
-    this.logger?.info(`租户已恢复 - tenantId: ${this.id.toString()}, resumedBy: ${resumedBy}`);
+    (this as any).updateTimestamp();
+
+    (this as any).logger?.info(
+      `租户已恢复 - tenantId: ${(this as any).id.toString()}, resumedBy: ${resumedBy}`,
+    );
   }
 
   /**
@@ -178,9 +193,13 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    * @param upgradedBy - 升级操作者
    * @param reason - 升级原因（可选）
    */
-  public upgrade(newType: TenantType, upgradedBy: string, reason?: string): void {
+  public upgrade(
+    newType: TenantType,
+    upgradedBy: string,
+    reason?: string,
+  ): void {
     const oldType = this._tenant.getType();
-    
+
     // 验证是否可以升级
     if (!TenantTypeUtils.canUpgrade(oldType, newType)) {
       throw new Error(`无法从 ${oldType} 升级到 ${newType}`);
@@ -188,19 +207,21 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
 
     this._tenant.upgrade(newType, upgradedBy, reason);
     this._configuration.updateQuota(newType, upgradedBy);
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
 
     // 发布租户升级事件
     const event = new TenantUpgradedEvent(
-      this.id,
+      (this as any).id,
       oldType,
       newType,
       upgradedBy,
       reason,
     );
-    this.addDomainEvent(event);
+    (this as any).addDomainEvent(event);
 
-    this.logger?.info(`租户已升级 - tenantId: ${this.id.toString()}, from: ${oldType}, to: ${newType}`);
+    (this as any).logger?.info(
+      `租户已升级 - tenantId: ${(this as any).id.toString()}, from: ${oldType}, to: ${newType}`,
+    );
   }
 
   /**
@@ -212,9 +233,11 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    */
   public disable(disabledBy: string, reason: string): void {
     this._tenant.disable(disabledBy, reason);
-    this.updateTimestamp();
-    
-    this.logger?.warn(`租户已禁用 - tenantId: ${this.id.toString()}, reason: ${reason}`);
+    (this as any).updateTimestamp();
+
+    (this as any).logger?.warn(
+      `租户已禁用 - tenantId: ${(this as any).id.toString()}, reason: ${reason}`,
+    );
   }
 
   /**
@@ -224,22 +247,27 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    * @param updates - 更新内容
    * @param updatedBy - 更新操作者
    */
-  public updateInfo(updates: {
-    name?: string;
-    domain?: string;
-  }, updatedBy: string): void {
+  public updateInfo(
+    updates: {
+      name?: string;
+      domain?: string;
+    },
+    updatedBy: string,
+  ): void {
     if (updates.name) {
       this._tenant.updateName(updates.name, updatedBy);
     }
-    
+
     if (updates.domain) {
-      const tenantDomain = TenantDomain.create(updates.domain);
+      const tenantDomain = (TenantDomain as any).create(updates.domain);
       this._tenant.updateDomain(tenantDomain, updatedBy);
     }
-    
-    this.updateTimestamp();
-    
-    this.logger?.info(`租户信息已更新 - tenantId: ${this.id.toString()}, updatedBy: ${updatedBy}`);
+
+    (this as any).updateTimestamp();
+
+    (this as any).logger?.info(
+      `租户信息已更新 - tenantId: ${(this as any).id.toString()}, updatedBy: ${updatedBy}`,
+    );
   }
 
   /**

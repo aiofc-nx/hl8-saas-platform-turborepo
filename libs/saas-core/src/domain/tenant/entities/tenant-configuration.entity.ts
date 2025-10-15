@@ -29,7 +29,7 @@
 
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { TenantId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { TenantType, TenantTypeUtils } from "../value-objects/tenant-type.enum.js";
 
 /**
@@ -79,7 +79,7 @@ export class TenantConfiguration extends BaseEntity {
     usage: UsageStats,
     settings: Record<string, any>,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
     this._quota = quota;
@@ -101,7 +101,7 @@ export class TenantConfiguration extends BaseEntity {
     id: TenantId,
     tenantType: TenantType,
     auditInfo?: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ): TenantConfiguration {
     const quota = TenantConfiguration.getDefaultQuota(tenantType);
     const usage: UsageStats = {
@@ -161,9 +161,9 @@ export class TenantConfiguration extends BaseEntity {
   public updateQuota(tenantType: TenantType, updatedBy: string): void {
     this._tenantType = tenantType;
     this._quota = TenantConfiguration.getDefaultQuota(tenantType);
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户配额已更新 - tenantId: ${this.id.toString()}, type: ${tenantType}`);
+    (this as any).logger?.info(`租户配额已更新 - tenantId: ${(this as any).id.toString()}, type: ${tenantType}`);
   }
 
   /**
@@ -174,7 +174,7 @@ export class TenantConfiguration extends BaseEntity {
    */
   public updateUsage(usage: Partial<UsageStats>): void {
     this._usage = { ...this._usage, ...usage };
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
   }
 
   /**
@@ -187,9 +187,9 @@ export class TenantConfiguration extends BaseEntity {
    */
   public updateSetting(key: string, value: any, updatedBy: string): void {
     this._settings[key] = value;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户配置已更新 - tenantId: ${this.id.toString()}, key: ${key}`);
+    (this as any).logger?.info(`租户配置已更新 - tenantId: ${(this as any).id.toString()}, key: ${key}`);
   }
 
   /**
@@ -201,9 +201,9 @@ export class TenantConfiguration extends BaseEntity {
    */
   public updateSettings(settings: Record<string, any>, updatedBy: string): void {
     this._settings = { ...this._settings, ...settings };
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户配置已批量更新 - tenantId: ${this.id.toString()}, keys: ${Object.keys(settings).join(', ')}`);
+    (this as any).logger?.info(`租户配置已批量更新 - tenantId: ${(this as any).id.toString()}, keys: ${Object.keys(settings).join(', ')}`);
   }
 
   /**

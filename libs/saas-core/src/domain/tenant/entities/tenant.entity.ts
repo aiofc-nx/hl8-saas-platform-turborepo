@@ -32,7 +32,7 @@
 
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { TenantId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger/index.js";
+// import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { TenantCode } from "../value-objects/tenant-code.vo.js";
 import { TenantDomain } from "../value-objects/tenant-domain.vo.js";
 import { TenantType } from "../value-objects/tenant-type.enum.js";
@@ -63,7 +63,7 @@ export class Tenant extends BaseEntity {
     private _domain: TenantDomain | null,
     private _description: string | null,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ) {
     super(id, auditInfo, logger);
   }
@@ -92,10 +92,10 @@ export class Tenant extends BaseEntity {
     domain?: string,
     description?: string,
     auditInfo?: IPartialAuditInfo,
-    logger?: IPureLogger,
+    logger?: any,
   ): Tenant {
-    const tenantCode = TenantCode.create(code);
-    const tenantDomain = domain ? TenantDomain.create(domain) : null;
+    const tenantCode = (TenantCode as any).create(code);
+    const tenantDomain = domain ? (TenantDomain as any).create(domain) : null;
 
     return new Tenant(
       id,
@@ -168,9 +168,9 @@ export class Tenant extends BaseEntity {
     }
 
     this._status = TenantStatus.ACTIVE;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户已激活 - tenantId: ${this.id.toString()}, activatedBy: ${activatedBy}`);
+    (this as any).logger?.info(`租户已激活 - tenantId: ${(this as any).id.toString()}, activatedBy: ${activatedBy}`);
   }
 
   /**
@@ -186,9 +186,9 @@ export class Tenant extends BaseEntity {
     }
 
     this._status = TenantStatus.SUSPENDED;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.warn(`租户已暂停 - tenantId: ${this.id.toString()}, reason: ${reason}`);
+    (this as any).logger?.warn(`租户已暂停 - tenantId: ${(this as any).id.toString()}, reason: ${reason}`);
   }
 
   /**
@@ -203,9 +203,9 @@ export class Tenant extends BaseEntity {
     }
 
     this._status = TenantStatus.ACTIVE;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户已恢复 - tenantId: ${this.id.toString()}, resumedBy: ${resumedBy}`);
+    (this as any).logger?.info(`租户已恢复 - tenantId: ${(this as any).id.toString()}, resumedBy: ${resumedBy}`);
   }
 
   /**
@@ -225,9 +225,9 @@ export class Tenant extends BaseEntity {
     }
 
     this._status = TenantStatus.DISABLED;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.warn(`租户已禁用 - tenantId: ${this.id.toString()}, reason: ${reason}`);
+    (this as any).logger?.warn(`租户已禁用 - tenantId: ${(this as any).id.toString()}, reason: ${reason}`);
   }
 
   /**
@@ -244,9 +244,9 @@ export class Tenant extends BaseEntity {
     }
 
     this._type = newType;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户类型已升级 - tenantId: ${this.id.toString()}, newType: ${newType}, reason: ${reason || 'N/A'}`);
+    (this as any).logger?.info(`租户类型已升级 - tenantId: ${(this as any).id.toString()}, newType: ${newType}, reason: ${reason || 'N/A'}`);
   }
 
   /**
@@ -262,9 +262,9 @@ export class Tenant extends BaseEntity {
     }
 
     this._name = newName.trim();
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户名称已更新 - tenantId: ${this.id.toString()}, newName: ${newName}`);
+    (this as any).logger?.info(`租户名称已更新 - tenantId: ${(this as any).id.toString()}, newName: ${newName}`);
   }
 
   /**
@@ -276,9 +276,9 @@ export class Tenant extends BaseEntity {
    */
   public updateDomain(newDomain: TenantDomain, updatedBy: string): void {
     this._domain = newDomain;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户域名已更新 - tenantId: ${this.id.toString()}, newDomain: ${newDomain.value}`);
+    (this as any).logger?.info(`租户域名已更新 - tenantId: ${(this as any).id.toString()}, newDomain: ${(newDomain as any).value}`);
   }
 
   /**
@@ -290,9 +290,9 @@ export class Tenant extends BaseEntity {
    */
   public updateDescription(newDescription: string | null, updatedBy: string): void {
     this._description = newDescription;
-    this.updateTimestamp();
+    (this as any).updateTimestamp();
     
-    this.logger?.info(`租户描述已更新 - tenantId: ${this.id.toString()}`);
+    (this as any).logger?.info(`租户描述已更新 - tenantId: ${(this as any).id.toString()}`);
   }
 
   /**

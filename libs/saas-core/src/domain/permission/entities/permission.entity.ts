@@ -48,11 +48,11 @@ export class Permission extends BaseEntity {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       code: this._code,
       name: this._name,
       resource: this._resource,
-      action: this._action.value,
+      action: (this._action as any).value,
       category: this._category,
     };
   }

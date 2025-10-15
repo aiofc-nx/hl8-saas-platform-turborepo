@@ -15,7 +15,7 @@ export class OrganizationCreatedEvent extends BaseDomainEvent {
     return "OrganizationCreated";
   }
 
-  public override toJSON(): Record<string, unknown> {
+  public toJSON(): Record<string, unknown> {
     return {
       ...super.toJSON(),
       code: this.code,

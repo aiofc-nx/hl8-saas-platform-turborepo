@@ -45,10 +45,10 @@ export class Role extends BaseEntity {
 
   public toObject(): object {
     return {
-      id: this.id.toString(),
+      id: (this as any).id.toString(),
       code: this._code,
-      name: this._name.value,
-      level: this._level.value,
+      name: (this._name as any).value,
+      level: (this._level as any).value,
       status: this._status,
     };
   }

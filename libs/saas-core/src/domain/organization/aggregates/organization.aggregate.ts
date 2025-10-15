@@ -55,7 +55,9 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
     );
 
     this._members.push(member);
-    (this as any).logTenantOperation("组织成员已添加", { userId: userId.toString() });
+    (this as any).logTenantOperation("组织成员已添加", {
+      userId: userId.toString(),
+    });
   }
 
   public removeMember(userId: EntityId, updatedBy: string): void {
