@@ -32,7 +32,7 @@
 
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { TenantId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger";
+import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { TenantCode } from "../value-objects/tenant-code.vo.js";
 import { TenantDomain } from "../value-objects/tenant-domain.vo.js";
 import { TenantType } from "../value-objects/tenant-type.enum.js";
@@ -105,7 +105,7 @@ export class Tenant extends BaseEntity {
       TenantStatus.TRIAL,
       tenantDomain,
       description || null,
-      auditInfo || { createdBy, createdAt: new Date() },
+      auditInfo || { createdBy },
       logger,
     );
   }
@@ -278,7 +278,7 @@ export class Tenant extends BaseEntity {
     this._domain = newDomain;
     this.updateTimestamp();
     
-    this.logger?.info(`租户域名已更新 - tenantId: ${this.id.toString()}, newDomain: ${newDomain.getValue()}`);
+    this.logger?.info(`租户域名已更新 - tenantId: ${this.id.toString()}, newDomain: ${newDomain.value}`);
   }
 
   /**

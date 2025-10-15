@@ -106,7 +106,7 @@ export interface UserListResult {
 /**
  * 用户聚合根仓储接口
  */
-export interface IUserAggregateRepository extends IRepository<UserAggregate> {
+export interface IUserAggregateRepository extends IRepository<UserAggregate, EntityId> {
   /**
    * 根据用户名查找用户
    *

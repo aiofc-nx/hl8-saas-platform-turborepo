@@ -51,7 +51,7 @@ import {
   PhoneNumber,
   UserStatus,
 } from "../value-objects/index.js";
-import type { IPureLogger } from "@hl8/pure-logger";
+import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { USER_STATUS_TRANSITIONS } from "../../../constants/user.constants.js";
 
 import { TenantId } from "@hl8/isolation-model";

@@ -37,12 +37,12 @@
 
 import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { TenantId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger";
+import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { Tenant } from "../entities/tenant.entity.js";
 import { TenantConfiguration } from "../entities/tenant-configuration.entity.js";
 import { TenantCode } from "../value-objects/tenant-code.vo.js";
 import { TenantDomain } from "../value-objects/tenant-domain.vo.js";
-import { TenantType } from "../value-objects/tenant-type.enum.js";
+import { TenantType, TenantTypeUtils } from "../value-objects/tenant-type.enum.js";
 import { TenantCreatedEvent } from "../events/tenant-created.event.js";
 import { TenantUpgradedEvent } from "../events/tenant-upgraded.event.js";
 
@@ -81,16 +81,14 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     auditInfo?: IPartialAuditInfo,
     logger?: IPureLogger,
   ): TenantAggregate {
-    const tenantCode = TenantCode.create(code);
-    const tenantDomain = domain ? TenantDomain.create(domain) : undefined;
-
     const tenant = Tenant.create(
       id,
-      tenantCode,
+      code,
       name,
       type,
       createdBy,
-      tenantDomain,
+      domain,
+      undefined,
       auditInfo,
     );
 
@@ -98,6 +96,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
       id,
       type,
       auditInfo,
+      logger,
     );
 
     const aggregate = new TenantAggregate(id, tenant, configuration, auditInfo, logger);

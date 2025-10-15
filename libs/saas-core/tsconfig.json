@@ -14,7 +14,8 @@
       "@hl8/nestjs-fastify": ["node_modules/@hl8/nestjs-fastify"],
       "@hl8/nestjs-isolation": ["node_modules/@hl8/nestjs-isolation"],
       "@hl8/exceptions": ["node_modules/@hl8/exceptions"],
-      "@hl8/isolation-model": ["node_modules/@hl8/isolation-model"]
+      "@hl8/isolation-model": ["node_modules/@hl8/isolation-model"],
+      "@hl8/pure-logger": ["node_modules/@hl8/pure-logger"]
     }
   },
   "include": ["src"],

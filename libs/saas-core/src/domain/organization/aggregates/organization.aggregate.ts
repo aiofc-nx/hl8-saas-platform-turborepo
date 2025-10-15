@@ -7,7 +7,7 @@
 
 import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger";
+import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { Organization } from "../entities/organization.entity.js";
 import { OrganizationMember } from "../entities/organization-member.entity.js";
 import { OrganizationType } from "../value-objects/organization-type.vo.js";

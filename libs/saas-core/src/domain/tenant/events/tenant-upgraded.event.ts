@@ -30,7 +30,7 @@
  * @since 1.0.0
  */
 
-import { DomainEvent } from "@hl8/hybrid-archi";
+import { BaseDomainEvent } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantType } from "../value-objects/tenant-type.enum.js";
 
@@ -48,7 +48,9 @@ export interface TenantUpgradedEventData {
   upgradeDate: string;
 }
 
-export class TenantUpgradedEvent extends DomainEvent<TenantUpgradedEventData> {
+export class TenantUpgradedEvent extends BaseDomainEvent {
+  private readonly _data: TenantUpgradedEventData;
+
   constructor(
     tenantId: EntityId,
     fromType: TenantType,
@@ -56,7 +58,8 @@ export class TenantUpgradedEvent extends DomainEvent<TenantUpgradedEventData> {
     upgradedBy: string,
     reason?: string,
   ) {
-    super("TenantUpgraded", {
+    super(tenantId, 1, tenantId);
+    this._data = {
       tenantId: tenantId.toString(),
       fromType,
       toType,
@@ -68,7 +71,28 @@ export class TenantUpgradedEvent extends DomainEvent<TenantUpgradedEventData> {
         apiCalls: toType === TenantType.ENTERPRISE ? 100000 : toType === TenantType.PROFESSIONAL ? 10000 : 1000,
       },
       upgradeDate: new Date().toISOString(),
-    });
+    };
+  }
+
+  get eventType(): string {
+    return "TenantUpgraded";
+  }
+
+  get data(): TenantUpgradedEventData {
+    return this._data;
+  }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      eventId: this.eventId.toString(),
+      eventType: this.eventType,
+      aggregateId: this.aggregateId.toString(),
+      aggregateVersion: this.aggregateVersion,
+      tenantId: this.tenantId.toString(),
+      occurredAt: this.occurredAt.toISOString(),
+      eventVersion: this.eventVersion,
+      data: this._data,
+    };
   }
 
   getTenantId(): string {

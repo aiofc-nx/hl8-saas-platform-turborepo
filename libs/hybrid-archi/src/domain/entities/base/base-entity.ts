@@ -73,11 +73,8 @@ import { EntityId } from "@hl8/isolation-model";
 import { IAuditInfo, IPartialAuditInfo } from "./audit-info";
 import { IEntity } from "./entity.interface";
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import {
-  Logger,
-  BadRequestException,
-  InternalServerErrorException,
-} from "@nestjs/common";
+import { BadRequestException, InternalServerErrorException } from "@nestjs/common";
+import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from "../../../constants";
 import { TenantId } from "@hl8/isolation-model";
 

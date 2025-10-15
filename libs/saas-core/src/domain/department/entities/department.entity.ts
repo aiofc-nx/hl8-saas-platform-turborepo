@@ -4,7 +4,7 @@
 
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
-import type { IPureLogger } from "@hl8/pure-logger";
+import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { DepartmentLevel } from "../value-objects/department-level.vo.js";
 import { DepartmentPath } from "../value-objects/department-path.vo.js";
 import { DepartmentStatus } from "../value-objects/department-status.enum.js";

@@ -95,7 +95,7 @@ export interface TenantListResult {
 /**
  * 租户聚合根仓储接口
  */
-export interface ITenantAggregateRepository extends IRepository<TenantAggregate> {
+export interface ITenantAggregateRepository extends IRepository<TenantAggregate, EntityId> {
   /**
    * 根据租户代码查找租户
    *

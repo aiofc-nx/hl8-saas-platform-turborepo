@@ -8,7 +8,7 @@
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
 import { OrganizationStatus } from "../value-objects/organization-status.vo.js";
-import type { IPureLogger } from "@hl8/pure-logger";
+import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { OrganizationType } from "../value-objects/organization-type.vo.js";
 
 export class Organization extends BaseEntity {

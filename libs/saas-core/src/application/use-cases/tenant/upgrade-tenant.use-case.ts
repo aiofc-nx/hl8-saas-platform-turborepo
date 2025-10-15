@@ -8,7 +8,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityId } from "@hl8/hybrid-archi";
+import { TenantId } from "@hl8/isolation-model";
 import { ICommandUseCase } from "../base/use-case.interface.js";
 import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
 import { TenantUpgradeService } from "../../../domain/tenant/services/tenant-upgrade.service.js";
@@ -32,7 +32,7 @@ export class UpgradeTenantUseCase
 
   async execute(command: IUpgradeTenantCommand): Promise<void> {
     // 加载租户聚合根
-    const tenantId = EntityId.create(command.tenantId);
+    const tenantId = TenantId.create(command.tenantId);
     const aggregate = await this.tenantRepository.findById(tenantId);
 
     if (!aggregate) {

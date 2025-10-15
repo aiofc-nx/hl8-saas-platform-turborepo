@@ -30,7 +30,7 @@
  * @since 1.0.0
  */
 
-import { DomainEvent } from "@hl8/hybrid-archi";
+import { BaseDomainEvent } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
 
 export interface UserLoginEventData {
@@ -49,7 +49,9 @@ export interface UserLoginEventData {
   isFirstLogin: boolean;
 }
 
-export class UserLoginEvent extends DomainEvent<UserLoginEventData> {
+export class UserLoginEvent extends BaseDomainEvent {
+  private readonly _data: UserLoginEventData;
+
   constructor(
     userId: EntityId,
     tenantId: EntityId,
@@ -64,7 +66,8 @@ export class UserLoginEvent extends DomainEvent<UserLoginEventData> {
       browser: string;
     },
   ) {
-    super("UserLogin", {
+    super(userId, 1, tenantId);
+    this._data = {
       userId: userId.toString(),
       tenantId: tenantId.toString(),
       loginTime: new Date().toISOString(),
@@ -74,7 +77,28 @@ export class UserLoginEvent extends DomainEvent<UserLoginEventData> {
       deviceInfo,
       sessionId,
       isFirstLogin,
-    });
+    };
+  }
+
+  get eventType(): string {
+    return "UserLogin";
+  }
+
+  get data(): UserLoginEventData {
+    return this._data;
+  }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      eventId: this.eventId.toString(),
+      eventType: this.eventType,
+      aggregateId: this.aggregateId.toString(),
+      aggregateVersion: this.aggregateVersion,
+      tenantId: this.tenantId.toString(),
+      occurredAt: this.occurredAt.toISOString(),
+      eventVersion: this.eventVersion,
+      data: this._data,
+    };
   }
 
   getUserId(): string {

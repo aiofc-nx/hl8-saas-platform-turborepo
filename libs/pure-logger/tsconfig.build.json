@@ -3,9 +3,9 @@
   "compilerOptions": {
     "module": "ES2022",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "emitDeclarationOnly": true
+    "allowImportingTsExtensions": false,
+    "noEmit": false,
+    "emitDeclarationOnly": false
   },
   "exclude": [
     "node_modules",

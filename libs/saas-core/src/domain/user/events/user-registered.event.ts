@@ -30,7 +30,7 @@
  * @since 1.0.0
  */
 
-import { DomainEvent } from "@hl8/hybrid-archi";
+import { BaseDomainEvent } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
 
 export interface UserRegisteredEventData {
@@ -47,7 +47,9 @@ export interface UserRegisteredEventData {
   initialRole?: string;
 }
 
-export class UserRegisteredEvent extends DomainEvent<UserRegisteredEventData> {
+export class UserRegisteredEvent extends BaseDomainEvent {
+  private readonly _data: UserRegisteredEventData;
+
   constructor(
     userId: EntityId,
     tenantId: EntityId,
@@ -58,7 +60,8 @@ export class UserRegisteredEvent extends DomainEvent<UserRegisteredEventData> {
     invitedBy?: string,
     initialRole?: string,
   ) {
-    super("UserRegistered", {
+    super(userId, 1, tenantId);
+    this._data = {
       userId: userId.toString(),
       tenantId: tenantId.toString(),
       email,
@@ -70,7 +73,28 @@ export class UserRegisteredEvent extends DomainEvent<UserRegisteredEventData> {
       registrationTime: new Date().toISOString(),
       invitedBy,
       initialRole,
-    });
+    };
+  }
+
+  get eventType(): string {
+    return "UserRegistered";
+  }
+
+  get data(): UserRegisteredEventData {
+    return this._data;
+  }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      eventId: this.eventId.toString(),
+      eventType: this.eventType,
+      aggregateId: this.aggregateId.toString(),
+      aggregateVersion: this.aggregateVersion,
+      tenantId: this.tenantId.toString(),
+      occurredAt: this.occurredAt.toISOString(),
+      eventVersion: this.eventVersion,
+      data: this._data,
+    };
   }
 
   getUserId(): string {
