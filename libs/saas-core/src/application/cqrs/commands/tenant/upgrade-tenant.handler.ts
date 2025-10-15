@@ -19,7 +19,44 @@ export class UpgradeTenantHandler
     await this.useCase.execute({
       tenantId: command.targetTenantId,
       targetType: command.targetType,
-      upgradedBy: command.userId, // 使用 BaseCommand 的 userId
+      upgradedBy: command.userId!, // 使用 BaseCommand 的 userId
     });
+  }
+
+  async handle(command: UpgradeTenantCommand): Promise<void> {
+    return await this.execute(command);
+  }
+
+  getSupportedCommandType(): string {
+    return "UpgradeTenantCommand";
+  }
+
+  supports(commandType: string): boolean {
+    return commandType === "UpgradeTenantCommand";
+  }
+
+  validateCommand(command: UpgradeTenantCommand): void {
+    if (!command.targetTenantId || command.targetTenantId.trim().length === 0) {
+      throw new Error("Target tenant ID is required");
+    }
+    if (!command.targetType) {
+      throw new Error("Target type is required");
+    }
+  }
+
+  getPriority(): number {
+    return 0;
+  }
+
+  canHandle(command: UpgradeTenantCommand): boolean {
+    return command.commandType === "UpgradeTenantCommand";
+  }
+
+  getHandlerName(): string {
+    return "UpgradeTenantHandler";
+  }
+
+  getCommandType(): string {
+    return "UpgradeTenantCommand";
   }
 }

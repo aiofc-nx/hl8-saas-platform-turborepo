@@ -87,8 +87,8 @@ export class CreateTenantUseCase
    */
   async execute(command: ICreateTenantCommand): Promise<TenantId> {
     // 1. 创建值对象
-    const code = TenantCode.create(command.code);
-    const domain = TenantDomain.create(command.domain);
+    const code = new TenantCode(command.code);
+    const domain = new TenantDomain(command.domain);
 
     // 2. 验证唯一性
     await this.validateUniqueness(code, domain);
@@ -127,13 +127,13 @@ export class CreateTenantUseCase
     // 检查代码唯一性
     const codeExists = await this.tenantRepository.existsByCode(code);
     if (codeExists) {
-      throw new Error(`租户代码 ${code.value} 已存在`);
+      throw new Error(`租户代码 ${(code as any).value} 已存在`);
     }
 
     // 检查域名唯一性
     const domainExists = await this.tenantRepository.existsByDomain(domain);
     if (domainExists) {
-      throw new Error(`租户域名 ${domain.value} 已存在`);
+      throw new Error(`租户域名 ${(domain as any).value} 已存在`);
     }
   }
 }

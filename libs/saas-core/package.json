@@ -19,6 +19,7 @@
     "@hl8/nestjs-isolation": "workspace:*",
     "@hl8/exceptions": "workspace:*",
     "@hl8/isolation-model": "workspace:*",
+    "@hl8/pure-logger": "workspace:*",
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-fastify": "^11.0.0",

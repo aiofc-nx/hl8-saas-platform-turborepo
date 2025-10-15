@@ -70,8 +70,9 @@ import { BaseCommand } from "./base-command";
  * 命令处理器接口
  *
  * @template TCommand - 命令类型
+ * @template TResult - 命令执行结果类型
  */
-export interface ICommandHandler<TCommand extends BaseCommand = BaseCommand> {
+export interface ICommandHandler<TCommand extends BaseCommand = BaseCommand, TResult = void> {
   /**
    * 执行命令
    *
@@ -82,7 +83,7 @@ export interface ICommandHandler<TCommand extends BaseCommand = BaseCommand> {
    * @returns Promise，命令执行完成后解析
    * @throws {Error} 当命令执行失败时
    */
-  execute(command: TCommand): Promise<void>;
+  execute(command: TCommand): Promise<TResult>;
 
   /**
    * 获取处理器支持的命令类型
@@ -130,5 +131,31 @@ export interface ICommandHandler<TCommand extends BaseCommand = BaseCommand> {
    * @param command - 要检查的命令
    * @returns 如果命令可以处理则返回 true，否则返回 false
    */
-  canHandle(command: TCommand): Promise<boolean>;
+  canHandle(command: TCommand): boolean;
+
+  /**
+   * 获取处理器名称
+   *
+   * @returns 处理器名称
+   */
+  getHandlerName(): string;
+
+  /**
+   * 获取命令类型
+   *
+   * @returns 命令类型名称
+   */
+  getCommandType(): string;
+
+  /**
+   * 处理命令
+   *
+   * 处理指定的命令，执行相应的业务逻辑。
+   * 此方法应该在事务中执行，确保数据一致性。
+   *
+   * @param command - 要处理的命令
+   * @returns Promise，命令处理完成后解析
+   * @throws {Error} 当命令处理失败时
+   */
+  handle(command: TCommand): Promise<TResult>;
 }
