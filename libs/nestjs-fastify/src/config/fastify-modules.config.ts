@@ -5,7 +5,7 @@
  * 集中管理所有 Fastify 增强模块的配置
  */
 
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsBoolean,
   IsInt,
@@ -13,12 +13,12 @@ import {
   IsString,
   Min,
   ValidateNested,
-} from 'class-validator';
-import type { CompressionOptions } from '../performance/compression/types/compression-options.js';
-import type { MetricsOptions } from '../performance/metrics/types/metrics-options.js';
-import type { CorsOptions } from '../security/cors/types/cors-options.js';
-import type { HelmetOptions } from '../security/helmet/types/helmet-options.js';
-import type { RateLimitOptions } from '../security/rate-limit/types/rate-limit-options.js';
+} from "class-validator";
+import type { CompressionOptions } from "../performance/compression/types/compression-options.js";
+import type { MetricsOptions } from "../performance/metrics/types/metrics-options.js";
+import type { CorsOptions } from "../security/cors/types/cors-options.js";
+import type { HelmetOptions } from "../security/helmet/types/helmet-options.js";
+import type { RateLimitOptions } from "../security/rate-limit/types/rate-limit-options.js";
 
 /**
  * 速率限制配置
@@ -27,15 +27,15 @@ export class RateLimitModuleConfig implements Partial<RateLimitOptions> {
   /**
    * 时间窗口内最大请求数
    */
-  @IsInt({ message: 'max 必须是整数' })
-  @Min(1, { message: 'max 必须大于 0' })
+  @IsInt({ message: "max 必须是整数" })
+  @Min(1, { message: "max 必须大于 0" })
   max!: number;
 
   /**
    * 时间窗口（毫秒）
    */
-  @IsInt({ message: 'timeWindow 必须是整数' })
-  @Min(1000, { message: 'timeWindow 必须至少 1000 毫秒' })
+  @IsInt({ message: "timeWindow 必须是整数" })
+  @Min(1000, { message: "timeWindow 必须至少 1000 毫秒" })
   timeWindow!: number;
 
   /**
@@ -43,7 +43,7 @@ export class RateLimitModuleConfig implements Partial<RateLimitOptions> {
    */
   @IsOptional()
   @IsString()
-  strategy?: 'ip' | 'tenant' | 'user' | 'custom' = 'tenant';
+  strategy?: "ip" | "tenant" | "user" | "custom" = "tenant";
 
   /**
    * Redis 错误时是否跳过限流
@@ -57,7 +57,7 @@ export class RateLimitModuleConfig implements Partial<RateLimitOptions> {
    */
   @IsOptional()
   @IsString()
-  errorMessage?: string = '请求过于频繁，请稍后再试';
+  errorMessage?: string = "请求过于频繁，请稍后再试";
 
   /**
    * 是否添加响应头
@@ -76,7 +76,7 @@ export class MetricsModuleConfig implements MetricsOptions {
    */
   @IsOptional()
   defaultLabels?: Record<string, string> = {
-    app: 'hl8-saas',
+    app: "hl8-saas",
   };
 
   /**
@@ -91,7 +91,7 @@ export class MetricsModuleConfig implements MetricsOptions {
    */
   @IsOptional()
   @IsString()
-  path?: string = '/metrics';
+  path?: string = "/metrics";
 
   /**
    * 是否启用默认指标
@@ -165,9 +165,9 @@ export const DEFAULT_FASTIFY_MODULES_CONFIG: FastifyModulesConfig = {
   rateLimit: {
     max: 1000,
     timeWindow: 60000,
-    strategy: 'tenant',
+    strategy: "tenant",
     skipOnError: true,
-    errorMessage: '请求过于频繁，请稍后再试',
+    errorMessage: "请求过于频繁，请稍后再试",
     addHeaders: true,
   },
   helmet: undefined, // 使用 Helmet 的默认配置
@@ -178,14 +178,14 @@ export const DEFAULT_FASTIFY_MODULES_CONFIG: FastifyModulesConfig = {
   compression: {
     global: true,
     threshold: 1024,
-    encodings: ['br', 'gzip', 'deflate'],
+    encodings: ["br", "gzip", "deflate"],
   },
   metrics: {
     defaultLabels: {
-      app: 'hl8-saas',
+      app: "hl8-saas",
     },
     includeTenantMetrics: true,
-    path: '/metrics',
+    path: "/metrics",
     enableDefaultMetrics: true,
   },
 };

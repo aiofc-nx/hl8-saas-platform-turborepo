@@ -4,21 +4,21 @@
  * @description 测试查询总线的功能
  * @since 1.0.0
  */
-import { Test, TestingModule } from '@nestjs/testing';
-import { QueryBus } from './query-bus';
+import { Test, TestingModule } from "@nestjs/testing";
+import { QueryBus } from "./query-bus";
 import {
   BaseQuery,
   IQueryResult,
   IPaginationInfo,
-} from '../queries/base/base-query';
-import type { IQueryHandler  } from '../queries/base/query-handler.interface';
-import { IMiddleware, IMessageContext } from './cqrs-bus.interface';
-import { EntityId  } from '@hl8/isolation-model';
-import { TenantId } from '@hl8/isolation-model';
+} from "../queries/base/base-query";
+import type { IQueryHandler } from "../queries/base/query-handler.interface";
+import { IMiddleware, IMessageContext } from "./cqrs-bus.interface";
+import { EntityId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model";
 
 // 测试用的有效UUID
 const TEST_TENANT_ID = TenantId.generate().toString();
-const TEST_USER_ID = 'test-user';
+const TEST_USER_ID = "test-user";
 
 /**
  * 测试查询类
@@ -29,13 +29,13 @@ class TestQuery extends BaseQuery {
     tenantId: string,
     userId: string,
     page = 1,
-    pageSize = 10
+    pageSize = 10,
   ) {
     super(tenantId, userId, page, pageSize);
   }
 
   get queryType(): string {
-    return 'TestQuery';
+    return "TestQuery";
   }
 
   override get queryData(): Record<string, unknown> {
@@ -53,7 +53,7 @@ class TestQuery extends BaseQuery {
 class TestQueryResult implements IQueryResult {
   constructor(
     private readonly data: unknown[],
-    private readonly pagination: IPaginationInfo
+    private readonly pagination: IPaginationInfo,
   ) {}
 
   getData(): unknown[] {
@@ -99,20 +99,20 @@ class TestQueryHandler implements IQueryHandler<TestQuery, TestQueryResult> {
       hasPreviousPage: query.page > 1,
     };
 
-    return new TestQueryResult([{ id: 1, name: 'test' }], pagination);
+    return new TestQueryResult([{ id: 1, name: "test" }], pagination);
   }
 
   getSupportedQueryType(): string {
-    return 'TestQuery';
+    return "TestQuery";
   }
 
   supports(queryType: string): boolean {
-    return queryType === 'TestQuery';
+    return queryType === "TestQuery";
   }
 
   validateQuery(query: TestQuery): void {
     if (!query.filter) {
-      throw new Error('Query filter is required');
+      throw new Error("Query filter is required");
     }
   }
 
@@ -140,11 +140,14 @@ class TestMiddleware implements IMiddleware {
   public executedCount = 0;
   public context: IMessageContext | null = null;
 
-  constructor(public name: string, public priority = 0) {}
+  constructor(
+    public name: string,
+    public priority = 0,
+  ) {}
 
   async execute(
     context: IMessageContext,
-    next: () => Promise<unknown>
+    next: () => Promise<unknown>,
   ): Promise<unknown> {
     this.executedCount++;
     this.context = context;
@@ -152,7 +155,7 @@ class TestMiddleware implements IMiddleware {
   }
 }
 
-describe('QueryBus', () => {
+describe("QueryBus", () => {
   let queryBus: QueryBus;
   let testHandler: TestQueryHandler;
 
@@ -165,13 +168,13 @@ describe('QueryBus', () => {
     testHandler = new TestQueryHandler();
   });
 
-  describe('查询执行', () => {
-    it('应该能够执行注册的查询', async () => {
+  describe("查询执行", () => {
+    it("应该能够执行注册的查询", async () => {
       // 注册处理器
-      queryBus.registerHandler('TestQuery', testHandler);
+      queryBus.registerHandler("TestQuery", testHandler);
 
       // 创建查询
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
       // 执行查询
       const result = await queryBus.execute(query);
@@ -183,35 +186,35 @@ describe('QueryBus', () => {
       expect(result.getData()).toHaveLength(1);
     });
 
-    it('应该在没有注册处理器时抛出错误', async () => {
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+    it("应该在没有注册处理器时抛出错误", async () => {
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
       await expect(queryBus.execute(query)).rejects.toThrow(
-        'No handler registered for query type: TestQuery'
+        "No handler registered for query type: TestQuery",
       );
     });
 
-    it('应该验证查询的有效性', async () => {
-      queryBus.registerHandler('TestQuery', testHandler);
+    it("应该验证查询的有效性", async () => {
+      queryBus.registerHandler("TestQuery", testHandler);
 
       // 创建无效查询
-      const invalidQuery = new TestQuery('', TEST_TENANT_ID, 'user-1');
+      const invalidQuery = new TestQuery("", TEST_TENANT_ID, "user-1");
 
       await expect(queryBus.execute(invalidQuery)).rejects.toThrow(
-        'Query filter is required'
+        "Query filter is required",
       );
     });
 
-    it('应该检查处理器是否可以处理查询', async () => {
+    it("应该检查处理器是否可以处理查询", async () => {
       // 创建不支持查询的处理器
       const unsupportedHandler = {
         ...testHandler,
-        supports: (type: string) => type === 'TestQuery',
+        supports: (type: string) => type === "TestQuery",
         validateQuery: () => {
           // 测试用的空验证函数
         },
         canHandle: async () => false,
-        generateCacheKey: () => 'test-key',
+        generateCacheKey: () => "test-key",
         getCacheExpiration: () => 300,
         execute: async () =>
           new TestQueryResult([], {
@@ -222,25 +225,25 @@ describe('QueryBus', () => {
             hasNextPage: false,
             hasPreviousPage: false,
           }),
-        getSupportedQueryType: () => 'TestQuery',
+        getSupportedQueryType: () => "TestQuery",
         getPriority: () => 0,
       };
 
-      queryBus.registerHandler('TestQuery', unsupportedHandler);
+      queryBus.registerHandler("TestQuery", unsupportedHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
       await expect(queryBus.execute(query)).rejects.toThrow(
-        'Handler cannot process query: TestQuery'
+        "Handler cannot process query: TestQuery",
       );
     });
   });
 
-  describe('缓存管理', () => {
-    it('应该缓存查询结果', async () => {
-      queryBus.registerHandler('TestQuery', testHandler);
+  describe("缓存管理", () => {
+    it("应该缓存查询结果", async () => {
+      queryBus.registerHandler("TestQuery", testHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
       // 第一次执行
       const result1 = await queryBus.execute(query);
@@ -252,20 +255,20 @@ describe('QueryBus', () => {
       expect(result2).toBe(result1); // 应该是同一个实例
     });
 
-    it('应该处理缓存过期', async () => {
+    it("应该处理缓存过期", async () => {
       // 创建短缓存时间的处理器
       const shortCacheHandler = {
         ...testHandler,
-        supports: (type: string) => type === 'TestQuery',
+        supports: (type: string) => type === "TestQuery",
         validateQuery: () => {
           // 测试用的空验证函数
         },
         canHandle: async () => true,
-        generateCacheKey: () => 'test-key',
+        generateCacheKey: () => "test-key",
         getCacheExpiration: () => 0.001, // 1毫秒
         async execute(query: TestQuery) {
           testHandler.executedQueries.push(query);
-          return new TestQueryResult([{ id: 1, name: 'test' }], {
+          return new TestQueryResult([{ id: 1, name: "test" }], {
             page: 1,
             pageSize: 10,
             totalCount: 1,
@@ -274,13 +277,13 @@ describe('QueryBus', () => {
             hasPreviousPage: false,
           });
         },
-        getSupportedQueryType: () => 'TestQuery',
+        getSupportedQueryType: () => "TestQuery",
         getPriority: () => 0,
       };
 
-      queryBus.registerHandler('TestQuery', shortCacheHandler);
+      queryBus.registerHandler("TestQuery", shortCacheHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
       // 第一次执行
       await queryBus.execute(query);
@@ -294,19 +297,19 @@ describe('QueryBus', () => {
       expect(testHandler.executedQueries).toHaveLength(2);
     });
 
-    it('应该支持不缓存的查询', async () => {
+    it("应该支持不缓存的查询", async () => {
       const noCacheHandler = {
         ...testHandler,
-        supports: (type: string) => type === 'TestQuery',
+        supports: (type: string) => type === "TestQuery",
         validateQuery: () => {
           // 测试用的空验证函数
         },
         canHandle: async () => true,
-        generateCacheKey: () => 'test-key',
+        generateCacheKey: () => "test-key",
         getCacheExpiration: () => 0, // 不缓存
         async execute(query: TestQuery) {
           testHandler.executedQueries.push(query);
-          return new TestQueryResult([{ id: 1, name: 'test' }], {
+          return new TestQueryResult([{ id: 1, name: "test" }], {
             page: 1,
             pageSize: 10,
             totalCount: 1,
@@ -315,13 +318,13 @@ describe('QueryBus', () => {
             hasPreviousPage: false,
           });
         },
-        getSupportedQueryType: () => 'TestQuery',
+        getSupportedQueryType: () => "TestQuery",
         getPriority: () => 0,
       };
 
-      queryBus.registerHandler('TestQuery', noCacheHandler);
+      queryBus.registerHandler("TestQuery", noCacheHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
       // 两次执行都应该调用处理器
       await queryBus.execute(query);
@@ -330,10 +333,10 @@ describe('QueryBus', () => {
       expect(testHandler.executedQueries).toHaveLength(2);
     });
 
-    it('应该提供缓存统计信息', async () => {
-      queryBus.registerHandler('TestQuery', testHandler);
+    it("应该提供缓存统计信息", async () => {
+      queryBus.registerHandler("TestQuery", testHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
       // 执行查询
       await queryBus.execute(query);
@@ -344,10 +347,10 @@ describe('QueryBus', () => {
       expect(stats.expiredEntries).toBe(0);
     });
 
-    it('应该能够清除所有缓存', async () => {
-      queryBus.registerHandler('TestQuery', testHandler);
+    it("应该能够清除所有缓存", async () => {
+      queryBus.registerHandler("TestQuery", testHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
       // 执行查询
       await queryBus.execute(query);
@@ -359,48 +362,48 @@ describe('QueryBus', () => {
     });
   });
 
-  describe('处理器管理', () => {
-    it('应该能够注册查询处理器', () => {
-      queryBus.registerHandler('TestQuery', testHandler);
+  describe("处理器管理", () => {
+    it("应该能够注册查询处理器", () => {
+      queryBus.registerHandler("TestQuery", testHandler);
 
-      expect(queryBus.supports('TestQuery')).toBe(true);
-      expect(queryBus.getRegisteredQueryTypes()).toContain('TestQuery');
+      expect(queryBus.supports("TestQuery")).toBe(true);
+      expect(queryBus.getRegisteredQueryTypes()).toContain("TestQuery");
       expect(queryBus.getHandlerCount()).toBe(1);
     });
 
-    it('应该防止重复注册同一查询类型的处理器', () => {
-      queryBus.registerHandler('TestQuery', testHandler);
+    it("应该防止重复注册同一查询类型的处理器", () => {
+      queryBus.registerHandler("TestQuery", testHandler);
 
       expect(() => {
-        queryBus.registerHandler('TestQuery', testHandler);
-      }).toThrow('Handler already registered for query type: TestQuery');
+        queryBus.registerHandler("TestQuery", testHandler);
+      }).toThrow("Handler already registered for query type: TestQuery");
     });
 
-    it('应该能够取消注册查询处理器', () => {
-      queryBus.registerHandler('TestQuery', testHandler);
-      expect(queryBus.supports('TestQuery')).toBe(true);
+    it("应该能够取消注册查询处理器", () => {
+      queryBus.registerHandler("TestQuery", testHandler);
+      expect(queryBus.supports("TestQuery")).toBe(true);
 
-      queryBus.unregisterHandler('TestQuery');
-      expect(queryBus.supports('TestQuery')).toBe(false);
+      queryBus.unregisterHandler("TestQuery");
+      expect(queryBus.supports("TestQuery")).toBe(false);
       expect(queryBus.getHandlerCount()).toBe(0);
     });
 
-    it('应该能够获取指定的处理器', () => {
-      queryBus.registerHandler('TestQuery', testHandler);
+    it("应该能够获取指定的处理器", () => {
+      queryBus.registerHandler("TestQuery", testHandler);
 
-      const handler = queryBus.getHandler('TestQuery');
+      const handler = queryBus.getHandler("TestQuery");
       expect(handler).toBe(testHandler);
     });
 
-    it('应该为不存在的处理器返回 undefined', () => {
-      const handler = queryBus.getHandler('NonExistentQuery');
+    it("应该为不存在的处理器返回 undefined", () => {
+      const handler = queryBus.getHandler("NonExistentQuery");
       expect(handler).toBeUndefined();
     });
   });
 
-  describe('中间件管理', () => {
-    it('应该能够添加中间件', () => {
-      const middleware = new TestMiddleware('TestMiddleware', 1);
+  describe("中间件管理", () => {
+    it("应该能够添加中间件", () => {
+      const middleware = new TestMiddleware("TestMiddleware", 1);
 
       queryBus.addMiddleware(middleware);
 
@@ -408,10 +411,10 @@ describe('QueryBus', () => {
       expect(queryBus.getMiddlewares()).toContain(middleware);
     });
 
-    it('应该按优先级排序中间件', () => {
-      const middleware1 = new TestMiddleware('Middleware1', 2);
-      const middleware2 = new TestMiddleware('Middleware2', 1);
-      const middleware3 = new TestMiddleware('Middleware3', 3);
+    it("应该按优先级排序中间件", () => {
+      const middleware1 = new TestMiddleware("Middleware1", 2);
+      const middleware2 = new TestMiddleware("Middleware2", 1);
+      const middleware3 = new TestMiddleware("Middleware3", 3);
 
       queryBus.addMiddleware(middleware1);
       queryBus.addMiddleware(middleware2);
@@ -423,9 +426,9 @@ describe('QueryBus', () => {
       expect(middlewares[2]).toBe(middleware3); // 优先级 3
     });
 
-    it('应该能够替换同名中间件', () => {
-      const middleware1 = new TestMiddleware('TestMiddleware', 1);
-      const middleware2 = new TestMiddleware('TestMiddleware', 2);
+    it("应该能够替换同名中间件", () => {
+      const middleware1 = new TestMiddleware("TestMiddleware", 1);
+      const middleware2 = new TestMiddleware("TestMiddleware", 2);
 
       queryBus.addMiddleware(middleware1);
       queryBus.addMiddleware(middleware2);
@@ -434,19 +437,19 @@ describe('QueryBus', () => {
       expect(queryBus.getMiddlewares()[0]).toBe(middleware2);
     });
 
-    it('应该能够移除中间件', () => {
-      const middleware = new TestMiddleware('TestMiddleware');
+    it("应该能够移除中间件", () => {
+      const middleware = new TestMiddleware("TestMiddleware");
 
       queryBus.addMiddleware(middleware);
       expect(queryBus.getMiddlewareCount()).toBe(1);
 
-      queryBus.removeMiddleware('TestMiddleware');
+      queryBus.removeMiddleware("TestMiddleware");
       expect(queryBus.getMiddlewareCount()).toBe(0);
     });
 
-    it('应该能够清除所有中间件', () => {
-      queryBus.addMiddleware(new TestMiddleware('Middleware1'));
-      queryBus.addMiddleware(new TestMiddleware('Middleware2'));
+    it("应该能够清除所有中间件", () => {
+      queryBus.addMiddleware(new TestMiddleware("Middleware1"));
+      queryBus.addMiddleware(new TestMiddleware("Middleware2"));
 
       expect(queryBus.getMiddlewareCount()).toBe(2);
 
@@ -455,16 +458,16 @@ describe('QueryBus', () => {
     });
   });
 
-  describe('中间件执行', () => {
-    it('应该按顺序执行中间件', async () => {
-      const middleware1 = new TestMiddleware('Middleware1', 1);
-      const middleware2 = new TestMiddleware('Middleware2', 2);
+  describe("中间件执行", () => {
+    it("应该按顺序执行中间件", async () => {
+      const middleware1 = new TestMiddleware("Middleware1", 1);
+      const middleware2 = new TestMiddleware("Middleware2", 2);
 
       queryBus.addMiddleware(middleware1);
       queryBus.addMiddleware(middleware2);
-      queryBus.registerHandler('TestQuery', testHandler);
+      queryBus.registerHandler("TestQuery", testHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
       await queryBus.execute(query);
 
       expect(middleware1.executedCount).toBe(1);
@@ -472,53 +475,53 @@ describe('QueryBus', () => {
       expect(testHandler.executedQueries).toHaveLength(1);
     });
 
-    it('应该传递正确的消息上下文给中间件', async () => {
-      const middleware = new TestMiddleware('TestMiddleware');
+    it("应该传递正确的消息上下文给中间件", async () => {
+      const middleware = new TestMiddleware("TestMiddleware");
 
       queryBus.addMiddleware(middleware);
-      queryBus.registerHandler('TestQuery', testHandler);
+      queryBus.registerHandler("TestQuery", testHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
       await queryBus.execute(query);
 
       expect(middleware.context).toBeDefined();
       expect(middleware.context?.messageId).toBe(query.queryId.toString());
       expect(middleware.context?.tenantId.toString()).toBe(TEST_TENANT_ID);
-      expect(middleware.context?.userId).toBe('user-1');
-      expect(middleware.context?.messageType).toBe('TestQuery');
+      expect(middleware.context?.userId).toBe("user-1");
+      expect(middleware.context?.messageType).toBe("TestQuery");
     });
 
-    it('应该处理中间件异常', async () => {
-      const errorMiddleware = new TestMiddleware('ErrorMiddleware');
+    it("应该处理中间件异常", async () => {
+      const errorMiddleware = new TestMiddleware("ErrorMiddleware");
       errorMiddleware.execute = async () => {
-        throw new Error('Middleware error');
+        throw new Error("Middleware error");
       };
 
       queryBus.addMiddleware(errorMiddleware);
-      queryBus.registerHandler('TestQuery', testHandler);
+      queryBus.registerHandler("TestQuery", testHandler);
 
-      const query = new TestQuery('test-filter', TEST_TENANT_ID, 'user-1');
+      const query = new TestQuery("test-filter", TEST_TENANT_ID, "user-1");
 
-      await expect(queryBus.execute(query)).rejects.toThrow('Middleware error');
+      await expect(queryBus.execute(query)).rejects.toThrow("Middleware error");
       expect(testHandler.executedQueries).toHaveLength(0);
     });
   });
 
-  describe('统计信息', () => {
-    it('应该返回正确的统计信息', () => {
-      queryBus.registerHandler('TestQuery', testHandler);
-      queryBus.addMiddleware(new TestMiddleware('TestMiddleware'));
+  describe("统计信息", () => {
+    it("应该返回正确的统计信息", () => {
+      queryBus.registerHandler("TestQuery", testHandler);
+      queryBus.addMiddleware(new TestMiddleware("TestMiddleware"));
 
       expect(queryBus.getHandlerCount()).toBe(1);
       expect(queryBus.getMiddlewareCount()).toBe(1);
-      expect(queryBus.getRegisteredQueryTypes()).toEqual(['TestQuery']);
+      expect(queryBus.getRegisteredQueryTypes()).toEqual(["TestQuery"]);
     });
 
-    it('应该支持多个查询类型', () => {
+    it("应该支持多个查询类型", () => {
       const handler1 = {
         ...new TestQueryHandler(),
-        getSupportedQueryType: () => 'Query1',
-        supports: (type: string) => type === 'Query1',
+        getSupportedQueryType: () => "Query1",
+        supports: (type: string) => type === "Query1",
         execute: async () =>
           new TestQueryResult([], {
             page: 1,
@@ -533,13 +536,13 @@ describe('QueryBus', () => {
         },
         getPriority: () => 0,
         canHandle: async () => true,
-        generateCacheKey: () => 'query1-key',
+        generateCacheKey: () => "query1-key",
         getCacheExpiration: () => 300,
       };
       const handler2 = {
         ...new TestQueryHandler(),
-        getSupportedQueryType: () => 'Query2',
-        supports: (type: string) => type === 'Query2',
+        getSupportedQueryType: () => "Query2",
+        supports: (type: string) => type === "Query2",
         execute: async () =>
           new TestQueryResult([], {
             page: 1,
@@ -554,27 +557,27 @@ describe('QueryBus', () => {
         },
         getPriority: () => 0,
         canHandle: async () => true,
-        generateCacheKey: () => 'query2-key',
+        generateCacheKey: () => "query2-key",
         getCacheExpiration: () => 300,
       };
 
-      queryBus.registerHandler('Query1', handler1);
-      queryBus.registerHandler('Query2', handler2);
+      queryBus.registerHandler("Query1", handler1);
+      queryBus.registerHandler("Query2", handler2);
 
       expect(queryBus.getHandlerCount()).toBe(2);
-      expect(queryBus.getRegisteredQueryTypes()).toContain('Query1');
-      expect(queryBus.getRegisteredQueryTypes()).toContain('Query2');
+      expect(queryBus.getRegisteredQueryTypes()).toContain("Query1");
+      expect(queryBus.getRegisteredQueryTypes()).toContain("Query2");
     });
   });
 
-  describe('清理操作', () => {
-    it('应该能够清除所有处理器', () => {
-      queryBus.registerHandler('TestQuery', testHandler);
+  describe("清理操作", () => {
+    it("应该能够清除所有处理器", () => {
+      queryBus.registerHandler("TestQuery", testHandler);
       expect(queryBus.getHandlerCount()).toBe(1);
 
       queryBus.clearHandlers();
       expect(queryBus.getHandlerCount()).toBe(0);
-      expect(queryBus.supports('TestQuery')).toBe(false);
+      expect(queryBus.supports("TestQuery")).toBe(false);
     });
   });
 });

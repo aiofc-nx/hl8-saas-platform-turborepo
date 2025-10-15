@@ -8,21 +8,21 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { ITimeProviderPort } from '../../../application/ports/shared/shared-ports.interface';
+import { Injectable } from "@nestjs/common";
+import { ITimeProviderPort } from "../../../application/ports/shared/shared-ports.interface";
 
 /**
  * 时间格式枚举
  */
 export enum TimeFormat {
   /** ISO 8601格式 */
-  ISO_8601 = 'iso8601',
+  ISO_8601 = "iso8601",
   /** Unix时间戳（秒） */
-  UNIX_TIMESTAMP = 'unix_timestamp',
+  UNIX_TIMESTAMP = "unix_timestamp",
   /** Unix时间戳（毫秒） */
-  UNIX_TIMESTAMP_MS = 'unix_timestamp_ms',
+  UNIX_TIMESTAMP_MS = "unix_timestamp_ms",
   /** 自定义格式 */
-  CUSTOM = 'custom',
+  CUSTOM = "custom",
 }
 
 /**
@@ -47,7 +47,7 @@ export class TimeProviderPortAdapter implements ITimeProviderPort {
   private readonly timezoneConfig: ITimezoneConfig;
 
   constructor(
-    timezoneConfig: ITimezoneConfig = { timezone: 'UTC', useUTC: true }
+    timezoneConfig: ITimezoneConfig = { timezone: "UTC", useUTC: true },
   ) {
     this.timezoneConfig = timezoneConfig;
   }
@@ -95,15 +95,15 @@ export class TimeProviderPortAdapter implements ITimeProviderPort {
    * @param format - 格式类型
    * @returns 格式化后的时间字符串
    */
-  format(date: Date, format = 'iso8601'): string {
+  format(date: Date, format = "iso8601"): string {
     switch (format) {
-      case 'iso8601':
+      case "iso8601":
         return this.formatISO8601(date);
-      case 'unix_timestamp':
+      case "unix_timestamp":
         return Math.floor(date.getTime() / 1000).toString();
-      case 'unix_timestamp_ms':
+      case "unix_timestamp_ms":
         return date.getTime().toString();
-      case 'custom':
+      case "custom":
         return this.formatCustom(date);
       default:
         return this.formatISO8601(date);
@@ -151,7 +151,7 @@ export class TimeProviderPortAdapter implements ITimeProviderPort {
     hour = 0,
     minute = 0,
     second = 0,
-    millisecond = 0
+    millisecond = 0,
   ): Date {
     return new Date(year, month, day, hour, minute, second, millisecond);
   }
@@ -164,23 +164,23 @@ export class TimeProviderPortAdapter implements ITimeProviderPort {
    * @param unit - 单位
    * @returns 添加后的时间
    */
-  add(date: Date, amount: number, unit: 'ms' | 's' | 'm' | 'h' | 'd'): Date {
+  add(date: Date, amount: number, unit: "ms" | "s" | "m" | "h" | "d"): Date {
     const result = new Date(date);
 
     switch (unit) {
-      case 'ms':
+      case "ms":
         result.setMilliseconds(result.getMilliseconds() + amount);
         break;
-      case 's':
+      case "s":
         result.setSeconds(result.getSeconds() + amount);
         break;
-      case 'm':
+      case "m":
         result.setMinutes(result.getMinutes() + amount);
         break;
-      case 'h':
+      case "h":
         result.setHours(result.getHours() + amount);
         break;
-      case 'd':
+      case "d":
         result.setDate(result.getDate() + amount);
         break;
     }
@@ -199,20 +199,20 @@ export class TimeProviderPortAdapter implements ITimeProviderPort {
   diff(
     start: Date,
     end: Date,
-    unit: 'milliseconds' | 'seconds' | 'minutes' | 'hours' | 'days'
+    unit: "milliseconds" | "seconds" | "minutes" | "hours" | "days",
   ): number {
     const diffMs = end.getTime() - start.getTime();
 
     switch (unit) {
-      case 'milliseconds':
+      case "milliseconds":
         return diffMs;
-      case 'seconds':
+      case "seconds":
         return Math.floor(diffMs / 1000);
-      case 'minutes':
+      case "minutes":
         return Math.floor(diffMs / (1000 * 60));
-      case 'hours':
+      case "hours":
         return Math.floor(diffMs / (1000 * 60 * 60));
-      case 'days':
+      case "days":
         return Math.floor(diffMs / (1000 * 60 * 60 * 24));
       default:
         return diffMs;
@@ -280,11 +280,11 @@ export class TimeProviderPortAdapter implements ITimeProviderPort {
   private formatCustom(date: Date): string {
     // 自定义格式化逻辑
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hour = String(date.getHours()).padStart(2, '0');
-    const minute = String(date.getMinutes()).padStart(2, '0');
-    const second = String(date.getSeconds()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hour = String(date.getHours()).padStart(2, "0");
+    const minute = String(date.getMinutes()).padStart(2, "0");
+    const second = String(date.getSeconds()).padStart(2, "0");
 
     return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
   }

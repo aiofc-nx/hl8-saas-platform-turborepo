@@ -113,21 +113,21 @@ pnpm migration:up
 ### 基础使用
 
 ```typescript
-import { SaasCoreModule } from '@hl8/saas-core';
-import { Module } from '@nestjs/common';
+import { SaasCoreModule } from "@hl8/saas-core";
+import { Module } from "@nestjs/common";
 
 @Module({
   imports: [
     SaasCoreModule.forRoot({
       database: {
-        host: 'localhost',
+        host: "localhost",
         port: 5432,
-        database: 'saas_platform',
-        username: 'postgres',
-        password: 'postgres',
+        database: "saas_platform",
+        username: "postgres",
+        password: "postgres",
       },
       redis: {
-        host: 'localhost',
+        host: "localhost",
         port: 6379,
       },
     }),
@@ -143,23 +143,23 @@ export class AppModule {}
 租户是系统中的顶级隔离单元，每个租户拥有独立的数据空间：
 
 ```typescript
-import { TenantAggregate } from '@hl8/saas-core';
+import { TenantAggregate } from "@hl8/saas-core";
 
 // 创建租户
 const tenant = TenantAggregate.create(
   EntityId.generate(),
-  TenantCode.create('mycompany'),
-  'My Company',
-  TenantDomain.create('mycompany.example.com'),
+  TenantCode.create("mycompany"),
+  "My Company",
+  TenantDomain.create("mycompany.example.com"),
   TenantType.PROFESSIONAL,
-  { createdBy: 'admin' }
+  { createdBy: "admin" },
 );
 
 // 激活租户
-tenant.activate('admin');
+tenant.activate("admin");
 
 // 升级租户
-tenant.upgrade(TenantType.ENTERPRISE, 'admin');
+tenant.upgrade(TenantType.ENTERPRISE, "admin");
 ```
 
 ### 用户（User）
@@ -167,19 +167,19 @@ tenant.upgrade(TenantType.ENTERPRISE, 'admin');
 用户可以属于一个或多个租户：
 
 ```typescript
-import { UserAggregate } from '@hl8/saas-core';
+import { UserAggregate } from "@hl8/saas-core";
 
 // 注册用户
 const user = UserAggregate.register(
   EntityId.generate(),
-  Username.create('john.doe'),
-  Email.create('john@example.com'),
-  PhoneNumber.create('+1234567890'),
-  { createdBy: 'system' }
+  Username.create("john.doe"),
+  Email.create("john@example.com"),
+  PhoneNumber.create("+1234567890"),
+  { createdBy: "system" },
 );
 
 // 激活用户
-user.activate('admin');
+user.activate("admin");
 ```
 
 ### 组织和部门（Organization & Department）
@@ -187,24 +187,24 @@ user.activate('admin');
 组织是租户下的业务单元，部门是组织内的层级结构：
 
 ```typescript
-import { OrganizationAggregate, DepartmentAggregate } from '@hl8/saas-core';
+import { OrganizationAggregate, DepartmentAggregate } from "@hl8/saas-core";
 
 // 创建组织
 const org = OrganizationAggregate.create(
   EntityId.generate(),
-  'Engineering',
-  OrganizationType.create('DEPARTMENT'),
+  "Engineering",
+  OrganizationType.create("DEPARTMENT"),
   tenantId,
-  { createdBy: 'admin' }
+  { createdBy: "admin" },
 );
 
 // 创建部门
 const dept = DepartmentAggregate.create(
   EntityId.generate(),
-  'Backend Team',
+  "Backend Team",
   organizationId,
   parentDepartmentId,
-  { createdBy: 'admin' }
+  { createdBy: "admin" },
 );
 ```
 
@@ -213,24 +213,24 @@ const dept = DepartmentAggregate.create(
 使用 CASL 实现细粒度的权限控制：
 
 ```typescript
-import { RoleAggregate, PermissionAggregate } from '@hl8/saas-core';
+import { RoleAggregate, PermissionAggregate } from "@hl8/saas-core";
 
 // 创建角色
 const role = RoleAggregate.create(
   EntityId.generate(),
-  RoleName.create('manager'),
-  'Department Manager',
+  RoleName.create("manager"),
+  "Department Manager",
   RoleLevel.create(3),
   tenantId,
-  { createdBy: 'admin' }
+  { createdBy: "admin" },
 );
 
 // 定义权限
 const permission = PermissionAggregate.create(
   EntityId.generate(),
-  'user',
-  PermissionAction.create('manage'),
-  { createdBy: 'admin' }
+  "user",
+  PermissionAction.create("manage"),
+  { createdBy: "admin" },
 );
 ```
 
@@ -362,8 +362,8 @@ pnpm test:integration
 ### 数据流
 
 ```
-Request → Controller → Command/Query 
-    → Use Case → Domain Logic 
+Request → Controller → Command/Query
+    → Use Case → Domain Logic
     → Repository → Database
 ```
 

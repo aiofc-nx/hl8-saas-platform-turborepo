@@ -7,9 +7,9 @@
  */
 
 // 领域服务适配器
-export * from './domain-service.adapter';
-export * from './domain-service.factory';
-export * from './domain-service.manager';
+export * from "./domain-service.adapter";
+export * from "./domain-service.factory";
+export * from "./domain-service.manager";
 
 // 领域服务适配器模块
-export * from './domain-service-adapters.module';
+export * from "./domain-service-adapters.module";

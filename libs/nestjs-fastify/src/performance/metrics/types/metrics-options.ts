@@ -32,9 +32,9 @@ export interface MetricsOptions {
  */
 export const DEFAULT_METRICS_OPTIONS: MetricsOptions = {
   defaultLabels: {
-    app: 'hl8-saas',
+    app: "hl8-saas",
   },
   includeTenantMetrics: true,
-  path: '/metrics',
+  path: "/metrics",
   enableDefaultMetrics: true,
 };

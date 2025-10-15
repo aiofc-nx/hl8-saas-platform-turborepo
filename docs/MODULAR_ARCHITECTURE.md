@@ -43,17 +43,19 @@ hl8-saas-platform-turborepo/
 **职责**: 应用程序入口，组合各种业务库
 
 **特点**:
+
 - 使用 Turborepo 管理
 - 每个应用独立部署
 - 组合多个业务库
 - 提供统一的 API 接口
 
 **示例**: `apps/fastify-api/`
+
 ```typescript
 // 组合多个业务库
-import { DatabaseModule } from '@hl8/database/index.js';
-import { CachingModule } from '@hl8/caching/index.js';
-import { FastifyLoggingModule } from '@hl8/nestjs-fastify/index.js';
+import { DatabaseModule } from "@hl8/database/index.js";
+import { CachingModule } from "@hl8/caching/index.js";
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify/index.js";
 ```
 
 ### 2. 业务库层（Libs）
@@ -63,23 +65,27 @@ import { FastifyLoggingModule } from '@hl8/nestjs-fastify/index.js';
 **分类**:
 
 #### 2.1 基础设施库
+
 - `@hl8/nestjs-fastify`: Fastify 企业级基础设施
 - `@hl8/database`: 数据库抽象层
 - `@hl8/caching`: 缓存抽象层
 - `@hl8/config`: 配置管理
 
 #### 2.2 业务领域库
+
 - `@hl8/exceptions`: 异常处理
 - `@hl8/isolation-model`: 多租户隔离模型
 - `@hl8/nestjs-isolation`: 多租户隔离实现
 
 #### 2.3 共享工具库
+
 - `@hl8/typescript-config`: TypeScript 配置
 - `@hl8/eslint-config`: ESLint 配置
 
 ### 3. 包管理策略
 
 **依赖关系**:
+
 ```
 apps/fastify-api
 ├── @hl8/nestjs-fastify
@@ -102,6 +108,7 @@ apps/fastify-api
 ### 1. 根配置（packages/typescript-config/）
 
 #### base.json - 基础配置
+
 ```json
 {
   "$schema": "https://json.schemastore.org/tsconfig",
@@ -126,6 +133,7 @@ apps/fastify-api
 ```
 
 #### nestjs.json - NestJS 应用配置
+
 ```json
 {
   "$schema": "https://json.schemastore.org/tsconfig",
@@ -149,7 +157,7 @@ apps/fastify-api
 }
 ```
 
-### 2. 应用配置（apps/*/tsconfig.json）
+### 2. 应用配置（apps/\*/tsconfig.json）
 
 ```json
 {
@@ -169,7 +177,7 @@ apps/fastify-api
 }
 ```
 
-### 3. 库配置（libs/*/tsconfig.json）
+### 3. 库配置（libs/\*/tsconfig.json）
 
 ```json
 {
@@ -193,34 +201,38 @@ apps/fastify-api
 ### 1. 导入路径规范
 
 #### 1.1 包导入（推荐）
+
 ```typescript
 // ✅ 正确 - 使用明确的文件路径
-import { DatabaseModule } from '@hl8/database/index.js';
-import { CachingModule } from '@hl8/caching/index.js';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify/index.js';
+import { DatabaseModule } from "@hl8/database/index.js";
+import { CachingModule } from "@hl8/caching/index.js";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
 ```
 
 #### 1.2 相对路径导入
+
 ```typescript
 // ✅ 正确 - 项目内部相对路径
-import { User } from '../entities/user.entity.js';
-import { AppConfig } from './config/app.config.js';
+import { User } from "../entities/user.entity.js";
+import { AppConfig } from "./config/app.config.js";
 ```
 
 #### 1.3 避免的导入方式
+
 ```typescript
 // ❌ 错误 - 目录导入（Node.js ES 模块不支持）
-import { DatabaseModule } from '@hl8/database';
-import { CachingModule } from '@hl8/caching';
+import { DatabaseModule } from "@hl8/database";
+import { CachingModule } from "@hl8/caching";
 
 // ❌ 错误 - 缺少文件扩展名
-import { User } from '../entities/user.entity';
-import { AppConfig } from './config/app.config';
+import { User } from "../entities/user.entity";
+import { AppConfig } from "./config/app.config";
 ```
 
 ### 2. 包导出配置
 
 #### 2.1 package.json 配置
+
 ```json
 {
   "name": "@hl8/database",
@@ -241,6 +253,7 @@ import { AppConfig } from './config/app.config';
 ```
 
 #### 2.2 关键配置说明
+
 - `"type": "module"`: 启用 ES 模块
 - `exports` 字段: 定义包的导出路径
 - `./index.js` 路径: 支持明确的文件路径导入
@@ -249,6 +262,7 @@ import { AppConfig } from './config/app.config';
 ### 3. 构建配置
 
 #### 3.1 NestJS 构建配置（nest-cli.json）
+
 ```json
 {
   "$schema": "https://json.schemastore.org/nest-cli",
@@ -268,6 +282,7 @@ import { AppConfig } from './config/app.config';
 ```
 
 #### 3.2 构建脚本
+
 ```json
 {
   "scripts": {
@@ -283,12 +298,14 @@ import { AppConfig } from './config/app.config';
 ### 1. 代码组织
 
 #### 1.1 文件命名
+
 - 使用 kebab-case: `user.service.ts`
 - 实体文件: `user.entity.ts`
 - 配置文件: `app.config.ts`
 - 测试文件: `user.service.spec.ts`
 
 #### 1.2 目录结构
+
 ```
 libs/database/src/
 ├── config/                 # 配置类
@@ -304,24 +321,25 @@ libs/database/src/
 
 ```typescript
 // 1. Node.js 内置模块
-import { readFileSync } from 'fs';
+import { readFileSync } from "fs";
 
 // 2. 第三方库
-import { Injectable } from '@nestjs/common';
-import { FastifyRequest } from 'fastify';
+import { Injectable } from "@nestjs/common";
+import { FastifyRequest } from "fastify";
 
 // 3. 项目内部包
-import { DatabaseModule } from '@hl8/database/index.js';
-import { CachingModule } from '@hl8/caching/index.js';
+import { DatabaseModule } from "@hl8/database/index.js";
+import { CachingModule } from "@hl8/caching/index.js";
 
 // 4. 相对路径导入
-import { User } from '../entities/user.entity.js';
-import { AppConfig } from './config/app.config.js';
+import { User } from "../entities/user.entity.js";
+import { AppConfig } from "./config/app.config.js";
 ```
 
 ### 3. 类型定义
 
 #### 3.1 接口定义
+
 ```typescript
 /**
  * 数据库配置接口
@@ -338,11 +356,12 @@ export interface DatabaseConfig {
 ```
 
 #### 3.2 类型导出
+
 ```typescript
 // index.ts
-export * from './config/database.config.js';
-export * from './entities/user.entity.js';
-export * from './services/database.service.js';
+export * from "./config/database.config.js";
+export * from "./entities/user.entity.js";
+export * from "./services/database.service.js";
 ```
 
 ## 常见问题和解决方案
@@ -354,12 +373,13 @@ export * from './services/database.service.js';
 **原因**: Node.js ES 模块不支持从目录直接导入
 
 **解决方案**:
+
 ```typescript
 // ❌ 错误
-import { DatabaseModule } from '@hl8/database';
+import { DatabaseModule } from "@hl8/database";
 
 // ✅ 正确
-import { DatabaseModule } from '@hl8/database/index.js';
+import { DatabaseModule } from "@hl8/database/index.js";
 ```
 
 ### 2. TypeScript 路径映射
@@ -367,6 +387,7 @@ import { DatabaseModule } from '@hl8/database/index.js';
 **问题**: 构建后使用相对路径导入目录
 
 **解决方案**:
+
 1. 使用明确的文件路径导入
 2. 配置正确的包导出路径
 3. 确保所有包都正确构建
@@ -376,6 +397,7 @@ import { DatabaseModule } from '@hl8/database/index.js';
 **问题**: 环境变量未正确映射到配置类
 
 **解决方案**:
+
 1. 检查环境变量前缀是否匹配
 2. 确保配置类字段有正确的装饰器
 3. 使用 `@Transform` 装饰器处理复杂映射
@@ -383,24 +405,28 @@ import { DatabaseModule } from '@hl8/database/index.js';
 ## 最佳实践
 
 ### 1. 模块设计
+
 - 每个模块职责单一
 - 接口设计清晰
 - 依赖关系明确
 - 易于测试和维护
 
 ### 2. 配置管理
+
 - 使用类型安全的配置
 - 支持多环境配置
 - 提供合理的默认值
 - 完整的验证机制
 
 ### 3. 错误处理
+
 - 统一的异常处理
 - 详细的错误信息
 - 适当的日志记录
 - 优雅的降级处理
 
 ### 4. 性能优化
+
 - 使用 SWC 构建器
 - 启用增量编译
 - 合理的缓存策略

@@ -13,19 +13,19 @@
  */
 export enum ConnectionStatus {
   /** 未连接 */
-  DISCONNECTED = 'disconnected',
+  DISCONNECTED = "disconnected",
 
   /** 连接中 */
-  CONNECTING = 'connecting',
+  CONNECTING = "connecting",
 
   /** 已连接 */
-  CONNECTED = 'connected',
+  CONNECTED = "connected",
 
   /** 连接失败 */
-  FAILED = 'failed',
+  FAILED = "failed",
 
   /** 重连中 */
-  RECONNECTING = 'reconnecting',
+  RECONNECTING = "reconnecting",
 }
 
 /**
@@ -35,7 +35,7 @@ export enum ConnectionStatus {
  */
 export interface ConnectionConfig {
   /** 数据库类型 */
-  type: 'postgresql' | 'mongodb';
+  type: "postgresql" | "mongodb";
 
   /** 主机地址 */
   host: string;

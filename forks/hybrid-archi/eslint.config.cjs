@@ -1,32 +1,32 @@
-const baseConfig = require('../../eslint.config.cjs');
+const baseConfig = require("../../eslint.config.cjs");
 
 module.exports = [
   ...baseConfig,
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
         {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_',
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
         },
       ],
     },
   },
   {
-    files: ['**/*.json'],
+    files: ["**/*.json"],
     rules: {
-      '@nx/dependency-checks': [
-        'error',
+      "@nx/dependency-checks": [
+        "error",
         {
-          ignoredFiles: ['{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}'],
+          ignoredFiles: ["{projectRoot}/eslint.config.{js,cjs,mjs,ts,cts,mts}"],
         },
       ],
     },
     languageOptions: {
-      parser: require('jsonc-eslint-parser'),
+      parser: require("jsonc-eslint-parser"),
     },
   },
 ];

@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { UserStatus } from '../domain/user/value-objects/user-status.enum.js';
+import { UserStatus } from "../domain/user/value-objects/user-status.enum.js";
 
 /**
  * 用户状态转换规则
@@ -15,29 +15,29 @@ import { UserStatus } from '../domain/user/value-objects/user-status.enum.js';
  */
 export const USER_STATUS_TRANSITIONS: Record<UserStatus, UserStatus[]> = {
   [UserStatus.PENDING]: [
-    UserStatus.ACTIVE,    // 激活
-    UserStatus.DISABLED,  // 禁用
-    UserStatus.DELETED,   // 删除
+    UserStatus.ACTIVE, // 激活
+    UserStatus.DISABLED, // 禁用
+    UserStatus.DELETED, // 删除
   ],
   [UserStatus.ACTIVE]: [
-    UserStatus.DISABLED,  // 禁用
-    UserStatus.LOCKED,    // 锁定
-    UserStatus.EXPIRED,   // 过期
-    UserStatus.DELETED,   // 删除
+    UserStatus.DISABLED, // 禁用
+    UserStatus.LOCKED, // 锁定
+    UserStatus.EXPIRED, // 过期
+    UserStatus.DELETED, // 删除
   ],
   [UserStatus.DISABLED]: [
-    UserStatus.ACTIVE,    // 启用
-    UserStatus.DELETED,   // 删除
+    UserStatus.ACTIVE, // 启用
+    UserStatus.DELETED, // 删除
   ],
   [UserStatus.LOCKED]: [
-    UserStatus.ACTIVE,    // 解锁
-    UserStatus.DISABLED,  // 禁用
-    UserStatus.DELETED,   // 删除
+    UserStatus.ACTIVE, // 解锁
+    UserStatus.DISABLED, // 禁用
+    UserStatus.DELETED, // 删除
   ],
   [UserStatus.EXPIRED]: [
-    UserStatus.ACTIVE,    // 重新激活
-    UserStatus.DISABLED,  // 禁用
-    UserStatus.DELETED,   // 删除
+    UserStatus.ACTIVE, // 重新激活
+    UserStatus.DISABLED, // 禁用
+    UserStatus.DELETED, // 删除
   ],
   [UserStatus.DELETED]: [
     // 已删除状态不能转换到其他状态
@@ -85,7 +85,7 @@ export const USER_PASSWORD_POLICY = {
   /** 必须包含特殊字符 */
   REQUIRE_SPECIAL_CHARS: true,
   /** 特殊字符集合 */
-  SPECIAL_CHARS: '!@#$%^&*()_+-=[]{}|;:,.<>?',
+  SPECIAL_CHARS: "!@#$%^&*()_+-=[]{}|;:,.<>?",
   /** 密码历史记录数量 */
   HISTORY_COUNT: 5,
 } as const;
@@ -125,7 +125,7 @@ export const USER_PROFILE = {
   /** 头像最大文件大小（MB） */
   AVATAR_MAX_SIZE_MB: 5,
   /** 支持的头像格式 */
-  AVATAR_SUPPORTED_FORMATS: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+  AVATAR_SUPPORTED_FORMATS: ["jpg", "jpeg", "png", "gif", "webp"],
   /** 头像尺寸 */
   AVATAR_SIZES: {
     SMALL: { width: 64, height: 64 },

@@ -2,11 +2,11 @@
  * 部门实体（简化版本）
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { DepartmentLevel } from '../value-objects/department-level.vo';
-import { DepartmentPath } from '../value-objects/department-path.vo';
-import { DepartmentStatus } from '../value-objects/department-status.enum';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { PinoLogger } from "@hl8/logger";
+import { DepartmentLevel } from "../value-objects/department-level.vo";
+import { DepartmentPath } from "../value-objects/department-path.vo";
+import { DepartmentStatus } from "../value-objects/department-status.enum";
 
 export class Department extends BaseEntity {
   constructor(
@@ -72,4 +72,3 @@ export class Department extends BaseEntity {
     };
   }
 }
-

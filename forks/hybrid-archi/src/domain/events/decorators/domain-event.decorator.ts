@@ -47,7 +47,7 @@
  * @since 1.0.0
  */
 
-import 'reflect-metadata';
+import "reflect-metadata";
 
 /**
  * 领域事件配置选项
@@ -180,7 +180,7 @@ export interface DomainEventOptions {
 /**
  * 领域事件元数据键
  */
-export const DOMAIN_EVENT_METADATA_KEY = Symbol('domainEvent');
+export const DOMAIN_EVENT_METADATA_KEY = Symbol("domainEvent");
 
 /**
  * 领域事件装饰器
@@ -208,7 +208,7 @@ export const DOMAIN_EVENT_METADATA_KEY = Symbol('domainEvent');
  * ```
  */
 export function DomainEventDecorator(
-  options: DomainEventOptions
+  options: DomainEventOptions,
 ): ClassDecorator {
   return function (target: any): any {
     // 验证配置选项
@@ -217,9 +217,9 @@ export function DomainEventDecorator(
     // 设置默认值
     const metadata: Required<DomainEventOptions> = {
       name: options.name,
-      version: options.version || '1.0.0',
-      description: options.description || '',
-      category: options.category || 'general',
+      version: options.version || "1.0.0",
+      description: options.description || "",
+      category: options.category || "general",
       tags: options.tags || [],
       critical: options.critical || false,
       retentionDays: options.retentionDays || 0,
@@ -227,7 +227,7 @@ export function DomainEventDecorator(
       serialization: {
         exclude: options.serialization?.exclude || [],
         include: options.serialization?.include || [],
-        customSerializer: options.serialization?.customSerializer || '',
+        customSerializer: options.serialization?.customSerializer || "",
       },
     };
 
@@ -253,10 +253,10 @@ export function DomainEventDecorator(
  * ```
  */
 export function getDomainEventMetadata(
-  target: any
+  target: any,
 ): Required<DomainEventOptions> | undefined {
   const targetClass =
-    typeof target === 'function' ? target : target.constructor;
+    typeof target === "function" ? target : target.constructor;
   return Reflect.getMetadata(DOMAIN_EVENT_METADATA_KEY, targetClass);
 }
 
@@ -301,19 +301,19 @@ export function EventHandler(eventTypes: string[]): MethodDecorator {
   return function (
     target: any,
     propertyKey: string | symbol,
-    descriptor: PropertyDescriptor
+    descriptor: PropertyDescriptor,
   ) {
     const existingHandlers =
-      Reflect.getMetadata('eventHandlers', target.constructor) || [];
+      Reflect.getMetadata("eventHandlers", target.constructor) || [];
     existingHandlers.push({
       method: propertyKey,
       eventTypes,
       handler: descriptor.value,
     });
     Reflect.defineMetadata(
-      'eventHandlers',
+      "eventHandlers",
       existingHandlers,
-      target.constructor
+      target.constructor,
     );
   };
 }
@@ -329,7 +329,7 @@ export function getEventHandlers(target: any): Array<{
   eventTypes: string[];
   handler: (...args: unknown[]) => unknown;
 }> {
-  return Reflect.getMetadata('eventHandlers', target) || [];
+  return Reflect.getMetadata("eventHandlers", target) || [];
 }
 
 /**
@@ -341,51 +341,51 @@ export function getEventHandlers(target: any): Array<{
 function validateDomainEventOptions(options: DomainEventOptions): void {
   if (
     !options.name ||
-    typeof options.name !== 'string' ||
+    typeof options.name !== "string" ||
     options.name.trim().length === 0
   ) {
-    throw new Error('领域事件名称不能为空');
+    throw new Error("领域事件名称不能为空");
   }
 
-  if (options.version && typeof options.version !== 'string') {
-    throw new Error('领域事件版本必须是字符串');
+  if (options.version && typeof options.version !== "string") {
+    throw new Error("领域事件版本必须是字符串");
   }
 
-  if (options.description && typeof options.description !== 'string') {
-    throw new Error('领域事件描述必须是字符串');
+  if (options.description && typeof options.description !== "string") {
+    throw new Error("领域事件描述必须是字符串");
   }
 
-  if (options.category && typeof options.category !== 'string') {
-    throw new Error('领域事件分类必须是字符串');
+  if (options.category && typeof options.category !== "string") {
+    throw new Error("领域事件分类必须是字符串");
   }
 
   if (options.tags && !Array.isArray(options.tags)) {
-    throw new Error('领域事件标签必须是字符串数组');
+    throw new Error("领域事件标签必须是字符串数组");
   }
 
-  if (options.tags && options.tags.some((tag) => typeof tag !== 'string')) {
-    throw new Error('领域事件标签必须都是字符串');
+  if (options.tags && options.tags.some((tag) => typeof tag !== "string")) {
+    throw new Error("领域事件标签必须都是字符串");
   }
 
   if (
     options.retentionDays !== undefined &&
-    (typeof options.retentionDays !== 'number' || options.retentionDays < 0)
+    (typeof options.retentionDays !== "number" || options.retentionDays < 0)
   ) {
-    throw new Error('事件保留期必须是非负整数');
+    throw new Error("事件保留期必须是非负整数");
   }
 
   if (
     options.serialization?.exclude &&
     !Array.isArray(options.serialization.exclude)
   ) {
-    throw new Error('排除字段列表必须是字符串数组');
+    throw new Error("排除字段列表必须是字符串数组");
   }
 
   if (
     options.serialization?.include &&
     !Array.isArray(options.serialization.include)
   ) {
-    throw new Error('包含字段列表必须是字符串数组');
+    throw new Error("包含字段列表必须是字符串数组");
   }
 }
 
@@ -395,7 +395,10 @@ function validateDomainEventOptions(options: DomainEventOptions): void {
  * @description 用于管理系统中所有已注册的领域事件
  */
 export class DomainEventRegistry {
-  private static events = new Map<string, new (...args: unknown[]) => unknown>();
+  private static events = new Map<
+    string,
+    new (...args: unknown[]) => unknown
+  >();
 
   /**
    * 注册领域事件
@@ -440,7 +443,9 @@ export class DomainEventRegistry {
    * @param category - 事件分类
    * @returns 该分类下的所有事件
    */
-  static getByCategory(category: string): Map<string, new (...args: unknown[]) => unknown> {
+  static getByCategory(
+    category: string,
+  ): Map<string, new (...args: unknown[]) => unknown> {
     const result = new Map<string, new (...args: unknown[]) => unknown>();
 
     for (const [name, eventClass] of this.events) {
@@ -459,7 +464,9 @@ export class DomainEventRegistry {
    * @param tag - 事件标签
    * @returns 包含该标签的所有事件
    */
-  static getByTag(tag: string): Map<string, new (...args: unknown[]) => unknown> {
+  static getByTag(
+    tag: string,
+  ): Map<string, new (...args: unknown[]) => unknown> {
     const result = new Map<string, new (...args: unknown[]) => unknown>();
 
     for (const [name, eventClass] of this.events) {

@@ -8,14 +8,14 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { DatabaseModule } from '@hl8/database';
-import { CacheModule } from '@hl8/caching';
-import { LoggerModule } from '@hl8/nestjs-fastify';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { DatabaseModule } from "@hl8/database";
+import { CacheModule } from "@hl8/caching";
+import { LoggerModule } from "@hl8/nestjs-fastify";
 
-import { EventStoreAdapter } from './event-store.adapter';
-import { EventStoreFactory } from './event-store.factory';
-import { EventStoreManager } from './event-store.manager';
+import { EventStoreAdapter } from "./event-store.adapter";
+import { EventStoreFactory } from "./event-store.factory";
+import { EventStoreManager } from "./event-store.manager";
 
 /**
  * 事件存储适配器模块选项
@@ -64,7 +64,7 @@ export class EventStoreAdaptersModule {
       CacheModule.forRoot({
         redis: {} as any,
       }),
-      LoggerModule.forRoot({})
+      LoggerModule.forRoot({}),
     );
 
     // 添加管理组件
@@ -73,7 +73,7 @@ export class EventStoreAdaptersModule {
 
     // 根据选项动态添加提供者
     if (options.enableEventStore !== false) {
-      providers.push({ provide: 'IEventStore', useClass: EventStoreAdapter });
+      providers.push({ provide: "IEventStore", useClass: EventStoreAdapter });
     }
 
     return {
@@ -91,7 +91,7 @@ export class EventStoreAdaptersModule {
    * @returns 事件存储适配器模块
    */
   static forRootAsync(
-    options: EventStoreAdaptersModuleOptions = {}
+    options: EventStoreAdaptersModuleOptions = {},
   ): DynamicModule {
     const providers: Provider[] = [];
     const imports: DynamicModule[] = [];
@@ -104,7 +104,7 @@ export class EventStoreAdaptersModule {
       CacheModule.forRoot({
         redis: {} as any,
       }),
-      LoggerModule.forRoot({})
+      LoggerModule.forRoot({}),
     );
 
     // 添加管理组件
@@ -113,7 +113,7 @@ export class EventStoreAdaptersModule {
 
     // 根据选项动态添加提供者
     if (options.enableEventStore !== false) {
-      providers.push({ provide: 'IEventStore', useClass: EventStoreAdapter });
+      providers.push({ provide: "IEventStore", useClass: EventStoreAdapter });
     }
 
     return {

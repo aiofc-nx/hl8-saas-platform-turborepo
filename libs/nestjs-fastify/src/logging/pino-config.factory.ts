@@ -21,7 +21,7 @@
  * @since 0.1.0
  */
 
-import type { LoggerOptions } from 'pino';
+import type { LoggerOptions } from "pino";
 
 /**
  * Pino 配置选项
@@ -79,17 +79,17 @@ export function createDevelopmentPinoConfig(
   options: PinoConfigOptions = {},
 ): LoggerOptions {
   const {
-    level = 'debug',
+    level = "debug",
     prettyPrint = true,
     colorize = true,
-    translateTime = 'SYS:standard',
-    ignore = 'pid,hostname',
+    translateTime = "SYS:standard",
+    ignore = "pid,hostname",
   } = options;
 
   return {
     level,
     transport: {
-      target: 'pino-pretty',
+      target: "pino-pretty",
       options: {
         colorize,
         translateTime,
@@ -109,7 +109,7 @@ export function createDevelopmentPinoConfig(
 export function createProductionPinoConfig(
   options: PinoConfigOptions = {},
 ): LoggerOptions {
-  const { level = 'info' } = options;
+  const { level = "info" } = options;
 
   return {
     level,
@@ -126,7 +126,7 @@ export function createProductionPinoConfig(
 export function createPinoConfig(
   options: PinoConfigOptions = {},
 ): LoggerOptions {
-  const isDevelopment = process.env.NODE_ENV === 'development';
+  const isDevelopment = process.env.NODE_ENV === "development";
 
   if (isDevelopment) {
     return createDevelopmentPinoConfig(options);

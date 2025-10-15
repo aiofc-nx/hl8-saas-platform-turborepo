@@ -19,7 +19,7 @@
  * @since 1.0.0
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
+import { BaseValueObject } from "@hl8/hybrid-archi";
 
 export class PhoneNumber extends BaseValueObject<string> {
   /**
@@ -39,14 +39,16 @@ export class PhoneNumber extends BaseValueObject<string> {
    * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, '手机号');
-    
+    this.validateNotEmpty(value, "手机号");
+
     // 清理输入，移除空格和特殊字符
-    const cleaned = value.replace(/[\s\-\(\)]/g, '');
-    
-    if (!PhoneNumber.CHINA_MOBILE_REGEX.test(cleaned) && 
-        !PhoneNumber.INTERNATIONAL_MOBILE_REGEX.test(cleaned)) {
-      throw new Error('手机号格式不正确，支持中国大陆手机号或国际手机号格式');
+    const cleaned = value.replace(/[\s\-\(\)]/g, "");
+
+    if (
+      !PhoneNumber.CHINA_MOBILE_REGEX.test(cleaned) &&
+      !PhoneNumber.INTERNATIONAL_MOBILE_REGEX.test(cleaned)
+    ) {
+      throw new Error("手机号格式不正确，支持中国大陆手机号或国际手机号格式");
     }
   }
 
@@ -58,7 +60,7 @@ export class PhoneNumber extends BaseValueObject<string> {
    */
   protected override transform(value: string): string {
     // 移除所有空格和特殊字符
-    return value.replace(/[\s\-\(\)]/g, '');
+    return value.replace(/[\s\-\(\)]/g, "");
   }
 
   /**
@@ -87,14 +89,14 @@ export class PhoneNumber extends BaseValueObject<string> {
   public getFormatted(): string {
     if (this.isChinaMobile()) {
       // 中国大陆手机号格式化：138 1234 5678
-      return this.value.replace(/(\d{3})(\d{4})(\d{4})/, '$1 $2 $3');
+      return this.value.replace(/(\d{3})(\d{4})(\d{4})/, "$1 $2 $3");
     } else if (this.isInternationalMobile()) {
       // 国际手机号格式化：+86 138 1234 5678
       const countryCode = this.value.substring(0, 3);
       const number = this.value.substring(3);
       return `${countryCode} ${number}`;
     }
-    
+
     return this.value;
   }
 
@@ -105,12 +107,12 @@ export class PhoneNumber extends BaseValueObject<string> {
    */
   public getCountryCode(): string | null {
     if (this.isChinaMobile()) {
-      return '+86';
+      return "+86";
     } else if (this.isInternationalMobile()) {
       const match = this.value.match(/^\+(\d{1,3})/);
       return match ? `+${match[1]}` : null;
     }
-    
+
     return null;
   }
 
@@ -126,37 +128,37 @@ export class PhoneNumber extends BaseValueObject<string> {
 
     const prefix = this.value.substring(0, 3);
     const carriers: Record<string, string> = {
-      '130': '中国联通',
-      '131': '中国联通',
-      '132': '中国联通',
-      '133': '中国电信',
-      '134': '中国移动',
-      '135': '中国移动',
-      '136': '中国移动',
-      '137': '中国移动',
-      '138': '中国移动',
-      '139': '中国移动',
-      '150': '中国联通',
-      '151': '中国联通',
-      '152': '中国联通',
-      '153': '中国电信',
-      '155': '中国联通',
-      '156': '中国联通',
-      '157': '中国移动',
-      '158': '中国移动',
-      '159': '中国移动',
-      '180': '中国电信',
-      '181': '中国电信',
-      '182': '中国移动',
-      '183': '中国移动',
-      '184': '中国移动',
-      '185': '中国联通',
-      '186': '中国联通',
-      '187': '中国移动',
-      '188': '中国移动',
-      '189': '中国电信',
+      "130": "中国联通",
+      "131": "中国联通",
+      "132": "中国联通",
+      "133": "中国电信",
+      "134": "中国移动",
+      "135": "中国移动",
+      "136": "中国移动",
+      "137": "中国移动",
+      "138": "中国移动",
+      "139": "中国移动",
+      "150": "中国联通",
+      "151": "中国联通",
+      "152": "中国联通",
+      "153": "中国电信",
+      "155": "中国联通",
+      "156": "中国联通",
+      "157": "中国移动",
+      "158": "中国移动",
+      "159": "中国移动",
+      "180": "中国电信",
+      "181": "中国电信",
+      "182": "中国移动",
+      "183": "中国移动",
+      "184": "中国移动",
+      "185": "中国联通",
+      "186": "中国联通",
+      "187": "中国移动",
+      "188": "中国移动",
+      "189": "中国电信",
     };
 
-    return carriers[prefix] || '未知运营商';
+    return carriers[prefix] || "未知运营商";
   }
 }

@@ -29,7 +29,7 @@
  * @since 1.0.0
  */
 
-import { CacheSerializationException } from '../exceptions/cache-serialization.exception.js';
+import { CacheSerializationException } from "../exceptions/cache-serialization.exception.js";
 
 /**
  * 序列化值为字符串
@@ -58,25 +58,25 @@ import { CacheSerializationException } from '../exceptions/cache-serialization.e
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 序列化函数必须支持任意类型（宪章 IX 允许场景）
 export function serialize(value: any): string {
   if (value === undefined) {
-    return 'undefined';
+    return "undefined";
   }
 
   if (value === null) {
-    return 'null';
+    return "null";
   }
 
   // 处理基本类型
-  if (typeof value !== 'object') {
+  if (typeof value !== "object") {
     return JSON.stringify(value);
   }
 
   // 处理顶层特殊类型
   if (value instanceof Date) {
-    return JSON.stringify({ __type: 'Date', value: value.toISOString() });
+    return JSON.stringify({ __type: "Date", value: value.toISOString() });
   }
 
   if (value instanceof RegExp) {
-    return JSON.stringify({ __type: 'RegExp', value: value.toString() });
+    return JSON.stringify({ __type: "RegExp", value: value.toString() });
   }
 
   // 处理循环引用
@@ -87,13 +87,13 @@ export function serialize(value: any): string {
     // 只有顶层的特殊类型需要特殊处理（已在上面处理）
 
     if (val === undefined) {
-      return { __type: 'undefined' };
+      return { __type: "undefined" };
     }
 
     // 处理循环引用
-    if (typeof val === 'object' && val !== null) {
+    if (typeof val === "object" && val !== null) {
       if (seen.has(val)) {
-        return { __type: 'CircularReference' };
+        return { __type: "CircularReference" };
       }
       seen.add(val);
     }
@@ -120,23 +120,23 @@ export function serialize(value: any): string {
  * ```
  */
 export function deserialize<T = any>(value: string): T {
-  if (value === 'undefined') {
+  if (value === "undefined") {
     return undefined as T;
   }
 
-  if (value === 'null') {
+  if (value === "null") {
     return null as T;
   }
 
   try {
     return JSON.parse(value, (key, val) => {
       // 恢复特殊类型
-      if (val && typeof val === 'object' && val.__type) {
+      if (val && typeof val === "object" && val.__type) {
         switch (val.__type) {
-          case 'Date':
+          case "Date":
             return new Date(val.value);
 
-          case 'RegExp': {
+          case "RegExp": {
             const match = val.value.match(/^\/(.*)\/([gimuy]*)$/);
             if (match) {
               return new RegExp(match[1], match[2]);
@@ -144,11 +144,11 @@ export function deserialize<T = any>(value: string): T {
             return new RegExp(val.value);
           }
 
-          case 'undefined':
+          case "undefined":
             return undefined;
 
-          case 'CircularReference':
-            return '[Circular]';
+          case "CircularReference":
+            return "[Circular]";
 
           default:
             return val;
@@ -191,11 +191,11 @@ export function isSerializable(value: any): boolean {
 
   const type = typeof value;
 
-  if (type === 'string' || type === 'number' || type === 'boolean') {
+  if (type === "string" || type === "number" || type === "boolean") {
     return true;
   }
 
-  if (type === 'function' || type === 'symbol') {
+  if (type === "function" || type === "symbol") {
     return false;
   }
 

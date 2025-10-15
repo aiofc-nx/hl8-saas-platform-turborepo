@@ -6,11 +6,11 @@
  * @since 1.0.0
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
-import { dotenvLoader, fileLoader } from '../../lib/loader';
-import { TypedConfigModule } from '../../lib/typed-config.module';
-import { cleanupTempFiles, createTempDir } from '../test-utils';
+import * as fs from "fs";
+import * as path from "path";
+import { dotenvLoader, fileLoader } from "../../lib/loader";
+import { TypedConfigModule } from "../../lib/typed-config.module";
+import { cleanupTempFiles, createTempDir } from "../test-utils";
 // 创建一个简单的测试配置类
 class TestAppConfig {
   app!: {
@@ -42,7 +42,7 @@ class TestAppConfig {
   };
 }
 
-describe('配置加载集成测试', () => {
+describe("配置加载集成测试", () => {
   let tempDir: string;
   let tempFiles: string[] = [];
 
@@ -51,25 +51,25 @@ describe('配置加载集成测试', () => {
     tempFiles = [tempDir];
 
     // 清理环境变量
-    delete process.env['DB_HOST'];
-    delete process.env['DB_PORT'];
-    delete process.env['DB_NAME'];
-    delete process.env['DB_USERNAME'];
-    delete process.env['DB_PASSWORD'];
-    delete process.env['JWT_SECRET'];
-    delete process.env['JWT_REFRESH_SECRET'];
-    delete process.env['LOG_LEVEL'];
-    delete process.env['REDIS_HOST'];
-    delete process.env['REDIS_PORT'];
-    delete process.env['REDIS_PASSWORD'];
+    delete process.env["DB_HOST"];
+    delete process.env["DB_PORT"];
+    delete process.env["DB_NAME"];
+    delete process.env["DB_USERNAME"];
+    delete process.env["DB_PASSWORD"];
+    delete process.env["JWT_SECRET"];
+    delete process.env["JWT_REFRESH_SECRET"];
+    delete process.env["LOG_LEVEL"];
+    delete process.env["REDIS_HOST"];
+    delete process.env["REDIS_PORT"];
+    delete process.env["REDIS_PASSWORD"];
   });
 
   afterEach(async () => {
     await cleanupTempFiles(tempFiles);
   });
 
-  describe('YAML配置文件加载', () => {
-    it('应该成功加载完整的API配置', () => {
+  describe("YAML配置文件加载", () => {
+    it("应该成功加载完整的API配置", () => {
       const yamlContent = `
 app:
   name: "HL8 SAAS API"
@@ -117,7 +117,7 @@ cache:
   defaultTtl: 3600
 `;
 
-      const filePath = path.join(tempDir, 'app.yml');
+      const filePath = path.join(tempDir, "app.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -129,12 +129,12 @@ cache:
       expect(configModule).toBeDefined();
     });
 
-    it('应该正确处理环境变量替换', () => {
+    it("应该正确处理环境变量替换", () => {
       // 设置环境变量
-      process.env['DB_HOST'] = 'production-db';
-      process.env['DB_PORT'] = '5433';
-      process.env['JWT_SECRET'] = 'production-jwt-secret';
-      process.env['LOG_LEVEL'] = 'debug';
+      process.env["DB_HOST"] = "production-db";
+      process.env["DB_PORT"] = "5433";
+      process.env["JWT_SECRET"] = "production-jwt-secret";
+      process.env["LOG_LEVEL"] = "debug";
 
       const yamlContent = `
 database:
@@ -151,7 +151,7 @@ logging:
   level: "\${LOG_LEVEL:-info}"
 `;
 
-      const filePath = path.join(tempDir, 'app.yml');
+      const filePath = path.join(tempDir, "app.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -163,14 +163,14 @@ logging:
       expect(configModule).toBeDefined();
     });
 
-    it('应该处理空的环境变量默认值', () => {
+    it("应该处理空的环境变量默认值", () => {
       const yamlContent = `
 cache:
   redisPassword: "\${REDIS_PASSWORD:-}"
   redisHost: "\${REDIS_HOST:-localhost}"
 `;
 
-      const filePath = path.join(tempDir, 'app.yml');
+      const filePath = path.join(tempDir, "app.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -183,8 +183,8 @@ cache:
     });
   });
 
-  describe('混合配置加载', () => {
-    it('应该同时支持文件配置和环境变量', () => {
+  describe("混合配置加载", () => {
+    it("应该同时支持文件配置和环境变量", () => {
       const yamlContent = `
 database:
   host: "\${DB_HOST:-localhost}"
@@ -192,7 +192,7 @@ database:
   database: "\${DB_NAME:-hl8_saas}"
 `;
 
-      const filePath = path.join(tempDir, 'app.yml');
+      const filePath = path.join(tempDir, "app.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -201,7 +201,7 @@ database:
 DB_HOST=env-file-db
 DB_PORT=5434
 `;
-      const envPath = path.join(tempDir, '.env');
+      const envPath = path.join(tempDir, ".env");
       fs.writeFileSync(envPath, envContent);
       tempFiles.push(envPath);
 
@@ -209,7 +209,7 @@ DB_PORT=5434
         schema: TestAppConfig,
         load: [
           fileLoader({ path: filePath }),
-          dotenvLoader({ separator: '__' }),
+          dotenvLoader({ separator: "__" }),
         ],
       });
 
@@ -217,8 +217,8 @@ DB_PORT=5434
     });
   });
 
-  describe('配置验证测试', () => {
-    it('应该验证必需的配置字段', () => {
+  describe("配置验证测试", () => {
+    it("应该验证必需的配置字段", () => {
       const yamlContent = `
 app:
   name: "Test App"
@@ -247,7 +247,7 @@ cache:
   type: "memory"
 `;
 
-      const filePath = path.join(tempDir, 'app.yml');
+      const filePath = path.join(tempDir, "app.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -259,7 +259,7 @@ cache:
       expect(configModule).toBeDefined();
     });
 
-    it('应该处理无效的配置值', () => {
+    it("应该处理无效的配置值", () => {
       const yamlContent = `
 app:
   name: "Test App"
@@ -288,7 +288,7 @@ cache:
   type: "memory"
 `;
 
-      const filePath = path.join(tempDir, 'app.yml');
+      const filePath = path.join(tempDir, "app.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -301,17 +301,17 @@ cache:
     });
   });
 
-  describe('错误处理测试', () => {
-    it('应该处理配置文件不存在', () => {
+  describe("错误处理测试", () => {
+    it("应该处理配置文件不存在", () => {
       expect(() => {
         TypedConfigModule.forRoot({
           schema: TestAppConfig,
-          load: [fileLoader({ path: '/nonexistent/config.yml' })],
+          load: [fileLoader({ path: "/nonexistent/config.yml" })],
         });
       }).toThrow();
     });
 
-    it('应该处理无效的YAML格式', () => {
+    it("应该处理无效的YAML格式", () => {
       const invalidYaml = `
 app:
   name: "Test App"
@@ -320,7 +320,7 @@ app:
   invalid: yaml: content: [
 `;
 
-      const filePath = path.join(tempDir, 'invalid.yml');
+      const filePath = path.join(tempDir, "invalid.yml");
       fs.writeFileSync(filePath, invalidYaml);
       tempFiles.push(filePath);
 
@@ -332,13 +332,13 @@ app:
       }).toThrow();
     });
 
-    it('应该处理环境变量替换错误', () => {
+    it("应该处理环境变量替换错误", () => {
       const yamlContent = `
 database:
   host: "\${INVALID_VAR_SYNTAX"
 `;
 
-      const filePath = path.join(tempDir, 'app.yml');
+      const filePath = path.join(tempDir, "app.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 
@@ -352,35 +352,35 @@ database:
     });
   });
 
-  describe('性能测试', () => {
-    it('应该高效加载大型配置文件', () => {
+  describe("性能测试", () => {
+    it("应该高效加载大型配置文件", () => {
       const largeConfig = {
         app: {
-          name: 'Test App',
-          version: '1.0.0',
-          environment: 'development',
+          name: "Test App",
+          version: "1.0.0",
+          environment: "development",
         },
         server: {
           port: 4000,
-          host: 'localhost',
+          host: "localhost",
         },
         database: {
-          type: 'postgresql',
-          host: 'localhost',
+          type: "postgresql",
+          host: "localhost",
           port: 5432,
-          database: 'test_db',
-          username: 'test_user',
-          password: 'test_password',
+          database: "test_db",
+          username: "test_user",
+          password: "test_password",
         },
         auth: {
-          jwtSecret: 'test-secret',
+          jwtSecret: "test-secret",
           jwtExpirationTime: 3600,
         },
         logging: {
-          level: 'info',
+          level: "info",
         },
         cache: {
-          type: 'memory',
+          type: "memory",
         },
         // 添加大量额外配置
         ...Object.fromEntries(
@@ -398,7 +398,7 @@ database:
       };
 
       const yamlContent = JSON.stringify(largeConfig, null, 2);
-      const filePath = path.join(tempDir, 'large-config.yml');
+      const filePath = path.join(tempDir, "large-config.yml");
       fs.writeFileSync(filePath, yamlContent);
       tempFiles.push(filePath);
 

@@ -8,26 +8,26 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../value-objects/entity-id';
+import { EntityId } from "../value-objects/entity-id";
 
 /**
  * 业务规则类型枚举
  */
 export enum BusinessRuleType {
   /** 格式验证规则 */
-  FORMAT_VALIDATION = 'format_validation',
+  FORMAT_VALIDATION = "format_validation",
   /** 业务逻辑规则 */
-  BUSINESS_LOGIC = 'business_logic',
+  BUSINESS_LOGIC = "business_logic",
   /** 数据完整性规则 */
-  DATA_INTEGRITY = 'data_integrity',
+  DATA_INTEGRITY = "data_integrity",
   /** 权限验证规则 */
-  PERMISSION_CHECK = 'permission_check',
+  PERMISSION_CHECK = "permission_check",
   /** 配额限制规则 */
-  QUOTA_LIMIT = 'quota_limit',
+  QUOTA_LIMIT = "quota_limit",
   /** 时间约束规则 */
-  TIME_CONSTRAINT = 'time_constraint',
+  TIME_CONSTRAINT = "time_constraint",
   /** 依赖关系规则 */
-  DEPENDENCY_CHECK = 'dependency_check',
+  DEPENDENCY_CHECK = "dependency_check",
 }
 
 /**
@@ -35,15 +35,15 @@ export enum BusinessRuleType {
  */
 export enum BusinessRuleScope {
   /** 字段级规则 */
-  FIELD = 'field',
+  FIELD = "field",
   /** 实体级规则 */
-  ENTITY = 'entity',
+  ENTITY = "entity",
   /** 聚合级规则 */
-  AGGREGATE = 'aggregate',
+  AGGREGATE = "aggregate",
   /** 跨聚合规则 */
-  CROSS_AGGREGATE = 'cross_aggregate',
+  CROSS_AGGREGATE = "cross_aggregate",
   /** 系统级规则 */
-  SYSTEM = 'system',
+  SYSTEM = "system",
 }
 
 /**
@@ -184,6 +184,6 @@ export interface IBusinessRuleManager {
    */
   validateRules(
     ruleCodes: string[],
-    value: unknown
+    value: unknown,
   ): Record<string, IBusinessRuleValidationResult>;
 }

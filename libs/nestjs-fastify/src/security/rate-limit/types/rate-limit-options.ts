@@ -11,9 +11,9 @@
  * @module security/rate-limit/types
  */
 
-import { IsBoolean, IsInt, IsOptional, IsString, Min } from 'class-validator';
-import type { FastifyRequest } from 'fastify';
-import type { Redis } from 'ioredis';
+import { IsBoolean, IsInt, IsOptional, IsString, Min } from "class-validator";
+import type { FastifyRequest } from "fastify";
+import type { Redis } from "ioredis";
 
 /**
  * 速率限制策略类型
@@ -25,7 +25,7 @@ import type { Redis } from 'ioredis';
  * - `user`: 基于用户 ID 限流（需要 isolation-model）
  * - `custom`: 自定义键生成函数
  */
-export type RateLimitStrategy = 'ip' | 'tenant' | 'user' | 'custom';
+export type RateLimitStrategy = "ip" | "tenant" | "user" | "custom";
 
 /**
  * 键生成函数类型
@@ -189,23 +189,23 @@ export class RateLimitConfig implements RateLimitOptions {
   /**
    * 时间窗口内最大请求数
    */
-  @IsInt({ message: 'max 必须是整数' })
-  @Min(1, { message: 'max 必须大于 0' })
+  @IsInt({ message: "max 必须是整数" })
+  @Min(1, { message: "max 必须大于 0" })
   max!: number;
 
   /**
    * 时间窗口（毫秒）
    */
-  @IsInt({ message: 'timeWindow 必须是整数' })
-  @Min(1000, { message: 'timeWindow 必须至少 1000 毫秒（1 秒）' })
+  @IsInt({ message: "timeWindow 必须是整数" })
+  @Min(1000, { message: "timeWindow 必须至少 1000 毫秒（1 秒）" })
   timeWindow!: number;
 
   /**
    * 限流策略
    */
   @IsOptional()
-  @IsString({ message: 'strategy 必须是字符串' })
-  strategy?: RateLimitStrategy = 'ip';
+  @IsString({ message: "strategy 必须是字符串" })
+  strategy?: RateLimitStrategy = "ip";
 
   /**
    * 自定义键生成函数
@@ -223,21 +223,21 @@ export class RateLimitConfig implements RateLimitOptions {
    * Redis 错误时是否跳过限流
    */
   @IsOptional()
-  @IsBoolean({ message: 'skipOnError 必须是布尔值' })
+  @IsBoolean({ message: "skipOnError 必须是布尔值" })
   skipOnError?: boolean = true;
 
   /**
    * 自定义错误消息
    */
   @IsOptional()
-  @IsString({ message: 'errorMessage 必须是字符串' })
-  errorMessage?: string = '请求过于频繁，请稍后再试';
+  @IsString({ message: "errorMessage 必须是字符串" })
+  errorMessage?: string = "请求过于频繁，请稍后再试";
 
   /**
    * 响应头中是否包含限流信息
    */
   @IsOptional()
-  @IsBoolean({ message: 'addHeaders 必须是布尔值' })
+  @IsBoolean({ message: "addHeaders 必须是布尔值" })
   addHeaders?: boolean = true;
 }
 
@@ -292,4 +292,4 @@ export interface RateLimitStatus {
  *
  * @internal
  */
-export const RATE_LIMIT_METADATA_KEY = 'rate-limit:options';
+export const RATE_LIMIT_METADATA_KEY = "rate-limit:options";

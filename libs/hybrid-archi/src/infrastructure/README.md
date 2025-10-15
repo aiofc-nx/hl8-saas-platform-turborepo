@@ -17,7 +17,7 @@
 **已删除的目录**：
 
 - ❌ `config/` - 重复的配置管理实现
-- ❌ `messaging/` - 重复的消息队列实现  
+- ❌ `messaging/` - 重复的消息队列实现
 - ❌ `monitoring/` - 重复的性能监控实现
 - ❌ `storage/` - 重复的存储实现
 
@@ -62,38 +62,51 @@
 
 ```typescript
 // 重构后的基础设施模块集成
-export { CacheService, CacheModule } from '@hl8/cache';
-export { Logger, LoggerModule } from '@hl8/logger';
-export { ConfigService, ConfigModule } from '@hl8/config';
-export { MessagingService, EventService, TaskService, MessagingModule } from '@hl8/messaging';
-export { TenantContextService, TenantIsolationService, MultiTenancyModule } from '@hl8/multi-tenancy';
-export { DatabaseService, TenantDatabaseService, DatabaseModule } from '@hl8/database';
-export { FastifyProModule } from '@hl8/fastify-pro';
+export { CacheService, CacheModule } from "@hl8/cache";
+export { Logger, LoggerModule } from "@hl8/logger";
+export { ConfigService, ConfigModule } from "@hl8/config";
+export {
+  MessagingService,
+  EventService,
+  TaskService,
+  MessagingModule,
+} from "@hl8/messaging";
+export {
+  TenantContextService,
+  TenantIsolationService,
+  MultiTenancyModule,
+} from "@hl8/multi-tenancy";
+export {
+  DatabaseService,
+  TenantDatabaseService,
+  DatabaseModule,
+} from "@hl8/database";
+export { FastifyProModule } from "@hl8/fastify-pro";
 ```
 
 ### 2. 通用功能组件
 
 ```typescript
 // 通用基础设施功能组件
-export * from './common';
+export * from "./common";
 
 // Web基础设施（通用功能组件）
-export * from './web';
+export * from "./web";
 
 // 映射器基础设施（通用功能组件）
-export * from './mappers';
+export * from "./mappers";
 ```
 
 ### 3. 使用方式
 
 ```typescript
 // 业务模块中使用基础设施服务
-import { 
-  CacheService, 
-  Logger, 
+import {
+  CacheService,
+  Logger,
   ConfigService,
-  InfrastructureServiceManager 
-} from '@hl8/hybrid-archi';
+  InfrastructureServiceManager,
+} from "@hl8/hybrid-archi";
 
 @Injectable()
 export class BusinessService {
@@ -101,7 +114,7 @@ export class BusinessService {
     private readonly cacheService: CacheService,
     private readonly logger: Logger,
     private readonly configService: ConfigService,
-    private readonly infrastructureManager: InfrastructureServiceManager
+    private readonly infrastructureManager: InfrastructureServiceManager,
   ) {}
 }
 ```
@@ -133,10 +146,12 @@ export class BusinessService {
 ```typescript
 // 注册基础设施服务
 const service = new BaseInfrastructureAdapter(
-  'service-id',
-  'Service Name',
-  '1.0.0',
-  { /* 配置 */ }
+  "service-id",
+  "Service Name",
+  "1.0.0",
+  {
+    /* 配置 */
+  },
 );
 
 await service.initialize();

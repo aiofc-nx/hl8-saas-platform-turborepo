@@ -73,8 +73,8 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase, IUseCaseExecutionResult } from './base-use-case';
-import { IUseCaseContext } from './use-case.interface';
+import { BaseUseCase, IUseCaseExecutionResult } from "./base-use-case";
+import { IUseCaseContext } from "./use-case.interface";
 
 /**
  * 基础命令用例抽象类
@@ -89,7 +89,7 @@ export abstract class BaseCommandUseCase<
   constructor(
     useCaseName: string,
     useCaseDescription: string,
-    useCaseVersion = '1.0.0',
+    useCaseVersion = "1.0.0",
     requiredPermissions: string[] = [],
   ) {
     super(useCaseName, useCaseDescription, useCaseVersion, requiredPermissions);
@@ -149,7 +149,7 @@ export abstract class BaseCommandUseCase<
   protected async publishDomainEvents(aggregateRoot: any): Promise<void> {
     if (
       !aggregateRoot ||
-      typeof aggregateRoot.getUncommittedEvents !== 'function'
+      typeof aggregateRoot.getUncommittedEvents !== "function"
     ) {
       return;
     }
@@ -164,7 +164,7 @@ export abstract class BaseCommandUseCase<
       // await this.eventBus.publishAll(events);
 
       // 清除已发布的事件
-      if (typeof aggregateRoot.clearEvents === 'function') {
+      if (typeof aggregateRoot.clearEvents === "function") {
         aggregateRoot.clearEvents();
       }
 
@@ -185,7 +185,7 @@ export abstract class BaseCommandUseCase<
    */
   protected async beginTransaction(): Promise<void> {
     // 事务逻辑将在具体实现中注入
-    this.log('debug', '开始事务');
+    this.log("debug", "开始事务");
   }
 
   /**
@@ -195,7 +195,7 @@ export abstract class BaseCommandUseCase<
    */
   protected async commitTransaction(): Promise<void> {
     // 事务逻辑将在具体实现中注入
-    this.log('debug', '提交事务');
+    this.log("debug", "提交事务");
   }
 
   /**
@@ -205,14 +205,14 @@ export abstract class BaseCommandUseCase<
    */
   protected async rollbackTransaction(): Promise<void> {
     // 事务逻辑将在具体实现中注入
-    this.log('debug', '回滚事务');
+    this.log("debug", "回滚事务");
   }
 
   /**
    * 记录事件发布日志
    */
   private logEventPublication(events: any[]): void {
-    this.log('info', `发布了 ${events.length} 个领域事件`, {
+    this.log("info", `发布了 ${events.length} 个领域事件`, {
       eventTypes: events.map(
         (event) => event.eventType || event.constructor.name,
       ),
@@ -223,7 +223,7 @@ export abstract class BaseCommandUseCase<
    * 记录事件发布失败日志
    */
   private logEventPublicationError(events: any[], error: any): void {
-    this.log('error', '事件发布失败', {
+    this.log("error", "事件发布失败", {
       eventCount: events.length,
       error: error.message,
     });
@@ -237,7 +237,7 @@ export abstract class BaseCommandUseCase<
    * @param data - 附加数据
    */
   protected log(
-    level: 'debug' | 'info' | 'warn' | 'error',
+    level: "debug" | "info" | "warn" | "error",
     message: string,
     data?: any,
   ): void {
@@ -271,7 +271,7 @@ export abstract class BaseCommandUseCase<
       data,
       error: error
         ? {
-            code: error.errorCode || 'UNKNOWN_ERROR',
+            code: error.errorCode || "UNKNOWN_ERROR",
             message: error.message,
             details: error,
           }
@@ -290,8 +290,8 @@ export abstract class BaseCommandUseCase<
  * 业务规则违反异常
  */
 export class BusinessRuleViolationError extends Error {
-  readonly errorCode = 'BUSINESS_RULE_VIOLATION';
-  readonly errorType = 'business';
+  readonly errorCode = "BUSINESS_RULE_VIOLATION";
+  readonly errorType = "business";
 
   constructor(
     message: string,
@@ -299,6 +299,6 @@ export class BusinessRuleViolationError extends Error {
     public readonly ruleDetails?: any,
   ) {
     super(message);
-    this.name = 'BusinessRuleViolationError';
+    this.name = "BusinessRuleViolationError";
   }
 }

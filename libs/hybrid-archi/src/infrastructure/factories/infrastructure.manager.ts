@@ -8,13 +8,13 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   InfrastructureFactory,
   IInfrastructureServiceConfig,
   InfrastructureServiceType,
-} from './infrastructure.factory';
+} from "./infrastructure.factory";
 
 /**
  * 基础设施管理器配置
@@ -55,7 +55,7 @@ export class InfrastructureManager {
   constructor(
     private readonly logger: FastifyLoggerService,
     private readonly infrastructureFactory: InfrastructureFactory,
-    config: Partial<IInfrastructureManagerConfig> = {}
+    config: Partial<IInfrastructureManagerConfig> = {},
   ) {
     this.config = {
       enableAutoStart: config.enableAutoStart ?? true,
@@ -169,7 +169,7 @@ export class InfrastructureManager {
    * @returns 健康检查结果
    */
   async healthCheckAllServices(): Promise<Record<string, any>> {
-    this.logger.debug('开始健康检查所有基础设施服务');
+    this.logger.debug("开始健康检查所有基础设施服务");
     return await this.infrastructureFactory.healthCheckAllServices();
   }
 
@@ -186,7 +186,7 @@ export class InfrastructureManager {
    * 启动所有服务
    */
   async startAllServices(): Promise<void> {
-    this.logger.log('启动所有基础设施服务');
+    this.logger.log("启动所有基础设施服务");
 
     const services = this.getAllServices();
     const sortedServices = this.sortServicesByPriority(services);
@@ -207,7 +207,7 @@ export class InfrastructureManager {
    * 停止所有服务
    */
   async stopAllServices(): Promise<void> {
-    this.logger.log('停止所有基础设施服务');
+    this.logger.log("停止所有基础设施服务");
 
     const services = this.getAllServices();
     const sortedServices = this.sortServicesByPriority(services).reverse();
@@ -245,12 +245,12 @@ export class InfrastructureManager {
    * 重启所有服务
    */
   async restartAllServices(): Promise<void> {
-    this.logger.log('重启所有基础设施服务');
+    this.logger.log("重启所有基础设施服务");
 
     await this.stopAllServices();
     await this.startAllServices();
 
-    this.logger.log('重启所有基础设施服务完成');
+    this.logger.log("重启所有基础设施服务完成");
   }
 
   /**
@@ -281,7 +281,7 @@ export class InfrastructureManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.log('启动基础设施管理器');
+    this.logger.log("启动基础设施管理器");
 
     // 启动健康检查
     if (this.config.enableHealthCheck) {
@@ -300,7 +300,7 @@ export class InfrastructureManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.log('停止基础设施管理器');
+    this.logger.log("停止基础设施管理器");
 
     // 停止健康检查
     if (this.healthCheckTimer) {
@@ -321,7 +321,7 @@ export class InfrastructureManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.log('销毁基础设施管理器');
+    this.logger.log("销毁基础设施管理器");
 
     // 停止管理器
     this.stop();
@@ -342,7 +342,7 @@ export class InfrastructureManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化基础设施管理器');
+    this.logger.debug("初始化基础设施管理器");
   }
 
   /**
@@ -353,14 +353,14 @@ export class InfrastructureManager {
       try {
         const healthResults = await this.healthCheckAllServices();
         const unhealthyServices = Object.entries(healthResults).filter(
-          ([, result]) => !result.healthy
+          ([, result]) => !result.healthy,
         );
 
         if (unhealthyServices.length > 0) {
-          this.logger.warn('发现不健康的基础设施服务');
+          this.logger.warn("发现不健康的基础设施服务");
         }
       } catch (error) {
-        this.logger.error('健康检查失败', error);
+        this.logger.error("健康检查失败", error);
       }
     }, this.config.healthCheckInterval);
   }
@@ -372,9 +372,9 @@ export class InfrastructureManager {
     this.statisticsTimer = setInterval(async () => {
       try {
         const statistics = this.getServiceStatistics();
-        this.logger.debug('基础设施服务统计信息收集完成');
+        this.logger.debug("基础设施服务统计信息收集完成");
       } catch (error) {
-        this.logger.error('统计收集失败', error);
+        this.logger.error("统计收集失败", error);
       }
     }, this.config.statisticsInterval);
   }
@@ -438,7 +438,7 @@ export class InfrastructureManager {
    * @returns 数据库统计信息
    */
   async getAllDatabaseStatistics(): Promise<any> {
-    this.logger.debug('获取所有数据库统计信息');
+    this.logger.debug("获取所有数据库统计信息");
     // 这里应该实现实际的统计信息收集逻辑
     return {
       totalConnections: 0,
@@ -452,7 +452,7 @@ export class InfrastructureManager {
    * 重置所有数据库统计信息
    */
   async resetAllDatabaseStatistics(): Promise<void> {
-    this.logger.debug('重置所有数据库统计信息');
+    this.logger.debug("重置所有数据库统计信息");
     // 这里应该实现实际的统计信息重置逻辑
   }
 }

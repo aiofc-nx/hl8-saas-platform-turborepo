@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const BUSINESS_VALIDATOR = 'Business Validator';
+export const BUSINESS_VALIDATOR = "Business Validator";

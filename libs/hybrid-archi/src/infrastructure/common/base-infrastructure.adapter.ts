@@ -8,13 +8,13 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   IBaseInfrastructureService,
   IInfrastructureServiceManager,
   IInfrastructureHealth,
   InfrastructureServiceStatus,
-} from './base-infrastructure.interface';
+} from "./base-infrastructure.interface";
 
 /**
  * 基础基础设施适配器
@@ -32,7 +32,7 @@ export class BaseInfrastructureAdapter implements IBaseInfrastructureService {
     public readonly serviceId: string,
     public readonly serviceName: string,
     public readonly serviceVersion: string,
-    private readonly configuration: Record<string, unknown> = {}
+    private readonly configuration: Record<string, unknown> = {},
   ) {}
 
   /**
@@ -56,7 +56,7 @@ export class BaseInfrastructureAdapter implements IBaseInfrastructureService {
       throw new Error(
         `基础设施服务初始化失败: ${
           error instanceof Error ? error.message : String(error)
-        }`
+        }`,
       );
     }
   }
@@ -84,7 +84,7 @@ export class BaseInfrastructureAdapter implements IBaseInfrastructureService {
       throw new Error(
         `基础设施服务启动失败: ${
           error instanceof Error ? error.message : String(error)
-        }`
+        }`,
       );
     }
   }
@@ -110,7 +110,7 @@ export class BaseInfrastructureAdapter implements IBaseInfrastructureService {
       throw new Error(
         `基础设施服务停止失败: ${
           error instanceof Error ? error.message : String(error)
-        }`
+        }`,
       );
     }
   }
@@ -242,7 +242,7 @@ export class InfrastructureServiceManager
       service.start().catch((error) => {
         console.error(`启动服务 ${service.serviceId} 失败:`, error);
         throw error;
-      })
+      }),
     );
 
     await Promise.all(startPromises);
@@ -256,7 +256,7 @@ export class InfrastructureServiceManager
       service.stop().catch((error) => {
         console.error(`停止服务 ${service.serviceId} 失败:`, error);
         throw error;
-      })
+      }),
     );
 
     await Promise.all(stopPromises);

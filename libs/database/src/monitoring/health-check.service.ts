@@ -34,12 +34,12 @@
  * @since 1.0.0
  */
 
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { Injectable } from '@nestjs/common';
-import { ConnectionManager } from '../connection/connection.manager.js';
-import { HealthCheckException } from '../exceptions/health-check.exception.js';
-import type { PoolStats } from '../types/connection.types.js';
-import type { HealthCheckResult } from '../types/monitoring.types.js';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { Injectable } from "@nestjs/common";
+import { ConnectionManager } from "../connection/connection.manager.js";
+import { HealthCheckException } from "../exceptions/health-check.exception.js";
+import type { PoolStats } from "../types/connection.types.js";
+import type { HealthCheckResult } from "../types/monitoring.types.js";
 
 @Injectable()
 export class HealthCheckService {
@@ -47,7 +47,7 @@ export class HealthCheckService {
     private readonly connectionManager: ConnectionManager,
     private readonly logger: FastifyLoggerService,
   ) {
-    this.logger.log('HealthCheckService 初始化');
+    this.logger.log("HealthCheckService 初始化");
   }
 
   /**
@@ -68,13 +68,13 @@ export class HealthCheckService {
       const responseTime = Date.now() - startTime;
 
       // 判断健康状态
-      let status: 'healthy' | 'unhealthy' | 'degraded' = 'healthy';
+      let status: "healthy" | "unhealthy" | "degraded" = "healthy";
 
       if (!isConnected) {
-        status = 'unhealthy';
+        status = "unhealthy";
       } else if (poolStats.idle < 2 && poolStats.total >= poolStats.max * 0.9) {
         // 连接池接近上限
-        status = 'degraded';
+        status = "degraded";
       }
 
       const result: HealthCheckResult = {
@@ -87,9 +87,9 @@ export class HealthCheckService {
         pool: poolStats,
       };
 
-      if (status !== 'healthy') {
+      if (status !== "healthy") {
         // 记录监控日志
-        this.logger.warn('数据库健康检查异常', result as any);
+        this.logger.warn("数据库健康检查异常", result as any);
         // 抛出业务异常
         throw new HealthCheckException(
           `数据库健康检查失败: ${status}`,
@@ -98,17 +98,17 @@ export class HealthCheckService {
         );
       } else {
         // 记录成功日志用于监控
-        this.logger.debug('数据库健康检查通过', result as any);
+        this.logger.debug("数据库健康检查通过", result as any);
       }
 
       return result;
     } catch (error) {
       const responseTime = Date.now() - startTime;
 
-      this.logger.error('健康检查失败', (error as Error).stack);
+      this.logger.error("健康检查失败", (error as Error).stack);
 
       return {
-        status: 'unhealthy',
+        status: "unhealthy",
         checkedAt: new Date(),
         responseTime,
         connection: {

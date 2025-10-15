@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
 /**
  * 当前用户装饰器
@@ -20,7 +20,7 @@ export const CurrentUser = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return request.user;
-  }
+  },
 );
 
 /**
@@ -34,7 +34,7 @@ export const TenantContext = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return request.tenantContext;
-  }
+  },
 );
 
 /**
@@ -47,8 +47,8 @@ export const TenantContext = createParamDecorator(
 export const TraceId = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return request.traceId || request.headers['x-trace-id'];
-  }
+    return request.traceId || request.headers["x-trace-id"];
+  },
 );
 
 /**
@@ -61,8 +61,8 @@ export const TraceId = createParamDecorator(
 export const CorrelationId = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
-    return request.correlationId || request.headers['x-correlation-id'];
-  }
+    return request.correlationId || request.headers["x-correlation-id"];
+  },
 );
 
 /**
@@ -76,9 +76,9 @@ export const ClientInfo = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return {
-      userAgent: request.headers['user-agent'],
+      userAgent: request.headers["user-agent"],
       ip: request.ip,
       referer: request.headers.referer,
     };
-  }
+  },
 );

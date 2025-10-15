@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { UserAggregate } from '../aggregates/user.aggregate';
-import { Username, Email, EntityId } from '@hl8/hybrid-archi';
+import { UserAggregate } from "../aggregates/user.aggregate";
+import { Username, Email, EntityId } from "@hl8/hybrid-archi";
 
 export interface IUserAggregateRepository {
   save(aggregate: UserAggregate): Promise<void>;
@@ -19,4 +19,3 @@ export interface IUserAggregateRepository {
   existsByEmail(email: Email): Promise<boolean>;
   count(): Promise<number>;
 }
-

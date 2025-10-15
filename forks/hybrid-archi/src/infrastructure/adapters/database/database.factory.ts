@@ -8,14 +8,14 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/logger';
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "@hl8/database";
+import { PinoLogger } from "@hl8/logger";
 import {
   DatabaseAdapter,
   IDatabaseConfig,
   DatabaseType,
-} from './database.adapter';
+} from "./database.adapter";
 
 /**
  * 数据库注册信息
@@ -50,7 +50,7 @@ export class DatabaseFactory {
 
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly logger: PinoLogger
+    private readonly logger: PinoLogger,
   ) {}
 
   /**
@@ -64,7 +64,7 @@ export class DatabaseFactory {
   createDatabase(
     databaseName: string,
     databaseType: DatabaseType,
-    config: Partial<IDatabaseConfig> = {}
+    config: Partial<IDatabaseConfig> = {},
   ): DatabaseAdapter {
     // 检查数据库是否已存在
     if (this.databases.has(databaseName)) {
@@ -77,7 +77,7 @@ export class DatabaseFactory {
     const database = new DatabaseAdapter(
       this.databaseService,
       this.logger,
-      config
+      config,
     );
 
     // 注册数据库
@@ -142,7 +142,7 @@ export class DatabaseFactory {
   getOrCreateDatabase(
     databaseName: string,
     databaseType: DatabaseType,
-    config: Partial<IDatabaseConfig> = {}
+    config: Partial<IDatabaseConfig> = {},
   ): DatabaseAdapter {
     const existingDatabase = this.getDatabase(databaseName);
     if (existingDatabase) {
@@ -206,7 +206,7 @@ export class DatabaseFactory {
    */
   updateDatabaseConfiguration(
     databaseName: string,
-    config: Partial<IDatabaseConfig>
+    config: Partial<IDatabaseConfig>,
   ): void {
     const registration = this.databases.get(databaseName);
     if (!registration) {
@@ -227,7 +227,7 @@ export class DatabaseFactory {
    * @returns 清理的数据库数量
    */
   async cleanupExpiredDatabases(
-    maxAge: number = 24 * 60 * 60 * 1000
+    maxAge: number = 24 * 60 * 60 * 1000,
   ): Promise<number> {
     const now = new Date();
     const expiredDatabases: string[] = [];
@@ -325,11 +325,11 @@ export class DatabaseFactory {
       try {
         const isHealthy = await this.checkDatabaseHealth(
           databaseName,
-          registration.instance!
+          registration.instance!,
         );
         results[databaseName] = {
           healthy: isHealthy,
-          status: isHealthy ? 'healthy' : 'unhealthy',
+          status: isHealthy ? "healthy" : "unhealthy",
           databaseName,
           databaseType: registration.databaseType,
           createdAt: registration.createdAt,
@@ -339,7 +339,7 @@ export class DatabaseFactory {
       } catch (error) {
         results[databaseName] = {
           healthy: false,
-          status: 'error',
+          status: "error",
           error: error instanceof Error ? error.message : String(error),
           databaseName,
         };
@@ -402,11 +402,11 @@ export class DatabaseFactory {
    */
   private async checkDatabaseHealth(
     databaseName: string,
-    instance: DatabaseAdapter
+    instance: DatabaseAdapter,
   ): Promise<boolean> {
     try {
       // 检查数据库是否可用
-      const testQuery = 'SELECT 1 as test';
+      const testQuery = "SELECT 1 as test";
       const result = await instance.query(testQuery);
 
       return result.length > 0 && (result[0] as { test: number }).test === 1;

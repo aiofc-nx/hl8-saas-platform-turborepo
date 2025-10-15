@@ -22,7 +22,7 @@ import {
   INFRASTRUCTURE_CONSTANTS,
   INFRASTRUCTURE_ERROR_MESSAGES,
   INFRASTRUCTURE_DEFAULT_CONFIG,
-} from '../constants';
+} from "../constants";
 
 /**
  * 缓存适配器常量使用示例
@@ -90,7 +90,7 @@ export class DatabaseAdapterExample {
    */
   static createQueryCacheKey(query: string, params: unknown[]): string {
     const queryHash = Buffer.from(query + JSON.stringify(params)).toString(
-      'base64'
+      "base64",
     );
     return `query:${queryHash}`;
   }
@@ -117,7 +117,7 @@ export class MessageQueueAdapterExample {
    * 创建消息优先级
    */
   static createMessagePriority(
-    priority: 'low' | 'normal' | 'high' | 'critical'
+    priority: "low" | "normal" | "high" | "critical",
   ): number {
     const priorityMap = {
       low: INFRASTRUCTURE_CONSTANTS.MESSAGE_QUEUE.PRIORITY.LOW,
@@ -177,7 +177,7 @@ export class PortAdapterExample {
    */
   static isValidAdapterType(type: string): boolean {
     return Object.values(INFRASTRUCTURE_CONSTANTS.PORT_ADAPTERS.TYPE).includes(
-      type as any
+      type as any,
     );
   }
 }
@@ -201,7 +201,7 @@ export class MapperExample {
    */
   static isValidMapperType(type: string): boolean {
     return Object.values(INFRASTRUCTURE_CONSTANTS.MAPPERS.TYPE).includes(
-      type as any
+      type as any,
     );
   }
 }
@@ -229,7 +229,7 @@ export class FactoryExample {
    */
   static isValidFactoryType(type: string): boolean {
     return Object.values(INFRASTRUCTURE_CONSTANTS.FACTORIES.TYPE).includes(
-      type as any
+      type as any,
     );
   }
 }
@@ -245,42 +245,42 @@ export class ErrorHandlingExample {
     const errorMessages = INFRASTRUCTURE_ERROR_MESSAGES;
 
     // 根据错误码获取对应的错误消息
-    if (errorCode.startsWith('CACHE_')) {
-      const cacheError = errorCode.replace('CACHE_', '');
+    if (errorCode.startsWith("CACHE_")) {
+      const cacheError = errorCode.replace("CACHE_", "");
       return (
         errorMessages.CACHE[cacheError as keyof typeof errorMessages.CACHE] ||
-        '未知缓存错误'
+        "未知缓存错误"
       );
     }
 
-    if (errorCode.startsWith('DATABASE_')) {
-      const dbError = errorCode.replace('DATABASE_', '');
+    if (errorCode.startsWith("DATABASE_")) {
+      const dbError = errorCode.replace("DATABASE_", "");
       return (
         errorMessages.DATABASE[
           dbError as keyof typeof errorMessages.DATABASE
-        ] || '未知数据库错误'
+        ] || "未知数据库错误"
       );
     }
 
-    if (errorCode.startsWith('MESSAGE_QUEUE_')) {
-      const mqError = errorCode.replace('MESSAGE_QUEUE_', '');
+    if (errorCode.startsWith("MESSAGE_QUEUE_")) {
+      const mqError = errorCode.replace("MESSAGE_QUEUE_", "");
       return (
         errorMessages.MESSAGE_QUEUE[
           mqError as keyof typeof errorMessages.MESSAGE_QUEUE
-        ] || '未知消息队列错误'
+        ] || "未知消息队列错误"
       );
     }
 
-    if (errorCode.startsWith('EVENT_STORE_')) {
-      const esError = errorCode.replace('EVENT_STORE_', '');
+    if (errorCode.startsWith("EVENT_STORE_")) {
+      const esError = errorCode.replace("EVENT_STORE_", "");
       return (
         errorMessages.EVENT_STORE[
           esError as keyof typeof errorMessages.EVENT_STORE
-        ] || '未知事件存储错误'
+        ] || "未知事件存储错误"
       );
     }
 
-    return '未知错误';
+    return "未知错误";
   }
 }
 
@@ -302,7 +302,7 @@ export class LoggingExample {
       factory: INFRASTRUCTURE_CONSTANTS.LOGGING.CONTEXT.FACTORY,
     };
 
-    return contextMap[module] || 'unknown';
+    return contextMap[module] || "unknown";
   }
 
   /**
@@ -310,7 +310,7 @@ export class LoggingExample {
    */
   static isValidLogLevel(level: string): boolean {
     return Object.values(INFRASTRUCTURE_CONSTANTS.LOGGING.LEVEL).includes(
-      level as any
+      level as any,
     );
   }
 }
@@ -336,7 +336,7 @@ export class PerformanceMonitoringExample {
    */
   static isValidMetricsType(type: string): boolean {
     return Object.values(
-      INFRASTRUCTURE_CONSTANTS.PERFORMANCE.METRICS_TYPE
+      INFRASTRUCTURE_CONSTANTS.PERFORMANCE.METRICS_TYPE,
     ).includes(type as any);
   }
 }
@@ -359,7 +359,7 @@ export class ConfigExample {
    */
   static isValidEnvironment(env: string): boolean {
     return Object.values(INFRASTRUCTURE_CONSTANTS.CONFIG.ENVIRONMENT).includes(
-      env as any
+      env as any,
     );
   }
 }
@@ -388,9 +388,9 @@ export class InfrastructureConstantsUsageExample {
    */
   static validateConfig(config: Record<string, unknown>): boolean {
     // 检查必需的配置项
-    const requiredKeys = ['cache', 'database', 'messageQueue', 'eventStore'];
+    const requiredKeys = ["cache", "database", "messageQueue", "eventStore"];
     return requiredKeys.every((key) =>
-      Object.prototype.hasOwnProperty.call(config, key)
+      Object.prototype.hasOwnProperty.call(config, key),
     );
   }
 

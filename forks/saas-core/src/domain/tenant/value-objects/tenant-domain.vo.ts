@@ -41,8 +41,8 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
-import { TENANT_DOMAIN_VALIDATION } from '../../../constants/tenant.constants';
+import { BaseValueObject } from "@hl8/hybrid-archi";
+import { TENANT_DOMAIN_VALIDATION } from "../../../constants/tenant.constants";
 
 export class TenantDomain extends BaseValueObject<string> {
   /**
@@ -53,40 +53,40 @@ export class TenantDomain extends BaseValueObject<string> {
    */
   protected override validate(value: string): void {
     // 使用继承的验证辅助方法
-    this.validateNotEmpty(value, '租户域名');
+    this.validateNotEmpty(value, "租户域名");
     this.validateLength(
       value,
       TENANT_DOMAIN_VALIDATION.MIN_LENGTH,
       TENANT_DOMAIN_VALIDATION.MAX_LENGTH,
-      '租户域名'
+      "租户域名",
     );
     this.validatePattern(
       value,
       TENANT_DOMAIN_VALIDATION.PATTERN,
-      '租户域名格式不正确，只能包含小写字母、数字、连字符和点'
+      "租户域名格式不正确，只能包含小写字母、数字、连字符和点",
     );
 
     // 租户特定的验证规则
-    if (value.startsWith('.') || value.endsWith('.')) {
-      throw new Error('租户域名不能以点开头或结尾');
+    if (value.startsWith(".") || value.endsWith(".")) {
+      throw new Error("租户域名不能以点开头或结尾");
     }
 
-    if (value.startsWith('-') || value.endsWith('-')) {
-      throw new Error('租户域名不能以连字符开头或结尾');
+    if (value.startsWith("-") || value.endsWith("-")) {
+      throw new Error("租户域名不能以连字符开头或结尾");
     }
 
-    if (value.includes('..')) {
-      throw new Error('租户域名不能包含连续的点');
+    if (value.includes("..")) {
+      throw new Error("租户域名不能包含连续的点");
     }
 
     // 验证每个标签（由点分隔的部分）
-    const labels = value.split('.');
+    const labels = value.split(".");
     for (const label of labels) {
       if (label.length === 0) {
-        throw new Error('租户域名不能包含空标签');
+        throw new Error("租户域名不能包含空标签");
       }
       if (label.length > 63) {
-        throw new Error('租户域名的每个标签长度不能超过63个字符');
+        throw new Error("租户域名的每个标签长度不能超过63个字符");
       }
     }
   }
@@ -129,7 +129,7 @@ export class TenantDomain extends BaseValueObject<string> {
    * ```
    */
   public getTLD(): string {
-    const parts = this._value.split('.');
+    const parts = this._value.split(".");
     return parts[parts.length - 1];
   }
 
@@ -145,9 +145,9 @@ export class TenantDomain extends BaseValueObject<string> {
    * ```
    */
   public getSLD(): string {
-    const parts = this._value.split('.');
+    const parts = this._value.split(".");
     if (parts.length < 2) {
-      throw new Error('无效的域名格式，无法获取二级域名');
+      throw new Error("无效的域名格式，无法获取二级域名");
     }
     return parts[parts.length - 2];
   }
@@ -164,11 +164,11 @@ export class TenantDomain extends BaseValueObject<string> {
    * ```
    */
   public getSubdomain(): string | null {
-    const parts = this._value.split('.');
+    const parts = this._value.split(".");
     if (parts.length <= 2) {
       return null;
     }
-    return parts.slice(0, -2).join('.');
+    return parts.slice(0, -2).join(".");
   }
 
   /**
@@ -185,7 +185,7 @@ export class TenantDomain extends BaseValueObject<string> {
    * ```
    */
   public isSubdomain(): boolean {
-    return this._value.split('.').length > 2;
+    return this._value.split(".").length > 2;
   }
 
   /**
@@ -200,10 +200,10 @@ export class TenantDomain extends BaseValueObject<string> {
    * ```
    */
   public getRootDomain(): string {
-    const parts = this._value.split('.');
+    const parts = this._value.split(".");
     if (parts.length <= 2) {
       return this._value;
     }
-    return parts.slice(-2).join('.');
+    return parts.slice(-2).join(".");
   }
 }

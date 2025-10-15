@@ -8,16 +8,16 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   ISnapshotStore,
   Snapshot,
   SnapshotStoreStats,
   SnapshotStoreConfig,
-} from './common/snapshot-store.interface';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { CacheService } from '@hl8/caching';
-import { DatabaseService } from '@hl8/database';
+} from "./common/snapshot-store.interface";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
+import { DatabaseService } from "@hl8/database";
 
 /**
  * 快照存储实现
@@ -40,7 +40,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
     private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
-    private readonly config: SnapshotStoreConfig
+    private readonly config: SnapshotStoreConfig,
   ) {}
 
   /**
@@ -54,7 +54,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   async saveSnapshot(
     aggregateId: string,
     snapshot: any,
-    version: number
+    version: number,
   ): Promise<void> {
     try {
       // 1. 验证快照数据
@@ -72,7 +72,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       await this.saveSnapshotToDatabase(
         aggregateId,
         encryptedSnapshot,
-        version
+        version,
       );
 
       // 5. 更新统计信息
@@ -81,9 +81,9 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       // 6. 清理旧快照
       await this.cleanupOldSnapshots(aggregateId);
 
-      this.logger.log('快照保存成功');
+      this.logger.log("快照保存成功");
     } catch (error) {
-      this.logger.error('快照保存失败', error, {
+      this.logger.error("快照保存失败", error, {
         aggregateId,
         version,
       });
@@ -101,7 +101,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   async getSnapshot(
     aggregateId: string,
-    version: number
+    version: number,
   ): Promise<Snapshot | null> {
     try {
       // 1. 检查缓存
@@ -122,16 +122,15 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
         : snapshot;
 
       // 4. 解压缩快照数据
-      const decompressedSnapshot = await this.decompressSnapshot(
-        decryptedSnapshot
-      );
+      const decompressedSnapshot =
+        await this.decompressSnapshot(decryptedSnapshot);
 
       // 5. 缓存快照
       await this.cacheSnapshot(aggregateId, version, decompressedSnapshot);
 
       return decompressedSnapshot;
     } catch (error) {
-      this.logger.error('获取快照失败', error, {
+      this.logger.error("获取快照失败", error, {
         aggregateId,
         version,
       });
@@ -167,12 +166,12 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       await this.cacheSnapshot(
         aggregateId,
         snapshot.version,
-        processedSnapshot
+        processedSnapshot,
       );
 
       return processedSnapshot;
     } catch (error) {
-      this.logger.error('获取最新快照失败', error, {
+      this.logger.error("获取最新快照失败", error, {
         aggregateId,
       });
       throw error;
@@ -191,9 +190,9 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       await this.deleteSnapshotFromDatabase(aggregateId, version);
       await this.invalidateCache(aggregateId, version);
 
-      this.logger.log('快照删除成功');
+      this.logger.log("快照删除成功");
     } catch (error) {
-      this.logger.error('删除快照失败', error, {
+      this.logger.error("删除快照失败", error, {
         aggregateId,
         version,
       });
@@ -210,16 +209,16 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   async cleanupOldSnapshots(
     aggregateId: string,
-    retainCount = 5
+    retainCount = 5,
   ): Promise<void> {
     try {
       const maxSnapshots =
         this.config.retentionPolicy?.maxSnapshotsPerAggregate || retainCount;
       await this.cleanupOldSnapshotsFromDatabase(aggregateId, maxSnapshots);
 
-      this.logger.log('旧快照清理成功');
+      this.logger.log("旧快照清理成功");
     } catch (error) {
-      this.logger.error('清理旧快照失败', error, {
+      this.logger.error("清理旧快照失败", error, {
         aggregateId,
         retainCount,
       });
@@ -240,7 +239,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       const exists = await this.checkSnapshotExists(aggregateId, version);
       return exists;
     } catch (error) {
-      this.logger.error('检查快照存在性失败', error, {
+      this.logger.error("检查快照存在性失败", error, {
         aggregateId,
         version,
       });
@@ -259,7 +258,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       const stats = await this.calculateStats();
       return stats;
     } catch (error) {
-      this.logger.error('获取快照统计信息失败', error);
+      this.logger.error("获取快照统计信息失败", error);
       throw error;
     }
   }
@@ -271,10 +270,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   private validateSnapshot(snapshot: any, version: number): void {
     if (!snapshot) {
-      throw new Error('快照数据不能为空');
+      throw new Error("快照数据不能为空");
     }
     if (version < 1) {
-      throw new Error('快照版本必须大于0');
+      throw new Error("快照版本必须大于0");
     }
   }
 
@@ -289,12 +288,12 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
     try {
       // 这里应该实现具体的压缩逻辑
       // 可以使用 gzip 或其他压缩算法
-      console.log('压缩快照数据', {
+      console.log("压缩快照数据", {
         originalSize: JSON.stringify(snapshot).length,
       });
       return snapshot;
     } catch (error) {
-      this.logger.warn('快照压缩失败', error);
+      this.logger.warn("快照压缩失败", error);
       return snapshot;
     }
   }
@@ -309,10 +308,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
     try {
       // 这里应该实现具体的解压缩逻辑
-      console.log('解压缩快照数据');
+      console.log("解压缩快照数据");
       return snapshot;
     } catch (error) {
-      this.logger.warn('快照解压缩失败', error);
+      this.logger.warn("快照解压缩失败", error);
       return snapshot;
     }
   }
@@ -324,10 +323,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
     try {
       // 这里应该实现具体的加密逻辑
       // 可以使用 AES 或其他加密算法
-      console.log('加密快照数据');
+      console.log("加密快照数据");
       return snapshot;
     } catch (error) {
-      this.logger.warn('快照加密失败', error);
+      this.logger.warn("快照加密失败", error);
       return snapshot;
     }
   }
@@ -338,10 +337,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   private async decryptSnapshot(snapshot: any): Promise<any> {
     try {
       // 这里应该实现具体的解密逻辑
-      console.log('解密快照数据');
+      console.log("解密快照数据");
       return snapshot;
     } catch (error) {
-      this.logger.warn('快照解密失败', error);
+      this.logger.warn("快照解密失败", error);
       return snapshot;
     }
   }
@@ -355,14 +354,14 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
     // 解密
     if (this.config.encryption) {
       processedSnapshot = (await this.decryptSnapshot(
-        processedSnapshot
+        processedSnapshot,
       )) as Snapshot;
     }
 
     // 解压缩
     if (this.config.compression) {
       processedSnapshot = (await this.decompressSnapshot(
-        processedSnapshot
+        processedSnapshot,
       )) as Snapshot;
     }
 
@@ -375,10 +374,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   private async saveSnapshotToDatabase(
     aggregateId: string,
     snapshot: any,
-    version: number
+    version: number,
   ): Promise<void> {
     // 这里应该实现具体的数据库保存逻辑
-    console.log('保存快照到数据库', { aggregateId, version });
+    console.log("保存快照到数据库", { aggregateId, version });
   }
 
   /**
@@ -386,10 +385,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   private async getSnapshotFromDatabase(
     aggregateId: string,
-    version: number
+    version: number,
   ): Promise<Snapshot | null> {
     // 这里应该实现具体的数据库查询逻辑
-    console.log('从数据库获取快照', { aggregateId, version });
+    console.log("从数据库获取快照", { aggregateId, version });
     return null;
   }
 
@@ -397,10 +396,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    * 从数据库获取最新快照
    */
   private async getLatestSnapshotFromDatabase(
-    aggregateId: string
+    aggregateId: string,
   ): Promise<Snapshot | null> {
     // 这里应该实现具体的数据库查询逻辑
-    console.log('从数据库获取最新快照', { aggregateId });
+    console.log("从数据库获取最新快照", { aggregateId });
     return null;
   }
 
@@ -409,10 +408,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   private async deleteSnapshotFromDatabase(
     aggregateId: string,
-    version?: number
+    version?: number,
   ): Promise<void> {
     // 这里应该实现具体的数据库删除逻辑
-    console.log('从数据库删除快照', { aggregateId, version });
+    console.log("从数据库删除快照", { aggregateId, version });
   }
 
   /**
@@ -420,10 +419,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   private async cleanupOldSnapshotsFromDatabase(
     aggregateId: string,
-    maxSnapshots: number
+    maxSnapshots: number,
   ): Promise<void> {
     // 这里应该实现具体的数据库清理逻辑
-    console.log('从数据库清理旧快照', { aggregateId, maxSnapshots });
+    console.log("从数据库清理旧快照", { aggregateId, maxSnapshots });
   }
 
   /**
@@ -431,10 +430,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   private async checkSnapshotExists(
     aggregateId: string,
-    version?: number
+    version?: number,
   ): Promise<boolean> {
     // 这里应该实现具体的数据库查询逻辑
-    console.log('检查快照是否存在', { aggregateId, version });
+    console.log("检查快照是否存在", { aggregateId, version });
     return false;
   }
 
@@ -443,14 +442,14 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   private async getCachedSnapshot(
     aggregateId: string,
-    version: number
+    version: number,
   ): Promise<Snapshot | null> {
     try {
       const cacheKey = `snapshot:${aggregateId}:${version}`;
       const cached = await this.cacheService.get(cacheKey);
       return cached ? JSON.parse(cached as string) : null;
     } catch (error) {
-      this.logger.warn('获取缓存快照失败', error);
+      this.logger.warn("获取缓存快照失败", error);
       return null;
     }
   }
@@ -459,14 +458,14 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    * 获取缓存的最新快照
    */
   private async getCachedLatestSnapshot(
-    aggregateId: string
+    aggregateId: string,
   ): Promise<Snapshot | null> {
     try {
       const cacheKey = `snapshot:${aggregateId}:latest`;
       const cached = await this.cacheService.get(cacheKey);
       return cached ? JSON.parse(cached as string) : null;
     } catch (error) {
-      this.logger.warn('获取缓存最新快照失败', error);
+      this.logger.warn("获取缓存最新快照失败", error);
       return null;
     }
   }
@@ -477,7 +476,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   private async cacheSnapshot(
     aggregateId: string,
     version: number,
-    snapshot: Snapshot
+    snapshot: Snapshot,
   ): Promise<void> {
     try {
       const cacheKey = `snapshot:${aggregateId}:${version}`;
@@ -488,10 +487,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       await this.cacheService.set(
         latestCacheKey,
         JSON.stringify(snapshot),
-        ttl
+        ttl,
       );
     } catch (error) {
-      this.logger.warn('缓存快照失败', error);
+      this.logger.warn("缓存快照失败", error);
     }
   }
 
@@ -500,7 +499,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
    */
   private async invalidateCache(
     aggregateId: string,
-    version?: number
+    version?: number,
   ): Promise<void> {
     try {
       if (version) {
@@ -513,7 +512,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
         // await this.cacheService.deletePattern(pattern);
       }
     } catch (error) {
-      this.logger.warn('使快照缓存失效失败', error);
+      this.logger.warn("使快照缓存失效失败", error);
     }
   }
 
@@ -523,7 +522,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   private updateStats(
     aggregateId: string,
     version: number,
-    snapshot: any
+    snapshot: any,
   ): void {
     this.stats.totalSnapshots++;
     this.stats.storageSize += JSON.stringify(snapshot).length;

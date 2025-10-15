@@ -5,10 +5,10 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { IUserAggregateRepository } from '../../../domain/user/repositories/user-aggregate.repository.interface';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/hybrid-archi";
+import { ICommandUseCase } from "../base/use-case.interface";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface";
 
 export interface IChangePasswordCommand {
   userId: string;
@@ -32,8 +32,7 @@ export class ChangePasswordUseCase
 
     // TODO: 验证旧密码并哈希新密码
     // aggregate.getCredentials().changePassword(newHash, newSalt);
-    
+
     await this.userRepository.save(aggregate);
   }
 }
-

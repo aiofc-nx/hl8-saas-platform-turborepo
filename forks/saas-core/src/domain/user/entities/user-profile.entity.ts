@@ -7,9 +7,9 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { Gender } from '../value-objects/gender.enum';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { PinoLogger } from "@hl8/logger";
+import { Gender } from "../value-objects/gender.enum";
 
 export class UserProfile extends BaseEntity {
   constructor(
@@ -43,8 +43,8 @@ export class UserProfile extends BaseEntity {
       null,
       null,
       null,
-      'Asia/Shanghai',
-      'zh-CN',
+      "Asia/Shanghai",
+      "zh-CN",
       auditInfo,
     );
   }
@@ -87,4 +87,3 @@ export class UserProfile extends BaseEntity {
     };
   }
 }
-

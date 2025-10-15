@@ -718,13 +718,13 @@ function process(data: any): any {
   ```typescript
   // ❌ 错误做法
   if (userNotFound) {
-    this.logger.error('用户不存在');
+    this.logger.error("用户不存在");
     return null; // 调用方需要检查null
   }
 
   // ✅ 正确做法
   if (userNotFound) {
-    this.logger.warn('用户查找失败', { userId });
+    this.logger.warn("用户查找失败", { userId });
     throw new UserNotFoundException(userId);
   }
   ```
@@ -733,11 +733,11 @@ function process(data: any): any {
 
   ```typescript
   // ❌ 错误做法
-  throw new DatabaseException('连接失败'); // 没有日志记录
+  throw new DatabaseException("连接失败"); // 没有日志记录
 
   // ✅ 正确做法
-  this.logger.error('数据库连接失败', undefined, { host, port });
-  throw new DatabaseException('连接失败');
+  this.logger.error("数据库连接失败", undefined, { host, port });
+  throw new DatabaseException("连接失败");
   ```
 
 - **禁止日志中不抛出异常**：
@@ -747,7 +747,7 @@ function process(data: any): any {
   try {
     await riskyOperation();
   } catch (error) {
-    this.logger.error('操作失败', undefined, { error: error.message });
+    this.logger.error("操作失败", undefined, { error: error.message });
     // 没有重新抛出异常，调用方不知道操作失败
   }
 
@@ -755,8 +755,8 @@ function process(data: any): any {
   try {
     await riskyOperation();
   } catch (error) {
-    this.logger.error('操作失败', undefined, { error: error.message });
-    throw new OperationFailedException('操作失败', error);
+    this.logger.error("操作失败", undefined, { error: error.message });
+    throw new OperationFailedException("操作失败", error);
   }
   ```
 

@@ -31,17 +31,17 @@
  */
 export enum IsolationLevel {
   /** 平台级 - 跨租户 */
-  PLATFORM = 'platform',
+  PLATFORM = "platform",
 
   /** 租户级 - 租户内 */
-  TENANT = 'tenant',
+  TENANT = "tenant",
 
   /** 组织级 - 组织内 */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
 
   /** 部门级 - 部门内 */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
 
   /** 用户级 - 用户私有 */
-  USER = 'user',
+  USER = "user",
 }

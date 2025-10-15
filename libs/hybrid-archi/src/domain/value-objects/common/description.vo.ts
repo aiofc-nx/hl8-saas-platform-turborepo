@@ -53,7 +53,7 @@
  * @since 1.1.0
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object";
 
 export abstract class Description extends BaseValueObject<string> {
   /**
@@ -89,7 +89,7 @@ export abstract class Description extends BaseValueObject<string> {
   protected override validate(value: string): void {
     // 允许为空字符串
     if (value.length > 0) {
-      this.validateLength(value, this.minLength, this.maxLength, '描述');
+      this.validateLength(value, this.minLength, this.maxLength, "描述");
     }
   }
 
@@ -104,4 +104,3 @@ export abstract class Description extends BaseValueObject<string> {
     return value.trim();
   }
 }
-

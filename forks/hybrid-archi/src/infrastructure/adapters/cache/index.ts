@@ -7,9 +7,9 @@
  */
 
 // 缓存适配器
-export * from './cache.adapter';
-export * from './cache.factory';
-export * from './cache.manager';
+export * from "./cache.adapter";
+export * from "./cache.factory";
+export * from "./cache.manager";
 
 // 缓存适配器模块
-export * from './cache-adapters.module';
+export * from "./cache-adapters.module";

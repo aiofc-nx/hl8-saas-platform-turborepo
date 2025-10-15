@@ -41,7 +41,7 @@ export const DEPARTMENT_CODE_VALIDATION = {
   /** 格式：字母数字下划线连字符 */
   PATTERN: /^[a-zA-Z0-9_-]+$/,
   /** 错误消息 */
-  ERROR_MESSAGE: '部门代码必须是2-20位的字母、数字、下划线或连字符组合',
+  ERROR_MESSAGE: "部门代码必须是2-20位的字母、数字、下划线或连字符组合",
 } as const;
 
 /**
@@ -55,7 +55,7 @@ export const DEPARTMENT_NAME_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 100,
   /** 错误消息 */
-  ERROR_MESSAGE: '部门名称长度必须在1-100字符之间',
+  ERROR_MESSAGE: "部门名称长度必须在1-100字符之间",
 } as const;
 
 /**
@@ -67,7 +67,7 @@ export const DEPARTMENT_DESCRIPTION_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 500,
   /** 错误消息 */
-  ERROR_MESSAGE: '部门描述不能超过500字符',
+  ERROR_MESSAGE: "部门描述不能超过500字符",
 } as const;
 
 /**
@@ -81,57 +81,57 @@ export const DEPARTMENT_LEVEL_CONFIG = {
   /** 一级：总部（根部门） */
   LEVEL_1: {
     level: 1,
-    name: '总部',
-    description: '企业总部，顶级部门',
+    name: "总部",
+    description: "企业总部，顶级部门",
     maxChildren: 10,
   },
   /** 二级：事业部 */
   LEVEL_2: {
     level: 2,
-    name: '事业部',
-    description: '按业务线划分的事业部',
+    name: "事业部",
+    description: "按业务线划分的事业部",
     maxChildren: 20,
   },
   /** 三级：区域 */
   LEVEL_3: {
     level: 3,
-    name: '区域',
-    description: '按地理区域划分的部门',
+    name: "区域",
+    description: "按地理区域划分的部门",
     maxChildren: 30,
   },
   /** 四级：分公司 */
   LEVEL_4: {
     level: 4,
-    name: '分公司',
-    description: '各地分公司或子公司',
+    name: "分公司",
+    description: "各地分公司或子公司",
     maxChildren: 20,
   },
   /** 五级：部门 */
   LEVEL_5: {
     level: 5,
-    name: '部门',
-    description: '职能部门',
+    name: "部门",
+    description: "职能部门",
     maxChildren: 15,
   },
   /** 六级：组 */
   LEVEL_6: {
     level: 6,
-    name: '组',
-    description: '部门下的工作组',
+    name: "组",
+    description: "部门下的工作组",
     maxChildren: 10,
   },
   /** 七级：小组 */
   LEVEL_7: {
     level: 7,
-    name: '小组',
-    description: '组下的工作小组',
+    name: "小组",
+    description: "组下的工作小组",
     maxChildren: 5,
   },
   /** 八级：专项团队（叶子部门） */
   LEVEL_8: {
     level: 8,
-    name: '专项团队',
-    description: '最小工作单元',
+    name: "专项团队",
+    description: "最小工作单元",
     maxChildren: 0, // 叶子部门，不允许有子部门
   },
 } as const;
@@ -178,8 +178,8 @@ export const DEPARTMENT_MEMBER_LIMITS = {
  * @constant
  */
 export const DEPARTMENT_STATUS_TRANSITIONS = {
-  ACTIVE: ['INACTIVE', 'DELETED'],
-  INACTIVE: ['ACTIVE', 'DELETED'],
+  ACTIVE: ["INACTIVE", "DELETED"],
+  INACTIVE: ["ACTIVE", "DELETED"],
   DELETED: [], // 已删除状态不可转换
 } as const;
 
@@ -192,13 +192,13 @@ export const DEPARTMENT_STATUS_TRANSITIONS = {
  */
 export const DEPARTMENT_PATH_CONFIG = {
   /** 路径分隔符 */
-  SEPARATOR: '/',
+  SEPARATOR: "/",
   /** 路径最大长度 */
   MAX_LENGTH: 500,
   /** 路径格式示例 */
-  FORMAT_EXAMPLE: '/1/5/12',
+  FORMAT_EXAMPLE: "/1/5/12",
   /** 错误消息 */
-  ERROR_MESSAGE: '部门路径格式不正确',
+  ERROR_MESSAGE: "部门路径格式不正确",
 } as const;
 
 /**
@@ -210,13 +210,13 @@ export const DEPARTMENT_PATH_CONFIG = {
  */
 export const DEPARTMENT_FULL_NAME_CONFIG = {
   /** 全名分隔符 */
-  SEPARATOR: ' > ',
+  SEPARATOR: " > ",
   /** 全名最大长度 */
   MAX_LENGTH: 500,
   /** 是否包含根部门 */
   INCLUDE_ROOT: true,
   /** 格式示例 */
-  FORMAT_EXAMPLE: '总部 > 技术事业部 > 研发中心 > 后端组',
+  FORMAT_EXAMPLE: "总部 > 技术事业部 > 研发中心 > 后端组",
 } as const;
 
 /**
@@ -240,11 +240,11 @@ export const DEPARTMENT_CLOSURE_CONFIG = {
  */
 export const DEPARTMENT_DEFAULTS = {
   /** 默认根部门名称 */
-  ROOT_DEPARTMENT_NAME: '总部',
+  ROOT_DEPARTMENT_NAME: "总部",
   /** 默认根部门代码 */
-  ROOT_DEPARTMENT_CODE: 'HQ',
+  ROOT_DEPARTMENT_CODE: "HQ",
   /** 默认状态 */
-  DEFAULT_STATUS: 'ACTIVE',
+  DEFAULT_STATUS: "ACTIVE",
   /** 默认显示顺序 */
   DEFAULT_DISPLAY_ORDER: 0,
 } as const;
@@ -262,7 +262,7 @@ export const DEPARTMENT_CACHE_CONFIG = {
   /** 部门成员列表缓存TTL（秒） */
   MEMBERS_TTL: 900, // 15分钟
   /** 缓存键前缀 */
-  KEY_PREFIX: 'department',
+  KEY_PREFIX: "department",
 } as const;
 
 /**
@@ -274,19 +274,19 @@ export const DEPARTMENT_CACHE_CONFIG = {
  */
 export const DEPARTMENT_PERMISSIONS = {
   /** 创建部门 */
-  CREATE: 'department:create',
+  CREATE: "department:create",
   /** 读取部门 */
-  READ: 'department:read',
+  READ: "department:read",
   /** 更新部门 */
-  UPDATE: 'department:update',
+  UPDATE: "department:update",
   /** 删除部门 */
-  DELETE: 'department:delete',
+  DELETE: "department:delete",
   /** 移动部门 */
-  MOVE: 'department:move',
+  MOVE: "department:move",
   /** 管理成员 */
-  MANAGE_MEMBERS: 'department:manage-members',
+  MANAGE_MEMBERS: "department:manage-members",
   /** 查看层级结构 */
-  VIEW_HIERARCHY: 'department:view-hierarchy',
+  VIEW_HIERARCHY: "department:view-hierarchy",
 } as const;
 
 /**
@@ -306,4 +306,3 @@ export const DEPARTMENT_MOVE_RULES = {
   /** 移动后是否重新计算闭包表 */
   REBUILD_CLOSURE: true,
 } as const;
-

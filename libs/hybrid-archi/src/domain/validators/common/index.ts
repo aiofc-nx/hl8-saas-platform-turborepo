@@ -6,6 +6,6 @@
  */
 
 // 通用验证器
-export * from './email.validator';
-export * from './password.validator';
-export * from './username.validator';
+export * from "./email.validator";
+export * from "./password.validator";
+export * from "./username.validator";

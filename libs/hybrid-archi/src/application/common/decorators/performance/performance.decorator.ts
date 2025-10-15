@@ -1,4 +1,4 @@
-import type { MethodDecoratorTarget } from '../types';
+import type { MethodDecoratorTarget } from "../types";
 
 /**
  * 性能监控装饰器
@@ -69,7 +69,7 @@ export interface IPerformanceMonitorOptions {
 /**
  * 性能监控装饰器元数据键
  */
-export const PERFORMANCE_MONITOR_METADATA_KEY = Symbol('performanceMonitor');
+export const PERFORMANCE_MONITOR_METADATA_KEY = Symbol("performanceMonitor");
 
 /**
  * 性能监控装饰器

@@ -69,14 +69,14 @@
  *
  * @since 1.0.0
  */
-import { EntityId } from '../../../../domain/value-objects/entity-id';
+import { EntityId } from "../../../../domain/value-objects/entity-id";
 
 /**
  * 排序方向枚举
  */
 export enum SortDirection {
-  ASC = 'ASC',
-  DESC = 'DESC',
+  ASC = "ASC",
+  DESC = "DESC",
 }
 
 /**
@@ -531,27 +531,27 @@ export abstract class BaseQuery {
    */
   protected validate(): void {
     if (!this._queryId || this._queryId.isEmpty()) {
-      throw new Error('Query ID cannot be null or empty');
+      throw new Error("Query ID cannot be null or empty");
     }
 
     if (!this._tenantId) {
-      throw new Error('Tenant ID cannot be null or empty');
+      throw new Error("Tenant ID cannot be null or empty");
     }
 
     if (!this._userId) {
-      throw new Error('User ID cannot be null or empty');
+      throw new Error("User ID cannot be null or empty");
     }
 
     if (this._queryVersion < 1) {
-      throw new Error('Query version must be greater than 0');
+      throw new Error("Query version must be greater than 0");
     }
 
     if (this._page < 1) {
-      throw new Error('Page must be greater than 0');
+      throw new Error("Page must be greater than 0");
     }
 
     if (this._pageSize < 1) {
-      throw new Error('Page size must be greater than 0');
+      throw new Error("Page size must be greater than 0");
     }
 
     if (this._pageSize > BaseQuery.MAX_PAGE_SIZE) {

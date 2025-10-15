@@ -81,17 +81,20 @@ export abstract class BaseGateway {
    * @param client - Socket客户端
    * @param args - 连接参数
    */
-  async handleConnection(client: { 
-    id: string; 
-    join: (room: string) => void;
-    emit: (event: string, data: unknown) => void;
-    disconnect: () => void;
-    handshake: { 
-      query: { token?: string }; 
-      headers: { authorization?: string; 'user-agent'?: string }; 
-      address?: string;
-    };
-  }, ...args: unknown[]): Promise<void> {
+  async handleConnection(
+    client: {
+      id: string;
+      join: (room: string) => void;
+      emit: (event: string, data: unknown) => void;
+      disconnect: () => void;
+      handshake: {
+        query: { token?: string };
+        headers: { authorization?: string; "user-agent"?: string };
+        address?: string;
+      };
+    },
+    ...args: unknown[]
+  ): Promise<void> {
     try {
       const connectionInfo = await this.authenticateConnection(client);
       this.connections.set(client.id, connectionInfo);
@@ -110,19 +113,19 @@ export abstract class BaseGateway {
 
       // 发送连接成功消息
       client.emit(
-        'connected',
+        "connected",
         this.createSuccessResponse(
           {
             clientId: client.id,
             userId: connectionInfo.userId,
             tenantId: connectionInfo.tenantId,
           },
-          '连接成功'
-        )
+          "连接成功",
+        ),
       );
     } catch (error) {
-      console.error('连接认证失败:', error);
-      client.emit('error', this.createErrorResponse('连接认证失败'));
+      console.error("连接认证失败:", error);
+      client.emit("error", this.createErrorResponse("连接认证失败"));
       client.disconnect();
     }
   }
@@ -149,36 +152,34 @@ export abstract class BaseGateway {
    * @returns 连接信息
    * @protected
    */
-  protected async authenticateConnection(
-    client: { 
-      id: string; 
-      handshake: { 
-        query: { token?: string }; 
-        headers: { authorization?: string; 'user-agent'?: string }; 
-        address?: string;
-      } 
-    }
-  ): Promise<IConnectionInfo> {
+  protected async authenticateConnection(client: {
+    id: string;
+    handshake: {
+      query: { token?: string };
+      headers: { authorization?: string; "user-agent"?: string };
+      address?: string;
+    };
+  }): Promise<IConnectionInfo> {
     // 从查询参数或头信息获取认证信息
     const token =
       (client.handshake.query.token as string) ||
-      client.handshake.headers.authorization?.replace('Bearer ', '');
+      client.handshake.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
-      throw new Error('未提供认证令牌');
+      throw new Error("未提供认证令牌");
     }
 
     // TODO: 实现JWT令牌验证
     // const payload = await this.jwtService.verifyAsync(token);
 
     // 模拟认证逻辑
-    const userId = 'user-123'; // 从JWT payload获取
-    const tenantId = 'tenant-123'; // 从JWT payload获取
+    const userId = "user-123"; // 从JWT payload获取
+    const tenantId = "tenant-123"; // 从JWT payload获取
 
     return {
       userId,
       tenantId,
-      userAgent: client.handshake.headers['user-agent'],
+      userAgent: client.handshake.headers["user-agent"],
       ipAddress: client.handshake.address,
       connectedAt: new Date(),
     };
@@ -195,7 +196,7 @@ export abstract class BaseGateway {
    */
   protected createSuccessResponse<T>(
     data: T,
-    message = '操作成功'
+    message = "操作成功",
   ): IMessageResponse<T> {
     return {
       success: true,
@@ -231,7 +232,13 @@ export abstract class BaseGateway {
    * @protected
    */
   protected sendToUser(userId: string, event: string, data: unknown): void {
-    (this.server as { to: (room: string) => { emit: (event: string, data: unknown) => void } }).to(`user:${userId}`).emit(event, data);
+    (
+      this.server as {
+        to: (room: string) => { emit: (event: string, data: unknown) => void };
+      }
+    )
+      .to(`user:${userId}`)
+      .emit(event, data);
   }
 
   /**
@@ -244,7 +251,13 @@ export abstract class BaseGateway {
    * @protected
    */
   protected sendToTenant(tenantId: string, event: string, data: unknown): void {
-    (this.server as { to: (room: string) => { emit: (event: string, data: unknown) => void } }).to(`tenant:${tenantId}`).emit(event, data);
+    (
+      this.server as {
+        to: (room: string) => { emit: (event: string, data: unknown) => void };
+      }
+    )
+      .to(`tenant:${tenantId}`)
+      .emit(event, data);
   }
 
   /**
@@ -256,7 +269,10 @@ export abstract class BaseGateway {
    * @protected
    */
   protected broadcast(event: string, data: unknown): void {
-    (this.server as { emit: (event: string, data: unknown) => void }).emit(event, data);
+    (this.server as { emit: (event: string, data: unknown) => void }).emit(
+      event,
+      data,
+    );
   }
 
   /**

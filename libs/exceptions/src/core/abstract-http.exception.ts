@@ -68,7 +68,7 @@
  * @since 0.1.0
  */
 
-import { HttpException } from '@nestjs/common';
+import { HttpException } from "@nestjs/common";
 
 /**
  * RFC7807 问题详情接口

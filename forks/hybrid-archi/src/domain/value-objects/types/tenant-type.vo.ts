@@ -32,67 +32,67 @@
 export enum TenantType {
   /**
    * 免费版
-   * 
+   *
    * @description 基础功能版本
    * 提供核心功能，资源有限，适合个人用户试用
    */
-  FREE = 'FREE',
+  FREE = "FREE",
 
   /**
    * 基础版
-   * 
+   *
    * @description 标准功能版本
    * 提供标准功能集，适合小型团队使用
    */
-  BASIC = 'BASIC',
+  BASIC = "BASIC",
 
   /**
    * 专业版
-   * 
+   *
    * @description 高级功能版本
    * 提供高级功能集，适合中型企业使用
    */
-  PROFESSIONAL = 'PROFESSIONAL',
+  PROFESSIONAL = "PROFESSIONAL",
 
   /**
    * 企业版
-   * 
+   *
    * @description 完整功能版本
    * 提供所有功能，无资源限制，适合大型企业使用
    */
-  ENTERPRISE = 'ENTERPRISE',
+  ENTERPRISE = "ENTERPRISE",
 
   /**
    * 定制版
-   * 
+   *
    * @description 定制化版本
    * 根据客户需求定制功能和资源，适合特殊需求客户
    */
-  CUSTOM = 'CUSTOM',
+  CUSTOM = "CUSTOM",
 
   /**
    * 个人版
-   * 
+   *
    * @description 个人用户版本
    * 适合个人用户使用的基础版本
    */
-  PERSONAL = 'PERSONAL',
+  PERSONAL = "PERSONAL",
 
   /**
    * 团队版
-   * 
+   *
    * @description 小团队版本
    * 适合小团队协作的版本
    */
-  TEAM = 'TEAM',
+  TEAM = "TEAM",
 
   /**
    * 社群版
-   * 
+   *
    * @description 社群组织版本
    * 适合社群、协会等组织使用的版本
    */
-  COMMUNITY = 'COMMUNITY'
+  COMMUNITY = "COMMUNITY",
 }
 
 /**
@@ -106,81 +106,85 @@ export enum TenantType {
 export class TenantTypeUtils {
   /**
    * 升级矩阵
-   * 
+   *
    * @description 定义允许的升级路径
    * 键为当前类型，值为可升级到的类型数组
    */
   private static readonly UPGRADE_MATRIX: Record<TenantType, TenantType[]> = {
-    [TenantType.FREE]: [TenantType.BASIC, TenantType.PROFESSIONAL, TenantType.ENTERPRISE],
+    [TenantType.FREE]: [
+      TenantType.BASIC,
+      TenantType.PROFESSIONAL,
+      TenantType.ENTERPRISE,
+    ],
     [TenantType.BASIC]: [TenantType.PROFESSIONAL, TenantType.ENTERPRISE],
     [TenantType.PROFESSIONAL]: [TenantType.ENTERPRISE],
     [TenantType.ENTERPRISE]: [], // 最高版本，不可升级
     [TenantType.CUSTOM]: [], // 定制版升级规则由合同约定
     [TenantType.PERSONAL]: [TenantType.TEAM, TenantType.ENTERPRISE],
     [TenantType.TEAM]: [TenantType.ENTERPRISE],
-    [TenantType.COMMUNITY]: [TenantType.ENTERPRISE]
+    [TenantType.COMMUNITY]: [TenantType.ENTERPRISE],
   };
 
   /**
    * 功能权限定义
-   * 
+   *
    * @description 定义每种类型的功能权限
    */
   private static readonly FEATURES: Record<TenantType, string[]> = {
     [TenantType.FREE]: [
-      'basic_user_management',
-      'basic_organization_management',
-      'basic_department_management',
-      'basic_reporting'
+      "basic_user_management",
+      "basic_organization_management",
+      "basic_department_management",
+      "basic_reporting",
     ],
     [TenantType.BASIC]: [
-      'basic_user_management',
-      'basic_organization_management',
-      'basic_department_management',
-      'basic_reporting',
-      'advanced_user_management',
-      'basic_analytics',
-      'email_notifications'
+      "basic_user_management",
+      "basic_organization_management",
+      "basic_department_management",
+      "basic_reporting",
+      "advanced_user_management",
+      "basic_analytics",
+      "email_notifications",
     ],
     [TenantType.PROFESSIONAL]: [
-      'basic_user_management',
-      'basic_organization_management',
-      'basic_department_management',
-      'basic_reporting',
-      'advanced_user_management',
-      'basic_analytics',
-      'email_notifications',
-      'advanced_organization_management',
-      'advanced_analytics',
-      'api_access',
-      'custom_branding'
+      "basic_user_management",
+      "basic_organization_management",
+      "basic_department_management",
+      "basic_reporting",
+      "advanced_user_management",
+      "basic_analytics",
+      "email_notifications",
+      "advanced_organization_management",
+      "advanced_analytics",
+      "api_access",
+      "custom_branding",
     ],
     [TenantType.ENTERPRISE]: [
-      'all_features' // 企业版包含所有功能
+      "all_features", // 企业版包含所有功能
     ],
     [TenantType.CUSTOM]: [
-      'custom_features' // 定制版功能由合同定义
+      "custom_features", // 定制版功能由合同定义
     ],
     [TenantType.PERSONAL]: [
-      'basic_user_management',
-      'personal_profile',
-      'basic_notifications'
+      "basic_user_management",
+      "personal_profile",
+      "basic_notifications",
     ],
     [TenantType.TEAM]: [
-      'basic_user_management',
-      'team_management',
-      'basic_organization_management',
-      'team_collaboration',
-      'basic_analytics'
+      "basic_user_management",
+      "team_management",
+      "basic_organization_management",
+      "team_collaboration",
+      "basic_analytics",
     ],
     [TenantType.COMMUNITY]: [
-      'basic_user_management',
-      'community_management',
-      'basic_organization_management',
-      'community_features',
-      'basic_analytics',
-      'public_profiles'
-    ]
+      "basic_user_management",
+      "community_management",
+      "basic_organization_management",
+      "community_features",
+      "basic_analytics",
+      "public_profiles",
+    ],
   };
 
   /**
@@ -195,14 +199,17 @@ export class TenantTypeUtils {
    * @example
    * ```typescript
    * const canUpgrade = TenantTypeUtils.canUpgradeTo(
-   *   TenantType.FREE, 
+   *   TenantType.FREE,
    *   TenantType.BASIC
    * ); // true
    * ```
    *
    * @since 1.0.0
    */
-  public static canUpgradeTo(fromType: TenantType, toType: TenantType): boolean {
+  public static canUpgradeTo(
+    fromType: TenantType,
+    toType: TenantType,
+  ): boolean {
     const allowedUpgrades = this.UPGRADE_MATRIX[fromType];
     return allowedUpgrades.includes(toType);
   }
@@ -239,7 +246,7 @@ export class TenantTypeUtils {
    * @example
    * ```typescript
    * const hasFeature = TenantTypeUtils.hasFeature(
-   *   TenantType.BASIC, 
+   *   TenantType.BASIC,
    *   'basic_user_management'
    * ); // true
    * ```
@@ -248,7 +255,7 @@ export class TenantTypeUtils {
    */
   public static hasFeature(type: TenantType, feature: string): boolean {
     const features = this.getFeatures(type);
-    return features.includes(feature) || features.includes('all_features');
+    return features.includes(feature) || features.includes("all_features");
   }
 
   /**
@@ -269,14 +276,14 @@ export class TenantTypeUtils {
    */
   public static getDescription(type: TenantType): string {
     const descriptions: Record<TenantType, string> = {
-      [TenantType.FREE]: '免费版',
-      [TenantType.BASIC]: '基础版',
-      [TenantType.PROFESSIONAL]: '专业版',
-      [TenantType.ENTERPRISE]: '企业版',
-      [TenantType.CUSTOM]: '定制版',
-      [TenantType.PERSONAL]: '个人版',
-      [TenantType.TEAM]: '团队版',
-      [TenantType.COMMUNITY]: '社群版'
+      [TenantType.FREE]: "免费版",
+      [TenantType.BASIC]: "基础版",
+      [TenantType.PROFESSIONAL]: "专业版",
+      [TenantType.ENTERPRISE]: "企业版",
+      [TenantType.CUSTOM]: "定制版",
+      [TenantType.PERSONAL]: "个人版",
+      [TenantType.TEAM]: "团队版",
+      [TenantType.COMMUNITY]: "社群版",
     };
 
     return descriptions[type];

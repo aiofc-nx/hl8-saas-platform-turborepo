@@ -47,28 +47,28 @@ export enum UserStatus {
    *
    * @description 用户已创建但未激活，无法登录
    */
-  Pending = 'pending',
+  Pending = "pending",
 
   /**
    * 活跃状态
    *
    * @description 用户已激活，可以正常登录和操作
    */
-  Active = 'active',
+  Active = "active",
 
   /**
    * 禁用状态
    *
    * @description 用户被管理员禁用，无法登录
    */
-  Disabled = 'disabled',
+  Disabled = "disabled",
 
   /**
    * 已删除状态
    *
    * @description 用户已删除，数据标记删除
    */
-  Deleted = 'deleted',
+  Deleted = "deleted",
 }
 
 /**
@@ -141,13 +141,13 @@ export class UserStatusUtils {
    */
   public static getDisplayName(status: UserStatus): string {
     const displayNames: Record<UserStatus, string> = {
-      [UserStatus.Pending]: '待激活',
-      [UserStatus.Active]: '活跃',
-      [UserStatus.Disabled]: '已禁用',
-      [UserStatus.Deleted]: '已删除',
+      [UserStatus.Pending]: "待激活",
+      [UserStatus.Active]: "活跃",
+      [UserStatus.Disabled]: "已禁用",
+      [UserStatus.Deleted]: "已删除",
     };
 
-    return displayNames[status] || '未知状态';
+    return displayNames[status] || "未知状态";
   }
 
   /**
@@ -159,12 +159,12 @@ export class UserStatusUtils {
    */
   public static getDescription(status: UserStatus): string {
     const descriptions: Record<UserStatus, string> = {
-      [UserStatus.Pending]: '用户已创建但未激活，需要激活后才能登录',
-      [UserStatus.Active]: '用户已激活，可以正常登录和操作系统',
-      [UserStatus.Disabled]: '用户被管理员禁用，无法登录系统',
-      [UserStatus.Deleted]: '用户已删除，数据标记删除但未物理删除',
+      [UserStatus.Pending]: "用户已创建但未激活，需要激活后才能登录",
+      [UserStatus.Active]: "用户已激活，可以正常登录和操作系统",
+      [UserStatus.Disabled]: "用户被管理员禁用，无法登录系统",
+      [UserStatus.Deleted]: "用户已删除，数据标记删除但未物理删除",
     };
 
-    return descriptions[status] || '未知状态';
+    return descriptions[status] || "未知状态";
   }
 }

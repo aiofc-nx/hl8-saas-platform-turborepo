@@ -6,8 +6,8 @@
  * @since 1.0.0
  */
 
-import type { Options as MikroORMOptions } from '@mikro-orm/core';
-import type { ConnectionConfig, PoolConfig } from './connection.types.js';
+import type { Options as MikroORMOptions } from "@mikro-orm/core";
+import type { ConnectionConfig, PoolConfig } from "./connection.types.js";
 
 /**
  * 数据库模块配置选项

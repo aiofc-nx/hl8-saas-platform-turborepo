@@ -7,9 +7,9 @@
  * @module security/helmet
  */
 
-import { DynamicModule, Global, Module } from '@nestjs/common';
-import type { HelmetOptions } from './types/helmet-options.js';
-import { DEFAULT_HELMET_OPTIONS } from './types/helmet-options.js';
+import { DynamicModule, Global, Module } from "@nestjs/common";
+import type { HelmetOptions } from "./types/helmet-options.js";
+import { DEFAULT_HELMET_OPTIONS } from "./types/helmet-options.js";
 
 /**
  * 安全头模块
@@ -123,11 +123,11 @@ export class SecurityModule {
       global: true,
       providers: [
         {
-          provide: 'HELMET_OPTIONS',
+          provide: "HELMET_OPTIONS",
           useValue: mergedOptions,
         },
       ],
-      exports: ['HELMET_OPTIONS'],
+      exports: ["HELMET_OPTIONS"],
     };
   }
 }

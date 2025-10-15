@@ -16,21 +16,21 @@ export enum ThemeType {
    *
    * @description 浅色背景，深色文字
    */
-  Light = 'light',
+  Light = "light",
 
   /**
    * 深色主题
    *
    * @description 深色背景，浅色文字
    */
-  Dark = 'dark',
+  Dark = "dark",
 
   /**
    * 自动主题
    *
    * @description 根据系统设置自动切换
    */
-  Auto = 'auto',
+  Auto = "auto",
 }
 
 /**
@@ -59,12 +59,12 @@ export class ThemeUtils {
    */
   public static getDisplayName(theme: ThemeType): string {
     const displayNames: Record<ThemeType, string> = {
-      [ThemeType.Light]: '浅色主题',
-      [ThemeType.Dark]: '深色主题',
-      [ThemeType.Auto]: '自动主题',
+      [ThemeType.Light]: "浅色主题",
+      [ThemeType.Dark]: "深色主题",
+      [ThemeType.Auto]: "自动主题",
     };
 
-    return displayNames[theme] || '未知主题';
+    return displayNames[theme] || "未知主题";
   }
 
   /**
@@ -76,11 +76,11 @@ export class ThemeUtils {
    */
   public static getDescription(theme: ThemeType): string {
     const descriptions: Record<ThemeType, string> = {
-      [ThemeType.Light]: '浅色背景，深色文字，适合白天使用',
-      [ThemeType.Dark]: '深色背景，浅色文字，适合夜间使用',
-      [ThemeType.Auto]: '根据系统设置自动切换主题',
+      [ThemeType.Light]: "浅色背景，深色文字，适合白天使用",
+      [ThemeType.Dark]: "深色背景，浅色文字，适合夜间使用",
+      [ThemeType.Auto]: "根据系统设置自动切换主题",
     };
 
-    return descriptions[theme] || '未知主题';
+    return descriptions[theme] || "未知主题";
   }
 }

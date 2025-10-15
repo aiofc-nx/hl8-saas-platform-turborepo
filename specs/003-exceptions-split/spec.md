@@ -161,8 +161,8 @@ export class AppModule {}
     ExceptionModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
-        enableLogging: config.get('LOGGING_ENABLED'),
-        isProduction: config.get('NODE_ENV') === 'production',
+        enableLogging: config.get("LOGGING_ENABLED"),
+        isProduction: config.get("NODE_ENV") === "production",
       }),
       inject: [ConfigService],
     }),
@@ -175,12 +175,12 @@ export class AppModule {}
 
 ```typescript
 // 抛出标准异常
-throw new GeneralBadRequestException('Invalid input');
+throw new GeneralBadRequestException("Invalid input");
 
 // 抛出自定义异常
 class CustomException extends AbstractHttpException {
   constructor(message: string) {
-    super(HttpStatus.CONFLICT, 'CUSTOM_ERROR', message);
+    super(HttpStatus.CONFLICT, "CUSTOM_ERROR", message);
   }
 }
 ```

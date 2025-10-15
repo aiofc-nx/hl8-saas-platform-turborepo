@@ -45,7 +45,7 @@
  * @since 1.0.0
  */
 
-import { IsolationValidationError } from '../errors/isolation-validation.error.js';
+import { IsolationValidationError } from "../errors/isolation-validation.error.js";
 
 /**
  * UUID v4 正则表达式
@@ -79,7 +79,7 @@ export abstract class EntityId<TType extends string = string> {
    * @private
    */
   private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+    if (!this.value || typeof this.value !== "string") {
       throw new IsolationValidationError(
         `${this.typeName} 必须是非空字符串`,
         `INVALID_${this.typeName.toUpperCase()}`,

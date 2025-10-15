@@ -14,7 +14,7 @@ export type {
   IQueryExecutionResult,
   IQueryValidator,
   IQueryValidationResult,
-} from './query-handler.interface';
+} from "./query-handler.interface";
 
 // 基础查询处理器
-export { BaseQueryHandler } from './base-query-handler';
+export { BaseQueryHandler } from "./base-query-handler";

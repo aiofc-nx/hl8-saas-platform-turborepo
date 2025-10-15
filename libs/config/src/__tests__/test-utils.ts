@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { ConfigRecord } from '../lib/types/config.types.js';
+import { ConfigRecord } from "../lib/types/config.types.js";
 
 /**
  * 测试配置类
@@ -48,14 +48,14 @@ export class TestDatabaseConfig {
  */
 export function createTestConfig(): ConfigRecord {
   return {
-    name: 'Test App',
-    version: '1.0.0',
+    name: "Test App",
+    version: "1.0.0",
     port: 3000,
     database: {
-      host: 'localhost',
+      host: "localhost",
       port: 5432,
-      username: 'testuser',
-      password: 'testpass',
+      username: "testuser",
+      password: "testpass",
     },
   };
 }
@@ -69,13 +69,13 @@ export function createTestConfig(): ConfigRecord {
  */
 export function createTestEnvVars(): Record<string, string> {
   return {
-    APP__NAME: 'Test App',
-    APP__VERSION: '1.0.0',
-    APP__PORT: '3000',
-    APP__DATABASE__HOST: 'localhost',
-    APP__DATABASE__PORT: '5432',
-    APP__DATABASE__USERNAME: 'testuser',
-    APP__DATABASE__PASSWORD: 'testpass',
+    APP__NAME: "Test App",
+    APP__VERSION: "1.0.0",
+    APP__PORT: "3000",
+    APP__DATABASE__HOST: "localhost",
+    APP__DATABASE__PORT: "5432",
+    APP__DATABASE__USERNAME: "testuser",
+    APP__DATABASE__PASSWORD: "testpass",
   };
 }
 
@@ -87,21 +87,21 @@ export function createTestEnvVars(): Record<string, string> {
  * @returns 文件内容
  * @since 1.0.0
  */
-export function createTestFileContent(format: 'json' | 'yaml'): string {
+export function createTestFileContent(format: "json" | "yaml"): string {
   const config = createTestConfig();
 
   switch (format) {
-    case 'json':
+    case "json":
       return JSON.stringify(config, null, 2);
-    case 'yaml':
-      return `name: ${config['name'] || 'N/A'}
-version: ${config['version'] || 'N/A'}
-port: ${config['port'] || 'N/A'}
+    case "yaml":
+      return `name: ${config["name"] || "N/A"}
+version: ${config["version"] || "N/A"}
+port: ${config["port"] || "N/A"}
 database:
-  host: ${config['database']?.['host'] || 'N/A'}
-  port: ${config['database']?.['port'] || 'N/A'}
-  username: ${config['database']?.['username'] || 'N/A'}
-  password: ${config['database']?.['password'] || 'N/A'}`;
+  host: ${config["database"]?.["host"] || "N/A"}
+  port: ${config["database"]?.["port"] || "N/A"}
+  username: ${config["database"]?.["username"] || "N/A"}
+  password: ${config["database"]?.["password"] || "N/A"}`;
     default:
       throw new Error(`Unsupported format: ${format}`);
   }
@@ -127,10 +127,10 @@ export function wait(ms: number): Promise<void> {
  * @returns 临时目录路径
  * @since 1.0.0
  */
-export function createTempDir(prefix: string = 'test'): string {
-  const os = require('os');
-  const path = require('path');
-  const fs = require('fs');
+export function createTempDir(prefix: string = "test"): string {
+  const os = require("os");
+  const path = require("path");
+  const fs = require("fs");
 
   const tempDir = path.join(
     os.tmpdir(),
@@ -151,8 +151,8 @@ export function createTempDir(prefix: string = 'test'): string {
  * @since 1.0.0
  */
 export async function cleanupTempFiles(paths: string[]): Promise<void> {
-  const fs = require('fs').promises;
-  const path = require('path');
+  const fs = require("fs").promises;
+  const path = require("path");
 
   for (const filePath of paths) {
     try {
@@ -227,7 +227,7 @@ export const testAssertions = {
   assertConfigStructure(config: any, expected: any): void {
     for (const [key, value] of Object.entries(expected)) {
       expect(config).toHaveProperty(key);
-      if (typeof value === 'object' && value !== null) {
+      if (typeof value === "object" && value !== null) {
         expect(config[key]).toMatchObject(value);
       } else {
         expect(config[key]).toBe(value);
@@ -267,7 +267,7 @@ export const testAssertions = {
   assertCacheStats(stats: any, expected: any): void {
     for (const [key, value] of Object.entries(expected)) {
       expect(stats).toHaveProperty(key);
-      if (typeof value === 'number') {
+      if (typeof value === "number") {
         expect(stats[key]).toBeCloseTo(value, 2);
       } else {
         expect(stats[key]).toBe(value);

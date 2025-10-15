@@ -65,12 +65,12 @@
  * ```
  */
 
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
-import * as path from 'path';
-import { ConfigError, ErrorHandler } from '../errors/index.js';
-import { ConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
-import { ConfigRecord } from '../types/index.js';
+import * as fs from "fs";
+import * as yaml from "js-yaml";
+import * as path from "path";
+import { ConfigError, ErrorHandler } from "../errors/index.js";
+import { ConfigLoader } from "../interfaces/typed-config-module-options.interface.js";
+import { ConfigRecord } from "../types/index.js";
 
 /**
  * 文件加载器选项接口
@@ -110,7 +110,7 @@ import { ConfigRecord } from '../types/index.js';
  * };
  * ```
  */
-import { FileLoaderOptions } from '../types/loader.types.js';
+import { FileLoaderOptions } from "../types/loader.types.js";
 
 /**
  * 文件加载器
@@ -193,7 +193,7 @@ export const fileLoader = (options: FileLoaderOptions = {}): ConfigLoader => {
   const {
     path: filePath,
     searchFrom = process.cwd(),
-    basename = 'config',
+    basename = "config",
     ignoreEnvironmentVariableSubstitution = false,
   } = options;
 
@@ -209,25 +209,25 @@ export const fileLoader = (options: FileLoaderOptions = {}): ConfigLoader => {
         });
       }
 
-      const content = fs.readFileSync(configPath, 'utf8');
+      const content = fs.readFileSync(configPath, "utf8");
       const ext = path.extname(configPath).toLowerCase();
 
       let config: ConfigRecord;
 
       try {
         switch (ext) {
-          case '.json':
+          case ".json":
             config = JSON.parse(content) as ConfigRecord;
             break;
-          case '.yml':
-          case '.yaml':
+          case ".yml":
+          case ".yaml":
             config = yaml.load(content) as ConfigRecord;
             break;
           default:
             throw ErrorHandler.handleFileFormatError(
               new Error(`Unsupported file format: ${ext}`),
               configPath,
-              'json, yml, yaml',
+              "json, yml, yaml",
               { ext, configPath },
             );
         }
@@ -247,7 +247,7 @@ export const fileLoader = (options: FileLoaderOptions = {}): ConfigLoader => {
         } catch (error) {
           throw ErrorHandler.handleVariableExpansionError(
             error as Error,
-            'substituteEnvironmentVariables',
+            "substituteEnvironmentVariables",
             { configPath, ignoreEnvironmentVariableSubstitution },
           );
         }
@@ -278,7 +278,7 @@ export const fileLoader = (options: FileLoaderOptions = {}): ConfigLoader => {
  * @since 1.0.0
  */
 function findConfigFile(searchFrom: string, basename: string): string | null {
-  const extensions = ['.json', '.yml', '.yaml'];
+  const extensions = [".json", ".yml", ".yaml"];
 
   for (const ext of extensions) {
     const filePath = path.join(searchFrom, `${basename}${ext}`);
@@ -300,7 +300,7 @@ function findConfigFile(searchFrom: string, basename: string): string | null {
  * @since 1.0.0
  */
 function substituteEnvironmentVariables(config: ConfigRecord): ConfigRecord {
-  if (typeof config === 'string') {
+  if (typeof config === "string") {
     return (config as string).replace(
       /\$\{([^}]+)\}/g,
       (match: string, key: string): string => {
@@ -308,8 +308,8 @@ function substituteEnvironmentVariables(config: ConfigRecord): ConfigRecord {
         const defaultMatch = key.match(/^([^:]+):-(.*)$/);
         if (defaultMatch) {
           const [, envKey, defaultValue] = defaultMatch;
-          return process.env[envKey ?? ''] !== undefined
-            ? (process.env[envKey ?? ''] as string)
+          return process.env[envKey ?? ""] !== undefined
+            ? (process.env[envKey ?? ""] as string)
             : (defaultValue ?? match);
         }
 
@@ -326,7 +326,7 @@ function substituteEnvironmentVariables(config: ConfigRecord): ConfigRecord {
     ) as unknown as ConfigRecord;
   }
 
-  if (config && typeof config === 'object') {
+  if (config && typeof config === "object") {
     const result: ConfigRecord = {};
     for (const [key, value] of Object.entries(config)) {
       result[key] = substituteEnvironmentVariables(value as ConfigRecord);

@@ -24,4 +24,4 @@ export type {
   IFileUpload,
   IFileUploadOptions,
   IFileInfo,
-} from './command-ports.interface';
+} from "./command-ports.interface";

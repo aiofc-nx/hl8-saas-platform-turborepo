@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { FastifyRequest } from '@hl8/fastify-pro';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { FastifyRequest } from "@hl8/fastify-pro";
 
 /**
  * 当前租户装饰器
@@ -17,8 +17,8 @@ import { FastifyRequest } from '@hl8/fastify-pro';
 export const CurrentTenant = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<FastifyRequest>();
-    return request['tenantId'];
-  }
+    return request["tenantId"];
+  },
 );
 
 /**
@@ -30,8 +30,8 @@ export const CurrentTenant = createParamDecorator(
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<FastifyRequest>();
-    return request['user'];
-  }
+    return request["user"];
+  },
 );
 
 /**
@@ -44,10 +44,10 @@ export const TenantContext = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<FastifyRequest>();
     return {
-      tenantId: request['tenantId'],
-      userId: request['user']?.id,
-      userRoles: request['user']?.roles || [],
-      userPermissions: request['user']?.permissions || [],
+      tenantId: request["tenantId"],
+      userId: request["user"]?.id,
+      userRoles: request["user"]?.roles || [],
+      userPermissions: request["user"]?.permissions || [],
     };
-  }
+  },
 );

@@ -107,7 +107,7 @@ export class TenantId {
 }
 
 // ✅ 后：继承基类，只需 25 行
-export class TenantId extends EntityId<'TenantId'> {
+export class TenantId extends EntityId<"TenantId"> {
   // 只需 25 行！验证逻辑在基类中
 }
 ```
@@ -142,11 +142,11 @@ nestjs-isolation (NestJS 实现)
 
 ```typescript
 // ✅ 充血模型
-const cacheKey = context.buildCacheKey('users', 'list');
+const cacheKey = context.buildCacheKey("users", "list");
 const canAccess = context.canAccess(dataContext, isShared);
 
 // ❌ 贫血模型
-const cacheKey = CacheKeyBuilder.build(context, 'users', 'list');
+const cacheKey = CacheKeyBuilder.build(context, "users", "list");
 const canAccess = AccessChecker.check(context, dataContext, isShared);
 ```
 
@@ -156,8 +156,8 @@ const canAccess = AccessChecker.check(context, dataContext, isShared);
 
 ```typescript
 // 业务代码无需关心隔离逻辑！
-await cacheService.set('user', 'list', users);
-await cacheService.get<User[]>('user', 'list');
+await cacheService.set("user", "list", users);
+await cacheService.get<User[]>("user", "list");
 
 // CacheService 内部：
 // 1. 从 CLS 获取 IsolationContext
@@ -274,7 +274,7 @@ ClsModule.forRoot({
     setup: (cls, req) => {
       // 在 CLS 上下文设置后立即提取隔离上下文
       const context = extractIsolationContext(req);
-      cls.set('ISOLATION_CONTEXT', context);
+      cls.set("ISOLATION_CONTEXT", context);
     },
   },
 });

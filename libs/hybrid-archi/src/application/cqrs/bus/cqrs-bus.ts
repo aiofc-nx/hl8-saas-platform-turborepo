@@ -56,20 +56,20 @@
  *
  * @since 1.0.0
  */
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 // import type { CoreTypedTypedConfigModule } from '../../../infrastructure/config/core-config.service';
-import type { TypedConfigModule } from '@hl8/config';
-import type { BaseCommand } from '../commands/base/base-command';
-import type { BaseQuery, IQueryResult } from '../queries/base/base-query';
-import type { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import type { IUseCaseRegistry } from '../../use-cases/base/use-case.interface';
-import type { ProjectorManager } from '../events/projectors/projector-manager';
+import type { TypedConfigModule } from "@hl8/config";
+import type { BaseCommand } from "../commands/base/base-command";
+import type { BaseQuery, IQueryResult } from "../queries/base/base-query";
+import type { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
+import type { IUseCaseRegistry } from "../../use-cases/base/use-case.interface";
+import type { ProjectorManager } from "../events/projectors/projector-manager";
 import type {
   ICQRSBus,
   ICommandBus,
   IQueryBus,
   IEventBus,
-} from './cqrs-bus.interface';
+} from "./cqrs-bus.interface";
 
 /**
  * CQRS 总线统计信息
@@ -114,7 +114,7 @@ export class CQRSBus implements ICQRSBus {
     private readonly _eventBus: IEventBus,
     private readonly _useCaseRegistry: IUseCaseRegistry,
     private readonly _projectorManager: ProjectorManager,
-    private readonly configService?: TypedConfigModule
+    private readonly configService?: TypedConfigModule,
   ) {}
 
   /**
@@ -145,24 +145,24 @@ export class CQRSBus implements ICQRSBus {
       // const config = await this.configService.getCQRSConfig();
       const config = {} as Record<string, unknown>; // 临时模拟配置
       return {
-        enabled: (config['enabled'] as boolean) ?? true,
+        enabled: (config["enabled"] as boolean) ?? true,
         commandBus: {
           timeout:
-            ((config['commandBus'] as Record<string, unknown>)?.[
-              'timeout'
+            ((config["commandBus"] as Record<string, unknown>)?.[
+              "timeout"
             ] as number) || 30000,
           maxRetries: 3, // 暂时硬编码
         },
         queryBus: {
           enableCache:
-            ((config['queryBus'] as Record<string, unknown>)?.[
-              'enableCache'
+            ((config["queryBus"] as Record<string, unknown>)?.[
+              "enableCache"
             ] as boolean) || false,
           cacheTTL: 300000, // 暂时硬编码
         },
         eventBus: {
-          enableAsync: !((config['eventBus'] as Record<string, unknown>)?.[
-            'enablePersistence'
+          enableAsync: !((config["eventBus"] as Record<string, unknown>)?.[
+            "enablePersistence"
           ] as boolean), // 基于现有字段推断
           maxConcurrency: 10, // 暂时硬编码
         },
@@ -210,7 +210,7 @@ export class CQRSBus implements ICQRSBus {
    * @throws {Error} 当总线未初始化或命令执行失败时
    */
   public async executeCommand<TCommand extends BaseCommand>(
-    command: TCommand
+    command: TCommand,
   ): Promise<void> {
     this.ensureInitialized();
     await this._commandBus.execute(command);
@@ -225,7 +225,7 @@ export class CQRSBus implements ICQRSBus {
    */
   public async executeQuery<
     TQuery extends BaseQuery,
-    TResult extends IQueryResult
+    TResult extends IQueryResult,
   >(query: TQuery): Promise<TResult> {
     this.ensureInitialized();
     return await this._queryBus.execute<TQuery, TResult>(query);
@@ -239,7 +239,7 @@ export class CQRSBus implements ICQRSBus {
    * @throws {Error} 当总线未初始化或事件发布失败时
    */
   public async publishEvent<TEvent extends BaseDomainEvent>(
-    event: TEvent
+    event: TEvent,
   ): Promise<void> {
     this.ensureInitialized();
     await this._eventBus.publish(event);
@@ -256,7 +256,7 @@ export class CQRSBus implements ICQRSBus {
    * @throws {Error} 当总线未初始化或事件发布失败时
    */
   public async publishEvents<TEvent extends BaseDomainEvent>(
-    events: TEvent[]
+    events: TEvent[],
   ): Promise<void> {
     this.ensureInitialized();
     await this._eventBus.publishAll(events);
@@ -275,7 +275,7 @@ export class CQRSBus implements ICQRSBus {
    */
   public async executeUseCase<TRequest, TResponse>(
     useCaseName: string,
-    request: TRequest
+    request: TRequest,
   ): Promise<TResponse> {
     this.ensureInitialized();
 
@@ -303,7 +303,7 @@ export class CQRSBus implements ICQRSBus {
    */
   public async initialize(): Promise<void> {
     if (this._isInitialized) {
-      throw new Error('CQRS Bus is already initialized');
+      throw new Error("CQRS Bus is already initialized");
     }
 
     try {
@@ -342,19 +342,19 @@ export class CQRSBus implements ICQRSBus {
    */
   public async shutdown(): Promise<void> {
     if (!this._isInitialized) {
-      throw new Error('CQRS Bus is not initialized');
+      throw new Error("CQRS Bus is not initialized");
     }
 
     try {
       // 清理资源
-      if ('clearHandlers' in this._commandBus) {
+      if ("clearHandlers" in this._commandBus) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this._commandBus as any).clearHandlers();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this._commandBus as any).clearMiddlewares();
       }
 
-      if ('clearHandlers' in this._queryBus) {
+      if ("clearHandlers" in this._queryBus) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this._queryBus as any).clearHandlers();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -363,7 +363,7 @@ export class CQRSBus implements ICQRSBus {
         (this._queryBus as any).clearCache();
       }
 
-      if ('clearHandlers' in this._eventBus) {
+      if ("clearHandlers" in this._eventBus) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this._eventBus as any).clearHandlers();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -391,9 +391,9 @@ export class CQRSBus implements ICQRSBus {
     try {
       // 检查各个总线的健康状态
       const commandBusHealthy =
-        this._commandBus.supports('_health_check') || true;
-      const queryBusHealthy = this._queryBus.supports('_health_check') || true;
-      const eventBusHealthy = this._eventBus.supports('_health_check') || true;
+        this._commandBus.supports("_health_check") || true;
+      const queryBusHealthy = this._queryBus.supports("_health_check") || true;
+      const eventBusHealthy = this._eventBus.supports("_health_check") || true;
 
       return commandBusHealthy && queryBusHealthy && eventBusHealthy;
     } catch {
@@ -410,7 +410,7 @@ export class CQRSBus implements ICQRSBus {
     const commandBusStats = {
       registeredHandlers: this._commandBus.getRegisteredCommandTypes().length,
       middlewares:
-        'getMiddlewareCount' in this._commandBus
+        "getMiddlewareCount" in this._commandBus
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this._commandBus as any).getMiddlewareCount()
           : 0,
@@ -419,12 +419,12 @@ export class CQRSBus implements ICQRSBus {
     const queryBusStats = {
       registeredHandlers: this._queryBus.getRegisteredQueryTypes().length,
       middlewares:
-        'getMiddlewareCount' in this._queryBus
+        "getMiddlewareCount" in this._queryBus
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this._queryBus as any).getMiddlewareCount()
           : 0,
       cacheEntries:
-        'getCacheStats' in this._queryBus
+        "getCacheStats" in this._queryBus
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this._queryBus as any).getCacheStats().totalEntries
           : 0,
@@ -433,12 +433,12 @@ export class CQRSBus implements ICQRSBus {
     const eventBusStats = {
       registeredHandlers: this._eventBus.getRegisteredEventTypes().length,
       subscriptions:
-        'getHandlerCount' in this._eventBus
+        "getHandlerCount" in this._eventBus
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this._eventBus as any).getHandlerCount()
           : 0,
       middlewares:
-        'getMiddlewareCount' in this._eventBus
+        "getMiddlewareCount" in this._eventBus
           ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (this._eventBus as any).getMiddlewareCount()
           : 0,
@@ -526,7 +526,7 @@ export class CQRSBus implements ICQRSBus {
    */
   private ensureInitialized(): void {
     if (!this._isInitialized) {
-      throw new Error('CQRS Bus is not initialized. Call initialize() first.');
+      throw new Error("CQRS Bus is not initialized. Call initialize() first.");
     }
   }
 }

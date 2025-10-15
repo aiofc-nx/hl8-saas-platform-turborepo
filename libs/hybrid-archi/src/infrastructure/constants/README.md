@@ -20,7 +20,7 @@ infrastructure/
 ### 1. 缓存相关常量 (`CACHE`)
 
 ```typescript
-import { INFRASTRUCTURE_CONSTANTS } from './constants';
+import { INFRASTRUCTURE_CONSTANTS } from "./constants";
 
 // 使用缓存常量
 const cacheConfig = {
@@ -45,7 +45,8 @@ const cacheConfig = {
 // 使用数据库常量
 const dbConfig = {
   queryTimeout: INFRASTRUCTURE_CONSTANTS.DATABASE.DEFAULT_QUERY_TIMEOUT,
-  connectionTimeout: INFRASTRUCTURE_CONSTANTS.DATABASE.DEFAULT_CONNECTION_TIMEOUT,
+  connectionTimeout:
+    INFRASTRUCTURE_CONSTANTS.DATABASE.DEFAULT_CONNECTION_TIMEOUT,
   poolSize: INFRASTRUCTURE_CONSTANTS.DATABASE.DEFAULT_POOL_SIZE,
 };
 ```
@@ -84,7 +85,8 @@ const mqConfig = {
 // 使用事件存储常量
 const eventStoreConfig = {
   eventTtl: INFRASTRUCTURE_CONSTANTS.EVENT_STORE.DEFAULT_EVENT_TTL,
-  snapshotInterval: INFRASTRUCTURE_CONSTANTS.EVENT_STORE.DEFAULT_SNAPSHOT_INTERVAL,
+  snapshotInterval:
+    INFRASTRUCTURE_CONSTANTS.EVENT_STORE.DEFAULT_SNAPSHOT_INTERVAL,
   batchSize: INFRASTRUCTURE_CONSTANTS.EVENT_STORE.DEFAULT_BATCH_SIZE,
 };
 ```
@@ -100,7 +102,8 @@ const eventStoreConfig = {
 ```typescript
 // 使用端口适配器常量
 const adapterConfig = {
-  healthCheckInterval: INFRASTRUCTURE_CONSTANTS.PORT_ADAPTERS.DEFAULT_HEALTH_CHECK_INTERVAL,
+  healthCheckInterval:
+    INFRASTRUCTURE_CONSTANTS.PORT_ADAPTERS.DEFAULT_HEALTH_CHECK_INTERVAL,
   retryCount: INFRASTRUCTURE_CONSTANTS.PORT_ADAPTERS.DEFAULT_RETRY_COUNT,
   timeout: INFRASTRUCTURE_CONSTANTS.PORT_ADAPTERS.DEFAULT_TIMEOUT,
 };
@@ -136,9 +139,12 @@ const mapperConfig = {
 ```typescript
 // 使用工厂常量
 const factoryConfig = {
-  serviceStartTimeout: INFRASTRUCTURE_CONSTANTS.FACTORIES.DEFAULT_SERVICE_START_TIMEOUT,
-  serviceStopTimeout: INFRASTRUCTURE_CONSTANTS.FACTORIES.DEFAULT_SERVICE_STOP_TIMEOUT,
-  healthCheckTimeout: INFRASTRUCTURE_CONSTANTS.FACTORIES.DEFAULT_HEALTH_CHECK_TIMEOUT,
+  serviceStartTimeout:
+    INFRASTRUCTURE_CONSTANTS.FACTORIES.DEFAULT_SERVICE_START_TIMEOUT,
+  serviceStopTimeout:
+    INFRASTRUCTURE_CONSTANTS.FACTORIES.DEFAULT_SERVICE_STOP_TIMEOUT,
+  healthCheckTimeout:
+    INFRASTRUCTURE_CONSTANTS.FACTORIES.DEFAULT_HEALTH_CHECK_TIMEOUT,
 };
 ```
 
@@ -179,7 +185,7 @@ const config = INFRASTRUCTURE_DEFAULT_CONFIG.CACHE;
 ### 1. 基本使用
 
 ```typescript
-import { INFRASTRUCTURE_CONSTANTS } from './constants';
+import { INFRASTRUCTURE_CONSTANTS } from "./constants";
 
 // 创建缓存配置
 const cacheConfig = {
@@ -192,7 +198,7 @@ const cacheConfig = {
 ### 2. 错误处理
 
 ```typescript
-import { INFRASTRUCTURE_ERROR_MESSAGES } from './constants';
+import { INFRASTRUCTURE_ERROR_MESSAGES } from "./constants";
 
 // 获取错误消息
 const errorMessage = INFRASTRUCTURE_ERROR_MESSAGES.CACHE.KEY_NOT_FOUND;
@@ -201,7 +207,7 @@ const errorMessage = INFRASTRUCTURE_ERROR_MESSAGES.CACHE.KEY_NOT_FOUND;
 ### 3. 配置管理
 
 ```typescript
-import { INFRASTRUCTURE_DEFAULT_CONFIG } from './constants';
+import { INFRASTRUCTURE_DEFAULT_CONFIG } from "./constants";
 
 // 使用默认配置
 const config = INFRASTRUCTURE_DEFAULT_CONFIG.DATABASE;
@@ -210,10 +216,12 @@ const config = INFRASTRUCTURE_DEFAULT_CONFIG.DATABASE;
 ### 4. 类型检查
 
 ```typescript
-import { INFRASTRUCTURE_CONSTANTS } from './constants';
+import { INFRASTRUCTURE_CONSTANTS } from "./constants";
 
 // 检查缓存级别
-const isValidLevel = Object.values(INFRASTRUCTURE_CONSTANTS.CACHE.LEVEL).includes(level);
+const isValidLevel = Object.values(
+  INFRASTRUCTURE_CONSTANTS.CACHE.LEVEL,
+).includes(level);
 ```
 
 ## 最佳实践

@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { IsString, IsOptional, Length } from 'class-validator';
-import { TENANT_NAME_VALIDATION } from '../../../constants/tenant.constants';
+import { IsString, IsOptional, Length } from "class-validator";
+import { TENANT_NAME_VALIDATION } from "../../../constants/tenant.constants";
 
 export class UpdateTenantDto {
   @IsString()
@@ -18,4 +18,3 @@ export class UpdateTenantDto {
   )
   name?: string;
 }
-

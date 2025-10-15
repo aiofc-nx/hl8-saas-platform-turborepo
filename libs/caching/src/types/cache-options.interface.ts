@@ -6,8 +6,8 @@
  * @since 1.0.0
  */
 
-import type { ModuleMetadata, Type } from '@nestjs/common';
-import type { RedisOptions } from './redis-options.interface.js';
+import type { ModuleMetadata, Type } from "@nestjs/common";
+import type { RedisOptions } from "./redis-options.interface.js";
 
 /**
  * 缓存模块配置选项
@@ -44,7 +44,7 @@ export interface CachingModuleOptions {
  * 缓存模块异步配置选项
  */
 export interface CachingModuleAsyncOptions
-  extends Pick<ModuleMetadata, 'imports'> {
+  extends Pick<ModuleMetadata, "imports"> {
   /**
    * 注入依赖
    *

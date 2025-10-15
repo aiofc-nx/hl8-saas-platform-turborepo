@@ -1,4 +1,4 @@
-import { BaseCommand } from '@hl8/hybrid-archi';
+import { BaseCommand } from "@hl8/hybrid-archi";
 
 export class RegisterUserCommand extends BaseCommand {
   constructor(
@@ -13,7 +13,6 @@ export class RegisterUserCommand extends BaseCommand {
   }
 
   get commandType(): string {
-    return 'RegisterUserCommand';
+    return "RegisterUserCommand";
   }
 }
-

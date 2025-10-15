@@ -13,9 +13,9 @@
  * @since 0.1.0
  */
 
-import { ModuleMetadata, Type } from '@nestjs/common';
-import { ILoggerService } from '../filters/http-exception.filter.js';
-import { ExceptionMessageProvider } from '../providers/exception-message.provider.js';
+import { ModuleMetadata, Type } from "@nestjs/common";
+import { ILoggerService } from "../filters/http-exception.filter.js";
+import { ExceptionMessageProvider } from "../providers/exception-message.provider.js";
 
 /**
  * 异常模块配置
@@ -69,7 +69,7 @@ export interface ExceptionModuleOptions {
  * @description 支持异步方式配置异常模块
  */
 export interface ExceptionModuleAsyncOptions
-  extends Pick<ModuleMetadata, 'imports'> {
+  extends Pick<ModuleMetadata, "imports"> {
   /**
    * 使用工厂函数配置
    */
@@ -114,7 +114,7 @@ export interface ExceptionOptionsFactory {
  *
  * @description 用于依赖注入的配置令牌
  */
-export const EXCEPTION_MODULE_OPTIONS = 'EXCEPTION_MODULE_OPTIONS';
+export const EXCEPTION_MODULE_OPTIONS = "EXCEPTION_MODULE_OPTIONS";
 
 /**
  * 默认配置
@@ -124,5 +124,5 @@ export const EXCEPTION_MODULE_OPTIONS = 'EXCEPTION_MODULE_OPTIONS';
 export const DEFAULT_EXCEPTION_OPTIONS: ExceptionModuleOptions = {
   enableLogging: true,
   registerGlobalFilters: true,
-  isProduction: process.env.NODE_ENV === 'production',
+  isProduction: process.env.NODE_ENV === "production",
 };

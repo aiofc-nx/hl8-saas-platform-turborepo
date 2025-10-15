@@ -41,27 +41,27 @@
  *
  * @since 1.0.0
  */
-import { Injectable, DynamicModule } from '@nestjs/common';
-import type { PinoLogger } from '@hl8/logger';
+import { Injectable, DynamicModule } from "@nestjs/common";
+import type { PinoLogger } from "@hl8/logger";
 
 // 定义 LogContext 枚举
 enum LogContext {
-  SYSTEM = 'SYSTEM',
-  BUSINESS = 'BUSINESS',
-  AUTH = 'AUTH',
-  DATABASE = 'DATABASE',
-  EXTERNAL = 'EXTERNAL',
-  CACHE = 'CACHE',
-  PERFORMANCE = 'PERFORMANCE',
-  HTTP_REQUEST = 'HTTP_REQUEST',
+  SYSTEM = "SYSTEM",
+  BUSINESS = "BUSINESS",
+  AUTH = "AUTH",
+  DATABASE = "DATABASE",
+  EXTERNAL = "EXTERNAL",
+  CACHE = "CACHE",
+  PERFORMANCE = "PERFORMANCE",
+  HTTP_REQUEST = "HTTP_REQUEST",
 }
-import { ModuleRef } from '@nestjs/core';
-import { NestApplication } from '@nestjs/core';
-import { Type } from '@nestjs/common';
-import { CoreExplorerService } from './core-explorer.service';
-import { AutoRegistrationService } from './auto-registration.service';
-import { ModuleScannerService } from './module-scanner.service';
-import { IHandlerInfo } from './core-explorer.service';
+import { ModuleRef } from "@nestjs/core";
+import { NestApplication } from "@nestjs/core";
+import { Type } from "@nestjs/common";
+import { CoreExplorerService } from "./core-explorer.service";
+import { AutoRegistrationService } from "./auto-registration.service";
+import { ModuleScannerService } from "./module-scanner.service";
+import { IHandlerInfo } from "./core-explorer.service";
 
 /**
  * 模块配置接口
@@ -109,7 +109,7 @@ export interface IModuleConfig {
     /**
      * 提供者作用域
      */
-    providerScope?: 'SINGLETON' | 'REQUEST' | 'TRANSIENT';
+    providerScope?: "SINGLETON" | "REQUEST" | "TRANSIENT";
 
     /**
      * 是否启用缓存
@@ -159,7 +159,7 @@ export interface IIntegrationStatus {
    * 错误信息
    */
   errors: Array<{
-    type: 'module' | 'handler' | 'provider';
+    type: "module" | "handler" | "provider";
     name: string;
     error: string;
     timestamp: Date;
@@ -196,7 +196,7 @@ export class DIIntegrationService {
     private readonly _moduleRef: ModuleRef,
     private readonly _explorerService: CoreExplorerService,
     private readonly _registrationService: AutoRegistrationService,
-    private readonly scannerService: ModuleScannerService
+    private readonly scannerService: ModuleScannerService,
   ) {}
 
   /**
@@ -212,11 +212,11 @@ export class DIIntegrationService {
       scanPaths?: string[];
       excludePatterns?: string[];
       includePatterns?: string[];
-    } = {}
+    } = {},
   ): Promise<IIntegrationStatus> {
     this.logger.info(
-      'Initializing DI integration service...',
-      LogContext.SYSTEM
+      "Initializing DI integration service...",
+      LogContext.SYSTEM,
     );
 
     try {
@@ -238,16 +238,16 @@ export class DIIntegrationService {
       this.integrationStatus.lastUpdatedAt = new Date();
 
       this.logger.info(
-        'DI integration service initialized successfully',
-        LogContext.SYSTEM
+        "DI integration service initialized successfully",
+        LogContext.SYSTEM,
       );
       return this.integrationStatus;
     } catch (error) {
       this.logger.error(
-        'Failed to initialize DI integration service',
+        "Failed to initialize DI integration service",
         LogContext.SYSTEM,
         {},
-        error as Error
+        error as Error,
       );
       throw error;
     }
@@ -268,11 +268,11 @@ export class DIIntegrationService {
 
       this.integrationStatus.registeredModules++;
       this.logger.info(
-        'Core module registered successfully',
-        LogContext.SYSTEM
+        "Core module registered successfully",
+        LogContext.SYSTEM,
       );
     } catch (error) {
-      this.addError('module', 'CoreModule', (error as Error).message);
+      this.addError("module", "CoreModule", (error as Error).message);
       throw error;
     }
   }
@@ -311,15 +311,15 @@ export class DIIntegrationService {
     includePatterns?: string[];
   }): Promise<void> {
     try {
-      const scanPaths = config.scanPaths || ['./src'];
+      const scanPaths = config.scanPaths || ["./src"];
       const excludePatterns = config.excludePatterns || [
-        'node_modules',
-        '.git',
-        'dist',
+        "node_modules",
+        ".git",
+        "dist",
       ];
-      const includePatterns = config.includePatterns || ['**/*.module.ts'];
+      const includePatterns = config.includePatterns || ["**/*.module.ts"];
 
-      this.logger.info('Performing auto discovery...', LogContext.SYSTEM);
+      this.logger.info("Performing auto discovery...", LogContext.SYSTEM);
 
       // 扫描模块
       await this.scannerService.scanPath(scanPaths[0], {
@@ -332,9 +332,9 @@ export class DIIntegrationService {
 
       // this.integrationStatus.registeredHandlers = explorerResults.statistics.totalHandlers;
 
-      this.logger.info('Auto discovery completed', LogContext.SYSTEM);
+      this.logger.info("Auto discovery completed", LogContext.SYSTEM);
     } catch (error) {
-      this.addError('handler', 'AutoDiscovery', (error as Error).message);
+      this.addError("handler", "AutoDiscovery", (error as Error).message);
       throw error;
     }
   }
@@ -346,14 +346,14 @@ export class DIIntegrationService {
    */
   private async performAutoRegistration(): Promise<void> {
     try {
-      this.logger.info('Performing auto registration...', LogContext.SYSTEM);
+      this.logger.info("Performing auto registration...", LogContext.SYSTEM);
 
       // 这里需要获取之前发现的处理器结果
       // 由于这是一个简化的实现，我们暂时跳过具体的注册逻辑
 
-      this.logger.info('Auto registration completed', LogContext.SYSTEM);
+      this.logger.info("Auto registration completed", LogContext.SYSTEM);
     } catch (error) {
-      this.addError('handler', 'AutoRegistration', (error as Error).message);
+      this.addError("handler", "AutoRegistration", (error as Error).message);
       throw error;
     }
   }
@@ -367,16 +367,16 @@ export class DIIntegrationService {
   public async registerHandlers(
     handlers: IHandlerInfo[],
     options: {
-      scope?: 'SINGLETON' | 'REQUEST' | 'TRANSIENT';
+      scope?: "SINGLETON" | "REQUEST" | "TRANSIENT";
       enableValidation?: boolean;
       customValidator?: (handler: IHandlerInfo) => Promise<boolean>;
-    } = {}
+    } = {},
   ): Promise<void> {
     try {
       this.logger.info(
         `Registering ${handlers.length} handlers...`,
         LogContext.SYSTEM,
-        { handlerCount: handlers.length }
+        { handlerCount: handlers.length },
       );
 
       for (const handler of handlers) {
@@ -389,14 +389,14 @@ export class DIIntegrationService {
       this.logger.info(
         `Successfully registered ${handlers.length} handlers`,
         LogContext.SYSTEM,
-        { handlerCount: handlers.length }
+        { handlerCount: handlers.length },
       );
     } catch (error) {
       this.logger.error(
-        'Failed to register handlers',
+        "Failed to register handlers",
         LogContext.SYSTEM,
         {},
-        error as Error
+        error as Error,
       );
       throw error;
     }
@@ -410,10 +410,10 @@ export class DIIntegrationService {
   private async registerHandler(
     handler: IHandlerInfo,
     options: {
-      scope?: 'SINGLETON' | 'REQUEST' | 'TRANSIENT';
+      scope?: "SINGLETON" | "REQUEST" | "TRANSIENT";
       enableValidation?: boolean;
       customValidator?: (handler: IHandlerInfo) => Promise<boolean>;
-    }
+    },
   ): Promise<void> {
     try {
       // 验证处理器
@@ -422,7 +422,7 @@ export class DIIntegrationService {
           options.customValidator &&
           !(await options.customValidator(handler))
         ) {
-          throw new Error('Handler validation failed');
+          throw new Error("Handler validation failed");
         }
       }
 
@@ -431,7 +431,7 @@ export class DIIntegrationService {
 
       this.integrationStatus.registeredProviders++;
     } catch (error) {
-      this.addError('provider', handler.handlerName, (error as Error).message);
+      this.addError("provider", handler.handlerName, (error as Error).message);
       throw error;
     }
   }
@@ -443,16 +443,16 @@ export class DIIntegrationService {
    */
   private async registerProvider(
     handler: IHandlerInfo,
-    scope?: 'SINGLETON' | 'REQUEST' | 'TRANSIENT'
+    scope?: "SINGLETON" | "REQUEST" | "TRANSIENT",
   ): Promise<void> {
     // 这里需要实现具体的提供者注册逻辑
     // 由于这是一个复杂的实现，我们暂时只记录日志
     this.logger.debug(
       `Registering provider: ${handler.handlerName} with scope: ${
-        scope || 'SINGLETON'
+        scope || "SINGLETON"
       }`,
       LogContext.SYSTEM,
-      { handlerName: handler.handlerName, scope: scope || 'SINGLETON' }
+      { handlerName: handler.handlerName, scope: scope || "SINGLETON" },
     );
   }
 
@@ -464,28 +464,28 @@ export class DIIntegrationService {
    */
   public async configureModule(
     module: Type<any>,
-    config: IModuleConfig
+    config: IModuleConfig,
   ): Promise<void> {
     try {
       this.logger.info(
         `Configuring module: ${config.name}`,
         LogContext.SYSTEM,
-        { moduleName: config.name }
+        { moduleName: config.name },
       );
 
       // 这里需要实现模块配置逻辑
       // 由于这是一个复杂的实现，我们暂时只记录日志
       this.logger.debug(
         `Module ${config.name} configured with options: ${JSON.stringify(
-          config.options
+          config.options,
         )}`,
         LogContext.SYSTEM,
-        { moduleName: config.name, options: config.options }
+        { moduleName: config.name, options: config.options },
       );
 
       this.integrationStatus.lastUpdatedAt = new Date();
     } catch (error) {
-      this.addError('module', config.name, (error as Error).message);
+      this.addError("module", config.name, (error as Error).message);
       throw error;
     }
   }
@@ -504,10 +504,10 @@ export class DIIntegrationService {
    *
    * @param type - 错误类型
    */
-  public clearErrors(type?: 'module' | 'handler' | 'provider'): void {
+  public clearErrors(type?: "module" | "handler" | "provider"): void {
     if (type) {
       this.integrationStatus.errors = this.integrationStatus.errors.filter(
-        (error) => error.type !== type
+        (error) => error.type !== type,
       );
     } else {
       this.integrationStatus.errors = [];
@@ -527,7 +527,7 @@ export class DIIntegrationService {
       errors: [],
       lastUpdatedAt: new Date(),
     };
-    this.logger.info('Integration status reset', LogContext.SYSTEM);
+    this.logger.info("Integration status reset", LogContext.SYSTEM);
   }
 
   /**
@@ -536,9 +536,9 @@ export class DIIntegrationService {
    * @private
    */
   private addError(
-    type: 'module' | 'handler' | 'provider',
+    type: "module" | "handler" | "provider",
     name: string,
-    message: string
+    message: string,
   ): void {
     this.integrationStatus.errors.push({
       type,

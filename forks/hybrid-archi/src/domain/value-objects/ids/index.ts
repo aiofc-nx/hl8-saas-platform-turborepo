@@ -5,5 +5,5 @@
  * @since 1.0.0
  */
 
-export * from './tenant-id.vo';
-export * from './user-id.vo';
+export * from "./tenant-id.vo";
+export * from "./user-id.vo";

@@ -8,10 +8,10 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { CacheService } from '@hl8/caching';
-import { IDomainService } from '../../../domain/services/base/domain-service.interface';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
+import { IDomainService } from "../../../domain/services/base/domain-service.interface";
 
 /**
  * 领域服务配置接口
@@ -46,7 +46,7 @@ export class DomainServiceAdapter implements IDomainService {
     private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly serviceName: string,
-    config: Partial<IDomainServiceConfig> = {}
+    config: Partial<IDomainServiceConfig> = {},
   ) {
     this.config = {
       enableCache: config.enableCache ?? true,
@@ -77,7 +77,7 @@ export class DomainServiceAdapter implements IDomainService {
    */
   async execute<T = unknown>(
     operation: string,
-    parameters: Record<string, unknown> = {}
+    parameters: Record<string, unknown> = {},
   ): Promise<T> {
     const startTime = this.config.enablePerformanceMonitoring ? Date.now() : 0;
 
@@ -143,7 +143,7 @@ export class DomainServiceAdapter implements IDomainService {
    */
   async executeTransaction<T = unknown>(
     operation: string,
-    parameters: Record<string, unknown> = {}
+    parameters: Record<string, unknown> = {},
   ): Promise<T> {
     if (!this.config.enableTransaction) {
       return this.execute<T>(operation, parameters);
@@ -160,7 +160,7 @@ export class DomainServiceAdapter implements IDomainService {
       // 执行事务操作
       const result = await this.executeTransactionOperation<T>(
         operation,
-        parameters
+        parameters,
       );
 
       // 记录事务完成
@@ -200,7 +200,7 @@ export class DomainServiceAdapter implements IDomainService {
    */
   async executeWithRetry<T = unknown>(
     operation: string,
-    parameters: Record<string, unknown> = {}
+    parameters: Record<string, unknown> = {},
   ): Promise<T> {
     let lastError: Error | null = null;
 
@@ -212,13 +212,14 @@ export class DomainServiceAdapter implements IDomainService {
 
         if (attempt < this.config.maxRetries) {
           this.logger.warn(
-            `领域服务操作失败，重试中 (${attempt}/${this.config.maxRetries})`);
+            `领域服务操作失败，重试中 (${attempt}/${this.config.maxRetries})`,
+          );
           await this.delay(this.config.retryDelay * attempt);
         }
       }
     }
 
-    throw lastError || new Error('领域服务操作失败');
+    throw lastError || new Error("领域服务操作失败");
   }
 
   /**
@@ -265,7 +266,7 @@ export class DomainServiceAdapter implements IDomainService {
 
       return {
         healthy,
-        status: healthy ? 'healthy' : 'unhealthy',
+        status: healthy ? "healthy" : "unhealthy",
         details: {
           serviceName: this.serviceName,
           cacheHealthy,
@@ -277,7 +278,7 @@ export class DomainServiceAdapter implements IDomainService {
     } catch (error) {
       return {
         healthy: false,
-        status: 'error',
+        status: "error",
         details: {
           serviceName: this.serviceName,
           error: error instanceof Error ? error.message : String(error),
@@ -301,10 +302,10 @@ export class DomainServiceAdapter implements IDomainService {
     try {
       const cachePattern = pattern || `${this.serviceName}:*`;
       // 使用兼容性检查调用 deletePattern 方法
-      if (typeof (this.cacheService as any).deletePattern === 'function') {
+      if (typeof (this.cacheService as any).deletePattern === "function") {
         return await (this.cacheService as any).deletePattern(cachePattern);
       } else {
-        console.warn('CacheService不支持deletePattern方法');
+        console.warn("CacheService不支持deletePattern方法");
         return 0;
       }
     } catch (error) {
@@ -363,7 +364,7 @@ export class DomainServiceAdapter implements IDomainService {
    */
   private async executeOperation<T>(
     operation: string,
-    parameters: Record<string, unknown>
+    parameters: Record<string, unknown>,
   ): Promise<T> {
     // 实现具体的领域服务操作逻辑
     // 这里需要根据具体的领域服务类型来实现
@@ -375,7 +376,7 @@ export class DomainServiceAdapter implements IDomainService {
    */
   private async executeTransactionOperation<T>(
     operation: string,
-    parameters: Record<string, unknown>
+    parameters: Record<string, unknown>,
   ): Promise<T> {
     // 实现具体的事务操作逻辑
     // 这里需要根据具体的领域服务类型来实现
@@ -387,7 +388,7 @@ export class DomainServiceAdapter implements IDomainService {
    */
   private getCacheKey(
     operation: string,
-    parameters: Record<string, unknown>
+    parameters: Record<string, unknown>,
   ): string {
     const paramsHash = this.hashParameters(parameters);
     return `${this.serviceName}:${operation}:${paramsHash}`;
@@ -400,9 +401,9 @@ export class DomainServiceAdapter implements IDomainService {
     const sortedParams = Object.keys(parameters)
       .sort()
       .map((key) => `${key}=${JSON.stringify(parameters[key])}`)
-      .join('&');
+      .join("&");
 
-    return Buffer.from(sortedParams).toString('base64');
+    return Buffer.from(sortedParams).toString("base64");
   }
 
   /**
@@ -418,10 +419,10 @@ export class DomainServiceAdapter implements IDomainService {
   private async checkCacheHealth(): Promise<boolean> {
     try {
       const testKey = `${this.serviceName}:health:${Date.now()}`;
-      await this.cacheService.set(testKey, 'test', 1);
+      await this.cacheService.set(testKey, "test", 1);
       const result = await this.cacheService.get(testKey);
       await this.cacheService.delete(testKey);
-      return result === 'test';
+      return result === "test";
     } catch {
       return false;
     }

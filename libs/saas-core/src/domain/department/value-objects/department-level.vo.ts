@@ -19,7 +19,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
+import { BaseValueObject } from "@hl8/hybrid-archi";
 
 export class DepartmentLevel extends BaseValueObject<number> {
   private static readonly MIN_LEVEL = 1;
@@ -32,12 +32,12 @@ export class DepartmentLevel extends BaseValueObject<number> {
    * @override
    */
   protected override validate(value: number): void {
-    this.validateInteger(value, '部门层级');
+    this.validateInteger(value, "部门层级");
     this.validateRange(
       value,
       DepartmentLevel.MIN_LEVEL,
       DepartmentLevel.MAX_LEVEL,
-      '部门层级'
+      "部门层级",
     );
   }
 
@@ -67,7 +67,7 @@ export class DepartmentLevel extends BaseValueObject<number> {
    */
   public nextLevel(): DepartmentLevel {
     if (this.isMaxLevel()) {
-      throw new Error('已达到最大部门层级，无法创建子部门');
+      throw new Error("已达到最大部门层级，无法创建子部门");
     }
     return DepartmentLevel.create(this._value + 1);
   }
@@ -77,7 +77,7 @@ export class DepartmentLevel extends BaseValueObject<number> {
    */
   public previousLevel(): DepartmentLevel {
     if (this.isTopLevel()) {
-      throw new Error('已是顶级部门，没有上级层级');
+      throw new Error("已是顶级部门，没有上级层级");
     }
     return DepartmentLevel.create(this._value - 1);
   }

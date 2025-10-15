@@ -8,13 +8,13 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { CacheModule, CacheService } from '@hl8/cache';
-import { LoggerModule, PinoLogger } from '@hl8/logger';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { CacheModule, CacheService } from "@hl8/cache";
+import { LoggerModule, PinoLogger } from "@hl8/logger";
 
-import { CacheAdapter } from './cache.adapter';
-import { CacheFactory } from './cache.factory';
-import { CacheManager } from './cache.manager';
+import { CacheAdapter } from "./cache.adapter";
+import { CacheFactory } from "./cache.factory";
+import { CacheManager } from "./cache.manager";
 
 /**
  * 缓存适配器模块选项
@@ -74,14 +74,14 @@ export class CacheAdaptersModule {
 
     // 根据选项动态添加提供者
     if (options.enableCache !== false) {
-      providers.push({ provide: 'ICache', useClass: CacheAdapter });
+      providers.push({ provide: "ICache", useClass: CacheAdapter });
     }
 
     return {
       module: CacheAdaptersModule,
       imports: [
         CacheModule.forRoot({ redis: {} as any }),
-        LoggerModule.forRoot({})
+        LoggerModule.forRoot({}),
       ],
       providers,
       exports: providers,
@@ -113,14 +113,14 @@ export class CacheAdaptersModule {
 
     // 根据选项动态添加提供者
     if (options.enableCache !== false) {
-      providers.push({ provide: 'ICache', useClass: CacheAdapter });
+      providers.push({ provide: "ICache", useClass: CacheAdapter });
     }
 
     return {
       module: CacheAdaptersModule,
       imports: [
         CacheModule.forRoot({ redis: {} as any }),
-        LoggerModule.forRoot({})
+        LoggerModule.forRoot({}),
       ],
       providers,
       exports: providers,

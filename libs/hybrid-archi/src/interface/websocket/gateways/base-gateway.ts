@@ -47,14 +47,15 @@
  *
  * @since 1.0.0
  */
-import type { ILoggerService,
+import type {
+  ILoggerService,
   IMetricsService,
   IWebSocketContext,
   IUser,
   IWebSocketClient,
   IJwtPayload,
-} from '../../shared/interfaces';
-import { TenantId } from '@hl8/isolation-model';
+} from "../../shared/interfaces";
+import { TenantId } from "@hl8/isolation-model";
 
 export abstract class BaseGateway {
   protected readonly requestId: string;
@@ -64,7 +65,7 @@ export abstract class BaseGateway {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.requestId = this.generateRequestId();
     this.correlationId = this.generateCorrelationId();
@@ -82,7 +83,7 @@ export abstract class BaseGateway {
    */
   protected async handleMessage<TResult>(
     messageExecutor: () => Promise<TResult>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TResult> {
     this.getWebSocketContext();
 
@@ -112,7 +113,9 @@ export abstract class BaseGateway {
    * @param client - WebSocket客户端
    * @returns 认证结果
    */
-  protected async authenticateConnection(client: IWebSocketClient): Promise<boolean> {
+  protected async authenticateConnection(
+    client: IWebSocketClient,
+  ): Promise<boolean> {
     try {
       // 1. 提取认证令牌
       const token = this.extractTokenFromClient(client);
@@ -138,16 +141,16 @@ export abstract class BaseGateway {
         user.getId().getValue(),
         user.getTenantId(),
         new Date(),
-        client.handshake.address
+        client.handshake.address,
       );
 
       this.connectedClients.set(client.id, connection);
 
-      this.logger.log('WebSocket连接认证成功');
+      this.logger.log("WebSocket连接认证成功");
 
       return true;
     } catch (error) {
-      this.logger.error('WebSocket连接认证失败');
+      this.logger.error("WebSocket连接认证失败");
 
       return false;
     }
@@ -166,7 +169,7 @@ export abstract class BaseGateway {
     if (connection) {
       this.connectedClients.delete(client.id);
 
-      this.logger.log('WebSocket连接断开');
+      this.logger.log("WebSocket连接断开");
     }
   }
 
@@ -183,8 +186,8 @@ export abstract class BaseGateway {
     return {
       requestId: this.requestId,
       correlationId: this.correlationId,
-      userId: 'current-user-id',
-      tenantId: 'current-tenant-id',
+      userId: "current-user-id",
+      tenantId: "current-tenant-id",
       timestamp: new Date(),
     };
   }
@@ -202,7 +205,7 @@ export abstract class BaseGateway {
     const headers = client.handshake.headers;
 
     return (
-      auth?.token || headers?.authorization?.replace('Bearer ', '') || null
+      auth?.token || headers?.authorization?.replace("Bearer ", "") || null
     );
   }
 
@@ -217,7 +220,7 @@ export abstract class BaseGateway {
   private async verifyToken(token: string): Promise<IJwtPayload | null> {
     // 这里应该实现JWT令牌验证
     // 实际实现中会调用JWT服务
-    this.logger.debug('验证JWT令牌');
+    this.logger.debug("验证JWT令牌");
     return null; // 占位符实现
   }
 
@@ -232,7 +235,7 @@ export abstract class BaseGateway {
   private async validateUser(userId: string): Promise<IUser | null> {
     // 这里应该调用用户服务验证用户状态
     // 实际实现中会从数据库或缓存中获取用户信息
-    this.logger.debug('验证用户状态');
+    this.logger.debug("验证用户状态");
     return null; // 占位符实现
   }
 
@@ -251,11 +254,11 @@ export abstract class BaseGateway {
 
     // 记录性能指标
     this.metricsService?.incrementCounter(
-      `websocket_${operationName}_success_total`
+      `websocket_${operationName}_success_total`,
     );
     this.metricsService?.recordHistogram(
       `websocket_${operationName}_duration_ms`,
-      duration
+      duration,
     );
   }
 
@@ -274,7 +277,8 @@ export abstract class BaseGateway {
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
-      `websocket_${operationName}_error_total`);
+      `websocket_${operationName}_error_total`,
+    );
   }
 
   /**
@@ -311,6 +315,6 @@ export class ClientConnection {
     public readonly userId: string,
     public readonly tenantId: string,
     public readonly connectedAt: Date,
-    public readonly ipAddress: string
+    public readonly ipAddress: string,
   ) {}
 }

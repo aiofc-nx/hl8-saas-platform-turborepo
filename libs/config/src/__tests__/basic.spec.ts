@@ -6,14 +6,14 @@
  * @since 1.0.0
  */
 
-import { TypedConfigModule } from '../lib/typed-config.module';
+import { TypedConfigModule } from "../lib/typed-config.module";
 
-describe('配置模块基础测试', () => {
-  describe('基本功能', () => {
-    it('应该创建配置模块', () => {
+describe("配置模块基础测试", () => {
+  describe("基本功能", () => {
+    it("应该创建配置模块", () => {
       const configModule = TypedConfigModule.forRoot({
         schema: Object,
-        load: () => ({ name: 'Test App', version: '1.0.0' }),
+        load: () => ({ name: "Test App", version: "1.0.0" }),
       });
 
       expect(configModule).toBeDefined();
@@ -23,8 +23,8 @@ describe('配置模块基础测试', () => {
       expect(configModule.exports).toBeDefined();
     });
 
-    it('应该支持自定义配置加载器', () => {
-      const customLoader = jest.fn().mockReturnValue({ name: 'Test App' });
+    it("应该支持自定义配置加载器", () => {
+      const customLoader = jest.fn().mockReturnValue({ name: "Test App" });
 
       const configModule = TypedConfigModule.forRoot({
         schema: Object,
@@ -35,7 +35,7 @@ describe('配置模块基础测试', () => {
       expect(customLoader).toHaveBeenCalled();
     });
 
-    it('应该支持配置标准化', () => {
+    it("应该支持配置标准化", () => {
       const normalize = jest.fn().mockImplementation((config) => ({
         ...config,
         normalized: true,
@@ -43,19 +43,19 @@ describe('配置模块基础测试', () => {
 
       const configModule = TypedConfigModule.forRoot({
         schema: Object,
-        load: () => ({ name: 'Test App' }),
+        load: () => ({ name: "Test App" }),
         normalize,
       });
 
       expect(configModule).toBeDefined();
     });
 
-    it('应该支持缓存选项', () => {
+    it("应该支持缓存选项", () => {
       const configModule = TypedConfigModule.forRoot({
         schema: Object,
-        load: () => ({ name: 'Test App' }),
+        load: () => ({ name: "Test App" }),
         cacheOptions: {
-          strategy: 'memory' as any,
+          strategy: "memory" as any,
           ttl: 300000,
           enabled: true,
         },
@@ -66,12 +66,12 @@ describe('配置模块基础测试', () => {
     });
   });
 
-  describe('错误处理', () => {
-    it('应该处理无效配置', () => {
+  describe("错误处理", () => {
+    it("应该处理无效配置", () => {
       expect(() => {
         TypedConfigModule.forRoot({
           schema: Object,
-          load: () => 'invalid config' as any,
+          load: () => "invalid config" as any,
         });
       }).toThrow();
     });

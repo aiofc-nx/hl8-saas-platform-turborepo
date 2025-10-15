@@ -8,23 +8,23 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId  } from '@hl8/isolation-model';
-import { IIdGeneratorPort } from '../../../application/ports/shared/shared-ports.interface';
-import { TenantId } from '@hl8/isolation-model';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/isolation-model";
+import { IIdGeneratorPort } from "../../../application/ports/shared/shared-ports.interface";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * ID生成策略枚举
  */
 export enum IdGenerationStrategy {
   /** UUID策略 */
-  UUID = 'uuid',
+  UUID = "uuid",
   /** 雪花算法策略 */
-  SNOWFLAKE = 'snowflake',
+  SNOWFLAKE = "snowflake",
   /** 自增ID策略 */
-  AUTO_INCREMENT = 'auto_increment',
+  AUTO_INCREMENT = "auto_increment",
   /** 自定义策略 */
-  CUSTOM = 'custom',
+  CUSTOM = "custom",
 }
 
 /**
@@ -51,7 +51,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
   private readonly config: IIdGeneratorConfig;
 
   constructor(
-    config: IIdGeneratorConfig = { strategy: IdGenerationStrategy.UUID }
+    config: IIdGeneratorConfig = { strategy: IdGenerationStrategy.UUID },
   ) {
     this.config = config;
   }
@@ -143,7 +143,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
    * @returns 是否有效
    */
   validate(id: string): boolean {
-    if (!id || typeof id !== 'string') {
+    if (!id || typeof id !== "string") {
       return false;
     }
 
@@ -185,13 +185,13 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
    * 生成UUID
    */
   private generateUUID(): EntityId {
-    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+    const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
       (c) => {
         const r = (Math.random() * 16) | 0;
-        const v = c === 'x' ? r : (r & 0x3) | 0x8;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
-      }
+      },
     );
 
     return TenantId.create(this.formatId(uuid));
@@ -225,8 +225,8 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
   private generateCustom(): EntityId {
     // 使用自定义配置生成ID
     const customConfig = this.config.customConfig || {};
-    const prefix = (customConfig as { prefix?: string }).prefix || '';
-    const suffix = (customConfig as { suffix?: string }).suffix || '';
+    const prefix = (customConfig as { prefix?: string }).prefix || "";
+    const suffix = (customConfig as { suffix?: string }).suffix || "";
     const baseId = this.generateUUID();
 
     return TenantId.create(`${prefix}${baseId}${suffix}`);

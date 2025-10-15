@@ -8,11 +8,11 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@hl8/database';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "@hl8/database";
+import { CacheService } from "@hl8/cache";
+import { PinoLogger } from "@hl8/logger";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
 
 /**
  * 事件存储配置接口
@@ -133,7 +133,7 @@ export class EventStoreAdapter {
     private readonly databaseService: DatabaseService,
     private readonly cacheService: CacheService,
     private readonly logger: PinoLogger,
-    config: Partial<IEventStoreConfig> = {}
+    config: Partial<IEventStoreConfig> = {},
   ) {
     this.config = {
       enableCache: config.enableCache ?? true,
@@ -141,7 +141,7 @@ export class EventStoreAdapter {
       enableCompression: config.enableCompression ?? false,
       enableEncryption: config.enableEncryption ?? false,
       enableSharding: config.enableSharding ?? false,
-      shardKey: config.shardKey ?? 'aggregateId',
+      shardKey: config.shardKey ?? "aggregateId",
       maxEvents: config.maxEvents ?? 10000,
       retentionDays: config.retentionDays ?? 365,
     };
@@ -160,7 +160,7 @@ export class EventStoreAdapter {
     aggregateId: string,
     aggregateType: string,
     events: BaseDomainEvent[],
-    expectedVersion?: number
+    expectedVersion?: number,
   ): Promise<void> {
     try {
       // 检查版本冲突
@@ -168,7 +168,7 @@ export class EventStoreAdapter {
         const currentVersion = await this.getCurrentVersion(aggregateId);
         if (currentVersion !== expectedVersion) {
           throw new Error(
-            `版本冲突: 期望版本 ${expectedVersion}, 当前版本 ${currentVersion}`
+            `版本冲突: 期望版本 ${expectedVersion}, 当前版本 ${currentVersion}`,
           );
         }
       }
@@ -227,7 +227,7 @@ export class EventStoreAdapter {
   async getEvents(
     aggregateId: string,
     fromVersion?: number,
-    toVersion?: number
+    toVersion?: number,
   ): Promise<BaseDomainEvent[]> {
     try {
       // 尝试从缓存获取
@@ -235,7 +235,7 @@ export class EventStoreAdapter {
         const cached = await this.getFromCache(
           aggregateId,
           fromVersion,
-          toVersion
+          toVersion,
         );
         if (cached) {
           this.logger.debug(`从缓存获取事件: ${aggregateId}`, {
@@ -251,7 +251,7 @@ export class EventStoreAdapter {
       const records = await this.getEventsFromDatabase(
         aggregateId,
         fromVersion,
-        toVersion
+        toVersion,
       );
       const events = records.map((record) => this.deserializeEvent(record));
 
@@ -286,7 +286,7 @@ export class EventStoreAdapter {
     try {
       return await this.queryEventsFromDatabase(options);
     } catch (error) {
-      this.logger.error('查询事件失败', error, { options });
+      this.logger.error("查询事件失败", error, { options });
       throw error;
     }
   }
@@ -332,7 +332,7 @@ export class EventStoreAdapter {
   async deleteEvents(
     aggregateId: string,
     fromVersion?: number,
-    toVersion?: number
+    toVersion?: number,
   ): Promise<void> {
     try {
       await this.deleteEventsFromDatabase(aggregateId, fromVersion, toVersion);
@@ -365,9 +365,8 @@ export class EventStoreAdapter {
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - this.config.retentionDays);
 
-      const deletedCount = await this.deleteExpiredEventsFromDatabase(
-        cutoffDate
-      );
+      const deletedCount =
+        await this.deleteExpiredEventsFromDatabase(cutoffDate);
 
       this.logger.debug(`清理过期事件完成: ${deletedCount}`, {
         cutoffDate,
@@ -376,7 +375,7 @@ export class EventStoreAdapter {
 
       return deletedCount;
     } catch (error) {
-      this.logger.error('清理过期事件失败', error);
+      this.logger.error("清理过期事件失败", error);
       throw error;
     }
   }
@@ -396,7 +395,7 @@ export class EventStoreAdapter {
     try {
       return await this.getStatisticsFromDatabase();
     } catch (error) {
-      this.logger.error('获取事件统计信息失败', error);
+      this.logger.error("获取事件统计信息失败", error);
       throw error;
     }
   }
@@ -488,11 +487,11 @@ export class EventStoreAdapter {
    * 保存事件到数据库
    */
   private async saveEventsToDatabase(
-    _records: IEventStoreRecord[]
+    _records: IEventStoreRecord[],
   ): Promise<void> {
     // 实现具体的数据库保存逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库保存逻辑');
+    throw new Error("需要实现具体的数据库保存逻辑");
   }
 
   /**
@@ -501,22 +500,22 @@ export class EventStoreAdapter {
   private async getEventsFromDatabase(
     _aggregateId: string,
     _fromVersion?: number,
-    _toVersion?: number
+    _toVersion?: number,
   ): Promise<IEventStoreRecord[]> {
     // 实现具体的数据库查询逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库查询逻辑');
+    throw new Error("需要实现具体的数据库查询逻辑");
   }
 
   /**
    * 从数据库查询事件
    */
   private async queryEventsFromDatabase(
-    _options: IEventQueryOptions
+    _options: IEventQueryOptions,
   ): Promise<IEventStoreRecord[]> {
     // 实现具体的数据库查询逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库查询逻辑');
+    throw new Error("需要实现具体的数据库查询逻辑");
   }
 
   /**
@@ -525,7 +524,7 @@ export class EventStoreAdapter {
   private async getVersionFromDatabase(_aggregateId: string): Promise<number> {
     // 实现具体的数据库版本查询逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库版本查询逻辑');
+    throw new Error("需要实现具体的数据库版本查询逻辑");
   }
 
   /**
@@ -534,22 +533,22 @@ export class EventStoreAdapter {
   private async deleteEventsFromDatabase(
     _aggregateId: string,
     _fromVersion?: number,
-    _toVersion?: number
+    _toVersion?: number,
   ): Promise<void> {
     // 实现具体的数据库删除逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库删除逻辑');
+    throw new Error("需要实现具体的数据库删除逻辑");
   }
 
   /**
    * 从数据库删除过期事件
    */
   private async deleteExpiredEventsFromDatabase(
-    _cutoffDate: Date
+    _cutoffDate: Date,
   ): Promise<number> {
     // 实现具体的数据库过期事件删除逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库过期事件删除逻辑');
+    throw new Error("需要实现具体的数据库过期事件删除逻辑");
   }
 
   /**
@@ -564,7 +563,7 @@ export class EventStoreAdapter {
   }> {
     // 实现具体的数据库统计查询逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error('需要实现具体的数据库统计查询逻辑');
+    throw new Error("需要实现具体的数据库统计查询逻辑");
   }
 
   /**
@@ -573,7 +572,7 @@ export class EventStoreAdapter {
   private async getFromCache(
     aggregateId: string,
     fromVersion?: number,
-    toVersion?: number
+    toVersion?: number,
   ): Promise<BaseDomainEvent[] | null> {
     const cacheKey = this.getEventCacheKey(aggregateId, fromVersion, toVersion);
     return await this.cacheService.get<BaseDomainEvent[]>(cacheKey);
@@ -586,7 +585,7 @@ export class EventStoreAdapter {
     aggregateId: string,
     events: BaseDomainEvent[],
     fromVersion?: number,
-    toVersion?: number
+    toVersion?: number,
   ): Promise<void> {
     const cacheKey = this.getEventCacheKey(aggregateId, fromVersion, toVersion);
     await this.cacheService.set(cacheKey, events, this.config.cacheTtl);
@@ -596,7 +595,7 @@ export class EventStoreAdapter {
    * 从缓存获取版本
    */
   private async getVersionFromCache(
-    aggregateId: string
+    aggregateId: string,
   ): Promise<number | null> {
     const cacheKey = this.getVersionCacheKey(aggregateId);
     return await this.cacheService.get<number>(cacheKey);
@@ -607,7 +606,7 @@ export class EventStoreAdapter {
    */
   private async setVersionCache(
     aggregateId: string,
-    version: number
+    version: number,
   ): Promise<void> {
     const cacheKey = this.getVersionCacheKey(aggregateId);
     await this.cacheService.set(cacheKey, version, this.config.cacheTtl);
@@ -618,7 +617,7 @@ export class EventStoreAdapter {
    */
   private async updateCache(
     aggregateId: string,
-    _records: IEventStoreRecord[]
+    _records: IEventStoreRecord[],
   ): Promise<void> {
     // 清除相关缓存
     await this.clearCache(aggregateId);
@@ -633,10 +632,10 @@ export class EventStoreAdapter {
     const cacheServiceWithPattern = this.cacheService as CacheService & {
       deletePattern?: (pattern: string) => Promise<void>;
     };
-    if (typeof cacheServiceWithPattern.deletePattern === 'function') {
+    if (typeof cacheServiceWithPattern.deletePattern === "function") {
       await cacheServiceWithPattern.deletePattern(pattern);
     } else {
-      console.warn('CacheService不支持deletePattern方法');
+      console.warn("CacheService不支持deletePattern方法");
     }
   }
 
@@ -646,9 +645,9 @@ export class EventStoreAdapter {
   private getEventCacheKey(
     aggregateId: string,
     fromVersion?: number,
-    toVersion?: number
+    toVersion?: number,
   ): string {
-    return `event:${aggregateId}:${fromVersion || 0}:${toVersion || 'latest'}`;
+    return `event:${aggregateId}:${fromVersion || 0}:${toVersion || "latest"}`;
   }
 
   /**

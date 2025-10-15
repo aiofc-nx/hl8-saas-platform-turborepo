@@ -88,8 +88,8 @@
 // apps/fastify-api/src/config/app.config.ts
 
 // 1. 导入业务库的配置类
-import { LoggingConfig } from '@hl8/nestjs-fastify';
-import { CachingModuleConfig } from '@hl8/caching';
+import { LoggingConfig } from "@hl8/nestjs-fastify";
+import { CachingModuleConfig } from "@hl8/caching";
 
 // 2. 组合使用（不重新定义！）
 export class AppConfig {
@@ -141,14 +141,14 @@ export class CachingModuleConfig {
 
 ```typescript
 // libs/caching/src/index.ts
-export { CachingModuleConfig, RedisConfig } from './config/caching.config.js';
+export { CachingModuleConfig, RedisConfig } from "./config/caching.config.js";
 ```
 
 ### 3️⃣ 应用导入使用
 
 ```typescript
 // apps/fastify-api/src/config/app.config.ts
-import { CachingModuleConfig } from '@hl8/caching';
+import { CachingModuleConfig } from "@hl8/caching";
 
 export class AppConfig {
   caching: CachingModuleConfig = new CachingModuleConfig();
@@ -198,7 +198,7 @@ export class MyService {
 
 // ❌ 重新定义了 RedisConfig
 export class RedisConfig {
-  host: string = 'localhost';
+  host: string = "localhost";
   port: number = 6379;
 }
 
@@ -225,7 +225,7 @@ export class AppConfig {
 // apps/fastify-api/src/config/app.config.ts
 
 // ✅ 从库中导入
-import { CachingModuleConfig } from '@hl8/caching';
+import { CachingModuleConfig } from "@hl8/caching";
 
 export class AppConfig {
   // ✅ 使用导入的配置类

@@ -7,34 +7,34 @@
  */
 
 // 值对象系统（基础组件，被其他组件引用）
-export * from './value-objects';
+export * from "./value-objects";
 
 // 实体系统 - 避免重复导出 EntityId
-export { BaseEntity } from './entities';
-export type { IEntity, IAuditInfo, IPartialAuditInfo } from './entities';
+export { BaseEntity } from "./entities";
+export type { IEntity, IAuditInfo, IPartialAuditInfo } from "./entities";
 
 // 聚合根系统（基础组件和装饰器）- 避免重复导出 EntityId
-export { BaseAggregateRoot, TenantAwareAggregateRoot } from './aggregates';
-export type { IAggregateRoot, IAggregateRootFactory } from './aggregates';
+export { BaseAggregateRoot, TenantAwareAggregateRoot } from "./aggregates";
+export type { IAggregateRoot, IAggregateRootFactory } from "./aggregates";
 
 // 领域服务系统 - 避免重复导出 EntityId
-export { BaseDomainService } from './services';
-export type { IDomainService } from './services';
+export { BaseDomainService } from "./services";
+export type { IDomainService } from "./services";
 
 // 领域事件系统
-export * from './events';
+export * from "./events";
 
 // 仓储接口系统
-export * from './repositories';
+export * from "./repositories";
 
 // 领域异常系统
-export * from './exceptions';
+export * from "./exceptions";
 
 // 验证系统（通用功能组件）
-export * from './validation';
+export * from "./validation";
 
 // 安全系统（通用功能组件）
-export * from './security';
+export * from "./security";
 
 // 业务规则系统（通用功能组件）
-export * from './rules';
+export * from "./rules";

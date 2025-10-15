@@ -67,7 +67,8 @@ export interface IUseCase<TCommand, TResult> {
  * @template TQuery - 查询参数
  * @template TResult - 查询结果
  */
-export interface IQueryUseCase<TQuery, TResult> extends IUseCase<TQuery, TResult> {
+export interface IQueryUseCase<TQuery, TResult>
+  extends IUseCase<TQuery, TResult> {
   /**
    * 执行查询
    *
@@ -86,7 +87,8 @@ export interface IQueryUseCase<TQuery, TResult> extends IUseCase<TQuery, TResult
  * @template TCommand - 命令参数
  * @template TResult - 命令结果
  */
-export interface ICommandUseCase<TCommand, TResult> extends IUseCase<TCommand, TResult> {
+export interface ICommandUseCase<TCommand, TResult>
+  extends IUseCase<TCommand, TResult> {
   /**
    * 执行命令
    *
@@ -96,4 +98,3 @@ export interface ICommandUseCase<TCommand, TResult> extends IUseCase<TCommand, T
    */
   execute(command: TCommand): Promise<TResult>;
 }
-

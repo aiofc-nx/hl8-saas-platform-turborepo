@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const API_MONITORING = 'API Monitoring System';
+export const API_MONITORING = "API Monitoring System";

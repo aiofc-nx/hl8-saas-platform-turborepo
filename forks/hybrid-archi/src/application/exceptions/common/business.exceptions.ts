@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { ApplicationException } from './application.exception';
+import { ApplicationException } from "./application.exception";
 
 /**
  * 未授权操作异常
@@ -14,7 +14,7 @@ import { ApplicationException } from './application.exception';
  */
 export class UnauthorizedOperationException extends ApplicationException {
   constructor(operation: string, userId?: string) {
-    super(`用户无权限执行操作: ${operation}`, 'UNAUTHORIZED_OPERATION', {
+    super(`用户无权限执行操作: ${operation}`, "UNAUTHORIZED_OPERATION", {
       operation,
       userId,
     });
@@ -28,7 +28,7 @@ export class UnauthorizedOperationException extends ApplicationException {
  */
 export class BusinessRuleViolationException extends ApplicationException {
   constructor(rule: string, context?: any) {
-    super(`业务规则违反: ${rule}`, 'BUSINESS_RULE_VIOLATION', {
+    super(`业务规则违反: ${rule}`, "BUSINESS_RULE_VIOLATION", {
       rule,
       context,
     });
@@ -42,7 +42,7 @@ export class BusinessRuleViolationException extends ApplicationException {
  */
 export class ResourceNotFoundException extends ApplicationException {
   constructor(resourceType: string, resourceId: string) {
-    super(`资源未找到: ${resourceType} (${resourceId})`, 'RESOURCE_NOT_FOUND', {
+    super(`资源未找到: ${resourceType} (${resourceId})`, "RESOURCE_NOT_FOUND", {
       resourceType,
       resourceId,
     });
@@ -58,11 +58,11 @@ export class ResourceAlreadyExistsException extends ApplicationException {
   constructor(resourceType: string, resourceId: string) {
     super(
       `资源已存在: ${resourceType} (${resourceId})`,
-      'RESOURCE_ALREADY_EXISTS',
+      "RESOURCE_ALREADY_EXISTS",
       {
         resourceType,
         resourceId,
-      }
+      },
     );
   }
 }
@@ -77,17 +77,17 @@ export class ResourceStateException extends ApplicationException {
     resourceType: string,
     resourceId: string,
     currentState: string,
-    requiredState: string
+    requiredState: string,
   ) {
     super(
       `资源状态异常: ${resourceType} (${resourceId}) 当前状态 ${currentState}，需要状态 ${requiredState}`,
-      'RESOURCE_STATE_EXCEPTION',
+      "RESOURCE_STATE_EXCEPTION",
       {
         resourceType,
         resourceId,
         currentState,
         requiredState,
-      }
+      },
     );
   }
 }

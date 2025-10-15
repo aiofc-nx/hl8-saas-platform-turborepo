@@ -30,20 +30,20 @@
  *
  * @since 1.0.0
  */
-import { randomBytes, randomUUID } from 'crypto';
+import { randomBytes, randomUUID } from "crypto";
 
 /**
  * 请求 ID 生成策略
  */
 export enum RequestIdStrategy {
   /** UUID v4 格式 */
-  UUID = 'uuid',
+  UUID = "uuid",
   /** ULID 格式 */
-  ULID = 'ulid',
+  ULID = "ulid",
   /** 时间戳 + 随机数 */
-  TIMESTAMP = 'timestamp',
+  TIMESTAMP = "timestamp",
   /** 自定义前缀 + UUID */
-  PREFIXED = 'prefixed',
+  PREFIXED = "prefixed",
 }
 
 /**
@@ -71,7 +71,7 @@ export class RequestIdGenerator {
   private static readonly DEFAULT_OPTIONS: Required<RequestIdGeneratorOptions> =
     {
       strategy: RequestIdStrategy.UUID,
-      prefix: '',
+      prefix: "",
       includeTimestamp: false,
       randomLength: 8,
     };
@@ -121,8 +121,8 @@ export class RequestIdGenerator {
    */
   private static generateULID(): string {
     // ULID 实现：时间戳(10位) + 随机数(16位)
-    const timestamp = Date.now().toString(36).padStart(10, '0');
-    const random = randomBytes(8).toString('hex');
+    const timestamp = Date.now().toString(36).padStart(10, "0");
+    const random = randomBytes(8).toString("hex");
     return `${timestamp}${random}`;
   }
 
@@ -137,7 +137,7 @@ export class RequestIdGenerator {
     options: Required<RequestIdGeneratorOptions>,
   ): string {
     const timestamp = Date.now().toString(36);
-    const random = randomBytes(options.randomLength).toString('hex');
+    const random = randomBytes(options.randomLength).toString("hex");
     const id = `${timestamp}-${random}`;
     return options.prefix ? `${options.prefix}-${id}` : id;
   }
@@ -191,7 +191,7 @@ export class RequestIdGenerator {
    * @returns 是否为有效格式
    */
   static isValid(id: string): boolean {
-    if (!id || typeof id !== 'string') {
+    if (!id || typeof id !== "string") {
       return false;
     }
 
@@ -234,11 +234,11 @@ export class RequestIdGenerator {
     headers: Record<string, string | string[] | undefined>,
   ): string | null {
     const requestId =
-      headers['x-request-id'] ||
-      headers['x-request-id'] ||
-      headers['request-id'];
+      headers["x-request-id"] ||
+      headers["x-request-id"] ||
+      headers["request-id"];
 
-    if (typeof requestId === 'string' && this.isValid(requestId)) {
+    if (typeof requestId === "string" && this.isValid(requestId)) {
       return requestId;
     }
 

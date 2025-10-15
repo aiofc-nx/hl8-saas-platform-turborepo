@@ -64,9 +64,9 @@
  * @since 1.0.0
  */
 
-import { BaseDomainMapper, MappingError } from './base-domain-mapper';
-import type { IDtoMapper } from './mapper.interface';
-import { TenantId } from '@hl8/isolation-model';
+import { BaseDomainMapper, MappingError } from "./base-domain-mapper";
+import type { IDtoMapper } from "./mapper.interface";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * DTO映射选项接口
@@ -143,8 +143,8 @@ export abstract class BaseDtoMapper<
     } catch (error) {
       throw new MappingError(
         `映射到DTO失败: ${error instanceof Error ? error.message : String(error)}`,
-        'Domain',
-        'DTO',
+        "Domain",
+        "DTO",
         error instanceof Error ? error : undefined,
       );
     }
@@ -165,8 +165,8 @@ export abstract class BaseDtoMapper<
     } catch (error) {
       throw new MappingError(
         `从DTO映射失败: ${error instanceof Error ? error.message : String(error)}`,
-        'DTO',
-        'Domain',
+        "DTO",
+        "Domain",
         error instanceof Error ? error : undefined,
       );
     }
@@ -265,7 +265,7 @@ export abstract class BaseDtoMapper<
 
     sensitiveFields.forEach((field) => {
       if (field in filtered) {
-        filtered[field as keyof TDTO] = '***' as TDTO[keyof TDTO];
+        filtered[field as keyof TDTO] = "***" as TDTO[keyof TDTO];
       }
     });
 
@@ -318,7 +318,7 @@ export abstract class BaseDtoMapper<
    */
   protected validateDto(dto: TDTO): void {
     if (dto === null || dto === undefined) {
-      throw new Error('DTO对象不能为空');
+      throw new Error("DTO对象不能为空");
     }
   }
 

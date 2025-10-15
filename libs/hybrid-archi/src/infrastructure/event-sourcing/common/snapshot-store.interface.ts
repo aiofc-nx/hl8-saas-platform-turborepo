@@ -57,7 +57,7 @@ export interface ISnapshotStore {
   saveSnapshot(
     aggregateId: string,
     snapshot: unknown,
-    version: number
+    version: number,
   ): Promise<void>;
 
   /**
@@ -135,7 +135,7 @@ export interface SnapshotStoreStats {
  * 快照存储配置接口
  */
 export interface SnapshotStoreConfig {
-  provider: 'postgresql' | 'mysql' | 'mongodb' | 'inmemory';
+  provider: "postgresql" | "mysql" | "mongodb" | "inmemory";
   connectionString?: string;
   tableName?: string;
   compression?: boolean;

@@ -94,8 +94,8 @@ pnpm add @hl8/nestjs-isolation
 
 ```typescript
 // app.module.ts
-import { Module } from '@nestjs/common';
-import { IsolationModule } from '@hl8/nestjs-isolation';
+import { Module } from "@nestjs/common";
+import { IsolationModule } from "@hl8/nestjs-isolation";
 
 @Module({
   imports: [
@@ -109,18 +109,18 @@ export class AppModule {}
 
 ```typescript
 // user.controller.ts
-import { Controller, Get } from '@nestjs/common';
-import { RequireTenant, CurrentContext } from '@hl8/nestjs-isolation';
-import { IsolationContext } from '@hl8/isolation-model';
+import { Controller, Get } from "@nestjs/common";
+import { RequireTenant, CurrentContext } from "@hl8/nestjs-isolation";
+import { IsolationContext } from "@hl8/isolation-model";
 
-@Controller('users')
+@Controller("users")
 export class UserController {
   @Get()
   @RequireTenant() // ← 要求租户级上下文
   async getUsers(@CurrentContext() context: IsolationContext) {
     // context.tenantId 自动从请求头提取
-    console.log('Tenant ID:', context.tenantId?.value);
-    console.log('Level:', context.level);
+    console.log("Tenant ID:", context.tenantId?.value);
+    console.log("Level:", context.level);
 
     return this.userService.findByTenant(context.tenantId);
   }
@@ -293,7 +293,7 @@ async getTasks() {
 获取当前请求的隔离上下文：
 
 ```typescript
-import { IsolationContextService } from '@hl8/nestjs-isolation';
+import { IsolationContextService } from "@hl8/nestjs-isolation";
 
 @Injectable()
 export class UserService {
@@ -301,7 +301,7 @@ export class UserService {
 
   async findUsers() {
     const context = this.isolationContext.getContext();
-    console.log('Current level:', context.level);
+    console.log("Current level:", context.level);
 
     if (context.isTenantLevel()) {
       return this.findByTenant(context.tenantId);
@@ -316,7 +316,7 @@ export class UserService {
 多级隔离服务，提供层级验证和数据访问控制：
 
 ```typescript
-import { MultiLevelIsolationService } from '@hl8/nestjs-isolation';
+import { MultiLevelIsolationService } from "@hl8/nestjs-isolation";
 
 @Injectable()
 export class DataService {
@@ -402,7 +402,7 @@ curl -H "X-User-Id: 9d4f6e8a-1234-5678-90ab-cdef12345678" \
 
 ```typescript
 // 每个租户的数据完全隔离
-@Controller('products')
+@Controller("products")
 export class ProductController {
   @Get()
   @RequireTenant() // 要求租户上下文
@@ -417,7 +417,7 @@ export class ProductController {
 
 ```typescript
 // 组织级数据隔离
-@Controller('employees')
+@Controller("employees")
 export class EmployeeController {
   @Get()
   @RequireOrganization() // 要求组织上下文
@@ -435,7 +435,7 @@ export class EmployeeController {
 
 ```typescript
 // 部门级数据隔离
-@Controller('documents')
+@Controller("documents")
 export class DocumentController {
   @Get()
   @RequireDepartment() // 要求部门上下文
@@ -454,7 +454,7 @@ export class DocumentController {
 
 ```typescript
 // 用户级数据隔离
-@Controller('notes')
+@Controller("notes")
 export class NoteController {
   @Get()
   async getMyNotes(@CurrentContext() context: IsolationContext) {
@@ -474,12 +474,12 @@ export class NoteController {
 
 ```typescript
 // 平台级，无隔离
-@Controller('admin/stats')
+@Controller("admin/stats")
 export class AdminController {
   @Get()
   async getStats(@CurrentContext() context: IsolationContext) {
     if (!context.isPlatformLevel()) {
-      throw new ForbiddenException('仅系统管理员可访问');
+      throw new ForbiddenException("仅系统管理员可访问");
     }
     // 返回全局统计数据
     return this.statsService.getGlobalStats();
@@ -494,22 +494,22 @@ export class AdminController {
 ### 与 @hl8/exceptions 集成
 
 ```typescript
-import { GeneralNotFoundException } from '@hl8/exceptions';
-import { RequireTenant, CurrentContext } from '@hl8/nestjs-isolation';
+import { GeneralNotFoundException } from "@hl8/exceptions";
+import { RequireTenant, CurrentContext } from "@hl8/nestjs-isolation";
 
-@Controller('users')
+@Controller("users")
 export class UserController {
-  @Get(':id')
+  @Get(":id")
   @RequireTenant()
   async getUser(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @CurrentContext() context: IsolationContext,
   ) {
     const user = await this.userService.findOne(id, context.tenantId);
 
     if (!user) {
       throw new GeneralNotFoundException(
-        '用户未找到',
+        "用户未找到",
         `租户 ${context.tenantId?.value} 中不存在 ID 为 ${id} 的用户`,
         { userId: id, tenantId: context.tenantId?.value },
       );
@@ -535,20 +535,20 @@ export class UserRepository {
   async findAll() {
     const context = this.isolationContext.getContext();
 
-    const query = this.repo.createQueryBuilder('user');
+    const query = this.repo.createQueryBuilder("user");
 
     // 根据隔离级别添加 WHERE 条件
     if (context.isTenantLevel()) {
-      query.where('user.tenantId = :tenantId', {
+      query.where("user.tenantId = :tenantId", {
         tenantId: context.tenantId?.value,
       });
     }
 
     if (context.isOrganizationLevel()) {
-      query.where('user.tenantId = :tenantId', {
+      query.where("user.tenantId = :tenantId", {
         tenantId: context.tenantId?.value,
       });
-      query.andWhere('user.organizationId = :orgId', {
+      query.andWhere("user.organizationId = :orgId", {
         orgId: context.organizationId?.value,
       });
     }
@@ -561,8 +561,8 @@ export class UserRepository {
 ### 与日志集成
 
 ```typescript
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { IsolationContextService } from '@hl8/nestjs-isolation';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { IsolationContextService } from "@hl8/nestjs-isolation";
 
 @Injectable()
 export class AuditService {
@@ -574,7 +574,7 @@ export class AuditService {
   async logAction(action: string) {
     const context = this.isolationContext.getContext();
 
-    this.logger.info('User action', {
+    this.logger.info("User action", {
       action,
       level: context.level,
       tenantId: context.tenantId?.value,
@@ -661,8 +661,8 @@ context.tenantId === undefined; // true
 export class HeaderMapperMiddleware implements NestMiddleware {
   use(req: any, res: any, next: () => void) {
     // 映射自定义请求头到标准请求头
-    if (req.headers['custom-tenant']) {
-      req.headers['x-tenant-id'] = req.headers['custom-tenant'];
+    if (req.headers["custom-tenant"]) {
+      req.headers["x-tenant-id"] = req.headers["custom-tenant"];
     }
     next();
   }
@@ -700,7 +700,7 @@ export class HeaderMapperMiddleware implements NestMiddleware {
 
 ```typescript
 // ✅ 好的做法
-@Controller('users')
+@Controller("users")
 export class UserController {
   @Get()
   @RequireTenant() // 明确要求隔离级别
@@ -710,7 +710,7 @@ export class UserController {
 }
 
 // ❌ 不推荐
-@Controller('users')
+@Controller("users")
 export class UserController {
   @Get()
   async getUsers() {
@@ -730,7 +730,7 @@ export class UserController {
 export class UserService {
   async findByContext(context: IsolationContext) {
     if (!context.isTenantLevel()) {
-      throw new BadRequestException('需要租户上下文');
+      throw new BadRequestException("需要租户上下文");
     }
 
     return this.repo.find({
@@ -752,7 +752,7 @@ if (context.tenantId) {
 }
 
 // ❌ 避免
-const id = context.tenantId?.value || 'default'; // 不应该有默认值
+const id = context.tenantId?.value || "default"; // 不应该有默认值
 ```
 
 ---
@@ -768,11 +768,11 @@ export class Repository {
 
     // 根据隔离级别添加条件
     if (context.isTenantLevel()) {
-      query.where('tenantId = :tid', { tid: context.tenantId.value });
+      query.where("tenantId = :tid", { tid: context.tenantId.value });
     }
 
     if (context.isOrganizationLevel()) {
-      query.andWhere('organizationId = :oid', {
+      query.andWhere("organizationId = :oid", {
         oid: context.organizationId.value,
       });
     }
@@ -788,8 +788,8 @@ export class Repository {
 
 ```typescript
 // ✅ 好的做法
-this.logger.info('User action', {
-  action: 'login',
+this.logger.info("User action", {
+  action: "login",
   level: context.level,
   tenantId: context.tenantId?.value,
   organizationId: context.organizationId?.value,

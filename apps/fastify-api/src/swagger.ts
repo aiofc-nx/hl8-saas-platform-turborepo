@@ -17,8 +17,8 @@
  * @since 1.0.0
  */
 
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 /**
  * 设置 Swagger API 文档
@@ -45,60 +45,60 @@ export const setupSwagger = async (
   app: NestFastifyApplication,
 ): Promise<void> => {
   // 生产环境可选择性禁用 Swagger
-  if (process.env.SWAGGER_ENABLED === 'false') {
-    console.log('📚 Swagger is disabled in production');
+  if (process.env.SWAGGER_ENABLED === "false") {
+    console.log("📚 Swagger is disabled in production");
     return;
   }
 
   const config = new DocumentBuilder()
-    .setTitle('HL8 SAAS Platform API')
+    .setTitle("HL8 SAAS Platform API")
     .setDescription(
-      '🚀 HL8 SAAS 平台企业级 RESTful API\n\n' +
-        '## 特性\n' +
-        '- 🔐 基于 JWT 的认证和授权\n' +
-        '- 🏢 多租户数据隔离\n' +
-        '- 📊 完整的 CRUD 操作\n' +
-        '- ⚡ 高性能缓存\n' +
-        '- 🛡️ 安全防护和限流\n' +
-        '- 📝 标准化错误响应（RFC7807）\n\n' +
-        '## 认证\n' +
-        '大部分 API 需要 Bearer Token 认证。\n' +
+      "🚀 HL8 SAAS 平台企业级 RESTful API\n\n" +
+        "## 特性\n" +
+        "- 🔐 基于 JWT 的认证和授权\n" +
+        "- 🏢 多租户数据隔离\n" +
+        "- 📊 完整的 CRUD 操作\n" +
+        "- ⚡ 高性能缓存\n" +
+        "- 🛡️ 安全防护和限流\n" +
+        "- 📝 标准化错误响应（RFC7807）\n\n" +
+        "## 认证\n" +
+        "大部分 API 需要 Bearer Token 认证。\n" +
         '点击右上角 "Authorize" 按钮输入您的 Token。',
     )
-    .setVersion('1.0.0')
+    .setVersion("1.0.0")
     .setContact(
-      'HL8 SAAS Platform Team',
-      'https://github.com/your-org/hl8-saas-platform',
-      'support@hl8.com',
+      "HL8 SAAS Platform Team",
+      "https://github.com/your-org/hl8-saas-platform",
+      "support@hl8.com",
     )
-    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+    .setLicense("MIT", "https://opensource.org/licenses/MIT")
     .addBearerAuth(
       {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'JWT',
-        description: 'Enter JWT token',
-        in: 'header',
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        name: "JWT",
+        description: "Enter JWT token",
+        in: "header",
       },
-      'JWT-auth', // 这个名称将在控制器中使用 @ApiBearerAuth('JWT-auth')
+      "JWT-auth", // 这个名称将在控制器中使用 @ApiBearerAuth('JWT-auth')
     )
-    .addTag('健康检查', '系统健康状态和性能指标')
-    .addTag('认证', '用户认证和授权相关接口')
-    .addTag('用户管理', '用户 CRUD 操作')
-    .addTag('租户管理', '租户配置和管理')
-    .addTag('组织管理', '组织架构管理')
+    .addTag("健康检查", "系统健康状态和性能指标")
+    .addTag("认证", "用户认证和授权相关接口")
+    .addTag("用户管理", "用户 CRUD 操作")
+    .addTag("租户管理", "租户配置和管理")
+    .addTag("组织管理", "组织架构管理")
     .addServer(
-      process.env.API_SERVER_URL || 'http://localhost:3001',
-      'Development Server',
-    )
-    .addServer(
-      process.env.API_STAGING_URL || 'https://staging-api.hl8.com',
-      'Staging Server',
+      process.env.API_SERVER_URL || "http://localhost:3001",
+      "Development Server",
     )
     .addServer(
-      process.env.API_PRODUCTION_URL || 'https://api.hl8.com',
-      'Production Server',
+      process.env.API_STAGING_URL || "https://staging-api.hl8.com",
+      "Staging Server",
+    )
+    .addServer(
+      process.env.API_PRODUCTION_URL || "https://api.hl8.com",
+      "Production Server",
     )
     .build();
 
@@ -108,9 +108,9 @@ export const setupSwagger = async (
   });
 
   // 设置 Swagger UI
-  SwaggerModule.setup('api-docs', app, document, {
-    customSiteTitle: 'HL8 SAAS Platform API 文档',
-    customfavIcon: '/favicon.ico',
+  SwaggerModule.setup("api-docs", app, document, {
+    customSiteTitle: "HL8 SAAS Platform API 文档",
+    customfavIcon: "/favicon.ico",
     customCss: `
       .swagger-ui .topbar { display: none }
       .swagger-ui .info .title { color: #1890ff; }
@@ -125,7 +125,7 @@ export const setupSwagger = async (
     },
   });
 
-  console.log('📚 Swagger documentation is available at:');
+  console.log("📚 Swagger documentation is available at:");
   console.log(
     `   📖 UI: http://localhost:${process.env.PORT || 3001}/api-docs`,
   );

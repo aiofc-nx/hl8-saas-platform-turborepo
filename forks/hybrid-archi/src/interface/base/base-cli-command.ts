@@ -54,7 +54,10 @@ export abstract class BaseCliCommand {
    * @returns 命令结果
    * @protected
    */
-  protected createSuccessResult(message: string, data?: unknown): ICommandResult {
+  protected createSuccessResult(
+    message: string,
+    data?: unknown,
+  ): ICommandResult {
     return {
       success: true,
       message,
@@ -87,17 +90,17 @@ export abstract class BaseCliCommand {
    */
   protected output(
     message: string,
-    color?: 'red' | 'green' | 'yellow' | 'blue'
+    color?: "red" | "green" | "yellow" | "blue",
   ): void {
     const colors = {
-      red: '\x1b[31m',
-      green: '\x1b[32m',
-      yellow: '\x1b[33m',
-      blue: '\x1b[34m',
+      red: "\x1b[31m",
+      green: "\x1b[32m",
+      yellow: "\x1b[33m",
+      blue: "\x1b[34m",
     };
 
-    const reset = '\x1b[0m';
-    const colorCode = color ? colors[color] : '';
+    const reset = "\x1b[0m";
+    const colorCode = color ? colors[color] : "";
 
     console.log(`${colorCode}${message}${reset}`);
   }
@@ -110,7 +113,7 @@ export abstract class BaseCliCommand {
    * @protected
    */
   protected outputSuccess(message: string): void {
-    this.output(`✅ ${message}`, 'green');
+    this.output(`✅ ${message}`, "green");
   }
 
   /**
@@ -121,7 +124,7 @@ export abstract class BaseCliCommand {
    * @protected
    */
   protected outputError(message: string): void {
-    this.output(`❌ ${message}`, 'red');
+    this.output(`❌ ${message}`, "red");
   }
 
   /**
@@ -132,7 +135,7 @@ export abstract class BaseCliCommand {
    * @protected
    */
   protected outputWarning(message: string): void {
-    this.output(`⚠️  ${message}`, 'yellow');
+    this.output(`⚠️  ${message}`, "yellow");
   }
 
   /**
@@ -143,7 +146,7 @@ export abstract class BaseCliCommand {
    * @protected
    */
   protected outputInfo(message: string): void {
-    this.output(`ℹ️  ${message}`, 'blue');
+    this.output(`ℹ️  ${message}`, "blue");
   }
 
   /**
@@ -158,19 +161,19 @@ export abstract class BaseCliCommand {
   protected showProgress(
     current: number,
     total: number,
-    label = '处理中'
+    label = "处理中",
   ): void {
     const percentage = Math.round((current / total) * 100);
     const barLength = 20;
     const filledLength = Math.round((current / total) * barLength);
-    const bar = '█'.repeat(filledLength) + '░'.repeat(barLength - filledLength);
+    const bar = "█".repeat(filledLength) + "░".repeat(barLength - filledLength);
 
     process.stdout.write(
-      `\r${label}: [${bar}] ${percentage}% (${current}/${total})`
+      `\r${label}: [${bar}] ${percentage}% (${current}/${total})`,
     );
 
     if (current === total) {
-      process.stdout.write('\n');
+      process.stdout.write("\n");
     }
   }
 
@@ -200,12 +203,12 @@ export abstract class BaseCliCommand {
    */
   protected validateRequiredParams(
     params: Record<string, unknown>,
-    requiredFields: string[]
+    requiredFields: string[],
   ): void {
     const missingFields = requiredFields.filter((field) => !params[field]);
 
     if (missingFields.length > 0) {
-      throw new Error(`缺少必需参数: ${missingFields.join(', ')}`);
+      throw new Error(`缺少必需参数: ${missingFields.join(", ")}`);
     }
   }
 }

@@ -20,7 +20,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from '@hl8/hybrid-archi';
+import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
 
 /**
  * 租户删除事件
@@ -49,7 +49,7 @@ export class TenantDeletedEvent extends BaseDomainEvent {
   }
 
   get eventType(): string {
-    return 'TenantDeleted';
+    return "TenantDeleted";
   }
 
   /**
@@ -65,4 +65,3 @@ export class TenantDeletedEvent extends BaseDomainEvent {
     };
   }
 }
-

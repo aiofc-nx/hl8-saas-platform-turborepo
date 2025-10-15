@@ -304,7 +304,7 @@ export {
   IsolationContext,
   IsolationLevel,
   DataSharingLevel,
-} from './core/index.js';
+} from "./core/index.js";
 ```
 
 ### 3. 适配器优化
@@ -318,8 +318,8 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     const fastify = this.getInstance();
 
     // 使用 Fastify 原生插件系统（避免冲突）
-    fastify.register(require('@fastify/cors'), {});
-    fastify.register(require('@fastify/helmet'), {});
+    fastify.register(require("@fastify/cors"), {});
+    fastify.register(require("@fastify/helmet"), {});
 
     // 直接访问 Fastify 的 Pino
     const logger = fastify.log;
@@ -408,7 +408,7 @@ EOF
 
 ```typescript
 // src/exceptions/filters/fastify-http-exception.filter.ts
-import { AbstractHttpException } from '@hl8/nestjs-infra';
+import { AbstractHttpException } from "@hl8/nestjs-infra";
 
 export class FastifyHttpExceptionFilter {
   catch(exception: AbstractHttpException, host: ArgumentsHost) {
@@ -418,7 +418,7 @@ export class FastifyHttpExceptionFilter {
 
     response
       .code(problemDetails.status) // ← Fastify .code()
-      .header('Content-Type', 'application/problem+json')
+      .header("Content-Type", "application/problem+json")
       .send(problemDetails);
   }
 }

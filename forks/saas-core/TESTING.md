@@ -11,7 +11,7 @@
 ✅ **发现性能问题** - 发现 N+1 查询、缺失索引  
 ✅ **测试事务处理** - 验证真实的事务隔离和回滚  
 ✅ **验证多租户隔离** - 确保租户数据完全隔离  
-✅ **发现并发问题** - 测试锁、死锁等并发场景  
+✅ **发现并发问题** - 测试锁、死锁等并发场景
 
 ## 🚀 快速开始
 
@@ -86,9 +86,9 @@ pnpm test:e2e
 提供数据库测试的完整工具集：
 
 ```typescript
-import { TestDatabaseHelper } from './__tests__/setup/test-database.helper';
+import { TestDatabaseHelper } from "./__tests__/setup/test-database.helper";
 
-describe('数据库测试', () => {
+describe("数据库测试", () => {
   beforeAll(async () => {
     await TestDatabaseHelper.setup(); // 初始化数据库
   });
@@ -101,7 +101,7 @@ describe('数据库测试', () => {
     await TestDatabaseHelper.clearDatabase(); // 清空数据
   });
 
-  it('测试示例', async () => {
+  it("测试示例", async () => {
     const em = TestDatabaseHelper.fork();
     // 执行测试...
   });
@@ -113,7 +113,7 @@ describe('数据库测试', () => {
 使用事务自动回滚，速度更快：
 
 ```typescript
-it('应该在事务中测试', async () => {
+it("应该在事务中测试", async () => {
   await TestDatabaseHelper.runInTransaction(async (em) => {
     // 测试代码
     // 测试结束后自动回滚
@@ -125,14 +125,14 @@ it('应该在事务中测试', async () => {
 
 当前测试覆盖情况：
 
-| 组件 | 单元测试 | 集成测试 | 状态 |
-|-----|---------|---------|-----|
-| 租户聚合根 | ✅ 100% | ✅ 完成 | 🟢 |
-| 租户仓储 | - | ✅ 完成 | 🟢 |
-| 用户聚合根 | ✅ 100% | ⏳ 待实现 | 🟡 |
-| 用户仓储 | - | ⏳ 待实现 | 🟡 |
-| 组织聚合根 | ✅ 100% | ⏳ 待实现 | 🟡 |
-| 部门聚合根 | ✅ 100% | ⏳ 待实现 | 🟡 |
+| 组件       | 单元测试 | 集成测试  | 状态 |
+| ---------- | -------- | --------- | ---- |
+| 租户聚合根 | ✅ 100%  | ✅ 完成   | 🟢   |
+| 租户仓储   | -        | ✅ 完成   | 🟢   |
+| 用户聚合根 | ✅ 100%  | ⏳ 待实现 | 🟡   |
+| 用户仓储   | -        | ⏳ 待实现 | 🟡   |
+| 组织聚合根 | ✅ 100%  | ⏳ 待实现 | 🟡   |
+| 部门聚合根 | ✅ 100%  | ⏳ 待实现 | 🟡   |
 
 ## 🐛 故障排查
 

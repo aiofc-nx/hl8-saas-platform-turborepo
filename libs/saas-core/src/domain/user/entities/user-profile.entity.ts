@@ -7,10 +7,10 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { EntityId } from '@hl8/isolation-model';
-import type { IPureLogger } from '@hl8/pure-logger';
-import { Gender } from '../value-objects/gender.enum.js';
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model";
+import type { IPureLogger } from "@hl8/pure-logger";
+import { Gender } from "../value-objects/gender.enum.js";
 
 export class UserProfile extends BaseEntity {
   constructor(
@@ -44,8 +44,8 @@ export class UserProfile extends BaseEntity {
       null,
       null,
       null,
-      'Asia/Shanghai',
-      'zh-CN',
+      "Asia/Shanghai",
+      "zh-CN",
       auditInfo,
     );
   }
@@ -88,4 +88,3 @@ export class UserProfile extends BaseEntity {
     };
   }
 }
-

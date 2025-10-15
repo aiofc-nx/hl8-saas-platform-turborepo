@@ -6,5 +6,4 @@
  */
 
 // 角色业务特定类型和枚举
-export * from './user-role.enum.js';
-
+export * from "./user-role.enum.js";

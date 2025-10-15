@@ -108,8 +108,8 @@ METRICS__INCLUDE_TENANT_METRICS=true
 ### 2. 在服务中使用配置
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { AppConfig } from './config/app.config.js';
+import { Injectable } from "@nestjs/common";
+import { AppConfig } from "./config/app.config.js";
 
 @Injectable()
 export class MyService {
@@ -316,8 +316,8 @@ export class RedisConfig {
 ### 在服务中注入配置
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { AppConfig } from './config/app.config.js';
+import { Injectable } from "@nestjs/common";
+import { AppConfig } from "./config/app.config.js";
 
 @Injectable()
 export class UserService {
@@ -345,13 +345,13 @@ export class UserService {
 ### 在模块中使用配置
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { AppConfig } from './config/app.config.js';
+import { Module } from "@nestjs/common";
+import { AppConfig } from "./config/app.config.js";
 
 @Module({
   providers: [
     {
-      provide: 'MY_CONFIG',
+      provide: "MY_CONFIG",
       inject: [AppConfig],
       useFactory: (config: AppConfig) => {
         // 根据配置创建 provider
@@ -369,14 +369,14 @@ export class MyModule {}
 ### 在控制器中使用配置
 
 ```typescript
-import { Controller, Get } from '@nestjs/common';
-import { AppConfig } from './config/app.config.js';
+import { Controller, Get } from "@nestjs/common";
+import { AppConfig } from "./config/app.config.js";
 
-@Controller('api')
+@Controller("api")
 export class ApiController {
   constructor(private readonly config: AppConfig) {}
 
-  @Get('config')
+  @Get("config")
   getConfig() {
     return {
       environment: this.config.NODE_ENV,
@@ -401,17 +401,17 @@ export class ApiController {
 
 export class AppConfig {
   // 现有配置...
-  NODE_ENV: string = 'development';
+  NODE_ENV: string = "development";
   PORT: number = 3000;
 
   // 添加新的应用配置
   @IsString()
   @IsOptional()
-  public readonly APP_NAME: string = 'hl8-api';
+  public readonly APP_NAME: string = "hl8-api";
 
   @IsString()
   @IsOptional()
-  public readonly API_VERSION: string = 'v1';
+  public readonly API_VERSION: string = "v1";
 }
 ```
 
@@ -444,7 +444,7 @@ export class MyModuleConfig {
 ```typescript
 // apps/fastify-api/src/config/app.config.ts
 
-import { MyModuleConfig } from '@hl8/my-module';
+import { MyModuleConfig } from "@hl8/my-module";
 
 export class AppConfig {
   // ... 其他配置
@@ -469,7 +469,7 @@ export class AppConfig {
 **防护**：
 
 ```typescript
-import { deepFreeze } from './config/config-security.util.js';
+import { deepFreeze } from "./config/config-security.util.js";
 
 // main.ts
 const config = app.get(AppConfig);
@@ -489,7 +489,7 @@ config.PORT = 9999; // ❌ TypeError
 import {
   cleanupSensitiveEnvVars,
   getSafeConfigCopy,
-} from './config/config-security.util.js';
+} from "./config/config-security.util.js";
 
 // 生产环境清理敏感环境变量
 if (config.isProduction) {
@@ -498,7 +498,7 @@ if (config.isProduction) {
 
 // 打印日志时隐藏敏感信息
 const safeConfig = getSafeConfigCopy(config);
-console.log('Config:', safeConfig); // password: '***'
+console.log("Config:", safeConfig); // password: '***'
 ```
 
 #### 3. 文件权限
@@ -533,8 +533,8 @@ ls -l .env.local
 TypedConfigModule.forRoot({
   schema: AppConfig,
   load: [
-    fileLoader({ path: './config/app.yml' }), // 基础配置
-    dotenvLoader({ envFilePath: ['.env.local', '.env'] }), // 敏感配置
+    fileLoader({ path: "./config/app.yml" }), // 基础配置
+    dotenvLoader({ envFilePath: [".env.local", ".env"] }), // 敏感配置
   ],
 });
 ```
@@ -580,7 +580,7 @@ TypedConfigModule.forRoot({
 3. **在配置类中提供合理的默认值**
 
    ```typescript
-   NODE_ENV: string = 'development'; // 提供默认值
+   NODE_ENV: string = "development"; // 提供默认值
    ```
 
 4. **使用类型安全的配置访问**
@@ -607,7 +607,7 @@ TypedConfigModule.forRoot({
 
    ```typescript
    // ❌ 避免
-   const host = 'localhost';
+   const host = "localhost";
 
    // ✅ 正确
    const host = this.config.caching.redis.host;
@@ -642,11 +642,11 @@ TypedConfigModule.forRoot({
 **A**: 创建一个配置端点：
 
 ```typescript
-@Controller('debug')
+@Controller("debug")
 export class DebugController {
   constructor(private readonly config: AppConfig) {}
 
-  @Get('config')
+  @Get("config")
   getConfig() {
     return {
       environment: this.config.NODE_ENV,

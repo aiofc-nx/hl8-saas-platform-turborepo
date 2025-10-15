@@ -72,9 +72,9 @@
  * @since 1.0.0
  */
 
-import type { IUseCaseExecutionResult  } from './base-use-case';
-import { BaseUseCase } from './base-use-case';
-import type { IUseCaseContext  } from './use-case.interface';
+import type { IUseCaseExecutionResult } from "./base-use-case";
+import { BaseUseCase } from "./base-use-case";
+import type { IUseCaseContext } from "./use-case.interface";
 
 /**
  * 查询选项接口
@@ -94,7 +94,7 @@ export interface QueryOptions {
    */
   sorting?: {
     field: string;
-    direction: 'asc' | 'desc';
+    direction: "asc" | "desc";
   }[];
 
   /**
@@ -173,8 +173,8 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
   constructor(
     useCaseName: string,
     useCaseDescription: string,
-    useCaseVersion = '1.0.0',
-    requiredPermissions: string[] = []
+    useCaseVersion = "1.0.0",
+    requiredPermissions: string[] = [],
   ) {
     super(useCaseName, useCaseDescription, useCaseVersion, requiredPermissions);
   }
@@ -186,7 +186,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    */
   protected async executeUseCase(
     request: TRequest,
-    context: IUseCaseContext
+    context: IUseCaseContext,
   ): Promise<TResponse> {
     // 查询用例的标准执行流程
     return await this.executeQuery(request, context);
@@ -203,7 +203,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    */
   protected abstract executeQuery(
     request: TRequest,
-    context: IUseCaseContext
+    context: IUseCaseContext,
   ): Promise<TResponse>;
 
   /**
@@ -217,7 +217,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    */
   protected async validateDataAccess(
     request: TRequest,
-    context: IUseCaseContext
+    context: IUseCaseContext,
   ): Promise<void> {
     // 子类可以重写此方法来实现具体的数据访问权限验证
 
@@ -234,7 +234,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    */
   protected async validateTenantAccess(
     request: TRequest,
-    context: IUseCaseContext
+    context: IUseCaseContext,
   ): Promise<void> {
     // 基础的租户隔离验证
     if (!context.tenant?.id) {
@@ -270,7 +270,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
   protected getCacheKey(request: TRequest, context: IUseCaseContext): string {
     const baseKey = `usecase:${this.useCaseName}`;
     const requestHash = this.hashRequest(request);
-    const tenantId = context.tenant?.id || 'global';
+    const tenantId = context.tenant?.id || "global";
 
     return `${baseKey}:${tenantId}:${requestHash}`;
   }
@@ -287,7 +287,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
       // return await this.cacheService.get(cacheKey);
       return null;
     } catch (error) {
-      this.logger?.warn('缓存读取失败', {
+      this.logger?.warn("缓存读取失败", {
         cacheKey,
         error: (error as Error).message,
       });
@@ -305,16 +305,16 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
   protected async cacheResult(
     cacheKey: string,
     result: TResponse,
-    ttl?: number
+    ttl?: number,
   ): Promise<void> {
     try {
       const cacheTtl = ttl || this.defaultCacheTtl;
       // 缓存逻辑将在具体实现中注入
       // await this.cacheService.set(cacheKey, result, cacheTtl);
 
-      this.logger?.debug('查询结果已缓存', { cacheKey, ttl: cacheTtl });
+      this.logger?.debug("查询结果已缓存", { cacheKey, ttl: cacheTtl });
     } catch (error) {
-      this.logger?.warn('缓存写入失败', {
+      this.logger?.warn("缓存写入失败", {
         cacheKey,
         error: (error as Error).message,
       });
@@ -377,7 +377,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
         `查询复杂度 ${complexity} 超过最大限制 ${this.maxQueryComplexity}`,
         this.useCaseName,
         complexity,
-        this.maxQueryComplexity
+        this.maxQueryComplexity,
       );
     }
   }
@@ -410,17 +410,17 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
  * 查询复杂度异常
  */
 export class QueryComplexityError extends Error {
-  readonly errorCode = 'QUERY_COMPLEXITY_ERROR';
-  readonly errorType = 'complexity';
+  readonly errorCode = "QUERY_COMPLEXITY_ERROR";
+  readonly errorType = "complexity";
 
   constructor(
     message: string,
     public readonly useCaseName: string,
     public readonly actualComplexity: number,
-    public readonly maxComplexity: number
+    public readonly maxComplexity: number,
   ) {
     super(message);
-    this.name = 'QueryComplexityError';
+    this.name = "QueryComplexityError";
   }
 }
 
@@ -428,17 +428,17 @@ export class QueryComplexityError extends Error {
  * 数据访问拒绝异常
  */
 export class DataAccessDeniedError extends Error {
-  readonly errorCode = 'DATA_ACCESS_DENIED';
-  readonly errorType = 'access';
+  readonly errorCode = "DATA_ACCESS_DENIED";
+  readonly errorType = "access";
 
   constructor(
     message: string,
     public readonly useCaseName: string,
     public readonly resourceId?: string,
-    public readonly requiredPermissions?: string[]
+    public readonly requiredPermissions?: string[],
   ) {
     super(message);
-    this.name = 'DataAccessDeniedError';
+    this.name = "DataAccessDeniedError";
   }
 }
 
@@ -446,15 +446,15 @@ export class DataAccessDeniedError extends Error {
  * 实体未找到异常
  */
 export class EntityNotFoundError extends Error {
-  readonly errorCode = 'ENTITY_NOT_FOUND';
-  readonly errorType = 'notFound';
+  readonly errorCode = "ENTITY_NOT_FOUND";
+  readonly errorType = "notFound";
 
   constructor(
     message: string,
     public readonly entityType: string,
-    public readonly entityId: string
+    public readonly entityId: string,
   ) {
     super(message);
-    this.name = 'EntityNotFoundError';
+    this.name = "EntityNotFoundError";
   }
 }

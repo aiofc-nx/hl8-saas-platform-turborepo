@@ -6,8 +6,8 @@
  * @since 1.0.0
  */
 
-export { Username } from './username.vo.js';
-export { Email } from './email.vo.js';
-export { PhoneNumber } from './phone-number.vo.js';
-export { UserStatus, UserStatusUtils } from './user-status.enum.js';
-export { Gender } from './gender.enum.js';
+export { Username } from "./username.vo.js";
+export { Email } from "./email.vo.js";
+export { PhoneNumber } from "./phone-number.vo.js";
+export { UserStatus, UserStatusUtils } from "./user-status.enum.js";
+export { Gender } from "./gender.enum.js";

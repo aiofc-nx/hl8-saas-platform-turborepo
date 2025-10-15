@@ -10,7 +10,7 @@
 所有 database 异常都继承自 `AbstractHttpException`（来自 @hl8/exceptions）
 
 ```typescript
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 ```
 
 **基类构造函数签名**：
@@ -54,10 +54,10 @@ constructor(detail: string, data?: Record<string, any>)
 try {
   await this.orm.connect();
 } catch (error) {
-  this.logger.error('数据库连接失败', error.stack);
+  this.logger.error("数据库连接失败", error.stack);
 
   throw new DatabaseConnectionException(
-    '无法连接到数据库服务器，请检查数据库配置和网络连接',
+    "无法连接到数据库服务器，请检查数据库配置和网络连接",
     {
       host: this.config.host,
       port: this.config.port,
@@ -317,13 +317,13 @@ data 参数不应包含：
 
 ```typescript
 // ✅ 正确
-throw new DatabaseQueryException('查询失败', {
-  operation: 'findUsers',
+throw new DatabaseQueryException("查询失败", {
+  operation: "findUsers",
   // 不包含实际的查询条件
 });
 
 // ❌ 错误（暴露了敏感 SQL）
-throw new DatabaseQueryException('查询失败', {
+throw new DatabaseQueryException("查询失败", {
   sql: "SELECT * FROM users WHERE email = 'sensitive@email.com'",
 });
 ```
@@ -333,25 +333,25 @@ throw new DatabaseQueryException('查询失败', {
 ```typescript
 // ✅ 正确
 throw new DatabaseConnectionException(
-  '无法连接到数据库服务器，请检查数据库配置和网络连接',
+  "无法连接到数据库服务器，请检查数据库配置和网络连接",
 );
 
 // ❌ 错误（使用英文）
-throw new DatabaseConnectionException('Failed to connect to database server');
+throw new DatabaseConnectionException("Failed to connect to database server");
 ```
 
 ### 4. 提供有用的上下文
 
 ```typescript
 // ✅ 正确（包含诊断信息）
-throw new DatabaseConnectionException('数据库连接超时', {
+throw new DatabaseConnectionException("数据库连接超时", {
   host: config.host,
   port: config.port,
   timeoutMs: 5000,
 });
 
 // ❌ 错误（信息不足）
-throw new DatabaseConnectionException('连接失败');
+throw new DatabaseConnectionException("连接失败");
 ```
 
 ---
@@ -369,7 +369,7 @@ database 模块依赖于应用已经配置了 `ExceptionModule`：
     // 1. 配置异常模块（必需）
     ExceptionModule.forRoot({
       enableLogging: true,
-      isProduction: process.env.NODE_ENV === 'production',
+      isProduction: process.env.NODE_ENV === "production",
     }),
 
     // 2. 导入 database 模块
@@ -400,10 +400,10 @@ export class AppModule {}
 
 ```typescript
 // connection.manager.spec.ts
-describe('ConnectionManager', () => {
-  it('应该在连接失败时抛出 DatabaseConnectionException', async () => {
+describe("ConnectionManager", () => {
+  it("应该在连接失败时抛出 DatabaseConnectionException", async () => {
     // Arrange
-    mockOrm.connect.mockRejectedValue(new Error('Connection refused'));
+    mockOrm.connect.mockRejectedValue(new Error("Connection refused"));
 
     // Act & Assert
     await expect(connectionManager.connect()).rejects.toThrow(
@@ -411,9 +411,9 @@ describe('ConnectionManager', () => {
     );
   });
 
-  it('应该在异常中包含诊断信息', async () => {
+  it("应该在异常中包含诊断信息", async () => {
     // Arrange
-    mockOrm.connect.mockRejectedValue(new Error('Connection refused'));
+    mockOrm.connect.mockRejectedValue(new Error("Connection refused"));
 
     // Act & Assert
     try {
@@ -421,11 +421,11 @@ describe('ConnectionManager', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(DatabaseConnectionException);
       expect(error.getResponse()).toMatchObject({
-        errorCode: 'DATABASE_CONNECTION_ERROR',
+        errorCode: "DATABASE_CONNECTION_ERROR",
         status: 503,
       });
-      expect(error.getResponse().data).toHaveProperty('host');
-      expect(error.getResponse().data).toHaveProperty('port');
+      expect(error.getResponse().data).toHaveProperty("host");
+      expect(error.getResponse().data).toHaveProperty("port");
     }
   });
 });
@@ -440,10 +440,10 @@ describe('ConnectionManager', () => {
 ```typescript
 // src/constants/error-codes.ts
 export const DATABASE_ERROR_CODES = {
-  CONNECTION_ERROR: 'DATABASE_CONNECTION_ERROR',
-  QUERY_ERROR: 'DATABASE_QUERY_ERROR',
-  TRANSACTION_ERROR: 'DATABASE_TRANSACTION_ERROR',
-  ISOLATION_CONTEXT_MISSING: 'ISOLATION_CONTEXT_MISSING',
+  CONNECTION_ERROR: "DATABASE_CONNECTION_ERROR",
+  QUERY_ERROR: "DATABASE_QUERY_ERROR",
+  TRANSACTION_ERROR: "DATABASE_TRANSACTION_ERROR",
+  ISOLATION_CONTEXT_MISSING: "ISOLATION_CONTEXT_MISSING",
 } as const;
 
 export type DatabaseErrorCode =
@@ -508,18 +508,18 @@ database 模块应导出以下异常类：
 
 ```typescript
 // src/exceptions/index.ts
-export { DatabaseConnectionException } from './database-connection.exception.js';
-export { DatabaseQueryException } from './database-query.exception.js';
-export { DatabaseTransactionException } from './database-transaction.exception.js';
-export { IsolationContextMissingException } from './isolation-context-missing.exception.js';
+export { DatabaseConnectionException } from "./database-connection.exception.js";
+export { DatabaseQueryException } from "./database-query.exception.js";
+export { DatabaseTransactionException } from "./database-transaction.exception.js";
+export { IsolationContextMissingException } from "./isolation-context-missing.exception.js";
 
 // 同时导出错误代码常量
-export { DATABASE_ERROR_CODES } from '../constants/error-codes.js';
-export type { DatabaseErrorCode } from '../constants/error-codes.js';
+export { DATABASE_ERROR_CODES } from "../constants/error-codes.js";
+export type { DatabaseErrorCode } from "../constants/error-codes.js";
 
 // 主 index.ts 重新导出
 // src/index.ts
-export * from './exceptions/index.js';
+export * from "./exceptions/index.js";
 ```
 
 ---
@@ -536,7 +536,7 @@ import {
   GeneralBadRequestException,
   InvalidIsolationContextException,
   TenantNotFoundException,
-} from '@hl8/exceptions';
+} from "@hl8/exceptions";
 
 // 示例：租户未找到
 if (!tenant) {
@@ -545,7 +545,7 @@ if (!tenant) {
 
 // 示例：隔离上下文无效
 if (!context.getTenantId()) {
-  throw new InvalidIsolationContextException('缺少租户 ID');
+  throw new InvalidIsolationContextException("缺少租户 ID");
 }
 ```
 

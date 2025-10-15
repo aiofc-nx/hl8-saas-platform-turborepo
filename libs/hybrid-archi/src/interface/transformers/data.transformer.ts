@@ -18,7 +18,7 @@ export class DataTransformer {
    */
   static toDTO<TDomain, TDTO extends object>(
     domainObject: TDomain,
-    dtoClass: new () => TDTO
+    dtoClass: new () => TDTO,
   ): TDTO {
     const dto = new dtoClass();
 
@@ -43,7 +43,7 @@ export class DataTransformer {
    */
   static toDomain<TDTO, TDomain>(
     dto: TDTO,
-    domainClass: new (...args: any[]) => TDomain
+    domainClass: new (...args: any[]) => TDomain,
   ): TDomain {
     // 这里应该根据具体的领域类构造函数进行转换
     // 实际实现中会调用领域类的工厂方法
@@ -74,7 +74,7 @@ export class DataTransformer {
    */
   static fromJSON<T extends object>(
     json: string,
-    targetClass?: new () => T
+    targetClass?: new () => T,
   ): T | any {
     const obj = JSON.parse(json);
 

@@ -16,7 +16,7 @@ export interface PrivacySettings {
    *
    * @description 个人资料的可见性设置
    */
-  profileVisibility: 'public' | 'private' | 'friends';
+  profileVisibility: "public" | "private" | "friends";
 
   /**
    * 活动状态
@@ -54,7 +54,7 @@ export class PrivacySettingsUtils {
    */
   public static createDefault(): PrivacySettings {
     return {
-      profileVisibility: 'private',
+      profileVisibility: "private",
       activityStatus: false,
       dataCollection: true,
       analytics: false,
@@ -69,13 +69,13 @@ export class PrivacySettingsUtils {
    * @returns 是否有效
    */
   public static validate(settings: PrivacySettings): boolean {
-    const validVisibility = ['public', 'private', 'friends'].includes(
-      settings.profileVisibility
+    const validVisibility = ["public", "private", "friends"].includes(
+      settings.profileVisibility,
     );
     const validBooleans =
-      typeof settings.activityStatus === 'boolean' &&
-      typeof settings.dataCollection === 'boolean' &&
-      typeof settings.analytics === 'boolean';
+      typeof settings.activityStatus === "boolean" &&
+      typeof settings.dataCollection === "boolean" &&
+      typeof settings.analytics === "boolean";
 
     return validVisibility && validBooleans;
   }
@@ -90,7 +90,7 @@ export class PrivacySettingsUtils {
    */
   public static merge(
     base: PrivacySettings,
-    override: Partial<PrivacySettings>
+    override: Partial<PrivacySettings>,
   ): PrivacySettings {
     return {
       profileVisibility: override.profileVisibility ?? base.profileVisibility,

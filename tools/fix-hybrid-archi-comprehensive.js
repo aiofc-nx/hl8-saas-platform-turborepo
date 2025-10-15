@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile, readdir } from 'node:fs/promises';
-import { join, extname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFile, writeFile, readdir } from "node:fs/promises";
+import { join, extname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const REPO_ROOT = join(__dirname, '..');
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const REPO_ROOT = join(__dirname, "..");
 
 /**
  * 递归获取指定目录下所有 .ts 文件（非 .d.ts）
@@ -18,7 +18,11 @@ async function getAllTsFiles(dir) {
     const fullPath = join(dir, item.name);
     if (item.isDirectory()) {
       files = files.concat(await getAllTsFiles(fullPath));
-    } else if (item.isFile() && extname(item.name) === '.ts' && !item.name.endsWith('.d.ts')) {
+    } else if (
+      item.isFile() &&
+      extname(item.name) === ".ts" &&
+      !item.name.endsWith(".d.ts")
+    ) {
       files.push(fullPath);
     }
   }
@@ -29,7 +33,7 @@ async function getAllTsFiles(dir) {
  * 修复文件中的导入和类型问题
  */
 async function fixFileIssues(filePath) {
-  let content = await readFile(filePath, 'utf-8');
+  let content = await readFile(filePath, "utf-8");
   let hasChanges = false;
 
   // 1. 修复相对导入路径，添加 .js 扩展名
@@ -39,13 +43,13 @@ async function fixFileIssues(filePath) {
       if (importPath.match(/\.[a-zA-Z0-9]+$/)) {
         return match;
       }
-      if (importPath.endsWith('/')) {
+      if (importPath.endsWith("/")) {
         hasChanges = true;
         return `${prefix}${importPath}index.js${suffix}`;
       }
       hasChanges = true;
       return `${prefix}${importPath}.js${suffix}`;
-    }
+    },
   );
 
   // 2. 修复 export ... from 语句中的相对路径
@@ -55,13 +59,13 @@ async function fixFileIssues(filePath) {
       if (importPath.match(/\.[a-zA-Z0-9]+$/)) {
         return match;
       }
-      if (importPath.endsWith('/')) {
+      if (importPath.endsWith("/")) {
         hasChanges = true;
         return `${prefix}${importPath}index.js${suffix}`;
       }
       hasChanges = true;
       return `${prefix}${importPath}.js${suffix}`;
-    }
+    },
   );
 
   // 3. 修复类型导入问题 - 将接口类型导入改为 type 导入
@@ -69,30 +73,37 @@ async function fixFileIssues(filePath) {
     /import\s*{\s*([^}]*ILoggerService[^}]*)\s*}\s*from\s*['"][^'"]*['"];?/g,
     (match, imports) => {
       // 如果导入中包含 ILoggerService，将其改为 type 导入
-      if (imports.includes('ILoggerService')) {
+      if (imports.includes("ILoggerService")) {
         hasChanges = true;
-        return `import type { ${imports} } from '${match.match(/from\s*['"]([^'"]*)['"]/)?.[1] || ''}';`;
+        return `import type { ${imports} } from '${match.match(/from\s*['"]([^'"]*)['"]/)?.[1] || ""}';`;
       }
       return match;
-    }
+    },
   );
 
   // 4. 修复其他接口类型导入
   const interfaceTypes = [
-    'IUserContext', 'IWebSocketContext', 'ICommandHandler', 'IQueryHandler',
-    'IEventHandler', 'ISaga', 'IUseCase', 'IRepository', 'IAggregateRepository'
+    "IUserContext",
+    "IWebSocketContext",
+    "ICommandHandler",
+    "IQueryHandler",
+    "IEventHandler",
+    "ISaga",
+    "IUseCase",
+    "IRepository",
+    "IAggregateRepository",
   ];
 
   for (const typeName of interfaceTypes) {
     const regex = new RegExp(
       `import\\s*{\\s*([^}]*${typeName}[^}]*)\\s*}\\s*from\\s*['"][^'"]*['"];?`,
-      'g'
+      "g",
     );
-    
+
     content = content.replace(regex, (match, imports) => {
       if (imports.includes(typeName)) {
         hasChanges = true;
-        return `import type { ${imports} } from '${match.match(/from\s*['"]([^'"]*)['"]/)?.[1] || ''}';`;
+        return `import type { ${imports} } from '${match.match(/from\s*['"]([^'"]*)['"]/)?.[1] || ""}';`;
       }
       return match;
     });
@@ -104,7 +115,7 @@ async function fixFileIssues(filePath) {
     (match, imports) => {
       hasChanges = true;
       return `import { ${imports} } from 'fastify';`;
-    }
+    },
   );
 
   content = content.replace(
@@ -112,7 +123,7 @@ async function fixFileIssues(filePath) {
     (match, imports) => {
       hasChanges = true;
       return `import { ${imports} } from 'fastify';`;
-    }
+    },
   );
 
   // 6. 修复 @hl8/nestjs-fastify/logging 导入
@@ -121,7 +132,7 @@ async function fixFileIssues(filePath) {
     () => {
       hasChanges = true;
       return `import { Logger } from '@nestjs/common';`;
-    }
+    },
   );
 
   // 7. 修复 @hl8/nestjs-isolation 导入问题
@@ -130,7 +141,7 @@ async function fixFileIssues(filePath) {
     () => {
       hasChanges = true;
       return `// import { TenantContextService } from '@hl8/nestjs-isolation'; // TODO: 需要实现`;
-    }
+    },
   );
 
   // 8. 修复 @hl8/isolation-model 导入问题
@@ -139,22 +150,22 @@ async function fixFileIssues(filePath) {
     () => {
       hasChanges = true;
       return `import { BadRequestException } from '@nestjs/common';`;
-    }
+    },
   );
 
   if (hasChanges) {
     await writeFile(filePath, content);
-    console.log(`✅ Fixed: ${filePath.replace(REPO_ROOT, '.')}`);
+    console.log(`✅ Fixed: ${filePath.replace(REPO_ROOT, ".")}`);
   }
   return hasChanges;
 }
 
 async function main() {
-  console.log('🚀 开始全面修复 hybrid-archi 模块问题...');
-  
-  const hybridArchiPath = join(REPO_ROOT, 'libs', 'hybrid-archi', 'src');
+  console.log("🚀 开始全面修复 hybrid-archi 模块问题...");
+
+  const hybridArchiPath = join(REPO_ROOT, "libs", "hybrid-archi", "src");
   const files = await getAllTsFiles(hybridArchiPath);
-  
+
   console.log(`📁 找到 ${files.length} 个 TypeScript 文件`);
 
   let fixedCount = 0;
@@ -164,7 +175,7 @@ async function main() {
     }
   }
 
-  console.log('\n🎉 修复完成！');
+  console.log("\n🎉 修复完成！");
   console.log(`📊 统计:`);
   console.log(`   - 总文件数: ${files.length}`);
   console.log(`   - 修复文件数: ${fixedCount}`);

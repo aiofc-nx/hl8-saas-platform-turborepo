@@ -54,7 +54,7 @@
 class TypedConfigModule {
   static forRoot(options) {
     const cacheManager = new CacheManager({
-      strategy: 'memory', // 内存缓存
+      strategy: "memory", // 内存缓存
       ttl: 3600000, // 1小时
     });
 
@@ -64,7 +64,7 @@ class TypedConfigModule {
           provide: AppConfig,
           useFactory: async () => {
             // 1. 检查缓存
-            const cached = await cacheManager.get('app-config');
+            const cached = await cacheManager.get("app-config");
             if (cached) {
               return cached; // 缓存命中
             }
@@ -75,7 +75,7 @@ class TypedConfigModule {
             await validate(instance);
 
             // 3. 存入缓存
-            await cacheManager.set('app-config', instance);
+            await cacheManager.set("app-config", instance);
 
             return instance;
           },
@@ -109,9 +109,9 @@ TypedConfigModule.forRoot({
   // 可选：自定义缓存配置
   cache: {
     enabled: true, // 是否启用缓存
-    strategy: 'memory', // 缓存策略
+    strategy: "memory", // 缓存策略
     ttl: 3600000, // 过期时间（毫秒）
-    keyPrefix: 'config', // 缓存键前缀
+    keyPrefix: "config", // 缓存键前缀
   },
 });
 ```
@@ -271,7 +271,7 @@ TypedConfigModule.forRoot({
   // 可选：配置缓存（默认已启用）
   cache: {
     enabled: true, // 默认：true
-    strategy: 'memory', // 默认：memory
+    strategy: "memory", // 默认：memory
   },
 });
 

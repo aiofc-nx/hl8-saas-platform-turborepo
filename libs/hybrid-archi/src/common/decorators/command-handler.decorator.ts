@@ -48,14 +48,15 @@
  *
  * @since 1.0.0
  */
-import 'reflect-metadata';
-import { BaseCommand } from '../../application/cqrs/commands/base/base-command';
-import type { ICommandHandler  } from '../../application/cqrs/commands/base/command-handler.interface';
+import "reflect-metadata";
+import { BaseCommand } from "../../application/cqrs/commands/base/base-command";
+import type { ICommandHandler } from "../../application/cqrs/commands/base/command-handler.interface";
 import {
   setCommandHandlerMetadata,
   getCommandHandlerMetadata as getMetadata,
-} from './metadata.utils';
-import type { ICommandHandlerMetadata,
+} from "./metadata.utils";
+import type {
+  ICommandHandlerMetadata,
   IRetryConfig,
   IValidationConfig,
   IAuthorizationConfig,
@@ -63,7 +64,7 @@ import type { ICommandHandlerMetadata,
   IMultiTenantConfig,
   IDataIsolationConfig,
   IPerformanceMonitorConfig,
- } from './metadata.interfaces';
+} from "./metadata.interfaces";
 
 /**
  * 命令处理器装饰器选项
@@ -149,7 +150,7 @@ export function CommandHandler<TCommand extends BaseCommand>(
   return function (target: new (...args: any[]) => ICommandHandler<TCommand>) {
     // 验证目标类实现了 ICommandHandler 接口
     const prototype = target.prototype;
-    if (typeof prototype.execute !== 'function') {
+    if (typeof prototype.execute !== "function") {
       throw new Error(
         `Command handler ${target.name} must implement execute method`,
       );
@@ -159,7 +160,7 @@ export function CommandHandler<TCommand extends BaseCommand>(
     setCommandHandlerMetadata(target, commandType, options);
 
     // 添加静态方法用于获取命令类型
-    Object.defineProperty(target, 'commandType', {
+    Object.defineProperty(target, "commandType", {
       value: commandType,
       writable: false,
       enumerable: true,
@@ -167,7 +168,7 @@ export function CommandHandler<TCommand extends BaseCommand>(
     });
 
     // 添加静态方法用于获取处理器优先级
-    Object.defineProperty(target, 'priority', {
+    Object.defineProperty(target, "priority", {
       value: options.priority || 0,
       writable: false,
       enumerable: true,
@@ -175,7 +176,7 @@ export function CommandHandler<TCommand extends BaseCommand>(
     });
 
     // 添加静态方法用于检查是否支持指定命令类型
-    Object.defineProperty(target, 'supports', {
+    Object.defineProperty(target, "supports", {
       value: function (cmdType: string): boolean {
         return cmdType === commandType;
       },
@@ -185,7 +186,7 @@ export function CommandHandler<TCommand extends BaseCommand>(
     });
 
     // 添加静态方法用于获取元数据
-    Object.defineProperty(target, 'getMetadata', {
+    Object.defineProperty(target, "getMetadata", {
       value: function (): ICommandHandlerMetadata | undefined {
         return getMetadata(target);
       },

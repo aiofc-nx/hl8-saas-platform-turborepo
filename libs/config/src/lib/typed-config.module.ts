@@ -1,19 +1,19 @@
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import chalk from 'chalk';
-import type { ClassConstructor } from 'class-transformer';
-import type { ValidationError, ValidatorOptions } from 'class-validator';
-import merge from 'lodash.merge';
-import { CacheManager, CacheOptions } from './cache/index.js';
-import { ErrorHandler } from './errors/index.js';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import chalk from "chalk";
+import type { ClassConstructor } from "class-transformer";
+import type { ValidationError, ValidatorOptions } from "class-validator";
+import merge from "lodash.merge";
+import { CacheManager, CacheOptions } from "./cache/index.js";
+import { ErrorHandler } from "./errors/index.js";
 import {
   TypedConfigModuleAsyncOptions,
   TypedConfigModuleOptions,
-} from './interfaces/typed-config-module-options.interface.js';
-import { ConfigRecord } from './types/index.js';
-import { debug } from './utils/debug.util.js';
-import { forEachDeep } from './utils/for-each-deep.util.js';
-import { identity } from './utils/identity.util.js';
-import { plainToClass, validateSync } from './utils/imports.util.js';
+} from "./interfaces/typed-config-module-options.interface.js";
+import { ConfigRecord } from "./types/index.js";
+import { debug } from "./utils/debug.util.js";
+import { forEachDeep } from "./utils/for-each-deep.util.js";
+import { identity } from "./utils/identity.util.js";
+import { plainToClass, validateSync } from "./utils/imports.util.js";
 
 @Module({})
 export class TypedConfigModule {
@@ -208,7 +208,7 @@ export class TypedConfigModule {
       cacheOptions,
     } = options;
 
-    if (typeof rawConfig !== 'object') {
+    if (typeof rawConfig !== "object") {
       throw new Error(
         `Configuration should be an object, received: ${rawConfig}. Please check the return value of \`load()\``,
       );
@@ -235,7 +235,7 @@ export class TypedConfigModule {
    * @author HL8 SAAS Platform Team
    * @since 1.0.0
    */
-  private static getRawConfig(load: TypedConfigModuleOptions['load']) {
+  private static getRawConfig(load: TypedConfigModuleOptions["load"]) {
     if (Array.isArray(load)) {
       const config = {};
       for (const fn of load) {
@@ -267,7 +267,7 @@ export class TypedConfigModule {
    * @since 1.0.0
    */
   private static async getRawConfigAsync(
-    load: TypedConfigModuleAsyncOptions['load'],
+    load: TypedConfigModuleAsyncOptions["load"],
   ) {
     if (Array.isArray(load)) {
       const config = {};
@@ -327,7 +327,7 @@ export class TypedConfigModule {
     forEachDeep(config, (value: any) => {
       if (
         value &&
-        typeof value === 'object' &&
+        typeof value === "object" &&
         !Array.isArray(value) &&
         value.constructor !== Object
       ) {
@@ -426,8 +426,8 @@ export class TypedConfigModule {
   private static formatValidationError(errors: ValidationError[]) {
     const result: {
       property: string;
-      constraints: ValidationError['constraints'];
-      value: ValidationError['value'];
+      constraints: ValidationError["constraints"];
+      value: ValidationError["value"];
     }[] = [];
 
     const helper = (
@@ -447,7 +447,7 @@ export class TypedConfigModule {
       }
     };
 
-    errors.forEach((error) => helper(error, ''));
+    errors.forEach((error) => helper(error, ""));
     return result;
   }
 }

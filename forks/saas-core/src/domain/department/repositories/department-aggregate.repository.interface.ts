@@ -1,5 +1,5 @@
-import { DepartmentAggregate } from '../aggregates/department.aggregate';
-import { EntityId } from '@hl8/hybrid-archi';
+import { DepartmentAggregate } from "../aggregates/department.aggregate";
+import { EntityId } from "@hl8/hybrid-archi";
 
 export interface IDepartmentAggregateRepository {
   save(aggregate: DepartmentAggregate): Promise<void>;
@@ -8,4 +8,3 @@ export interface IDepartmentAggregateRepository {
   delete(id: EntityId, deletedBy: string, reason: string): Promise<void>;
   count(): Promise<number>;
 }
-

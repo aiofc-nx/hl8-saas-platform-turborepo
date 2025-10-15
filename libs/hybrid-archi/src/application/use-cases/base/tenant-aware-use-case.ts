@@ -54,12 +54,12 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase } from './base-use-case';
-import type { IUseCaseContext  } from './use-case.interface';
+import { BaseUseCase } from "./base-use-case";
+import type { IUseCaseContext } from "./use-case.interface";
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { BadRequestException } from '@nestjs/common';
-import { TENANT_ERROR_CODES } from '../../../constants';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { BadRequestException } from "@nestjs/common";
+import { TENANT_ERROR_CODES } from "../../../constants";
 
 /**
  * 多租户感知的用例基类
@@ -69,24 +69,24 @@ import { TENANT_ERROR_CODES } from '../../../constants';
  */
 export abstract class TenantAwareUseCase<
   TRequest,
-  TResponse
+  TResponse,
 > extends BaseUseCase<TRequest, TResponse> {
   protected readonly tenantContextService: any;
 
   constructor(
     useCaseName: string,
     useCaseDescription: string,
-    useCaseVersion = '1.0.0',
+    useCaseVersion = "1.0.0",
     requiredPermissions: string[] = [],
     tenantContextService: any,
-    logger?: FastifyLoggerService
+    logger?: FastifyLoggerService,
   ) {
     super(
       useCaseName,
       useCaseDescription,
       useCaseVersion,
       requiredPermissions,
-      logger
+      logger,
     );
     this.tenantContextService = tenantContextService;
   }
@@ -122,7 +122,7 @@ export abstract class TenantAwareUseCase<
         request,
         response,
         context,
-        executionTime
+        executionTime,
       );
 
       return response;
@@ -147,23 +147,29 @@ export abstract class TenantAwareUseCase<
       const tenantContext = await this.getTenantContextAsync();
 
       if (!tenantContext) {
-        throw new BadRequestException(`Tenant context does not exist for use case: ${this.useCaseName}`);
+        throw new BadRequestException(
+          `Tenant context does not exist for use case: ${this.useCaseName}`,
+        );
       }
 
       if (!tenantContext.tenantId) {
-        throw new BadRequestException(`Tenant ID does not exist in context for use case: ${this.useCaseName}`);
+        throw new BadRequestException(
+          `Tenant ID does not exist in context for use case: ${this.useCaseName}`,
+        );
       }
 
       // 验证租户状态
-      if (tenantContext.metadata?.['tenantStatus'] === 'inactive') {
-        throw new BadRequestException(`Tenant status is inactive for use case: ${this.useCaseName}`);
+      if (tenantContext.metadata?.["tenantStatus"] === "inactive") {
+        throw new BadRequestException(
+          `Tenant status is inactive for use case: ${this.useCaseName}`,
+        );
       }
 
-      this.logger.log(
-        `Tenant context validation passed: ${this.useCaseName}`);
+      this.logger.log(`Tenant context validation passed: ${this.useCaseName}`);
     } catch (error) {
       this.logger.error(
-        `Tenant context validation failed: ${this.useCaseName}`);
+        `Tenant context validation failed: ${this.useCaseName}`,
+      );
       throw error;
     }
   }
@@ -200,22 +206,23 @@ export abstract class TenantAwareUseCase<
       if (tenantContext) {
         baseContext.tenant = {
           id: tenantContext.tenantId.toString(),
-          name: (tenantContext.metadata?.['tenantName'] as string) || 'Unknown',
+          name: (tenantContext.metadata?.["tenantName"] as string) || "Unknown",
         };
 
         if (tenantContext.userId) {
           baseContext.user = {
             id: tenantContext.userId,
-            name: (tenantContext.metadata?.['userName'] as string) || 'Unknown',
+            name: (tenantContext.metadata?.["userName"] as string) || "Unknown",
             permissions:
-              (tenantContext.metadata?.['permissions'] as string[]) || [],
+              (tenantContext.metadata?.["permissions"] as string[]) || [],
           };
         }
       }
     } catch (error) {
       // 如果获取租户上下文失败，记录警告但不影响用例执行
       this.logger.warn(
-        `Failed to get tenant context for use case: ${this.useCaseName}`);
+        `Failed to get tenant context for use case: ${this.useCaseName}`,
+      );
     }
 
     return baseContext;
@@ -226,7 +233,7 @@ export abstract class TenantAwareUseCase<
    */
   private logTenantAwareUseCaseStart(
     request: TRequest,
-    context: IUseCaseContext
+    context: IUseCaseContext,
   ): void {
     this.logger.log(`Tenant-aware use case started: ${this.useCaseName}`);
   }
@@ -238,9 +245,11 @@ export abstract class TenantAwareUseCase<
     request: TRequest,
     response: TResponse,
     context: IUseCaseContext,
-    executionTime: number
+    executionTime: number,
   ): void {
-    this.logger.log(`Tenant-aware use case completed successfully: ${this.useCaseName}`);
+    this.logger.log(
+      `Tenant-aware use case completed successfully: ${this.useCaseName}`,
+    );
   }
 
   /**
@@ -250,8 +259,11 @@ export abstract class TenantAwareUseCase<
     request: TRequest,
     error: any,
     context: IUseCaseContext,
-    executionTime: number
+    executionTime: number,
   ): void {
-    this.logger.error(`Tenant-aware use case failed: ${this.useCaseName}`, error);
+    this.logger.error(
+      `Tenant-aware use case failed: ${this.useCaseName}`,
+      error,
+    );
   }
 }

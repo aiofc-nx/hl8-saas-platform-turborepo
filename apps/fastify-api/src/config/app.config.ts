@@ -46,27 +46,27 @@
  * ```
  */
 
-import { Transform, Type } from 'class-transformer';
+import { Transform, Type } from "class-transformer";
 import {
   IsIn,
   IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
 // 从 @hl8/nestjs-fastify 导入配置类（单一配置源）
 import {
   LoggingConfig,
   MetricsModuleConfig,
   RateLimitModuleConfig,
-} from '@hl8/nestjs-fastify/index.js';
+} from "@hl8/nestjs-fastify/index.js";
 
 // 从 @hl8/caching 导入配置类（单一配置源）
-import { CachingModuleConfig } from '@hl8/caching/index.js';
+import { CachingModuleConfig } from "@hl8/caching/index.js";
 
 // 从 @hl8/database 导入配置类（单一配置源）
-import { DatabaseConfig } from '@hl8/database/index.js';
+import { DatabaseConfig } from "@hl8/database/index.js";
 
 /**
  * 应用配置
@@ -80,9 +80,9 @@ export class AppConfig {
    * @default 'development'
    */
   @IsString()
-  @IsIn(['development', 'production', 'test'])
+  @IsIn(["development", "production", "test"])
   @IsOptional()
-  public readonly NODE_ENV: string = 'development';
+  public readonly NODE_ENV: string = "development";
 
   /**
    * 应用端口
@@ -147,13 +147,13 @@ export class AppConfig {
    * 是否为生产环境
    */
   get isProduction(): boolean {
-    return this.NODE_ENV === 'production';
+    return this.NODE_ENV === "production";
   }
 
   /**
    * 是否为开发环境
    */
   get isDevelopment(): boolean {
-    return this.NODE_ENV === 'development';
+    return this.NODE_ENV === "development";
   }
 }

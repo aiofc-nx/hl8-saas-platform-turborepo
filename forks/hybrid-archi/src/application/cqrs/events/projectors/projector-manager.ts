@@ -46,13 +46,13 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { BaseDomainEvent } from '../../../../domain/events/base/base-domain-event';
+import { Injectable } from "@nestjs/common";
+import { BaseDomainEvent } from "../../../../domain/events/base/base-domain-event";
 import {
   IEventProjector,
   IProjectorManager,
   IProjectionExecutionResult,
-} from './event-projector.interface';
+} from "./event-projector.interface";
 
 /**
  * 投射器注册信息
@@ -164,7 +164,7 @@ export class ProjectorManager implements IProjectorManager {
 
     // 并行执行所有投射器
     const projectionPromises = projectors.map((projector) =>
-      this.executeProjector(projector, event)
+      this.executeProjector(projector, event),
     );
 
     const results = await Promise.allSettled(projectionPromises);
@@ -172,10 +172,10 @@ export class ProjectorManager implements IProjectorManager {
     // 处理执行结果
     results.forEach((result, index) => {
       const projector = projectors[index];
-      if (result.status === 'rejected') {
+      if (result.status === "rejected") {
         console.error(
           `投射器 ${projector.getProjectorName()} 执行失败`,
-          result.reason
+          result.reason,
         );
       }
     });
@@ -209,7 +209,7 @@ export class ProjectorManager implements IProjectorManager {
    */
   async rebuildAllReadModels(
     aggregateId: string,
-    events: BaseDomainEvent[]
+    events: BaseDomainEvent[],
   ): Promise<void> {
     console.log(`开始重建聚合根 ${aggregateId} 的所有读模型`);
 
@@ -223,19 +223,25 @@ export class ProjectorManager implements IProjectorManager {
 
     // 为每个投射器重建读模型
     const rebuildPromises = Array.from(allProjectors)
-      .filter((p) => 'rebuildReadModel' in p)
+      .filter((p) => "rebuildReadModel" in p)
       .map(async (projector) => {
         try {
-          const readModelProjector = projector as IEventProjector<BaseDomainEvent> & { rebuildReadModel: (aggregateId: string, events: unknown[]) => Promise<void> };
+          const readModelProjector =
+            projector as IEventProjector<BaseDomainEvent> & {
+              rebuildReadModel: (
+                aggregateId: string,
+                events: unknown[],
+              ) => Promise<void>;
+            };
           const relevantEvents = events.filter((e) => projector.canProject(e));
           await readModelProjector.rebuildReadModel(
             aggregateId,
-            relevantEvents
+            relevantEvents,
           );
         } catch (error) {
           console.error(
             `投射器 ${projector.getProjectorName()} 重建失败`,
-            error
+            error,
           );
         }
       });
@@ -298,7 +304,7 @@ export class ProjectorManager implements IProjectorManager {
       const projectors = this.projectorsByEventType.get(eventType);
       if (projectors) {
         const index = projectors.findIndex(
-          (reg) => reg.projector.getProjectorName() === projectorName
+          (reg) => reg.projector.getProjectorName() === projectorName,
         );
         if (index >= 0) {
           projectors.splice(index, 1);
@@ -320,7 +326,7 @@ export class ProjectorManager implements IProjectorManager {
   clear(): void {
     this.projectorsByName.clear();
     this.projectorsByEventType.clear();
-    console.log('所有投射器已清空');
+    console.log("所有投射器已清空");
   }
 
   /**
@@ -329,7 +335,9 @@ export class ProjectorManager implements IProjectorManager {
    * @param projectorName - 投射器名称
    * @returns 统计信息
    */
-  getProjectorStats(projectorName: string): Record<string, unknown> | undefined {
+  getProjectorStats(
+    projectorName: string,
+  ): Record<string, unknown> | undefined {
     const registration = this.projectorsByName.get(projectorName);
     return registration?.stats;
   }
@@ -344,7 +352,7 @@ export class ProjectorManager implements IProjectorManager {
     const registration = this.projectorsByName.get(projectorName);
     if (registration) {
       registration.enabled = enabled;
-      console.log(`投射器 ${projectorName} ${enabled ? '已启用' : '已禁用'}`);
+      console.log(`投射器 ${projectorName} ${enabled ? "已启用" : "已禁用"}`);
     }
   }
 
@@ -357,11 +365,11 @@ export class ProjectorManager implements IProjectorManager {
    */
   private async executeProjector(
     projector: IEventProjector<BaseDomainEvent>,
-    event: BaseDomainEvent
+    event: BaseDomainEvent,
   ): Promise<IProjectionExecutionResult> {
     const startTime = Date.now();
     const registration = this.projectorsByName.get(
-      projector.getProjectorName()
+      projector.getProjectorName(),
     );
     if (!registration) {
       throw new Error(`投射器 ${projector.getProjectorName()} 未注册`);

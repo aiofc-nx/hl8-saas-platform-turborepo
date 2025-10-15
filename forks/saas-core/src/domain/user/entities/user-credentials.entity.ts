@@ -7,9 +7,9 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { LOGIN_SECURITY } from '../../../constants/user.constants';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { PinoLogger } from "@hl8/logger";
+import { LOGIN_SECURITY } from "../../../constants/user.constants";
 
 export class UserCredentials extends BaseEntity {
   constructor(
@@ -59,12 +59,12 @@ export class UserCredentials extends BaseEntity {
 
   public recordFailedLogin(): void {
     this._failedLoginAttempts++;
-    
+
     if (this._failedLoginAttempts >= LOGIN_SECURITY.MAX_FAILED_ATTEMPTS) {
       const lockoutMinutes = LOGIN_SECURITY.LOCKOUT_DURATION_MINUTES;
       this._lockedUntil = new Date(Date.now() + lockoutMinutes * 60 * 1000);
     }
-    
+
     this.updateTimestamp();
   }
 
@@ -103,4 +103,3 @@ export class UserCredentials extends BaseEntity {
     };
   }
 }
-

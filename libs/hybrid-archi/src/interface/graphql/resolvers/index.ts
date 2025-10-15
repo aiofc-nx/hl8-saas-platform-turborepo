@@ -6,16 +6,16 @@
  */
 
 // 基础解析器
-export * from './base-resolver';
+export * from "./base-resolver";
 
 // 查询解析器
-export * from './query.resolver';
+export * from "./query.resolver";
 
 // 变更解析器
-export * from './mutation.resolver';
+export * from "./mutation.resolver";
 
 // 订阅解析器
-export * from './subscription.resolver';
+export * from "./subscription.resolver";
 
 // 字段解析器
-export * from './field.resolver';
+export * from "./field.resolver";

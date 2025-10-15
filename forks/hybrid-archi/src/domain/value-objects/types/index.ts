@@ -5,6 +5,6 @@
  * @since 1.0.0
  */
 
-export * from './tenant-type.vo';
-export * from './user-role.vo';
-export * from './permission-definitions.vo';
+export * from "./tenant-type.vo";
+export * from "./user-role.vo";
+export * from "./permission-definitions.vo";

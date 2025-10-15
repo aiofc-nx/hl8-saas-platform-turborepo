@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from "@nestjs/common";
 
 /**
  * 日志记录装饰器
@@ -20,23 +20,23 @@ import { SetMetadata } from '@nestjs/common';
 export function Logging(
   config: {
     enabled?: boolean;
-    level?: 'debug' | 'info' | 'warn' | 'error';
+    level?: "debug" | "info" | "warn" | "error";
     includeRequest?: boolean;
     includeResponse?: boolean;
     includeTiming?: boolean;
     sensitiveFields?: string[];
-  } = {}
+  } = {},
 ): MethodDecorator {
   const defaultConfig = {
     enabled: true,
-    level: 'info',
+    level: "info",
     includeRequest: true,
     includeResponse: false,
     includeTiming: true,
-    sensitiveFields: ['password', 'token', 'secret', 'key'],
+    sensitiveFields: ["password", "token", "secret", "key"],
   };
 
-  return SetMetadata('logging', { ...defaultConfig, ...config });
+  return SetMetadata("logging", { ...defaultConfig, ...config });
 }
 
 /**
@@ -54,9 +54,9 @@ export function AuditLog(
     includeTenant?: boolean;
     includeResource?: boolean;
     includeAction?: boolean;
-  } = {}
+  } = {},
 ): MethodDecorator {
-  return SetMetadata('audit_log', config);
+  return SetMetadata("audit_log", config);
 }
 
 /**
@@ -73,7 +73,7 @@ export function ErrorLogging(
     includeStack?: boolean;
     includeContext?: boolean;
     includeUser?: boolean;
-  } = {}
+  } = {},
 ): MethodDecorator {
-  return SetMetadata('error_logging', config);
+  return SetMetadata("error_logging", config);
 }

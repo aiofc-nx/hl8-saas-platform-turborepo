@@ -24,8 +24,8 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityManager } from '@hl8/database';
+import { Injectable } from "@nestjs/common";
+import { EntityManager } from "@hl8/database";
 
 /**
  * 快照记录接口
@@ -129,7 +129,7 @@ export class SnapshotStoreAdapter {
     }
 
     // 提取租户ID
-    const tenantId = aggregateState.tenantId?.toString() || '';
+    const tenantId = aggregateState.tenantId?.toString() || "";
 
     // 准备快照记录
     const record: ISnapshotRecord = {
@@ -145,12 +145,12 @@ export class SnapshotStoreAdapter {
     // 保存快照
     // TODO: MikroORM 6.x API 变更 - 使用 em.insert() 或创建 ORM 实体
     // await this.em.nativeInsert('snapshot_store', record);
-    console.log('TODO: 保存快照到快照存储', record);
+    console.log("TODO: 保存快照到快照存储", record);
 
     // 异步清理过期快照
     setImmediate(() => {
-      this.cleanupOldSnapshots(streamId).catch(err => {
-        console.error('快照清理失败:', err);
+      this.cleanupOldSnapshots(streamId).catch((err) => {
+        console.error("快照清理失败:", err);
       });
     });
   }
@@ -186,8 +186,8 @@ export class SnapshotStoreAdapter {
     //   },
     // );
     // return record || null;
-    
-    console.log('TODO: 获取最新快照', streamId);
+
+    console.log("TODO: 获取最新快照", streamId);
     return null;
   }
 
@@ -218,8 +218,8 @@ export class SnapshotStoreAdapter {
     //   },
     // );
     // return record || null;
-    
-    console.log('TODO: 获取指定版本快照', streamId, version);
+
+    console.log("TODO: 获取指定版本快照", streamId, version);
     return null;
   }
 
@@ -248,13 +248,13 @@ export class SnapshotStoreAdapter {
    */
   private async cleanupOldSnapshots(streamId: string): Promise<void> {
     const allSnapshots = await this.em.find<ISnapshotRecord>(
-      'snapshot_store',
+      "snapshot_store",
       {
         aggregateType: this.extractAggregateType(streamId),
         aggregateId: this.extractAggregateId(streamId),
       },
       {
-        orderBy: { version: 'DESC' },
+        orderBy: { version: "DESC" },
       },
     );
 
@@ -263,7 +263,7 @@ export class SnapshotStoreAdapter {
 
     if (snapshotsToDelete.length > 0) {
       const idsToDelete = snapshotsToDelete.map((s: any) => s.id);
-      await this.em.nativeDelete('snapshot_store', {
+      await this.em.nativeDelete("snapshot_store", {
         id: { $in: idsToDelete },
       });
     }
@@ -287,7 +287,7 @@ export class SnapshotStoreAdapter {
    * @returns {string} 聚合根类型
    */
   private extractAggregateType(streamId: string): string {
-    return streamId.split('-')[0];
+    return streamId.split("-")[0];
   }
 
   /**
@@ -298,7 +298,7 @@ export class SnapshotStoreAdapter {
    * @returns {string} 聚合根ID
    */
   private extractAggregateId(streamId: string): string {
-    return streamId.substring(streamId.indexOf('-') + 1);
+    return streamId.substring(streamId.indexOf("-") + 1);
   }
 
   /**
@@ -309,10 +309,10 @@ export class SnapshotStoreAdapter {
    * @returns {Record<string, any>} 序列化后的状态
    */
   private serializeState(state: any): Record<string, any> {
-    if (typeof state.toSnapshot === 'function') {
+    if (typeof state.toSnapshot === "function") {
       return state.toSnapshot();
     }
-    if (typeof state.toJSON === 'function') {
+    if (typeof state.toJSON === "function") {
       return state.toJSON();
     }
     return state;
@@ -331,13 +331,13 @@ export class SnapshotStoreAdapter {
     streamId: string,
   ): Promise<{ count: number; latestVersion: number }> {
     const snapshots = await this.em.find<ISnapshotRecord>(
-      'snapshot_store',
+      "snapshot_store",
       {
         aggregateType: this.extractAggregateType(streamId),
         aggregateId: this.extractAggregateId(streamId),
       },
       {
-        orderBy: { version: 'DESC' },
+        orderBy: { version: "DESC" },
       },
     );
 
@@ -347,4 +347,3 @@ export class SnapshotStoreAdapter {
     };
   }
 }
-

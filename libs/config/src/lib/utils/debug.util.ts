@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import debugLib from 'debug';
+import debugLib from "debug";
 
 /**
  * 调试函数
@@ -27,4 +27,4 @@ export const createDebug = (namespace: string) => debugLib(namespace);
  * 默认调试函数
  * @description 默认的调试函数
  */
-export const debug = createDebug('hl8:config');
+export const debug = createDebug("hl8:config");

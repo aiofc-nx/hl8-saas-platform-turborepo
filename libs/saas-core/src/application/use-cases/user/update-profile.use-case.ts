@@ -5,10 +5,10 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { IUserAggregateRepository } from '../../../domain/user/repositories/user-aggregate.repository.interface';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/hybrid-archi";
+import { ICommandUseCase } from "../base/use-case.interface";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface";
 
 export interface IUpdateProfileCommand {
   userId: string;
@@ -32,7 +32,7 @@ export class UpdateProfileUseCase
     }
 
     const profile = aggregate.getProfile();
-    
+
     if (command.fullName) {
       profile.updateFullName(command.fullName, command.userId);
     }
@@ -46,4 +46,3 @@ export class UpdateProfileUseCase
     await this.userRepository.save(aggregate);
   }
 }
-

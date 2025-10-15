@@ -8,13 +8,13 @@
  */
 
 // 模块
-export { RateLimitModule } from './rate-limit.module.js';
+export { RateLimitModule } from "./rate-limit.module.js";
 
 // 服务
-export { RateLimitService } from './rate-limit.service.js';
+export { RateLimitService } from "./rate-limit.service.js";
 
 // 守卫
-export { RateLimitGuard } from './rate-limit.guard.js';
+export { RateLimitGuard } from "./rate-limit.guard.js";
 
 // 装饰器
 export {
@@ -22,7 +22,7 @@ export {
   RateLimitByIp,
   RateLimitByTenant,
   RateLimitByUser,
-} from './rate-limit.decorator.js';
+} from "./rate-limit.decorator.js";
 
 // 类型
 export type {
@@ -30,9 +30,9 @@ export type {
   RateLimitOptions,
   RateLimitStatus,
   RateLimitStrategy,
-} from './types/rate-limit-options.js';
+} from "./types/rate-limit-options.js";
 
 export {
   RATE_LIMIT_METADATA_KEY,
   RateLimitConfig,
-} from './types/rate-limit-options.js';
+} from "./types/rate-limit-options.js";

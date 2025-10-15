@@ -20,7 +20,7 @@
 ```typescript
 interface ConnectionConfig {
   /** 数据库类型 */
-  type: 'postgresql' | 'mongodb';
+  type: "postgresql" | "mongodb";
 
   /** 主机地址 */
   host: string;
@@ -87,19 +87,19 @@ interface PoolConfig {
 ```typescript
 enum ConnectionStatus {
   /** 未连接 */
-  DISCONNECTED = 'disconnected',
+  DISCONNECTED = "disconnected",
 
   /** 连接中 */
-  CONNECTING = 'connecting',
+  CONNECTING = "connecting",
 
   /** 已连接 */
-  CONNECTED = 'connected',
+  CONNECTED = "connected",
 
   /** 连接失败 */
-  FAILED = 'failed',
+  FAILED = "failed",
 
   /** 重连中 */
-  RECONNECTING = 'reconnecting',
+  RECONNECTING = "reconnecting",
 }
 ```
 
@@ -174,7 +174,7 @@ interface PoolStats {
 ```typescript
 interface TransactionOptions {
   /** 事务隔离级别（使用数据库默认） */
-  isolationLevel?: 'read committed' | 'repeatable read' | 'serializable';
+  isolationLevel?: "read committed" | "repeatable read" | "serializable";
 
   /** 是否只读事务 */
   readOnly?: boolean;
@@ -266,7 +266,7 @@ interface MigrationInfo {
   executedAt: Date | null;
 
   /** 迁移状态 */
-  status: 'executed' | 'pending' | 'failed';
+  status: "executed" | "pending" | "failed";
 
   /** 迁移文件路径 */
   path?: string;
@@ -304,7 +304,7 @@ interface MigrationResult {
 ```typescript
 interface HealthCheckResult {
   /** 健康状态 */
-  status: 'healthy' | 'unhealthy' | 'degraded';
+  status: "healthy" | "unhealthy" | "degraded";
 
   /** 检查时间 */
   checkedAt: Date;
@@ -829,7 +829,7 @@ CREATE INDEX idx_tenant_dept ON table_name(tenant_id, department_id);
 模型设计支持扩展到其他数据库类型：
 
 ```typescript
-type DatabaseType = 'postgresql' | 'mongodb' | 'mysql' | 'sqlite';
+type DatabaseType = "postgresql" | "mongodb" | "mysql" | "sqlite";
 ```
 
 ### 支持分片

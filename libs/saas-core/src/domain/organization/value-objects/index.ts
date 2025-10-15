@@ -6,5 +6,11 @@
  * @since 1.0.0
  */
 
-export { OrganizationStatus, OrganizationStatusUtils } from './organization-status.vo.js';
-export { OrganizationType, type OrganizationTypeValue } from './organization-type.vo.js';
+export {
+  OrganizationStatus,
+  OrganizationStatusUtils,
+} from "./organization-status.vo.js";
+export {
+  OrganizationType,
+  type OrganizationTypeValue,
+} from "./organization-type.vo.js";

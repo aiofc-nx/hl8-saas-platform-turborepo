@@ -8,17 +8,17 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   IEventStore,
   EventStoreStats,
   EventStoreConfig,
-} from './common/event-store.interface';
-import { ISnapshotStore, Snapshot } from './common/snapshot-store.interface';
+} from "./common/event-store.interface";
+import { ISnapshotStore, Snapshot } from "./common/snapshot-store.interface";
 // import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
-import { DatabaseService } from '@hl8/database';
+import { PinoLogger } from "@hl8/logger";
+import { CacheService } from "@hl8/cache";
+import { DatabaseService } from "@hl8/database";
 
 /**
  * 事件存储实现
@@ -42,7 +42,7 @@ export class EventStoreImplementation implements IEventStore {
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
     private readonly snapshotStore: ISnapshotStore,
-    private readonly config: EventStoreConfig
+    private readonly config: EventStoreConfig,
   ) {}
 
   /**
@@ -56,7 +56,7 @@ export class EventStoreImplementation implements IEventStore {
   async saveEvents(
     aggregateId: string,
     events: any[],
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
     try {
       // 1. 验证事件
@@ -74,13 +74,13 @@ export class EventStoreImplementation implements IEventStore {
       // 5. 清理缓存
       await this.invalidateCache(aggregateId);
 
-      this.logger.info('事件保存成功', {
+      this.logger.info("事件保存成功", {
         aggregateId,
         eventCount: events.length,
         expectedVersion,
       });
     } catch (error) {
-      this.logger.error('事件保存失败', error, {
+      this.logger.error("事件保存失败", error, {
         aggregateId,
         eventCount: events.length,
         expectedVersion,
@@ -112,7 +112,7 @@ export class EventStoreImplementation implements IEventStore {
 
       return events;
     } catch (error) {
-      this.logger.error('获取事件失败', error, { aggregateId });
+      this.logger.error("获取事件失败", error, { aggregateId });
       throw error;
     }
   }
@@ -127,13 +127,13 @@ export class EventStoreImplementation implements IEventStore {
    */
   async getEventsFromVersion(
     aggregateId: string,
-    fromVersion: number
+    fromVersion: number,
   ): Promise<any[]> {
     try {
       const events = await this.getEventsFromDatabase(aggregateId, fromVersion);
       return events;
     } catch (error) {
-      this.logger.error('从版本获取事件失败', error, {
+      this.logger.error("从版本获取事件失败", error, {
         aggregateId,
         fromVersion,
       });
@@ -153,17 +153,17 @@ export class EventStoreImplementation implements IEventStore {
   async getEventsByType(
     eventType: string,
     fromDate?: Date,
-    toDate?: Date
+    toDate?: Date,
   ): Promise<any[]> {
     try {
       const events = await this.getEventsFromDatabaseByType(
         eventType,
         fromDate,
-        toDate
+        toDate,
       );
       return events;
     } catch (error) {
-      this.logger.error('按类型获取事件失败', error, {
+      this.logger.error("按类型获取事件失败", error, {
         eventType,
         fromDate,
         toDate,
@@ -184,17 +184,17 @@ export class EventStoreImplementation implements IEventStore {
   async getEventsByTenant(
     tenantId: string,
     fromDate?: Date,
-    toDate?: Date
+    toDate?: Date,
   ): Promise<any[]> {
     try {
       const events = await this.getEventsFromDatabaseByTenant(
         tenantId,
         fromDate,
-        toDate
+        toDate,
       );
       return events;
     } catch (error) {
-      this.logger.error('按租户获取事件失败', error, {
+      this.logger.error("按租户获取事件失败", error, {
         tenantId,
         fromDate,
         toDate,
@@ -215,7 +215,7 @@ export class EventStoreImplementation implements IEventStore {
       const version = await this.getAggregateVersionFromDatabase(aggregateId);
       return version;
     } catch (error) {
-      this.logger.error('获取聚合版本失败', error, { aggregateId });
+      this.logger.error("获取聚合版本失败", error, { aggregateId });
       throw error;
     }
   }
@@ -232,7 +232,7 @@ export class EventStoreImplementation implements IEventStore {
       const exists = await this.checkAggregateExists(aggregateId);
       return exists;
     } catch (error) {
-      this.logger.error('检查聚合存在性失败', error, { aggregateId });
+      this.logger.error("检查聚合存在性失败", error, { aggregateId });
       throw error;
     }
   }
@@ -248,9 +248,9 @@ export class EventStoreImplementation implements IEventStore {
       await this.deleteEventsFromDatabase(aggregateId);
       await this.invalidateCache(aggregateId);
 
-      this.logger.info('聚合事件删除成功', { aggregateId });
+      this.logger.info("聚合事件删除成功", { aggregateId });
     } catch (error) {
-      this.logger.error('删除聚合事件失败', error, { aggregateId });
+      this.logger.error("删除聚合事件失败", error, { aggregateId });
       throw error;
     }
   }
@@ -266,7 +266,7 @@ export class EventStoreImplementation implements IEventStore {
       const stats = await this.calculateStats();
       return stats;
     } catch (error) {
-      this.logger.error('获取统计信息失败', error);
+      this.logger.error("获取统计信息失败", error);
       throw error;
     }
   }
@@ -278,12 +278,12 @@ export class EventStoreImplementation implements IEventStore {
    */
   private validateEvents(events: any[]): void {
     if (!events || events.length === 0) {
-      throw new Error('事件列表不能为空');
+      throw new Error("事件列表不能为空");
     }
 
     for (const event of events) {
       if (!event.eventId || !event.aggregateId) {
-        throw new Error('事件必须包含事件ID和聚合ID');
+        throw new Error("事件必须包含事件ID和聚合ID");
       }
     }
   }
@@ -293,15 +293,14 @@ export class EventStoreImplementation implements IEventStore {
    */
   private async checkConcurrencyConflict(
     aggregateId: string,
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
-    const currentVersion = await this.getAggregateVersionFromDatabase(
-      aggregateId
-    );
+    const currentVersion =
+      await this.getAggregateVersionFromDatabase(aggregateId);
 
     if (currentVersion !== expectedVersion) {
       throw new Error(
-        `聚合 ${aggregateId} 版本冲突: 期望版本 ${expectedVersion}, 实际版本 ${currentVersion}`
+        `聚合 ${aggregateId} 版本冲突: 期望版本 ${expectedVersion}, 实际版本 ${currentVersion}`,
       );
     }
   }
@@ -312,11 +311,11 @@ export class EventStoreImplementation implements IEventStore {
   private async saveEventsToDatabase(
     aggregateId: string,
     events: any[],
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
     // 这里应该实现具体的数据保存逻辑
     // 实际实现中会调用数据库服务
-    console.log('保存事件到数据库', { aggregateId, events, expectedVersion });
+    console.log("保存事件到数据库", { aggregateId, events, expectedVersion });
   }
 
   /**
@@ -324,11 +323,11 @@ export class EventStoreImplementation implements IEventStore {
    */
   private async getEventsFromDatabase(
     aggregateId: string,
-    fromVersion?: number
+    fromVersion?: number,
   ): Promise<any[]> {
     // 这里应该实现具体的数据库查询逻辑
     // 实际实现中会调用数据库服务
-    console.log('从数据库获取事件', { aggregateId, fromVersion });
+    console.log("从数据库获取事件", { aggregateId, fromVersion });
     return [];
   }
 
@@ -338,10 +337,10 @@ export class EventStoreImplementation implements IEventStore {
   private async getEventsFromDatabaseByType(
     eventType: string,
     fromDate?: Date,
-    toDate?: Date
+    toDate?: Date,
   ): Promise<any[]> {
     // 这里应该实现具体的数据库查询逻辑
-    console.log('按类型从数据库获取事件', { eventType, fromDate, toDate });
+    console.log("按类型从数据库获取事件", { eventType, fromDate, toDate });
     return [];
   }
 
@@ -351,10 +350,10 @@ export class EventStoreImplementation implements IEventStore {
   private async getEventsFromDatabaseByTenant(
     tenantId: string,
     fromDate?: Date,
-    toDate?: Date
+    toDate?: Date,
   ): Promise<any[]> {
     // 这里应该实现具体的数据库查询逻辑
-    console.log('按租户从数据库获取事件', { tenantId, fromDate, toDate });
+    console.log("按租户从数据库获取事件", { tenantId, fromDate, toDate });
     return [];
   }
 
@@ -362,10 +361,10 @@ export class EventStoreImplementation implements IEventStore {
    * 从数据库获取聚合版本
    */
   private async getAggregateVersionFromDatabase(
-    aggregateId: string
+    aggregateId: string,
   ): Promise<number> {
     // 这里应该实现具体的数据库查询逻辑
-    console.log('从数据库获取聚合版本', { aggregateId });
+    console.log("从数据库获取聚合版本", { aggregateId });
     return 0;
   }
 
@@ -374,7 +373,7 @@ export class EventStoreImplementation implements IEventStore {
    */
   private async checkAggregateExists(aggregateId: string): Promise<boolean> {
     // 这里应该实现具体的数据库查询逻辑
-    console.log('检查聚合是否存在', { aggregateId });
+    console.log("检查聚合是否存在", { aggregateId });
     return false;
   }
 
@@ -383,7 +382,7 @@ export class EventStoreImplementation implements IEventStore {
    */
   private async deleteEventsFromDatabase(aggregateId: string): Promise<void> {
     // 这里应该实现具体的数据库删除逻辑
-    console.log('从数据库删除事件', { aggregateId });
+    console.log("从数据库删除事件", { aggregateId });
   }
 
   /**
@@ -395,7 +394,7 @@ export class EventStoreImplementation implements IEventStore {
       const cached = await this.cacheService.get(cacheKey);
       return cached ? JSON.parse(cached as string) : null;
     } catch (error) {
-      this.logger.warn('获取缓存事件失败', error);
+      this.logger.warn("获取缓存事件失败", error);
       return null;
     }
   }
@@ -409,7 +408,7 @@ export class EventStoreImplementation implements IEventStore {
       const ttl = this.config.retentionPeriod || 3600; // 默认1小时
       await this.cacheService.set(cacheKey, JSON.stringify(events), ttl);
     } catch (error) {
-      this.logger.warn('缓存事件失败', error);
+      this.logger.warn("缓存事件失败", error);
     }
   }
 
@@ -421,7 +420,7 @@ export class EventStoreImplementation implements IEventStore {
       const cacheKey = `events:${aggregateId}`;
       await this.cacheService.delete(cacheKey);
     } catch (error) {
-      this.logger.warn('使缓存失效失败', error);
+      this.logger.warn("使缓存失效失败", error);
     }
   }
 

@@ -6,11 +6,11 @@ import {
   ArgumentsHost,
   BadRequestException,
   HttpException,
-} from '@nestjs/common';
-import { AnyExceptionFilter } from './any-exception.filter.js';
-import type { ILoggerService } from './http-exception.filter.js';
+} from "@nestjs/common";
+import { AnyExceptionFilter } from "./any-exception.filter.js";
+import type { ILoggerService } from "./http-exception.filter.js";
 
-describe('AnyExceptionFilter', () => {
+describe("AnyExceptionFilter", () => {
   let filter: AnyExceptionFilter;
   let mockLogger: jest.Mocked<ILoggerService>;
   let mockArgumentsHost: jest.Mocked<ArgumentsHost>;
@@ -39,13 +39,13 @@ describe('AnyExceptionFilter', () => {
     } as any;
 
     mockRequest = {
-      id: 'req-456',
-      method: 'POST',
-      url: '/api/test',
-      ip: '192.168.1.1',
+      id: "req-456",
+      method: "POST",
+      url: "/api/test",
+      ip: "192.168.1.1",
       headers: {
-        'user-agent': 'Test Agent',
-        'x-request-id': 'req-456',
+        "user-agent": "Test Agent",
+        "x-request-id": "req-456",
       },
     };
 
@@ -62,8 +62,8 @@ describe('AnyExceptionFilter', () => {
     // 清理
   });
 
-  describe('基本功能', () => {
-    it('应该创建过滤器实例', () => {
+  describe("基本功能", () => {
+    it("应该创建过滤器实例", () => {
       // Act
       filter = new AnyExceptionFilter();
 
@@ -71,7 +71,7 @@ describe('AnyExceptionFilter', () => {
       expect(filter).toBeInstanceOf(AnyExceptionFilter);
     });
 
-    it('应该使用注入的日志服务', () => {
+    it("应该使用注入的日志服务", () => {
       // Act
       filter = new AnyExceptionFilter(mockLogger);
 
@@ -79,7 +79,7 @@ describe('AnyExceptionFilter', () => {
       expect(filter).toBeDefined();
     });
 
-    it('应该根据参数判断生产环境', () => {
+    it("应该根据参数判断生产环境", () => {
       // Act
       filter = new AnyExceptionFilter(mockLogger, true);
 
@@ -87,7 +87,7 @@ describe('AnyExceptionFilter', () => {
       expect(filter).toBeDefined();
     });
 
-    it('应该允许手动指定生产环境', () => {
+    it("应该允许手动指定生产环境", () => {
       // Act
       filter = new AnyExceptionFilter(mockLogger, true);
 
@@ -96,14 +96,14 @@ describe('AnyExceptionFilter', () => {
     });
   });
 
-  describe('catch() - Error 实例', () => {
+  describe("catch() - Error 实例", () => {
     beforeEach(() => {
       filter = new AnyExceptionFilter(mockLogger, true);
     });
 
-    it('应该捕获 Error 实例', () => {
+    it("应该捕获 Error 实例", () => {
       // Arrange
-      const error = new Error('测试错误');
+      const error = new Error("测试错误");
 
       // Act
       filter.catch(error, mockArgumentsHost);
@@ -111,22 +111,22 @@ describe('AnyExceptionFilter', () => {
       // Assert
       expect(mockResponse.status).toHaveBeenCalledWith(500);
       expect(mockResponse.header).toHaveBeenCalledWith(
-        'Content-Type',
-        'application/problem+json; charset=utf-8',
+        "Content-Type",
+        "application/problem+json; charset=utf-8",
       );
       expect(mockResponse.send).toHaveBeenCalledWith(
         expect.objectContaining({
-          type: 'https://docs.hl8.com/errors#INTERNAL_SERVER_ERROR',
+          type: "https://docs.hl8.com/errors#INTERNAL_SERVER_ERROR",
           status: 500,
-          errorCode: 'INTERNAL_SERVER_ERROR',
-          instance: 'req-456',
+          errorCode: "INTERNAL_SERVER_ERROR",
+          instance: "req-456",
         }),
       );
     });
 
-    it('应该捕获 TypeError', () => {
+    it("应该捕获 TypeError", () => {
       // Arrange
-      const error = new TypeError('类型错误');
+      const error = new TypeError("类型错误");
 
       // Act
       filter.catch(error, mockArgumentsHost);
@@ -135,9 +135,9 @@ describe('AnyExceptionFilter', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(500);
     });
 
-    it('应该捕获 ReferenceError', () => {
+    it("应该捕获 ReferenceError", () => {
       // Arrange
-      const error = new ReferenceError('引用错误');
+      const error = new ReferenceError("引用错误");
 
       // Act
       filter.catch(error, mockArgumentsHost);
@@ -147,14 +147,14 @@ describe('AnyExceptionFilter', () => {
     });
   });
 
-  describe('catch() - HttpException', () => {
+  describe("catch() - HttpException", () => {
     beforeEach(() => {
       filter = new AnyExceptionFilter(mockLogger);
     });
 
-    it('应该捕获 HttpException 并保留状态码', () => {
+    it("应该捕获 HttpException 并保留状态码", () => {
       // Arrange
-      const exception = new HttpException('Forbidden', 403);
+      const exception = new HttpException("Forbidden", 403);
 
       // Act
       filter.catch(exception, mockArgumentsHost);
@@ -163,9 +163,9 @@ describe('AnyExceptionFilter', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(403);
     });
 
-    it('应该捕获 BadRequestException', () => {
+    it("应该捕获 BadRequestException", () => {
       // Arrange
-      const exception = new BadRequestException('参数错误');
+      const exception = new BadRequestException("参数错误");
 
       // Act
       filter.catch(exception, mockArgumentsHost);
@@ -179,13 +179,13 @@ describe('AnyExceptionFilter', () => {
       );
     });
 
-    it('应该处理 HttpException 的对象响应', () => {
+    it("应该处理 HttpException 的对象响应", () => {
       // Arrange
       filter = new AnyExceptionFilter(mockLogger, true); // 生产环境模式
       const exception = new HttpException(
         {
-          error: 'Validation Error',
-          message: ['field1 is required', 'field2 is invalid'],
+          error: "Validation Error",
+          message: ["field1 is required", "field2 is invalid"],
         },
         400,
       );
@@ -196,15 +196,15 @@ describe('AnyExceptionFilter', () => {
       // Assert
       expect(mockResponse.send).toHaveBeenCalledWith(
         expect.objectContaining({
-          detail: 'field1 is required, field2 is invalid',
+          detail: "field1 is required, field2 is invalid",
         }),
       );
     });
 
-    it('应该处理 HttpException 的字符串响应', () => {
+    it("应该处理 HttpException 的字符串响应", () => {
       // Arrange
       filter = new AnyExceptionFilter(mockLogger, true); // 生产环境模式
-      const exception = new HttpException('Simple error message', 400);
+      const exception = new HttpException("Simple error message", 400);
 
       // Act
       filter.catch(exception, mockArgumentsHost);
@@ -212,20 +212,20 @@ describe('AnyExceptionFilter', () => {
       // Assert
       expect(mockResponse.send).toHaveBeenCalledWith(
         expect.objectContaining({
-          detail: 'Simple error message',
+          detail: "Simple error message",
         }),
       );
     });
   });
 
-  describe('catch() - 其他类型异常', () => {
+  describe("catch() - 其他类型异常", () => {
     beforeEach(() => {
       filter = new AnyExceptionFilter(mockLogger);
     });
 
-    it('应该捕获字符串异常', () => {
+    it("应该捕获字符串异常", () => {
       // Arrange
-      const exception = '字符串错误';
+      const exception = "字符串错误";
 
       // Act
       filter.catch(exception, mockArgumentsHost);
@@ -234,7 +234,7 @@ describe('AnyExceptionFilter', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(500);
     });
 
-    it('应该捕获数字异常', () => {
+    it("应该捕获数字异常", () => {
       // Arrange
       const exception = 12345;
 
@@ -245,9 +245,9 @@ describe('AnyExceptionFilter', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(500);
     });
 
-    it('应该捕获对象异常', () => {
+    it("应该捕获对象异常", () => {
       // Arrange
-      const exception = { code: 'ERR_001', message: '自定义错误' };
+      const exception = { code: "ERR_001", message: "自定义错误" };
 
       // Act
       filter.catch(exception, mockArgumentsHost);
@@ -256,7 +256,7 @@ describe('AnyExceptionFilter', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(500);
     });
 
-    it('应该捕获 null', () => {
+    it("应该捕获 null", () => {
       // Arrange
       const exception = null;
 
@@ -267,7 +267,7 @@ describe('AnyExceptionFilter', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(500);
     });
 
-    it('应该捕获 undefined', () => {
+    it("应该捕获 undefined", () => {
       // Arrange
       const exception = undefined;
 
@@ -279,11 +279,11 @@ describe('AnyExceptionFilter', () => {
     });
   });
 
-  describe('生产环境 vs 开发环境', () => {
-    it('生产环境不应暴露错误堆栈', () => {
+  describe("生产环境 vs 开发环境", () => {
+    it("生产环境不应暴露错误堆栈", () => {
       // Arrange
       filter = new AnyExceptionFilter(mockLogger, true);
-      const error = new Error('敏感错误');
+      const error = new Error("敏感错误");
 
       // Act
       filter.catch(error, mockArgumentsHost);
@@ -291,57 +291,57 @@ describe('AnyExceptionFilter', () => {
       // Assert
       expect(mockResponse.send).toHaveBeenCalledWith(
         expect.objectContaining({
-          detail: '处理请求时发生未预期的错误',
+          detail: "处理请求时发生未预期的错误",
         }),
       );
     });
 
-    it('开发环境应包含详细错误信息', () => {
+    it("开发环境应包含详细错误信息", () => {
       // Arrange
       filter = new AnyExceptionFilter(mockLogger, false);
-      const error = new Error('开发错误');
+      const error = new Error("开发错误");
 
       // Act
       filter.catch(error, mockArgumentsHost);
 
       // Assert
       const sendCall = mockResponse.send.mock.calls[0][0];
-      expect(sendCall.detail).toContain('开发错误');
-      expect(sendCall.detail).toContain('堆栈追踪');
+      expect(sendCall.detail).toContain("开发错误");
+      expect(sendCall.detail).toContain("堆栈追踪");
     });
   });
 
-  describe('日志记录', () => {
+  describe("日志记录", () => {
     beforeEach(() => {
       filter = new AnyExceptionFilter(mockLogger);
     });
 
-    it('应该记录完整的错误信息', () => {
+    it("应该记录完整的错误信息", () => {
       // Arrange
-      const error = new Error('测试错误');
+      const error = new Error("测试错误");
 
       // Act
       filter.catch(error, mockArgumentsHost);
 
       // Assert
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Unhandled Exception: 测试错误',
-        expect.stringContaining('Error: 测试错误'),
+        "Unhandled Exception: 测试错误",
+        expect.stringContaining("Error: 测试错误"),
         expect.objectContaining({
           request: expect.objectContaining({
-            id: 'req-456',
-            method: 'POST',
-            url: '/api/test',
+            id: "req-456",
+            method: "POST",
+            url: "/api/test",
           }),
-          exceptionType: 'Error',
+          exceptionType: "Error",
           timestamp: expect.any(String),
         }),
       );
     });
 
-    it('应该记录异常类型', () => {
+    it("应该记录异常类型", () => {
       // Arrange
-      const error = new TypeError('类型错误');
+      const error = new TypeError("类型错误");
 
       // Act
       filter.catch(error, mockArgumentsHost);
@@ -351,32 +351,32 @@ describe('AnyExceptionFilter', () => {
         expect.any(String),
         expect.any(String),
         expect.objectContaining({
-          exceptionType: 'TypeError',
+          exceptionType: "TypeError",
         }),
       );
     });
 
-    it('应该记录非 Error 类型的异常', () => {
+    it("应该记录非 Error 类型的异常", () => {
       // Arrange
-      const exception = '字符串异常';
+      const exception = "字符串异常";
 
       // Act
       filter.catch(exception, mockArgumentsHost);
 
       // Assert
       expect(mockLogger.error).toHaveBeenCalledWith(
-        'Unhandled Exception: 字符串异常',
+        "Unhandled Exception: 字符串异常",
         undefined, // 非 Error 类型没有 stack
         expect.objectContaining({
-          exceptionType: 'string',
+          exceptionType: "string",
         }),
       );
     });
 
-    it('没有日志服务时应该静默处理', () => {
+    it("没有日志服务时应该静默处理", () => {
       // Arrange
       filter = new AnyExceptionFilter(); // 不注入日志服务
-      const error = new Error('测试错误');
+      const error = new Error("测试错误");
 
       // Act & Assert - 应该不抛出错误
       expect(() => filter.catch(error, mockArgumentsHost)).not.toThrow();
@@ -387,14 +387,14 @@ describe('AnyExceptionFilter', () => {
     });
   });
 
-  describe('边界情况', () => {
+  describe("边界情况", () => {
     beforeEach(() => {
       filter = new AnyExceptionFilter(mockLogger);
     });
 
-    it('应该处理循环引用的对象', () => {
+    it("应该处理循环引用的对象", () => {
       // Arrange
-      const obj: any = { name: 'test' };
+      const obj: any = { name: "test" };
       obj.self = obj; // 创建循环引用
 
       // Act
@@ -404,10 +404,10 @@ describe('AnyExceptionFilter', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(500);
     });
 
-    it('应该处理没有 request.id 的情况', () => {
+    it("应该处理没有 request.id 的情况", () => {
       // Arrange
       mockRequest.id = undefined;
-      const error = new Error('测试');
+      const error = new Error("测试");
 
       // Act
       filter.catch(error, mockArgumentsHost);
@@ -415,7 +415,7 @@ describe('AnyExceptionFilter', () => {
       // Assert
       expect(mockResponse.send).toHaveBeenCalledWith(
         expect.objectContaining({
-          instance: 'req-456', // 应该使用 x-request-id header
+          instance: "req-456", // 应该使用 x-request-id header
         }),
       );
     });

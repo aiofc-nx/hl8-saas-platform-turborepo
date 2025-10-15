@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const SORTING_PIPE = 'Sorting Pipe';
+export const SORTING_PIPE = "Sorting Pipe";

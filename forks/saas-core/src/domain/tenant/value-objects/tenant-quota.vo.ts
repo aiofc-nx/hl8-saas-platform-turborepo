@@ -52,9 +52,9 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
-import { TENANT_TYPE_QUOTAS } from '../../../constants/tenant.constants';
-import { TenantType } from './tenant-type.enum';
+import { BaseValueObject } from "@hl8/hybrid-archi";
+import { TENANT_TYPE_QUOTAS } from "../../../constants/tenant.constants";
+import { TenantType } from "./tenant-type.enum";
 
 /**
  * 租户配额属性
@@ -83,18 +83,18 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    */
   protected override validate(props: ITenantQuotaProps): void {
     // 验证所有配额值都是正数
-    this.validatePositive(props.maxUsers, '最大用户数');
-    this.validatePositive(props.maxStorageMB, '最大存储空间');
-    this.validatePositive(props.maxOrganizations, '最大组织数');
-    this.validatePositive(props.maxDepartmentLevels, '最大部门层级');
-    this.validatePositive(props.maxApiCallsPerDay, '每日API调用限制');
+    this.validatePositive(props.maxUsers, "最大用户数");
+    this.validatePositive(props.maxStorageMB, "最大存储空间");
+    this.validatePositive(props.maxOrganizations, "最大组织数");
+    this.validatePositive(props.maxDepartmentLevels, "最大部门层级");
+    this.validatePositive(props.maxApiCallsPerDay, "每日API调用限制");
 
     // 验证所有配额值都是整数
-    this.validateInteger(props.maxUsers, '最大用户数');
-    this.validateInteger(props.maxStorageMB, '最大存储空间');
-    this.validateInteger(props.maxOrganizations, '最大组织数');
-    this.validateInteger(props.maxDepartmentLevels, '最大部门层级');
-    this.validateInteger(props.maxApiCallsPerDay, '每日API调用限制');
+    this.validateInteger(props.maxUsers, "最大用户数");
+    this.validateInteger(props.maxStorageMB, "最大存储空间");
+    this.validateInteger(props.maxOrganizations, "最大组织数");
+    this.validateInteger(props.maxDepartmentLevels, "最大部门层级");
+    this.validateInteger(props.maxApiCallsPerDay, "每日API调用限制");
   }
 
   /**
@@ -257,7 +257,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 使用率（0-100）
    */
   public getOrganizationQuotaUsage(currentOrgCount: number): number {
-    return Math.min((currentOrgCount / this._value.maxOrganizations) * 100, 100);
+    return Math.min(
+      (currentOrgCount / this._value.maxOrganizations) * 100,
+      100,
+    );
   }
 
   /**
@@ -267,7 +270,10 @@ export class TenantQuota extends BaseValueObject<ITenantQuotaProps> {
    * @returns {number} 使用率（0-100）
    */
   public getApiQuotaUsage(currentApiCalls: number): number {
-    return Math.min((currentApiCalls / this._value.maxApiCallsPerDay) * 100, 100);
+    return Math.min(
+      (currentApiCalls / this._value.maxApiCallsPerDay) * 100,
+      100,
+    );
   }
 
   // ============ 配额剩余量方法 ============

@@ -62,13 +62,14 @@
  *
  * @since 1.0.0
  */
-import 'reflect-metadata';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
+import "reflect-metadata";
+import { BaseDomainEvent } from "../../domain/events/base/base-domain-event";
 import {
   setSagaMetadata,
   getSagaMetadata as getMetadata,
-} from './metadata.utils';
-import type { ISagaMetadata,
+} from "./metadata.utils";
+import type {
+  ISagaMetadata,
   IRetryConfig,
   IValidationConfig,
   IAuthorizationConfig,
@@ -76,7 +77,7 @@ import type { ISagaMetadata,
   IMultiTenantConfig,
   IDataIsolationConfig,
   IPerformanceMonitorConfig,
- } from './metadata.interfaces';
+} from "./metadata.interfaces";
 
 /**
  * Saga 处理器接口
@@ -237,7 +238,7 @@ export function Saga<TEvent extends BaseDomainEvent>(
   return function (target: new (...args: any[]) => ISagaHandler<TEvent>) {
     // 验证目标类实现了 ISagaHandler 接口
     const prototype = target.prototype;
-    if (typeof prototype.handle !== 'function') {
+    if (typeof prototype.handle !== "function") {
       throw new Error(
         `Saga handler ${target.name} must implement handle method`,
       );
@@ -247,7 +248,7 @@ export function Saga<TEvent extends BaseDomainEvent>(
     setSagaMetadata(target, sagaType, options);
 
     // 添加静态方法用于获取 Saga 类型
-    Object.defineProperty(target, 'sagaType', {
+    Object.defineProperty(target, "sagaType", {
       value: sagaType,
       writable: false,
       enumerable: true,
@@ -255,7 +256,7 @@ export function Saga<TEvent extends BaseDomainEvent>(
     });
 
     // 添加静态方法用于获取处理器优先级
-    Object.defineProperty(target, 'priority', {
+    Object.defineProperty(target, "priority", {
       value: options.priority || 0,
       writable: false,
       enumerable: true,
@@ -263,7 +264,7 @@ export function Saga<TEvent extends BaseDomainEvent>(
     });
 
     // 添加静态方法用于检查是否支持指定 Saga 类型
-    Object.defineProperty(target, 'supports', {
+    Object.defineProperty(target, "supports", {
       value: function (sgType: string): boolean {
         return sgType === sagaType;
       },
@@ -273,7 +274,7 @@ export function Saga<TEvent extends BaseDomainEvent>(
     });
 
     // 添加静态方法用于获取元数据
-    Object.defineProperty(target, 'getMetadata', {
+    Object.defineProperty(target, "getMetadata", {
       value: function (): ISagaMetadata | undefined {
         return getMetadata(target);
       },

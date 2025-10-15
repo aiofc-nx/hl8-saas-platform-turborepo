@@ -2,7 +2,7 @@
  * 邮件适配器（简化版本）
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class EmailAdapter {
@@ -15,4 +15,3 @@ export class EmailAdapter {
     console.log(`发送欢迎邮件到: ${email}`);
   }
 }
-

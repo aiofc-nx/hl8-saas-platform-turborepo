@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile, readdir } from 'node:fs/promises';
-import { join, extname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFile, writeFile, readdir } from "node:fs/promises";
+import { join, extname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const REPO_ROOT = join(__dirname, '..');
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const REPO_ROOT = join(__dirname, "..");
 
 async function getAllTsFiles(dir) {
   let files = [];
@@ -15,7 +15,11 @@ async function getAllTsFiles(dir) {
     const fullPath = join(dir, item.name);
     if (item.isDirectory()) {
       files = files.concat(await getAllTsFiles(fullPath));
-    } else if (item.isFile() && extname(item.name) === '.ts' && !item.name.endsWith('.d.ts')) {
+    } else if (
+      item.isFile() &&
+      extname(item.name) === ".ts" &&
+      !item.name.endsWith(".d.ts")
+    ) {
       files.push(fullPath);
     }
   }
@@ -23,15 +27,16 @@ async function getAllTsFiles(dir) {
 }
 
 async function fixLoggerImports(filePath) {
-  let content = await readFile(filePath, 'utf-8');
+  let content = await readFile(filePath, "utf-8");
   let hasChanges = false;
 
   // 检查是否是领域层文件
-  const isDomainFile = filePath.includes('/domain/');
-  
+  const isDomainFile = filePath.includes("/domain/");
+
   // 1. 替换 FastifyLoggerService 导入
-  const fastifyLoggerImportRegex = /import\s*{\s*FastifyLoggerService\s*}\s*from\s*['"]@hl8\/nestjs-fastify['"];?/g;
-  
+  const fastifyLoggerImportRegex =
+    /import\s*{\s*FastifyLoggerService\s*}\s*from\s*['"]@hl8\/nestjs-fastify['"];?/g;
+
   if (fastifyLoggerImportRegex.test(content)) {
     content = content.replace(fastifyLoggerImportRegex, (match) => {
       hasChanges = true;
@@ -44,8 +49,9 @@ async function fixLoggerImports(filePath) {
   }
 
   // 2. 替换 Logger 导入
-  const loggerImportRegex = /import\s*{\s*Logger\s*}\s*from\s*['"]@nestjs\/common['"];?/g;
-  
+  const loggerImportRegex =
+    /import\s*{\s*Logger\s*}\s*from\s*['"]@nestjs\/common['"];?/g;
+
   if (loggerImportRegex.test(content)) {
     content = content.replace(loggerImportRegex, (match) => {
       hasChanges = true;
@@ -63,9 +69,9 @@ async function fixLoggerImports(filePath) {
     content = content.replace(fastifyLoggerTypeRegex, (match) => {
       hasChanges = true;
       if (isDomainFile) {
-        return ': IPureLogger';
+        return ": IPureLogger";
       } else {
-        return ': FastifyLoggerService';
+        return ": FastifyLoggerService";
       }
     });
   }
@@ -75,9 +81,9 @@ async function fixLoggerImports(filePath) {
     content = content.replace(loggerTypeRegex, (match) => {
       hasChanges = true;
       if (isDomainFile) {
-        return ': IPureLogger';
+        return ": IPureLogger";
       } else {
-        return ': Logger';
+        return ": Logger";
       }
     });
   }
@@ -88,9 +94,9 @@ async function fixLoggerImports(filePath) {
     content = content.replace(fastifyLoggerConstructorRegex, (match) => {
       hasChanges = true;
       if (isDomainFile) {
-        return 'null as any // TODO: 注入 IPureLogger';
+        return "null as any // TODO: 注入 IPureLogger";
       } else {
-        return 'new FastifyLoggerService(';
+        return "new FastifyLoggerService(";
       }
     });
   }
@@ -100,27 +106,29 @@ async function fixLoggerImports(filePath) {
     content = content.replace(loggerConstructorRegex, (match) => {
       hasChanges = true;
       if (isDomainFile) {
-        return 'null as any // TODO: 注入 IPureLogger';
+        return "null as any // TODO: 注入 IPureLogger";
       } else {
-        return 'new Logger(';
+        return "new Logger(";
       }
     });
   }
 
   if (hasChanges) {
     await writeFile(filePath, content);
-    const layer = isDomainFile ? 'domain' : 'application';
-    console.log(`✅ Updated ${layer} layer logger in: ${filePath.replace(REPO_ROOT, '.')}`);
+    const layer = isDomainFile ? "domain" : "application";
+    console.log(
+      `✅ Updated ${layer} layer logger in: ${filePath.replace(REPO_ROOT, ".")}`,
+    );
   }
   return hasChanges;
 }
 
 async function main() {
-  console.log('🚀 修复所有 Logger 导入问题...');
-  
-  const hybridArchiPath = join(REPO_ROOT, 'libs', 'hybrid-archi', 'src');
+  console.log("🚀 修复所有 Logger 导入问题...");
+
+  const hybridArchiPath = join(REPO_ROOT, "libs", "hybrid-archi", "src");
   const files = await getAllTsFiles(hybridArchiPath);
-  
+
   let fixedCount = 0;
   for (const file of files) {
     if (await fixLoggerImports(file)) {

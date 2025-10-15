@@ -6,21 +6,21 @@
  * @since 1.0.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import * as fs from 'fs';
-import * as path from 'path';
-import { CacheManager, CacheStrategy } from '../../lib/cache';
-import { dotenvLoader, fileLoader } from '../../lib/loader';
-import { TypedConfigModule } from '../../lib/typed-config.module';
+import { Test, TestingModule } from "@nestjs/testing";
+import * as fs from "fs";
+import * as path from "path";
+import { CacheManager, CacheStrategy } from "../../lib/cache";
+import { dotenvLoader, fileLoader } from "../../lib/loader";
+import { TypedConfigModule } from "../../lib/typed-config.module";
 import {
   TestConfig,
   cleanupTempFiles,
   createTempDir,
   createTestConfig,
   createTestEnvVars,
-} from '../test-utils';
+} from "../test-utils";
 
-describe('配置模块集成测试', () => {
+describe("配置模块集成测试", () => {
   let module: TestingModule;
   let tempDir: string;
   let tempFiles: string[] = [];
@@ -37,11 +37,11 @@ describe('配置模块集成测试', () => {
     await cleanupTempFiles(tempFiles);
   });
 
-  describe('基本配置加载', () => {
-    it('应该从文件加载配置', async () => {
+  describe("基本配置加载", () => {
+    it("应该从文件加载配置", async () => {
       const configData = createTestConfig();
       const jsonContent = JSON.stringify(configData);
-      const configFile = path.join(tempDir, 'app.json');
+      const configFile = path.join(tempDir, "app.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
@@ -56,12 +56,12 @@ describe('配置模块集成测试', () => {
 
       const config = module.get<TestConfig>(TestConfig);
       expect(config).toBeDefined();
-      expect(config.name).toBe('Test App');
-      expect(config.version).toBe('1.0.0');
+      expect(config.name).toBe("Test App");
+      expect(config.version).toBe("1.0.0");
       expect(config.port).toBe(3000);
     });
 
-    it('应该从环境变量加载配置', async () => {
+    it("应该从环境变量加载配置", async () => {
       const envVars = createTestEnvVars();
       Object.assign(process.env, envVars);
 
@@ -69,28 +69,28 @@ describe('配置模块集成测试', () => {
         imports: [
           TypedConfigModule.forRoot({
             schema: TestConfig,
-            load: dotenvLoader({ separator: '__' }),
+            load: dotenvLoader({ separator: "__" }),
           }),
         ],
       }).compile();
 
       const config = module.get<TestConfig>(TestConfig);
       expect(config).toBeDefined();
-      expect(config.name).toBe('Test App');
-      expect(config.version).toBe('1.0.0');
+      expect(config.name).toBe("Test App");
+      expect(config.version).toBe("1.0.0");
       expect(config.port).toBe(3000);
     });
 
-    it('应该合并多个配置源', async () => {
+    it("应该合并多个配置源", async () => {
       const baseConfig = createTestConfig();
       const jsonContent = JSON.stringify(baseConfig);
-      const configFile = path.join(tempDir, 'base.json');
+      const configFile = path.join(tempDir, "base.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
       // 设置环境变量覆盖
-      process.env['APP__NAME'] = 'Override App';
-      process.env['APP__PORT'] = '8080';
+      process.env["APP__NAME"] = "Override App";
+      process.env["APP__PORT"] = "8080";
 
       module = await Test.createTestingModule({
         imports: [
@@ -98,7 +98,7 @@ describe('配置模块集成测试', () => {
             schema: TestConfig,
             load: [
               fileLoader({ path: configFile }),
-              dotenvLoader({ separator: '__' }),
+              dotenvLoader({ separator: "__" }),
             ],
           }),
         ],
@@ -106,17 +106,17 @@ describe('配置模块集成测试', () => {
 
       const config = module.get<TestConfig>(TestConfig);
       expect(config).toBeDefined();
-      expect(config.name).toBe('Override App'); // 环境变量覆盖
-      expect(config.version).toBe('1.0.0'); // 文件配置
+      expect(config.name).toBe("Override App"); // 环境变量覆盖
+      expect(config.version).toBe("1.0.0"); // 文件配置
       expect(config.port).toBe(8080); // 环境变量覆盖
     });
   });
 
-  describe('缓存集成', () => {
-    it('应该使用内存缓存', async () => {
+  describe("缓存集成", () => {
+    it("应该使用内存缓存", async () => {
       const configData = createTestConfig();
       const jsonContent = JSON.stringify(configData);
-      const configFile = path.join(tempDir, 'app.json');
+      const configFile = path.join(tempDir, "app.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
@@ -146,14 +146,14 @@ describe('配置模块集成测试', () => {
       expect(stats.totalEntries).toBeGreaterThan(0);
     });
 
-    it('应该使用文件缓存', async () => {
+    it("应该使用文件缓存", async () => {
       const configData = createTestConfig();
       const jsonContent = JSON.stringify(configData);
-      const configFile = path.join(tempDir, 'app.json');
+      const configFile = path.join(tempDir, "app.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
-      const cacheDir = path.join(tempDir, 'cache');
+      const cacheDir = path.join(tempDir, "cache");
       tempFiles.push(cacheDir);
 
       module = await Test.createTestingModule({
@@ -180,9 +180,9 @@ describe('配置模块集成测试', () => {
     });
   });
 
-  describe('错误处理集成', () => {
-    it('应该处理文件不存在错误', async () => {
-      const nonexistentFile = path.join(tempDir, 'nonexistent.json');
+  describe("错误处理集成", () => {
+    it("应该处理文件不存在错误", async () => {
+      const nonexistentFile = path.join(tempDir, "nonexistent.json");
 
       await expect(
         Test.createTestingModule({
@@ -196,9 +196,9 @@ describe('配置模块集成测试', () => {
       ).rejects.toThrow();
     });
 
-    it('应该处理无效的配置文件', async () => {
-      const invalidJson = '{ invalid json }';
-      const configFile = path.join(tempDir, 'invalid.json');
+    it("应该处理无效的配置文件", async () => {
+      const invalidJson = "{ invalid json }";
+      const configFile = path.join(tempDir, "invalid.json");
       fs.writeFileSync(configFile, invalidJson);
       tempFiles.push(configFile);
 
@@ -214,10 +214,10 @@ describe('配置模块集成测试', () => {
       ).rejects.toThrow();
     });
 
-    it('应该处理配置验证错误', async () => {
-      const invalidConfig = { invalid: 'config' };
+    it("应该处理配置验证错误", async () => {
+      const invalidConfig = { invalid: "config" };
       const jsonContent = JSON.stringify(invalidConfig);
-      const configFile = path.join(tempDir, 'invalid-config.json');
+      const configFile = path.join(tempDir, "invalid-config.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
@@ -234,17 +234,17 @@ describe('配置模块集成测试', () => {
     });
   });
 
-  describe('异步配置加载', () => {
-    it('应该支持异步配置加载', async () => {
+  describe("异步配置加载", () => {
+    it("应该支持异步配置加载", async () => {
       const configData = createTestConfig();
       const jsonContent = JSON.stringify(configData);
-      const configFile = path.join(tempDir, 'async-config.json');
+      const configFile = path.join(tempDir, "async-config.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
       const asyncLoader = async () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
-        return JSON.parse(fs.readFileSync(configFile, 'utf8'));
+        return JSON.parse(fs.readFileSync(configFile, "utf8"));
       };
 
       module = await Test.createTestingModule({
@@ -258,13 +258,13 @@ describe('配置模块集成测试', () => {
 
       const config = module.get<TestConfig>(TestConfig);
       expect(config).toBeDefined();
-      expect(config.name).toBe('Test App');
+      expect(config.name).toBe("Test App");
     });
 
-    it('应该处理异步加载错误', async () => {
+    it("应该处理异步加载错误", async () => {
       const asyncLoader = async () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
-        throw new Error('Async load failed');
+        throw new Error("Async load failed");
       };
 
       await expect(
@@ -276,26 +276,26 @@ describe('配置模块集成测试', () => {
             }),
           ],
         }).compile(),
-      ).rejects.toThrow('Async load failed');
+      ).rejects.toThrow("Async load failed");
     });
   });
 
-  describe('配置标准化和验证', () => {
-    it('应该支持配置标准化', async () => {
+  describe("配置标准化和验证", () => {
+    it("应该支持配置标准化", async () => {
       const rawConfig = {
-        name: '  Test App  ', // 需要标准化
-        version: '1.0.0',
-        port: '3000', // 需要转换为数字
+        name: "  Test App  ", // 需要标准化
+        version: "1.0.0",
+        port: "3000", // 需要转换为数字
         database: {
-          host: 'localhost',
-          port: '5432', // 需要转换为数字
-          username: 'user',
-          password: 'pass',
+          host: "localhost",
+          port: "5432", // 需要转换为数字
+          username: "user",
+          password: "pass",
         },
       };
 
       const jsonContent = JSON.stringify(rawConfig);
-      const configFile = path.join(tempDir, 'raw-config.json');
+      const configFile = path.join(tempDir, "raw-config.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
@@ -321,21 +321,21 @@ describe('配置模块集成测试', () => {
 
       const config = module.get<TestConfig>(TestConfig);
       expect(config).toBeDefined();
-      expect(config.name).toBe('Test App');
+      expect(config.name).toBe("Test App");
       expect(config.port).toBe(3000);
       expect(config.database.port).toBe(5432);
     });
 
-    it('应该支持自定义验证器', async () => {
+    it("应该支持自定义验证器", async () => {
       const configData = createTestConfig();
       const jsonContent = JSON.stringify(configData);
-      const configFile = path.join(tempDir, 'config.json');
+      const configFile = path.join(tempDir, "config.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
       const customValidator = jest.fn().mockImplementation((config) => {
         if (config.port < 1000) {
-          throw new Error('Port must be at least 1000');
+          throw new Error("Port must be at least 1000");
         }
         return config;
       });
@@ -350,14 +350,14 @@ describe('配置模块集成测试', () => {
             }),
           ],
         }).compile(),
-      ).rejects.toThrow('Port must be at least 1000');
+      ).rejects.toThrow("Port must be at least 1000");
 
       expect(customValidator).toHaveBeenCalled();
     });
   });
 
-  describe('性能测试', () => {
-    it('应该高效处理大型配置', async () => {
+  describe("性能测试", () => {
+    it("应该高效处理大型配置", async () => {
       const largeConfig = {
         ...createTestConfig(),
         largeArray: new Array(1000)
@@ -369,7 +369,7 @@ describe('配置模块集成测试', () => {
       };
 
       const jsonContent = JSON.stringify(largeConfig);
-      const configFile = path.join(tempDir, 'large-config.json');
+      const configFile = path.join(tempDir, "large-config.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
@@ -393,10 +393,10 @@ describe('配置模块集成测试', () => {
       expect(config).toBeDefined();
     });
 
-    it('应该高效处理缓存操作', async () => {
+    it("应该高效处理缓存操作", async () => {
       const configData = createTestConfig();
       const jsonContent = JSON.stringify(configData);
-      const configFile = path.join(tempDir, 'config.json');
+      const configFile = path.join(tempDir, "config.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 
@@ -434,11 +434,11 @@ describe('配置模块集成测试', () => {
     });
   });
 
-  describe('模块生命周期', () => {
-    it('应该正确处理模块销毁', async () => {
+  describe("模块生命周期", () => {
+    it("应该正确处理模块销毁", async () => {
       const configData = createTestConfig();
       const jsonContent = JSON.stringify(configData);
-      const configFile = path.join(tempDir, 'config.json');
+      const configFile = path.join(tempDir, "config.json");
       fs.writeFileSync(configFile, jsonContent);
       tempFiles.push(configFile);
 

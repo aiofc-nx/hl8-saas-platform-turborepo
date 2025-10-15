@@ -5,20 +5,15 @@
  * @since 1.0.0
  */
 
-import { BaseQuery } from '@hl8/hybrid-archi';
+import { BaseQuery } from "@hl8/hybrid-archi";
 
 export class ListTenantsQuery extends BaseQuery {
-  constructor(
-    tenantId: string,
-    userId: string,
-    page = 1,
-    pageSize = 20,
-  ) {
+  constructor(tenantId: string, userId: string, page = 1, pageSize = 20) {
     super(tenantId, userId, page, pageSize);
   }
 
   get queryType(): string {
-    return 'ListTenantsQuery';
+    return "ListTenantsQuery";
   }
 
   protected createCopyWithSortRules(sortRules: any[]): this {
@@ -31,4 +26,3 @@ export class ListTenantsQuery extends BaseQuery {
     return copy as this;
   }
 }
-

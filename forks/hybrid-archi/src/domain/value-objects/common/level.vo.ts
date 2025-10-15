@@ -48,7 +48,7 @@
  * @since 1.1.0
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object";
 
 export abstract class Level extends BaseValueObject<number> {
   /**
@@ -82,8 +82,8 @@ export abstract class Level extends BaseValueObject<number> {
    * @override
    */
   protected override validate(value: number): void {
-    this.validateInteger(value, '级别');
-    this.validateRange(value, this.minLevel, this.maxLevel, '级别');
+    this.validateInteger(value, "级别");
+    this.validateRange(value, this.minLevel, this.maxLevel, "级别");
   }
 
   /**
@@ -124,4 +124,3 @@ export abstract class Level extends BaseValueObject<number> {
     return this._value - 1;
   }
 }
-

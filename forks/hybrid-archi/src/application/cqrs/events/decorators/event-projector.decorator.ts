@@ -69,7 +69,7 @@ export interface IEventProjectorOptions {
    */
   retry?: {
     maxAttempts: number;
-    backoffStrategy: 'fixed' | 'exponential' | 'linear';
+    backoffStrategy: "fixed" | "exponential" | "linear";
     baseDelay: number;
   };
 
@@ -108,7 +108,9 @@ type Constructor<T = Record<string, unknown>> = new (...args: unknown[]) => T;
 /**
  * 类装饰器类型定义
  */
-type ClassDecorator = <TFunction extends Constructor>(target: TFunction) => TFunction | void;
+type ClassDecorator = <TFunction extends Constructor>(
+  target: TFunction,
+) => TFunction | void;
 
 /**
  * 事件投射器元数据接口
@@ -149,7 +151,7 @@ export interface IEventProjectorMetadata {
    */
   retry?: {
     maxAttempts: number;
-    backoffStrategy: 'fixed' | 'exponential' | 'linear';
+    backoffStrategy: "fixed" | "exponential" | "linear";
     baseDelay: number;
   };
 
@@ -183,7 +185,7 @@ export interface IEventProjectorMetadata {
 /**
  * 事件投射器元数据键
  */
-export const EVENT_PROJECTOR_METADATA_KEY = Symbol('eventProjector');
+export const EVENT_PROJECTOR_METADATA_KEY = Symbol("eventProjector");
 
 /**
  * 事件投射器装饰器
@@ -216,7 +218,7 @@ export const EVENT_PROJECTOR_METADATA_KEY = Symbol('eventProjector');
  */
 export function EventProjector(
   eventTypes: string | string[],
-  options: IEventProjectorOptions = {}
+  options: IEventProjectorOptions = {},
 ): ClassDecorator {
   return function <T extends Constructor>(target: T): T {
     // 规范化事件类型
@@ -228,7 +230,7 @@ export function EventProjector(
     const metadata: IEventProjectorMetadata = {
       eventTypes: normalizedEventTypes,
       description: options.description || `${target.name} 事件投射器`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       readModelType: options.readModelType,
       category: options.category,
       tags: options.tags,
@@ -247,7 +249,7 @@ export function EventProjector(
     Reflect.defineMetadata(EVENT_PROJECTOR_METADATA_KEY, metadata, target);
 
     // 设置事件类型属性
-    Object.defineProperty(target.prototype, 'eventTypes', {
+    Object.defineProperty(target.prototype, "eventTypes", {
       value: normalizedEventTypes,
       writable: false,
       enumerable: true,
@@ -265,7 +267,7 @@ export function EventProjector(
  * @returns 事件投射器元数据
  */
 export function getEventProjectorMetadata(
-  target: Constructor
+  target: Constructor,
 ): IEventProjectorMetadata | undefined {
   return Reflect.getMetadata(EVENT_PROJECTOR_METADATA_KEY, target);
 }
@@ -303,7 +305,7 @@ export function isEventProjector(target: Constructor): boolean {
 export function ReadModelProjector(
   eventTypes: string | string[],
   readModelType: string,
-  options: Omit<IEventProjectorOptions, 'readModelType'> = {}
+  options: Omit<IEventProjectorOptions, "readModelType"> = {},
 ): ClassDecorator {
   return EventProjector(eventTypes, {
     ...options,
@@ -328,7 +330,7 @@ export function ReadModelProjector(
 export function AutoRegisterProjector(): ClassDecorator {
   return function <T extends Constructor>(target: T): T {
     // 标记为自动注册
-    Reflect.defineMetadata('autoRegister', true, target);
+    Reflect.defineMetadata("autoRegister", true, target);
     return target;
   };
 }
@@ -339,8 +341,6 @@ export function AutoRegisterProjector(): ClassDecorator {
  * @param target - 要检查的目标
  * @returns 如果是自动注册投射器返回true，否则返回false
  */
-export function isAutoRegisterProjector(
-  target: Constructor
-): boolean {
-  return Reflect.getMetadata('autoRegister', target) === true;
+export function isAutoRegisterProjector(target: Constructor): boolean {
+  return Reflect.getMetadata("autoRegister", target) === true;
 }

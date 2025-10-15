@@ -6,10 +6,10 @@
  */
 
 // 认证守卫
-export * from './auth.guard';
+export * from "./auth.guard";
 
 // 权限守卫
-export * from './permission.guard';
+export * from "./permission.guard";
 
 // 租户守卫
-export * from './tenant.guard';
+export * from "./tenant.guard";

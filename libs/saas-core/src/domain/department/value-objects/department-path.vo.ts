@@ -21,7 +21,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
+import { BaseValueObject } from "@hl8/hybrid-archi";
 
 export class DepartmentPath extends BaseValueObject<string> {
   /**
@@ -31,17 +31,17 @@ export class DepartmentPath extends BaseValueObject<string> {
    * @override
    */
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '部门路径');
+    this.validateNotEmpty(value, "部门路径");
     this.validatePattern(
       value,
       /^\/[\w-]+(\/[\w-]+)*$/,
-      '部门路径格式不正确，应该是 /root/parent/current 的格式'
+      "部门路径格式不正确，应该是 /root/parent/current 的格式",
     );
 
     // 检查路径深度
     const depth = this.calculateDepth(value);
     if (depth > 6) {
-      throw new Error('部门路径层级不能超过6级');
+      throw new Error("部门路径层级不能超过6级");
     }
   }
 
@@ -49,7 +49,7 @@ export class DepartmentPath extends BaseValueObject<string> {
    * 计算路径深度
    */
   private calculateDepth(path: string): number {
-    return path.split('/').filter((p) => p.length > 0).length;
+    return path.split("/").filter((p) => p.length > 0).length;
   }
 
   /**
@@ -57,7 +57,7 @@ export class DepartmentPath extends BaseValueObject<string> {
    *
    * @param rootName 根路径名称，默认为 'root'
    */
-  public static root(rootName: string = 'root'): DepartmentPath {
+  public static root(rootName: string = "root"): DepartmentPath {
     return DepartmentPath.create(`/${rootName}`);
   }
 
@@ -82,16 +82,16 @@ export class DepartmentPath extends BaseValueObject<string> {
     if (this.isRoot()) {
       return null;
     }
-    const parts = this._value.split('/').filter((p) => p.length > 0);
+    const parts = this._value.split("/").filter((p) => p.length > 0);
     parts.pop();
-    return '/' + parts.join('/');
+    return "/" + parts.join("/");
   }
 
   /**
    * 获取当前部门名称
    */
   public getCurrentName(): string {
-    const parts = this._value.split('/').filter((p) => p.length > 0);
+    const parts = this._value.split("/").filter((p) => p.length > 0);
     return parts[parts.length - 1];
   }
 
@@ -100,7 +100,7 @@ export class DepartmentPath extends BaseValueObject<string> {
    */
   public appendChild(childName: string): DepartmentPath {
     if (!childName || !/^[\w-]+$/.test(childName)) {
-      throw new Error('子部门名称格式不正确');
+      throw new Error("子部门名称格式不正确");
     }
     return DepartmentPath.create(`${this._value}/${childName}`);
   }
@@ -109,7 +109,7 @@ export class DepartmentPath extends BaseValueObject<string> {
    * 检查是否为另一个路径的子路径
    */
   public isChildOf(parentPath: DepartmentPath): boolean {
-    return this._value.startsWith(parentPath._value + '/');
+    return this._value.startsWith(parentPath._value + "/");
   }
 
   /**

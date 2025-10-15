@@ -58,14 +58,14 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
-import { IAggregateRoot } from '../../aggregates/base/aggregate-root.interface';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
+import { EntityId } from "../../value-objects/entity-id";
+import { IAggregateRoot } from "../../aggregates/base/aggregate-root.interface";
+import { BaseDomainEvent } from "../../events/base/base-domain-event";
 import {
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
-} from './base-repository.interface';
+} from "./base-repository.interface";
 
 /**
  * 聚合根仓储接口

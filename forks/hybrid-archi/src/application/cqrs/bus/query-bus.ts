@@ -49,11 +49,11 @@
  *
  * @since 1.0.0
  */
-import { Injectable } from '@nestjs/common';
-import { BaseQuery, IQueryResult } from '../queries/base/base-query';
-import { IQueryHandler } from '../queries/base/query-handler.interface';
-import { IQueryBus, IMiddleware, IMessageContext } from './cqrs-bus.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { Injectable } from "@nestjs/common";
+import { BaseQuery, IQueryResult } from "../queries/base/base-query";
+import { IQueryHandler } from "../queries/base/query-handler.interface";
+import { IQueryBus, IMiddleware, IMessageContext } from "./cqrs-bus.interface";
+import { EntityId } from "../../../domain/value-objects/entity-id";
 
 /**
  * 查询总线实现
@@ -87,8 +87,10 @@ export class QueryBus implements IQueryBus {
     // 创建消息上下文
     const context: IMessageContext = {
       messageId: query.queryId.toString(),
-      tenantId: query.tenantId ? EntityId.fromString(query.tenantId) : EntityId.generate(),
-      userId: query.userId || '',
+      tenantId: query.tenantId
+        ? EntityId.fromString(query.tenantId)
+        : EntityId.generate(),
+      userId: query.userId || "",
       messageType: queryType,
       createdAt: query.createdAt,
       metadata: query.metadata,
@@ -126,7 +128,7 @@ export class QueryBus implements IQueryBus {
     });
 
     if (!result) {
-      throw new Error('查询执行失败：未返回结果');
+      throw new Error("查询执行失败：未返回结果");
     }
     return result;
   }

@@ -8,10 +8,10 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { CacheAdapter, ICacheConfig } from './cache.adapter';
+import { Injectable } from "@nestjs/common";
+import { CacheService } from "@hl8/cache";
+import { PinoLogger } from "@hl8/logger";
+import { CacheAdapter, ICacheConfig } from "./cache.adapter";
 
 /**
  * 缓存注册信息
@@ -44,7 +44,7 @@ export class CacheFactory {
 
   constructor(
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger
+    private readonly logger: PinoLogger,
   ) {}
 
   /**
@@ -58,7 +58,7 @@ export class CacheFactory {
   createCache(
     cacheName: string,
     cacheType: string,
-    config: Partial<ICacheConfig> = {}
+    config: Partial<ICacheConfig> = {},
   ): CacheAdapter {
     // 检查缓存是否已存在
     if (this.caches.has(cacheName)) {
@@ -83,7 +83,7 @@ export class CacheFactory {
         enableCompression: config.enableCompression ?? false,
         enableEncryption: config.enableEncryption ?? false,
         enableStatistics: config.enableStatistics ?? true,
-        keyPrefix: config.keyPrefix ?? 'hybrid-archi',
+        keyPrefix: config.keyPrefix ?? "hybrid-archi",
         enableWarmup: config.enableWarmup ?? false,
       },
       instance: cache,
@@ -129,7 +129,7 @@ export class CacheFactory {
   getOrCreateCache(
     cacheName: string,
     cacheType: string,
-    config: Partial<ICacheConfig> = {}
+    config: Partial<ICacheConfig> = {},
   ): CacheAdapter {
     const existingCache = this.getCache(cacheName);
     if (existingCache) {
@@ -193,7 +193,7 @@ export class CacheFactory {
    */
   updateCacheConfiguration(
     cacheName: string,
-    config: Partial<ICacheConfig>
+    config: Partial<ICacheConfig>,
   ): void {
     const registration = this.caches.get(cacheName);
     if (!registration) {
@@ -214,7 +214,7 @@ export class CacheFactory {
    * @returns 清理的缓存数量
    */
   async cleanupExpiredCaches(
-    maxAge: number = 24 * 60 * 60 * 1000
+    maxAge: number = 24 * 60 * 60 * 1000,
   ): Promise<number> {
     const now = new Date();
     const expiredCaches: string[] = [];
@@ -303,11 +303,11 @@ export class CacheFactory {
       try {
         const isHealthy = await this.checkCacheHealth(
           cacheName,
-          registration.instance!
+          registration.instance!,
         );
         results[cacheName] = {
           healthy: isHealthy,
-          status: isHealthy ? 'healthy' : 'unhealthy',
+          status: isHealthy ? "healthy" : "unhealthy",
           cacheName,
           cacheType: registration.cacheType,
           createdAt: registration.createdAt,
@@ -316,7 +316,7 @@ export class CacheFactory {
       } catch (error) {
         results[cacheName] = {
           healthy: false,
-          status: 'error',
+          status: "error",
           error: error instanceof Error ? error.message : String(error),
           cacheName,
         };
@@ -333,12 +333,12 @@ export class CacheFactory {
    */
   private async checkCacheHealth(
     cacheName: string,
-    instance: CacheAdapter
+    instance: CacheAdapter,
   ): Promise<boolean> {
     try {
       // 检查缓存是否可用
       const testKey = `health:${cacheName}:${Date.now()}`;
-      const testValue = 'test';
+      const testValue = "test";
 
       await instance.set(testKey, testValue, 1);
       const retrieved = await instance.get(testKey);

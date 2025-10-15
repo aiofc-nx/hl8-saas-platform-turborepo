@@ -42,7 +42,7 @@ export const USERNAME_VALIDATION = {
   /** 格式：字母数字下划线连字符 */
   PATTERN: /^[a-zA-Z0-9_-]+$/,
   /** 错误消息 */
-  ERROR_MESSAGE: '用户名必须是3-50位的字母、数字、下划线或连字符组合',
+  ERROR_MESSAGE: "用户名必须是3-50位的字母、数字、下划线或连字符组合",
 } as const;
 
 /**
@@ -56,7 +56,7 @@ export const EMAIL_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 255,
   /** 错误消息 */
-  ERROR_MESSAGE: '邮箱格式不正确',
+  ERROR_MESSAGE: "邮箱格式不正确",
 } as const;
 
 /**
@@ -80,9 +80,9 @@ export const PASSWORD_VALIDATION = {
   /** 必须包含特殊字符 */
   REQUIRE_SPECIAL: true,
   /** 特殊字符集合 */
-  SPECIAL_CHARS: '!@#$%^&*()_+-=[]{}|;:,.<>?',
+  SPECIAL_CHARS: "!@#$%^&*()_+-=[]{}|;:,.<>?",
   /** 错误消息 */
-  ERROR_MESSAGE: '密码必须至少8位，包含大小写字母、数字和特殊字符',
+  ERROR_MESSAGE: "密码必须至少8位，包含大小写字母、数字和特殊字符",
 } as const;
 
 /**
@@ -173,13 +173,13 @@ export const PHONE_VERIFICATION = {
  * @constant
  */
 export const USER_STATUS_TRANSITIONS: Record<string, readonly string[]> = {
-  PENDING: ['ACTIVE', 'DELETED', 'REJECTED'],
-  ACTIVE: ['DISABLED', 'LOCKED', 'EXPIRED', 'SUSPENDED', 'DELETED'],
-  DISABLED: ['ACTIVE', 'DELETED'],
-  LOCKED: ['ACTIVE', 'DISABLED', 'DELETED'],
-  EXPIRED: ['ACTIVE', 'DELETED'],
-  SUSPENDED: ['ACTIVE', 'DISABLED', 'DELETED'],
-  REJECTED: ['DELETED'], // 被拒绝的用户只能删除
+  PENDING: ["ACTIVE", "DELETED", "REJECTED"],
+  ACTIVE: ["DISABLED", "LOCKED", "EXPIRED", "SUSPENDED", "DELETED"],
+  DISABLED: ["ACTIVE", "DELETED"],
+  LOCKED: ["ACTIVE", "DISABLED", "DELETED"],
+  EXPIRED: ["ACTIVE", "DELETED"],
+  SUSPENDED: ["ACTIVE", "DISABLED", "DELETED"],
+  REJECTED: ["DELETED"], // 被拒绝的用户只能删除
   DELETED: [], // 已删除状态不可转换
 } as const;
 
@@ -214,7 +214,7 @@ export const USER_CACHE_CONFIG = {
   /** 用户会话缓存TTL（秒） */
   SESSION_TTL: 7200, // 2小时
   /** 缓存键前缀 */
-  KEY_PREFIX: 'user',
+  KEY_PREFIX: "user",
 } as const;
 
 /**
@@ -234,4 +234,3 @@ export const USER_RATE_LIMITS = {
   /** 个人资料更新：每小时 */
   PROFILE_UPDATES_PER_HOUR: 20,
 } as const;
-

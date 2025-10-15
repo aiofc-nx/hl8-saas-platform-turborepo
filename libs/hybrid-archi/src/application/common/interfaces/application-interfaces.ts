@@ -315,7 +315,7 @@ export interface INotification {
   /**
    * 优先级
    */
-  readonly priority: 'low' | 'medium' | 'high' | 'urgent';
+  readonly priority: "low" | "medium" | "high" | "urgent";
 
   /**
    * 发送时间
@@ -451,7 +451,7 @@ export interface IAuditLog {
   /**
    * 操作结果
    */
-  readonly result: 'success' | 'failure';
+  readonly result: "success" | "failure";
 
   /**
    * 操作详情

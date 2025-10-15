@@ -45,18 +45,18 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 import {
   IUseCase,
   IUseCaseContext,
   IUseCaseRegistry,
   IUseCaseFactory,
-} from '../base/use-case.interface';
+} from "../base/use-case.interface";
 import {
   getUseCaseMetadata,
   IUseCaseOptions,
   // UseCaseType, // 暂时未使用
-} from '../decorators/use-case.decorator';
+} from "../decorators/use-case.decorator";
 
 /**
  * 用例注册信息
@@ -134,7 +134,7 @@ export class UseCaseRegistry implements IUseCaseRegistry {
    */
   register<TRequest, TResponse>(
     useCaseName: string,
-    useCaseFactory: IUseCaseFactory<IUseCase<TRequest, TResponse>>
+    useCaseFactory: IUseCaseFactory<IUseCase<TRequest, TResponse>>,
   ): void {
     if (this.useCases.has(useCaseName)) {
       throw new Error(`用例名称 "${useCaseName}" 已经被注册`);
@@ -145,10 +145,10 @@ export class UseCaseRegistry implements IUseCaseRegistry {
       factory: () => useCaseFactory.create(),
       metadata: {
         name: useCaseName,
-        type: 'command', // 默认类型，实际应该从工厂获取
-        description: '',
-        version: '1.0.0',
-        category: 'default',
+        type: "command", // 默认类型，实际应该从工厂获取
+        description: "",
+        version: "1.0.0",
+        category: "default",
         tags: [],
         permissions: [],
         timeout: { execution: 30000 },
@@ -179,7 +179,7 @@ export class UseCaseRegistry implements IUseCaseRegistry {
    * @returns 用例实例
    */
   get<TRequest, TResponse>(
-    useCaseName: string
+    useCaseName: string,
   ): IUseCase<TRequest, TResponse> | undefined {
     const registration = this.useCases.get(useCaseName);
     if (!registration) {
@@ -219,7 +219,7 @@ export class UseCaseRegistry implements IUseCaseRegistry {
    * @param type - 用例类型
    * @returns 该类型的所有用例
    */
-  getByType(type: 'command' | 'query'): Map<string, IUseCase<any, any>> {
+  getByType(type: "command" | "query"): Map<string, IUseCase<any, any>> {
     const result = new Map<string, IUseCase<any, any>>();
 
     for (const [name, registration] of this.useCases) {
@@ -287,7 +287,7 @@ export class UseCaseRegistry implements IUseCaseRegistry {
   async execute<TRequest, TResponse>(
     useCaseName: string,
     request: TRequest,
-    context?: IUseCaseContext
+    context?: IUseCaseContext,
   ): Promise<TResponse> {
     const useCase = this.get<TRequest, TResponse>(useCaseName);
     if (!useCase) {
@@ -376,7 +376,7 @@ export class UseCaseRegistry implements IUseCaseRegistry {
       stats.averageExecutionTime = this.calculateAverageExecutionTime(
         stats.averageExecutionTime,
         executionTime,
-        stats.executionCount
+        stats.executionCount,
       );
     }
   }
@@ -392,7 +392,7 @@ export class UseCaseRegistry implements IUseCaseRegistry {
       stats.averageExecutionTime = this.calculateAverageExecutionTime(
         stats.averageExecutionTime,
         executionTime,
-        stats.executionCount
+        stats.executionCount,
       );
     }
   }
@@ -403,7 +403,7 @@ export class UseCaseRegistry implements IUseCaseRegistry {
   private calculateAverageExecutionTime(
     currentAverage: number,
     newExecutionTime: number,
-    totalExecutions: number
+    totalExecutions: number,
   ): number {
     return (
       (currentAverage * (totalExecutions - 1) + newExecutionTime) /
@@ -421,62 +421,62 @@ export class UseCaseRegistry implements IUseCaseRegistry {
 function _validateUseCaseOptions(options: IUseCaseOptions): void {
   if (
     !options.name ||
-    typeof options.name !== 'string' ||
+    typeof options.name !== "string" ||
     options.name.trim().length === 0
   ) {
-    throw new Error('用例名称不能为空');
+    throw new Error("用例名称不能为空");
   }
 
-  if (!options.description || typeof options.description !== 'string') {
-    throw new Error('用例描述不能为空');
+  if (!options.description || typeof options.description !== "string") {
+    throw new Error("用例描述不能为空");
   }
 
-  if (!options.type || !['command', 'query'].includes(options.type as string)) {
+  if (!options.type || !["command", "query"].includes(options.type as string)) {
     throw new Error('用例类型必须是 "command" 或 "query"');
   }
 
-  if (options.version && typeof options.version !== 'string') {
-    throw new Error('用例版本必须是字符串');
+  if (options.version && typeof options.version !== "string") {
+    throw new Error("用例版本必须是字符串");
   }
 
   if (options.permissions && !Array.isArray(options.permissions)) {
-    throw new Error('用例权限必须是字符串数组');
+    throw new Error("用例权限必须是字符串数组");
   }
 
   if (
     options.permissions &&
-    options.permissions.some((p: unknown) => typeof p !== 'string')
+    options.permissions.some((p: unknown) => typeof p !== "string")
   ) {
-    throw new Error('用例权限必须都是字符串');
+    throw new Error("用例权限必须都是字符串");
   }
 
-  if (options.category && typeof options.category !== 'string') {
-    throw new Error('用例分类必须是字符串');
+  if (options.category && typeof options.category !== "string") {
+    throw new Error("用例分类必须是字符串");
   }
 
   if (options.tags && !Array.isArray(options.tags)) {
-    throw new Error('用例标签必须是字符串数组');
+    throw new Error("用例标签必须是字符串数组");
   }
 
   if (
     options.tags &&
-    options.tags.some((tag: unknown) => typeof tag !== 'string')
+    options.tags.some((tag: unknown) => typeof tag !== "string")
   ) {
-    throw new Error('用例标签必须都是字符串');
+    throw new Error("用例标签必须都是字符串");
   }
 
   if (
     options.timeout?.execution &&
-    (typeof options.timeout.execution !== 'number' ||
+    (typeof options.timeout.execution !== "number" ||
       options.timeout.execution <= 0)
   ) {
-    throw new Error('用例超时时间必须是正整数');
+    throw new Error("用例超时时间必须是正整数");
   }
 
   if (
     options.cache?.ttl &&
-    (typeof options.cache.ttl !== 'number' || options.cache.ttl <= 0)
+    (typeof options.cache.ttl !== "number" || options.cache.ttl <= 0)
   ) {
-    throw new Error('缓存TTL必须是正整数');
+    throw new Error("缓存TTL必须是正整数");
   }
 }

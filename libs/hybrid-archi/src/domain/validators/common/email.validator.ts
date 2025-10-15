@@ -37,26 +37,26 @@ export class EmailValidator {
     error?: string;
   } {
     if (!email || email.trim().length === 0) {
-      return { isValid: false, error: '邮箱不能为空' };
+      return { isValid: false, error: "邮箱不能为空" };
     }
 
     if (email.length > 254) {
-      return { isValid: false, error: '邮箱长度不能超过254个字符' };
+      return { isValid: false, error: "邮箱长度不能超过254个字符" };
     }
 
-    const [localPart, domain] = email.split('@');
+    const [localPart, domain] = email.split("@");
     if (!localPart || !domain) {
-      return { isValid: false, error: '邮箱必须包含@符号' };
+      return { isValid: false, error: "邮箱必须包含@符号" };
     }
 
     if (localPart.length > 64) {
-      return { isValid: false, error: '邮箱本地部分长度不能超过64个字符' };
+      return { isValid: false, error: "邮箱本地部分长度不能超过64个字符" };
     }
 
     // RFC 5322 基本验证
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return { isValid: false, error: '邮箱格式无效' };
+      return { isValid: false, error: "邮箱格式无效" };
     }
 
     // 验证本地部分
@@ -87,19 +87,19 @@ export class EmailValidator {
     error?: string;
   } {
     // 检查是否以点开头或结尾
-    if (localPart.startsWith('.') || localPart.endsWith('.')) {
-      return { isValid: false, error: '本地部分不能以点开头或结尾' };
+    if (localPart.startsWith(".") || localPart.endsWith(".")) {
+      return { isValid: false, error: "本地部分不能以点开头或结尾" };
     }
 
     // 检查连续的点
-    if (localPart.includes('..')) {
-      return { isValid: false, error: '本地部分不能包含连续的点' };
+    if (localPart.includes("..")) {
+      return { isValid: false, error: "本地部分不能包含连续的点" };
     }
 
     // 检查特殊字符
     const validChars = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
     if (!validChars.test(localPart)) {
-      return { isValid: false, error: '本地部分包含非法字符' };
+      return { isValid: false, error: "本地部分包含非法字符" };
     }
 
     return { isValid: true };
@@ -118,25 +118,25 @@ export class EmailValidator {
     error?: string;
   } {
     if (domain.length > 253) {
-      return { isValid: false, error: '域名长度不能超过253个字符' };
+      return { isValid: false, error: "域名长度不能超过253个字符" };
     }
 
     // 检查是否包含点
-    if (!domain.includes('.')) {
-      return { isValid: false, error: '域名必须包含点' };
+    if (!domain.includes(".")) {
+      return { isValid: false, error: "域名必须包含点" };
     }
 
     // 检查域名标签
-    const labels = domain.split('.');
+    const labels = domain.split(".");
     for (const label of labels) {
       if (label.length === 0) {
-        return { isValid: false, error: '域名标签不能为空' };
+        return { isValid: false, error: "域名标签不能为空" };
       }
       if (label.length > 63) {
-        return { isValid: false, error: '域名标签长度不能超过63个字符' };
+        return { isValid: false, error: "域名标签长度不能超过63个字符" };
       }
-      if (label.startsWith('-') || label.endsWith('-')) {
-        return { isValid: false, error: '域名标签不能以连字符开头或结尾' };
+      if (label.startsWith("-") || label.endsWith("-")) {
+        return { isValid: false, error: "域名标签不能以连字符开头或结尾" };
       }
     }
 
@@ -153,9 +153,9 @@ export class EmailValidator {
    */
   public static validateDomainWhitelist(
     email: string,
-    allowedDomains: string[]
+    allowedDomains: string[],
   ): { isValid: boolean; error?: string } {
-    const domain = email.split('@')[1];
+    const domain = email.split("@")[1];
     if (!allowedDomains.includes(domain)) {
       return { isValid: false, error: `邮箱域名不在允许列表中: ${domain}` };
     }
@@ -172,9 +172,9 @@ export class EmailValidator {
    */
   public static validateDomainBlacklist(
     email: string,
-    blockedDomains: string[]
+    blockedDomains: string[],
   ): { isValid: boolean; error?: string } {
-    const domain = email.split('@')[1];
+    const domain = email.split("@")[1];
     if (blockedDomains.includes(domain)) {
       return { isValid: false, error: `邮箱域名被禁止: ${domain}` };
     }

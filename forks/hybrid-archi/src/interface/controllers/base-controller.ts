@@ -2,7 +2,7 @@ import {
   ILoggerService,
   IMetricsService,
   IRequestContext,
-} from '../shared/interfaces';
+} from "../shared/interfaces";
 
 /**
  * 基础REST控制器
@@ -59,7 +59,7 @@ export abstract class BaseController {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.requestId = this.generateRequestId();
     this.correlationId = this.generateCorrelationId();
@@ -83,7 +83,7 @@ export abstract class BaseController {
   protected async handleRequest<TInput, TOutput>(
     input: TInput,
     useCaseExecutor: (input: TInput) => Promise<TOutput>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TOutput> {
     this.getRequestContext();
 
@@ -124,8 +124,8 @@ export abstract class BaseController {
     return {
       requestId: this.requestId,
       correlationId: this.correlationId,
-      userId: 'current-user-id',
-      tenantId: 'current-tenant-id',
+      userId: "current-user-id",
+      tenantId: "current-tenant-id",
       timestamp: new Date(),
     };
   }
@@ -153,7 +153,7 @@ export abstract class BaseController {
     this.metricsService?.incrementCounter(`${operationName}_success_total`);
     this.metricsService?.recordHistogram(
       `${operationName}_duration_ms`,
-      duration
+      duration,
     );
   }
 
@@ -180,7 +180,7 @@ export abstract class BaseController {
     // 记录错误指标
     this.metricsService?.incrementCounter(`${operationName}_error_total`, {
       error_type:
-        error instanceof Error ? error.constructor.name : 'UnknownError',
+        error instanceof Error ? error.constructor.name : "UnknownError",
     });
   }
 
@@ -193,14 +193,14 @@ export abstract class BaseController {
    * @returns 清理后的数据
    */
   protected sanitizeInput(input: unknown): unknown {
-    if (typeof input === 'object' && input !== null) {
+    if (typeof input === "object" && input !== null) {
       const sanitized = { ...(input as Record<string, unknown>) };
 
       // 清理敏感字段
-      const sensitiveFields = ['password', 'token', 'secret', 'key'];
+      const sensitiveFields = ["password", "token", "secret", "key"];
       sensitiveFields.forEach((field) => {
         if (field in sanitized) {
-          sanitized[field] = '[REDACTED]';
+          sanitized[field] = "[REDACTED]";
         }
       });
 

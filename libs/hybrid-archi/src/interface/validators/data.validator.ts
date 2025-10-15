@@ -19,7 +19,7 @@ export class DataValidator {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValid = emailRegex.test(email);
 
-    return new ValidationResult(isValid, isValid ? [] : ['邮箱格式不正确']);
+    return new ValidationResult(isValid, isValid ? [] : ["邮箱格式不正确"]);
   }
 
   /**
@@ -34,7 +34,7 @@ export class DataValidator {
     const phoneRegex = /^1[3-9]\d{9}$/;
     const isValid = phoneRegex.test(phone);
 
-    return new ValidationResult(isValid, isValid ? [] : ['手机号格式不正确']);
+    return new ValidationResult(isValid, isValid ? [] : ["手机号格式不正确"]);
   }
 
   /**
@@ -50,7 +50,7 @@ export class DataValidator {
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     const isValid = uuidRegex.test(uuid);
 
-    return new ValidationResult(isValid, isValid ? [] : ['UUID格式不正确']);
+    return new ValidationResult(isValid, isValid ? [] : ["UUID格式不正确"]);
   }
 
   /**
@@ -66,14 +66,14 @@ export class DataValidator {
   static validateStringLength(
     value: string,
     minLength: number,
-    maxLength: number
+    maxLength: number,
   ): ValidationResult {
     const length = value.length;
     const isValid = length >= minLength && length <= maxLength;
 
     return new ValidationResult(
       isValid,
-      isValid ? [] : [`字符串长度必须在${minLength}-${maxLength}个字符之间`]
+      isValid ? [] : [`字符串长度必须在${minLength}-${maxLength}个字符之间`],
     );
   }
 
@@ -90,13 +90,13 @@ export class DataValidator {
   static validateNumberRange(
     value: number,
     min: number,
-    max: number
+    max: number,
   ): ValidationResult {
     const isValid = value >= min && value <= max;
 
     return new ValidationResult(
       isValid,
-      isValid ? [] : [`数字必须在${min}-${max}之间`]
+      isValid ? [] : [`数字必须在${min}-${max}之间`],
     );
   }
 
@@ -111,7 +111,7 @@ export class DataValidator {
    */
   static validateDateFormat(
     dateString: string,
-    format: 'ISO' | 'YYYY-MM-DD' | 'DD/MM/YYYY' = 'ISO'
+    format: "ISO" | "YYYY-MM-DD" | "DD/MM/YYYY" = "ISO",
   ): ValidationResult {
     let isValid = false;
 
@@ -119,13 +119,13 @@ export class DataValidator {
       const date = new Date(dateString);
       isValid = !isNaN(date.getTime());
 
-      if (isValid && format !== 'ISO') {
+      if (isValid && format !== "ISO") {
         // 根据格式进行额外验证
         switch (format) {
-          case 'YYYY-MM-DD':
+          case "YYYY-MM-DD":
             isValid = /^\d{4}-\d{2}-\d{2}$/.test(dateString);
             break;
-          case 'DD/MM/YYYY':
+          case "DD/MM/YYYY":
             isValid = /^\d{2}\/\d{2}\/\d{4}$/.test(dateString);
             break;
         }
@@ -134,7 +134,7 @@ export class DataValidator {
       isValid = false;
     }
 
-    return new ValidationResult(isValid, isValid ? [] : ['日期格式不正确']);
+    return new ValidationResult(isValid, isValid ? [] : ["日期格式不正确"]);
   }
 }
 
@@ -146,7 +146,7 @@ export class DataValidator {
 export class ValidationResult {
   constructor(
     public readonly isValid: boolean,
-    public readonly errors: string[]
+    public readonly errors: string[],
   ) {}
 
   /**
@@ -157,7 +157,7 @@ export class ValidationResult {
    * @returns 错误消息
    */
   getErrorMessage(): string {
-    return this.errors.join('; ');
+    return this.errors.join("; ");
   }
 
   /**

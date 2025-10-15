@@ -28,13 +28,13 @@
  * @module security/rate-limit
  */
 
-import { Injectable, Logger } from '@nestjs/common';
-import type { FastifyRequest } from 'fastify';
-import type { Redis } from 'ioredis';
+import { Injectable, Logger } from "@nestjs/common";
+import type { FastifyRequest } from "fastify";
+import type { Redis } from "ioredis";
 import type {
   RateLimitOptions,
   RateLimitStatus,
-} from './types/rate-limit-options.js';
+} from "./types/rate-limit-options.js";
 
 /**
  * 速率限制服务
@@ -105,7 +105,7 @@ export class RateLimitService {
 
   constructor(private readonly options: RateLimitOptions) {
     this.logger.log(
-      `速率限制服务已初始化，策略: ${options.strategy || 'ip'}, 限制: ${options.max}/${options.timeWindow}ms`,
+      `速率限制服务已初始化，策略: ${options.strategy || "ip"}, 限制: ${options.max}/${options.timeWindow}ms`,
     );
   }
 
@@ -162,7 +162,7 @@ export class RateLimitService {
 
       // 根据 skipOnError 决定是否放行
       if (this.options.skipOnError) {
-        this.logger.warn('速率限制检查失败，降级放行');
+        this.logger.warn("速率限制检查失败，降级放行");
         return {
           allowed: true,
           remaining: this.options.max,
@@ -213,29 +213,29 @@ export class RateLimitService {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fastify request 扩展属性动态，宪章 IX 允许（第三方集成）
   generateKey(req: FastifyRequest<any>): string {
-    const strategy = this.options.strategy || 'ip';
+    const strategy = this.options.strategy || "ip";
 
     try {
       switch (strategy) {
-        case 'ip':
+        case "ip":
           return `ratelimit:ip:${req.ip}`;
 
-        case 'tenant': {
-          const tenantId = req.headers['x-tenant-id'] as string;
+        case "tenant": {
+          const tenantId = req.headers["x-tenant-id"] as string;
           if (!tenantId) {
-            this.logger.warn('租户 ID 不存在，降级为 IP 策略');
+            this.logger.warn("租户 ID 不存在，降级为 IP 策略");
             return `ratelimit:ip:${req.ip}`;
           }
           return `ratelimit:tenant:${tenantId}`;
         }
 
-        case 'user': {
-          const userId = req.headers['x-user-id'] as string;
+        case "user": {
+          const userId = req.headers["x-user-id"] as string;
           if (!userId) {
-            this.logger.warn('用户 ID 不存在，降级为租户策略');
-            const tenantId = req.headers['x-tenant-id'] as string;
+            this.logger.warn("用户 ID 不存在，降级为租户策略");
+            const tenantId = req.headers["x-tenant-id"] as string;
             if (!tenantId) {
-              this.logger.warn('租户 ID 也不存在，降级为 IP 策略');
+              this.logger.warn("租户 ID 也不存在，降级为 IP 策略");
               return `ratelimit:ip:${req.ip}`;
             }
             return `ratelimit:tenant:${tenantId}`;
@@ -243,9 +243,9 @@ export class RateLimitService {
           return `ratelimit:user:${userId}`;
         }
 
-        case 'custom': {
+        case "custom": {
           if (!this.options.keyGenerator) {
-            this.logger.warn('自定义键生成函数不存在，降级为 IP 策略');
+            this.logger.warn("自定义键生成函数不存在，降级为 IP 策略");
             return `ratelimit:ip:${req.ip}`;
           }
           const customKey = this.options.keyGenerator(req);
@@ -387,7 +387,7 @@ export class RateLimitService {
    */
   clearMemoryStore(): void {
     this.memoryStore.clear();
-    this.logger.debug('内存存储已清理');
+    this.logger.debug("内存存储已清理");
   }
 
   /**

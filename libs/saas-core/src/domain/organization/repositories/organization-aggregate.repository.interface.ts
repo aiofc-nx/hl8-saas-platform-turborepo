@@ -1,5 +1,5 @@
-import { OrganizationAggregate } from '../aggregates/organization.aggregate';
-import { EntityId } from '@hl8/hybrid-archi';
+import { OrganizationAggregate } from "../aggregates/organization.aggregate";
+import { EntityId } from "@hl8/hybrid-archi";
 
 export interface IOrganizationAggregateRepository {
   save(aggregate: OrganizationAggregate): Promise<void>;
@@ -10,4 +10,3 @@ export interface IOrganizationAggregateRepository {
   existsByCode(code: string): Promise<boolean>;
   count(): Promise<number>;
 }
-

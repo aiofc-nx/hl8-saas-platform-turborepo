@@ -49,7 +49,7 @@
  * @since 1.0.0
  */
 
-import 'reflect-metadata';
+import "reflect-metadata";
 
 /**
  * 聚合根配置选项
@@ -155,7 +155,7 @@ export interface AggregateOptions {
 /**
  * 聚合根元数据键
  */
-export const AGGREGATE_METADATA_KEY = Symbol('aggregate');
+export const AGGREGATE_METADATA_KEY = Symbol("aggregate");
 
 /**
  * 聚合根装饰器
@@ -190,9 +190,9 @@ export function Aggregate(options: AggregateOptions): ClassDecorator {
     // 设置默认值
     const metadata: Required<AggregateOptions> = {
       name: options.name,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       snapshotFrequency: options.snapshotFrequency || 0,
-      description: options.description || '',
+      description: options.description || "",
       tags: options.tags || [],
       auditEnabled: options.auditEnabled !== false, // 默认启用
       cacheEnabled: options.cacheEnabled || false,
@@ -224,7 +224,7 @@ export function getAggregateMetadata(
   target: any,
 ): Required<AggregateOptions> | undefined {
   const targetClass =
-    typeof target === 'function' ? target : target.constructor;
+    typeof target === "function" ? target : target.constructor;
   return Reflect.getMetadata(AGGREGATE_METADATA_KEY, targetClass);
 }
 
@@ -256,41 +256,41 @@ export function isAggregate(target: unknown): boolean {
 function validateAggregateOptions(options: AggregateOptions): void {
   if (
     !options.name ||
-    typeof options.name !== 'string' ||
+    typeof options.name !== "string" ||
     options.name.trim().length === 0
   ) {
-    throw new Error('聚合根名称不能为空');
+    throw new Error("聚合根名称不能为空");
   }
 
-  if (options.version && typeof options.version !== 'string') {
-    throw new Error('聚合根版本必须是字符串');
+  if (options.version && typeof options.version !== "string") {
+    throw new Error("聚合根版本必须是字符串");
   }
 
   if (
     options.snapshotFrequency !== undefined &&
-    (typeof options.snapshotFrequency !== 'number' ||
+    (typeof options.snapshotFrequency !== "number" ||
       options.snapshotFrequency < 0)
   ) {
-    throw new Error('快照频率必须是非负整数');
+    throw new Error("快照频率必须是非负整数");
   }
 
-  if (options.description && typeof options.description !== 'string') {
-    throw new Error('聚合根描述必须是字符串');
+  if (options.description && typeof options.description !== "string") {
+    throw new Error("聚合根描述必须是字符串");
   }
 
   if (options.tags && !Array.isArray(options.tags)) {
-    throw new Error('聚合根标签必须是字符串数组');
+    throw new Error("聚合根标签必须是字符串数组");
   }
 
-  if (options.tags && options.tags.some((tag) => typeof tag !== 'string')) {
-    throw new Error('聚合根标签必须都是字符串');
+  if (options.tags && options.tags.some((tag) => typeof tag !== "string")) {
+    throw new Error("聚合根标签必须都是字符串");
   }
 
   if (
     options.cacheTtl !== undefined &&
-    (typeof options.cacheTtl !== 'number' || options.cacheTtl <= 0)
+    (typeof options.cacheTtl !== "number" || options.cacheTtl <= 0)
   ) {
-    throw new Error('缓存TTL必须是正整数');
+    throw new Error("缓存TTL必须是正整数");
   }
 }
 
@@ -300,7 +300,10 @@ function validateAggregateOptions(options: AggregateOptions): void {
  * @description 用于管理系统中所有已注册的聚合根
  */
 export class AggregateRegistry {
-  private static aggregates = new Map<string, new (...args: unknown[]) => unknown>();
+  private static aggregates = new Map<
+    string,
+    new (...args: unknown[]) => unknown
+  >();
 
   /**
    * 注册聚合根

@@ -6,7 +6,7 @@
  */
 
 // 基础设施 - 明确导出以避免命名冲突
-export { BaseDomainEvent } from './base';
+export { BaseDomainEvent } from "./base";
 export type {
   IDomainEvent,
   IDomainEventHandler,
@@ -14,7 +14,7 @@ export type {
   IDomainEventStore,
   EventMetadata,
   DomainEvent,
-} from './base';
+} from "./base";
 
 // 装饰器 - 明确导出以避免命名冲突
 export {
@@ -25,5 +25,5 @@ export {
   getEventHandlers,
   DomainEventRegistry,
   DOMAIN_EVENT_METADATA_KEY,
-} from './decorators';
-export type { DomainEventOptions } from './decorators';
+} from "./decorators";
+export type { DomainEventOptions } from "./decorators";

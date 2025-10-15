@@ -27,13 +27,13 @@
  */
 export enum PermissionStatus {
   /** 活跃 - 权限可正常使用 */
-  ACTIVE = 'ACTIVE',
+  ACTIVE = "ACTIVE",
 
   /** 停用 - 权限暂时停用 */
-  INACTIVE = 'INACTIVE',
+  INACTIVE = "INACTIVE",
 
   /** 已删除 - 软删除 */
-  DELETED = 'DELETED',
+  DELETED = "DELETED",
 }
 
 /**
@@ -87,9 +87,9 @@ export class PermissionStatusUtils {
    */
   public static getDisplayName(status: PermissionStatus): string {
     const names: Record<PermissionStatus, string> = {
-      [PermissionStatus.ACTIVE]: '活跃',
-      [PermissionStatus.INACTIVE]: '停用',
-      [PermissionStatus.DELETED]: '已删除',
+      [PermissionStatus.ACTIVE]: "活跃",
+      [PermissionStatus.INACTIVE]: "停用",
+      [PermissionStatus.DELETED]: "已删除",
     };
     return names[status];
   }
@@ -108,8 +108,14 @@ export class PermissionStatusUtils {
   ): boolean {
     // 定义允许的状态转换
     const transitions: Record<PermissionStatus, PermissionStatus[]> = {
-      [PermissionStatus.ACTIVE]: [PermissionStatus.INACTIVE, PermissionStatus.DELETED],
-      [PermissionStatus.INACTIVE]: [PermissionStatus.ACTIVE, PermissionStatus.DELETED],
+      [PermissionStatus.ACTIVE]: [
+        PermissionStatus.INACTIVE,
+        PermissionStatus.DELETED,
+      ],
+      [PermissionStatus.INACTIVE]: [
+        PermissionStatus.ACTIVE,
+        PermissionStatus.DELETED,
+      ],
       [PermissionStatus.DELETED]: [], // 已删除状态不可转换
     };
 
@@ -138,4 +144,3 @@ export class PermissionStatusUtils {
     return status === PermissionStatus.DELETED;
   }
 }
-

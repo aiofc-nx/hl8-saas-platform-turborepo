@@ -8,8 +8,8 @@
  * @since 1.0.0
  */
 
-import { Observable } from 'rxjs';
-import { TenantId } from '@hl8/isolation-model';
+import { Observable } from "rxjs";
+import { TenantId } from "@hl8/isolation-model";
 // 简化的上下文类型定义
 interface IAsyncContext {
   getTenantId?(): string;
@@ -25,42 +25,42 @@ export enum SagaStatus {
   /**
    * 未开始
    */
-  NOT_STARTED = 'NOT_STARTED',
+  NOT_STARTED = "NOT_STARTED",
 
   /**
    * 运行中
    */
-  RUNNING = 'RUNNING',
+  RUNNING = "RUNNING",
 
   /**
    * 已完成
    */
-  COMPLETED = 'COMPLETED',
+  COMPLETED = "COMPLETED",
 
   /**
    * 已失败
    */
-  FAILED = 'FAILED',
+  FAILED = "FAILED",
 
   /**
    * 已取消
    */
-  CANCELLED = 'CANCELLED',
+  CANCELLED = "CANCELLED",
 
   /**
    * 补偿中
    */
-  COMPENSATING = 'COMPENSATING',
+  COMPENSATING = "COMPENSATING",
 
   /**
    * 已补偿
    */
-  COMPENSATED = 'COMPENSATED',
+  COMPENSATED = "COMPENSATED",
 
   /**
    * 超时
    */
-  TIMEOUT = 'TIMEOUT',
+  TIMEOUT = "TIMEOUT",
 }
 
 /**
@@ -70,37 +70,37 @@ export enum SagaStepType {
   /**
    * 命令步骤
    */
-  COMMAND = 'COMMAND',
+  COMMAND = "COMMAND",
 
   /**
    * 事件步骤
    */
-  EVENT = 'EVENT',
+  EVENT = "EVENT",
 
   /**
    * 补偿步骤
    */
-  COMPENSATION = 'COMPENSATION',
+  COMPENSATION = "COMPENSATION",
 
   /**
    * 超时步骤
    */
-  TIMEOUT = 'TIMEOUT',
+  TIMEOUT = "TIMEOUT",
 
   /**
    * 条件步骤
    */
-  CONDITION = 'CONDITION',
+  CONDITION = "CONDITION",
 
   /**
    * 并行步骤
    */
-  PARALLEL = 'PARALLEL',
+  PARALLEL = "PARALLEL",
 
   /**
    * 顺序步骤
    */
-  SEQUENTIAL = 'SEQUENTIAL',
+  SEQUENTIAL = "SEQUENTIAL",
 }
 
 /**
@@ -110,37 +110,37 @@ export enum SagaStepStatus {
   /**
    * 待执行
    */
-  PENDING = 'PENDING',
+  PENDING = "PENDING",
 
   /**
    * 执行中
    */
-  EXECUTING = 'EXECUTING',
+  EXECUTING = "EXECUTING",
 
   /**
    * 已完成
    */
-  COMPLETED = 'COMPLETED',
+  COMPLETED = "COMPLETED",
 
   /**
    * 已失败
    */
-  FAILED = 'FAILED',
+  FAILED = "FAILED",
 
   /**
    * 已跳过
    */
-  SKIPPED = 'SKIPPED',
+  SKIPPED = "SKIPPED",
 
   /**
    * 补偿中
    */
-  COMPENSATING = 'COMPENSATING',
+  COMPENSATING = "COMPENSATING",
 
   /**
    * 已补偿
    */
-  COMPENSATED = 'COMPENSATED',
+  COMPENSATED = "COMPENSATED",
 }
 
 /**
@@ -501,7 +501,7 @@ export interface ISaga {
    * 处理超时
    */
   handleTimeout(
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Observable<ISagaExecutionContext>;
 
   /**
@@ -545,7 +545,7 @@ export interface ISagaManager {
   startSaga(
     sagaType: string,
     data: Record<string, unknown>,
-    context?: IAsyncContext
+    context?: IAsyncContext,
   ): Observable<ISagaExecutionContext>;
 
   /**

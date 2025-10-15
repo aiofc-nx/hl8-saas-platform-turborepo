@@ -5,16 +5,16 @@
  * @since 1.0.0
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { CacheModule } from '@hl8/caching';
-import { LoggerModule } from '@hl8/nestjs-fastify';
-import { CacheAdaptersModule } from '../../../../../infrastructure/adapters/cache/cache-adapters.module';
-import { CacheAdapter } from '../../../../../infrastructure/adapters/cache/cache.adapter';
-import { CacheFactory } from '../../../../../infrastructure/adapters/cache/cache.factory';
-import { CacheManager } from '../../../../../infrastructure/adapters/cache/cache.manager';
-import { CacheLevel } from '../../../../../infrastructure/adapters/cache/cache.adapter';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CacheModule } from "@hl8/caching";
+import { LoggerModule } from "@hl8/nestjs-fastify";
+import { CacheAdaptersModule } from "../../../../../infrastructure/adapters/cache/cache-adapters.module";
+import { CacheAdapter } from "../../../../../infrastructure/adapters/cache/cache.adapter";
+import { CacheFactory } from "../../../../../infrastructure/adapters/cache/cache.factory";
+import { CacheManager } from "../../../../../infrastructure/adapters/cache/cache.manager";
+import { CacheLevel } from "../../../../../infrastructure/adapters/cache/cache.adapter";
 
-describe('CacheAdaptersModule Integration', () => {
+describe("CacheAdaptersModule Integration", () => {
   let module: TestingModule;
   let cacheAdapter: CacheAdapter;
   let cacheFactory: CacheFactory;
@@ -26,15 +26,15 @@ describe('CacheAdaptersModule Integration', () => {
         imports: [
           CacheModule.forRoot({
             redis: {
-              host: 'localhost',
+              host: "localhost",
               port: 6379,
             },
             defaultTTL: 3600,
-            keyPrefix: 'test:',
+            keyPrefix: "test:",
           }),
           LoggerModule.forRoot({
             config: {
-              level: 'error',
+              level: "error",
             },
           }),
           CacheAdaptersModule.forRoot({
@@ -47,11 +47,11 @@ describe('CacheAdaptersModule Integration', () => {
         ],
       }).compile();
 
-      cacheAdapter = module.get<CacheAdapter>('ICache');
+      cacheAdapter = module.get<CacheAdapter>("ICache");
       cacheFactory = module.get<CacheFactory>(CacheFactory);
       cacheManager = module.get<CacheManager>(CacheManager);
     } catch (error) {
-      console.error('Failed to initialize test module:', error);
+      console.error("Failed to initialize test module:", error);
       throw error;
     }
   });
@@ -61,20 +61,20 @@ describe('CacheAdaptersModule Integration', () => {
       try {
         await module.close();
       } catch (error) {
-        console.error('Failed to close test module:', error);
+        console.error("Failed to close test module:", error);
       }
     }
   });
 
-  describe('CacheAdapter', () => {
-    it('应该正确注入和初始化', () => {
+  describe("CacheAdapter", () => {
+    it("应该正确注入和初始化", () => {
       expect(cacheAdapter).toBeDefined();
       expect(cacheAdapter).toBeInstanceOf(CacheAdapter);
     });
 
-    it('应该能够设置和获取缓存', async () => {
-      const key = 'test-key';
-      const value = { data: 'test value' };
+    it("应该能够设置和获取缓存", async () => {
+      const key = "test-key";
+      const value = { data: "test value" };
       const ttl = 300;
 
       // 设置缓存
@@ -86,9 +86,9 @@ describe('CacheAdaptersModule Integration', () => {
       expect(result).toEqual(value);
     });
 
-    it('应该支持多级缓存策略', async () => {
-      const key = 'multi-level-key';
-      const value = { data: 'multi-level value' };
+    it("应该支持多级缓存策略", async () => {
+      const key = "multi-level-key";
+      const value = { data: "multi-level value" };
       const ttl = 300;
 
       // 测试内存缓存
@@ -102,12 +102,12 @@ describe('CacheAdaptersModule Integration', () => {
       expect(redisResult).toEqual(value);
     });
 
-    it('应该支持批量操作', async () => {
-      const keys = ['key1', 'key2', 'key3'];
+    it("应该支持批量操作", async () => {
+      const keys = ["key1", "key2", "key3"];
       const data = {
-        key1: 'value1',
-        key2: 'value2',
-        key3: 'value3',
+        key1: "value1",
+        key2: "value2",
+        key3: "value3",
       };
       const ttl = 300;
 
@@ -120,10 +120,10 @@ describe('CacheAdaptersModule Integration', () => {
       expect(results).toEqual(data);
     });
 
-    it('应该支持缓存预热', async () => {
+    it("应该支持缓存预热", async () => {
       const warmupData = {
-        'warmup-key1': 'warmup-value1',
-        'warmup-key2': 'warmup-value2',
+        "warmup-key1": "warmup-value1",
+        "warmup-key2": "warmup-value2",
       };
       const ttl = 300;
 
@@ -135,17 +135,17 @@ describe('CacheAdaptersModule Integration', () => {
       }
     });
 
-    it('应该提供统计信息', () => {
+    it("应该提供统计信息", () => {
       const stats = cacheAdapter.getStatistics();
 
-      expect(stats).toHaveProperty('totalRequests');
-      expect(stats).toHaveProperty('hits');
-      expect(stats).toHaveProperty('misses');
-      expect(stats).toHaveProperty('hitRate');
-      expect(stats).toHaveProperty('averageResponseTime');
+      expect(stats).toHaveProperty("totalRequests");
+      expect(stats).toHaveProperty("hits");
+      expect(stats).toHaveProperty("misses");
+      expect(stats).toHaveProperty("hitRate");
+      expect(stats).toHaveProperty("averageResponseTime");
     });
 
-    it('应该支持统计信息重置', () => {
+    it("应该支持统计信息重置", () => {
       cacheAdapter.resetStatistics();
 
       const stats = cacheAdapter.getStatistics();
@@ -155,15 +155,15 @@ describe('CacheAdaptersModule Integration', () => {
     });
   });
 
-  describe('CacheFactory', () => {
-    it('应该正确注入和初始化', () => {
+  describe("CacheFactory", () => {
+    it("应该正确注入和初始化", () => {
       expect(cacheFactory).toBeDefined();
       expect(cacheFactory).toBeInstanceOf(CacheFactory);
     });
 
-    it('应该能够创建缓存实例', () => {
-      const cacheName = 'test-cache';
-      const cacheType = 'test';
+    it("应该能够创建缓存实例", () => {
+      const cacheName = "test-cache";
+      const cacheType = "test";
       const config = {
         enableMemoryCache: true,
         enableRedisCache: true,
@@ -176,9 +176,9 @@ describe('CacheAdaptersModule Integration', () => {
       expect(cache).toBeInstanceOf(CacheAdapter);
     });
 
-    it('应该能够获取已创建的缓存', () => {
-      const cacheName = 'test-cache';
-      const cacheType = 'test';
+    it("应该能够获取已创建的缓存", () => {
+      const cacheName = "test-cache";
+      const cacheType = "test";
       const config = {};
 
       // 创建缓存
@@ -191,16 +191,16 @@ describe('CacheAdaptersModule Integration', () => {
       expect(cache).toBeInstanceOf(CacheAdapter);
     });
 
-    it('应该能够获取或创建缓存', () => {
-      const cacheName = 'get-or-create-cache';
-      const cacheType = 'test';
+    it("应该能够获取或创建缓存", () => {
+      const cacheName = "get-or-create-cache";
+      const cacheType = "test";
       const config = {};
 
       // 第一次调用应该创建缓存
       const cache1 = cacheFactory.getOrCreateCache(
         cacheName,
         cacheType,
-        config
+        config,
       );
       expect(cache1).toBeDefined();
 
@@ -208,21 +208,21 @@ describe('CacheAdaptersModule Integration', () => {
       const cache2 = cacheFactory.getOrCreateCache(
         cacheName,
         cacheType,
-        config
+        config,
       );
       expect(cache2).toBe(cache1);
     });
   });
 
-  describe('CacheManager', () => {
-    it('应该正确注入和初始化', () => {
+  describe("CacheManager", () => {
+    it("应该正确注入和初始化", () => {
       expect(cacheManager).toBeDefined();
       expect(cacheManager).toBeInstanceOf(CacheManager);
     });
 
-    it('应该能够管理缓存生命周期', async () => {
-      const cacheName = 'managed-cache';
-      const cacheType = 'test';
+    it("应该能够管理缓存生命周期", async () => {
+      const cacheName = "managed-cache";
+      const cacheType = "test";
       const config = {
         enableMemoryCache: true,
         enableRedisCache: true,
@@ -243,25 +243,25 @@ describe('CacheAdaptersModule Integration', () => {
       expect(allCaches[0].cacheName).toBe(cacheName);
     });
 
-    it('应该提供缓存统计信息', () => {
+    it("应该提供缓存统计信息", () => {
       const stats = cacheManager.getCacheStatistics();
 
-      expect(stats).toHaveProperty('totalCaches');
-      expect(stats).toHaveProperty('activeCaches');
-      expect(stats).toHaveProperty('cacheTypes');
-      expect(stats).toHaveProperty('averageAge');
+      expect(stats).toHaveProperty("totalCaches");
+      expect(stats).toHaveProperty("activeCaches");
+      expect(stats).toHaveProperty("cacheTypes");
+      expect(stats).toHaveProperty("averageAge");
     });
 
-    it('应该支持健康检查', async () => {
+    it("应该支持健康检查", async () => {
       const healthResults = await cacheManager.healthCheckAllCaches();
 
       expect(healthResults).toBeDefined();
-      expect(typeof healthResults).toBe('object');
+      expect(typeof healthResults).toBe("object");
     });
   });
 
-  describe('缓存性能测试', () => {
-    it('应该能够处理大量缓存操作', async () => {
+  describe("缓存性能测试", () => {
+    it("应该能够处理大量缓存操作", async () => {
       const startTime = Date.now();
       const operations = 1000;
 
@@ -281,7 +281,7 @@ describe('CacheAdaptersModule Integration', () => {
       expect(duration).toBeLessThan(5000); // 5秒内完成1000次操作
     });
 
-    it('应该支持并发缓存操作', async () => {
+    it("应该支持并发缓存操作", async () => {
       const concurrentOperations = 100;
       const promises: Promise<any>[] = [];
 
@@ -291,7 +291,7 @@ describe('CacheAdaptersModule Integration', () => {
         const value = { index: i, data: `concurrent-data-${i}` };
 
         promises.push(
-          cacheAdapter.set(key, value, 300).then(() => cacheAdapter.get(key))
+          cacheAdapter.set(key, value, 300).then(() => cacheAdapter.get(key)),
         );
       }
 

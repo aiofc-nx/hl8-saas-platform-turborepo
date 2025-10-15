@@ -45,8 +45,8 @@
  *
  * @since 1.0.0
  */
-import 'reflect-metadata';
-import { Type } from '@nestjs/common';
+import "reflect-metadata";
+import { Type } from "@nestjs/common";
 import {
   isCommandHandler,
   isQueryHandler,
@@ -56,12 +56,13 @@ import {
   getQueryHandlerMetadata,
   getEventHandlerMetadata,
   getSagaMetadata,
-} from '../../common/decorators';
-import type { ICommandHandlerMetadata,
+} from "../../common/decorators";
+import type {
+  ICommandHandlerMetadata,
   IQueryHandlerMetadata,
   IEventHandlerMetadata,
   ISagaMetadata,
- } from '../../common/decorators/metadata.interfaces';
+} from "../../common/decorators/metadata.interfaces";
 
 /**
  * 处理器信息接口
@@ -80,7 +81,7 @@ export interface IHandlerInfo {
   /**
    * 处理器类型
    */
-  handlerType: 'command' | 'query' | 'event' | 'saga';
+  handlerType: "command" | "query" | "event" | "saga";
 
   /**
    * 处理器元数据
@@ -197,8 +198,8 @@ export class CoreExplorerService {
     enableCache: true,
     cacheExpiration: 300000, // 5分钟
     recursive: true,
-    excludePatterns: ['node_modules', '.git', 'dist', 'build'],
-    includePatterns: ['src/**/*.ts'],
+    excludePatterns: ["node_modules", ".git", "dist", "build"],
+    includePatterns: ["src/**/*.ts"],
     scanPrivateMembers: false,
     maxDepth: 10,
   };
@@ -285,7 +286,7 @@ export class CoreExplorerService {
    * @returns 命令处理器信息数组
    */
   public getCommandHandlers(handlers: IHandlerInfo[]): IHandlerInfo[] {
-    return handlers.filter((handler) => handler.handlerType === 'command');
+    return handlers.filter((handler) => handler.handlerType === "command");
   }
 
   /**
@@ -295,7 +296,7 @@ export class CoreExplorerService {
    * @returns 查询处理器信息数组
    */
   public getQueryHandlers(handlers: IHandlerInfo[]): IHandlerInfo[] {
-    return handlers.filter((handler) => handler.handlerType === 'query');
+    return handlers.filter((handler) => handler.handlerType === "query");
   }
 
   /**
@@ -305,7 +306,7 @@ export class CoreExplorerService {
    * @returns 事件处理器信息数组
    */
   public getEventHandlers(handlers: IHandlerInfo[]): IHandlerInfo[] {
-    return handlers.filter((handler) => handler.handlerType === 'event');
+    return handlers.filter((handler) => handler.handlerType === "event");
   }
 
   /**
@@ -315,7 +316,7 @@ export class CoreExplorerService {
    * @returns Saga 处理器信息数组
    */
   public getSagaHandlers(handlers: IHandlerInfo[]): IHandlerInfo[] {
-    return handlers.filter((handler) => handler.handlerType === 'saga');
+    return handlers.filter((handler) => handler.handlerType === "saga");
   }
 
   /**
@@ -457,20 +458,20 @@ export class CoreExplorerService {
     moduleName: string,
   ): IHandlerInfo | null {
     try {
-      let handlerType: 'command' | 'query' | 'event' | 'saga';
+      let handlerType: "command" | "query" | "event" | "saga";
       let metadata: any;
 
       if (isCommandHandler(handlerClass)) {
-        handlerType = 'command';
+        handlerType = "command";
         metadata = getCommandHandlerMetadata(handlerClass);
       } else if (isQueryHandler(handlerClass)) {
-        handlerType = 'query';
+        handlerType = "query";
         metadata = getQueryHandlerMetadata(handlerClass);
       } else if (isEventHandler(handlerClass)) {
-        handlerType = 'event';
+        handlerType = "event";
         metadata = getEventHandlerMetadata(handlerClass);
       } else if (isSaga(handlerClass)) {
-        handlerType = 'saga';
+        handlerType = "saga";
         metadata = getSagaMetadata(handlerClass);
       } else {
         return null;
@@ -571,7 +572,7 @@ export class CoreExplorerService {
     options: IExplorerOptions,
   ): string {
     const optionsHash = JSON.stringify(options);
-    return `${module.name}:${Buffer.from(optionsHash).toString('base64')}`;
+    return `${module.name}:${Buffer.from(optionsHash).toString("base64")}`;
   }
 
   /**

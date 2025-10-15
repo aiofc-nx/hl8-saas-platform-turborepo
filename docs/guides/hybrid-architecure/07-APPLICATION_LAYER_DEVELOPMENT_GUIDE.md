@@ -66,14 +66,18 @@ export class CreateUserUseCase {
 
 export class UpdateUserProfileUseCase {
   // 承诺：只处理更新用户资料的业务场景
-  async execute(request: UpdateUserProfileRequest): Promise<UpdateUserProfileResponse> {
+  async execute(
+    request: UpdateUserProfileRequest,
+  ): Promise<UpdateUserProfileResponse> {
     // 单一职责：只关注用户资料更新
   }
 }
 
 export class AuthenticateUserUseCase {
   // 承诺：只处理用户认证的业务场景
-  async execute(request: AuthenticateUserRequest): Promise<AuthenticateUserResponse> {
+  async execute(
+    request: AuthenticateUserRequest,
+  ): Promise<AuthenticateUserResponse> {
     // 单一职责：只关注用户认证
   }
 }
@@ -81,10 +85,10 @@ export class AuthenticateUserUseCase {
 // ❌ 错误：违反设计承诺
 export class UserService {
   // ❌ 违反承诺：处理多个业务场景
-  async createUser(): Promise<void> { }
-  async updateUser(): Promise<void> { }
-  async deleteUser(): Promise<void> { }
-  async authenticateUser(): Promise<void> { }
+  async createUser(): Promise<void> {}
+  async updateUser(): Promise<void> {}
+  async deleteUser(): Promise<void> {}
+  async authenticateUser(): Promise<void> {}
 }
 ```
 
@@ -126,14 +130,14 @@ export class CreateUserUseCase {
   async execute(input: CreateUserInput): Promise<CreateUserOutput> {
     // 用例逻辑：协调各个组件完成业务场景
     const user = UserAggregate.create(input.email, input.username);
-    
+
     // 委托给领域对象执行业务逻辑
     user.register(input.email, input.username, input.password);
-    
+
     // 协调基础设施服务
     await this.userRepository.save(user);
     await this.eventBus.publishAll(user.getUncommittedEvents());
-    
+
     return new CreateUserOutput(user.getId());
   }
 }
@@ -144,9 +148,9 @@ export class User extends BaseEntity {
   public register(email: Email, username: Username, password: Password): void {
     // 业务规则：用户状态转换
     if (this._status !== UserStatus.Pending) {
-      throw new UserNotPendingException('只有待激活状态的用户才能注册');
+      throw new UserNotPendingException("只有待激活状态的用户才能注册");
     }
-    
+
     // 业务逻辑：注册的具体实现
     this._email = email;
     this._username = username;
@@ -236,34 +240,34 @@ graph TB
             QH[Query Handler<br/>查询处理器]
             EH[Event Handler<br/>事件处理器]
         end
-        
+
         subgraph "用例服务"
             US[Use Case Service<br/>用例服务]
             AS[Application Service<br/>应用服务]
         end
-        
+
         subgraph "端口接口"
             PI[Port Interface<br/>端口接口]
         end
-        
+
         subgraph "异常处理"
             EX[Exception Handler<br/>异常处理器]
         end
     end
-    
+
     subgraph "领域层 (Domain Layer)"
         AR[Aggregate Root<br/>聚合根]
         DS[Domain Service<br/>领域服务]
         DE[Domain Event<br/>领域事件]
     end
-    
+
     subgraph "基础设施层 (Infrastructure Layer)"
         REPO[Repository<br/>仓储]
         ES[Event Store<br/>事件存储]
         DB[Database<br/>数据库]
         MQ[Message Queue<br/>消息队列]
     end
-    
+
     CH --> AR
     QH --> REPO
     EH --> DS
@@ -283,24 +287,24 @@ graph TB
         CH[Command Handler]
         AR[Aggregate Root]
         ES[Event Store]
-        
+
         C --> CH
         CH --> AR
         AR --> DE[Domain Event]
         DE --> ES
     end
-    
+
     subgraph "查询端 (Query Side)"
         Q[Query]
         QH[Query Handler]
         RM[Read Model]
         CACHE[Cache]
-        
+
         Q --> QH
         QH --> RM
         QH --> CACHE
     end
-    
+
     subgraph "事件端 (Event Side)"
         DE --> EB[Event Bus]
         EB --> EH[Event Handler]
@@ -318,7 +322,7 @@ sequenceDiagram
     participant AR as 聚合根
     participant EH as 事件处理器
     participant QH as 查询处理器
-    
+
     Client->>US: 1. 发送业务请求
     US->>CH: 2. 执行命令
     CH->>AR: 3. 调用聚合根
@@ -352,7 +356,7 @@ flowchart TD
     K --> L[代码审查]
     L --> M[集成测试]
     M --> N[完成开发]
-    
+
     style A fill:#e1f5fe
     style N fill:#c8e6c9
     style K fill:#fff3e0
@@ -477,14 +481,14 @@ flowchart TD
        public readonly username: string,
        public readonly password: string,
        public readonly profile: UserProfileData,
-       public readonly tenantId: string
+       public readonly tenantId: string,
      ) {}
    }
-   
+
    export class ActivateUserCommand implements ICommand {
      constructor(
        public readonly userId: string,
-       public readonly tenantId: string
+       public readonly tenantId: string,
      ) {}
    }
    ```
@@ -493,33 +497,38 @@ flowchart TD
 
    ```typescript
    // 命令验证器
-   export class CreateUserCommandValidator implements ICommandValidator<CreateUserCommand> {
-     async validate(command: CreateUserCommand): Promise<ICommandValidationResult> {
-       const errors: Array<{field: string; message: string; code: string}> = [];
-       
+   export class CreateUserCommandValidator
+     implements ICommandValidator<CreateUserCommand>
+   {
+     async validate(
+       command: CreateUserCommand,
+     ): Promise<ICommandValidationResult> {
+       const errors: Array<{ field: string; message: string; code: string }> =
+         [];
+
        // 验证邮箱格式
        if (!this.isValidEmail(command.email)) {
          errors.push({
-           field: 'email',
-           message: '邮箱格式不正确',
-           code: 'INVALID_EMAIL'
+           field: "email",
+           message: "邮箱格式不正确",
+           code: "INVALID_EMAIL",
          });
        }
-       
+
        // 验证用户名
        if (!command.username || command.username.length < 3) {
          errors.push({
-           field: 'username',
-           message: '用户名长度不能少于3个字符',
-           code: 'INVALID_USERNAME'
+           field: "username",
+           message: "用户名长度不能少于3个字符",
+           code: "INVALID_USERNAME",
          });
        }
-       
+
        return {
          isValid: errors.length === 0,
          errors,
          warnings: [],
-         context: {}
+         context: {},
        };
      }
    }
@@ -534,7 +543,7 @@ flowchart TD
        public readonly userId: string,
        public readonly email: string,
        public readonly username: string,
-       public readonly createdAt: Date
+       public readonly createdAt: Date,
      ) {}
    }
    ```
@@ -558,16 +567,16 @@ flowchart TD
    export class GetUserQuery implements IQuery {
      constructor(
        public readonly userId: string,
-       public readonly tenantId: string
+       public readonly tenantId: string,
      ) {}
    }
-   
+
    export class GetUserListQuery implements IQuery {
      constructor(
        public readonly tenantId: string,
        public readonly page: number = 1,
        public readonly limit: number = 10,
-       public readonly filters?: UserFilters
+       public readonly filters?: UserFilters,
      ) {}
    }
    ```
@@ -577,17 +586,15 @@ flowchart TD
    ```typescript
    // 查询结果
    export class GetUserResult {
-     constructor(
-       public readonly user: UserReadModel
-     ) {}
+     constructor(public readonly user: UserReadModel) {}
    }
-   
+
    export class GetUserListResult {
      constructor(
        public readonly users: UserReadModel[],
        public readonly total: number,
        public readonly page: number,
-       public readonly limit: number
+       public readonly limit: number,
      ) {}
    }
    ```
@@ -603,7 +610,7 @@ flowchart TD
        public readonly username: string,
        public readonly status: string,
        public readonly createdAt: Date,
-       public readonly updatedAt: Date
+       public readonly updatedAt: Date,
      ) {}
    }
    ```
@@ -625,16 +632,18 @@ flowchart TD
    ```typescript
    // 事件处理器设计模板
    @EventsHandler(UserCreatedEvent)
-   export class UserCreatedEventHandler implements IEventHandler<UserCreatedEvent> {
+   export class UserCreatedEventHandler
+     implements IEventHandler<UserCreatedEvent>
+   {
      constructor(
        private readonly emailService: IEmailService,
-       private readonly auditService: IAuditService
+       private readonly auditService: IAuditService,
      ) {}
-     
+
      async handle(event: UserCreatedEvent): Promise<void> {
        // 发送欢迎邮件
        await this.emailService.sendWelcomeEmail(event.email, event.username);
-       
+
        // 记录审计日志
        await this.auditService.logUserCreation(event);
      }
@@ -645,11 +654,13 @@ flowchart TD
 
    ```typescript
    // 事件处理逻辑
-   export class UserActivatedEventHandler implements IEventHandler<UserActivatedEvent> {
+   export class UserActivatedEventHandler
+     implements IEventHandler<UserActivatedEvent>
+   {
      async handle(event: UserActivatedEvent): Promise<void> {
        // 更新用户状态
-       await this.userService.updateUserStatus(event.userId, 'active');
-       
+       await this.userService.updateUserStatus(event.userId, "active");
+
        // 发送激活通知
        await this.notificationService.sendActivationNotification(event.userId);
      }
@@ -692,9 +703,9 @@ flowchart TD
 export class CreateUserUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly eventBus: IEventBus
+    private readonly eventBus: IEventBus,
   ) {}
-  
+
   // 设计承诺：只处理创建用户的业务场景
   async execute(input: CreateUserInput): Promise<CreateUserOutput> {
     // 用例的完整业务流程
@@ -709,10 +720,12 @@ export class CreateUserUseCase {
 export class UpdateUserProfileUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly eventBus: IEventBus
+    private readonly eventBus: IEventBus,
   ) {}
-  
-  async execute(input: UpdateUserProfileInput): Promise<UpdateUserProfileOutput> {
+
+  async execute(
+    input: UpdateUserProfileInput,
+  ): Promise<UpdateUserProfileOutput> {
     // 只关注用户资料更新的业务逻辑
     const user = await this.userRepository.findById(input.userId);
     user.updateProfile(input.profile);
@@ -725,9 +738,9 @@ export class UpdateUserProfileUseCase {
 export class AuthenticateUserUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly eventBus: IEventBus
+    private readonly eventBus: IEventBus,
   ) {}
-  
+
   async execute(input: AuthenticateUserInput): Promise<AuthenticateUserOutput> {
     // 只关注用户认证的业务逻辑
     const user = await this.userRepository.findByEmail(input.email);
@@ -746,7 +759,7 @@ export class CreateUserInput {
   constructor(
     public readonly email: string,
     public readonly username: string,
-    public readonly password: string
+    public readonly password: string,
   ) {}
 }
 
@@ -754,7 +767,7 @@ export class CreateUserInput {
 export class CreateUserOutput {
   constructor(
     public readonly userId: string,
-    public readonly email: string
+    public readonly email: string,
   ) {}
 }
 ```
@@ -767,11 +780,11 @@ export class UserService {
   async createUser(email: string, username: string): Promise<void> {
     // 没有明确的用例边界
   }
-  
+
   async updateUser(id: string, data: any): Promise<void> {
     // 多个用例混在一起
   }
-  
+
   async deleteUser(id: string): Promise<void> {
     // 没有明确的输入输出
   }
@@ -791,11 +804,11 @@ export class ActivateUserUseCase {
     if (!user) {
       throw new UserNotFoundException();
     }
-    
+
     // 明确的业务逻辑
     user.activate();
     await this.userRepository.save(user);
-    
+
     // 明确的输出
     return new ActivateUserOutput(user.getId(), user.getStatus());
   }
@@ -845,17 +858,20 @@ export class UserApplicationService {
   constructor(
     private readonly createUserUseCase: ICreateUserUseCase,
     private readonly updateUserUseCase: IUpdateUserUseCase,
-    private readonly getUserUseCase: IGetUserUseCase
+    private readonly getUserUseCase: IGetUserUseCase,
   ) {}
-  
+
   async createUser(data: CreateUserData): Promise<CreateUserResult> {
     // 委托给用例服务
     const input = new CreateUserInput(data.email, data.username, data.password);
     const output = await this.createUserUseCase.execute(input);
     return new CreateUserResult(output.userId, output.email);
   }
-  
-  async updateUser(userId: string, data: UpdateUserData): Promise<UpdateUserResult> {
+
+  async updateUser(
+    userId: string,
+    data: UpdateUserData,
+  ): Promise<UpdateUserResult> {
     // 委托给用例服务
     const input = new UpdateUserInput(userId, data);
     const output = await this.updateUserUseCase.execute(input);
@@ -871,7 +887,9 @@ export class UserApplicationService {
 ```typescript
 // 每个处理器只处理一种类型的命令
 @CommandHandler(CreateUserCommand)
-export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand, CreateUserResult> {
+export class CreateUserCommandHandler
+  implements ICommandHandler<CreateUserCommand, CreateUserResult>
+{
   async handle(command: CreateUserCommand): Promise<CreateUserResult> {
     // 只处理创建用户的逻辑
   }
@@ -883,11 +901,15 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
 ```typescript
 // ❌ 一个处理器处理多种命令
 export class UserCommandHandler {
-  async handleCreateUser(command: CreateUserCommand): Promise<CreateUserResult> {
+  async handleCreateUser(
+    command: CreateUserCommand,
+  ): Promise<CreateUserResult> {
     // 创建用户逻辑
   }
-  
-  async handleUpdateUser(command: UpdateUserCommand): Promise<UpdateUserResult> {
+
+  async handleUpdateUser(
+    command: UpdateUserCommand,
+  ): Promise<UpdateUserResult> {
     // 更新用户逻辑
   }
 }
@@ -902,7 +924,7 @@ export class UserCommandHandler {
 export class CreateUserCommandHandler {
   constructor(
     private readonly userRepository: IUserRepository, // 抽象接口
-    private readonly eventBus: IEventBus // 抽象接口
+    private readonly eventBus: IEventBus, // 抽象接口
   ) {}
 }
 ```
@@ -914,7 +936,7 @@ export class CreateUserCommandHandler {
 export class CreateUserCommandHandler {
   constructor(
     private readonly userRepository: UserRepository, // 具体实现
-    private readonly eventBus: EventBus // 具体实现
+    private readonly eventBus: EventBus, // 具体实现
   ) {}
 }
 ```
@@ -952,49 +974,55 @@ export class SmsNotificationHandler implements IUserEventHandler {
 
 ```typescript
 @CommandHandler(CreateUserCommand)
-export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand, CreateUserResult> {
+export class CreateUserCommandHandler
+  implements ICommandHandler<CreateUserCommand, CreateUserResult>
+{
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly eventBus: IEventBus,
-    private readonly validator: ICommandValidator<CreateUserCommand>
+    private readonly validator: ICommandValidator<CreateUserCommand>,
   ) {}
-  
+
   async handle(command: CreateUserCommand): Promise<CreateUserResult> {
     // 1. 验证命令
     await this.validateCommand(command);
-    
+
     // 2. 执行业务逻辑
     const user = await this.createUser(command);
-    
+
     // 3. 保存聚合根
     await this.userRepository.save(user);
-    
+
     // 4. 发布事件
     await this.publishEvents(user);
-    
+
     // 5. 返回结果
-    return new CreateUserResult(user.getId(), user.getEmail(), user.getUsername());
+    return new CreateUserResult(
+      user.getId(),
+      user.getEmail(),
+      user.getUsername(),
+    );
   }
-  
+
   private async validateCommand(command: CreateUserCommand): Promise<void> {
     const result = await this.validator.validate(command);
     if (!result.isValid) {
       throw new CommandValidationError(result.errors);
     }
   }
-  
+
   private async createUser(command: CreateUserCommand): Promise<UserAggregate> {
     const user = UserAggregate.create(
       EntityId.generate(),
       Email.create(command.email),
       Username.create(command.username),
       Password.create(command.password),
-      UserProfile.create(command.profile)
+      UserProfile.create(command.profile),
     );
-    
+
     return user;
   }
-  
+
   private async publishEvents(user: UserAggregate): Promise<void> {
     const events = user.getUncommittedEvents();
     await this.eventBus.publishAll(events);
@@ -1009,10 +1037,8 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
 
 ```typescript
 export class CreateUserCommandHandler {
-  constructor(
-    private readonly transactionManager: ITransactionManager
-  ) {}
-  
+  constructor(private readonly transactionManager: ITransactionManager) {}
+
   async handle(command: CreateUserCommand): Promise<CreateUserResult> {
     return await this.transactionManager.execute(async () => {
       // 在事务中执行所有操作
@@ -1034,16 +1060,16 @@ export class UpdateUserCommandHandler {
     if (!user) {
       throw new UserNotFoundException();
     }
-    
+
     // 检查版本号
     if (user.getVersion() !== command.expectedVersion) {
-      throw new ConcurrencyConflictError('用户数据已被其他操作修改');
+      throw new ConcurrencyConflictError("用户数据已被其他操作修改");
     }
-    
+
     // 更新用户
     user.updateProfile(command.profile);
     await this.userRepository.save(user);
-    
+
     return new UpdateUserResult(user.getId());
   }
 }
@@ -1061,15 +1087,15 @@ export class CreateUserCommandHandler {
       return new CreateUserResult(user.getId());
     } catch (error) {
       // 记录错误日志
-      this.logger.error('Failed to create user', error);
-      
+      this.logger.error("Failed to create user", error);
+
       // 根据错误类型处理
       if (error instanceof BusinessRuleViolationError) {
-        throw new CommandExecutionError('业务规则验证失败', error);
+        throw new CommandExecutionError("业务规则验证失败", error);
       } else if (error instanceof ConcurrencyConflictError) {
-        throw new CommandExecutionError('并发冲突', error);
+        throw new CommandExecutionError("并发冲突", error);
       } else {
-        throw new CommandExecutionError('创建用户失败', error);
+        throw new CommandExecutionError("创建用户失败", error);
       }
     }
   }
@@ -1086,51 +1112,58 @@ export class CreateUserCommandHandler {
 
 ```typescript
 @QueryHandler(GetUserQuery)
-export class GetUserQueryHandler implements IQueryHandler<GetUserQuery, GetUserResult> {
+export class GetUserQueryHandler
+  implements IQueryHandler<GetUserQuery, GetUserResult>
+{
   constructor(
     private readonly userReadRepository: IUserReadRepository,
-    private readonly cache: IApplicationCache
+    private readonly cache: IApplicationCache,
   ) {}
-  
+
   async handle(query: GetUserQuery): Promise<GetUserResult> {
     // 1. 验证查询
     this.validateQuery(query);
-    
+
     // 2. 检查缓存
     const cached = await this.getFromCache(query);
     if (cached) return cached;
-    
+
     // 3. 执行查询
     const user = await this.userReadRepository.findById(query.userId);
     if (!user) {
       throw new UserNotFoundException();
     }
-    
+
     // 4. 构建结果
     const result = new GetUserResult(user);
-    
+
     // 5. 缓存结果
     await this.cacheResult(query, result);
-    
+
     return result;
   }
-  
+
   private validateQuery(query: GetUserQuery): void {
     if (!query.userId) {
-      throw new QueryValidationError('用户ID不能为空');
+      throw new QueryValidationError("用户ID不能为空");
     }
   }
-  
-  private async getFromCache(query: GetUserQuery): Promise<GetUserResult | null> {
+
+  private async getFromCache(
+    query: GetUserQuery,
+  ): Promise<GetUserResult | null> {
     const cacheKey = this.getCacheKey(query);
     return await this.cache.get(cacheKey);
   }
-  
-  private async cacheResult(query: GetUserQuery, result: GetUserResult): Promise<void> {
+
+  private async cacheResult(
+    query: GetUserQuery,
+    result: GetUserResult,
+  ): Promise<void> {
     const cacheKey = this.getCacheKey(query);
     await this.cache.set(cacheKey, result, 300); // 5分钟缓存
   }
-  
+
   private getCacheKey(query: GetUserQuery): string {
     return `user:${query.userId}:${query.tenantId}`;
   }
@@ -1143,19 +1176,26 @@ export class GetUserQueryHandler implements IQueryHandler<GetUserQuery, GetUserR
 
 ```typescript
 @QueryHandler(GetUserListQuery)
-export class GetUserListQueryHandler implements IQueryHandler<GetUserListQuery, GetUserListResult> {
+export class GetUserListQueryHandler
+  implements IQueryHandler<GetUserListQuery, GetUserListResult>
+{
   async handle(query: GetUserListQuery): Promise<GetUserListResult> {
     // 验证分页参数
     const page = Math.max(1, query.page);
     const limit = Math.min(100, Math.max(1, query.limit));
     const offset = (page - 1) * limit;
-    
+
     // 执行查询
     const [users, total] = await Promise.all([
-      this.userReadRepository.findByTenant(query.tenantId, offset, limit, query.filters),
-      this.userReadRepository.countByTenant(query.tenantId, query.filters)
+      this.userReadRepository.findByTenant(
+        query.tenantId,
+        offset,
+        limit,
+        query.filters,
+      ),
+      this.userReadRepository.countByTenant(query.tenantId, query.filters),
     ]);
-    
+
     return new GetUserListResult(users, total, page, limit);
   }
 }
@@ -1168,21 +1208,21 @@ export class GetUserQueryHandler {
   async handle(query: GetUserQuery): Promise<GetUserResult> {
     // 检查权限
     await this.checkPermission(query);
-    
+
     // 执行查询
     const user = await this.userReadRepository.findById(query.userId);
     return new GetUserResult(user);
   }
-  
+
   private async checkPermission(query: GetUserQuery): Promise<void> {
     const hasPermission = await this.permissionService.checkUserAccess(
       query.requestingUserId,
       query.userId,
-      'READ_USER'
+      "READ_USER",
     );
-    
+
     if (!hasPermission) {
-      throw new AccessDeniedError('没有权限访问该用户信息');
+      throw new AccessDeniedError("没有权限访问该用户信息");
     }
   }
 }
@@ -1198,17 +1238,17 @@ export class GetUserListQueryHandler {
       query.tenantId,
       query.filters,
       query.sortBy,
-      query.sortOrder
+      query.sortOrder,
     );
-    
+
     // 使用投影减少数据传输
-    const projectedUsers = users.map(user => ({
+    const projectedUsers = users.map((user) => ({
       id: user.id,
       email: user.email,
       username: user.username,
-      status: user.status
+      status: user.status,
     }));
-    
+
     return new GetUserListResult(projectedUsers);
   }
 }
@@ -1224,25 +1264,27 @@ export class GetUserListQueryHandler {
 
 ```typescript
 @EventsHandler(UserCreatedEvent)
-export class UserCreatedEventHandler implements IEventHandler<UserCreatedEvent> {
+export class UserCreatedEventHandler
+  implements IEventHandler<UserCreatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
-    private readonly auditService: IAuditService
+    private readonly auditService: IAuditService,
   ) {}
-  
+
   async handle(event: UserCreatedEvent): Promise<void> {
     try {
       // 1. 验证事件
       this.validateEvent(event);
-      
+
       // 2. 检查是否已处理
       if (await this.isEventProcessed(event)) {
         return;
       }
-      
+
       // 3. 处理事件
       await this.processEvent(event);
-      
+
       // 4. 标记为已处理
       await this.markEventAsProcessed(event);
     } catch (error) {
@@ -1251,31 +1293,31 @@ export class UserCreatedEventHandler implements IEventHandler<UserCreatedEvent> 
       throw error;
     }
   }
-  
+
   private validateEvent(event: UserCreatedEvent): void {
     if (!event.userId || !event.email) {
-      throw new InvalidEventError('事件数据不完整');
+      throw new InvalidEventError("事件数据不完整");
     }
   }
-  
+
   private async processEvent(event: UserCreatedEvent): Promise<void> {
     // 发送欢迎邮件
     await this.emailService.sendWelcomeEmail(event.email, event.username);
-    
+
     // 记录审计日志
     await this.auditService.logUserCreation(event);
   }
-  
+
   async isEventProcessed(event: UserCreatedEvent): Promise<boolean> {
     return await this.eventStore.isEventProcessed(event.id);
   }
-  
+
   async markEventAsProcessed(event: UserCreatedEvent): Promise<void> {
     await this.eventStore.markEventAsProcessed(event.id);
   }
-  
+
   async handleFailure(event: UserCreatedEvent, error: Error): Promise<void> {
-    this.logger.error('Failed to handle UserCreatedEvent', error);
+    this.logger.error("Failed to handle UserCreatedEvent", error);
     await this.deadLetterQueue.send(event, error);
   }
 }
@@ -1291,13 +1333,13 @@ export class UserActivatedEventHandler {
     // 检查是否已处理
     const processed = await this.eventStore.isEventProcessed(event.id);
     if (processed) {
-      this.logger.info('Event already processed', { eventId: event.id });
+      this.logger.info("Event already processed", { eventId: event.id });
       return;
     }
-    
+
     // 处理事件
-    await this.updateUserStatus(event.userId, 'active');
-    
+    await this.updateUserStatus(event.userId, "active");
+
     // 标记为已处理
     await this.eventStore.markEventAsProcessed(event.id);
   }
@@ -1311,7 +1353,7 @@ export class UserCreatedEventHandler {
   async handle(event: UserCreatedEvent): Promise<void> {
     const maxRetries = this.getMaxRetries(event);
     let retryCount = 0;
-    
+
     while (retryCount <= maxRetries) {
       try {
         await this.processEvent(event);
@@ -1322,18 +1364,18 @@ export class UserCreatedEventHandler {
           await this.handleFailure(event, error);
           throw error;
         }
-        
+
         // 等待重试
         const delay = this.getRetryDelay(event, retryCount);
         await this.sleep(delay);
       }
     }
   }
-  
+
   getMaxRetries(event: UserCreatedEvent): number {
     return 3;
   }
-  
+
   getRetryDelay(event: UserCreatedEvent, retryCount: number): number {
     return Math.pow(2, retryCount) * 1000; // 指数退避
   }
@@ -1347,19 +1389,22 @@ export class UserBatchEventHandler {
   async handleBatch(events: UserEvent[]): Promise<void> {
     // 按类型分组
     const groupedEvents = this.groupEventsByType(events);
-    
+
     // 批量处理
     for (const [eventType, eventList] of groupedEvents) {
       await this.processBatch(eventType, eventList);
     }
   }
-  
-  private async processBatch(eventType: string, events: UserEvent[]): Promise<void> {
+
+  private async processBatch(
+    eventType: string,
+    events: UserEvent[],
+  ): Promise<void> {
     switch (eventType) {
-      case 'UserCreated':
+      case "UserCreated":
         await this.batchCreateUsers(events as UserCreatedEvent[]);
         break;
-      case 'UserActivated':
+      case "UserActivated":
         await this.batchActivateUsers(events as UserActivatedEvent[]);
         break;
     }
@@ -1436,45 +1481,45 @@ export class CreateUserUseCase implements ICreateUserUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly eventBus: IEventBus,
-    private readonly transactionManager: ITransactionManager
+    private readonly transactionManager: ITransactionManager,
   ) {}
-  
+
   async execute(input: CreateUserInput): Promise<CreateUserOutput> {
     return await this.transactionManager.execute(async () => {
       // 1. 验证输入
       this.validateInput(input);
-      
+
       // 2. 执行业务逻辑
       const user = await this.createUser(input);
-      
+
       // 3. 保存聚合根
       await this.userRepository.save(user);
-      
+
       // 4. 发布事件
       await this.publishEvents(user);
-      
+
       // 5. 返回输出
       return new CreateUserOutput(user.getId(), user.getEmail());
     });
   }
-  
+
   private validateInput(input: CreateUserInput): void {
     if (!input.email || !input.username) {
-      throw new InvalidInputError('邮箱和用户名不能为空');
+      throw new InvalidInputError("邮箱和用户名不能为空");
     }
   }
-  
+
   private async createUser(input: CreateUserInput): Promise<UserAggregate> {
     const user = UserAggregate.create(
       EntityId.generate(),
       Email.create(input.email),
       Username.create(input.username),
-      Password.create(input.password)
+      Password.create(input.password),
     );
-    
+
     return user;
   }
-  
+
   private async publishEvents(user: UserAggregate): Promise<void> {
     const events = user.getUncommittedEvents();
     await this.eventBus.publishAll(events);
@@ -1488,7 +1533,7 @@ export class CreateUserInput {
     public readonly email: string,
     public readonly username: string,
     public readonly password: string,
-    public readonly tenantId: string
+    public readonly tenantId: string,
   ) {}
 }
 
@@ -1497,7 +1542,7 @@ export class CreateUserOutput {
   constructor(
     public readonly userId: string,
     public readonly email: string,
-    public readonly createdAt: Date = new Date()
+    public readonly createdAt: Date = new Date(),
   ) {}
 }
 ```
@@ -1513,22 +1558,30 @@ export class UserUseCaseServices {
     private readonly deleteUserUseCase: IDeleteUserUseCase,
     private readonly activateUserUseCase: IActivateUserUseCase,
     private readonly getUserUseCase: IGetUserUseCase,
-    private readonly getUserListUseCase: IGetUserListUseCase
+    private readonly getUserListUseCase: IGetUserListUseCase,
   ) {}
-  
+
   // 委托给具体的用例服务
   async createUser(data: CreateUserData): Promise<CreateUserResult> {
-    const input = new CreateUserInput(data.email, data.username, data.password, data.tenantId);
+    const input = new CreateUserInput(
+      data.email,
+      data.username,
+      data.password,
+      data.tenantId,
+    );
     const output = await this.createUserUseCase.execute(input);
     return new CreateUserResult(output.userId, output.email);
   }
-  
-  async updateUser(userId: string, data: UpdateUserData): Promise<UpdateUserResult> {
+
+  async updateUser(
+    userId: string,
+    data: UpdateUserData,
+  ): Promise<UpdateUserResult> {
     const input = new UpdateUserInput(userId, data);
     const output = await this.updateUserUseCase.execute(input);
     return new UpdateUserResult(output.userId);
   }
-  
+
   async getUser(userId: string, tenantId: string): Promise<GetUserResult> {
     const input = new GetUserInput(userId, tenantId);
     const output = await this.getUserUseCase.execute(input);
@@ -1550,25 +1603,25 @@ export class UserUseCaseServices {
     ActivateUserUseCase,
     GetUserUseCase,
     GetUserListUseCase,
-    
+
     // 用例服务集合
     UserUseCaseServices,
-    
+
     // 依赖服务
     {
-      provide: 'IUserRepository',
-      useClass: UserRepository
+      provide: "IUserRepository",
+      useClass: UserRepository,
     },
     {
-      provide: 'IEventBus',
-      useClass: EventBus
+      provide: "IEventBus",
+      useClass: EventBus,
     },
     {
-      provide: 'ITransactionManager',
-      useClass: TransactionManager
-    }
+      provide: "ITransactionManager",
+      useClass: TransactionManager,
+    },
   ],
-  exports: [UserUseCaseServices]
+  exports: [UserUseCaseServices],
 })
 export class UserUseCaseModule {}
 ```
@@ -1579,20 +1632,25 @@ export class UserUseCaseModule {}
 
 ```typescript
 export class UserUseCaseService {
-  constructor(
-    private readonly transactionManager: ITransactionManager
-  ) {}
-  
+  constructor(private readonly transactionManager: ITransactionManager) {}
+
   async createUserWithProfile(data: CreateUserData): Promise<CreateUserResult> {
     return await this.transactionManager.execute(async () => {
       // 1. 创建用户
-      const createCommand = new CreateUserCommand(data.email, data.username, data.password);
+      const createCommand = new CreateUserCommand(
+        data.email,
+        data.username,
+        data.password,
+      );
       const userResult = await this.commandBus.execute(createCommand);
-      
+
       // 2. 创建用户资料
-      const profileCommand = new CreateUserProfileCommand(userResult.userId, data.profile);
+      const profileCommand = new CreateUserProfileCommand(
+        userResult.userId,
+        data.profile,
+      );
       await this.commandBus.execute(profileCommand);
-      
+
       return userResult;
     });
   }
@@ -1603,17 +1661,32 @@ export class UserUseCaseService {
 
 ```typescript
 export class UserUseCaseService {
-  async createUser(data: CreateUserData, requestingUser: UserContext): Promise<CreateUserResult> {
+  async createUser(
+    data: CreateUserData,
+    requestingUser: UserContext,
+  ): Promise<CreateUserResult> {
     // 检查权限
-    await this.checkPermission(requestingUser, 'CREATE_USER', data.tenantId);
-    
+    await this.checkPermission(requestingUser, "CREATE_USER", data.tenantId);
+
     // 执行命令
-    const command = new CreateUserCommand(data.email, data.username, data.password);
+    const command = new CreateUserCommand(
+      data.email,
+      data.username,
+      data.password,
+    );
     return await this.commandBus.execute(command);
   }
-  
-  private async checkPermission(user: UserContext, action: string, tenantId: string): Promise<void> {
-    const hasPermission = await this.permissionService.checkPermission(user.id, action, tenantId);
+
+  private async checkPermission(
+    user: UserContext,
+    action: string,
+    tenantId: string,
+  ): Promise<void> {
+    const hasPermission = await this.permissionService.checkPermission(
+      user.id,
+      action,
+      tenantId,
+    );
     if (!hasPermission) {
       throw new AccessDeniedError(`用户没有执行 ${action} 的权限`);
     }
@@ -1625,10 +1698,8 @@ export class UserUseCaseService {
 
 ```typescript
 export class UserUseCaseService {
-  constructor(
-    private readonly cache: IApplicationCache
-  ) {}
-  
+  constructor(private readonly cache: IApplicationCache) {}
+
   async getUser(userId: string, tenantId: string): Promise<GetUserResult> {
     // 检查缓存
     const cacheKey = `user:${userId}:${tenantId}`;
@@ -1636,14 +1707,14 @@ export class UserUseCaseService {
     if (cached) {
       return cached;
     }
-    
+
     // 执行查询
     const query = new GetUserQuery(userId, tenantId);
     const result = await this.queryBus.execute(query);
-    
+
     // 缓存结果
     await this.cache.set(cacheKey, result, 300);
-    
+
     return result;
   }
 }
@@ -1670,7 +1741,9 @@ export class CreateUserUseCase {
 
 export class UpdateUserProfileUseCase {
   // 承诺：只处理更新用户资料的业务场景
-  async execute(input: UpdateUserProfileInput): Promise<UpdateUserProfileOutput> {
+  async execute(
+    input: UpdateUserProfileInput,
+  ): Promise<UpdateUserProfileOutput> {
     // 单一职责：只关注用户资料更新
   }
 }
@@ -1689,20 +1762,20 @@ export class AuthenticateUserUseCase {
 // ❌ 违反设计承诺的命名
 export class UserService {
   // ❌ 违反承诺：处理多个业务场景
-  async createUser(): Promise<void> { }
-  async updateUser(): Promise<void> { }
-  async deleteUser(): Promise<void> { }
-  async authenticateUser(): Promise<void> { }
+  async createUser(): Promise<void> {}
+  async updateUser(): Promise<void> {}
+  async deleteUser(): Promise<void> {}
+  async authenticateUser(): Promise<void> {}
 }
 
 export class UserManager {
   // ❌ 违反承诺：职责不明确
-  async handleUserOperations(): Promise<void> { }
+  async handleUserOperations(): Promise<void> {}
 }
 
 export class UserHandler {
   // ❌ 违反承诺：命名不体现业务场景
-  async processUserRequest(): Promise<void> { }
+  async processUserRequest(): Promise<void> {}
 }
 ```
 
@@ -1722,7 +1795,9 @@ export class CreateUserUseCase {
 }
 
 export class UpdateUserProfileUseCase {
-  async execute(input: UpdateUserProfileInput): Promise<UpdateUserProfileOutput> {
+  async execute(
+    input: UpdateUserProfileInput,
+  ): Promise<UpdateUserProfileOutput> {
     // 只处理用户资料更新的业务逻辑
     const user = await this.userRepository.findById(input.userId);
     user.updateProfile(input.profile);
@@ -1739,11 +1814,11 @@ export class UpdateUserProfileUseCase {
 export class UserManagementUseCase {
   async execute(input: UserManagementInput): Promise<UserManagementOutput> {
     // ❌ 违反承诺：处理多个业务场景
-    if (input.operation === 'create') {
+    if (input.operation === "create") {
       // 创建用户逻辑
-    } else if (input.operation === 'update') {
+    } else if (input.operation === "update") {
       // 更新用户逻辑
-    } else if (input.operation === 'delete') {
+    } else if (input.operation === "delete") {
       // 删除用户逻辑
     }
   }
@@ -1756,26 +1831,33 @@ export class UserManagementUseCase {
 
 ```typescript
 // 每个用例可以独立测试
-describe('CreateUserUseCase', () => {
-  it('should create user successfully', async () => {
+describe("CreateUserUseCase", () => {
+  it("should create user successfully", async () => {
     const useCase = new CreateUserUseCase(mockUserRepository, mockEventBus);
-    const input = new CreateUserInput('test@example.com', 'testuser', 'password');
-    
+    const input = new CreateUserInput(
+      "test@example.com",
+      "testuser",
+      "password",
+    );
+
     const result = await useCase.execute(input);
-    
+
     expect(result.userId).toBeDefined();
     expect(mockUserRepository.save).toHaveBeenCalled();
   });
 });
 
-describe('UpdateUserProfileUseCase', () => {
-  it('should update user profile successfully', async () => {
-    const useCase = new UpdateUserProfileUseCase(mockUserRepository, mockEventBus);
-    const input = new UpdateUserProfileInput('user-id', newProfile);
-    
+describe("UpdateUserProfileUseCase", () => {
+  it("should update user profile successfully", async () => {
+    const useCase = new UpdateUserProfileUseCase(
+      mockUserRepository,
+      mockEventBus,
+    );
+    const input = new UpdateUserProfileInput("user-id", newProfile);
+
     const result = await useCase.execute(input);
-    
-    expect(result.userId).toBe('user-id');
+
+    expect(result.userId).toBe("user-id");
     expect(mockUserRepository.save).toHaveBeenCalled();
   });
 });
@@ -1801,11 +1883,15 @@ export class CreateUserCommandHandler {
 ```typescript
 // ❌ 错误：职责混乱
 export class UserCommandHandler {
-  async handleCreateUser(command: CreateUserCommand): Promise<CreateUserResult> {
+  async handleCreateUser(
+    command: CreateUserCommand,
+  ): Promise<CreateUserResult> {
     // 创建用户逻辑
   }
-  
-  async handleUpdateUser(command: UpdateUserCommand): Promise<UpdateUserResult> {
+
+  async handleUpdateUser(
+    command: UpdateUserCommand,
+  ): Promise<UpdateUserResult> {
     // 更新用户逻辑
   }
 }
@@ -1840,16 +1926,16 @@ export class GetUserListQueryHandler {
       query.tenantId,
       query.filters,
       query.sortBy,
-      query.sortOrder
+      query.sortOrder,
     );
-    
+
     // 使用投影
-    const projectedUsers = users.map(user => ({
+    const projectedUsers = users.map((user) => ({
       id: user.id,
       email: user.email,
-      username: user.username
+      username: user.username,
     }));
-    
+
     return new GetUserListResult(projectedUsers);
   }
 }
@@ -1864,10 +1950,10 @@ export class GetUserQueryHandler {
     const cacheKey = this.getCacheKey(query);
     const cached = await this.cache.get(cacheKey);
     if (cached) return cached;
-    
+
     const user = await this.userReadRepository.findById(query.userId);
     const result = new GetUserResult(user);
-    
+
     await this.cache.set(cacheKey, result, 300);
     return result;
   }
@@ -1885,7 +1971,7 @@ export class UserCreatedEventHandler {
     if (await this.isEventProcessed(event)) {
       return;
     }
-    
+
     await this.processEvent(event);
     await this.markEventAsProcessed(event);
   }
@@ -1905,9 +1991,9 @@ export class UserCreatedEventHandler {
       throw error;
     }
   }
-  
+
   async handleFailure(event: UserCreatedEvent, error: Error): Promise<void> {
-    this.logger.error('Failed to handle UserCreatedEvent', error);
+    this.logger.error("Failed to handle UserCreatedEvent", error);
     await this.deadLetterQueue.send(event, error);
   }
 }
@@ -1951,9 +2037,9 @@ export class UpdateUserCommandHandler {
   async handle(command: UpdateUserCommand): Promise<UpdateUserResult> {
     const user = await this.userRepository.findById(command.userId);
     if (user.getVersion() !== command.expectedVersion) {
-      throw new ConcurrencyConflictError('数据已被其他操作修改');
+      throw new ConcurrencyConflictError("数据已被其他操作修改");
     }
-    
+
     user.updateProfile(command.profile);
     await this.userRepository.save(user);
     return new UpdateUserResult(user.getId());
@@ -1976,9 +2062,9 @@ export class GetUserListQueryHandler {
     // 一次性查询所有数据
     const users = await this.userReadRepository.findByTenantWithProfiles(
       query.tenantId,
-      query.filters
+      query.filters,
     );
-    
+
     return new GetUserListResult(users);
   }
 }
@@ -1996,11 +2082,11 @@ export class UpdateUserCommandHandler {
   async handle(command: UpdateUserCommand): Promise<UpdateUserResult> {
     const user = await this.updateUser(command);
     await this.userRepository.save(user);
-    
+
     // 清除相关缓存
     await this.cache.delete(`user:${user.getId()}`);
     await this.cache.delete(`user:${user.getEmail()}`);
-    
+
     return new UpdateUserResult(user.getId());
   }
 }
@@ -2019,10 +2105,10 @@ export class UpdateUserCommandHandler {
 export class UserCreatedEventHandler {
   async handle(event: UserCreatedEvent): Promise<void> {
     if (await this.isEventProcessed(event)) {
-      this.logger.info('Event already processed', { eventId: event.id });
+      this.logger.info("Event already processed", { eventId: event.id });
       return;
     }
-    
+
     await this.processEvent(event);
     await this.markEventAsProcessed(event);
   }
@@ -2041,7 +2127,7 @@ export class UserCreatedEventHandler {
   async handle(event: UserCreatedEvent): Promise<void> {
     const maxRetries = 3;
     let retryCount = 0;
-    
+
     while (retryCount <= maxRetries) {
       try {
         await this.processEvent(event);
@@ -2052,7 +2138,7 @@ export class UserCreatedEventHandler {
           await this.handleFailure(event, error);
           throw error;
         }
-        
+
         await this.sleep(Math.pow(2, retryCount) * 1000);
       }
     }

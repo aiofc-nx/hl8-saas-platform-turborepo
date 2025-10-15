@@ -35,7 +35,7 @@ export class IsolationValidationError extends Error {
     public readonly context?: Record<string, any>,
   ) {
     super(message);
-    this.name = 'IsolationValidationError';
+    this.name = "IsolationValidationError";
 
     // 设置原型链（TypeScript 继承 Error 的必需操作）
     Object.setPrototypeOf(this, IsolationValidationError.prototype);

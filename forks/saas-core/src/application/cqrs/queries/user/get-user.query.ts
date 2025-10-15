@@ -1,4 +1,4 @@
-import { BaseQuery } from '@hl8/hybrid-archi';
+import { BaseQuery } from "@hl8/hybrid-archi";
 
 export class GetUserQuery extends BaseQuery {
   constructor(
@@ -10,7 +10,7 @@ export class GetUserQuery extends BaseQuery {
   }
 
   get queryType(): string {
-    return 'GetUserQuery';
+    return "GetUserQuery";
   }
 
   protected createCopyWithSortRules(sortRules: any[]): this {
@@ -22,4 +22,3 @@ export class GetUserQuery extends BaseQuery {
     return copy as this;
   }
 }
-

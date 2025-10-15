@@ -2,11 +2,11 @@
  * 角色实体（简化版本）
  */
 
-import { BaseEntity, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { EntityId } from '@hl8/isolation-model';
-import { RoleLevel } from '../value-objects/role-level.vo.js';
-import { RoleName } from '../value-objects/role-name.vo.js';
-import { RoleStatus } from '../value-objects/role-status.enum.js';
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model";
+import { RoleLevel } from "../value-objects/role-level.vo.js";
+import { RoleName } from "../value-objects/role-name.vo.js";
+import { RoleStatus } from "../value-objects/role-status.enum.js";
 
 export class Role extends BaseEntity {
   constructor(
@@ -53,4 +53,3 @@ export class Role extends BaseEntity {
     };
   }
 }
-

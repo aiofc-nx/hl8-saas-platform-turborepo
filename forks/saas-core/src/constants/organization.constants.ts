@@ -37,7 +37,7 @@ export const ORGANIZATION_CODE_VALIDATION = {
   /** 格式：字母数字下划线连字符 */
   PATTERN: /^[a-zA-Z0-9_-]+$/,
   /** 错误消息 */
-  ERROR_MESSAGE: '组织代码必须是2-20位的字母、数字、下划线或连字符组合',
+  ERROR_MESSAGE: "组织代码必须是2-20位的字母、数字、下划线或连字符组合",
 } as const;
 
 /**
@@ -51,7 +51,7 @@ export const ORGANIZATION_NAME_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 100,
   /** 错误消息 */
-  ERROR_MESSAGE: '组织名称长度必须在1-100字符之间',
+  ERROR_MESSAGE: "组织名称长度必须在1-100字符之间",
 } as const;
 
 /**
@@ -63,7 +63,7 @@ export const ORGANIZATION_DESCRIPTION_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 500,
   /** 错误消息 */
-  ERROR_MESSAGE: '组织描述不能超过500字符',
+  ERROR_MESSAGE: "组织描述不能超过500字符",
 } as const;
 
 /**
@@ -76,37 +76,37 @@ export const ORGANIZATION_DESCRIPTION_VALIDATION = {
 export const ORGANIZATION_TYPE_CONFIG = {
   /** 专业委员会 */
   PROFESSIONAL_COMMITTEE: {
-    code: 'PROFESSIONAL_COMMITTEE',
-    name: '专业委员会',
-    description: '负责特定专业领域的管理和决策',
+    code: "PROFESSIONAL_COMMITTEE",
+    name: "专业委员会",
+    description: "负责特定专业领域的管理和决策",
     defaultMemberLimit: 20,
   },
   /** 项目管理团队 */
   PROJECT_TEAM: {
-    code: 'PROJECT_TEAM',
-    name: '项目管理团队',
-    description: '负责项目的策划、执行和监控',
+    code: "PROJECT_TEAM",
+    name: "项目管理团队",
+    description: "负责项目的策划、执行和监控",
     defaultMemberLimit: 50,
   },
   /** 质量控制小组 */
   QUALITY_CONTROL: {
-    code: 'QUALITY_CONTROL',
-    name: '质量控制小组',
-    description: '负责质量管理和流程改进',
+    code: "QUALITY_CONTROL",
+    name: "质量控制小组",
+    description: "负责质量管理和流程改进",
     defaultMemberLimit: 10,
   },
   /** 绩效管理小组 */
   PERFORMANCE_TEAM: {
-    code: 'PERFORMANCE_TEAM',
-    name: '绩效管理小组',
-    description: '负责绩效评估和考核管理',
+    code: "PERFORMANCE_TEAM",
+    name: "绩效管理小组",
+    description: "负责绩效评估和考核管理",
     defaultMemberLimit: 15,
   },
   /** 自定义类型 */
   CUSTOM: {
-    code: 'CUSTOM',
-    name: '自定义组织',
-    description: '用户自定义的组织类型',
+    code: "CUSTOM",
+    name: "自定义组织",
+    description: "用户自定义的组织类型",
     defaultMemberLimit: 100,
   },
 } as const;
@@ -118,13 +118,13 @@ export const ORGANIZATION_TYPE_CONFIG = {
  */
 export const ORGANIZATION_MEMBER_ROLES = {
   /** 组织负责人 */
-  LEADER: 'LEADER',
+  LEADER: "LEADER",
   /** 副负责人 */
-  DEPUTY_LEADER: 'DEPUTY_LEADER',
+  DEPUTY_LEADER: "DEPUTY_LEADER",
   /** 成员 */
-  MEMBER: 'MEMBER',
+  MEMBER: "MEMBER",
   /** 观察员 */
-  OBSERVER: 'OBSERVER',
+  OBSERVER: "OBSERVER",
 } as const;
 
 /**
@@ -151,8 +151,8 @@ export const ORGANIZATION_MEMBER_LIMITS = {
  * @constant
  */
 export const ORGANIZATION_STATUS_TRANSITIONS = {
-  ACTIVE: ['INACTIVE', 'DELETED'],
-  INACTIVE: ['ACTIVE', 'DELETED'],
+  ACTIVE: ["INACTIVE", "DELETED"],
+  INACTIVE: ["ACTIVE", "DELETED"],
   DELETED: [], // 已删除状态不可转换
 } as const;
 
@@ -163,11 +163,11 @@ export const ORGANIZATION_STATUS_TRANSITIONS = {
  */
 export const ORGANIZATION_DEFAULTS = {
   /** 默认组织名称前缀 */
-  DEFAULT_NAME_PREFIX: '默认组织',
+  DEFAULT_NAME_PREFIX: "默认组织",
   /** 默认组织代码前缀 */
-  DEFAULT_CODE_PREFIX: 'default-org',
+  DEFAULT_CODE_PREFIX: "default-org",
   /** 是否默认激活 */
-  DEFAULT_STATUS: 'ACTIVE',
+  DEFAULT_STATUS: "ACTIVE",
   /** 默认显示顺序 */
   DEFAULT_DISPLAY_ORDER: 0,
 } as const;
@@ -183,7 +183,7 @@ export const ORGANIZATION_CACHE_CONFIG = {
   /** 组织成员列表缓存TTL（秒） */
   MEMBERS_TTL: 900, // 15分钟
   /** 缓存键前缀 */
-  KEY_PREFIX: 'organization',
+  KEY_PREFIX: "organization",
 } as const;
 
 /**
@@ -195,17 +195,17 @@ export const ORGANIZATION_CACHE_CONFIG = {
  */
 export const ORGANIZATION_PERMISSIONS = {
   /** 创建组织 */
-  CREATE: 'organization:create',
+  CREATE: "organization:create",
   /** 读取组织 */
-  READ: 'organization:read',
+  READ: "organization:read",
   /** 更新组织 */
-  UPDATE: 'organization:update',
+  UPDATE: "organization:update",
   /** 删除组织 */
-  DELETE: 'organization:delete',
+  DELETE: "organization:delete",
   /** 管理成员 */
-  MANAGE_MEMBERS: 'organization:manage-members',
+  MANAGE_MEMBERS: "organization:manage-members",
   /** 分配角色 */
-  ASSIGN_ROLES: 'organization:assign-roles',
+  ASSIGN_ROLES: "organization:assign-roles",
 } as const;
 
 /**
@@ -221,4 +221,3 @@ export const ORGANIZATION_HIERARCHY_LIMITS = {
   /** 组织层级深度（横向组织，深度为1） */
   MAX_DEPTH: 1,
 } as const;
-

@@ -60,8 +60,8 @@
  * @since 1.0.0
  */
 
-import { IDomainMapper } from './mapper.interface';
-import { TenantId } from '@hl8/isolation-model';
+import { IDomainMapper } from "./mapper.interface";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 映射错误类
@@ -74,7 +74,7 @@ export class MappingError extends Error {
     public readonly originalError?: Error,
   ) {
     super(message);
-    this.name = 'MappingError';
+    this.name = "MappingError";
   }
 }
 
@@ -134,8 +134,8 @@ export abstract class BaseDomainMapper<TDomain, TPersistence>
     } catch (error) {
       throw new MappingError(
         `映射到持久化对象失败: ${error instanceof Error ? error.message : String(error)}`,
-        'Domain',
-        'Persistence',
+        "Domain",
+        "Persistence",
         error instanceof Error ? error : undefined,
       );
     }
@@ -157,8 +157,8 @@ export abstract class BaseDomainMapper<TDomain, TPersistence>
     } catch (error) {
       throw new MappingError(
         `映射到领域对象失败: ${error instanceof Error ? error.message : String(error)}`,
-        'Persistence',
-        'Domain',
+        "Persistence",
+        "Domain",
         error instanceof Error ? error : undefined,
       );
     }
@@ -234,7 +234,7 @@ export abstract class BaseDomainMapper<TDomain, TPersistence>
    */
   protected validateDomainEntity(domainEntity: TDomain): void {
     if (domainEntity === null || domainEntity === undefined) {
-      throw new Error('领域对象不能为空');
+      throw new Error("领域对象不能为空");
     }
   }
 
@@ -247,7 +247,7 @@ export abstract class BaseDomainMapper<TDomain, TPersistence>
    */
   protected validatePersistenceEntity(persistenceEntity: TPersistence): void {
     if (persistenceEntity === null || persistenceEntity === undefined) {
-      throw new Error('持久化对象不能为空');
+      throw new Error("持久化对象不能为空");
     }
   }
 

@@ -28,12 +28,12 @@ export interface IMetricsService {
   recordHistogram(
     name: string,
     value: number,
-    labels?: Record<string, string>
+    labels?: Record<string, string>,
   ): void;
   recordGauge(
     name: string,
     value: number,
-    labels?: Record<string, string>
+    labels?: Record<string, string>,
   ): void;
 }
 

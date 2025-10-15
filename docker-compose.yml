@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: aiofix_password
       POSTGRES_MULTIPLE_DATABASES: aiofix_tenant_1,aiofix_tenant_2,aiofix_tenant_3
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-multiple-databases.sh:/docker-entrypoint-initdb.d/01-init-multiple-databases.sh
@@ -18,7 +18,7 @@ services:
     networks:
       - aiofix-network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U aiofix_user -d aiofix_platform']
+      test: ["CMD-SHELL", "pg_isready -U aiofix_user -d aiofix_platform"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -32,14 +32,14 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: aiofix_password
       MONGO_INITDB_DATABASE: aiofix_events
     ports:
-      - '27017:27017'
+      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
       - ./scripts/init-mongodb.js:/docker-entrypoint-initdb.d/init-mongodb.js
     networks:
       - aiofix-network
     healthcheck:
-      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -49,7 +49,7 @@ services:
     image: redis:7.2-alpine
     container_name: aiofix-redis
     ports:
-      - '6379:6379'
+      - "6379:6379"
     volumes:
       - redis_data:/data
       - ./config/redis.conf:/usr/local/etc/redis/redis.conf
@@ -57,7 +57,7 @@ services:
     networks:
       - aiofix-network
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -69,7 +69,7 @@ services:
     environment:
       REDIS_HOSTS: local:redis:6379
     ports:
-      - '8081:8081'
+      - "8081:8081"
     depends_on:
       - redis
     networks:
@@ -82,9 +82,9 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@aiofix.com
       PGADMIN_DEFAULT_PASSWORD: admin123
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_SERVER_MODE: "False"
     ports:
-      - '8080:80'
+      - "8080:80"
     depends_on:
       - postgres
     networks:
@@ -101,7 +101,7 @@ services:
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: admin123
     ports:
-      - '8082:8081'
+      - "8082:8081"
     depends_on:
       - mongodb
     networks:

@@ -35,211 +35,211 @@
  */
 export enum AuditEventType {
   // ==================== 认证事件 ====================
-  
+
   /** 用户登录 */
-  USER_LOGIN = 'USER_LOGIN',
-  
+  USER_LOGIN = "USER_LOGIN",
+
   /** 用户登出 */
-  USER_LOGOUT = 'USER_LOGOUT',
-  
+  USER_LOGOUT = "USER_LOGOUT",
+
   /** 登录失败 */
-  LOGIN_FAILED = 'LOGIN_FAILED',
-  
+  LOGIN_FAILED = "LOGIN_FAILED",
+
   /** 密码变更 */
-  PASSWORD_CHANGED = 'PASSWORD_CHANGED',
-  
+  PASSWORD_CHANGED = "PASSWORD_CHANGED",
+
   /** 密码重置 */
-  PASSWORD_RESET = 'PASSWORD_RESET',
-  
+  PASSWORD_RESET = "PASSWORD_RESET",
+
   /** MFA启用 */
-  MFA_ENABLED = 'MFA_ENABLED',
-  
+  MFA_ENABLED = "MFA_ENABLED",
+
   /** MFA禁用 */
-  MFA_DISABLED = 'MFA_DISABLED',
-  
+  MFA_DISABLED = "MFA_DISABLED",
+
   /** MFA验证成功 */
-  MFA_VERIFICATION_SUCCESS = 'MFA_VERIFICATION_SUCCESS',
-  
+  MFA_VERIFICATION_SUCCESS = "MFA_VERIFICATION_SUCCESS",
+
   /** MFA验证失败 */
-  MFA_VERIFICATION_FAILED = 'MFA_VERIFICATION_FAILED',
-  
+  MFA_VERIFICATION_FAILED = "MFA_VERIFICATION_FAILED",
+
   /** 账户锁定 */
-  ACCOUNT_LOCKED = 'ACCOUNT_LOCKED',
-  
+  ACCOUNT_LOCKED = "ACCOUNT_LOCKED",
+
   /** 账户解锁 */
-  ACCOUNT_UNLOCKED = 'ACCOUNT_UNLOCKED',
-  
+  ACCOUNT_UNLOCKED = "ACCOUNT_UNLOCKED",
+
   /** 会话超时 */
-  SESSION_TIMEOUT = 'SESSION_TIMEOUT',
-  
+  SESSION_TIMEOUT = "SESSION_TIMEOUT",
+
   /** 会话终止 */
-  SESSION_TERMINATED = 'SESSION_TERMINATED',
-  
+  SESSION_TERMINATED = "SESSION_TERMINATED",
+
   // ==================== 授权事件 ====================
-  
+
   /** 权限分配 */
-  PERMISSION_GRANTED = 'PERMISSION_GRANTED',
-  
+  PERMISSION_GRANTED = "PERMISSION_GRANTED",
+
   /** 权限撤销 */
-  PERMISSION_REVOKED = 'PERMISSION_REVOKED',
-  
+  PERMISSION_REVOKED = "PERMISSION_REVOKED",
+
   /** 角色分配 */
-  ROLE_ASSIGNED = 'ROLE_ASSIGNED',
-  
+  ROLE_ASSIGNED = "ROLE_ASSIGNED",
+
   /** 角色移除 */
-  ROLE_REMOVED = 'ROLE_REMOVED',
-  
+  ROLE_REMOVED = "ROLE_REMOVED",
+
   /** 角色创建 */
-  ROLE_CREATED = 'ROLE_CREATED',
-  
+  ROLE_CREATED = "ROLE_CREATED",
+
   /** 角色更新 */
-  ROLE_UPDATED = 'ROLE_UPDATED',
-  
+  ROLE_UPDATED = "ROLE_UPDATED",
+
   /** 角色删除 */
-  ROLE_DELETED = 'ROLE_DELETED',
-  
+  ROLE_DELETED = "ROLE_DELETED",
+
   /** 访问控制变更 */
-  ACCESS_CONTROL_CHANGED = 'ACCESS_CONTROL_CHANGED',
-  
+  ACCESS_CONTROL_CHANGED = "ACCESS_CONTROL_CHANGED",
+
   // ==================== 数据事件 ====================
-  
+
   /** 用户创建 */
-  USER_CREATED = 'USER_CREATED',
-  
+  USER_CREATED = "USER_CREATED",
+
   /** 用户更新 */
-  USER_UPDATED = 'USER_UPDATED',
-  
+  USER_UPDATED = "USER_UPDATED",
+
   /** 用户删除 */
-  USER_DELETED = 'USER_DELETED',
-  
+  USER_DELETED = "USER_DELETED",
+
   /** 租户创建 */
-  TENANT_CREATED = 'TENANT_CREATED',
-  
+  TENANT_CREATED = "TENANT_CREATED",
+
   /** 租户更新 */
-  TENANT_UPDATED = 'TENANT_UPDATED',
-  
+  TENANT_UPDATED = "TENANT_UPDATED",
+
   /** 租户删除 */
-  TENANT_DELETED = 'TENANT_DELETED',
-  
+  TENANT_DELETED = "TENANT_DELETED",
+
   /** 组织创建 */
-  ORGANIZATION_CREATED = 'ORGANIZATION_CREATED',
-  
+  ORGANIZATION_CREATED = "ORGANIZATION_CREATED",
+
   /** 组织更新 */
-  ORGANIZATION_UPDATED = 'ORGANIZATION_UPDATED',
-  
+  ORGANIZATION_UPDATED = "ORGANIZATION_UPDATED",
+
   /** 组织删除 */
-  ORGANIZATION_DELETED = 'ORGANIZATION_DELETED',
-  
+  ORGANIZATION_DELETED = "ORGANIZATION_DELETED",
+
   /** 部门创建 */
-  DEPARTMENT_CREATED = 'DEPARTMENT_CREATED',
-  
+  DEPARTMENT_CREATED = "DEPARTMENT_CREATED",
+
   /** 部门更新 */
-  DEPARTMENT_UPDATED = 'DEPARTMENT_UPDATED',
-  
+  DEPARTMENT_UPDATED = "DEPARTMENT_UPDATED",
+
   /** 部门删除 */
-  DEPARTMENT_DELETED = 'DEPARTMENT_DELETED',
-  
+  DEPARTMENT_DELETED = "DEPARTMENT_DELETED",
+
   /** 数据导出 */
-  DATA_EXPORTED = 'DATA_EXPORTED',
-  
+  DATA_EXPORTED = "DATA_EXPORTED",
+
   /** 数据导入 */
-  DATA_IMPORTED = 'DATA_IMPORTED',
-  
+  DATA_IMPORTED = "DATA_IMPORTED",
+
   /** 数据备份 */
-  DATA_BACKED_UP = 'DATA_BACKED_UP',
-  
+  DATA_BACKED_UP = "DATA_BACKED_UP",
+
   /** 数据恢复 */
-  DATA_RESTORED = 'DATA_RESTORED',
-  
+  DATA_RESTORED = "DATA_RESTORED",
+
   // ==================== 系统事件 ====================
-  
+
   /** 系统启动 */
-  SYSTEM_STARTED = 'SYSTEM_STARTED',
-  
+  SYSTEM_STARTED = "SYSTEM_STARTED",
+
   /** 系统关闭 */
-  SYSTEM_SHUTDOWN = 'SYSTEM_SHUTDOWN',
-  
+  SYSTEM_SHUTDOWN = "SYSTEM_SHUTDOWN",
+
   /** 配置变更 */
-  CONFIGURATION_CHANGED = 'CONFIGURATION_CHANGED',
-  
+  CONFIGURATION_CHANGED = "CONFIGURATION_CHANGED",
+
   /** 系统维护 */
-  SYSTEM_MAINTENANCE = 'SYSTEM_MAINTENANCE',
-  
+  SYSTEM_MAINTENANCE = "SYSTEM_MAINTENANCE",
+
   /** 系统错误 */
-  SYSTEM_ERROR = 'SYSTEM_ERROR',
-  
+  SYSTEM_ERROR = "SYSTEM_ERROR",
+
   /** 性能警告 */
-  PERFORMANCE_WARNING = 'PERFORMANCE_WARNING',
-  
+  PERFORMANCE_WARNING = "PERFORMANCE_WARNING",
+
   /** 资源使用警告 */
-  RESOURCE_USAGE_WARNING = 'RESOURCE_USAGE_WARNING',
-  
+  RESOURCE_USAGE_WARNING = "RESOURCE_USAGE_WARNING",
+
   /** 数据库连接 */
-  DATABASE_CONNECTION = 'DATABASE_CONNECTION',
-  
+  DATABASE_CONNECTION = "DATABASE_CONNECTION",
+
   /** 数据库断开 */
-  DATABASE_DISCONNECTION = 'DATABASE_DISCONNECTION',
-  
+  DATABASE_DISCONNECTION = "DATABASE_DISCONNECTION",
+
   // ==================== 安全事件 ====================
-  
+
   /** 异常访问尝试 */
-  SUSPICIOUS_ACCESS_ATTEMPT = 'SUSPICIOUS_ACCESS_ATTEMPT',
-  
+  SUSPICIOUS_ACCESS_ATTEMPT = "SUSPICIOUS_ACCESS_ATTEMPT",
+
   /** 暴力破解攻击 */
-  BRUTE_FORCE_ATTACK = 'BRUTE_FORCE_ATTACK',
-  
+  BRUTE_FORCE_ATTACK = "BRUTE_FORCE_ATTACK",
+
   /** SQL注入尝试 */
-  SQL_INJECTION_ATTEMPT = 'SQL_INJECTION_ATTEMPT',
-  
+  SQL_INJECTION_ATTEMPT = "SQL_INJECTION_ATTEMPT",
+
   /** XSS攻击尝试 */
-  XSS_ATTEMPT = 'XSS_ATTEMPT',
-  
+  XSS_ATTEMPT = "XSS_ATTEMPT",
+
   /** CSRF攻击尝试 */
-  CSRF_ATTEMPT = 'CSRF_ATTEMPT',
-  
+  CSRF_ATTEMPT = "CSRF_ATTEMPT",
+
   /** 权限提升尝试 */
-  PRIVILEGE_ESCALATION_ATTEMPT = 'PRIVILEGE_ESCALATION_ATTEMPT',
-  
+  PRIVILEGE_ESCALATION_ATTEMPT = "PRIVILEGE_ESCALATION_ATTEMPT",
+
   /** 数据泄露尝试 */
-  DATA_BREACH_ATTEMPT = 'DATA_BREACH_ATTEMPT',
-  
+  DATA_BREACH_ATTEMPT = "DATA_BREACH_ATTEMPT",
+
   /** 恶意软件检测 */
-  MALWARE_DETECTED = 'MALWARE_DETECTED',
-  
+  MALWARE_DETECTED = "MALWARE_DETECTED",
+
   /** 安全策略违规 */
-  SECURITY_POLICY_VIOLATION = 'SECURITY_POLICY_VIOLATION',
-  
+  SECURITY_POLICY_VIOLATION = "SECURITY_POLICY_VIOLATION",
+
   // ==================== 业务事件 ====================
-  
+
   /** 业务操作执行 */
-  BUSINESS_OPERATION_EXECUTED = 'BUSINESS_OPERATION_EXECUTED',
-  
+  BUSINESS_OPERATION_EXECUTED = "BUSINESS_OPERATION_EXECUTED",
+
   /** 业务流程启动 */
-  BUSINESS_PROCESS_STARTED = 'BUSINESS_PROCESS_STARTED',
-  
+  BUSINESS_PROCESS_STARTED = "BUSINESS_PROCESS_STARTED",
+
   /** 业务流程完成 */
-  BUSINESS_PROCESS_COMPLETED = 'BUSINESS_PROCESS_COMPLETED',
-  
+  BUSINESS_PROCESS_COMPLETED = "BUSINESS_PROCESS_COMPLETED",
+
   /** 业务流程失败 */
-  BUSINESS_PROCESS_FAILED = 'BUSINESS_PROCESS_FAILED',
-  
+  BUSINESS_PROCESS_FAILED = "BUSINESS_PROCESS_FAILED",
+
   /** 审批请求 */
-  APPROVAL_REQUESTED = 'APPROVAL_REQUESTED',
-  
+  APPROVAL_REQUESTED = "APPROVAL_REQUESTED",
+
   /** 审批通过 */
-  APPROVAL_GRANTED = 'APPROVAL_GRANTED',
-  
+  APPROVAL_GRANTED = "APPROVAL_GRANTED",
+
   /** 审批拒绝 */
-  APPROVAL_DENIED = 'APPROVAL_DENIED',
-  
+  APPROVAL_DENIED = "APPROVAL_DENIED",
+
   /** 通知发送 */
-  NOTIFICATION_SENT = 'NOTIFICATION_SENT',
-  
+  NOTIFICATION_SENT = "NOTIFICATION_SENT",
+
   /** 集成调用 */
-  INTEGRATION_CALLED = 'INTEGRATION_CALLED',
-  
+  INTEGRATION_CALLED = "INTEGRATION_CALLED",
+
   /** API调用 */
-  API_CALLED = 'API_CALLED'
+  API_CALLED = "API_CALLED",
 }
 
 /**
@@ -253,7 +253,7 @@ export enum AuditEventType {
 export class AuditEventTypeUtils {
   /**
    * 事件分类定义
-   * 
+   *
    * @description 定义事件的分组分类
    */
   private static readonly EVENT_CATEGORIES: Record<string, AuditEventType[]> = {
@@ -270,9 +270,9 @@ export class AuditEventTypeUtils {
       AuditEventType.ACCOUNT_LOCKED,
       AuditEventType.ACCOUNT_UNLOCKED,
       AuditEventType.SESSION_TIMEOUT,
-      AuditEventType.SESSION_TERMINATED
+      AuditEventType.SESSION_TERMINATED,
     ],
-    
+
     AUTHORIZATION: [
       AuditEventType.PERMISSION_GRANTED,
       AuditEventType.PERMISSION_REVOKED,
@@ -281,9 +281,9 @@ export class AuditEventTypeUtils {
       AuditEventType.ROLE_CREATED,
       AuditEventType.ROLE_UPDATED,
       AuditEventType.ROLE_DELETED,
-      AuditEventType.ACCESS_CONTROL_CHANGED
+      AuditEventType.ACCESS_CONTROL_CHANGED,
     ],
-    
+
     DATA: [
       AuditEventType.USER_CREATED,
       AuditEventType.USER_UPDATED,
@@ -300,9 +300,9 @@ export class AuditEventTypeUtils {
       AuditEventType.DATA_EXPORTED,
       AuditEventType.DATA_IMPORTED,
       AuditEventType.DATA_BACKED_UP,
-      AuditEventType.DATA_RESTORED
+      AuditEventType.DATA_RESTORED,
     ],
-    
+
     SYSTEM: [
       AuditEventType.SYSTEM_STARTED,
       AuditEventType.SYSTEM_SHUTDOWN,
@@ -312,9 +312,9 @@ export class AuditEventTypeUtils {
       AuditEventType.PERFORMANCE_WARNING,
       AuditEventType.RESOURCE_USAGE_WARNING,
       AuditEventType.DATABASE_CONNECTION,
-      AuditEventType.DATABASE_DISCONNECTION
+      AuditEventType.DATABASE_DISCONNECTION,
     ],
-    
+
     SECURITY: [
       AuditEventType.SUSPICIOUS_ACCESS_ATTEMPT,
       AuditEventType.BRUTE_FORCE_ATTACK,
@@ -324,9 +324,9 @@ export class AuditEventTypeUtils {
       AuditEventType.PRIVILEGE_ESCALATION_ATTEMPT,
       AuditEventType.DATA_BREACH_ATTEMPT,
       AuditEventType.MALWARE_DETECTED,
-      AuditEventType.SECURITY_POLICY_VIOLATION
+      AuditEventType.SECURITY_POLICY_VIOLATION,
     ],
-    
+
     BUSINESS: [
       AuditEventType.BUSINESS_OPERATION_EXECUTED,
       AuditEventType.BUSINESS_PROCESS_STARTED,
@@ -337,176 +337,182 @@ export class AuditEventTypeUtils {
       AuditEventType.APPROVAL_DENIED,
       AuditEventType.NOTIFICATION_SENT,
       AuditEventType.INTEGRATION_CALLED,
-      AuditEventType.API_CALLED
-    ]
+      AuditEventType.API_CALLED,
+    ],
   };
 
   /**
    * 审计级别定义
-   * 
+   *
    * @description 定义不同事件的审计级别
    */
-  private static readonly AUDIT_LEVELS: Record<AuditEventType, 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'> = {
+  private static readonly AUDIT_LEVELS: Record<
+    AuditEventType,
+    "CRITICAL" | "HIGH" | "MEDIUM" | "LOW"
+  > = {
     // 认证事件
-    [AuditEventType.USER_LOGIN]: 'HIGH',
-    [AuditEventType.USER_LOGOUT]: 'LOW',
-    [AuditEventType.LOGIN_FAILED]: 'HIGH',
-    [AuditEventType.PASSWORD_CHANGED]: 'HIGH',
-    [AuditEventType.PASSWORD_RESET]: 'CRITICAL',
-    [AuditEventType.MFA_ENABLED]: 'HIGH',
-    [AuditEventType.MFA_DISABLED]: 'HIGH',
-    [AuditEventType.MFA_VERIFICATION_SUCCESS]: 'MEDIUM',
-    [AuditEventType.MFA_VERIFICATION_FAILED]: 'HIGH',
-    [AuditEventType.ACCOUNT_LOCKED]: 'HIGH',
-    [AuditEventType.ACCOUNT_UNLOCKED]: 'HIGH',
-    [AuditEventType.SESSION_TIMEOUT]: 'LOW',
-    [AuditEventType.SESSION_TERMINATED]: 'MEDIUM',
-    
+    [AuditEventType.USER_LOGIN]: "HIGH",
+    [AuditEventType.USER_LOGOUT]: "LOW",
+    [AuditEventType.LOGIN_FAILED]: "HIGH",
+    [AuditEventType.PASSWORD_CHANGED]: "HIGH",
+    [AuditEventType.PASSWORD_RESET]: "CRITICAL",
+    [AuditEventType.MFA_ENABLED]: "HIGH",
+    [AuditEventType.MFA_DISABLED]: "HIGH",
+    [AuditEventType.MFA_VERIFICATION_SUCCESS]: "MEDIUM",
+    [AuditEventType.MFA_VERIFICATION_FAILED]: "HIGH",
+    [AuditEventType.ACCOUNT_LOCKED]: "HIGH",
+    [AuditEventType.ACCOUNT_UNLOCKED]: "HIGH",
+    [AuditEventType.SESSION_TIMEOUT]: "LOW",
+    [AuditEventType.SESSION_TERMINATED]: "MEDIUM",
+
     // 授权事件
-    [AuditEventType.PERMISSION_GRANTED]: 'HIGH',
-    [AuditEventType.PERMISSION_REVOKED]: 'HIGH',
-    [AuditEventType.ROLE_ASSIGNED]: 'HIGH',
-    [AuditEventType.ROLE_REMOVED]: 'HIGH',
-    [AuditEventType.ROLE_CREATED]: 'HIGH',
-    [AuditEventType.ROLE_UPDATED]: 'HIGH',
-    [AuditEventType.ROLE_DELETED]: 'CRITICAL',
-    [AuditEventType.ACCESS_CONTROL_CHANGED]: 'CRITICAL',
-    
+    [AuditEventType.PERMISSION_GRANTED]: "HIGH",
+    [AuditEventType.PERMISSION_REVOKED]: "HIGH",
+    [AuditEventType.ROLE_ASSIGNED]: "HIGH",
+    [AuditEventType.ROLE_REMOVED]: "HIGH",
+    [AuditEventType.ROLE_CREATED]: "HIGH",
+    [AuditEventType.ROLE_UPDATED]: "HIGH",
+    [AuditEventType.ROLE_DELETED]: "CRITICAL",
+    [AuditEventType.ACCESS_CONTROL_CHANGED]: "CRITICAL",
+
     // 数据事件
-    [AuditEventType.USER_CREATED]: 'HIGH',
-    [AuditEventType.USER_UPDATED]: 'MEDIUM',
-    [AuditEventType.USER_DELETED]: 'CRITICAL',
-    [AuditEventType.TENANT_CREATED]: 'CRITICAL',
-    [AuditEventType.TENANT_UPDATED]: 'HIGH',
-    [AuditEventType.TENANT_DELETED]: 'CRITICAL',
-    [AuditEventType.ORGANIZATION_CREATED]: 'HIGH',
-    [AuditEventType.ORGANIZATION_UPDATED]: 'MEDIUM',
-    [AuditEventType.ORGANIZATION_DELETED]: 'CRITICAL',
-    [AuditEventType.DEPARTMENT_CREATED]: 'MEDIUM',
-    [AuditEventType.DEPARTMENT_UPDATED]: 'LOW',
-    [AuditEventType.DEPARTMENT_DELETED]: 'HIGH',
-    [AuditEventType.DATA_EXPORTED]: 'HIGH',
-    [AuditEventType.DATA_IMPORTED]: 'HIGH',
-    [AuditEventType.DATA_BACKED_UP]: 'MEDIUM',
-    [AuditEventType.DATA_RESTORED]: 'CRITICAL',
-    
+    [AuditEventType.USER_CREATED]: "HIGH",
+    [AuditEventType.USER_UPDATED]: "MEDIUM",
+    [AuditEventType.USER_DELETED]: "CRITICAL",
+    [AuditEventType.TENANT_CREATED]: "CRITICAL",
+    [AuditEventType.TENANT_UPDATED]: "HIGH",
+    [AuditEventType.TENANT_DELETED]: "CRITICAL",
+    [AuditEventType.ORGANIZATION_CREATED]: "HIGH",
+    [AuditEventType.ORGANIZATION_UPDATED]: "MEDIUM",
+    [AuditEventType.ORGANIZATION_DELETED]: "CRITICAL",
+    [AuditEventType.DEPARTMENT_CREATED]: "MEDIUM",
+    [AuditEventType.DEPARTMENT_UPDATED]: "LOW",
+    [AuditEventType.DEPARTMENT_DELETED]: "HIGH",
+    [AuditEventType.DATA_EXPORTED]: "HIGH",
+    [AuditEventType.DATA_IMPORTED]: "HIGH",
+    [AuditEventType.DATA_BACKED_UP]: "MEDIUM",
+    [AuditEventType.DATA_RESTORED]: "CRITICAL",
+
     // 系统事件
-    [AuditEventType.SYSTEM_STARTED]: 'MEDIUM',
-    [AuditEventType.SYSTEM_SHUTDOWN]: 'HIGH',
-    [AuditEventType.CONFIGURATION_CHANGED]: 'HIGH',
-    [AuditEventType.SYSTEM_MAINTENANCE]: 'MEDIUM',
-    [AuditEventType.SYSTEM_ERROR]: 'HIGH',
-    [AuditEventType.PERFORMANCE_WARNING]: 'MEDIUM',
-    [AuditEventType.RESOURCE_USAGE_WARNING]: 'MEDIUM',
-    [AuditEventType.DATABASE_CONNECTION]: 'LOW',
-    [AuditEventType.DATABASE_DISCONNECTION]: 'MEDIUM',
-    
+    [AuditEventType.SYSTEM_STARTED]: "MEDIUM",
+    [AuditEventType.SYSTEM_SHUTDOWN]: "HIGH",
+    [AuditEventType.CONFIGURATION_CHANGED]: "HIGH",
+    [AuditEventType.SYSTEM_MAINTENANCE]: "MEDIUM",
+    [AuditEventType.SYSTEM_ERROR]: "HIGH",
+    [AuditEventType.PERFORMANCE_WARNING]: "MEDIUM",
+    [AuditEventType.RESOURCE_USAGE_WARNING]: "MEDIUM",
+    [AuditEventType.DATABASE_CONNECTION]: "LOW",
+    [AuditEventType.DATABASE_DISCONNECTION]: "MEDIUM",
+
     // 安全事件
-    [AuditEventType.SUSPICIOUS_ACCESS_ATTEMPT]: 'HIGH',
-    [AuditEventType.BRUTE_FORCE_ATTACK]: 'CRITICAL',
-    [AuditEventType.SQL_INJECTION_ATTEMPT]: 'CRITICAL',
-    [AuditEventType.XSS_ATTEMPT]: 'CRITICAL',
-    [AuditEventType.CSRF_ATTEMPT]: 'CRITICAL',
-    [AuditEventType.PRIVILEGE_ESCALATION_ATTEMPT]: 'CRITICAL',
-    [AuditEventType.DATA_BREACH_ATTEMPT]: 'CRITICAL',
-    [AuditEventType.MALWARE_DETECTED]: 'CRITICAL',
-    [AuditEventType.SECURITY_POLICY_VIOLATION]: 'HIGH',
-    
+    [AuditEventType.SUSPICIOUS_ACCESS_ATTEMPT]: "HIGH",
+    [AuditEventType.BRUTE_FORCE_ATTACK]: "CRITICAL",
+    [AuditEventType.SQL_INJECTION_ATTEMPT]: "CRITICAL",
+    [AuditEventType.XSS_ATTEMPT]: "CRITICAL",
+    [AuditEventType.CSRF_ATTEMPT]: "CRITICAL",
+    [AuditEventType.PRIVILEGE_ESCALATION_ATTEMPT]: "CRITICAL",
+    [AuditEventType.DATA_BREACH_ATTEMPT]: "CRITICAL",
+    [AuditEventType.MALWARE_DETECTED]: "CRITICAL",
+    [AuditEventType.SECURITY_POLICY_VIOLATION]: "HIGH",
+
     // 业务事件
-    [AuditEventType.BUSINESS_OPERATION_EXECUTED]: 'MEDIUM',
-    [AuditEventType.BUSINESS_PROCESS_STARTED]: 'LOW',
-    [AuditEventType.BUSINESS_PROCESS_COMPLETED]: 'LOW',
-    [AuditEventType.BUSINESS_PROCESS_FAILED]: 'MEDIUM',
-    [AuditEventType.APPROVAL_REQUESTED]: 'MEDIUM',
-    [AuditEventType.APPROVAL_GRANTED]: 'HIGH',
-    [AuditEventType.APPROVAL_DENIED]: 'HIGH',
-    [AuditEventType.NOTIFICATION_SENT]: 'LOW',
-    [AuditEventType.INTEGRATION_CALLED]: 'MEDIUM',
-    [AuditEventType.API_CALLED]: 'LOW'
+    [AuditEventType.BUSINESS_OPERATION_EXECUTED]: "MEDIUM",
+    [AuditEventType.BUSINESS_PROCESS_STARTED]: "LOW",
+    [AuditEventType.BUSINESS_PROCESS_COMPLETED]: "LOW",
+    [AuditEventType.BUSINESS_PROCESS_FAILED]: "MEDIUM",
+    [AuditEventType.APPROVAL_REQUESTED]: "MEDIUM",
+    [AuditEventType.APPROVAL_GRANTED]: "HIGH",
+    [AuditEventType.APPROVAL_DENIED]: "HIGH",
+    [AuditEventType.NOTIFICATION_SENT]: "LOW",
+    [AuditEventType.INTEGRATION_CALLED]: "MEDIUM",
+    [AuditEventType.API_CALLED]: "LOW",
   };
 
   /**
    * 合规要求定义
-   * 
+   *
    * @description 定义不同事件需要满足的合规要求
    */
-  private static readonly COMPLIANCE_REQUIREMENTS: Record<AuditEventType, string[]> = {
+  private static readonly COMPLIANCE_REQUIREMENTS: Record<
+    AuditEventType,
+    string[]
+  > = {
     // 认证事件
-    [AuditEventType.USER_LOGIN]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.USER_LOGOUT]: ['SOX', 'GDPR'],
-    [AuditEventType.LOGIN_FAILED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.PASSWORD_CHANGED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.PASSWORD_RESET]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.MFA_ENABLED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.MFA_DISABLED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.MFA_VERIFICATION_SUCCESS]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.MFA_VERIFICATION_FAILED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ACCOUNT_LOCKED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ACCOUNT_UNLOCKED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.SESSION_TIMEOUT]: ['SOX', 'GDPR'],
-    [AuditEventType.SESSION_TERMINATED]: ['SOX', 'GDPR'],
-    
+    [AuditEventType.USER_LOGIN]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.USER_LOGOUT]: ["SOX", "GDPR"],
+    [AuditEventType.LOGIN_FAILED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.PASSWORD_CHANGED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.PASSWORD_RESET]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.MFA_ENABLED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.MFA_DISABLED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.MFA_VERIFICATION_SUCCESS]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.MFA_VERIFICATION_FAILED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ACCOUNT_LOCKED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ACCOUNT_UNLOCKED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.SESSION_TIMEOUT]: ["SOX", "GDPR"],
+    [AuditEventType.SESSION_TERMINATED]: ["SOX", "GDPR"],
+
     // 授权事件
-    [AuditEventType.PERMISSION_GRANTED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.PERMISSION_REVOKED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ROLE_ASSIGNED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ROLE_REMOVED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ROLE_CREATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ROLE_UPDATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ROLE_DELETED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ACCESS_CONTROL_CHANGED]: ['SOX', 'GDPR', 'HIPAA'],
-    
+    [AuditEventType.PERMISSION_GRANTED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.PERMISSION_REVOKED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ROLE_ASSIGNED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ROLE_REMOVED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ROLE_CREATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ROLE_UPDATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ROLE_DELETED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ACCESS_CONTROL_CHANGED]: ["SOX", "GDPR", "HIPAA"],
+
     // 数据事件
-    [AuditEventType.USER_CREATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.USER_UPDATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.USER_DELETED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.TENANT_CREATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.TENANT_UPDATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.TENANT_DELETED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ORGANIZATION_CREATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ORGANIZATION_UPDATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.ORGANIZATION_DELETED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.DEPARTMENT_CREATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.DEPARTMENT_UPDATED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.DEPARTMENT_DELETED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.DATA_EXPORTED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.DATA_IMPORTED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.DATA_BACKED_UP]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.DATA_RESTORED]: ['SOX', 'GDPR', 'HIPAA'],
-    
+    [AuditEventType.USER_CREATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.USER_UPDATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.USER_DELETED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.TENANT_CREATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.TENANT_UPDATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.TENANT_DELETED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ORGANIZATION_CREATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ORGANIZATION_UPDATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.ORGANIZATION_DELETED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.DEPARTMENT_CREATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.DEPARTMENT_UPDATED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.DEPARTMENT_DELETED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.DATA_EXPORTED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.DATA_IMPORTED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.DATA_BACKED_UP]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.DATA_RESTORED]: ["SOX", "GDPR", "HIPAA"],
+
     // 系统事件
-    [AuditEventType.SYSTEM_STARTED]: ['SOX'],
-    [AuditEventType.SYSTEM_SHUTDOWN]: ['SOX'],
-    [AuditEventType.CONFIGURATION_CHANGED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.SYSTEM_MAINTENANCE]: ['SOX'],
-    [AuditEventType.SYSTEM_ERROR]: ['SOX'],
+    [AuditEventType.SYSTEM_STARTED]: ["SOX"],
+    [AuditEventType.SYSTEM_SHUTDOWN]: ["SOX"],
+    [AuditEventType.CONFIGURATION_CHANGED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.SYSTEM_MAINTENANCE]: ["SOX"],
+    [AuditEventType.SYSTEM_ERROR]: ["SOX"],
     [AuditEventType.PERFORMANCE_WARNING]: [],
     [AuditEventType.RESOURCE_USAGE_WARNING]: [],
-    [AuditEventType.DATABASE_CONNECTION]: ['SOX'],
-    [AuditEventType.DATABASE_DISCONNECTION]: ['SOX'],
-    
+    [AuditEventType.DATABASE_CONNECTION]: ["SOX"],
+    [AuditEventType.DATABASE_DISCONNECTION]: ["SOX"],
+
     // 安全事件
-    [AuditEventType.SUSPICIOUS_ACCESS_ATTEMPT]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.BRUTE_FORCE_ATTACK]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.SQL_INJECTION_ATTEMPT]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.XSS_ATTEMPT]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.CSRF_ATTEMPT]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.PRIVILEGE_ESCALATION_ATTEMPT]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.DATA_BREACH_ATTEMPT]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.MALWARE_DETECTED]: ['SOX', 'GDPR', 'HIPAA'],
-    [AuditEventType.SECURITY_POLICY_VIOLATION]: ['SOX', 'GDPR', 'HIPAA'],
-    
+    [AuditEventType.SUSPICIOUS_ACCESS_ATTEMPT]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.BRUTE_FORCE_ATTACK]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.SQL_INJECTION_ATTEMPT]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.XSS_ATTEMPT]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.CSRF_ATTEMPT]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.PRIVILEGE_ESCALATION_ATTEMPT]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.DATA_BREACH_ATTEMPT]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.MALWARE_DETECTED]: ["SOX", "GDPR", "HIPAA"],
+    [AuditEventType.SECURITY_POLICY_VIOLATION]: ["SOX", "GDPR", "HIPAA"],
+
     // 业务事件
-    [AuditEventType.BUSINESS_OPERATION_EXECUTED]: ['SOX', 'GDPR'],
-    [AuditEventType.BUSINESS_PROCESS_STARTED]: ['SOX'],
-    [AuditEventType.BUSINESS_PROCESS_COMPLETED]: ['SOX'],
-    [AuditEventType.BUSINESS_PROCESS_FAILED]: ['SOX'],
-    [AuditEventType.APPROVAL_REQUESTED]: ['SOX', 'GDPR'],
-    [AuditEventType.APPROVAL_GRANTED]: ['SOX', 'GDPR'],
-    [AuditEventType.APPROVAL_DENIED]: ['SOX', 'GDPR'],
-    [AuditEventType.NOTIFICATION_SENT]: ['GDPR'],
-    [AuditEventType.INTEGRATION_CALLED]: ['SOX', 'GDPR'],
-    [AuditEventType.API_CALLED]: ['SOX', 'GDPR']
+    [AuditEventType.BUSINESS_OPERATION_EXECUTED]: ["SOX", "GDPR"],
+    [AuditEventType.BUSINESS_PROCESS_STARTED]: ["SOX"],
+    [AuditEventType.BUSINESS_PROCESS_COMPLETED]: ["SOX"],
+    [AuditEventType.BUSINESS_PROCESS_FAILED]: ["SOX"],
+    [AuditEventType.APPROVAL_REQUESTED]: ["SOX", "GDPR"],
+    [AuditEventType.APPROVAL_GRANTED]: ["SOX", "GDPR"],
+    [AuditEventType.APPROVAL_DENIED]: ["SOX", "GDPR"],
+    [AuditEventType.NOTIFICATION_SENT]: ["GDPR"],
+    [AuditEventType.INTEGRATION_CALLED]: ["SOX", "GDPR"],
+    [AuditEventType.API_CALLED]: ["SOX", "GDPR"],
   };
 
   /**
@@ -531,7 +537,7 @@ export class AuditEventTypeUtils {
         return category;
       }
     }
-    return 'UNKNOWN';
+    return "UNKNOWN";
   }
 
   /**
@@ -550,7 +556,9 @@ export class AuditEventTypeUtils {
    *
    * @since 1.0.0
    */
-  public static getAuditLevel(eventType: AuditEventType): 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' {
+  public static getAuditLevel(
+    eventType: AuditEventType,
+  ): "CRITICAL" | "HIGH" | "MEDIUM" | "LOW" {
     return this.AUDIT_LEVELS[eventType];
   }
 
@@ -608,7 +616,9 @@ export class AuditEventTypeUtils {
    *
    * @since 1.0.0
    */
-  public static getEventsByLevel(level: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'): AuditEventType[] {
+  public static getEventsByLevel(
+    level: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW",
+  ): AuditEventType[] {
     return Object.entries(this.AUDIT_LEVELS)
       .filter(([_, eventLevel]) => eventLevel === level)
       .map(([eventType, _]) => eventType as AuditEventType);
@@ -652,7 +662,7 @@ export class AuditEventTypeUtils {
    * @since 1.0.0
    */
   public static isCriticalEvent(eventType: AuditEventType): boolean {
-    return this.getAuditLevel(eventType) === 'CRITICAL';
+    return this.getAuditLevel(eventType) === "CRITICAL";
   }
 
   /**
@@ -672,7 +682,7 @@ export class AuditEventTypeUtils {
    * @since 1.0.0
    */
   public static isSecurityEvent(eventType: AuditEventType): boolean {
-    return this.getCategory(eventType) === 'SECURITY';
+    return this.getCategory(eventType) === "SECURITY";
   }
 
   /**
@@ -694,81 +704,81 @@ export class AuditEventTypeUtils {
   public static getDescription(eventType: AuditEventType): string {
     const descriptions: Record<AuditEventType, string> = {
       // 认证事件
-      [AuditEventType.USER_LOGIN]: '用户登录',
-      [AuditEventType.USER_LOGOUT]: '用户登出',
-      [AuditEventType.LOGIN_FAILED]: '登录失败',
-      [AuditEventType.PASSWORD_CHANGED]: '密码变更',
-      [AuditEventType.PASSWORD_RESET]: '密码重置',
-      [AuditEventType.MFA_ENABLED]: 'MFA启用',
-      [AuditEventType.MFA_DISABLED]: 'MFA禁用',
-      [AuditEventType.MFA_VERIFICATION_SUCCESS]: 'MFA验证成功',
-      [AuditEventType.MFA_VERIFICATION_FAILED]: 'MFA验证失败',
-      [AuditEventType.ACCOUNT_LOCKED]: '账户锁定',
-      [AuditEventType.ACCOUNT_UNLOCKED]: '账户解锁',
-      [AuditEventType.SESSION_TIMEOUT]: '会话超时',
-      [AuditEventType.SESSION_TERMINATED]: '会话终止',
-      
+      [AuditEventType.USER_LOGIN]: "用户登录",
+      [AuditEventType.USER_LOGOUT]: "用户登出",
+      [AuditEventType.LOGIN_FAILED]: "登录失败",
+      [AuditEventType.PASSWORD_CHANGED]: "密码变更",
+      [AuditEventType.PASSWORD_RESET]: "密码重置",
+      [AuditEventType.MFA_ENABLED]: "MFA启用",
+      [AuditEventType.MFA_DISABLED]: "MFA禁用",
+      [AuditEventType.MFA_VERIFICATION_SUCCESS]: "MFA验证成功",
+      [AuditEventType.MFA_VERIFICATION_FAILED]: "MFA验证失败",
+      [AuditEventType.ACCOUNT_LOCKED]: "账户锁定",
+      [AuditEventType.ACCOUNT_UNLOCKED]: "账户解锁",
+      [AuditEventType.SESSION_TIMEOUT]: "会话超时",
+      [AuditEventType.SESSION_TERMINATED]: "会话终止",
+
       // 授权事件
-      [AuditEventType.PERMISSION_GRANTED]: '权限分配',
-      [AuditEventType.PERMISSION_REVOKED]: '权限撤销',
-      [AuditEventType.ROLE_ASSIGNED]: '角色分配',
-      [AuditEventType.ROLE_REMOVED]: '角色移除',
-      [AuditEventType.ROLE_CREATED]: '角色创建',
-      [AuditEventType.ROLE_UPDATED]: '角色更新',
-      [AuditEventType.ROLE_DELETED]: '角色删除',
-      [AuditEventType.ACCESS_CONTROL_CHANGED]: '访问控制变更',
-      
+      [AuditEventType.PERMISSION_GRANTED]: "权限分配",
+      [AuditEventType.PERMISSION_REVOKED]: "权限撤销",
+      [AuditEventType.ROLE_ASSIGNED]: "角色分配",
+      [AuditEventType.ROLE_REMOVED]: "角色移除",
+      [AuditEventType.ROLE_CREATED]: "角色创建",
+      [AuditEventType.ROLE_UPDATED]: "角色更新",
+      [AuditEventType.ROLE_DELETED]: "角色删除",
+      [AuditEventType.ACCESS_CONTROL_CHANGED]: "访问控制变更",
+
       // 数据事件
-      [AuditEventType.USER_CREATED]: '用户创建',
-      [AuditEventType.USER_UPDATED]: '用户更新',
-      [AuditEventType.USER_DELETED]: '用户删除',
-      [AuditEventType.TENANT_CREATED]: '租户创建',
-      [AuditEventType.TENANT_UPDATED]: '租户更新',
-      [AuditEventType.TENANT_DELETED]: '租户删除',
-      [AuditEventType.ORGANIZATION_CREATED]: '组织创建',
-      [AuditEventType.ORGANIZATION_UPDATED]: '组织更新',
-      [AuditEventType.ORGANIZATION_DELETED]: '组织删除',
-      [AuditEventType.DEPARTMENT_CREATED]: '部门创建',
-      [AuditEventType.DEPARTMENT_UPDATED]: '部门更新',
-      [AuditEventType.DEPARTMENT_DELETED]: '部门删除',
-      [AuditEventType.DATA_EXPORTED]: '数据导出',
-      [AuditEventType.DATA_IMPORTED]: '数据导入',
-      [AuditEventType.DATA_BACKED_UP]: '数据备份',
-      [AuditEventType.DATA_RESTORED]: '数据恢复',
-      
+      [AuditEventType.USER_CREATED]: "用户创建",
+      [AuditEventType.USER_UPDATED]: "用户更新",
+      [AuditEventType.USER_DELETED]: "用户删除",
+      [AuditEventType.TENANT_CREATED]: "租户创建",
+      [AuditEventType.TENANT_UPDATED]: "租户更新",
+      [AuditEventType.TENANT_DELETED]: "租户删除",
+      [AuditEventType.ORGANIZATION_CREATED]: "组织创建",
+      [AuditEventType.ORGANIZATION_UPDATED]: "组织更新",
+      [AuditEventType.ORGANIZATION_DELETED]: "组织删除",
+      [AuditEventType.DEPARTMENT_CREATED]: "部门创建",
+      [AuditEventType.DEPARTMENT_UPDATED]: "部门更新",
+      [AuditEventType.DEPARTMENT_DELETED]: "部门删除",
+      [AuditEventType.DATA_EXPORTED]: "数据导出",
+      [AuditEventType.DATA_IMPORTED]: "数据导入",
+      [AuditEventType.DATA_BACKED_UP]: "数据备份",
+      [AuditEventType.DATA_RESTORED]: "数据恢复",
+
       // 系统事件
-      [AuditEventType.SYSTEM_STARTED]: '系统启动',
-      [AuditEventType.SYSTEM_SHUTDOWN]: '系统关闭',
-      [AuditEventType.CONFIGURATION_CHANGED]: '配置变更',
-      [AuditEventType.SYSTEM_MAINTENANCE]: '系统维护',
-      [AuditEventType.SYSTEM_ERROR]: '系统错误',
-      [AuditEventType.PERFORMANCE_WARNING]: '性能警告',
-      [AuditEventType.RESOURCE_USAGE_WARNING]: '资源使用警告',
-      [AuditEventType.DATABASE_CONNECTION]: '数据库连接',
-      [AuditEventType.DATABASE_DISCONNECTION]: '数据库断开',
-      
+      [AuditEventType.SYSTEM_STARTED]: "系统启动",
+      [AuditEventType.SYSTEM_SHUTDOWN]: "系统关闭",
+      [AuditEventType.CONFIGURATION_CHANGED]: "配置变更",
+      [AuditEventType.SYSTEM_MAINTENANCE]: "系统维护",
+      [AuditEventType.SYSTEM_ERROR]: "系统错误",
+      [AuditEventType.PERFORMANCE_WARNING]: "性能警告",
+      [AuditEventType.RESOURCE_USAGE_WARNING]: "资源使用警告",
+      [AuditEventType.DATABASE_CONNECTION]: "数据库连接",
+      [AuditEventType.DATABASE_DISCONNECTION]: "数据库断开",
+
       // 安全事件
-      [AuditEventType.SUSPICIOUS_ACCESS_ATTEMPT]: '异常访问尝试',
-      [AuditEventType.BRUTE_FORCE_ATTACK]: '暴力破解攻击',
-      [AuditEventType.SQL_INJECTION_ATTEMPT]: 'SQL注入尝试',
-      [AuditEventType.XSS_ATTEMPT]: 'XSS攻击尝试',
-      [AuditEventType.CSRF_ATTEMPT]: 'CSRF攻击尝试',
-      [AuditEventType.PRIVILEGE_ESCALATION_ATTEMPT]: '权限提升尝试',
-      [AuditEventType.DATA_BREACH_ATTEMPT]: '数据泄露尝试',
-      [AuditEventType.MALWARE_DETECTED]: '恶意软件检测',
-      [AuditEventType.SECURITY_POLICY_VIOLATION]: '安全策略违规',
-      
+      [AuditEventType.SUSPICIOUS_ACCESS_ATTEMPT]: "异常访问尝试",
+      [AuditEventType.BRUTE_FORCE_ATTACK]: "暴力破解攻击",
+      [AuditEventType.SQL_INJECTION_ATTEMPT]: "SQL注入尝试",
+      [AuditEventType.XSS_ATTEMPT]: "XSS攻击尝试",
+      [AuditEventType.CSRF_ATTEMPT]: "CSRF攻击尝试",
+      [AuditEventType.PRIVILEGE_ESCALATION_ATTEMPT]: "权限提升尝试",
+      [AuditEventType.DATA_BREACH_ATTEMPT]: "数据泄露尝试",
+      [AuditEventType.MALWARE_DETECTED]: "恶意软件检测",
+      [AuditEventType.SECURITY_POLICY_VIOLATION]: "安全策略违规",
+
       // 业务事件
-      [AuditEventType.BUSINESS_OPERATION_EXECUTED]: '业务操作执行',
-      [AuditEventType.BUSINESS_PROCESS_STARTED]: '业务流程启动',
-      [AuditEventType.BUSINESS_PROCESS_COMPLETED]: '业务流程完成',
-      [AuditEventType.BUSINESS_PROCESS_FAILED]: '业务流程失败',
-      [AuditEventType.APPROVAL_REQUESTED]: '审批请求',
-      [AuditEventType.APPROVAL_GRANTED]: '审批通过',
-      [AuditEventType.APPROVAL_DENIED]: '审批拒绝',
-      [AuditEventType.NOTIFICATION_SENT]: '通知发送',
-      [AuditEventType.INTEGRATION_CALLED]: '集成调用',
-      [AuditEventType.API_CALLED]: 'API调用'
+      [AuditEventType.BUSINESS_OPERATION_EXECUTED]: "业务操作执行",
+      [AuditEventType.BUSINESS_PROCESS_STARTED]: "业务流程启动",
+      [AuditEventType.BUSINESS_PROCESS_COMPLETED]: "业务流程完成",
+      [AuditEventType.BUSINESS_PROCESS_FAILED]: "业务流程失败",
+      [AuditEventType.APPROVAL_REQUESTED]: "审批请求",
+      [AuditEventType.APPROVAL_GRANTED]: "审批通过",
+      [AuditEventType.APPROVAL_DENIED]: "审批拒绝",
+      [AuditEventType.NOTIFICATION_SENT]: "通知发送",
+      [AuditEventType.INTEGRATION_CALLED]: "集成调用",
+      [AuditEventType.API_CALLED]: "API调用",
     };
 
     return descriptions[eventType] || eventType;
@@ -826,8 +836,8 @@ export class AuditEventTypeUtils {
    */
   public static getAllCompliances(): string[] {
     const allCompliances = new Set<string>();
-    Object.values(this.COMPLIANCE_REQUIREMENTS).forEach(requirements => {
-      requirements.forEach(compliance => allCompliances.add(compliance));
+    Object.values(this.COMPLIANCE_REQUIREMENTS).forEach((requirements) => {
+      requirements.forEach((compliance) => allCompliances.add(compliance));
     });
     return Array.from(allCompliances);
   }

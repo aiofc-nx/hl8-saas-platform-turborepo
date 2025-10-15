@@ -38,8 +38,8 @@
 
 ```typescript
 // libs/database/src/database.module.ts
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { Module, DynamicModule } from '@nestjs/common';
+import { MikroOrmModule } from "@mikro-orm/nestjs";
+import { Module, DynamicModule } from "@nestjs/common";
 
 @Module({})
 export class DatabaseModule {
@@ -49,7 +49,7 @@ export class DatabaseModule {
       imports: [
         MikroOrmModule.forRootAsync({
           useFactory: async (config: DatabaseConfig) => ({
-            type: 'postgresql',
+            type: "postgresql",
             clientUrl: config.getConnectionString(),
             entities: config.entities,
             // ES Module 配置
@@ -123,9 +123,9 @@ export class DatabaseModule {
 ```typescript
 // 在 ES Module 环境下，实体需要动态导入
 const config: Options = {
-  type: 'postgresql',
-  entities: ['./dist/**/*.entity.js'], // 使用编译后的 .js 文件
-  entitiesTs: ['./src/**/*.entity.ts'], // TypeScript 源文件
+  type: "postgresql",
+  entities: ["./dist/**/*.entity.js"], // 使用编译后的 .js 文件
+  entitiesTs: ["./src/**/*.entity.ts"], // TypeScript 源文件
   tsNode: false, // 禁用 ts-node（生产环境）
   discovery: {
     warnWhenNoEntities: false,
@@ -157,7 +157,7 @@ const config: Options = {
 **模块配置**:
 
 ```typescript
-import { ClsModule } from 'nestjs-cls';
+import { ClsModule } from "nestjs-cls";
 
 @Module({
   imports: [
@@ -166,7 +166,7 @@ import { ClsModule } from 'nestjs-cls';
       middleware: {
         mount: true,
         generateId: true,
-        idGenerator: (req) => req.headers['x-request-id'] ?? uuidv4(),
+        idGenerator: (req) => req.headers["x-request-id"] ?? uuidv4(),
       },
     }),
   ],
@@ -177,18 +177,18 @@ export class DatabaseModule {}
 **隔离上下文存储**:
 
 ```typescript
-import { ClsService } from 'nestjs-cls';
-import { IsolationContext } from '@hl8/isolation-model';
+import { ClsService } from "nestjs-cls";
+import { IsolationContext } from "@hl8/isolation-model";
 
 export class IsolationService {
   constructor(private readonly cls: ClsService) {}
 
   setIsolationContext(context: IsolationContext): void {
-    this.cls.set('isolationContext', context);
+    this.cls.set("isolationContext", context);
   }
 
   getIsolationContext(): IsolationContext | undefined {
-    return this.cls.get('isolationContext');
+    return this.cls.get("isolationContext");
   }
 
   getTenantId(): string | undefined {
@@ -204,11 +204,11 @@ export class TransactionService {
   constructor(private readonly cls: ClsService) {}
 
   setEntityManager(em: EntityManager): void {
-    this.cls.set('entityManager', em);
+    this.cls.set("entityManager", em);
   }
 
   getEntityManager(): EntityManager | undefined {
-    return this.cls.get('entityManager');
+    return this.cls.get("entityManager");
   }
 }
 ```
@@ -231,8 +231,8 @@ export class TransactionService {
 **隔离上下文集成**:
 
 ```typescript
-import { IsolationContext } from '@hl8/isolation-model';
-import { IsolationService as BaseIsolationService } from '@hl8/nestjs-isolation';
+import { IsolationContext } from "@hl8/isolation-model";
+import { IsolationService as BaseIsolationService } from "@hl8/nestjs-isolation";
 
 export class DatabaseIsolationService {
   constructor(
@@ -252,7 +252,7 @@ export class DatabaseIsolationService {
     const context = this.baseIsolationService.getContext();
 
     if (!context) {
-      throw new DatabaseQueryException('缺少隔离上下文');
+      throw new DatabaseQueryException("缺少隔离上下文");
     }
 
     // 应用租户隔离
@@ -288,15 +288,15 @@ export function IsolationAware(level: IsolationLevel = IsolationLevel.TENANT) {
 
     descriptor.value = async function (...args: any[]) {
       const cls: ClsService = this.cls;
-      const context: IsolationContext = cls.get('isolationContext');
+      const context: IsolationContext = cls.get("isolationContext");
 
       if (!context) {
-        throw new DatabaseQueryException('缺少隔离上下文');
+        throw new DatabaseQueryException("缺少隔离上下文");
       }
 
       // 验证隔离级别
       if (level === IsolationLevel.TENANT && !context.getTenantId()) {
-        throw new DatabaseQueryException('租户隔离要求提供租户ID');
+        throw new DatabaseQueryException("租户隔离要求提供租户ID");
       }
 
       return originalMethod.apply(this, args);
@@ -319,8 +319,8 @@ export class UserRepository {
 
   @IsolationAware(IsolationLevel.TENANT)
   async findAll(): Promise<User[]> {
-    const qb = this.em.createQueryBuilder(User, 'u');
-    this.isolationService.applyIsolationFilter(qb, 'User');
+    const qb = this.em.createQueryBuilder(User, "u");
+    this.isolationService.applyIsolationFilter(qb, "User");
     return qb.getResult();
   }
 }
@@ -344,11 +344,11 @@ export class UserRepository {
 **事务装饰器**:
 
 ```typescript
-import { ClsService } from 'nestjs-cls';
-import { EntityManager } from '@mikro-orm/core';
+import { ClsService } from "nestjs-cls";
+import { EntityManager } from "@mikro-orm/core";
 
 export interface TransactionalOptions {
-  isolationLevel?: 'read committed' | 'repeatable read' | 'serializable';
+  isolationLevel?: "read committed" | "repeatable read" | "serializable";
   readOnly?: boolean;
 }
 
@@ -365,7 +365,7 @@ export function Transactional(options?: TransactionalOptions) {
       const em: EntityManager = this.em || this.entityManager;
 
       // 如果已在事务中，复用现有事务
-      const existingEm = cls.get<EntityManager>('entityManager');
+      const existingEm = cls.get<EntityManager>("entityManager");
       if (existingEm) {
         return originalMethod.apply(this, args);
       }
@@ -373,7 +373,7 @@ export function Transactional(options?: TransactionalOptions) {
       // 开启新事务
       return em.transactional(async (transactionEm) => {
         // 将事务 EM 存储到上下文
-        cls.set('entityManager', transactionEm);
+        cls.set("entityManager", transactionEm);
 
         try {
           const result = await originalMethod.apply(this, args);
@@ -384,7 +384,7 @@ export function Transactional(options?: TransactionalOptions) {
           throw error;
         } finally {
           // 清理上下文
-          cls.set('entityManager', undefined);
+          cls.set("entityManager", undefined);
         }
       });
     };
@@ -407,7 +407,7 @@ export class UserService {
   @Transactional()
   async createUser(data: CreateUserDto): Promise<User> {
     // 从上下文获取事务 EM
-    const em = this.cls.get<EntityManager>('entityManager');
+    const em = this.cls.get<EntityManager>("entityManager");
 
     const user = new User(data);
     await em.persistAndFlush(user);
@@ -445,21 +445,21 @@ export class UserService {
 **方案 A：注入 FastifyLoggerService（推荐）**
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 @Injectable()
 export class ConnectionManager {
   constructor(private readonly logger: FastifyLoggerService) {}
 
   async connect(): Promise<void> {
-    this.logger.log('正在连接数据库...');
+    this.logger.log("正在连接数据库...");
     try {
       await this.orm.connect();
-      this.logger.log('数据库连接成功');
+      this.logger.log("数据库连接成功");
     } catch (error) {
-      this.logger.error('数据库连接失败', error.stack);
-      throw new DatabaseConnectionException('无法连接到数据库服务器');
+      this.logger.error("数据库连接失败", error.stack);
+      throw new DatabaseConnectionException("无法连接到数据库服务器");
     }
   }
 }
@@ -470,7 +470,7 @@ export class ConnectionManager {
 如果未使用 Fastify，可以回退到 NestJS Logger：
 
 ```typescript
-import { Logger } from '@nestjs/common';
+import { Logger } from "@nestjs/common";
 
 @Injectable()
 export class ConnectionManager {
@@ -550,7 +550,7 @@ export class AppModule {}
 
 ```typescript
 // ✅ 推荐：使用结构化日志
-this.logger.log('数据库连接成功', {
+this.logger.log("数据库连接成功", {
   host: config.host,
   port: config.port,
   database: config.database,
@@ -572,7 +572,7 @@ this.logger.log(`数据库连接成功: ${config.host}:${config.port}`);
 **异常类定义**:
 
 ```typescript
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 
 /**
  * 数据库连接异常
@@ -582,8 +582,8 @@ import { AbstractHttpException } from '@hl8/exceptions';
 export class DatabaseConnectionException extends AbstractHttpException {
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_CONNECTION_ERROR', // errorCode
-      '数据库连接错误', // title
+      "DATABASE_CONNECTION_ERROR", // errorCode
+      "数据库连接错误", // title
       detail, // detail
       503, // status
       data, // data (可选)
@@ -598,7 +598,7 @@ export class DatabaseConnectionException extends AbstractHttpException {
  */
 export class DatabaseQueryException extends AbstractHttpException {
   constructor(detail: string, data?: Record<string, any>) {
-    super('DATABASE_QUERY_ERROR', '数据库查询错误', detail, 500, data);
+    super("DATABASE_QUERY_ERROR", "数据库查询错误", detail, 500, data);
   }
 }
 
@@ -609,7 +609,7 @@ export class DatabaseQueryException extends AbstractHttpException {
  */
 export class DatabaseTransactionException extends AbstractHttpException {
   constructor(detail: string, data?: Record<string, any>) {
-    super('DATABASE_TRANSACTION_ERROR', '数据库事务错误', detail, 500, data);
+    super("DATABASE_TRANSACTION_ERROR", "数据库事务错误", detail, 500, data);
   }
 }
 ```
@@ -624,8 +624,8 @@ export class DatabaseTransactionException extends AbstractHttpException {
 ### 使用示例
 
 ```typescript
-import { Logger } from '@nestjs/common';
-import { DatabaseConnectionException } from '../exceptions/index.js';
+import { Logger } from "@nestjs/common";
+import { DatabaseConnectionException } from "../exceptions/index.js";
 
 @Injectable()
 export class ConnectionManager {
@@ -633,13 +633,13 @@ export class ConnectionManager {
 
   async connect(): Promise<void> {
     try {
-      this.logger.log('正在连接数据库...');
+      this.logger.log("正在连接数据库...");
       await this.orm.connect();
-      this.logger.log('数据库连接成功');
+      this.logger.log("数据库连接成功");
     } catch (error) {
-      this.logger.error('数据库连接失败', error.stack);
+      this.logger.error("数据库连接失败", error.stack);
 
-      throw new DatabaseConnectionException('无法连接到数据库服务器', {
+      throw new DatabaseConnectionException("无法连接到数据库服务器", {
         host: this.config.host,
         port: this.config.port,
         database: this.config.database,
@@ -652,9 +652,9 @@ export class ConnectionManager {
     try {
       return await this.em.execute(sql, params);
     } catch (error) {
-      this.logger.error('查询执行失败', error.stack);
+      this.logger.error("查询执行失败", error.stack);
 
-      throw new DatabaseQueryException('数据库查询执行失败', {
+      throw new DatabaseQueryException("数据库查询执行失败", {
         // 脱敏后的 SQL（隐藏敏感参数）
         query: this.sanitizeQuery(sql),
         // 不包含实际参数值
@@ -705,7 +705,7 @@ export class ConnectionManager {
 **配置类定义**:
 
 ```typescript
-import { IsString, IsNumber, IsOptional, Min, Max } from 'class-validator';
+import { IsString, IsNumber, IsOptional, Min, Max } from "class-validator";
 
 /**
  * 数据库配置
@@ -717,7 +717,7 @@ export class DatabaseConfig {
    * 数据库主机
    */
   @IsString()
-  host: string = 'localhost';
+  host: string = "localhost";
 
   /**
    * 数据库端口
@@ -789,7 +789,7 @@ export class DatabaseConfig {
 **模块集成**:
 
 ```typescript
-import { TypedConfigModule } from '@hl8/config';
+import { TypedConfigModule } from "@hl8/config";
 
 @Module({
   imports: [
@@ -837,7 +837,7 @@ DB_SLOW_QUERY_THRESHOLD=1000
 
 ```typescript
 const config: Options = {
-  type: 'postgresql',
+  type: "postgresql",
   clientUrl: dbConfig.getConnectionString(),
   pool: {
     min: dbConfig.poolMin,
@@ -879,7 +879,7 @@ export class ConnectionPoolMonitor {
 
     // 警告：如果空闲连接过少
     if (stats.idle < 2 && stats.total >= pool.max) {
-      this.logger.warn('连接池接近上限，考虑增加最大连接数');
+      this.logger.warn("连接池接近上限，考虑增加最大连接数");
     }
 
     // 警告：如果有等待中的请求

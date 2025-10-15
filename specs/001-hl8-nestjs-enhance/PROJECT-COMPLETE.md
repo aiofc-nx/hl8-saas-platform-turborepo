@@ -292,7 +292,7 @@ export class UserService {
 
   async getUsers(): Promise<User[]> {
     // 🎯 自动使用隔离上下文！
-    let users = await this.cacheService.get<User[]>('user', 'list');
+    let users = await this.cacheService.get<User[]>("user", "list");
     // ...
   }
 }

@@ -28,126 +28,126 @@
 /**
  * 命令处理器元数据键名
  */
-export const COMMAND_HANDLER_METADATA = 'CommandHandlerMetadata' as const;
+export const COMMAND_HANDLER_METADATA = "CommandHandlerMetadata" as const;
 
 /**
  * 查询处理器元数据键名
  */
-export const QUERY_HANDLER_METADATA = 'QueryHandlerMetadata' as const;
+export const QUERY_HANDLER_METADATA = "QueryHandlerMetadata" as const;
 
 /**
  * 事件处理器元数据键名
  */
-export const EVENT_HANDLER_METADATA = 'EventHandlerMetadata' as const;
+export const EVENT_HANDLER_METADATA = "EventHandlerMetadata" as const;
 
 /**
  * Saga 处理器元数据键名
  */
-export const SAGA_METADATA = 'SagaMetadata' as const;
+export const SAGA_METADATA = "SagaMetadata" as const;
 
 /**
  * 性能监控元数据键名
  */
 export const PERFORMANCE_MONITOR_METADATA =
-  'PerformanceMonitorMetadata' as const;
+  "PerformanceMonitorMetadata" as const;
 
 /**
  * 数据隔离元数据键名
  */
-export const DATA_ISOLATION_METADATA = 'DataIsolationMetadata' as const;
+export const DATA_ISOLATION_METADATA = "DataIsolationMetadata" as const;
 
 /**
  * 缓存元数据键名
  */
-export const CACHE_METADATA = 'CacheMetadata' as const;
+export const CACHE_METADATA = "CacheMetadata" as const;
 
 /**
  * 验证元数据键名
  */
-export const VALIDATION_METADATA = 'ValidationMetadata' as const;
+export const VALIDATION_METADATA = "ValidationMetadata" as const;
 
 /**
  * 授权元数据键名
  */
-export const AUTHORIZATION_METADATA = 'AuthorizationMetadata' as const;
+export const AUTHORIZATION_METADATA = "AuthorizationMetadata" as const;
 
 /**
  * 事务元数据键名
  */
-export const TRANSACTION_METADATA = 'TransactionMetadata' as const;
+export const TRANSACTION_METADATA = "TransactionMetadata" as const;
 
 /**
  * 重试元数据键名
  */
-export const RETRY_METADATA = 'RetryMetadata' as const;
+export const RETRY_METADATA = "RetryMetadata" as const;
 
 /**
  * 超时元数据键名
  */
-export const TIMEOUT_METADATA = 'TimeoutMetadata' as const;
+export const TIMEOUT_METADATA = "TimeoutMetadata" as const;
 
 /**
  * 日志记录元数据键名
  */
-export const LOGGING_METADATA = 'LoggingMetadata' as const;
+export const LOGGING_METADATA = "LoggingMetadata" as const;
 
 /**
  * 审计元数据键名
  */
-export const AUDIT_METADATA = 'AuditMetadata' as const;
+export const AUDIT_METADATA = "AuditMetadata" as const;
 
 /**
  * 多租户元数据键名
  */
-export const MULTI_TENANT_METADATA = 'MultiTenantMetadata' as const;
+export const MULTI_TENANT_METADATA = "MultiTenantMetadata" as const;
 
 /**
  * 异步上下文元数据键名
  */
-export const ASYNC_CONTEXT_METADATA = 'AsyncContextMetadata' as const;
+export const ASYNC_CONTEXT_METADATA = "AsyncContextMetadata" as const;
 
 /**
  * 中间件元数据键名
  */
-export const MIDDLEWARE_METADATA = 'MiddlewareMetadata' as const;
+export const MIDDLEWARE_METADATA = "MiddlewareMetadata" as const;
 
 /**
  * 拦截器元数据键名
  */
-export const INTERCEPTOR_METADATA = 'InterceptorMetadata' as const;
+export const INTERCEPTOR_METADATA = "InterceptorMetadata" as const;
 
 /**
  * 装饰器类型枚举
  */
 export enum DecoratorType {
-  COMMAND_HANDLER = 'CommandHandler',
-  QUERY_HANDLER = 'QueryHandler',
-  EVENT_HANDLER = 'EventHandler',
-  SAGA = 'Saga',
-  PERFORMANCE_MONITOR = 'PerformanceMonitor',
-  DATA_ISOLATION = 'DataIsolation',
-  CACHE = 'Cache',
-  VALIDATION = 'Validation',
-  AUTHORIZATION = 'Authorization',
-  TRANSACTION = 'Transaction',
-  RETRY = 'Retry',
-  TIMEOUT = 'Timeout',
-  LOGGING = 'Logging',
-  AUDIT = 'Audit',
-  MULTI_TENANT = 'MultiTenant',
-  ASYNC_CONTEXT = 'AsyncContext',
-  MIDDLEWARE = 'Middleware',
-  INTERCEPTOR = 'Interceptor',
+  COMMAND_HANDLER = "CommandHandler",
+  QUERY_HANDLER = "QueryHandler",
+  EVENT_HANDLER = "EventHandler",
+  SAGA = "Saga",
+  PERFORMANCE_MONITOR = "PerformanceMonitor",
+  DATA_ISOLATION = "DataIsolation",
+  CACHE = "Cache",
+  VALIDATION = "Validation",
+  AUTHORIZATION = "Authorization",
+  TRANSACTION = "Transaction",
+  RETRY = "Retry",
+  TIMEOUT = "Timeout",
+  LOGGING = "Logging",
+  AUDIT = "Audit",
+  MULTI_TENANT = "MultiTenant",
+  ASYNC_CONTEXT = "AsyncContext",
+  MIDDLEWARE = "Middleware",
+  INTERCEPTOR = "Interceptor",
 }
 
 /**
  * 处理器类型枚举
  */
 export enum HandlerType {
-  COMMAND = 'Command',
-  QUERY = 'Query',
-  EVENT = 'Event',
-  SAGA = 'Saga',
+  COMMAND = "Command",
+  QUERY = "Query",
+  EVENT = "Event",
+  SAGA = "Saga",
 }
 
 /**
@@ -245,12 +245,12 @@ export const DEFAULT_METADATA_VALUES = {
 /**
  * 元数据版本
  */
-export const METADATA_VERSION = '1.0.0' as const;
+export const METADATA_VERSION = "1.0.0" as const;
 
 /**
  * 元数据命名空间
  */
-export const METADATA_NAMESPACE = 'aiofix:core' as const;
+export const METADATA_NAMESPACE = "aiofix:core" as const;
 
 /**
  * 获取完整的元数据键名

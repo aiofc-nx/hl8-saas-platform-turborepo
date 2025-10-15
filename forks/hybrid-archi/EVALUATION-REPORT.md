@@ -4,7 +4,7 @@
 > **最后更新**: 2025-01-27  
 > **模块版本**: 0.0.1  
 > **评估人**: AI 助手  
-> **更新说明**: 已同步 CQRS Bus 类重命名 (Core*→*)  
+> **更新说明**: 已同步 CQRS Bus 类重命名 (Core*→*)
 
 ---
 
@@ -45,14 +45,14 @@
 ✅ **注释规范**: 严格遵循 TSDoc 规范，注释详细、业务规则清晰  
 ✅ **类型安全**: 使用 TypeScript 严格模式，类型系统完整  
 ✅ **常量管理**: 集中管理常量，避免硬编码  
-✅ **测试覆盖**: 包含单元测试、集成测试、E2E 测试  
+✅ **测试覆盖**: 包含单元测试、集成测试、E2E 测试
 
 ### 1.3 核心问题
 
 ⚠️ **README 不完整**: 缺少详细的模块介绍和使用文档  
 ⚠️ **部分功能未实现**: 某些适配器和工厂类可能尚未完全实现  
 ⚠️ **测试覆盖率未知**: 无法确认实际测试覆盖率  
-⚠️ **缺少实际示例**: 缺少完整的端到端使用示例  
+⚠️ **缺少实际示例**: 缺少完整的端到端使用示例
 
 ---
 
@@ -117,14 +117,14 @@ packages/hybrid-archi/src/
 
 **核心组件完整性**:
 
-| 组件 | 状态 | 评价 |
-|------|------|------|
-| BaseEntity | ✅ | 完整实现，包含审计信息、多租户支持 |
-| BaseAggregateRoot | ✅ | 完整实现，包含事件管理、版本控制 |
-| BaseValueObject | ✅ | 完整实现，支持相等性比较、验证 |
-| BaseDomainEvent | ✅ | 完整实现，支持事件元数据、版本 |
-| IDomainService | ✅ | 接口定义清晰 |
-| 仓储接口 | ✅ | 完整的仓储接口体系 |
+| 组件              | 状态 | 评价                               |
+| ----------------- | ---- | ---------------------------------- |
+| BaseEntity        | ✅   | 完整实现，包含审计信息、多租户支持 |
+| BaseAggregateRoot | ✅   | 完整实现，包含事件管理、版本控制   |
+| BaseValueObject   | ✅   | 完整实现，支持相等性比较、验证     |
+| BaseDomainEvent   | ✅   | 完整实现，支持事件元数据、版本     |
+| IDomainService    | ✅   | 接口定义清晰                       |
+| 仓储接口          | ✅   | 完整的仓储接口体系                 |
 
 **DDD 模式支持**:
 
@@ -168,15 +168,15 @@ packages/hybrid-archi/src/
 
 **事件溯源组件**:
 
-| 组件 | 状态 | 说明 |
-|------|------|------|
-| IEventStore | ✅ | 事件存储接口定义完整 |
-| IEventStoreRepository | ✅ | 事件存储仓储接口 |
-| ISnapshotStore | ✅ | 快照存储接口 |
-| EventStoreAdapter | ✅ | 事件存储适配器 |
-| 事件版本管理 | ✅ | 支持事件版本控制 |
-| 状态重建 | ✅ | 聚合根支持从事件流重建 |
-| 实际实现 | ⚠️ | 需要确认具体实现的完整性 |
+| 组件                  | 状态 | 说明                     |
+| --------------------- | ---- | ------------------------ |
+| IEventStore           | ✅   | 事件存储接口定义完整     |
+| IEventStoreRepository | ✅   | 事件存储仓储接口         |
+| ISnapshotStore        | ✅   | 快照存储接口             |
+| EventStoreAdapter     | ✅   | 事件存储适配器           |
+| 事件版本管理          | ✅   | 支持事件版本控制         |
+| 状态重建              | ✅   | 聚合根支持从事件流重建   |
+| 实际实现              | ⚠️   | 需要确认具体实现的完整性 |
 
 **改进空间**:
 
@@ -244,7 +244,7 @@ packages/hybrid-archi/src/
 
 **注释质量**:
 
-```typescript
+````typescript
 /**
  * 基础实体类
  *
@@ -267,7 +267,7 @@ packages/hybrid-archi/src/
  * ```
  * @since 1.0.0
  */
-```
+````
 
 **注释特点**:
 
@@ -285,16 +285,16 @@ packages/hybrid-archi/src/
 ```typescript
 // constants.ts
 export const ENTITY_OPERATIONS = {
-  CREATE: 'CREATE',
-  UPDATE: 'UPDATE',
-  DELETE: 'DELETE',
-  RESTORE: 'RESTORE',
+  CREATE: "CREATE",
+  UPDATE: "UPDATE",
+  DELETE: "DELETE",
+  RESTORE: "RESTORE",
 } as const;
 
 export const METADATA_KEYS = {
-  DOMAIN_EVENT: Symbol('domainEvent'),
-  AGGREGATE: Symbol('aggregate'),
-  USE_CASE: Symbol('useCase'),
+  DOMAIN_EVENT: Symbol("domainEvent"),
+  AGGREGATE: Symbol("aggregate"),
+  USE_CASE: Symbol("useCase"),
   // ...
 } as const;
 ```
@@ -311,14 +311,14 @@ export const METADATA_KEYS = {
 
 **命名约定检查**:
 
-| 类型 | 规范 | 实际 | 评价 |
-|------|------|------|------|
-| 文件名 | kebab-case | ✅ base-entity.ts | 符合 |
-| 变量名 | camelCase | ✅ _domainEvents | 符合 |
+| 类型   | 规范             | 实际                 | 评价 |
+| ------ | ---------------- | -------------------- | ---- |
+| 文件名 | kebab-case       | ✅ base-entity.ts    | 符合 |
+| 变量名 | camelCase        | ✅ \_domainEvents    | 符合 |
 | 常量名 | UPPER_SNAKE_CASE | ✅ ENTITY_OPERATIONS | 符合 |
-| 类名 | PascalCase | ✅ BaseEntity | 符合 |
-| 接口名 | I+PascalCase | ✅ IEntity | 符合 |
-| 方法名 | camelCase+动词 | ✅ addDomainEvent() | 符合 |
+| 类名   | PascalCase       | ✅ BaseEntity        | 符合 |
+| 接口名 | I+PascalCase     | ✅ IEntity           | 符合 |
+| 方法名 | camelCase+动词   | ✅ addDomainEvent()  | 符合 |
 
 ### 3.5 依赖注入 (评分: ⭐⭐⭐⭐⭐)
 
@@ -343,7 +343,7 @@ export {
   BaseValueObject,
   BaseDomainEvent,
   // ...
-} from './domain';
+} from "./domain";
 ```
 
 **优点**:
@@ -370,9 +370,11 @@ export {
 This library was generated with [Nx](https://nx.dev).
 
 ## Building
+
 Run `nx build hybrid-archi` to build the library.
 
 ## Running unit tests
+
 Run `nx test hybrid-archi` to execute the unit tests via [Jest](https://jestjs.io).
 ```
 
@@ -390,35 +392,51 @@ Run `nx test hybrid-archi` to execute the unit tests via [Jest](https://jestjs.i
 # hybrid-archi
 
 ## 简介
+
 混合架构核心模块，为业务模块开发提供统一的架构设计模式...
 
 ## 架构概述
+
 ### Clean Architecture
+
 ### DDD
+
 ### CQRS
+
 ### Event Sourcing
+
 ### Event-Driven Architecture
+
 ### 多租户架构
 
 ## 安装与使用
+
 ...
 
 ## 核心概念
+
 ### 领域层
+
 ### 应用层
+
 ### 基础设施层
+
 ### 接口层
 
 ## 快速开始
+
 ...
 
 ## API 文档
+
 ...
 
 ## 示例
+
 ...
 
 ## 贡献指南
+
 ...
 ```
 
@@ -482,13 +500,13 @@ src/
 
 ### 5.2 测试类型完整性 (评分: ⭐⭐⭐⭐☆)
 
-| 测试类型 | 状态 | 说明 |
-|---------|------|------|
-| 单元测试 | ✅ | 核心组件都有单元测试 |
-| 集成测试 | ✅ | 包含集成测试 |
-| E2E 测试 | ✅ | 包含端到端测试 |
-| 性能测试 | ⚠️ | 未见明确的性能测试 |
-| 压力测试 | ⚠️ | 未见明确的压力测试 |
+| 测试类型 | 状态 | 说明                 |
+| -------- | ---- | -------------------- |
+| 单元测试 | ✅   | 核心组件都有单元测试 |
+| 集成测试 | ✅   | 包含集成测试         |
+| E2E 测试 | ✅   | 包含端到端测试       |
+| 性能测试 | ⚠️   | 未见明确的性能测试   |
+| 压力测试 | ⚠️   | 未见明确的压力测试   |
 
 ### 5.3 测试组织 (评分: ⭐⭐⭐⭐⭐)
 
@@ -888,9 +906,11 @@ adapters/
 # hybrid-archi - 混合架构核心模块
 
 ## 简介
+
 详细介绍模块的作用、定位、核心价值
 
 ## 架构概述
+
 - Clean Architecture
 - Domain-Driven Design
 - CQRS
@@ -899,25 +919,37 @@ adapters/
 - 多租户架构
 
 ## 快速开始
+
 ### 安装
+
 ### 基本使用
+
 ### 创建实体
+
 ### 创建聚合根
+
 ### 实现用例
 
 ## 核心概念
+
 ### 领域层
+
 ### 应用层
+
 ### 基础设施层
+
 ### 接口层
 
 ## API 文档
+
 链接到自动生成的 API 文档
 
 ## 示例
+
 链接到示例项目
 
 ## 最佳实践
+
 - 实体设计
 - 聚合根设计
 - 值对象设计
@@ -925,9 +957,11 @@ adapters/
 - 事件设计
 
 ## 常见问题
+
 FAQ 部分
 
 ## 贡献指南
+
 如何贡献代码
 
 ## 许可证
@@ -994,8 +1028,8 @@ packages/hybrid-archi/examples/
 
 ```typescript
 // 部分使用 export *，可能导致命名冲突
-export * from './common';
-export * from './domain/enums/common';
+export * from "./common";
+export * from "./domain/enums/common";
 ```
 
 **建议改进**:
@@ -1005,7 +1039,7 @@ export * from './domain/enums/common';
 export {
   UserStatus as CommonUserStatus,
   UserStatusUtils as CommonUserStatusUtils,
-} from './domain/enums/common';
+} from "./domain/enums/common";
 ```
 
 #### 10.2.3 补充缺失的测试
@@ -1216,7 +1250,7 @@ nx g @hl8/hybrid-archi:use-case CreateUser
 **报告生成时间**: 2025-01-27  
 **评估工具**: AI 助手  
 **评估范围**: packages/hybrid-archi 模块  
-**评估版本**: 0.0.1  
+**评估版本**: 0.0.1
 
 ---
 
@@ -1226,6 +1260,7 @@ nx g @hl8/hybrid-archi:use-case CreateUser
 
 ```markdown
 ## 架构检查
+
 - [x] 遵循 Clean Architecture
 - [x] 实现 DDD 核心概念
 - [x] 支持 CQRS
@@ -1234,6 +1269,7 @@ nx g @hl8/hybrid-archi:use-case CreateUser
 - [x] 支持多租户
 
 ## 代码质量检查
+
 - [x] TypeScript 严格模式
 - [x] TSDoc 注释规范
 - [x] 常量管理
@@ -1242,6 +1278,7 @@ nx g @hl8/hybrid-archi:use-case CreateUser
 - [x] 类型安全
 
 ## 测试检查
+
 - [x] 单元测试
 - [x] 集成测试
 - [x] E2E 测试
@@ -1249,6 +1286,7 @@ nx g @hl8/hybrid-archi:use-case CreateUser
 - [ ] 测试覆盖率 >= 80%
 
 ## 文档检查
+
 - [ ] README 完整
 - [x] 代码注释完整
 - [x] 测试文档完整
@@ -1257,6 +1295,7 @@ nx g @hl8/hybrid-archi:use-case CreateUser
 - [ ] 示例代码
 
 ## 功能完整性检查
+
 - [x] 领域层组件
 - [x] 应用层组件
 - [x] 基础设施层组件

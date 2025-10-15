@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const API_VERSIONING = 'API Versioning System';
+export const API_VERSIONING = "API Versioning System";

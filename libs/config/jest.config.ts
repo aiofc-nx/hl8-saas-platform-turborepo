@@ -1,11 +1,11 @@
 export default {
-  displayName: 'config',
-  preset: '../../jest.preset.js',
-  testEnvironment: 'node',
+  displayName: "config",
+  preset: "../../jest.preset.js",
+  testEnvironment: "node",
   transform: {
-    '^.+\\.[tj]s$': ['@swc/jest'],
+    "^.+\\.[tj]s$": ["@swc/jest"],
   },
-  moduleFileExtensions: ['ts', 'js'],
-  coverageDirectory: '../../coverage/libs/config',
-  testMatch: ['**/__tests__/**/*.spec.ts', '**/*.spec.ts'],
+  moduleFileExtensions: ["ts", "js"],
+  coverageDirectory: "../../coverage/libs/config",
+  testMatch: ["**/__tests__/**/*.spec.ts", "**/*.spec.ts"],
 };

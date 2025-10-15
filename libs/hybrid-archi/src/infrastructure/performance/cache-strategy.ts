@@ -8,9 +8,9 @@
  * @since 1.0.0
  */
 
-import { Injectable, Inject } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { CacheService } from '@hl8/caching';
+import { Injectable, Inject } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
 
 /**
  * 缓存策略配置
@@ -19,7 +19,7 @@ export interface CacheStrategyConfig {
   /** 是否启用缓存 */
   enabled: boolean;
   /** 缓存级别 */
-  level: 'L1' | 'L2' | 'L3' | 'multi';
+  level: "L1" | "L2" | "L3" | "multi";
   /** 默认TTL（秒） */
   defaultTtl: number;
   /** 最大缓存大小 */
@@ -44,12 +44,12 @@ export interface CacheStrategyConfig {
  * 缓存策略类型
  */
 export type CacheStrategyType =
-  | 'write-through'
-  | 'write-behind'
-  | 'write-around'
-  | 'read-through'
-  | 'cache-aside'
-  | 'refresh-ahead';
+  | "write-through"
+  | "write-behind"
+  | "write-around"
+  | "read-through"
+  | "cache-aside"
+  | "refresh-ahead";
 
 /**
  * 缓存统计信息
@@ -114,7 +114,7 @@ export class CacheStrategy {
   constructor(
     private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
-    @Inject('CacheStrategyConfig') private readonly config: CacheStrategyConfig
+    @Inject("CacheStrategyConfig") private readonly config: CacheStrategyConfig,
   ) {
     this.initializePartitions();
   }
@@ -129,7 +129,7 @@ export class CacheStrategy {
    */
   async get<T>(
     key: string,
-    strategy: CacheStrategyType = 'cache-aside'
+    strategy: CacheStrategyType = "cache-aside",
   ): Promise<T | null> {
     const startTime = Date.now();
 
@@ -159,11 +159,11 @@ export class CacheStrategy {
       this.stats.lastAccessTime = new Date();
       this.updateStats();
 
-      this.logger.debug('缓存命中');
+      this.logger.debug("缓存命中");
 
       return entry.value as T;
     } catch (error) {
-      this.logger.error('获取缓存失败', error, { key, strategy });
+      this.logger.error("获取缓存失败", error, { key, strategy });
       return null;
     }
   }
@@ -181,7 +181,7 @@ export class CacheStrategy {
     key: string,
     value: T,
     ttl?: number,
-    strategy: CacheStrategyType = 'cache-aside'
+    strategy: CacheStrategyType = "cache-aside",
   ): Promise<void> {
     const startTime = Date.now();
 
@@ -202,13 +202,13 @@ export class CacheStrategy {
 
       // 根据策略处理
       switch (strategy) {
-        case 'write-through':
+        case "write-through":
           await this.writeThrough(key, entry);
           break;
-        case 'write-behind':
+        case "write-behind":
           await this.writeBehind(key, entry);
           break;
-        case 'write-around':
+        case "write-around":
           await this.writeAround(key, entry);
           break;
         default:
@@ -220,9 +220,9 @@ export class CacheStrategy {
       this.stats.newestEntry = new Date();
       this.updateStats();
 
-      this.logger.debug('缓存设置成功');
+      this.logger.debug("缓存设置成功");
     } catch (error) {
-      this.logger.error('设置缓存失败', error, { key, strategy });
+      this.logger.error("设置缓存失败", error, { key, strategy });
       throw error;
     }
   }
@@ -255,10 +255,10 @@ export class CacheStrategy {
       this.stats.size--;
       this.updateStats();
 
-      this.logger.debug('缓存删除成功');
+      this.logger.debug("缓存删除成功");
       return true;
     } catch (error) {
-      this.logger.error('删除缓存失败', error, { key });
+      this.logger.error("删除缓存失败", error, { key });
       return false;
     }
   }
@@ -285,9 +285,9 @@ export class CacheStrategy {
       this.stats.misses = 0;
       this.updateStats();
 
-      this.logger.log('缓存已清空');
+      this.logger.log("缓存已清空");
     } catch (error) {
-      this.logger.error('清空缓存失败', error);
+      this.logger.error("清空缓存失败", error);
       throw error;
     }
   }
@@ -301,7 +301,7 @@ export class CacheStrategy {
    */
   async preload<T>(
     keys: string[],
-    loader: (key: string) => Promise<T>
+    loader: (key: string) => Promise<T>,
   ): Promise<void> {
     try {
       const promises = keys.map(async (key) => {
@@ -309,15 +309,15 @@ export class CacheStrategy {
           const value = await loader(key);
           await this.set(key, value);
         } catch (error) {
-          this.logger.warn('缓存预热失败', error, { key });
+          this.logger.warn("缓存预热失败", error, { key });
         }
       });
 
       await Promise.all(promises);
 
-      this.logger.log('缓存预热完成');
+      this.logger.log("缓存预热完成");
     } catch (error) {
-      this.logger.error('缓存预热失败', error);
+      this.logger.error("缓存预热失败", error);
       throw error;
     }
   }
@@ -485,10 +485,10 @@ export class CacheStrategy {
         await this.cacheService.set(
           key,
           JSON.stringify(entry.value),
-          entry.ttl
+          entry.ttl,
         );
       } catch (error) {
-        this.logger.warn('异步写入外部存储失败', error, { key });
+        this.logger.warn("异步写入外部存储失败", error, { key });
       }
     });
   }

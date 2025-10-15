@@ -18,9 +18,9 @@ import {
   IsolationContext,
   IsolationLevel,
   SharingLevel,
-} from '@hl8/isolation-model';
-import { Injectable } from '@nestjs/common';
-import { IsolationContextService } from './isolation-context.service.js';
+} from "@hl8/isolation-model";
+import { Injectable } from "@nestjs/common";
+import { IsolationContextService } from "./isolation-context.service.js";
 
 @Injectable()
 export class MultiLevelIsolationService implements IIsolationValidator {

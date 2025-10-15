@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { CliBaseCommand } from './base-command';
+import { CliBaseCommand } from "./base-command";
 
 export class TenantCommand extends CliBaseCommand {
   // 占位符实现

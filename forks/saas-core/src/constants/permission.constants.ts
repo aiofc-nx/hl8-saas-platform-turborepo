@@ -36,7 +36,7 @@ export const PERMISSION_CODE_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 100,
   /** 错误消息 */
-  ERROR_MESSAGE: '权限代码格式必须为 resource:action',
+  ERROR_MESSAGE: "权限代码格式必须为 resource:action",
 } as const;
 
 /**
@@ -50,7 +50,7 @@ export const PERMISSION_NAME_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 100,
   /** 错误消息 */
-  ERROR_MESSAGE: '权限名称长度必须在1-100字符之间',
+  ERROR_MESSAGE: "权限名称长度必须在1-100字符之间",
 } as const;
 
 /**
@@ -62,15 +62,15 @@ export const PERMISSION_NAME_VALIDATION = {
  */
 export const PERMISSION_ACTIONS = {
   /** 创建 */
-  CREATE: 'CREATE',
+  CREATE: "CREATE",
   /** 读取 */
-  READ: 'READ',
+  READ: "READ",
   /** 更新 */
-  UPDATE: 'UPDATE',
+  UPDATE: "UPDATE",
   /** 删除 */
-  DELETE: 'DELETE',
+  DELETE: "DELETE",
   /** 执行（特殊操作） */
-  EXECUTE: 'EXECUTE',
+  EXECUTE: "EXECUTE",
 } as const;
 
 /**
@@ -83,45 +83,45 @@ export const PERMISSION_ACTIONS = {
 export const PERMISSION_CATEGORIES = {
   /** 租户管理 */
   TENANT_MANAGEMENT: {
-    code: 'tenant_management',
-    name: '租户管理',
-    description: '租户创建、配置、升级等操作',
+    code: "tenant_management",
+    name: "租户管理",
+    description: "租户创建、配置、升级等操作",
   },
   /** 用户管理 */
   USER_MANAGEMENT: {
-    code: 'user_management',
-    name: '用户管理',
-    description: '用户注册、认证、权限管理等操作',
+    code: "user_management",
+    name: "用户管理",
+    description: "用户注册、认证、权限管理等操作",
   },
   /** 组织管理 */
   ORGANIZATION_MANAGEMENT: {
-    code: 'organization_management',
-    name: '组织管理',
-    description: '组织创建、成员管理等操作',
+    code: "organization_management",
+    name: "组织管理",
+    description: "组织创建、成员管理等操作",
   },
   /** 部门管理 */
   DEPARTMENT_MANAGEMENT: {
-    code: 'department_management',
-    name: '部门管理',
-    description: '部门创建、层级管理、成员管理等操作',
+    code: "department_management",
+    name: "部门管理",
+    description: "部门创建、层级管理、成员管理等操作",
   },
   /** 角色管理 */
   ROLE_MANAGEMENT: {
-    code: 'role_management',
-    name: '角色管理',
-    description: '角色创建、权限分配等操作',
+    code: "role_management",
+    name: "角色管理",
+    description: "角色创建、权限分配等操作",
   },
   /** 权限管理 */
   PERMISSION_MANAGEMENT: {
-    code: 'permission_management',
-    name: '权限管理',
-    description: '权限定义、分配等操作',
+    code: "permission_management",
+    name: "权限管理",
+    description: "权限定义、分配等操作",
   },
   /** 系统管理 */
   SYSTEM_MANAGEMENT: {
-    code: 'system_management',
-    name: '系统管理',
-    description: '系统配置、监控等操作',
+    code: "system_management",
+    name: "系统管理",
+    description: "系统配置、监控等操作",
   },
 } as const;
 
@@ -131,15 +131,15 @@ export const PERMISSION_CATEGORIES = {
  * @constant
  */
 export const TENANT_PERMISSIONS = {
-  CREATE: 'tenant:create',
-  READ: 'tenant:read',
-  UPDATE: 'tenant:update',
-  DELETE: 'tenant:delete',
-  UPGRADE: 'tenant:upgrade',
-  DOWNGRADE: 'tenant:downgrade',
-  SUSPEND: 'tenant:suspend',
-  ACTIVATE: 'tenant:activate',
-  CONFIGURE: 'tenant:configure',
+  CREATE: "tenant:create",
+  READ: "tenant:read",
+  UPDATE: "tenant:update",
+  DELETE: "tenant:delete",
+  UPGRADE: "tenant:upgrade",
+  DOWNGRADE: "tenant:downgrade",
+  SUSPEND: "tenant:suspend",
+  ACTIVATE: "tenant:activate",
+  CONFIGURE: "tenant:configure",
 } as const;
 
 /**
@@ -148,15 +148,15 @@ export const TENANT_PERMISSIONS = {
  * @constant
  */
 export const USER_PERMISSIONS = {
-  CREATE: 'user:create',
-  READ: 'user:read',
-  UPDATE: 'user:update',
-  DELETE: 'user:delete',
-  DISABLE: 'user:disable',
-  ENABLE: 'user:enable',
-  RESET_PASSWORD: 'user:reset-password',
-  ASSIGN_ROLE: 'user:assign-role',
-  REVOKE_ROLE: 'user:revoke-role',
+  CREATE: "user:create",
+  READ: "user:read",
+  UPDATE: "user:update",
+  DELETE: "user:delete",
+  DISABLE: "user:disable",
+  ENABLE: "user:enable",
+  RESET_PASSWORD: "user:reset-password",
+  ASSIGN_ROLE: "user:assign-role",
+  REVOKE_ROLE: "user:revoke-role",
 } as const;
 
 /**
@@ -165,12 +165,12 @@ export const USER_PERMISSIONS = {
  * @constant
  */
 export const ORGANIZATION_PERMISSIONS = {
-  CREATE: 'organization:create',
-  READ: 'organization:read',
-  UPDATE: 'organization:update',
-  DELETE: 'organization:delete',
-  MANAGE_MEMBERS: 'organization:manage-members',
-  ASSIGN_ROLES: 'organization:assign-roles',
+  CREATE: "organization:create",
+  READ: "organization:read",
+  UPDATE: "organization:update",
+  DELETE: "organization:delete",
+  MANAGE_MEMBERS: "organization:manage-members",
+  ASSIGN_ROLES: "organization:assign-roles",
 } as const;
 
 /**
@@ -179,13 +179,13 @@ export const ORGANIZATION_PERMISSIONS = {
  * @constant
  */
 export const DEPARTMENT_PERMISSIONS = {
-  CREATE: 'department:create',
-  READ: 'department:read',
-  UPDATE: 'department:update',
-  DELETE: 'department:delete',
-  MOVE: 'department:move',
-  MANAGE_MEMBERS: 'department:manage-members',
-  VIEW_HIERARCHY: 'department:view-hierarchy',
+  CREATE: "department:create",
+  READ: "department:read",
+  UPDATE: "department:update",
+  DELETE: "department:delete",
+  MOVE: "department:move",
+  MANAGE_MEMBERS: "department:manage-members",
+  VIEW_HIERARCHY: "department:view-hierarchy",
 } as const;
 
 /**
@@ -194,14 +194,14 @@ export const DEPARTMENT_PERMISSIONS = {
  * @constant
  */
 export const ROLE_PERMISSIONS = {
-  CREATE: 'role:create',
-  READ: 'role:read',
-  UPDATE: 'role:update',
-  DELETE: 'role:delete',
-  ASSIGN_PERMISSIONS: 'role:assign-permissions',
-  REVOKE_PERMISSIONS: 'role:revoke-permissions',
-  ASSIGN: 'role:assign',
-  REVOKE: 'role:revoke',
+  CREATE: "role:create",
+  READ: "role:read",
+  UPDATE: "role:update",
+  DELETE: "role:delete",
+  ASSIGN_PERMISSIONS: "role:assign-permissions",
+  REVOKE_PERMISSIONS: "role:revoke-permissions",
+  ASSIGN: "role:assign",
+  REVOKE: "role:revoke",
 } as const;
 
 /**
@@ -210,9 +210,9 @@ export const ROLE_PERMISSIONS = {
  * @constant
  */
 export const PERMISSION_MANAGEMENT_PERMISSIONS = {
-  READ: 'permission:read',
-  GRANT: 'permission:grant',
-  REVOKE: 'permission:revoke',
+  READ: "permission:read",
+  GRANT: "permission:grant",
+  REVOKE: "permission:revoke",
 } as const;
 
 /**
@@ -221,11 +221,11 @@ export const PERMISSION_MANAGEMENT_PERMISSIONS = {
  * @constant
  */
 export const SYSTEM_PERMISSIONS = {
-  VIEW_DASHBOARD: 'system:view-dashboard',
-  VIEW_LOGS: 'system:view-logs',
-  MANAGE_CONFIG: 'system:manage-config',
-  VIEW_METRICS: 'system:view-metrics',
-  MANAGE_ALERTS: 'system:manage-alerts',
+  VIEW_DASHBOARD: "system:view-dashboard",
+  VIEW_LOGS: "system:view-logs",
+  MANAGE_CONFIG: "system:manage-config",
+  VIEW_METRICS: "system:view-metrics",
+  MANAGE_ALERTS: "system:manage-alerts",
 } as const;
 
 /**
@@ -234,8 +234,8 @@ export const SYSTEM_PERMISSIONS = {
  * @constant
  */
 export const PERMISSION_STATUS_TRANSITIONS = {
-  ACTIVE: ['INACTIVE', 'DELETED'],
-  INACTIVE: ['ACTIVE', 'DELETED'],
+  ACTIVE: ["INACTIVE", "DELETED"],
+  INACTIVE: ["ACTIVE", "DELETED"],
   DELETED: [], // 已删除状态不可转换
 } as const;
 
@@ -252,7 +252,7 @@ export const PERMISSION_CACHE_CONFIG = {
   /** 角色权限缓存TTL（秒） */
   ROLE_PERMISSIONS_TTL: 1800, // 30分钟
   /** 缓存键前缀 */
-  KEY_PREFIX: 'permission',
+  KEY_PREFIX: "permission",
 } as const;
 
 /**
@@ -284,9 +284,9 @@ export const PERMISSION_INHERITANCE_RULES = {
   /** 通配符权限支持 */
   SUPPORT_WILDCARD: true,
   /** 通配符符号 */
-  WILDCARD_SYMBOL: '*',
+  WILDCARD_SYMBOL: "*",
   /** 通配符权限示例 */
-  WILDCARD_EXAMPLES: ['tenant:*', '*:read', '*:*'],
+  WILDCARD_EXAMPLES: ["tenant:*", "*:read", "*:*"],
 } as const;
 
 /**
@@ -347,4 +347,3 @@ export const PERMISSION_SETS = {
     DEPARTMENT_PERMISSIONS.READ,
   ],
 } as const;
-

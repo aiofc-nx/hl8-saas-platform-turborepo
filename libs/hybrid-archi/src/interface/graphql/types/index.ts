@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const GRAPHQL_TYPES = 'GraphQL Types System';
+export const GRAPHQL_TYPES = "GraphQL Types System";

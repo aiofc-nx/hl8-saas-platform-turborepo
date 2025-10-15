@@ -23,36 +23,36 @@ import {
   BaseValueObject,
   BaseDomainEvent,
   EntityId,
-  
+
   // CQRS
   BaseCommand,
   BaseQuery,
   CommandBus,
   QueryBus,
   EventBus,
-  
+
   // 通用值对象库 (NEW v1.1)
   Code,
   Domain,
   Level,
   Name,
   Description,
-  
+
   // 身份值对象
   Email,
   Username,
   PhoneNumber,
   Password,
-  
+
   // 接口层
   BaseController,
   CliBaseCommand,
-  
+
   // 守卫和装饰器
   JwtAuthGuard,
   RequirePermissions,
   TenantContext,
-} from '@hl8/hybrid-archi';
+} from "@hl8/hybrid-archi";
 ```
 
 ---
@@ -65,20 +65,20 @@ import {
 // 基础用法
 export class ProductCode extends BaseValueObject<string> {
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '产品代码');
-    this.validateLength(value, 5, 20, '产品代码');
+    this.validateNotEmpty(value, "产品代码");
+    this.validateLength(value, 5, 20, "产品代码");
   }
 }
 
 // 复杂对象
 export class Address extends BaseValueObject<AddressProps> {
   protected override validate(props: AddressProps): void {
-    this.validateNotEmpty(props.city, '城市');
+    this.validateNotEmpty(props.city, "城市");
   }
 }
 
 // 使用
-const code = ProductCode.create('PROD-123');
+const code = ProductCode.create("PROD-123");
 console.log(code.value); // 'PROD-123'
 ```
 
@@ -100,7 +100,7 @@ export class ApiDomain extends Domain {
 // Level - 级别类
 export class VipLevel extends Level {
   constructor(value: number) {
-    super(value, 1, 5);  // VIP1-VIP5
+    super(value, 1, 5); // VIP1-VIP5
   }
 }
 
@@ -124,12 +124,12 @@ protected override validate(value: any): void {
   this.validateNotEmpty(value, '字段');
   this.validateLength(value, min, max, '字段');
   this.validatePattern(value, /regex/, '消息');
-  
+
   // 数值
   this.validateRange(value, min, max, '字段');
   this.validateInteger(value, '字段');
   this.validatePositive(value, '字段');
-  
+
   // 枚举
   this.validateEnum(value, ['A', 'B'], '字段');
 }
@@ -142,7 +142,7 @@ protected override validate(value: any): void {
 ### Command (命令)
 
 ```typescript
-import { BaseCommand } from '@hl8/hybrid-archi';
+import { BaseCommand } from "@hl8/hybrid-archi";
 
 export class CreateUserCommand extends BaseCommand {
   constructor(
@@ -159,7 +159,7 @@ export class CreateUserCommand extends BaseCommand {
 ### Query (查询)
 
 ```typescript
-import { BaseQuery } from '@hl8/hybrid-archi';
+import { BaseQuery } from "@hl8/hybrid-archi";
 
 export class GetUserQuery extends BaseQuery {
   constructor(
@@ -175,7 +175,7 @@ export class GetUserQuery extends BaseQuery {
 ### Handler (处理器)
 
 ```typescript
-import { ICommandHandler, CommandHandler } from '@nestjs/cqrs';
+import { ICommandHandler, CommandHandler } from "@nestjs/cqrs";
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
@@ -192,7 +192,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
 ### CLI Command (NEW: CliBaseCommand)
 
 ```typescript
-import { CliBaseCommand } from '@hl8/hybrid-archi';
+import { CliBaseCommand } from "@hl8/hybrid-archi";
 
 export class MigrateCommand extends CliBaseCommand {
   async run(): Promise<void> {
@@ -210,7 +210,7 @@ export class MigrateCommand extends CliBaseCommand {
 ### Entity (实体)
 
 ```typescript
-import { BaseEntity, EntityId } from '@hl8/hybrid-archi';
+import { BaseEntity, EntityId } from "@hl8/hybrid-archi";
 
 export class User extends BaseEntity {
   constructor(
@@ -220,11 +220,11 @@ export class User extends BaseEntity {
   ) {
     super(id);
   }
-  
+
   getName(): string {
     return this.name;
   }
-  
+
   updateName(newName: string): void {
     this.name = newName;
     this.updateTimestamp();
@@ -235,7 +235,7 @@ export class User extends BaseEntity {
 ### Aggregate Root (聚合根)
 
 ```typescript
-import { BaseAggregateRoot, EntityId } from '@hl8/hybrid-archi';
+import { BaseAggregateRoot, EntityId } from "@hl8/hybrid-archi";
 
 export class Order extends BaseAggregateRoot {
   constructor(
@@ -244,7 +244,7 @@ export class Order extends BaseAggregateRoot {
   ) {
     super(id);
   }
-  
+
   addItem(item: OrderItem): void {
     this.items.push(item);
     this.addDomainEvent(new ItemAddedEvent(this.id, item));
@@ -259,12 +259,12 @@ export class Order extends BaseAggregateRoot {
 ### JWT 认证
 
 ```typescript
-import { JwtAuthGuard, CurrentUser } from '@hl8/hybrid-archi';
+import { JwtAuthGuard, CurrentUser } from "@hl8/hybrid-archi";
 
-@Controller('users')
+@Controller("users")
 @UseGuards(JwtAuthGuard)
 export class UserController {
-  @Get('profile')
+  @Get("profile")
   getProfile(@CurrentUser() user: any) {
     return user;
   }
@@ -274,12 +274,12 @@ export class UserController {
 ### 权限控制
 
 ```typescript
-import { RequirePermissions } from '@hl8/hybrid-archi';
+import { RequirePermissions } from "@hl8/hybrid-archi";
 
-@Controller('admin')
+@Controller("admin")
 export class AdminController {
-  @Post('users')
-  @RequirePermissions('user:create')
+  @Post("users")
+  @RequirePermissions("user:create")
   createUser() {
     // ...
   }
@@ -289,11 +289,11 @@ export class AdminController {
 ### 租户上下文
 
 ```typescript
-import { TenantContext } from '@hl8/hybrid-archi';
+import { TenantContext } from "@hl8/hybrid-archi";
 
-@Controller('tenants')
+@Controller("tenants")
 export class TenantController {
-  @Get('info')
+  @Get("info")
   getTenantInfo(@TenantContext() tenantId: string) {
     return { tenantId };
   }
@@ -308,14 +308,14 @@ export class TenantController {
 
 ```typescript
 // 简单值对象
-const email = Email.create('user@example.com');
-const code = TenantCode.create('my-tenant');
+const email = Email.create("user@example.com");
+const code = TenantCode.create("my-tenant");
 
 // 复杂值对象
 const address = Address.create({
-  street: '123 Main St',
-  city: 'Beijing',
-  zipCode: '100000',
+  street: "123 Main St",
+  city: "Beijing",
+  zipCode: "100000",
 });
 ```
 
@@ -323,7 +323,7 @@ const address = Address.create({
 
 ```typescript
 const userId = EntityId.generate();
-const user = new User(userId, 'John Doe', 'john@example.com');
+const user = new User(userId, "John Doe", "john@example.com");
 ```
 
 ### 发送命令
@@ -332,8 +332,8 @@ const user = new User(userId, 'John Doe', 'john@example.com');
 const command = new CreateUserCommand(
   tenantId,
   userId,
-  'john-doe',
-  'john@example.com',
+  "john-doe",
+  "john@example.com",
 );
 
 await commandBus.execute(command);
@@ -350,19 +350,19 @@ const user = await queryBus.execute(query);
 
 ## 🔄 v1.0 → v1.1 速查
 
-| v1.0 | v1.1 | 说明 |
-|------|------|------|
-| `BaseValueObject` | `BaseValueObject<T>` | 需要泛型参数 |
-| `BaseCommand` (CLI) | `CliBaseCommand` | 重命名 |
-| `CqrsBaseCommand` | `BaseCommand` | 移除别名 |
-| `CqrsBaseQuery` | `BaseQuery` | 移除别名 |
-| `TenantStatus` | - | 移至 saas-core |
-| `OrganizationStatus` | - | 移至 saas-core |
-| - | `Code` | 新增 |
-| - | `Domain` | 新增 |
-| - | `Level` | 新增 |
-| - | `Name` | 新增 |
-| - | `Description` | 新增 |
+| v1.0                 | v1.1                 | 说明           |
+| -------------------- | -------------------- | -------------- |
+| `BaseValueObject`    | `BaseValueObject<T>` | 需要泛型参数   |
+| `BaseCommand` (CLI)  | `CliBaseCommand`     | 重命名         |
+| `CqrsBaseCommand`    | `BaseCommand`        | 移除别名       |
+| `CqrsBaseQuery`      | `BaseQuery`          | 移除别名       |
+| `TenantStatus`       | -                    | 移至 saas-core |
+| `OrganizationStatus` | -                    | 移至 saas-core |
+| -                    | `Code`               | 新增           |
+| -                    | `Domain`             | 新增           |
+| -                    | `Level`              | 新增           |
+| -                    | `Name`               | 新增           |
+| -                    | `Description`        | 新增           |
 
 ---
 

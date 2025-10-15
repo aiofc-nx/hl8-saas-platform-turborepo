@@ -26,13 +26,13 @@
  */
 export enum DepartmentStatus {
   /** 活跃 - 部门正常运作 */
-  ACTIVE = 'ACTIVE',
+  ACTIVE = "ACTIVE",
 
   /** 停用 - 部门暂时停用 */
-  INACTIVE = 'INACTIVE',
+  INACTIVE = "INACTIVE",
 
   /** 已删除 - 软删除 */
-  DELETED = 'DELETED',
+  DELETED = "DELETED",
 }
 
 /**
@@ -86,9 +86,9 @@ export class DepartmentStatusUtils {
    */
   public static getDisplayName(status: DepartmentStatus): string {
     const names: Record<DepartmentStatus, string> = {
-      [DepartmentStatus.ACTIVE]: '活跃',
-      [DepartmentStatus.INACTIVE]: '停用',
-      [DepartmentStatus.DELETED]: '已删除',
+      [DepartmentStatus.ACTIVE]: "活跃",
+      [DepartmentStatus.INACTIVE]: "停用",
+      [DepartmentStatus.DELETED]: "已删除",
     };
     return names[status];
   }
@@ -107,8 +107,14 @@ export class DepartmentStatusUtils {
   ): boolean {
     // 定义允许的状态转换
     const transitions: Record<DepartmentStatus, DepartmentStatus[]> = {
-      [DepartmentStatus.ACTIVE]: [DepartmentStatus.INACTIVE, DepartmentStatus.DELETED],
-      [DepartmentStatus.INACTIVE]: [DepartmentStatus.ACTIVE, DepartmentStatus.DELETED],
+      [DepartmentStatus.ACTIVE]: [
+        DepartmentStatus.INACTIVE,
+        DepartmentStatus.DELETED,
+      ],
+      [DepartmentStatus.INACTIVE]: [
+        DepartmentStatus.ACTIVE,
+        DepartmentStatus.DELETED,
+      ],
       [DepartmentStatus.DELETED]: [], // 已删除状态不可转换
     };
 
@@ -137,4 +143,3 @@ export class DepartmentStatusUtils {
     return status === DepartmentStatus.DELETED;
   }
 }
-

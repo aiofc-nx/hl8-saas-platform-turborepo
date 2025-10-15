@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from "@nestjs/common";
 
 /**
  * 审计配置接口
@@ -17,7 +17,7 @@ export interface AuditConfig {
   /** 是否启用审计 */
   enabled: boolean;
   /** 审计级别 */
-  level: 'basic' | 'detailed' | 'comprehensive';
+  level: "basic" | "detailed" | "comprehensive";
   /** 是否记录请求参数 */
   logRequest: boolean;
   /** 是否记录响应数据 */
@@ -41,7 +41,7 @@ export interface AuditConfig {
 /**
  * 审计元数据键
  */
-export const AUDIT_METADATA_KEY = 'audit_config';
+export const AUDIT_METADATA_KEY = "audit_config";
 
 /**
  * 审计装饰器
@@ -69,14 +69,14 @@ export const AUDIT_METADATA_KEY = 'audit_config';
 export function Audit(config: Partial<AuditConfig> = {}): MethodDecorator {
   const defaultConfig: AuditConfig = {
     enabled: true,
-    level: 'basic',
+    level: "basic",
     logRequest: false,
     logResponse: false,
     logExecutionTime: true,
     logUserInfo: true,
     logIpAddress: true,
     logUserAgent: false,
-    sensitiveFields: ['password', 'token', 'secret'],
+    sensitiveFields: ["password", "token", "secret"],
     excludeFields: [],
     tags: [],
   };
@@ -104,16 +104,16 @@ export function Audit(config: Partial<AuditConfig> = {}): MethodDecorator {
 export function BasicAudit(): MethodDecorator {
   return Audit({
     enabled: true,
-    level: 'basic',
+    level: "basic",
     logRequest: false,
     logResponse: false,
     logExecutionTime: true,
     logUserInfo: true,
     logIpAddress: false,
     logUserAgent: false,
-    sensitiveFields: ['password', 'token'],
+    sensitiveFields: ["password", "token"],
     excludeFields: [],
-    tags: ['basic-audit'],
+    tags: ["basic-audit"],
   });
 }
 
@@ -136,16 +136,16 @@ export function BasicAudit(): MethodDecorator {
 export function DetailedAudit(): MethodDecorator {
   return Audit({
     enabled: true,
-    level: 'detailed',
+    level: "detailed",
     logRequest: true,
     logResponse: true,
     logExecutionTime: true,
     logUserInfo: true,
     logIpAddress: true,
     logUserAgent: true,
-    sensitiveFields: ['password', 'token', 'secret', 'apiKey'],
-    excludeFields: ['internalId', 'systemData'],
-    tags: ['detailed-audit'],
+    sensitiveFields: ["password", "token", "secret", "apiKey"],
+    excludeFields: ["internalId", "systemData"],
+    tags: ["detailed-audit"],
   });
 }
 
@@ -168,16 +168,16 @@ export function DetailedAudit(): MethodDecorator {
 export function ComprehensiveAudit(): MethodDecorator {
   return Audit({
     enabled: true,
-    level: 'comprehensive',
+    level: "comprehensive",
     logRequest: true,
     logResponse: true,
     logExecutionTime: true,
     logUserInfo: true,
     logIpAddress: true,
     logUserAgent: true,
-    sensitiveFields: ['password', 'token', 'secret', 'apiKey', 'privateKey'],
+    sensitiveFields: ["password", "token", "secret", "apiKey", "privateKey"],
     excludeFields: [],
-    tags: ['comprehensive-audit'],
+    tags: ["comprehensive-audit"],
   });
 }
 
@@ -201,16 +201,16 @@ export function ComprehensiveAudit(): MethodDecorator {
 export function SensitiveOperationAudit(tags: string[] = []): MethodDecorator {
   return Audit({
     enabled: true,
-    level: 'comprehensive',
+    level: "comprehensive",
     logRequest: true,
     logResponse: true,
     logExecutionTime: true,
     logUserInfo: true,
     logIpAddress: true,
     logUserAgent: true,
-    sensitiveFields: ['password', 'token', 'secret', 'apiKey', 'privateKey'],
+    sensitiveFields: ["password", "token", "secret", "apiKey", "privateKey"],
     excludeFields: [],
-    tags: ['sensitive-operation', ...tags],
+    tags: ["sensitive-operation", ...tags],
   });
 }
 
@@ -233,7 +233,7 @@ export function SensitiveOperationAudit(tags: string[] = []): MethodDecorator {
 export function PerformanceAudit(): MethodDecorator {
   return Audit({
     enabled: true,
-    level: 'detailed',
+    level: "detailed",
     logRequest: false,
     logResponse: false,
     logExecutionTime: true,
@@ -242,7 +242,7 @@ export function PerformanceAudit(): MethodDecorator {
     logUserAgent: false,
     sensitiveFields: [],
     excludeFields: [],
-    tags: ['performance-audit'],
+    tags: ["performance-audit"],
   });
 }
 
@@ -265,16 +265,16 @@ export function PerformanceAudit(): MethodDecorator {
 export function SecurityAudit(): MethodDecorator {
   return Audit({
     enabled: true,
-    level: 'comprehensive',
+    level: "comprehensive",
     logRequest: true,
     logResponse: false,
     logExecutionTime: true,
     logUserInfo: true,
     logIpAddress: true,
     logUserAgent: true,
-    sensitiveFields: ['password', 'token', 'secret', 'apiKey', 'privateKey'],
+    sensitiveFields: ["password", "token", "secret", "apiKey", "privateKey"],
     excludeFields: [],
-    tags: ['security-audit'],
+    tags: ["security-audit"],
   });
 }
 
@@ -297,16 +297,16 @@ export function SecurityAudit(): MethodDecorator {
 export function DataChangeAudit(): MethodDecorator {
   return Audit({
     enabled: true,
-    level: 'comprehensive',
+    level: "comprehensive",
     logRequest: true,
     logResponse: true,
     logExecutionTime: true,
     logUserInfo: true,
     logIpAddress: true,
     logUserAgent: true,
-    sensitiveFields: ['password', 'token', 'secret'],
-    excludeFields: ['internalId', 'systemData'],
-    tags: ['data-change-audit'],
+    sensitiveFields: ["password", "token", "secret"],
+    excludeFields: ["internalId", "systemData"],
+    tags: ["data-change-audit"],
   });
 }
 
@@ -328,19 +328,19 @@ export function DataChangeAudit(): MethodDecorator {
  * @since 1.0.0
  */
 export function BusinessOperationAudit(
-  businessContext: string
+  businessContext: string,
 ): MethodDecorator {
   return Audit({
     enabled: true,
-    level: 'detailed',
+    level: "detailed",
     logRequest: true,
     logResponse: true,
     logExecutionTime: true,
     logUserInfo: true,
     logIpAddress: true,
     logUserAgent: true,
-    sensitiveFields: ['password', 'token', 'secret'],
-    excludeFields: ['internalId'],
-    tags: ['business-operation', businessContext],
+    sensitiveFields: ["password", "token", "secret"],
+    excludeFields: ["internalId"],
+    tags: ["business-operation", businessContext],
   });
 }

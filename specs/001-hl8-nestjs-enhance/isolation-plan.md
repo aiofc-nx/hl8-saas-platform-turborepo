@@ -346,7 +346,7 @@ libs/nestjs-infra            → libs/nestjs-isolation (实现)
 
 ```typescript
 // libs/nestjs-caching/src/cache.service.ts
-import { IsolationContext } from '@hl8/nestjs-isolation'; // 零依赖！
+import { IsolationContext } from "@hl8/nestjs-isolation"; // 零依赖！
 
 class CacheService {
   generateKey(namespace: string, key: string, context: IsolationContext) {
@@ -360,7 +360,7 @@ class CacheService {
 
 ```typescript
 // libs/nestjs-logging/src/logger.service.ts
-import { IsolationContext } from '@hl8/nestjs-isolation'; // 零依赖！
+import { IsolationContext } from "@hl8/nestjs-isolation"; // 零依赖！
 
 class LoggerService {
   log(message: string, context: IsolationContext) {
@@ -378,7 +378,7 @@ class LoggerService {
 
 ```typescript
 // apps/api/src/app.module.ts
-import { IsolationModule } from '@hl8/nestjs-isolation'; // 使用 NestJS 实现
+import { IsolationModule } from "@hl8/nestjs-isolation"; // 使用 NestJS 实现
 
 @Module({
   imports: [

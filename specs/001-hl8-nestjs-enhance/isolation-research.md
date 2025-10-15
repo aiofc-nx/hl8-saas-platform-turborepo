@@ -121,7 +121,7 @@
 
 ```typescript
 // ❌ 错误：依赖 class-validator
-import { IsString } from 'class-validator';
+import { IsString } from "class-validator";
 
 export class TenantId {
   @IsString()
@@ -139,16 +139,16 @@ export class TenantId {
   }
 
   private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
-      throw new Error('租户 ID 必须是非空字符串');
+    if (!this.value || typeof this.value !== "string") {
+      throw new Error("租户 ID 必须是非空字符串");
     }
 
     if (this.value.length > 50) {
-      throw new Error('租户 ID 长度不能超过 50 字符');
+      throw new Error("租户 ID 长度不能超过 50 字符");
     }
 
     if (!/^[a-zA-Z0-9_-]+$/.test(this.value)) {
-      throw new Error('租户 ID 只能包含字母、数字、下划线和连字符');
+      throw new Error("租户 ID 只能包含字母、数字、下划线和连字符");
     }
   }
 
@@ -177,11 +177,11 @@ export class IsolationContextService implements IIsolationContextProvider {
   constructor(private readonly cls: ClsService) {}
 
   getIsolationContext(): IsolationContext | undefined {
-    return this.cls.get('ISOLATION_CONTEXT');
+    return this.cls.get("ISOLATION_CONTEXT");
   }
 
   setIsolationContext(context: IsolationContext): void {
-    this.cls.set('ISOLATION_CONTEXT', context);
+    this.cls.set("ISOLATION_CONTEXT", context);
   }
 }
 ```
@@ -197,7 +197,7 @@ export class IsolationValidationError extends Error {
     public readonly context?: Record<string, any>,
   ) {
     super(message);
-    this.name = 'IsolationValidationError';
+    this.name = "IsolationValidationError";
   }
 }
 
@@ -330,16 +330,16 @@ export class IsolationContext {
     // 组织级必须有租户
     if (this.organizationId && !this.tenantId) {
       throw new IsolationValidationError(
-        '组织级上下文必须包含租户 ID',
-        'INVALID_ORGANIZATION_CONTEXT',
+        "组织级上下文必须包含租户 ID",
+        "INVALID_ORGANIZATION_CONTEXT",
       );
     }
 
     // 部门级必须有租户和组织
     if (this.departmentId && (!this.tenantId || !this.organizationId)) {
       throw new IsolationValidationError(
-        '部门级上下文必须包含租户 ID 和组织 ID',
-        'INVALID_DEPARTMENT_CONTEXT',
+        "部门级上下文必须包含租户 ID 和组织 ID",
+        "INVALID_DEPARTMENT_CONTEXT",
       );
     }
   }
@@ -397,18 +397,18 @@ export class IsolationContext {
 
     switch (this.getIsolationLevel()) {
       case IsolationLevel.PLATFORM:
-        parts.push('platform', namespace, key);
+        parts.push("platform", namespace, key);
         break;
 
       case IsolationLevel.TENANT:
-        parts.push('tenant', this.tenantId!.getValue(), namespace, key);
+        parts.push("tenant", this.tenantId!.getValue(), namespace, key);
         break;
 
       case IsolationLevel.ORGANIZATION:
         parts.push(
-          'tenant',
+          "tenant",
           this.tenantId!.getValue(),
-          'org',
+          "org",
           this.organizationId!.getValue(),
           namespace,
           key,
@@ -417,11 +417,11 @@ export class IsolationContext {
 
       case IsolationLevel.DEPARTMENT:
         parts.push(
-          'tenant',
+          "tenant",
           this.tenantId!.getValue(),
-          'org',
+          "org",
           this.organizationId!.getValue(),
-          'dept',
+          "dept",
           this.departmentId!.getValue(),
           namespace,
           key,
@@ -431,20 +431,20 @@ export class IsolationContext {
       case IsolationLevel.USER:
         if (this.tenantId) {
           parts.push(
-            'tenant',
+            "tenant",
             this.tenantId.getValue(),
-            'user',
+            "user",
             this.userId!.getValue(),
             namespace,
             key,
           );
         } else {
-          parts.push('user', this.userId!.getValue(), namespace, key);
+          parts.push("user", this.userId!.getValue(), namespace, key);
         }
         break;
     }
 
-    return parts.join(':');
+    return parts.join(":");
   }
 
   /**
@@ -620,9 +620,9 @@ export class IsolationContext {
 
 ```typescript
 // libs/nestjs-caching/src/cache.service.ts
-import { Injectable } from '@nestjs/common';
-import { IsolationContext } from '@hl8/isolation-model'; // 零依赖，框架无关！
-import type { IIsolationContextProvider } from '@hl8/isolation-model';
+import { Injectable } from "@nestjs/common";
+import { IsolationContext } from "@hl8/isolation-model"; // 零依赖，框架无关！
+import type { IIsolationContextProvider } from "@hl8/isolation-model";
 
 @Injectable()
 export class CacheService {
@@ -648,9 +648,9 @@ export class CacheService {
 
 ```typescript
 // libs/nestjs-logging/src/logger.service.ts
-import { Injectable } from '@nestjs/common';
-import { IsolationContext } from '@hl8/isolation-model'; // 零依赖，框架无关！
-import type { IIsolationContextProvider } from '@hl8/isolation-model';
+import { Injectable } from "@nestjs/common";
+import { IsolationContext } from "@hl8/isolation-model"; // 零依赖，框架无关！
+import type { IIsolationContextProvider } from "@hl8/isolation-model";
 
 @Injectable()
 export class LoggerService {
@@ -680,7 +680,7 @@ export class LoggerService {
 
 ```typescript
 // libs/nestjs-database/src/repository.base.ts
-import { IsolationContext, IsolationLevel } from '@hl8/isolation-model';
+import { IsolationContext, IsolationLevel } from "@hl8/isolation-model";
 
 export abstract class BaseRepository<T> {
   protected buildWhereClause(context: IsolationContext): any {
@@ -777,10 +777,10 @@ export class TenantId {
   }
 
   private validate(): void {
-    if (!this.value || typeof this.value !== 'string') {
+    if (!this.value || typeof this.value !== "string") {
       throw new IsolationValidationError(
-        '租户 ID 必须是非空字符串',
-        'INVALID_TENANT_ID',
+        "租户 ID 必须是非空字符串",
+        "INVALID_TENANT_ID",
       );
     }
   }

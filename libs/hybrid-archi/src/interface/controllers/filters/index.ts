@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const CONTROLLER_FILTERS = 'Controller Filters System';
+export const CONTROLLER_FILTERS = "Controller Filters System";

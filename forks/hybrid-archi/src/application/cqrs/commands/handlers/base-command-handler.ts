@@ -62,11 +62,11 @@
  * @since 1.0.0
  */
 
-import { ICommand } from '../base/command.interface';
+import { ICommand } from "../base/command.interface";
 import {
   ICommandHandler,
   ICommandExecutionContext,
-} from './command-handler.interface';
+} from "./command-handler.interface";
 
 /**
  * 基础命令处理器抽象类
@@ -97,7 +97,7 @@ export abstract class BaseCommandHandler<
   constructor(
     handlerName: string,
     commandType: string,
-    handlerVersion = '1.0.0',
+    handlerVersion = "1.0.0",
   ) {
     this.handlerName = handlerName;
     this.commandType = commandType;
@@ -195,15 +195,15 @@ export abstract class BaseCommandHandler<
   ): Promise<void> {
     // 1. 基础验证
     if (!command.commandId) {
-      throw new Error('命令ID不能为空');
+      throw new Error("命令ID不能为空");
     }
 
     if (!command.commandType) {
-      throw new Error('命令类型不能为空');
+      throw new Error("命令类型不能为空");
     }
 
     if (!command.timestamp) {
-      throw new Error('命令时间戳不能为空');
+      throw new Error("命令时间戳不能为空");
     }
 
     // 2. 命令自身验证
@@ -211,14 +211,14 @@ export abstract class BaseCommandHandler<
     if (!validationResult.isValid) {
       const errorMessages = validationResult.errors
         .map((e) => e.message)
-        .join(', ');
+        .join(", ");
       throw new Error(`命令验证失败: ${errorMessages}`);
     }
 
     // 3. 业务规则验证（子类可重写）
     await this.validateBusinessRules(command, context);
 
-    this.log('debug', '命令验证通过', {
+    this.log("debug", "命令验证通过", {
       commandId: command.commandId,
       commandType: command.commandType,
     });
@@ -265,7 +265,7 @@ export abstract class BaseCommandHandler<
     context: ICommandExecutionContext,
   ): Promise<void> {
     // 事务逻辑将在具体实现中注入
-    this.log('debug', '开始事务', { transactionId: context.transaction?.id });
+    this.log("debug", "开始事务", { transactionId: context.transaction?.id });
   }
 
   /**
@@ -277,7 +277,7 @@ export abstract class BaseCommandHandler<
     context: ICommandExecutionContext,
   ): Promise<void> {
     // 事务逻辑将在具体实现中注入
-    this.log('debug', '提交事务', { transactionId: context.transaction?.id });
+    this.log("debug", "提交事务", { transactionId: context.transaction?.id });
   }
 
   /**
@@ -289,7 +289,7 @@ export abstract class BaseCommandHandler<
     context: ICommandExecutionContext,
   ): Promise<void> {
     // 事务逻辑将在具体实现中注入
-    this.log('warn', '回滚事务', { transactionId: context.transaction?.id });
+    this.log("warn", "回滚事务", { transactionId: context.transaction?.id });
   }
 
   /**
@@ -309,7 +309,7 @@ export abstract class BaseCommandHandler<
       request: command.requestId ? { id: command.requestId } : undefined,
       transaction: {
         id: this.generateTransactionId(),
-        isolationLevel: 'READ_COMMITTED',
+        isolationLevel: "READ_COMMITTED",
       },
       custom: {} as Record<string, unknown>,
     };
@@ -329,7 +329,7 @@ export abstract class BaseCommandHandler<
   ): void {
     const executionTime = Date.now() - context.startTime.getTime();
 
-    this.log('info', '命令处理成功', {
+    this.log("info", "命令处理成功", {
       handlerName: this.handlerName,
       commandId: command.commandId,
       commandType: command.commandType,
@@ -353,7 +353,7 @@ export abstract class BaseCommandHandler<
   ): void {
     const executionTime = Date.now() - context.startTime.getTime();
 
-    this.log('error', '命令处理失败', {
+    this.log("error", "命令处理失败", {
       handlerName: this.handlerName,
       commandId: command.commandId,
       commandType: command.commandType,

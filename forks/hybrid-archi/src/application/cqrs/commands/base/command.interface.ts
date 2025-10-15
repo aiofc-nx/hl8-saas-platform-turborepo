@@ -340,7 +340,7 @@ export interface ICommandMetadata {
    */
   retry?: {
     maxAttempts: number;
-    backoffStrategy: 'fixed' | 'exponential' | 'linear';
+    backoffStrategy: "fixed" | "exponential" | "linear";
     baseDelay: number;
   };
 }

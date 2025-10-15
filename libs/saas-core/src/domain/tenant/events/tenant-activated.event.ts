@@ -20,8 +20,8 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from '@hl8/hybrid-archi';
-import { TenantStatus } from '../value-objects/tenant-status.vo';
+import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
+import { TenantStatus } from "../value-objects/tenant-status.vo";
 
 /**
  * 租户激活事件
@@ -48,7 +48,7 @@ export class TenantActivatedEvent extends BaseDomainEvent {
   }
 
   get eventType(): string {
-    return 'TenantActivated';
+    return "TenantActivated";
   }
 
   /**
@@ -64,4 +64,3 @@ export class TenantActivatedEvent extends BaseDomainEvent {
     };
   }
 }
-

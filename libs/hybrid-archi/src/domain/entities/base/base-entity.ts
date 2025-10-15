@@ -69,13 +69,17 @@
  *
  * @since 1.0.0
  */
-import { EntityId  } from '@hl8/isolation-model';
-import { IAuditInfo, IPartialAuditInfo } from './audit-info';
-import { IEntity } from './entity.interface';
+import { EntityId } from "@hl8/isolation-model";
+import { IAuditInfo, IPartialAuditInfo } from "./audit-info";
+import { IEntity } from "./entity.interface";
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import { Logger, BadRequestException, InternalServerErrorException } from '@nestjs/common';
-import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from '../../../constants';
-import { TenantId } from '@hl8/isolation-model';
+import {
+  Logger,
+  BadRequestException,
+  InternalServerErrorException,
+} from "@nestjs/common";
+import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from "../../../constants";
+import { TenantId } from "@hl8/isolation-model";
 
 export abstract class BaseEntity implements IEntity {
   private readonly _id: EntityId;
@@ -92,7 +96,7 @@ export abstract class BaseEntity implements IEntity {
   protected constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: IPureLogger
+    logger?: IPureLogger,
   ) {
     this._id = id;
     this._auditInfo = this.buildAuditInfo(auditInfo);
@@ -232,11 +236,13 @@ export abstract class BaseEntity implements IEntity {
     operationContext?: {
       ip?: string | null;
       userAgent?: string | null;
-      source?: 'WEB' | 'API' | 'CLI' | 'SYSTEM' | null;
-    }
+      source?: "WEB" | "API" | "CLI" | "SYSTEM" | null;
+    },
   ): void {
     if (this.isDeleted) {
-      throw new BadRequestException('Cannot delete an entity that is already deleted');
+      throw new BadRequestException(
+        "Cannot delete an entity that is already deleted",
+      );
     }
 
     const now = new Date();
@@ -254,7 +260,8 @@ export abstract class BaseEntity implements IEntity {
     // 更新操作上下文
     if (operationContext) {
       this._auditInfo.lastOperationIp = operationContext.ip || null;
-      this._auditInfo.lastOperationUserAgent = operationContext.userAgent || null;
+      this._auditInfo.lastOperationUserAgent =
+        operationContext.userAgent || null;
       this._auditInfo.lastOperationSource = operationContext.source || null;
     }
 
@@ -286,11 +293,13 @@ export abstract class BaseEntity implements IEntity {
     operationContext?: {
       ip?: string | null;
       userAgent?: string | null;
-      source?: 'WEB' | 'API' | 'CLI' | 'SYSTEM' | null;
-    }
+      source?: "WEB" | "API" | "CLI" | "SYSTEM" | null;
+    },
   ): void {
     if (!this.isDeleted) {
-      throw new BadRequestException('Cannot restore an entity that is not deleted');
+      throw new BadRequestException(
+        "Cannot restore an entity that is not deleted",
+      );
     }
 
     const now = new Date();
@@ -308,7 +317,8 @@ export abstract class BaseEntity implements IEntity {
     // 更新操作上下文
     if (operationContext) {
       this._auditInfo.lastOperationIp = operationContext.ip || null;
-      this._auditInfo.lastOperationUserAgent = operationContext.userAgent || null;
+      this._auditInfo.lastOperationUserAgent =
+        operationContext.userAgent || null;
       this._auditInfo.lastOperationSource = operationContext.source || null;
     }
 
@@ -456,7 +466,7 @@ export abstract class BaseEntity implements IEntity {
 
     // 尝试从多租户上下文获取租户信息
     let tenantId = partialAuditInfo.tenantId;
-    let createdBy = partialAuditInfo.createdBy || 'system';
+    let createdBy = partialAuditInfo.createdBy || "system";
 
     try {
       // 如果存在多租户上下文，优先使用上下文中的信息
@@ -469,8 +479,8 @@ export abstract class BaseEntity implements IEntity {
     } catch (error) {
       // 如果获取上下文失败，使用默认值
       console.warn(
-        'Failed to get tenant context, using default values:',
-        error
+        "Failed to get tenant context, using default values:",
+        error,
       );
     }
 
@@ -516,9 +526,9 @@ export abstract class BaseEntity implements IEntity {
   protected getCurrentUserId(): string {
     try {
       const tenantContext = this.getTenantContext();
-      return tenantContext?.userId || 'system';
+      return tenantContext?.userId || "system";
     } catch (error) {
-      return 'system';
+      return "system";
     }
   }
 
@@ -545,11 +555,11 @@ export abstract class BaseEntity implements IEntity {
    */
   protected validate(): void {
     if (!this._id || this._id.isEmpty()) {
-      throw new BadRequestException('Entity ID cannot be null or empty');
+      throw new BadRequestException("Entity ID cannot be null or empty");
     }
 
     if (!this._auditInfo.tenantId || this._auditInfo.tenantId.isEmpty()) {
-      throw new BadRequestException('Tenant ID cannot be null or empty');
+      throw new BadRequestException("Tenant ID cannot be null or empty");
     }
   }
 
@@ -560,7 +570,7 @@ export abstract class BaseEntity implements IEntity {
    * @protected
    */
   protected createDefaultLogger(): IPureLogger {
-    return null as any // TODO: 注入 IPureLogger'BaseEntity');
+    return null as any; // TODO: 注入 IPureLogger'BaseEntity');
   }
 
   /**
@@ -572,7 +582,7 @@ export abstract class BaseEntity implements IEntity {
    */
   protected logOperation(
     operation: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): void {
     this.logger.log(`Entity ${operation}`);
   }
@@ -588,7 +598,7 @@ export abstract class BaseEntity implements IEntity {
   protected logError(
     operation: string,
     error: Error,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): void {
     this.logger.error(`Entity ${operation} failed`);
   }
@@ -604,7 +614,7 @@ export abstract class BaseEntity implements IEntity {
   protected throwValidationError(
     message: string,
     validationError: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): never {
     throw new BadRequestException(message);
   }
@@ -620,7 +630,7 @@ export abstract class BaseEntity implements IEntity {
   protected throwOperationError(
     operation: string,
     message: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): never {
     throw new InternalServerErrorException(message);
   }

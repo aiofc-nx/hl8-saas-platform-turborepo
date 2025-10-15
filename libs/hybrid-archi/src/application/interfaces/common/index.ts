@@ -6,4 +6,4 @@
  */
 
 // 处理器接口
-export * from './handler.interface';
+export * from "./handler.interface";

@@ -8,7 +8,7 @@
 
 // 业务特定类型已移除：
 // - TenantType → 已迁移到 @hl8/saas-core
-// - UserRole → 已迁移到 @hl8/saas-core  
+// - UserRole → 已迁移到 @hl8/saas-core
 // - PermissionDefinitions → 已迁移到 @hl8/saas-core
 
 // 通用类型值对象保留在此处

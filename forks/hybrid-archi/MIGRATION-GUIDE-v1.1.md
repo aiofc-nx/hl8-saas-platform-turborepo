@@ -25,21 +25,21 @@ v1.1.0 是一个重大更新版本，包含多项架构优化和 API 改进。�
 ```typescript
 export class TenantCode extends BaseValueObject {
   private readonly _value: string;
-  
+
   get value(): string {
     return this._value;
   }
-  
+
   static create(code: string): TenantCode {
     if (!code || code.trim().length === 0) {
-      throw new Error('租户代码不能为空');
+      throw new Error("租户代码不能为空");
     }
     if (code.length < 3 || code.length > 20) {
-      throw new Error('长度必须在3-20之间');
+      throw new Error("长度必须在3-20之间");
     }
     return new TenantCode(code);
   }
-  
+
   private constructor(value: string) {
     super();
     this._value = value;
@@ -52,13 +52,13 @@ export class TenantCode extends BaseValueObject {
 ```typescript
 export class TenantCode extends BaseValueObject<string> {
   // value 和 create 自动继承
-  
+
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '租户代码');
-    this.validateLength(value, 3, 20, '租户代码');
-    this.validatePattern(value, /^[a-z0-9-]+$/, '格式不正确');
+    this.validateNotEmpty(value, "租户代码");
+    this.validateLength(value, 3, 20, "租户代码");
+    this.validatePattern(value, /^[a-z0-9-]+$/, "格式不正确");
   }
-  
+
   protected override transform(value: string): string {
     return value.toLowerCase().trim();
   }
@@ -72,8 +72,8 @@ export class TenantCode extends BaseValueObject<string> {
    ```typescript
    // Before
    extends BaseValueObject
-   
-   // After  
+
+   // After
    extends BaseValueObject<YourType>
    ```
 
@@ -153,10 +153,10 @@ export abstract class Description extends BaseValueObject<string> {
 // Before: 独立实现
 export class ProductCode extends BaseValueObject<string> {
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '产品代码');
-    this.validatePattern(value, /^[a-z0-9-]+$/, '格式不正确');
+    this.validateNotEmpty(value, "产品代码");
+    this.validatePattern(value, /^[a-z0-9-]+$/, "格式不正确");
   }
-  
+
   protected override transform(value: string): string {
     return value.toLowerCase().trim();
   }
@@ -167,8 +167,8 @@ export class ProductCode extends Code {
   // 通用验证和转换自动继承
   // 仅需添加业务特定规则
   protected override validate(value: string): void {
-    super.validate(value);  // 通用验证
-    this.validateLength(value, 5, 15, '产品代码');
+    super.validate(value); // 通用验证
+    this.validateLength(value, 5, 15, "产品代码");
   }
 }
 ```
@@ -189,7 +189,7 @@ export class ProductCode extends Code {
 #### Before (v1.0)
 
 ```typescript
-import { BaseCommand } from '@hl8/hybrid-archi';
+import { BaseCommand } from "@hl8/hybrid-archi";
 
 export class MigrateCommand extends BaseCommand {
   // ...
@@ -199,7 +199,7 @@ export class MigrateCommand extends BaseCommand {
 #### After (v1.1)
 
 ```typescript
-import { CliBaseCommand } from '@hl8/hybrid-archi';
+import { CliBaseCommand } from "@hl8/hybrid-archi";
 
 export class MigrateCommand extends CliBaseCommand {
   // ...
@@ -212,10 +212,10 @@ export class MigrateCommand extends CliBaseCommand {
 
    ```typescript
    // Before
-   import { BaseCommand } from '@hl8/hybrid-archi';
-   
+   import { BaseCommand } from "@hl8/hybrid-archi";
+
    // After
-   import { CliBaseCommand } from '@hl8/hybrid-archi';
+   import { CliBaseCommand } from "@hl8/hybrid-archi";
    ```
 
 2. 更新继承：
@@ -223,7 +223,7 @@ export class MigrateCommand extends CliBaseCommand {
    ```typescript
    // Before
    export class YourCommand extends BaseCommand
-   
+
    // After
    export class YourCommand extends CliBaseCommand
    ```
@@ -238,7 +238,7 @@ export class MigrateCommand extends CliBaseCommand {
 #### Before (v1.0)
 
 ```typescript
-import { CqrsBaseCommand, CqrsBaseQuery } from '@hl8/hybrid-archi';
+import { CqrsBaseCommand, CqrsBaseQuery } from "@hl8/hybrid-archi";
 
 export class CreateUserCommand extends CqrsBaseCommand {
   // ...
@@ -252,7 +252,7 @@ export class GetUserQuery extends CqrsBaseQuery {
 #### After (v1.1)
 
 ```typescript
-import { BaseCommand, BaseQuery } from '@hl8/hybrid-archi';
+import { BaseCommand, BaseQuery } from "@hl8/hybrid-archi";
 
 export class CreateUserCommand extends BaseCommand {
   // ...
@@ -280,15 +280,15 @@ export class GetUserQuery extends BaseQuery {
 #### Before (v1.0)
 
 ```typescript
-import { TenantStatus, OrganizationStatus } from '@hl8/hybrid-archi';
+import { TenantStatus, OrganizationStatus } from "@hl8/hybrid-archi";
 ```
 
 #### After (v1.1)
 
 ```typescript
 // 从业务模块导入
-import { TenantStatus } from '@hl8/saas-core';
-import { OrganizationStatus } from '@hl8/saas-core';
+import { TenantStatus } from "@hl8/saas-core";
+import { OrganizationStatus } from "@hl8/saas-core";
 
 // 或者在你的项目中创建自己的版本
 ```
@@ -299,7 +299,7 @@ import { OrganizationStatus } from '@hl8/saas-core';
 
    ```typescript
    // 更新导入路径
-   import { TenantStatus, OrganizationStatus } from '@hl8/saas-core';
+   import { TenantStatus, OrganizationStatus } from "@hl8/saas-core";
    ```
 
 2. **如果是其他项目**：
@@ -307,8 +307,8 @@ import { OrganizationStatus } from '@hl8/saas-core';
    ```typescript
    // 在你的项目中创建这些枚举
    export enum TenantStatus {
-     PENDING = 'PENDING',
-     ACTIVE = 'ACTIVE',
+     PENDING = "PENDING",
+     ACTIVE = "ACTIVE",
      // ...
    }
    ```
@@ -329,12 +329,12 @@ protected override validate(value: any): void {
   this.validateNotEmpty(value, '字段名');
   this.validateLength(value, min, max, '字段名');
   this.validatePattern(value, /regex/, '错误消息');
-  
+
   // 数值验证
   this.validateRange(value, min, max, '字段名');
   this.validateInteger(value, '字段名');
   this.validatePositive(value, '字段名');
-  
+
   // 枚举验证
   this.validateEnum(value, ['A', 'B', 'C'], '字段名');
 }
@@ -370,33 +370,33 @@ protected override validate(value: any): void {
 ```typescript
 export class Email extends BaseValueObject {
   private readonly _value: string;
-  
+
   get value(): string {
     return this._value;
   }
-  
+
   static create(email: string): Email {
     // 手动验证
     if (!email || email.trim().length === 0) {
-      throw new Error('邮箱不能为空');
+      throw new Error("邮箱不能为空");
     }
     if (email.length < 5 || email.length > 254) {
-      throw new Error('邮箱长度必须在5-254之间');
+      throw new Error("邮箱长度必须在5-254之间");
     }
     if (!EMAIL_REGEX.test(email)) {
-      throw new Error('邮箱格式不正确');
+      throw new Error("邮箱格式不正确");
     }
-    
+
     return new Email(email);
   }
-  
+
   private constructor(value: string) {
     super();
     this._value = value.toLowerCase().trim();
   }
-  
+
   getDomain(): string {
-    return this._value.split('@')[1];
+    return this._value.split("@")[1];
   }
 }
 ```
@@ -406,19 +406,19 @@ export class Email extends BaseValueObject {
 ```typescript
 export class Email extends BaseValueObject<string> {
   // value 和 create 自动继承
-  
+
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '邮箱');
-    this.validateLength(value, 5, 254, '邮箱');
-    this.validatePattern(value, EMAIL_REGEX, '邮箱格式不正确');
+    this.validateNotEmpty(value, "邮箱");
+    this.validateLength(value, 5, 254, "邮箱");
+    this.validatePattern(value, EMAIL_REGEX, "邮箱格式不正确");
   }
-  
+
   protected override transform(value: string): string {
     return value.toLowerCase().trim();
   }
-  
+
   getDomain(): string {
-    return this._value.split('@')[1];
+    return this._value.split("@")[1];
   }
 }
 ```
@@ -456,16 +456,16 @@ interface AddressProps {
 
 export class Address extends BaseValueObject<AddressProps> {
   protected override validate(props: AddressProps): void {
-    this.validateNotEmpty(props.street, '街道');
-    this.validateNotEmpty(props.city, '城市');
-    this.validatePattern(props.zipCode, /^\d{6}$/, '邮编格式不正确');
+    this.validateNotEmpty(props.street, "街道");
+    this.validateNotEmpty(props.city, "城市");
+    this.validatePattern(props.zipCode, /^\d{6}$/, "邮编格式不正确");
   }
-  
+
   // 添加便捷访问属性
   get street(): string {
     return this._value.street;
   }
-  
+
   get city(): string {
     return this._value.city;
   }
@@ -478,15 +478,15 @@ export class Address extends BaseValueObject<AddressProps> {
 
 ```typescript
 // ❌ 不再支持
-import { TenantStatus } from '@hl8/hybrid-archi';
+import { TenantStatus } from "@hl8/hybrid-archi";
 
 // ✅ 新的导入方式
-import { TenantStatus } from '@hl8/saas-core';
+import { TenantStatus } from "@hl8/saas-core";
 
 // ✅ 或在你的项目中创建自己的版本
 export enum TenantStatus {
-  PENDING = 'PENDING',
-  ACTIVE = 'ACTIVE',
+  PENDING = "PENDING",
+  ACTIVE = "ACTIVE",
   // ...
 }
 ```
@@ -495,14 +495,14 @@ export enum TenantStatus {
 
 **A**: 判断标准：
 
-| 场景 | 推荐 | 原因 |
-|------|------|------|
-| 代码类字段 | `Code` | 自动获得代码验证 |
-| 域名类字段 | `Domain` | 自动获得域名验证 |
-| 层级类字段 | `Level` | 自动获得层级逻辑 |
-| 名称类字段 | `Name` | 自动获得名称验证 |
-| 描述类字段 | `Description` | 允许为空 |
-| 复杂对象 | `BaseValueObject<T>` | 完全自定义 |
+| 场景       | 推荐                 | 原因             |
+| ---------- | -------------------- | ---------------- |
+| 代码类字段 | `Code`               | 自动获得代码验证 |
+| 域名类字段 | `Domain`             | 自动获得域名验证 |
+| 层级类字段 | `Level`              | 自动获得层级逻辑 |
+| 名称类字段 | `Name`               | 自动获得名称验证 |
+| 描述类字段 | `Description`        | 允许为空         |
+| 复杂对象   | `BaseValueObject<T>` | 完全自定义       |
 
 ---
 
@@ -514,17 +514,17 @@ export enum TenantStatus {
 // ✅ 好：继承通用基类
 export class TenantCode extends Code {
   protected override validate(value: string): void {
-    super.validate(value);  // 通用验证
-    this.validateLength(value, 3, 20, '租户代码');
+    super.validate(value); // 通用验证
+    this.validateLength(value, 3, 20, "租户代码");
   }
 }
 
 // ⚠️ 可以：直接继承 BaseValueObject
 export class TenantCode extends BaseValueObject<string> {
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '租户代码');
-    this.validateLength(value, 3, 20, '租户代码');
-    this.validatePattern(value, /^[a-z0-9-]+$/, '格式不正确');
+    this.validateNotEmpty(value, "租户代码");
+    this.validateLength(value, 3, 20, "租户代码");
+    this.validatePattern(value, /^[a-z0-9-]+$/, "格式不正确");
   }
 }
 ```
@@ -559,20 +559,20 @@ protected override validate(value: string): void {
 // ✅ 好：使用 transform 预处理
 export class Email extends BaseValueObject<string> {
   protected override transform(value: string): string {
-    return value.toLowerCase().trim();  // 预处理
+    return value.toLowerCase().trim(); // 预处理
   }
-  
+
   protected override validate(value: string): void {
     // 验证已转换的值
-    this.validatePattern(value, EMAIL_REGEX, '邮箱格式不正确');
+    this.validatePattern(value, EMAIL_REGEX, "邮箱格式不正确");
   }
 }
 
 // ❌ 避免：在验证中转换
 export class Email extends BaseValueObject<string> {
   protected override validate(value: string): void {
-    const cleaned = value.toLowerCase().trim();  // 不推荐
-    this.validatePattern(cleaned, EMAIL_REGEX, '格式不正确');
+    const cleaned = value.toLowerCase().trim(); // 不推荐
+    this.validatePattern(cleaned, EMAIL_REGEX, "格式不正确");
   }
 }
 ```
@@ -597,7 +597,7 @@ export class Email extends BaseValueObject<string> {
    ```
    查找: CqrsBaseCommand
    替换: BaseCommand
-   
+
    查找: CqrsBaseQuery
    替换: BaseQuery
    ```
@@ -607,7 +607,7 @@ export class Email extends BaseValueObject<string> {
    ```
    查找: import.*BaseCommand.*from '@hl8/hybrid-archi';
    替换: import { CliBaseCommand } from '@hl8/hybrid-archi';
-   
+
    查找: extends BaseCommand
    替换: extends CliBaseCommand
    ```
@@ -622,9 +622,9 @@ export class Email extends BaseValueObject<string> {
 export class OrderNumber extends BaseValueObject<string> {
   protected override validate(value: string): void {
     // 链式验证
-    this.validateNotEmpty(value, '订单号');
-    this.validateLength(value, 10, 20, '订单号');
-    this.validatePattern(value, /^ORD-\d{8}$/, '格式: ORD-年月日流水号');
+    this.validateNotEmpty(value, "订单号");
+    this.validateLength(value, 10, 20, "订单号");
+    this.validatePattern(value, /^ORD-\d{8}$/, "格式: ORD-年月日流水号");
   }
 }
 ```
@@ -651,14 +651,14 @@ export class ProductDescription extends Description {
 // 自定义范围
 export class VipLevel extends Level {
   constructor(value: number) {
-    super(value, 1, 5);  // VIP1-VIP5
+    super(value, 1, 5); // VIP1-VIP5
   }
 }
 
 // 自定义长度
 export class ShortDescription extends Description {
   constructor(value: string) {
-    super(value, 0, 200);  // 最多200字符
+    super(value, 0, 200); // 最多200字符
   }
 }
 ```
@@ -667,19 +667,19 @@ export class ShortDescription extends Description {
 
 ## 📦 完整的 API 变更对照表
 
-| v1.0 API | v1.1 API | 状态 | 说明 |
-|----------|----------|------|------|
-| `BaseValueObject` | `BaseValueObject<T>` | 🔄 升级 | 现在需要泛型参数 |
-| `BaseCommand` (CLI) | `CliBaseCommand` | 🔄 重命名 | 避免命名冲突 |
-| `CqrsBaseCommand` | `BaseCommand` | 🔄 简化 | 移除冗余别名 |
-| `CqrsBaseQuery` | `BaseQuery` | 🔄 简化 | 移除冗余别名 |
-| `TenantStatus` | - | ❌ 移除 | 移至 saas-core |
-| `OrganizationStatus` | - | ❌ 移除 | 移至 saas-core |
-| - | `Code` | ✨ 新增 | 通用代码基类 |
-| - | `Domain` | ✨ 新增 | 通用域名基类 |
-| - | `Level` | ✨ 新增 | 通用级别基类 |
-| - | `Name` | ✨ 新增 | 通用名称基类 |
-| - | `Description` | ✨ 新增 | 通用描述基类 |
+| v1.0 API             | v1.1 API             | 状态      | 说明             |
+| -------------------- | -------------------- | --------- | ---------------- |
+| `BaseValueObject`    | `BaseValueObject<T>` | 🔄 升级   | 现在需要泛型参数 |
+| `BaseCommand` (CLI)  | `CliBaseCommand`     | 🔄 重命名 | 避免命名冲突     |
+| `CqrsBaseCommand`    | `BaseCommand`        | 🔄 简化   | 移除冗余别名     |
+| `CqrsBaseQuery`      | `BaseQuery`          | 🔄 简化   | 移除冗余别名     |
+| `TenantStatus`       | -                    | ❌ 移除   | 移至 saas-core   |
+| `OrganizationStatus` | -                    | ❌ 移除   | 移至 saas-core   |
+| -                    | `Code`               | ✨ 新增   | 通用代码基类     |
+| -                    | `Domain`             | ✨ 新增   | 通用域名基类     |
+| -                    | `Level`              | ✨ 新增   | 通用级别基类     |
+| -                    | `Name`               | ✨ 新增   | 通用名称基类     |
+| -                    | `Description`        | ✨ 新增   | 通用描述基类     |
 
 ---
 

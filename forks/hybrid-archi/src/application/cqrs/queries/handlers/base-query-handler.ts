@@ -62,11 +62,11 @@
  * @since 1.0.0
  */
 
-import { IQuery } from '../base/query.interface';
+import { IQuery } from "../base/query.interface";
 import {
   IQueryHandler,
   IQueryExecutionContext,
-} from './query-handler.interface';
+} from "./query-handler.interface";
 
 /**
  * 基础查询处理器抽象类
@@ -105,7 +105,7 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
   constructor(
     handlerName: string,
     queryType: string,
-    handlerVersion = '1.0.0',
+    handlerVersion = "1.0.0",
   ) {
     this.handlerName = handlerName;
     this.queryType = queryType;
@@ -201,15 +201,15 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
   ): Promise<void> {
     // 1. 基础验证
     if (!query.queryId) {
-      throw new Error('查询ID不能为空');
+      throw new Error("查询ID不能为空");
     }
 
     if (!query.queryType) {
-      throw new Error('查询类型不能为空');
+      throw new Error("查询类型不能为空");
     }
 
     if (!query.timestamp) {
-      throw new Error('查询时间戳不能为空');
+      throw new Error("查询时间戳不能为空");
     }
 
     // 2. 查询自身验证
@@ -217,7 +217,7 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
     if (!validationResult.isValid) {
       const errorMessages = validationResult.errors
         .map((e) => e.message)
-        .join(', ');
+        .join(", ");
       throw new Error(`查询验证失败: ${errorMessages}`);
     }
 
@@ -232,7 +232,7 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
     // 4. 权限验证（子类可重写）
     await this.validateDataAccess(query, context);
 
-    this.log('debug', '查询验证通过', {
+    this.log("debug", "查询验证通过", {
       queryId: query.queryId,
       queryType: query.queryType,
       complexity,
@@ -271,7 +271,7 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
       // return await this.cache.get<TResult>(_cacheKey);
       return null; // 临时返回null
     } catch (error) {
-      this.log('warn', '缓存检查失败', {
+      this.log("warn", "缓存检查失败", {
         error: error instanceof Error ? error.message : String(error),
       });
       return null;
@@ -297,9 +297,9 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
       // 缓存逻辑将在具体实现中注入
       // await this.cache.set(cacheKey, result, ttl);
 
-      this.log('debug', '查询结果已缓存', { cacheKey, ttl });
+      this.log("debug", "查询结果已缓存", { cacheKey, ttl });
     } catch (error) {
-      this.log('warn', '缓存结果失败', {
+      this.log("warn", "缓存结果失败", {
         error: error instanceof Error ? error.message : String(error),
       });
     }
@@ -319,7 +319,7 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
     _context: IQueryExecutionContext,
   ): string {
     const baseKey = `${this.queryType}:${query.queryId}`;
-    const tenantId = query.tenantId || 'global';
+    const tenantId = query.tenantId || "global";
     return `${baseKey}:${tenantId}`;
   }
 
@@ -352,9 +352,9 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
       cache: {
         enabled: true,
         key: this.getCacheKey(query, {
-          queryId: query.queryId || 'unknown',
+          queryId: query.queryId || "unknown",
           startTime: new Date(),
-          custom: {}
+          custom: {},
         }),
         ttl: this.defaultCacheTtl,
       },
@@ -369,7 +369,7 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
    * @param context - 执行上下文
    */
   protected logCacheHit(query: TQuery, context: IQueryExecutionContext): void {
-    this.log('debug', '缓存命中', {
+    this.log("debug", "缓存命中", {
       handlerName: this.handlerName,
       queryId: query.queryId,
       queryType: query.queryType,
@@ -391,7 +391,7 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
   ): void {
     const executionTime = Date.now() - context.startTime.getTime();
 
-    this.log('info', '查询处理成功', {
+    this.log("info", "查询处理成功", {
       handlerName: this.handlerName,
       queryId: query.queryId,
       queryType: query.queryType,
@@ -416,7 +416,7 @@ export abstract class BaseQueryHandler<TQuery extends IQuery, TResult>
   ): void {
     const executionTime = Date.now() - context.startTime.getTime();
 
-    this.log('error', '查询处理失败', {
+    this.log("error", "查询处理失败", {
       handlerName: this.handlerName,
       queryId: query.queryId,
       queryType: query.queryType,

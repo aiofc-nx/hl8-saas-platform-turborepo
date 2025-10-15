@@ -1,4 +1,4 @@
-import { TenantId } from '@hl8/isolation-model';
+import { TenantId } from "@hl8/isolation-model";
 /**
  * 命令接口
  *
@@ -341,7 +341,7 @@ export interface ICommandMetadata {
    */
   retry?: {
     maxAttempts: number;
-    backoffStrategy: 'fixed' | 'exponential' | 'linear';
+    backoffStrategy: "fixed" | "exponential" | "linear";
     baseDelay: number;
   };
 }

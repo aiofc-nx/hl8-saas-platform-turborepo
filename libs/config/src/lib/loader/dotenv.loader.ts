@@ -5,12 +5,12 @@
  * @since 1.0.0
  */
 
-import * as dotenv from 'dotenv';
-import * as dotenvExpand from 'dotenv-expand';
-import { CONFIG_DEFAULTS } from '../constants.js';
-import { ConfigError, ErrorHandler } from '../errors/index.js';
-import { ConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
-import { ConfigRecord, KeyTransformer } from '../types/index.js';
+import * as dotenv from "dotenv";
+import * as dotenvExpand from "dotenv-expand";
+import { CONFIG_DEFAULTS } from "../constants.js";
+import { ConfigError, ErrorHandler } from "../errors/index.js";
+import { ConfigLoader } from "../interfaces/typed-config-module-options.interface.js";
+import { ConfigRecord, KeyTransformer } from "../types/index.js";
 
 /**
  * 环境变量加载器选项接口
@@ -19,7 +19,7 @@ import { ConfigRecord, KeyTransformer } from '../types/index.js';
  * @interface DotenvLoaderOptions
  * @since 1.0.0
  */
-import { DotenvLoaderOptions } from '../types/loader.types.js';
+import { DotenvLoaderOptions } from "../types/loader.types.js";
 
 /**
  * 环境变量加载器
@@ -59,7 +59,7 @@ export const dotenvLoader = (
         if (result.error) {
           throw ErrorHandler.handleFileLoadError(
             result.error,
-            Array.isArray(envFilePath) ? envFilePath.join(', ') : envFilePath,
+            Array.isArray(envFilePath) ? envFilePath.join(", ") : envFilePath,
             { ignoreEnvFile, ignoreEnvVars },
           );
         }
@@ -70,7 +70,7 @@ export const dotenvLoader = (
         }
         throw ErrorHandler.handleFileLoadError(
           error as Error,
-          Array.isArray(envFilePath) ? envFilePath.join(', ') : envFilePath,
+          Array.isArray(envFilePath) ? envFilePath.join(", ") : envFilePath,
           { ignoreEnvFile, ignoreEnvVars },
         );
       }
@@ -88,7 +88,7 @@ export const dotenvLoader = (
       } catch (error) {
         throw ErrorHandler.handleVariableExpansionError(
           error as Error,
-          'expandVariables',
+          "expandVariables",
           { enableExpandVariables, configKeys: Object.keys(config) },
         );
       }

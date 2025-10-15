@@ -14,7 +14,7 @@ export {
   ConcurrencyError,
   EntityNotFoundError,
   ValidationError,
-} from './base-repository.interface';
+} from "./base-repository.interface";
 
 // 聚合根仓储接口
 export {
@@ -22,9 +22,9 @@ export {
   IAggregateSnapshot,
   IEventStoreRepository,
   IReadModelRepository,
-} from './base-aggregate-repository.interface';
+} from "./base-aggregate-repository.interface";
 
 // 重新导出常用类型
-export type { EntityId } from '../../value-objects/entity-id';
-export type { IAggregateRoot } from '../../aggregates/base/aggregate-root.interface';
-export type { BaseDomainEvent } from '../../events/base/base-domain-event';
+export type { EntityId } from "../../value-objects/entity-id";
+export type { IAggregateRoot } from "../../aggregates/base/aggregate-root.interface";
+export type { BaseDomainEvent } from "../../events/base/base-domain-event";

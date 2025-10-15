@@ -62,13 +62,13 @@ interface RedisOptions {
   imports: [
     CachingModule.forRoot({
       redis: {
-        host: 'localhost',
+        host: "localhost",
         port: 6379,
-        password: 'secret',
+        password: "secret",
         db: 0,
       },
       ttl: 3600,
-      keyPrefix: 'myapp:cache:',
+      keyPrefix: "myapp:cache:",
     }),
   ],
 })
@@ -109,10 +109,10 @@ interface CachingModuleAsyncOptions {
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
         redis: {
-          host: config.get('REDIS_HOST'),
-          port: config.get('REDIS_PORT'),
+          host: config.get("REDIS_HOST"),
+          port: config.get("REDIS_PORT"),
         },
-        ttl: config.get('CACHE_TTL'),
+        ttl: config.get("CACHE_TTL"),
       }),
     }),
   ],
@@ -154,7 +154,7 @@ export class UserService {
 
   async getUserById(id: string): Promise<User | null> {
     // 尝试从缓存获取
-    const cached = await this.cacheService.get<User>('user', id);
+    const cached = await this.cacheService.get<User>("user", id);
     if (cached) {
       return cached;
     }
@@ -164,7 +164,7 @@ export class UserService {
 
     // 存入缓存
     if (user) {
-      await this.cacheService.set('user', id, user, 1800);
+      await this.cacheService.set("user", id, user, 1800);
     }
 
     return user;
@@ -204,13 +204,13 @@ async set<T>(
 
 ```typescript
 // 使用默认 TTL
-await cacheService.set('user', '123', userObject);
+await cacheService.set("user", "123", userObject);
 
 // 自定义 TTL（30 分钟）
-await cacheService.set('user', '123', userObject, 1800);
+await cacheService.set("user", "123", userObject, 1800);
 
 // 短期缓存（5 分钟）
-await cacheService.set('temp', 'data', tempData, 300);
+await cacheService.set("temp", "data", tempData, 300);
 ```
 
 ---
@@ -271,12 +271,12 @@ async exists(namespace: string, key: string): Promise<boolean>
 **示例**:
 
 ```typescript
-const hasCache = await cacheService.exists('user', '123');
+const hasCache = await cacheService.exists("user", "123");
 
 if (hasCache) {
-  console.log('缓存已存在');
+  console.log("缓存已存在");
 } else {
-  console.log('缓存不存在，需要查询数据库');
+  console.log("缓存不存在，需要查询数据库");
 }
 ```
 
@@ -304,10 +304,10 @@ async clear(pattern?: string): Promise<void>
 
 ```typescript
 // 清空所有用户缓存
-await cacheService.clear('user:*');
+await cacheService.clear("user:*");
 
 // 清空特定前缀的缓存
-await cacheService.clear('temp:*');
+await cacheService.clear("temp:*");
 
 // 清空所有缓存（危险操作！）
 await cacheService.clear();
@@ -358,13 +358,13 @@ interface CacheableOptions {
 @Injectable()
 export class UserService {
   // 基础用法
-  @Cacheable('user')
+  @Cacheable("user")
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
 
   // 自定义键
-  @Cacheable('user', {
+  @Cacheable("user", {
     keyGenerator: (id: string) => `profile:${id}`,
   })
   async getUserProfile(id: string): Promise<UserProfile> {
@@ -372,7 +372,7 @@ export class UserService {
   }
 
   // 自定义 TTL
-  @Cacheable('user', {
+  @Cacheable("user", {
     ttl: 1800, // 30 分钟
   })
   async getActiveUsers(): Promise<User[]> {
@@ -380,15 +380,15 @@ export class UserService {
   }
 
   // 条件缓存
-  @Cacheable('user', {
-    condition: (id: string) => id !== 'admin', // 不缓存 admin
+  @Cacheable("user", {
+    condition: (id: string) => id !== "admin", // 不缓存 admin
   })
   async getUserData(id: string): Promise<any> {
     return this.fetchUserData(id);
   }
 
   // 缓存 null 值
-  @Cacheable('user', {
+  @Cacheable("user", {
     cacheNull: true, // 防止缓存穿透
   })
   async findUserByEmail(email: string): Promise<User | null> {
@@ -434,13 +434,13 @@ interface CacheEvictOptions {
 @Injectable()
 export class UserService {
   // 更新后清除缓存
-  @CacheEvict('user')
+  @CacheEvict("user")
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
 
   // 删除前清除缓存
-  @CacheEvict('user', {
+  @CacheEvict("user", {
     beforeInvocation: true,
   })
   async deleteUser(id: string): Promise<void> {
@@ -448,7 +448,7 @@ export class UserService {
   }
 
   // 清除所有用户缓存
-  @CacheEvict('user', {
+  @CacheEvict("user", {
     allEntries: true,
   })
   async resetAllUsers(): Promise<void> {
@@ -456,8 +456,8 @@ export class UserService {
   }
 
   // 条件清除
-  @CacheEvict('user', {
-    condition: (id: string) => id !== 'system',
+  @CacheEvict("user", {
+    condition: (id: string) => id !== "system",
   })
   async modifyUser(id: string): Promise<void> {
     // ...
@@ -499,13 +499,13 @@ interface CachePutOptions {
 ```typescript
 @Injectable()
 export class UserService {
-  @Cacheable('user')
+  @Cacheable("user")
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
 
   // 更新数据并刷新缓存
-  @CachePut('user')
+  @CachePut("user")
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     const user = await this.repository.update(id, data);
     // 缓存自动更新，getUserById 将获取最新数据
@@ -513,11 +513,11 @@ export class UserService {
   }
 
   // 定时刷新缓存
-  @CachePut('user', {
+  @CachePut("user", {
     keyGenerator: (id: string) => id,
     ttl: 3600,
   })
-  @Cron('0 */5 * * * *') // 每 5 分钟
+  @Cron("0 */5 * * * *") // 每 5 分钟
   async refreshUserCache(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
@@ -719,13 +719,13 @@ function serialize(value: any): string;
 
 ```typescript
 const obj = {
-  name: 'John',
+  name: "John",
   age: 30,
   createdAt: new Date(),
 };
 
 const serialized = serialize(obj);
-await redis.set('user:123', serialized);
+await redis.set("user:123", serialized);
 ```
 
 ---
@@ -751,7 +751,7 @@ function deserialize<T = any>(value: string): T;
 **示例**:
 
 ```typescript
-const cached = await redis.get('user:123');
+const cached = await redis.get("user:123");
 if (cached) {
   const user = deserialize<User>(cached);
   console.log(user.name);
@@ -778,7 +778,7 @@ function isSerializable(value: any): boolean;
 
 ```typescript
 if (isSerializable(obj)) {
-  await cacheService.set('key', 'value', obj);
+  await cacheService.set("key", "value", obj);
 }
 ```
 
@@ -805,11 +805,11 @@ function generateKey(parts: (string | number | null | undefined)[]): string;
 **示例**:
 
 ```typescript
-const key = generateKey(['user', 'profile', userId]);
+const key = generateKey(["user", "profile", userId]);
 // 结果: "user:profile:123"
 
 // 自动过滤空值
-const key = generateKey(['user', '', null, 'list']);
+const key = generateKey(["user", "", null, "list"]);
 // 结果: "user:list"
 ```
 
@@ -836,7 +836,7 @@ function sanitizeKey(key: string): string;
 **示例**:
 
 ```typescript
-const clean = sanitizeKey('user name @123');
+const clean = sanitizeKey("user name @123");
 // 结果: "username123"
 ```
 
@@ -859,8 +859,8 @@ function isValidKey(key: string): boolean;
 **示例**:
 
 ```typescript
-isValidKey('user:profile:123'); // true
-isValidKey('user name'); // false
+isValidKey("user:profile:123"); // true
+isValidKey("user name"); // false
 ```
 
 ---
@@ -887,7 +887,7 @@ function generatePattern(prefix: string, pattern: string): string;
 **示例**:
 
 ```typescript
-const pattern = generatePattern('cache', 'user:*');
+const pattern = generatePattern("cache", "user:*");
 // 结果: "cache:user:*"
 ```
 
@@ -942,11 +942,11 @@ interface CacheMetrics {
 
 ```typescript
 enum CacheLevel {
-  PLATFORM = 'PLATFORM',
-  TENANT = 'TENANT',
-  ORGANIZATION = 'ORGANIZATION',
-  DEPARTMENT = 'DEPARTMENT',
-  USER = 'USER',
+  PLATFORM = "PLATFORM",
+  TENANT = "TENANT",
+  ORGANIZATION = "ORGANIZATION",
+  DEPARTMENT = "DEPARTMENT",
+  USER = "USER",
 }
 ```
 

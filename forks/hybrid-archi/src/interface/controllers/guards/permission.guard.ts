@@ -12,9 +12,9 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { ILoggerService, IUserContext } from '../../shared/interfaces';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { ILoggerService, IUserContext } from "../../shared/interfaces";
 
 /**
  * 权限控制守卫
@@ -26,7 +26,7 @@ export class PermissionGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly permissionService: IPermissionService,
-    private readonly logger: ILoggerService
+    private readonly logger: ILoggerService,
   ) {}
 
   /**
@@ -43,13 +43,13 @@ export class PermissionGuard implements CanActivate {
     const user = request.user as IUserContext;
 
     if (!user) {
-      throw new ForbiddenException('用户未认证');
+      throw new ForbiddenException("用户未认证");
     }
 
     // 1. 获取所需权限
     const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
-      'permissions',
-      [context.getHandler(), context.getClass()]
+      "permissions",
+      [context.getHandler(), context.getClass()],
     );
 
     if (!requiredPermissions || requiredPermissions.length === 0) {
@@ -61,21 +61,21 @@ export class PermissionGuard implements CanActivate {
       const hasPermission = await this.permissionService.hasAnyPermission(
         user.userId,
         requiredPermissions,
-        user.tenantId
+        user.tenantId,
       );
 
       if (!hasPermission) {
-        this.logger.warn('权限检查失败', {
+        this.logger.warn("权限检查失败", {
           userId: user.userId,
           requiredPermissions,
           userPermissions: user.permissions,
           traceId: request.traceId,
         });
 
-        throw new ForbiddenException('权限不足');
+        throw new ForbiddenException("权限不足");
       }
 
-      this.logger.debug('权限检查通过', {
+      this.logger.debug("权限检查通过", {
         userId: user.userId,
         requiredPermissions,
         traceId: request.traceId,
@@ -83,7 +83,7 @@ export class PermissionGuard implements CanActivate {
 
       return true;
     } catch (error) {
-      this.logger.error('权限检查异常', {
+      this.logger.error("权限检查异常", {
         userId: user.userId,
         requiredPermissions,
         error: error instanceof Error ? error.message : String(error),
@@ -104,6 +104,6 @@ export interface IPermissionService {
   hasAnyPermission(
     userId: string,
     permissions: string[],
-    tenantId: string
+    tenantId: string,
   ): Promise<boolean>;
 }

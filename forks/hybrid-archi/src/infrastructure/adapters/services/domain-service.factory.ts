@@ -8,13 +8,13 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+import { Injectable } from "@nestjs/common";
+import { PinoLogger } from "@hl8/logger";
+import { CacheService } from "@hl8/cache";
 import {
   DomainServiceAdapter,
   IDomainServiceConfig,
-} from './domain-service.adapter';
+} from "./domain-service.adapter";
 
 /**
  * 领域服务注册信息
@@ -47,7 +47,7 @@ export class DomainServiceFactory {
 
   constructor(
     private readonly logger: PinoLogger,
-    private readonly cacheService: CacheService
+    private readonly cacheService: CacheService,
   ) {}
 
   /**
@@ -61,7 +61,7 @@ export class DomainServiceFactory {
   createService(
     serviceName: string,
     serviceType: string,
-    config: Partial<IDomainServiceConfig> = {}
+    config: Partial<IDomainServiceConfig> = {},
   ): DomainServiceAdapter {
     // 检查服务是否已存在
     if (this.services.has(serviceName)) {
@@ -75,7 +75,7 @@ export class DomainServiceFactory {
       this.logger,
       this.cacheService,
       serviceName,
-      config
+      config,
     );
 
     // 注册服务
@@ -134,7 +134,7 @@ export class DomainServiceFactory {
   getOrCreateService(
     serviceName: string,
     serviceType: string,
-    config: Partial<IDomainServiceConfig> = {}
+    config: Partial<IDomainServiceConfig> = {},
   ): DomainServiceAdapter {
     const existingService = this.getService(serviceName);
     if (existingService) {
@@ -187,7 +187,7 @@ export class DomainServiceFactory {
    * @returns 服务注册信息
    */
   getServiceRegistration(
-    serviceName: string
+    serviceName: string,
   ): IDomainServiceRegistration | null {
     return this.services.get(serviceName) || null;
   }
@@ -200,7 +200,7 @@ export class DomainServiceFactory {
    */
   updateServiceConfiguration(
     serviceName: string,
-    config: Partial<IDomainServiceConfig>
+    config: Partial<IDomainServiceConfig>,
   ): void {
     const registration = this.services.get(serviceName);
     if (!registration) {
@@ -222,7 +222,7 @@ export class DomainServiceFactory {
    * @returns 清理的服务数量
    */
   async cleanupExpiredServices(
-    maxAge: number = 24 * 60 * 60 * 1000
+    maxAge: number = 24 * 60 * 60 * 1000,
   ): Promise<number> {
     const now = new Date();
     const expiredServices: string[] = [];
@@ -315,7 +315,7 @@ export class DomainServiceFactory {
       } catch (error) {
         results[serviceName] = {
           healthy: false,
-          status: 'error',
+          status: "error",
           error: error instanceof Error ? error.message : String(error),
         };
       }

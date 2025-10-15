@@ -102,36 +102,36 @@ graph TB
             IE[Internal Entity<br/>内部实体]
             AR --> IE
         end
-        
+
         subgraph "值对象 (Value Objects)"
             VO[Value Object<br/>值对象]
         end
-        
+
         subgraph "领域服务 (Domain Services)"
             DS[Domain Service<br/>领域服务]
         end
-        
+
         subgraph "领域事件 (Domain Events)"
             DE[Domain Event<br/>领域事件]
         end
-        
+
         subgraph "业务规则 (Business Rules)"
             BR[Business Rule<br/>业务规则]
         end
     end
-    
+
     subgraph "应用层 (Application Layer)"
         CH[Command Handler<br/>命令处理器]
         QH[Query Handler<br/>查询处理器]
         EH[Event Handler<br/>事件处理器]
     end
-    
+
     subgraph "基础设施层 (Infrastructure Layer)"
         ES[Event Store<br/>事件存储]
         DB[Database<br/>数据库]
         MQ[Message Queue<br/>消息队列]
     end
-    
+
     AR --> DE
     DE --> EH
     CH --> AR
@@ -151,7 +151,7 @@ graph TB
         AR --> |协调内部实体| CE[Coordinate Entities]
         AR --> |确保业务规则| BR[Business Rules]
     end
-    
+
     subgraph "内部实体 (Internal Entity) - 被管理者"
         IE[Internal Entity]
         IE --> |执行具体业务操作| BO[Business Operations]
@@ -159,7 +159,7 @@ graph TB
         IE --> |遵循聚合根指令| FI[Follow Instructions]
         IE --> |实现业务逻辑| BL[Business Logic]
     end
-    
+
     AR --> |发出指令| IE
     IE --> |执行结果| AR
 ```
@@ -176,7 +176,7 @@ graph TB
             C --> CH
             CH --> AR
         end
-        
+
         subgraph "查询端 (Query Side)"
             Q[Query]
             QH[Query Handler]
@@ -185,20 +185,20 @@ graph TB
             QH --> RM
         end
     end
-    
+
     subgraph "事件溯源 (Event Sourcing)"
         AR --> |发布事件| DE[Domain Event]
         DE --> |存储到| ES[Event Store]
         ES --> |重建状态| AR
         ES --> |快照| SS[Snapshot Store]
     end
-    
+
     subgraph "事件驱动架构 (EDA)"
         DE --> |发布到| EB[Event Bus]
         EB --> |路由到| EH[Event Handler]
         EH --> |异步处理| AP[Async Processing]
     end
-    
+
     subgraph "多租户支持"
         AR --> |包含| TI[Tenant ID]
         DE --> |租户隔离| TI
@@ -214,7 +214,7 @@ sequenceDiagram
     participant AR as 聚合根 (管理者)
     participant IE as 内部实体 (被管理者)
     participant ES as 事件存储
-    
+
     Client->>AR: 1. 发送业务请求
     AR->>AR: 2. 验证业务规则
     AR->>IE: 3. 发出指令 (activate())
@@ -248,7 +248,7 @@ flowchart TD
     K --> L[代码审查]
     L --> M[集成测试]
     M --> N[完成开发]
-    
+
     style A fill:#e1f5fe
     style N fill:#c8e6c9
     style K fill:#fff3e0
@@ -298,17 +298,17 @@ flowchart TD
    export interface UserDomainModel {
      // 聚合根
      userAggregate: UserAggregate;
-     
+
      // 内部实体
      user: User;
      userProfile: UserProfile;
      userPermission: UserPermission[];
-     
+
      // 值对象
      email: Email;
      username: Username;
      password: Password;
-     
+
      // 领域事件
      userCreated: UserCreatedEvent;
      userActivated: UserActivatedEvent;
@@ -347,30 +347,39 @@ flowchart TD
      private _user: User;
      private _profile: UserProfile;
      private _permissions: UserPermission[];
-     
+
      // 构造函数
      constructor(id: EntityId) {
        super(id);
      }
-     
+
      // 业务方法 - 协调内部实体
-     public createUser(email: Email, username: Username, profile: UserProfile): void {
+     public createUser(
+       email: Email,
+       username: Username,
+       profile: UserProfile,
+     ): void {
        // 1. 创建内部实体
-       this._user = User.create(EntityId.generate(), email, username, UserStatus.Pending);
+       this._user = User.create(
+         EntityId.generate(),
+         email,
+         username,
+         UserStatus.Pending,
+       );
        this._profile = profile;
        this._permissions = [];
-       
+
        // 2. 验证业务规则
        this.validateUserCreation();
-       
+
        // 3. 发布领域事件
        this.addDomainEvent(new UserCreatedEvent(this._id, email, username));
      }
-     
+
      // 私有方法 - 验证业务规则
      private validateUserCreation(): void {
        if (!this._user || !this._profile) {
-         throw new InvalidUserCreationException('用户和资料必须同时创建');
+         throw new InvalidUserCreationException("用户和资料必须同时创建");
        }
      }
    }
@@ -386,39 +395,39 @@ flowchart TD
      private _status: UserStatus;
      private _profile: UserProfile;
      private _activatedAt?: Date;
-     
+
      // 构造函数
      private constructor(
        id: EntityId,
        email: Email,
        username: Username,
-       status: UserStatus
+       status: UserStatus,
      ) {
        super(id);
        this._email = email;
        this._username = username;
        this._status = status;
      }
-     
+
      // 业务方法 - 激活用户
      public activate(): void {
        // 验证业务规则
        if (this._status !== UserStatus.Pending) {
-         throw new UserNotPendingException('只有待激活状态的用户才能激活');
+         throw new UserNotPendingException("只有待激活状态的用户才能激活");
        }
-       
+
        // 执行业务逻辑
        this._status = UserStatus.Active;
        this._activatedAt = new Date();
        this.updateTimestamp();
      }
-     
+
      // 静态工厂方法
      public static create(
        id: EntityId,
        email: Email,
        username: Username,
-       status: UserStatus = UserStatus.Pending
+       status: UserStatus = UserStatus.Pending,
      ): User {
        return new User(id, email, username, status);
      }
@@ -456,33 +465,33 @@ flowchart TD
        super();
        this.validate();
      }
-     
+
      // 验证逻辑
      private validate(): void {
        if (!this.value || this.value.trim().length === 0) {
-         throw new InvalidEmailException('邮箱不能为空');
+         throw new InvalidEmailException("邮箱不能为空");
        }
-       
+
        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
        if (!emailRegex.test(this.value)) {
-         throw new InvalidEmailException('邮箱格式不正确');
+         throw new InvalidEmailException("邮箱格式不正确");
        }
      }
-     
+
      // 业务方法
      public getValue(): string {
        return this.value;
      }
-     
+
      public getDomain(): string {
-       return this.value.split('@')[1];
+       return this.value.split("@")[1];
      }
-     
+
      // 相等性比较
      protected arePropertiesEqual(other: Email): boolean {
        return this.value.toLowerCase() === other.value.toLowerCase();
      }
-     
+
      // 静态工厂方法
      public static create(value: string): Email {
        return new Email(value);
@@ -522,17 +531,17 @@ flowchart TD
        public readonly email: Email,
        public readonly username: Username,
        public readonly tenantId: EntityId,
-       public readonly timestamp: Date = new Date()
+       public readonly timestamp: Date = new Date(),
      ) {
        super();
      }
    }
-   
+
    export class UserActivatedEvent extends BaseDomainEvent {
      constructor(
        public readonly userId: EntityId,
        public readonly tenantId: EntityId,
-       public readonly activatedAt: Date = new Date()
+       public readonly activatedAt: Date = new Date(),
      ) {
        super();
      }
@@ -568,24 +577,27 @@ flowchart TD
    export class UserDomainService {
      constructor(
        private readonly userRepository: IUserRepository,
-       private readonly emailService: IEmailService
+       private readonly emailService: IEmailService,
      ) {}
-     
+
      // 跨聚合业务逻辑
      public async validateUserUniqueness(
-       email: Email, 
-       tenantId: EntityId
+       email: Email,
+       tenantId: EntityId,
      ): Promise<boolean> {
-       const existingUser = await this.userRepository.findByEmailAndTenant(email, tenantId);
+       const existingUser = await this.userRepository.findByEmailAndTenant(
+         email,
+         tenantId,
+       );
        return existingUser === null;
      }
-     
+
      // 复杂业务逻辑
      public async sendWelcomeEmail(user: User): Promise<void> {
        if (user.getStatus() !== UserStatus.Active) {
-         throw new UserNotActiveException('只有活跃用户才能发送欢迎邮件');
+         throw new UserNotActiveException("只有活跃用户才能发送欢迎邮件");
        }
-       
+
        await this.emailService.sendWelcomeEmail(user.getEmail());
      }
    }
@@ -615,31 +627,38 @@ flowchart TD
    export class UserBusinessRules {
      // 约束规则
      static readonly EMAIL_MUST_BE_UNIQUE = "用户邮箱在租户内必须唯一";
-     static readonly PASSWORD_MUST_BE_SECURE = "用户密码必须包含大小写字母、数字和特殊字符";
-     
+     static readonly PASSWORD_MUST_BE_SECURE =
+       "用户密码必须包含大小写字母、数字和特殊字符";
+
      // 计算规则
      static readonly AGE_CALCULATION = "用户年龄 = 当前日期 - 出生日期";
-     
+
      // 验证规则
      static readonly STATUS_TRANSITION = "用户只能从待激活状态转换到激活状态";
-     
+
      // 授权规则
      static readonly PERMISSION_INHERITANCE = "部门管理员继承组织管理员的权限";
    }
-   
+
    // 业务规则验证器
    export class UserRuleValidator {
-     public static validateEmailUniqueness(email: Email, tenantId: EntityId): boolean {
+     public static validateEmailUniqueness(
+       email: Email,
+       tenantId: EntityId,
+     ): boolean {
        // 实现邮箱唯一性验证
        return true;
      }
-     
+
      public static validatePasswordSecurity(password: Password): boolean {
        // 实现密码安全性验证
        return true;
      }
-     
-     public static validateStatusTransition(currentStatus: UserStatus, newStatus: UserStatus): boolean {
+
+     public static validateStatusTransition(
+       currentStatus: UserStatus,
+       newStatus: UserStatus,
+     ): boolean {
        // 实现状态转换验证
        return true;
      }
@@ -667,32 +686,36 @@ flowchart TD
 
    ```typescript
    // 聚合根测试模板
-   describe('UserAggregate', () => {
+   describe("UserAggregate", () => {
      let userAggregate: UserAggregate;
      let email: Email;
      let username: Username;
      let profile: UserProfile;
-     
+
      beforeEach(() => {
        userAggregate = new UserAggregate(EntityId.generate());
-       email = Email.create('test@example.com');
-       username = Username.create('testuser');
-       profile = UserProfile.create({ firstName: 'Test', lastName: 'User' });
+       email = Email.create("test@example.com");
+       username = Username.create("testuser");
+       profile = UserProfile.create({ firstName: "Test", lastName: "User" });
      });
-     
-     it('should create user with valid data', () => {
+
+     it("should create user with valid data", () => {
        userAggregate.createUser(email, username, profile);
-       
+
        expect(userAggregate.getUncommittedEvents()).toHaveLength(1);
-       expect(userAggregate.getUncommittedEvents()[0]).toBeInstanceOf(UserCreatedEvent);
+       expect(userAggregate.getUncommittedEvents()[0]).toBeInstanceOf(
+         UserCreatedEvent,
+       );
      });
-     
-     it('should activate user successfully', () => {
+
+     it("should activate user successfully", () => {
        userAggregate.createUser(email, username, profile);
        userAggregate.activateUser();
-       
+
        expect(userAggregate.getUncommittedEvents()).toHaveLength(2);
-       expect(userAggregate.getUncommittedEvents()[1]).toBeInstanceOf(UserActivatedEvent);
+       expect(userAggregate.getUncommittedEvents()[1]).toBeInstanceOf(
+         UserActivatedEvent,
+       );
      });
    });
    ```
@@ -701,27 +724,32 @@ flowchart TD
 
    ```typescript
    // 实体测试模板
-   describe('User', () => {
+   describe("User", () => {
      let user: User;
      let email: Email;
      let username: Username;
-     
+
      beforeEach(() => {
-       email = Email.create('test@example.com');
-       username = Username.create('testuser');
-       user = User.create(EntityId.generate(), email, username, UserStatus.Pending);
+       email = Email.create("test@example.com");
+       username = Username.create("testuser");
+       user = User.create(
+         EntityId.generate(),
+         email,
+         username,
+         UserStatus.Pending,
+       );
      });
-     
-     it('should activate user when status is pending', () => {
+
+     it("should activate user when status is pending", () => {
        user.activate();
-       
+
        expect(user.getStatus()).toBe(UserStatus.Active);
        expect(user.getActivatedAt()).toBeDefined();
      });
-     
-     it('should throw exception when activating non-pending user', () => {
+
+     it("should throw exception when activating non-pending user", () => {
        user.activate(); // 第一次激活
-       
+
        expect(() => user.activate()).toThrow(UserNotPendingException);
      });
    });
@@ -731,22 +759,24 @@ flowchart TD
 
    ```typescript
    // 值对象测试模板
-   describe('Email', () => {
-     it('should create valid email', () => {
-       const email = Email.create('test@example.com');
-       
-       expect(email.getValue()).toBe('test@example.com');
-       expect(email.getDomain()).toBe('example.com');
+   describe("Email", () => {
+     it("should create valid email", () => {
+       const email = Email.create("test@example.com");
+
+       expect(email.getValue()).toBe("test@example.com");
+       expect(email.getDomain()).toBe("example.com");
      });
-     
-     it('should throw exception for invalid email', () => {
-       expect(() => Email.create('invalid-email')).toThrow(InvalidEmailException);
+
+     it("should throw exception for invalid email", () => {
+       expect(() => Email.create("invalid-email")).toThrow(
+         InvalidEmailException,
+       );
      });
-     
-     it('should be equal when values are same', () => {
-       const email1 = Email.create('test@example.com');
-       const email2 = Email.create('TEST@EXAMPLE.COM');
-       
+
+     it("should be equal when values are same", () => {
+       const email1 = Email.create("test@example.com");
+       const email2 = Email.create("TEST@EXAMPLE.COM");
+
        expect(email1.equals(email2)).toBe(true);
      });
    });
@@ -901,9 +931,9 @@ flowchart TD
 export class User extends BaseEntity {
   public activate(): void {
     if (this.status !== UserStatus.Pending) {
-      throw new UserNotPendingException('只有待激活状态的用户才能激活');
+      throw new UserNotPendingException("只有待激活状态的用户才能激活");
     }
-    
+
     this.status = UserStatus.Active;
     this.activatedAt = new Date();
     this.updateTimestamp();
@@ -917,11 +947,11 @@ export class User extends BaseEntity {
 // ❌ 贫血模型 - 只有getter/setter
 export class User {
   private _status: UserStatus;
-  
+
   setStatus(status: UserStatus): void {
     this._status = status;
   }
-  
+
   getStatus(): UserStatus {
     return this._status;
   }
@@ -965,8 +995,7 @@ export class Email extends BaseValueObject {
 ```typescript
 export class Money extends BaseValueObject {
   protected arePropertiesEqual(other: Money): boolean {
-    return this.amount === other.amount && 
-           this.currency === other.currency;
+    return this.amount === other.amount && this.currency === other.currency;
   }
 }
 ```
@@ -999,9 +1028,18 @@ export class Money extends BaseValueObject {
 // 聚合根 - 管理者职责
 export class UserAggregate extends BaseAggregateRoot {
   // 管理者职责：协调用户创建
-  public createUser(email: Email, username: Username, profile: UserProfile): void {
+  public createUser(
+    email: Email,
+    username: Username,
+    profile: UserProfile,
+  ): void {
     // 1. 创建内部实体
-    this._user = User.create(EntityId.generate(), email, username, UserStatus.Pending);
+    this._user = User.create(
+      EntityId.generate(),
+      email,
+      username,
+      UserStatus.Pending,
+    );
     this._profile = profile;
     this._permissions = [];
 
@@ -1016,10 +1054,10 @@ export class UserAggregate extends BaseAggregateRoot {
   public activateUser(): void {
     // 1. 委托给内部实体执行
     this._user.activate();
-    
+
     // 2. 更新相关状态
     this._profile.setStatus(UserProfileStatus.Active);
-    
+
     // 3. 发布领域事件
     this.addDomainEvent(new UserActivatedEvent(this._id));
   }
@@ -1030,9 +1068,9 @@ export class User extends BaseEntity {
   // 被管理者职责：执行具体业务操作
   public activate(): void {
     if (this.status !== UserStatus.Pending) {
-      throw new UserNotPendingException('只有待激活状态的用户才能激活');
+      throw new UserNotPendingException("只有待激活状态的用户才能激活");
     }
-    
+
     this.status = UserStatus.Active;
     this.activatedAt = new Date();
     this.updateTimestamp();
@@ -1041,9 +1079,9 @@ export class User extends BaseEntity {
   // 被管理者职责：维护自身状态
   public updateProfile(profile: UserProfile): void {
     if (!profile.getFirstName() || !profile.getLastName()) {
-      throw new InvalidProfileException('用户资料必须包含姓名');
+      throw new InvalidProfileException("用户资料必须包含姓名");
     }
-    
+
     this._profile = profile;
     this.updateTimestamp();
   }
@@ -1076,10 +1114,10 @@ export class UserAggregate extends BaseAggregateRoot {
   public updateUserProfile(newProfile: UserProfile): void {
     // 指令：请更新用户资料
     this._user.updateProfile(newProfile);
-    
+
     // 指令：请验证资料完整性
     this._profile.validate();
-    
+
     // 指令：请更新时间戳
     this._user.updateTimestamp();
   }
@@ -1091,7 +1129,7 @@ export class User extends BaseEntity {
     // 执行聚合根指令
     this._profile = profile;
     this.updateTimestamp();
-    
+
     // 状态报告：资料已更新
     // (通过方法返回值或异常报告状态)
   }
@@ -1120,12 +1158,12 @@ export class OrderAggregate extends BaseAggregateRoot {
   public processPayment(paymentData: PaymentData): void {
     // 指令1：请处理支付
     this._payment.processPayment(paymentData);
-    
+
     // 指令2：请标记订单为已支付
     this._order.markAsPaid();
-    
+
     // 指令3：请更新订单项状态
-    this._orderItems.forEach(item => item.markAsPaid());
+    this._orderItems.forEach((item) => item.markAsPaid());
   }
 }
 
@@ -1151,12 +1189,12 @@ export class UserAggregate extends BaseAggregateRoot {
   public activateUser(): void {
     // 指令：请激活用户
     this._user.activate();
-    
+
     // 指令：请更新资料状态
     this._profile.setStatus(UserProfileStatus.Active);
-    
+
     // 指令：请激活所有权限
-    this._permissions.forEach(permission => permission.activate());
+    this._permissions.forEach((permission) => permission.activate());
   }
 }
 
@@ -1165,9 +1203,9 @@ export class User extends BaseEntity {
   public activate(): void {
     // 执行聚合根的"激活用户"指令
     if (this.status !== UserStatus.Pending) {
-      throw new UserNotPendingException('只有待激活状态的用户才能激活');
+      throw new UserNotPendingException("只有待激活状态的用户才能激活");
     }
-    
+
     this.status = UserStatus.Active;
     this.activatedAt = new Date();
     this.updateTimestamp();
@@ -1183,13 +1221,13 @@ export class UserAggregate extends BaseAggregateRoot {
   public assignPermission(permission: Permission): void {
     // 指令：请验证用户状态
     this._user.validateActiveStatus();
-    
+
     // 指令：请检查权限是否已存在
-    this._permissions.forEach(p => p.validateNotDuplicate(permission));
-    
+    this._permissions.forEach((p) => p.validateNotDuplicate(permission));
+
     // 指令：请添加新权限
     this._permissions.push(UserPermission.create(permission));
-    
+
     // 发布事件
     this.addDomainEvent(new UserPermissionAssignedEvent(this._id, permission));
   }
@@ -1200,7 +1238,7 @@ export class User extends BaseEntity {
   public validateActiveStatus(): void {
     // 执行聚合根的"验证用户状态"指令
     if (this.status !== UserStatus.Active) {
-      throw new UserNotActiveException('只有活跃用户才能分配权限');
+      throw new UserNotActiveException("只有活跃用户才能分配权限");
     }
   }
 }
@@ -1232,9 +1270,11 @@ export class Order extends BaseEntity {
   public markAsPaid(): void {
     // 验证指令的有效性
     if (this.status !== OrderStatus.Pending) {
-      throw new OrderNotPendingException('只有待支付状态的订单才能标记为已支付');
+      throw new OrderNotPendingException(
+        "只有待支付状态的订单才能标记为已支付",
+      );
     }
-    
+
     // 执行指令
     this.status = OrderStatus.Paid;
     this.paidAt = new Date();
@@ -1251,12 +1291,12 @@ export class Payment extends BaseEntity {
   public processPayment(paymentData: PaymentData): void {
     // 1. 验证支付数据
     this.validatePaymentData(paymentData);
-    
+
     // 2. 处理支付逻辑
     this.amount = paymentData.amount;
     this.paymentMethod = paymentData.method;
     this.status = PaymentStatus.Processing;
-    
+
     // 3. 更新状态
     this.processedAt = new Date();
     this.updateTimestamp();
@@ -1274,10 +1314,10 @@ export class UserAggregate extends BaseAggregateRoot {
   public createUser(userData: CreateUserData): void {
     // 高层指令：创建用户
     this._user = User.create(userData);
-    
+
     // 高层指令：创建用户资料
     this._profile = UserProfile.create(userData.profile);
-    
+
     // 高层指令：初始化权限
     this._permissions = [];
   }
@@ -1293,7 +1333,7 @@ export class UserAggregate extends BaseAggregateRoot {
     // 中层指令：协调用户激活
     this._user.activate();
     this._profile.setStatus(UserProfileStatus.Active);
-    this._permissions.forEach(p => p.activate());
+    this._permissions.forEach((p) => p.activate());
   }
 }
 ```
@@ -1308,7 +1348,7 @@ export class User extends BaseEntity {
     if (this.status !== UserStatus.Pending) {
       throw new UserNotPendingException();
     }
-    
+
     this.status = UserStatus.Active;
     this.activatedAt = new Date();
     this.updateTimestamp();
@@ -1327,7 +1367,7 @@ export class User extends BaseEntity {
     // 同步执行指令
     this._profile = profile;
     this.updateTimestamp();
-    
+
     // 同步返回结果
     return true;
   }
@@ -1342,7 +1382,7 @@ export class User extends BaseEntity {
   public async sendWelcomeEmail(): Promise<void> {
     // 异步执行指令
     await this.emailService.sendWelcomeEmail(this.email);
-    
+
     // 异步更新状态
     this.welcomeEmailSent = true;
     this.updateTimestamp();
@@ -1359,9 +1399,9 @@ export class User extends BaseEntity {
     // 验证指令有效性
     if (this.status !== UserStatus.Pending) {
       // 通过异常响应指令无效
-      throw new UserNotPendingException('只有待激活状态的用户才能激活');
+      throw new UserNotPendingException("只有待激活状态的用户才能激活");
     }
-    
+
     // 执行指令
     this.status = UserStatus.Active;
     this.updateTimestamp();
@@ -1391,9 +1431,18 @@ export class UserAggregate extends BaseAggregateRoot {
   }
 
   // 业务方法 - 协调内部实体
-  public createUser(email: Email, username: Username, profile: UserProfile): void {
+  public createUser(
+    email: Email,
+    username: Username,
+    profile: UserProfile,
+  ): void {
     // 1. 创建内部实体
-    this._user = User.create(EntityId.generate(), email, username, UserStatus.Pending);
+    this._user = User.create(
+      EntityId.generate(),
+      email,
+      username,
+      UserStatus.Pending,
+    );
     this._profile = profile;
     this._permissions = [];
 
@@ -1408,10 +1457,10 @@ export class UserAggregate extends BaseAggregateRoot {
   public activateUser(): void {
     // 1. 委托给内部实体执行
     this._user.activate();
-    
+
     // 2. 更新相关状态
     this._profile.setStatus(UserProfileStatus.Active);
-    
+
     // 3. 发布领域事件
     this.addDomainEvent(new UserActivatedEvent(this._id));
   }
@@ -1419,7 +1468,7 @@ export class UserAggregate extends BaseAggregateRoot {
   // 私有方法 - 验证业务规则
   private validateUserCreation(): void {
     if (!this._user || !this._profile) {
-      throw new InvalidUserCreationException('用户和资料必须同时创建');
+      throw new InvalidUserCreationException("用户和资料必须同时创建");
     }
   }
 }
@@ -1460,7 +1509,7 @@ export class User extends BaseEntity {
     id: EntityId,
     email: Email,
     username: Username,
-    status: UserStatus
+    status: UserStatus,
   ) {
     super(id);
     this._email = email;
@@ -1472,9 +1521,9 @@ export class User extends BaseEntity {
   public activate(): void {
     // 验证业务规则
     if (this._status !== UserStatus.Pending) {
-      throw new UserNotPendingException('只有待激活状态的用户才能激活');
+      throw new UserNotPendingException("只有待激活状态的用户才能激活");
     }
-    
+
     // 执行业务逻辑
     this._status = UserStatus.Active;
     this._activatedAt = new Date();
@@ -1485,9 +1534,9 @@ export class User extends BaseEntity {
   public updateProfile(profile: UserProfile): void {
     // 验证业务规则
     if (!profile.getFirstName() || !profile.getLastName()) {
-      throw new InvalidProfileException('用户资料必须包含姓名');
+      throw new InvalidProfileException("用户资料必须包含姓名");
     }
-    
+
     // 执行业务逻辑
     this._profile = profile;
     this.updateTimestamp();
@@ -1498,7 +1547,7 @@ export class User extends BaseEntity {
     id: EntityId,
     email: Email,
     username: Username,
-    status: UserStatus = UserStatus.Pending
+    status: UserStatus = UserStatus.Pending,
   ): User {
     return new User(id, email, username, status);
   }
@@ -1537,12 +1586,12 @@ export class Email extends BaseValueObject {
   // 验证逻辑
   private validate(): void {
     if (!this.value || this.value.trim().length === 0) {
-      throw new InvalidEmailException('邮箱不能为空');
+      throw new InvalidEmailException("邮箱不能为空");
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.value)) {
-      throw new InvalidEmailException('邮箱格式不正确');
+      throw new InvalidEmailException("邮箱格式不正确");
     }
   }
 
@@ -1552,11 +1601,11 @@ export class Email extends BaseValueObject {
   }
 
   public getDomain(): string {
-    return this.value.split('@')[1];
+    return this.value.split("@")[1];
   }
 
   public getLocalPart(): string {
-    return this.value.split('@')[0];
+    return this.value.split("@")[0];
   }
 
   // 相等性比较
@@ -1596,7 +1645,7 @@ export class UserCreatedEvent extends BaseDomainEvent {
     public readonly userId: EntityId,
     public readonly email: Email,
     public readonly username: Username,
-    public readonly timestamp: Date = new Date()
+    public readonly timestamp: Date = new Date(),
   ) {
     super();
   }
@@ -1605,7 +1654,7 @@ export class UserCreatedEvent extends BaseDomainEvent {
 export class UserActivatedEvent extends BaseDomainEvent {
   constructor(
     public readonly userId: EntityId,
-    public readonly activatedAt: Date = new Date()
+    public readonly activatedAt: Date = new Date(),
   ) {
     super();
   }
@@ -1620,7 +1669,7 @@ export class UserAggregate extends BaseAggregateRoot {
   public createUser(email: Email, username: Username): void {
     // 业务逻辑
     this._user = User.create(EntityId.generate(), email, username);
-    
+
     // 发布事件
     this.addDomainEvent(new UserCreatedEvent(this._id, email, username));
   }
@@ -1641,10 +1690,10 @@ export class UserAggregate extends BaseAggregateRoot {
   public activateUser(): void {
     // 1. 委托给内部实体执行
     this._user.activate();
-    
+
     // 2. 协调相关状态更新
     this._profile.setStatus(UserProfileStatus.Active);
-    
+
     // 3. 发布领域事件
     this.addDomainEvent(new UserActivatedEvent(this._id));
   }
@@ -1672,7 +1721,7 @@ export class UserAggregate extends BaseAggregateRoot {
 export class UserAggregate extends BaseAggregateRoot {
   public createUser(email: Email, username: Username): void {
     this._user = User.create(EntityId.generate(), email, username);
-    
+
     // 聚合根发布事件
     this.addDomainEvent(new UserCreatedEvent(this._id, email, username));
   }
@@ -1700,9 +1749,9 @@ export class User extends BaseEntity {
   public activate(): void {
     // 业务逻辑在实体内
     if (this.status !== UserStatus.Pending) {
-      throw new UserNotPendingException('只有待激活状态的用户才能激活');
+      throw new UserNotPendingException("只有待激活状态的用户才能激活");
     }
-    
+
     this.status = UserStatus.Active;
     this.activatedAt = new Date();
     this.updateTimestamp();
@@ -1717,7 +1766,7 @@ export class User extends BaseEntity {
   setStatus(status: UserStatus): void {
     this.status = status;
   }
-  
+
   getStatus(): UserStatus {
     return this.status;
   }
@@ -1732,9 +1781,9 @@ export class User extends BaseEntity {
   public updateProfile(profile: UserProfile): void {
     // 验证业务规则
     if (!profile.getFirstName() || !profile.getLastName()) {
-      throw new InvalidProfileException('用户资料必须包含姓名');
+      throw new InvalidProfileException("用户资料必须包含姓名");
     }
-    
+
     // 更新状态
     this._profile = profile;
     this.updateTimestamp();
@@ -1751,7 +1800,7 @@ export class User extends BaseEntity {
 export class Money extends BaseValueObject {
   private constructor(
     private readonly amount: number,
-    private readonly currency: string
+    private readonly currency: string,
   ) {
     super();
     this.validate();
@@ -1768,9 +1817,9 @@ export class Money extends BaseValueObject {
   // 创建新实例而不是修改现有实例
   public add(other: Money): Money {
     if (this.currency !== other.currency) {
-      throw new CurrencyMismatchException('货币类型不匹配');
+      throw new CurrencyMismatchException("货币类型不匹配");
     }
-    
+
     return new Money(this.amount + other.amount, this.currency);
   }
 }
@@ -1788,12 +1837,12 @@ export class Email extends BaseValueObject {
 
   private validate(): void {
     if (!this.value || this.value.trim().length === 0) {
-      throw new InvalidEmailException('邮箱不能为空');
+      throw new InvalidEmailException("邮箱不能为空");
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.value)) {
-      throw new InvalidEmailException('邮箱格式不正确');
+      throw new InvalidEmailException("邮箱格式不正确");
     }
   }
 }

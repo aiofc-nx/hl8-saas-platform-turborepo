@@ -321,7 +321,7 @@ export enum UserStatus {
    * - 可以接收系统通知和消息
    * - 可以参与工作流程和审批流程
    */
-  ACTIVE = 'ACTIVE',
+  ACTIVE = "ACTIVE",
 
   /**
    * 非活跃状态
@@ -336,7 +336,7 @@ export enum UserStatus {
    * - 数据保留但不可访问
    * - 可以通过激活操作恢复到 ACTIVE 状态
    */
-  INACTIVE = 'INACTIVE',
+  INACTIVE = "INACTIVE",
 
   /**
    * 已删除状态
@@ -352,7 +352,7 @@ export enum UserStatus {
    * - 可以通过恢复操作恢复到 ACTIVE 状态
    * - 删除操作不可逆，需要特殊权限
    */
-  DELETED = 'DELETED',
+  DELETED = "DELETED",
 }
 ````
 

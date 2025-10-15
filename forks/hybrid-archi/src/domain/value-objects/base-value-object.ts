@@ -37,7 +37,7 @@
  *     this.validateNotEmpty(value, '邮箱');
  *     this.validatePattern(value, /^.+@.+\..+$/, '邮箱格式不正确');
  *   }
- *   
+ *
  *   protected transform(value: string): string {
  *     return value.toLowerCase().trim();
  *   }
@@ -107,7 +107,7 @@ export abstract class BaseValueObject<T> {
    */
   static create<V extends BaseValueObject<any>>(
     this: new (value: any) => V,
-    value: any
+    value: any,
   ): V {
     return new this(value);
   }
@@ -179,11 +179,11 @@ export abstract class BaseValueObject<T> {
     value: string,
     min: number,
     max: number,
-    fieldName = '值'
+    fieldName = "值",
   ): void {
     if (value.length < min || value.length > max) {
       throw new Error(
-        `${fieldName}长度必须在${min}-${max}个字符之间，当前长度：${value.length}`
+        `${fieldName}长度必须在${min}-${max}个字符之间，当前长度：${value.length}`,
       );
     }
   }
@@ -209,7 +209,7 @@ export abstract class BaseValueObject<T> {
   protected validatePattern(
     value: string,
     pattern: RegExp,
-    message: string
+    message: string,
   ): void {
     if (!pattern.test(value)) {
       throw new Error(message);
@@ -231,7 +231,7 @@ export abstract class BaseValueObject<T> {
    */
   protected validateNotEmpty(
     value: string | any[] | null | undefined,
-    fieldName = '值'
+    fieldName = "值",
   ): void {
     if (value === null || value === undefined || value.length === 0) {
       throw new Error(`${fieldName}不能为空`);
@@ -257,12 +257,10 @@ export abstract class BaseValueObject<T> {
     value: number,
     min: number,
     max: number,
-    fieldName = '值'
+    fieldName = "值",
   ): void {
     if (value < min || value > max) {
-      throw new Error(
-        `${fieldName}必须在${min}-${max}之间，当前值：${value}`
-      );
+      throw new Error(`${fieldName}必须在${min}-${max}之间，当前值：${value}`);
     }
   }
 
@@ -279,7 +277,7 @@ export abstract class BaseValueObject<T> {
    * this.validateInteger(count, '用户数量');
    * ```
    */
-  protected validateInteger(value: number, fieldName = '值'): void {
+  protected validateInteger(value: number, fieldName = "值"): void {
     if (!Number.isInteger(value)) {
       throw new Error(`${fieldName}必须是整数`);
     }
@@ -298,7 +296,7 @@ export abstract class BaseValueObject<T> {
    * this.validatePositive(amount, '金额');
    * ```
    */
-  protected validatePositive(value: number, fieldName = '值'): void {
+  protected validatePositive(value: number, fieldName = "值"): void {
     if (value <= 0) {
       throw new Error(`${fieldName}必须是正数`);
     }
@@ -321,11 +319,11 @@ export abstract class BaseValueObject<T> {
   protected validateEnum<V>(
     value: V,
     allowedValues: V[],
-    fieldName = '值'
+    fieldName = "值",
   ): void {
     if (!allowedValues.includes(value)) {
       throw new Error(
-        `${fieldName}必须是以下值之一：${allowedValues.join(', ')}`
+        `${fieldName}必须是以下值之一：${allowedValues.join(", ")}`,
       );
     }
   }
@@ -405,7 +403,7 @@ export abstract class BaseValueObject<T> {
    * @returns JSON 表示
    */
   public toJSON(): T | Record<string, unknown> {
-    if (typeof this._value === 'object' && this._value !== null) {
+    if (typeof this._value === "object" && this._value !== null) {
       return this._value as Record<string, unknown>;
     }
     return this._value;
@@ -429,7 +427,7 @@ export abstract class BaseValueObject<T> {
     if (this._value === null || this._value === undefined) {
       return true;
     }
-    if (typeof this._value === 'string' && this._value.length === 0) {
+    if (typeof this._value === "string" && this._value.length === 0) {
       return true;
     }
     if (Array.isArray(this._value) && this._value.length === 0) {

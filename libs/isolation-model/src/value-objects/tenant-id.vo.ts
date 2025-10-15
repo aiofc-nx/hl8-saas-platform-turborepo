@@ -27,16 +27,16 @@
  * @since 1.0.0
  */
 
-import { EntityId } from './entity-id.vo.js';
+import { EntityId } from "./entity-id.vo.js";
 
-export class TenantId extends EntityId<'TenantId'> {
+export class TenantId extends EntityId<"TenantId"> {
   private static cache = new Map<string, TenantId>();
 
   /**
    * 私有构造函数
    */
   private constructor(value: string) {
-    super(value, 'TenantId');
+    super(value, "TenantId");
   }
 
   /**
@@ -72,11 +72,14 @@ export class TenantId extends EntityId<'TenantId'> {
    */
   static generate(): TenantId {
     // 生成 UUID v4
-    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = (Math.random() * 16) | 0;
-      const v = c === 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      (c) => {
+        const r = (Math.random() * 16) | 0;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      },
+    );
     return this.create(uuid);
   }
 

@@ -8,19 +8,19 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { LoggerModule } from '@hl8/nestjs-fastify';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { LoggerModule } from "@hl8/nestjs-fastify";
 // import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
-import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
+import { MessagingModule } from "@hl8/nestjs-fastify/messaging";
 
-import { LoggerPortAdapter } from './logger-port.adapter';
-import { IdGeneratorPortAdapter } from './id-generator-port.adapter';
-import { TimeProviderPortAdapter } from './time-provider-port.adapter';
-import { ValidationPortAdapter } from './validation-port.adapter';
-import { ConfigurationPortAdapter } from './configuration-port.adapter';
-import { EventBusPortAdapter } from './event-bus-port.adapter';
-import { PortAdaptersFactory } from './port-adapters.factory';
-import { PortAdaptersManager } from './port-adapters.manager';
+import { LoggerPortAdapter } from "./logger-port.adapter";
+import { IdGeneratorPortAdapter } from "./id-generator-port.adapter";
+import { TimeProviderPortAdapter } from "./time-provider-port.adapter";
+import { ValidationPortAdapter } from "./validation-port.adapter";
+import { ConfigurationPortAdapter } from "./configuration-port.adapter";
+import { EventBusPortAdapter } from "./event-bus-port.adapter";
+import { PortAdaptersFactory } from "./port-adapters.factory";
+import { PortAdaptersManager } from "./port-adapters.manager";
 
 /**
  * 端口适配器模块选项
@@ -67,28 +67,28 @@ export class PortAdaptersModule {
         LoggerModule.forRootAsync({
           useFactory: () => ({}),
           inject: [],
-        })
+        }),
       );
-      providers.push({ provide: 'ILoggerPort', useClass: LoggerPortAdapter });
+      providers.push({ provide: "ILoggerPort", useClass: LoggerPortAdapter });
     }
 
     if (options.enableIdGenerator !== false) {
       providers.push({
-        provide: 'IIdGeneratorPort',
+        provide: "IIdGeneratorPort",
         useClass: IdGeneratorPortAdapter,
       });
     }
 
     if (options.enableTimeProvider !== false) {
       providers.push({
-        provide: 'ITimeProviderPort',
+        provide: "ITimeProviderPort",
         useClass: TimeProviderPortAdapter,
       });
     }
 
     if (options.enableValidation !== false) {
       providers.push({
-        provide: 'IValidationPort',
+        provide: "IValidationPort",
         useClass: ValidationPortAdapter,
       });
     }
@@ -97,19 +97,19 @@ export class PortAdaptersModule {
       imports.push(
         TypedConfigModule.forRoot({
           schema: class TestConfig {
-            appName = 'test-app';
-            version = '1.0.0';
-            environment = 'test';
+            appName = "test-app";
+            version = "1.0.0";
+            environment = "test";
           },
           load: () => ({
-            appName: 'test-app',
-            version: '1.0.0',
-            environment: 'test',
+            appName: "test-app",
+            version: "1.0.0",
+            environment: "test",
           }),
-        })
+        }),
       );
       providers.push({
-        provide: 'IConfigurationPort',
+        provide: "IConfigurationPort",
         useClass: ConfigurationPortAdapter,
       });
     }
@@ -117,11 +117,11 @@ export class PortAdaptersModule {
     if (options.enableEventBus !== false) {
       imports.push(
         MessagingModule.forRoot({
-          adapter: 'memory' as any,
-        })
+          adapter: "memory" as any,
+        }),
       );
       providers.push({
-        provide: 'IEventBusPort',
+        provide: "IEventBusPort",
         useClass: EventBusPortAdapter,
       });
     }
@@ -154,28 +154,28 @@ export class PortAdaptersModule {
         LoggerModule.forRootAsync({
           useFactory: () => ({}),
           inject: [],
-        })
+        }),
       );
-      providers.push({ provide: 'ILoggerPort', useClass: LoggerPortAdapter });
+      providers.push({ provide: "ILoggerPort", useClass: LoggerPortAdapter });
     }
 
     if (options.enableIdGenerator !== false) {
       providers.push({
-        provide: 'IIdGeneratorPort',
+        provide: "IIdGeneratorPort",
         useClass: IdGeneratorPortAdapter,
       });
     }
 
     if (options.enableTimeProvider !== false) {
       providers.push({
-        provide: 'ITimeProviderPort',
+        provide: "ITimeProviderPort",
         useClass: TimeProviderPortAdapter,
       });
     }
 
     if (options.enableValidation !== false) {
       providers.push({
-        provide: 'IValidationPort',
+        provide: "IValidationPort",
         useClass: ValidationPortAdapter,
       });
     }
@@ -184,19 +184,19 @@ export class PortAdaptersModule {
       imports.push(
         TypedConfigModule.forRoot({
           schema: class TestConfig {
-            appName = 'test-app';
-            version = '1.0.0';
-            environment = 'test';
+            appName = "test-app";
+            version = "1.0.0";
+            environment = "test";
           },
           load: () => ({
-            appName: 'test-app',
-            version: '1.0.0',
-            environment: 'test',
+            appName: "test-app",
+            version: "1.0.0",
+            environment: "test",
           }),
-        })
+        }),
       );
       providers.push({
-        provide: 'IConfigurationPort',
+        provide: "IConfigurationPort",
         useClass: ConfigurationPortAdapter,
       });
     }
@@ -204,11 +204,11 @@ export class PortAdaptersModule {
     if (options.enableEventBus !== false) {
       imports.push(
         MessagingModule.forRoot({
-          adapter: 'memory' as any,
-        })
+          adapter: "memory" as any,
+        }),
       );
       providers.push({
-        provide: 'IEventBusPort',
+        provide: "IEventBusPort",
         useClass: EventBusPortAdapter,
       });
     }

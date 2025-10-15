@@ -30,19 +30,19 @@
  */
 export enum TenantType {
   /** 免费版 - 5用户/100MB/1组织 */
-  FREE = 'FREE',
+  FREE = "FREE",
 
   /** 基础版 - 50用户/1GB/2组织 */
-  BASIC = 'BASIC',
+  BASIC = "BASIC",
 
   /** 专业版 - 500用户/10GB/10组织 */
-  PROFESSIONAL = 'PROFESSIONAL',
+  PROFESSIONAL = "PROFESSIONAL",
 
   /** 企业版 - 5000用户/100GB/100组织 */
-  ENTERPRISE = 'ENTERPRISE',
+  ENTERPRISE = "ENTERPRISE",
 
   /** 定制版 - 无限制，按需配置 */
-  CUSTOM = 'CUSTOM',
+  CUSTOM = "CUSTOM",
 }
 
 /**
@@ -96,11 +96,11 @@ export class TenantTypeUtils {
    */
   public static getDisplayName(type: TenantType): string {
     const names: Record<TenantType, string> = {
-      [TenantType.FREE]: '免费版',
-      [TenantType.BASIC]: '基础版',
-      [TenantType.PROFESSIONAL]: '专业版',
-      [TenantType.ENTERPRISE]: '企业版',
-      [TenantType.CUSTOM]: '定制版',
+      [TenantType.FREE]: "免费版",
+      [TenantType.BASIC]: "基础版",
+      [TenantType.PROFESSIONAL]: "专业版",
+      [TenantType.ENTERPRISE]: "企业版",
+      [TenantType.CUSTOM]: "定制版",
     };
     return names[type];
   }
@@ -113,7 +113,10 @@ export class TenantTypeUtils {
    * @param {TenantType} targetType - 目标类型
    * @returns {boolean}
    */
-  public static canUpgradeTo(currentType: TenantType, targetType: TenantType): boolean {
+  public static canUpgradeTo(
+    currentType: TenantType,
+    targetType: TenantType,
+  ): boolean {
     const hierarchy = [
       TenantType.FREE,
       TenantType.BASIC,
@@ -136,7 +139,10 @@ export class TenantTypeUtils {
    * @param {TenantType} targetType - 目标类型
    * @returns {boolean}
    */
-  public static canDowngradeTo(currentType: TenantType, targetType: TenantType): boolean {
+  public static canDowngradeTo(
+    currentType: TenantType,
+    targetType: TenantType,
+  ): boolean {
     const hierarchy = [
       TenantType.FREE,
       TenantType.BASIC,
@@ -151,4 +157,3 @@ export class TenantTypeUtils {
     return targetIndex < currentIndex;
   }
 }
-

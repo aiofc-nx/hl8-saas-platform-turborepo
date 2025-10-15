@@ -10,15 +10,15 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { FastifyRequest } from '@hl8/fastify-pro';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { FastifyRequest } from "@hl8/fastify-pro";
 
 /**
  * 权限装饰器元数据键
  */
-export const PERMISSIONS_KEY = 'permissions';
-export const ROLES_KEY = 'roles';
+export const PERMISSIONS_KEY = "permissions";
+export const ROLES_KEY = "roles";
 
 /**
  * 权限守卫
@@ -53,20 +53,20 @@ export class PermissionGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request = context.switchToHttp().getRequest<FastifyRequest>();
-      const user = request['user'];
+      const user = request["user"];
 
       if (!user) {
-        throw new ForbiddenException('用户未认证');
+        throw new ForbiddenException("用户未认证");
       }
 
       // 获取所需的权限和角色
       const requiredPermissions = this.reflector.get<string[]>(
         PERMISSIONS_KEY,
-        context.getHandler()
+        context.getHandler(),
       );
       const requiredRoles = this.reflector.get<string[]>(
         ROLES_KEY,
-        context.getHandler()
+        context.getHandler(),
       );
 
       // 如果没有权限要求，则允许访问
@@ -78,7 +78,7 @@ export class PermissionGuard implements CanActivate {
       if (requiredRoles && requiredRoles.length > 0) {
         const hasRole = this.checkUserRoles(user, requiredRoles);
         if (!hasRole) {
-          throw new ForbiddenException('用户角色不足');
+          throw new ForbiddenException("用户角色不足");
         }
       }
 
@@ -86,10 +86,10 @@ export class PermissionGuard implements CanActivate {
       if (requiredPermissions && requiredPermissions.length > 0) {
         const hasPermission = this.checkUserPermissions(
           user,
-          requiredPermissions
+          requiredPermissions,
         );
         if (!hasPermission) {
-          throw new ForbiddenException('用户权限不足');
+          throw new ForbiddenException("用户权限不足");
         }
       }
 
@@ -98,7 +98,7 @@ export class PermissionGuard implements CanActivate {
       if (error instanceof ForbiddenException) {
         throw error;
       }
-      throw new ForbiddenException('权限验证失败');
+      throw new ForbiddenException("权限验证失败");
     }
   }
 
@@ -111,7 +111,10 @@ export class PermissionGuard implements CanActivate {
    * @returns 是否具有角色
    * @private
    */
-  private checkUserRoles(user: { roles?: string[] }, requiredRoles: string[]): boolean {
+  private checkUserRoles(
+    user: { roles?: string[] },
+    requiredRoles: string[],
+  ): boolean {
     const userRoles = user.roles || [];
     return requiredRoles.some((role) => userRoles.includes(role));
   }
@@ -127,11 +130,11 @@ export class PermissionGuard implements CanActivate {
    */
   private checkUserPermissions(
     user: { permissions?: string[] },
-    requiredPermissions: string[]
+    requiredPermissions: string[],
   ): boolean {
     const userPermissions = user.permissions || [];
     return requiredPermissions.every((permission) =>
-      userPermissions.includes(permission)
+      userPermissions.includes(permission),
     );
   }
 }

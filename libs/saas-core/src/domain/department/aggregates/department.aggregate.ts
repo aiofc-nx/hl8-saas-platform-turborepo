@@ -2,10 +2,10 @@
  * 部门聚合根（简化版本）
  */
 
-import { TenantAwareAggregateRoot, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { EntityId } from '@hl8/isolation-model';
-import { Department } from '../entities/department.entity.js';
-import { DepartmentClosure } from '../entities/department-closure.entity.js';
+import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model";
+import { Department } from "../entities/department.entity.js";
+import { DepartmentClosure } from "../entities/department-closure.entity.js";
 
 export class DepartmentAggregate extends TenantAwareAggregateRoot {
   private _closurePaths: DepartmentClosure[] = [];
@@ -25,7 +25,13 @@ export class DepartmentAggregate extends TenantAwareAggregateRoot {
     name: string,
     auditInfo: IPartialAuditInfo,
   ): DepartmentAggregate {
-    const department = Department.createRoot(id, organizationId, code, name, auditInfo);
+    const department = Department.createRoot(
+      id,
+      organizationId,
+      code,
+      name,
+      auditInfo,
+    );
     return new DepartmentAggregate(id, department, auditInfo);
   }
 
@@ -44,4 +50,3 @@ export class DepartmentAggregate extends TenantAwareAggregateRoot {
     };
   }
 }
-

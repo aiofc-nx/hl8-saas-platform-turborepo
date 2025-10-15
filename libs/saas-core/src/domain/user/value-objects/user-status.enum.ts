@@ -48,42 +48,42 @@ export enum UserStatus {
    *
    * @description 用户已创建但未激活，无法登录
    */
-  PENDING = 'PENDING',
+  PENDING = "PENDING",
 
   /**
    * 活跃状态
    *
    * @description 用户已激活，可以正常登录和操作
    */
-  ACTIVE = 'ACTIVE',
+  ACTIVE = "ACTIVE",
 
   /**
    * 禁用状态
    *
    * @description 用户被管理员禁用，无法登录
    */
-  DISABLED = 'DISABLED',
+  DISABLED = "DISABLED",
 
   /**
    * 锁定状态
    *
    * @description 用户因登录失败次数过多被锁定
    */
-  LOCKED = 'LOCKED',
+  LOCKED = "LOCKED",
 
   /**
    * 过期状态
    *
    * @description 用户长期未登录，账户已过期
    */
-  EXPIRED = 'EXPIRED',
+  EXPIRED = "EXPIRED",
 
   /**
    * 已删除状态
    *
    * @description 用户已删除，数据标记删除
    */
-  DELETED = 'DELETED',
+  DELETED = "DELETED",
 }
 
 /**
@@ -200,15 +200,15 @@ export class UserStatusUtils {
    */
   public static getDisplayName(status: UserStatus): string {
     const displayNames: Record<UserStatus, string> = {
-      [UserStatus.PENDING]: '待激活',
-      [UserStatus.ACTIVE]: '活跃',
-      [UserStatus.DISABLED]: '已禁用',
-      [UserStatus.LOCKED]: '已锁定',
-      [UserStatus.EXPIRED]: '已过期',
-      [UserStatus.DELETED]: '已删除',
+      [UserStatus.PENDING]: "待激活",
+      [UserStatus.ACTIVE]: "活跃",
+      [UserStatus.DISABLED]: "已禁用",
+      [UserStatus.LOCKED]: "已锁定",
+      [UserStatus.EXPIRED]: "已过期",
+      [UserStatus.DELETED]: "已删除",
     };
 
-    return displayNames[status] || '未知状态';
+    return displayNames[status] || "未知状态";
   }
 
   /**
@@ -220,15 +220,15 @@ export class UserStatusUtils {
    */
   public static getDescription(status: UserStatus): string {
     const descriptions: Record<UserStatus, string> = {
-      [UserStatus.PENDING]: '用户已创建但未激活，需要激活后才能登录',
-      [UserStatus.ACTIVE]: '用户已激活，可以正常登录和操作系统',
-      [UserStatus.DISABLED]: '用户被管理员禁用，无法登录系统',
-      [UserStatus.LOCKED]: '用户因登录失败次数过多被锁定，需要管理员解锁',
-      [UserStatus.EXPIRED]: '用户长期未登录，账户已过期，需要重新激活',
-      [UserStatus.DELETED]: '用户已删除，数据标记删除但未物理删除',
+      [UserStatus.PENDING]: "用户已创建但未激活，需要激活后才能登录",
+      [UserStatus.ACTIVE]: "用户已激活，可以正常登录和操作系统",
+      [UserStatus.DISABLED]: "用户被管理员禁用，无法登录系统",
+      [UserStatus.LOCKED]: "用户因登录失败次数过多被锁定，需要管理员解锁",
+      [UserStatus.EXPIRED]: "用户长期未登录，账户已过期，需要重新激活",
+      [UserStatus.DELETED]: "用户已删除，数据标记删除但未物理删除",
     };
 
-    return descriptions[status] || '未知状态';
+    return descriptions[status] || "未知状态";
   }
 
   /**

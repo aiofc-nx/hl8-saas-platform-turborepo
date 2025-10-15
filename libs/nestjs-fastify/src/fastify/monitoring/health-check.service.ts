@@ -6,14 +6,14 @@
  * @since 0.2.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 /**
  * 健康检查结果
  */
 export interface HealthCheckResult {
   /** 整体状态 */
-  status: 'ok' | 'degraded' | 'down';
+  status: "ok" | "degraded" | "down";
   /** 时间戳 */
   timestamp: string;
   /** 运行时间（秒） */
@@ -33,7 +33,7 @@ export interface HealthCheckResult {
  * 组件健康状态
  */
 export interface ComponentHealth {
-  status: 'up' | 'down';
+  status: "up" | "down";
   message?: string;
   responseTime?: number;
 }
@@ -62,21 +62,21 @@ export class HealthCheckService {
    */
   async check(): Promise<HealthCheckResult> {
     const components: Record<string, ComponentHealth> = {};
-    let overallStatus: 'ok' | 'degraded' | 'down' = 'ok';
+    let overallStatus: "ok" | "degraded" | "down" = "ok";
 
     // 执行所有注册的检查
     for (const [name, checkFn] of this.checks) {
       try {
         components[name] = await checkFn();
-        if (components[name].status === 'down') {
-          overallStatus = 'degraded';
+        if (components[name].status === "down") {
+          overallStatus = "degraded";
         }
       } catch (error) {
         components[name] = {
-          status: 'down',
+          status: "down",
           message: error instanceof Error ? error.message : String(error),
         };
-        overallStatus = 'down';
+        overallStatus = "down";
       }
     }
 

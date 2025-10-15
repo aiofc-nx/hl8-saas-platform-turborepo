@@ -6,6 +6,9 @@
  * @since 1.0.0
  */
 
-export { DepartmentLevel } from './department-level.vo.js';
-export { DepartmentPath } from './department-path.vo.js';
-export { DepartmentStatus, DepartmentStatusUtils } from './department-status.enum.js';
+export { DepartmentLevel } from "./department-level.vo.js";
+export { DepartmentPath } from "./department-path.vo.js";
+export {
+  DepartmentStatus,
+  DepartmentStatusUtils,
+} from "./department-status.enum.js";

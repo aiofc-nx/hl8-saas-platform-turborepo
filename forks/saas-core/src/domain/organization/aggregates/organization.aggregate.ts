@@ -5,11 +5,15 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { Organization } from '../entities/organization.entity';
-import { OrganizationMember } from '../entities/organization-member.entity';
-import { OrganizationType } from '../value-objects/organization-type.vo';
+import {
+  TenantAwareAggregateRoot,
+  EntityId,
+  IPartialAuditInfo,
+} from "@hl8/hybrid-archi";
+import { PinoLogger } from "@hl8/logger";
+import { Organization } from "../entities/organization.entity";
+import { OrganizationMember } from "../entities/organization-member.entity";
+import { OrganizationType } from "../value-objects/organization-type.vo";
 
 export class OrganizationAggregate extends TenantAwareAggregateRoot {
   private _members: OrganizationMember[] = [];
@@ -53,11 +57,11 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
     );
 
     this._members.push(member);
-    this.logTenantOperation('组织成员已添加', { userId: userId.toString() });
+    this.logTenantOperation("组织成员已添加", { userId: userId.toString() });
   }
 
   public removeMember(userId: EntityId, updatedBy: string): void {
-    const member = this._members.find(m => m.getUserId().equals(userId));
+    const member = this._members.find((m) => m.getUserId().equals(userId));
     if (member) {
       member.leave(updatedBy);
     }
@@ -71,4 +75,3 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
     };
   }
 }
-

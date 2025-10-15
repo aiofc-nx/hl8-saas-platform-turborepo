@@ -20,8 +20,8 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from '@hl8/hybrid-archi';
-import { TenantType } from '../value-objects/tenant-type.enum';
+import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
+import { TenantType } from "../value-objects/tenant-type.enum";
 
 /**
  * 租户升级事件
@@ -50,7 +50,7 @@ export class TenantUpgradedEvent extends BaseDomainEvent {
   }
 
   get eventType(): string {
-    return 'TenantUpgraded';
+    return "TenantUpgraded";
   }
 
   /**
@@ -66,4 +66,3 @@ export class TenantUpgradedEvent extends BaseDomainEvent {
     };
   }
 }
-

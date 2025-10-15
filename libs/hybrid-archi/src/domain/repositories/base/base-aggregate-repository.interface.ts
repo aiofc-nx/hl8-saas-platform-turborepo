@@ -58,14 +58,15 @@
  * @since 1.0.0
  */
 
-import { EntityId  } from '@hl8/isolation-model';
-import { IAggregateRoot } from '../../aggregates/base/aggregate-root.interface';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import type { IRepository,
+import { EntityId } from "@hl8/isolation-model";
+import { IAggregateRoot } from "../../aggregates/base/aggregate-root.interface";
+import { BaseDomainEvent } from "../../events/base/base-domain-event";
+import type {
+  IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
-} from './base-repository.interface';
-import { TenantId } from '@hl8/isolation-model';
+} from "./base-repository.interface";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 聚合根仓储接口

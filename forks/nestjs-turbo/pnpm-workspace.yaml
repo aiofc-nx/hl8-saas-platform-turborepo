@@ -2,13 +2,13 @@ packages:
   - apps/*
   - packages/*
 onlyBuiltDependencies:
-  - '@apollo/protobufjs'
-  - '@nestjs/core'
-  - '@prisma/client'
-  - '@prisma/engines'
-  - '@scarf/scarf'
-  - '@swc/core'
-  - '@tailwindcss/oxide'
+  - "@apollo/protobufjs"
+  - "@nestjs/core"
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@scarf/scarf"
+  - "@swc/core"
+  - "@tailwindcss/oxide"
   - argon2
   - core-js-pure
   - prisma

@@ -214,8 +214,8 @@ Coverage:
 
 ```typescript
 // 1. 导入模块
-import { Module } from '@nestjs/common';
-import { IsolationModule } from '@hl8/nestjs-isolation';
+import { Module } from "@nestjs/common";
+import { IsolationModule } from "@hl8/nestjs-isolation";
 
 @Module({
   imports: [IsolationModule.forRoot()],
@@ -223,11 +223,11 @@ import { IsolationModule } from '@hl8/nestjs-isolation';
 export class AppModule {}
 
 // 2. 在控制器中使用
-import { Controller, Get } from '@nestjs/common';
-import { RequireTenant, CurrentContext } from '@hl8/nestjs-isolation';
-import { IsolationContext } from '@hl8/isolation-model';
+import { Controller, Get } from "@nestjs/common";
+import { RequireTenant, CurrentContext } from "@hl8/nestjs-isolation";
+import { IsolationContext } from "@hl8/isolation-model";
 
-@Controller('users')
+@Controller("users")
 export class UserController {
   constructor(private readonly contextService: IsolationContextService) {}
 
@@ -235,7 +235,7 @@ export class UserController {
   @RequireTenant()
   async getUsers() {
     const context = this.contextService.getIsolationContext();
-    const cacheKey = context.buildCacheKey('users', 'list');
+    const cacheKey = context.buildCacheKey("users", "list");
 
     return this.userService.findByContext(context);
   }

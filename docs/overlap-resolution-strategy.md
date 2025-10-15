@@ -2,7 +2,7 @@
 
 **文档版本**: 1.0  
 **创建日期**: 2025-01-27  
-**负责人**: HL8 开发团队  
+**负责人**: HL8 开发团队
 
 ## 重叠内容概览
 
@@ -33,6 +33,7 @@
 **移除**: `libs/hybrid-archi/src/domain/value-objects/ids/tenant-id.vo.ts`
 
 **理由**:
+
 - isolation-model 的实现使用了 Flyweight 模式
 - 有更好的内存管理和性能
 - 类型安全性更好
@@ -50,6 +51,7 @@
 **移除**: `libs/hybrid-archi/src/domain/value-objects/entity-id.ts`
 
 **理由**:
+
 - isolation-model 的实现更完整
 - 有更好的错误处理机制
 - 支持泛型类型安全
@@ -86,10 +88,12 @@
 ## 风险评估
 
 ### 低风险
+
 - isolation-model 的实现已经经过测试
 - 两个实现功能相同，只是内部结构不同
 
 ### 缓解措施
+
 - 完整的测试覆盖
 - 逐步迁移，分步验证
 - 保留备份文件

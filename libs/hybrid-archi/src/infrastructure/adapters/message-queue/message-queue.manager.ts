@@ -8,18 +8,18 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { MessagingService } from '@hl8/nestjs-fastify/messaging';
-import { CacheService } from '@hl8/caching';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import { MessagingService } from "@hl8/nestjs-fastify/messaging";
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,
-} from './message-queue.adapter';
+} from "./message-queue.adapter";
 import {
   MessageQueueFactory,
   IMessageQueueRegistration,
-} from './message-queue.factory';
+} from "./message-queue.factory";
 
 /**
  * 消息队列管理器配置
@@ -58,7 +58,7 @@ export class MessageQueueManager {
     private readonly cacheService: CacheService,
     private readonly logger: FastifyLoggerService,
     private readonly queueFactory: MessageQueueFactory,
-    config: Partial<IMessageQueueManagerConfig> = {}
+    config: Partial<IMessageQueueManagerConfig> = {},
   ) {
     this.config = {
       enableAutoCleanup: config.enableAutoCleanup ?? true,
@@ -85,7 +85,7 @@ export class MessageQueueManager {
   createQueue(
     queueName: string,
     queueType: string,
-    config: Partial<IMessageQueueConfig> = {}
+    config: Partial<IMessageQueueConfig> = {},
   ): MessageQueueAdapter {
     this.logger.debug(`创建消息队列: ${queueName}`);
 
@@ -113,7 +113,7 @@ export class MessageQueueManager {
   getOrCreateQueue(
     queueName: string,
     queueType: string,
-    config: Partial<IMessageQueueConfig> = {}
+    config: Partial<IMessageQueueConfig> = {},
   ): MessageQueueAdapter {
     return this.queueFactory.getOrCreateQueue(queueName, queueType, config);
   }
@@ -155,7 +155,7 @@ export class MessageQueueManager {
    */
   updateQueueConfiguration(
     queueName: string,
-    config: Partial<IMessageQueueConfig>
+    config: Partial<IMessageQueueConfig>,
   ): void {
     this.logger.debug(`更新消息队列配置: ${queueName}`);
     this.queueFactory.updateQueueConfiguration(queueName, config);
@@ -183,7 +183,7 @@ export class MessageQueueManager {
    * @returns 健康检查结果
    */
   async healthCheckAllQueues(): Promise<Record<string, any>> {
-    this.logger.debug('开始健康检查所有消息队列');
+    this.logger.debug("开始健康检查所有消息队列");
     return await this.queueFactory.healthCheckAllQueues();
   }
 
@@ -193,9 +193,9 @@ export class MessageQueueManager {
    * @returns 清理的队列数量
    */
   async cleanupExpiredQueues(): Promise<number> {
-    this.logger.debug('开始清理过期消息队列');
+    this.logger.debug("开始清理过期消息队列");
     return await this.queueFactory.cleanupExpiredQueues(
-      this.config.maxQueueAge
+      this.config.maxQueueAge,
     );
   }
 
@@ -205,7 +205,7 @@ export class MessageQueueManager {
    * @returns 清理的消息数量
    */
   async cleanupExpiredMessages(): Promise<number> {
-    this.logger.debug('开始清理过期消息');
+    this.logger.debug("开始清理过期消息");
 
     let totalCleaned = 0;
     const queues = this.getAllQueues();
@@ -252,7 +252,7 @@ export class MessageQueueManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.log('启动消息队列管理器');
+    this.logger.log("启动消息队列管理器");
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -274,7 +274,7 @@ export class MessageQueueManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.log('停止消息队列管理器');
+    this.logger.log("停止消息队列管理器");
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -299,7 +299,7 @@ export class MessageQueueManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.log('销毁消息队列管理器');
+    this.logger.log("销毁消息队列管理器");
 
     // 停止管理器
     this.stop();
@@ -317,7 +317,7 @@ export class MessageQueueManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化消息队列管理器');
+    this.logger.debug("初始化消息队列管理器");
   }
 
   /**
@@ -331,7 +331,7 @@ export class MessageQueueManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个队列`);
         }
       } catch (error) {
-        this.logger.error('自动清理失败', error);
+        this.logger.error("自动清理失败", error);
       }
     }, this.config.cleanupInterval);
   }
@@ -344,14 +344,14 @@ export class MessageQueueManager {
       try {
         const healthResults = await this.healthCheckAllQueues();
         const unhealthyQueues = Object.entries(healthResults).filter(
-          ([, result]) => !result.healthy
+          ([, result]) => !result.healthy,
         );
 
         if (unhealthyQueues.length > 0) {
-          this.logger.warn('发现不健康的消息队列');
+          this.logger.warn("发现不健康的消息队列");
         }
       } catch (error) {
-        this.logger.error('健康检查失败', error);
+        this.logger.error("健康检查失败", error);
       }
     }, this.config.healthCheckInterval);
   }
@@ -367,7 +367,7 @@ export class MessageQueueManager {
           this.logger.debug(`消息清理完成: ${cleanedCount} 个消息`);
         }
       } catch (error) {
-        this.logger.error('消息清理失败', error);
+        this.logger.error("消息清理失败", error);
       }
     }, this.config.messageCleanupInterval);
   }

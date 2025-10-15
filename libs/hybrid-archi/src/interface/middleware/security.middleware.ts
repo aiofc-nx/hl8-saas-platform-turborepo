@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const SECURITY_MIDDLEWARE = 'Security Middleware';
+export const SECURITY_MIDDLEWARE = "Security Middleware";

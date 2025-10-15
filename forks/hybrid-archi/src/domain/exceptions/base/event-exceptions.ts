@@ -11,9 +11,12 @@
  * @description 事件总线操作失败时抛出的异常
  */
 export class EventBusException extends Error {
-  constructor(message: string, public readonly code?: string) {
+  constructor(
+    message: string,
+    public readonly code?: string,
+  ) {
     super(message);
-    this.name = 'EventBusException';
+    this.name = "EventBusException";
   }
 }
 
@@ -23,8 +26,11 @@ export class EventBusException extends Error {
  * @description 事件处理失败时抛出的异常
  */
 export class EventHandlingException extends Error {
-  constructor(message: string, public readonly code?: string) {
+  constructor(
+    message: string,
+    public readonly code?: string,
+  ) {
     super(message);
-    this.name = 'EventHandlingException';
+    this.name = "EventHandlingException";
   }
 }

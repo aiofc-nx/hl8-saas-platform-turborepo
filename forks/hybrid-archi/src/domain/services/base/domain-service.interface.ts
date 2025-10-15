@@ -233,8 +233,8 @@ export abstract class BaseDomainService implements IDomainService {
 
   constructor(
     serviceName: string,
-    serviceVersion = '1.0.0',
-    serviceDescription = '',
+    serviceVersion = "1.0.0",
+    serviceDescription = "",
   ) {
     this.serviceName = serviceName;
     this.serviceVersion = serviceVersion;
@@ -324,7 +324,7 @@ export abstract class BaseDomainService implements IDomainService {
    * @param data - 附加数据
    */
   protected log(
-    _level: 'debug' | 'info' | 'warn' | 'error',
+    _level: "debug" | "info" | "warn" | "error",
     _message: string,
     _data?: unknown,
   ): void {

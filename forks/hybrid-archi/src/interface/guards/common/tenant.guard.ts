@@ -10,8 +10,8 @@ import {
   CanActivate,
   ExecutionContext,
   BadRequestException,
-} from '@nestjs/common';
-import { FastifyRequest } from '@hl8/fastify-pro';
+} from "@nestjs/common";
+import { FastifyRequest } from "@hl8/fastify-pro";
 
 /**
  * 租户守卫
@@ -44,31 +44,31 @@ export class TenantGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request = context.switchToHttp().getRequest<FastifyRequest>();
-      const user = request['user'];
+      const user = request["user"];
 
       if (!user) {
-        throw new BadRequestException('用户未认证');
+        throw new BadRequestException("用户未认证");
       }
 
       // 从请求中获取租户ID
       const tenantId = this.extractTenantId(request);
       if (!tenantId) {
-        throw new BadRequestException('未提供租户ID');
+        throw new BadRequestException("未提供租户ID");
       }
 
       // 验证租户ID格式
       if (!this.isValidTenantId(tenantId)) {
-        throw new BadRequestException('无效的租户ID格式');
+        throw new BadRequestException("无效的租户ID格式");
       }
 
       // 验证用户是否属于该租户
       if (!this.isUserInTenant(user, tenantId)) {
-        throw new BadRequestException('用户不属于指定租户');
+        throw new BadRequestException("用户不属于指定租户");
       }
 
       // 设置租户上下文
-      request['tenantId'] = tenantId;
-      request['tenantContext'] = {
+      request["tenantId"] = tenantId;
+      request["tenantContext"] = {
         tenantId,
         userId: user.id,
         userRoles: user.roles || [],
@@ -80,7 +80,7 @@ export class TenantGuard implements CanActivate {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException('租户验证失败');
+      throw new BadRequestException("租户验证失败");
     }
   }
 
@@ -94,7 +94,7 @@ export class TenantGuard implements CanActivate {
    */
   private extractTenantId(request: FastifyRequest): string | null {
     // 1. 从请求头获取
-    const headerTenantId = request.headers['x-tenant-id'] as string;
+    const headerTenantId = request.headers["x-tenant-id"] as string;
     if (headerTenantId) {
       return headerTenantId;
     }
@@ -138,7 +138,10 @@ export class TenantGuard implements CanActivate {
    * @returns 是否属于租户
    * @private
    */
-  private isUserInTenant(user: { tenants?: string[] }, tenantId: string): boolean {
+  private isUserInTenant(
+    user: { tenants?: string[] },
+    tenantId: string,
+  ): boolean {
     const userTenants = user.tenants || [];
     return userTenants.includes(tenantId);
   }

@@ -12,8 +12,8 @@ import {
   CanActivate,
   ExecutionContext,
   ForbiddenException,
-} from '@nestjs/common';
-import { ILoggerService, IUserContext } from '../../shared/interfaces';
+} from "@nestjs/common";
+import { ILoggerService, IUserContext } from "../../shared/interfaces";
 
 /**
  * 租户隔离守卫
@@ -24,7 +24,7 @@ import { ILoggerService, IUserContext } from '../../shared/interfaces';
 export class TenantIsolationGuard implements CanActivate {
   constructor(
     private readonly tenantService: ITenantService,
-    private readonly logger: ILoggerService
+    private readonly logger: ILoggerService,
   ) {}
 
   /**
@@ -41,7 +41,7 @@ export class TenantIsolationGuard implements CanActivate {
     const user = request.user as IUserContext;
 
     if (!user) {
-      throw new ForbiddenException('用户未认证');
+      throw new ForbiddenException("用户未认证");
     }
 
     try {
@@ -54,18 +54,18 @@ export class TenantIsolationGuard implements CanActivate {
         const hasCrossTenantAccess =
           await this.tenantService.hasCrossTenantAccess(
             user.userId,
-            requestTenantId
+            requestTenantId,
           );
 
         if (!hasCrossTenantAccess) {
-          throw new ForbiddenException('无权限访问其他租户数据');
+          throw new ForbiddenException("无权限访问其他租户数据");
         }
       }
 
       // 3. 设置租户上下文
       const tenantContext = new TenantContextInfo(
         requestTenantId || user.tenantId,
-        user.tenantId === requestTenantId ? 'owner' : 'guest'
+        user.tenantId === requestTenantId ? "owner" : "guest",
       );
 
       request.tenantContext = tenantContext;
@@ -73,7 +73,7 @@ export class TenantIsolationGuard implements CanActivate {
       // 4. 设置租户上下文管理器
       TenantContextManager.setCurrentTenant(tenantContext);
 
-      this.logger.debug('租户隔离检查通过', {
+      this.logger.debug("租户隔离检查通过", {
         userId: user.userId,
         userTenantId: user.tenantId,
         requestTenantId: requestTenantId,
@@ -82,7 +82,7 @@ export class TenantIsolationGuard implements CanActivate {
 
       return true;
     } catch (error) {
-      this.logger.error('租户隔离检查失败', {
+      this.logger.error("租户隔离检查失败", {
         userId: user.userId,
         error: error instanceof Error ? error.message : String(error),
         traceId: request.traceId,
@@ -100,18 +100,18 @@ export class TenantIsolationGuard implements CanActivate {
    * @param request - HTTP请求
    * @returns 租户ID或null
    */
-  private extractTenantId(request: { 
-    params?: { tenantId?: string }; 
-    query?: { tenantId?: string }; 
-    body?: { tenantId?: string }; 
-    headers?: { 'x-tenant-id'?: string } 
+  private extractTenantId(request: {
+    params?: { tenantId?: string };
+    query?: { tenantId?: string };
+    body?: { tenantId?: string };
+    headers?: { "x-tenant-id"?: string };
   }): string | null {
     // 从多个位置提取租户ID
     return (
       request.params?.tenantId ||
       request.query?.tenantId ||
       request.body?.tenantId ||
-      request.headers?.['x-tenant-id'] ||
+      request.headers?.["x-tenant-id"] ||
       null
     );
   }
@@ -125,7 +125,7 @@ export class TenantIsolationGuard implements CanActivate {
 export class TenantContextInfo {
   constructor(
     public readonly tenantId: string,
-    public readonly accessLevel: 'owner' | 'guest'
+    public readonly accessLevel: "owner" | "guest",
   ) {}
 }
 

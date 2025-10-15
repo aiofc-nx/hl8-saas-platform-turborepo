@@ -104,45 +104,45 @@ graph TB
             SA[Service Adapters<br/>服务适配器]
             EA[Event Store Adapters<br/>事件存储适配器]
         end
-        
+
         subgraph "事件溯源 (Event Sourcing)"
             ES[Event Store<br/>事件存储]
             SS[Snapshot Store<br/>快照存储]
         end
-        
+
         subgraph "事件驱动架构 (EDA)"
             DLQ[Dead Letter Queue<br/>死信队列]
             EM[Event Monitor<br/>事件监控]
         end
-        
+
         subgraph "工厂 (Factories)"
             IF[Infrastructure Factory<br/>基础设施工厂]
             IM[Infrastructure Manager<br/>基础设施管理器]
         end
-        
+
         subgraph "映射器 (Mappers)"
             DM[Domain Mappers<br/>领域映射器]
             DTO[DTO Mappers<br/>DTO映射器]
         end
     end
-    
+
     subgraph "应用层 (Application Layer)"
         CH[Command Handler<br/>命令处理器]
         QH[Query Handler<br/>查询处理器]
         EH[Event Handler<br/>事件处理器]
     end
-    
+
     subgraph "领域层 (Domain Layer)"
         AR[Aggregate Root<br/>聚合根]
         DE[Domain Event<br/>领域事件]
     end
-    
+
     subgraph "外部系统 (External Systems)"
         DB[Database<br/>数据库]
         MQ[Message Queue<br/>消息队列]
         CACHE[Cache<br/>缓存]
     end
-    
+
     CH --> PA
     QH --> RA
     EH --> SA
@@ -167,19 +167,19 @@ graph TB
         IS[IEmailService<br/>邮件服务接口]
         IC[ICacheService<br/>缓存服务接口]
     end
-    
+
     subgraph "基础设施适配器 (Infrastructure Adapters)"
         UA[UserRepositoryAdapter<br/>用户仓储适配器]
         EA[EmailServiceAdapter<br/>邮件服务适配器]
         CA[CacheServiceAdapter<br/>缓存服务适配器]
     end
-    
+
     subgraph "外部系统 (External Systems)"
         DB[(PostgreSQL<br/>数据库)]
         SMTP[SMTP Server<br/>邮件服务器]
         REDIS[(Redis<br/>缓存)]
     end
-    
+
     IP --> UA
     IS --> EA
     IC --> CA
@@ -215,7 +215,7 @@ graph TB
 export class LoggerPortAdapter implements ILogger {
   constructor(
     private readonly pinoLogger: PinoLogger,
-    private readonly config: LoggerConfig
+    private readonly config: LoggerConfig,
   ) {}
 
   /**
@@ -278,7 +278,7 @@ export class LoggerPortAdapter implements ILogger {
 export class IdGeneratorPortAdapter implements IIdGenerator {
   constructor(
     private readonly ulidGenerator: ULID,
-    private readonly config: IdGeneratorConfig
+    private readonly config: IdGeneratorConfig,
   ) {}
 
   /**
@@ -331,7 +331,7 @@ export class UserRepositoryAdapter implements IUserRepository {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly mapper: UserMapper,
-    private readonly logger: PinoLogger
+    private readonly logger: PinoLogger,
   ) {}
 
   /**
@@ -343,11 +343,11 @@ export class UserRepositoryAdapter implements IUserRepository {
   async save(user: UserAggregate): Promise<void> {
     try {
       const userData = this.mapper.toPersistence(user);
-      await this.databaseService.save('users', userData);
-      
-      this.logger.info('用户保存成功', { userId: user.getId() });
+      await this.databaseService.save("users", userData);
+
+      this.logger.info("用户保存成功", { userId: user.getId() });
     } catch (error) {
-      this.logger.error('用户保存失败', error, { userId: user.getId() });
+      this.logger.error("用户保存失败", error, { userId: user.getId() });
       throw error;
     }
   }
@@ -361,14 +361,17 @@ export class UserRepositoryAdapter implements IUserRepository {
    */
   async findById(id: EntityId): Promise<UserAggregate | null> {
     try {
-      const userData = await this.databaseService.findById('users', id.getValue());
+      const userData = await this.databaseService.findById(
+        "users",
+        id.getValue(),
+      );
       if (!userData) {
         return null;
       }
-      
+
       return this.mapper.toDomain(userData);
     } catch (error) {
-      this.logger.error('用户查找失败', error, { userId: id.getValue() });
+      this.logger.error("用户查找失败", error, { userId: id.getValue() });
       throw error;
     }
   }
@@ -381,22 +384,25 @@ export class UserRepositoryAdapter implements IUserRepository {
    * @param tenantId - 租户ID
    * @returns 用户聚合
    */
-  async findByEmail(email: Email, tenantId: EntityId): Promise<UserAggregate | null> {
+  async findByEmail(
+    email: Email,
+    tenantId: EntityId,
+  ): Promise<UserAggregate | null> {
     try {
-      const userData = await this.databaseService.findOne('users', {
+      const userData = await this.databaseService.findOne("users", {
         email: email.getValue(),
-        tenantId: tenantId.getValue()
+        tenantId: tenantId.getValue(),
       });
-      
+
       if (!userData) {
         return null;
       }
-      
+
       return this.mapper.toDomain(userData);
     } catch (error) {
-      this.logger.error('用户查找失败', error, { 
-        email: email.getValue(), 
-        tenantId: tenantId.getValue() 
+      this.logger.error("用户查找失败", error, {
+        email: email.getValue(),
+        tenantId: tenantId.getValue(),
       });
       throw error;
     }
@@ -423,7 +429,7 @@ export class UserRepositoryAdapter implements IUserRepository {
 export class EventStoreAdapter implements IEventStore {
   constructor(
     private readonly eventStoreImplementation: EventStoreImplementation,
-    private readonly logger: PinoLogger
+    private readonly logger: PinoLogger,
   ) {}
 
   /**
@@ -437,21 +443,25 @@ export class EventStoreAdapter implements IEventStore {
   async saveEvents(
     aggregateId: string,
     events: BaseDomainEvent[],
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
     try {
-      await this.eventStoreImplementation.saveEvents(aggregateId, events, expectedVersion);
-      
-      this.logger.info('事件保存成功', {
+      await this.eventStoreImplementation.saveEvents(
+        aggregateId,
+        events,
+        expectedVersion,
+      );
+
+      this.logger.info("事件保存成功", {
         aggregateId,
         eventCount: events.length,
-        expectedVersion
+        expectedVersion,
       });
     } catch (error) {
-      this.logger.error('事件保存失败', error, {
+      this.logger.error("事件保存失败", error, {
         aggregateId,
         eventCount: events.length,
-        expectedVersion
+        expectedVersion,
       });
       throw error;
     }
@@ -467,15 +477,15 @@ export class EventStoreAdapter implements IEventStore {
   async getEvents(aggregateId: string): Promise<BaseDomainEvent[]> {
     try {
       const events = await this.eventStoreImplementation.getEvents(aggregateId);
-      
-      this.logger.debug('事件获取成功', {
+
+      this.logger.debug("事件获取成功", {
         aggregateId,
-        eventCount: events.length
+        eventCount: events.length,
       });
-      
+
       return events;
     } catch (error) {
-      this.logger.error('事件获取失败', error, { aggregateId });
+      this.logger.error("事件获取失败", error, { aggregateId });
       throw error;
     }
   }
@@ -497,7 +507,7 @@ export class EventStoreAdapter implements IEventStore {
 export class MessageQueueAdapter implements IMessageQueue {
   constructor(
     private readonly messagingService: MessagingService,
-    private readonly logger: PinoLogger
+    private readonly logger: PinoLogger,
   ) {}
 
   /**
@@ -507,20 +517,23 @@ export class MessageQueueAdapter implements IMessageQueue {
    * @param event - 领域事件
    * @param options - 发布选项
    */
-  async publishEvent(event: BaseDomainEvent, options?: PublishOptions): Promise<void> {
+  async publishEvent(
+    event: BaseDomainEvent,
+    options?: PublishOptions,
+  ): Promise<void> {
     try {
       await this.messagingService.publish(event.eventType, event, options);
-      
-      this.logger.info('事件发布成功', {
+
+      this.logger.info("事件发布成功", {
         eventType: event.eventType,
         eventId: event.eventId,
-        aggregateId: event.aggregateId
+        aggregateId: event.aggregateId,
       });
     } catch (error) {
-      this.logger.error('事件发布失败', error, {
+      this.logger.error("事件发布失败", error, {
         eventType: event.eventType,
         eventId: event.eventId,
-        aggregateId: event.aggregateId
+        aggregateId: event.aggregateId,
       });
       throw error;
     }
@@ -534,15 +547,15 @@ export class MessageQueueAdapter implements IMessageQueue {
    * @param handler - 事件处理器
    */
   async subscribeEvent(
-    eventType: string, 
-    handler: (event: BaseDomainEvent) => Promise<void>
+    eventType: string,
+    handler: (event: BaseDomainEvent) => Promise<void>,
   ): Promise<void> {
     try {
       await this.messagingService.subscribe(eventType, handler);
-      
-      this.logger.info('事件订阅成功', { eventType });
+
+      this.logger.info("事件订阅成功", { eventType });
     } catch (error) {
-      this.logger.error('事件订阅失败', error, { eventType });
+      this.logger.error("事件订阅失败", error, { eventType });
       throw error;
     }
   }
@@ -600,16 +613,16 @@ export class {Function}Adapter implements I{Interface} {
     try {
       // 1. 参数验证
       this.validateParameters({parameters});
-      
+
       // 2. 调用外部服务
       const result = await this.{externalService}.{method}({parameters});
-      
+
       // 3. 结果处理
       const processedResult = this.processResult(result);
-      
+
       // 4. 记录日志
       this.logger.info('{操作}成功', { {parameters} });
-      
+
       return processedResult;
     } catch (error) {
       // 错误处理
@@ -667,7 +680,7 @@ export class EventStoreImplementation implements IEventStore {
     private readonly databaseService: DatabaseService,
     private readonly cacheService: CacheService,
     private readonly logger: PinoLogger,
-    private readonly config: EventStoreConfig
+    private readonly config: EventStoreConfig,
   ) {}
 
   /**
@@ -681,34 +694,34 @@ export class EventStoreImplementation implements IEventStore {
   async saveEvents(
     aggregateId: string,
     events: BaseDomainEvent[],
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
     try {
       // 1. 验证事件
       this.validateEvents(events);
-      
+
       // 2. 检查并发冲突
       await this.checkConcurrencyConflict(aggregateId, expectedVersion);
-      
+
       // 3. 保存事件到数据库
       await this.saveEventsToDatabase(aggregateId, events, expectedVersion);
-      
+
       // 4. 更新统计信息
       this.updateStats(events);
-      
+
       // 5. 清理缓存
       await this.invalidateCache(aggregateId);
-      
-      this.logger.info('事件保存成功', {
+
+      this.logger.info("事件保存成功", {
         aggregateId,
         eventCount: events.length,
-        expectedVersion
+        expectedVersion,
       });
     } catch (error) {
-      this.logger.error('事件保存失败', error, {
+      this.logger.error("事件保存失败", error, {
         aggregateId,
         eventCount: events.length,
-        expectedVersion
+        expectedVersion,
       });
       throw error;
     }
@@ -721,7 +734,7 @@ export class EventStoreImplementation implements IEventStore {
 
   private async checkConcurrencyConflict(
     aggregateId: string,
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
     // 并发冲突检查逻辑
   }
@@ -729,7 +742,7 @@ export class EventStoreImplementation implements IEventStore {
   private async saveEventsToDatabase(
     aggregateId: string,
     events: BaseDomainEvent[],
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
     // 数据库保存逻辑
   }
@@ -765,10 +778,10 @@ export class UserRepositoryAdapter implements IUserRepository {
 @Injectable()
 export class UserService {
   constructor(private readonly databaseService: DatabaseService) {}
-  
+
   async saveUser(userData: any): Promise<void> {
     // ❌ 直接使用数据库服务，没有适配
-    await this.databaseService.save('users', userData);
+    await this.databaseService.save("users", userData);
   }
 }
 ```
@@ -783,8 +796,8 @@ export class EmailServiceAdapter implements IEmailService {
     try {
       await this.smtpService.send(email);
     } catch (error) {
-      this.logger.error('邮件发送失败', error, { email: email.getValue() });
-      throw new EmailSendFailedException('邮件发送失败', error);
+      this.logger.error("邮件发送失败", error, { email: email.getValue() });
+      throw new EmailSendFailedException("邮件发送失败", error);
     }
   }
 }
@@ -810,16 +823,16 @@ export class EventStoreImplementation implements IEventStore {
   async saveEvents(
     aggregateId: string,
     events: BaseDomainEvent[],
-    expectedVersion: number
+    expectedVersion: number,
   ): Promise<void> {
     // 检查版本冲突
     const currentVersion = await this.getAggregateVersion(aggregateId);
     if (currentVersion !== expectedVersion) {
       throw new ConcurrencyConflictException(
-        `聚合 ${aggregateId} 版本冲突: 期望版本 ${expectedVersion}, 实际版本 ${currentVersion}`
+        `聚合 ${aggregateId} 版本冲突: 期望版本 ${expectedVersion}, 实际版本 ${currentVersion}`,
       );
     }
-    
+
     // 保存事件
     await this.saveEventsToDatabase(aggregateId, events, expectedVersion);
   }
@@ -838,13 +851,13 @@ export class EventStoreImplementation implements IEventStore {
     if (cachedEvents) {
       return cachedEvents;
     }
-    
+
     // 2. 从数据库获取
     const events = await this.getEventsFromDatabase(aggregateId);
-    
+
     // 3. 缓存结果
     await this.cacheEvents(aggregateId, events);
-    
+
     return events;
   }
 }
@@ -865,13 +878,13 @@ export class EventStoreImplementation implements IEventStore {
 @Injectable()
 export class UserRepositoryAdapter implements IUserRepository {
   constructor(private readonly databaseService: DatabaseService) {}
-  
+
   async save(user: UserAggregate): Promise<void> {
     // 适配数据库接口到应用层接口
     const userData = this.mapToDatabaseFormat(user);
-    await this.databaseService.save('users', userData);
+    await this.databaseService.save("users", userData);
   }
-  
+
   private mapToDatabaseFormat(user: UserAggregate): any {
     // 映射逻辑
     return {
@@ -900,17 +913,17 @@ export class EventStoreImplementation implements IEventStore {
       // 从快照版本开始获取事件
       return await this.getEventsFromVersion(aggregateId, snapshot.version);
     }
-    
+
     // 2. 检查缓存
     const cachedEvents = await this.getCachedEvents(aggregateId);
     if (cachedEvents) {
       return cachedEvents;
     }
-    
+
     // 3. 从数据库获取
     const events = await this.getEventsFromDatabase(aggregateId);
     await this.cacheEvents(aggregateId, events);
-    
+
     return events;
   }
 }
@@ -928,9 +941,9 @@ export class EventStoreImplementation implements IEventStore {
 export class EmailServiceAdapter implements IEmailService {
   constructor(
     private readonly smtpService: SmtpService,
-    private readonly circuitBreaker: CircuitBreaker
+    private readonly circuitBreaker: CircuitBreaker,
   ) {}
-  
+
   async sendEmail(email: Email): Promise<void> {
     return this.circuitBreaker.execute(async () => {
       await this.smtpService.send(email);

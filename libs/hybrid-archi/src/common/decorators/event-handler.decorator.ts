@@ -47,18 +47,19 @@
  *
  * @since 1.0.0
  */
-import 'reflect-metadata';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
-import type { IEventHandler  } from '../../application/cqrs/events/base/event-handler.interface';
+import "reflect-metadata";
+import { BaseDomainEvent } from "../../domain/events/base/base-domain-event";
+import type { IEventHandler } from "../../application/cqrs/events/base/event-handler.interface";
 import {
   setEventHandlerMetadata,
   getEventHandlerMetadata as getMetadata,
-} from './metadata.utils';
-import type { IEventHandlerMetadata,
+} from "./metadata.utils";
+import type {
+  IEventHandlerMetadata,
   IRetryConfig,
   IMultiTenantConfig,
   IPerformanceMonitorConfig,
- } from './metadata.interfaces';
+} from "./metadata.interfaces";
 
 /**
  * 事件处理器装饰器选项
@@ -144,7 +145,7 @@ export function EventHandler<TEvent extends BaseDomainEvent>(
   return function (target: new (...args: any[]) => IEventHandler<TEvent>) {
     // 验证目标类实现了 IEventHandler 接口
     const prototype = target.prototype;
-    if (typeof prototype.handle !== 'function') {
+    if (typeof prototype.handle !== "function") {
       throw new Error(
         `Event handler ${target.name} must implement handle method`,
       );
@@ -154,7 +155,7 @@ export function EventHandler<TEvent extends BaseDomainEvent>(
     setEventHandlerMetadata(target, eventType, options);
 
     // 添加静态方法用于获取事件类型
-    Object.defineProperty(target, 'eventType', {
+    Object.defineProperty(target, "eventType", {
       value: eventType,
       writable: false,
       enumerable: true,
@@ -162,7 +163,7 @@ export function EventHandler<TEvent extends BaseDomainEvent>(
     });
 
     // 添加静态方法用于获取处理器优先级
-    Object.defineProperty(target, 'priority', {
+    Object.defineProperty(target, "priority", {
       value: options.priority || 0,
       writable: false,
       enumerable: true,
@@ -170,7 +171,7 @@ export function EventHandler<TEvent extends BaseDomainEvent>(
     });
 
     // 添加静态方法用于检查是否支持指定事件类型
-    Object.defineProperty(target, 'supports', {
+    Object.defineProperty(target, "supports", {
       value: function (evtType: string): boolean {
         return evtType === eventType;
       },
@@ -180,7 +181,7 @@ export function EventHandler<TEvent extends BaseDomainEvent>(
     });
 
     // 添加静态方法用于获取元数据
-    Object.defineProperty(target, 'getMetadata', {
+    Object.defineProperty(target, "getMetadata", {
       value: function (): IEventHandlerMetadata | undefined {
         return getMetadata(target);
       },

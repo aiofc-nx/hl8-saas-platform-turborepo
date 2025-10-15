@@ -31,7 +31,7 @@
  * @since 1.0.0
  */
 
-import { AbstractHttpException } from '@hl8/exceptions';
+import { AbstractHttpException } from "@hl8/exceptions";
 
 export class DatabaseConnectionException extends AbstractHttpException {
   /**
@@ -42,8 +42,8 @@ export class DatabaseConnectionException extends AbstractHttpException {
    */
   constructor(detail: string, data?: Record<string, any>) {
     super(
-      'DATABASE_CONNECTION_ERROR', // errorCode
-      '数据库连接错误', // title
+      "DATABASE_CONNECTION_ERROR", // errorCode
+      "数据库连接错误", // title
       detail, // detail
       503, // status
       data, // data

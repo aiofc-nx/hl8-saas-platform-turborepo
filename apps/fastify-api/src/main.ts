@@ -1,12 +1,12 @@
 import {
   createFastifyLoggerConfig,
   EnterpriseFastifyAdapter,
-} from '@hl8/nestjs-fastify/index.js';
-import { NestFactory } from '@nestjs/core';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppModule } from './app.module.js';
-import { bootstrap } from './bootstrap.js';
-import { setupSwagger } from './swagger.js';
+} from "@hl8/nestjs-fastify/index.js";
+import { NestFactory } from "@nestjs/core";
+import { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { AppModule } from "./app.module.js";
+import { bootstrap } from "./bootstrap.js";
+import { setupSwagger } from "./swagger.js";
 
 /**
  * Main entry point to bootstrap the NestJS Fastify application.
@@ -22,11 +22,11 @@ const main = async (): Promise<void> => {
     // Fastify 基础配置
     fastifyOptions: {
       logger: createFastifyLoggerConfig({
-        level: process.env.LOG_LEVEL || 'info',
-        prettyPrint: process.env.NODE_ENV === 'development',
-        colorize: process.env.NODE_ENV === 'development',
-        translateTime: 'SYS:standard',
-        ignore: 'pid,hostname',
+        level: process.env.LOG_LEVEL || "info",
+        prettyPrint: process.env.NODE_ENV === "development",
+        colorize: process.env.NODE_ENV === "development",
+        translateTime: "SYS:standard",
+        ignore: "pid,hostname",
       }),
       trustProxy: true,
     },
@@ -44,13 +44,13 @@ const main = async (): Promise<void> => {
     // 安全配置
     enableSecurity: true,
     // 限流（生产环境启用）
-    enableRateLimit: process.env.NODE_ENV === 'production',
+    enableRateLimit: process.env.NODE_ENV === "production",
     rateLimitOptions: {
       timeWindow: 60000, // 1分钟
       max: 100, // 100次请求
     },
     // 熔断器（生产环境启用）
-    enableCircuitBreaker: process.env.NODE_ENV === 'production',
+    enableCircuitBreaker: process.env.NODE_ENV === "production",
   });
 
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -73,6 +73,6 @@ const main = async (): Promise<void> => {
  * @returns {void}
  */
 main().catch((error) => {
-  console.error('Failed to start application:', error);
+  console.error("Failed to start application:", error);
   process.exit(1);
 });

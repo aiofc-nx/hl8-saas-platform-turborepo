@@ -38,59 +38,59 @@
 export enum OrganizationStatus {
   /**
    * 待激活状态
-   * 
+   *
    * @description 组织创建后的初始状态
    * 此时组织已创建但尚未激活，不能执行业务操作
    */
-  PENDING = 'PENDING',
+  PENDING = "PENDING",
 
   /**
    * 活跃状态
-   * 
+   *
    * @description 组织正常使用状态
    * 可以执行所有业务操作，是组织的主要工作状态
    */
-  ACTIVE = 'ACTIVE',
+  ACTIVE = "ACTIVE",
 
   /**
    * 暂停状态
-   * 
+   *
    * @description 组织被临时暂停
    * 不能执行业务操作但数据完整保留，可随时恢复
    */
-  SUSPENDED = 'SUSPENDED',
+  SUSPENDED = "SUSPENDED",
 
   /**
    * 禁用状态
-   * 
+   *
    * @description 组织被禁用
    * 完全不能使用，但数据保留，可重新激活
    */
-  DISABLED = 'DISABLED',
+  DISABLED = "DISABLED",
 
   /**
    * 归档状态
-   * 
+   *
    * @description 组织被归档
    * 历史数据保留但不再使用，可重新激活
    */
-  ARCHIVED = 'ARCHIVED',
+  ARCHIVED = "ARCHIVED",
 
   /**
    * 删除状态
-   * 
+   *
    * @description 组织被标记删除
    * 数据标记删除但物理保留，不可恢复
    */
-  DELETED = 'DELETED',
+  DELETED = "DELETED",
 
   /**
    * 拒绝状态
-   * 
+   *
    * @description 组织申请被拒绝
    * 组织申请未通过审核，可以重新申请
    */
-  REJECTED = 'REJECTED'
+  REJECTED = "REJECTED",
 }
 
 /**
@@ -105,18 +105,32 @@ export enum OrganizationStatus {
 export class OrganizationStatusUtils {
   /**
    * 状态转换矩阵
-   * 
+   *
    * @description 定义允许的状态转换关系
    * 键为当前状态，值为可转换的目标状态数组
    */
-  private static readonly TRANSITION_MATRIX: Record<OrganizationStatus, OrganizationStatus[]> = {
-    [OrganizationStatus.PENDING]: [OrganizationStatus.ACTIVE, OrganizationStatus.DISABLED],
-    [OrganizationStatus.ACTIVE]: [OrganizationStatus.SUSPENDED, OrganizationStatus.DISABLED, OrganizationStatus.ARCHIVED],
-    [OrganizationStatus.SUSPENDED]: [OrganizationStatus.ACTIVE, OrganizationStatus.DISABLED, OrganizationStatus.ARCHIVED],
+  private static readonly TRANSITION_MATRIX: Record<
+    OrganizationStatus,
+    OrganizationStatus[]
+  > = {
+    [OrganizationStatus.PENDING]: [
+      OrganizationStatus.ACTIVE,
+      OrganizationStatus.DISABLED,
+    ],
+    [OrganizationStatus.ACTIVE]: [
+      OrganizationStatus.SUSPENDED,
+      OrganizationStatus.DISABLED,
+      OrganizationStatus.ARCHIVED,
+    ],
+    [OrganizationStatus.SUSPENDED]: [
+      OrganizationStatus.ACTIVE,
+      OrganizationStatus.DISABLED,
+      OrganizationStatus.ARCHIVED,
+    ],
     [OrganizationStatus.DISABLED]: [OrganizationStatus.ACTIVE],
     [OrganizationStatus.ARCHIVED]: [OrganizationStatus.ACTIVE],
     [OrganizationStatus.DELETED]: [], // 终态，不可转换
-    [OrganizationStatus.REJECTED]: [OrganizationStatus.PENDING] // 可以重新申请
+    [OrganizationStatus.REJECTED]: [OrganizationStatus.PENDING], // 可以重新申请
   };
 
   /**
@@ -131,14 +145,17 @@ export class OrganizationStatusUtils {
    * @example
    * ```typescript
    * const isValid = OrganizationStatusUtils.canTransitionTo(
-   *   OrganizationStatus.PENDING, 
+   *   OrganizationStatus.PENDING,
    *   OrganizationStatus.ACTIVE
    * ); // true
    * ```
    *
    * @since 1.0.0
    */
-  public static canTransitionTo(fromStatus: OrganizationStatus, toStatus: OrganizationStatus): boolean {
+  public static canTransitionTo(
+    fromStatus: OrganizationStatus,
+    toStatus: OrganizationStatus,
+  ): boolean {
     const allowedTransitions = this.TRANSITION_MATRIX[fromStatus];
     return allowedTransitions.includes(toStatus);
   }
@@ -161,13 +178,13 @@ export class OrganizationStatusUtils {
    */
   public static getDescription(status: OrganizationStatus): string {
     const descriptions: Record<OrganizationStatus, string> = {
-      [OrganizationStatus.PENDING]: '待激活',
-      [OrganizationStatus.ACTIVE]: '活跃',
-      [OrganizationStatus.SUSPENDED]: '暂停',
-      [OrganizationStatus.DISABLED]: '禁用',
-      [OrganizationStatus.ARCHIVED]: '已归档',
-      [OrganizationStatus.DELETED]: '已删除',
-      [OrganizationStatus.REJECTED]: '已拒绝'
+      [OrganizationStatus.PENDING]: "待激活",
+      [OrganizationStatus.ACTIVE]: "活跃",
+      [OrganizationStatus.SUSPENDED]: "暂停",
+      [OrganizationStatus.DISABLED]: "禁用",
+      [OrganizationStatus.ARCHIVED]: "已归档",
+      [OrganizationStatus.DELETED]: "已删除",
+      [OrganizationStatus.REJECTED]: "已拒绝",
     };
 
     return descriptions[status];
@@ -209,7 +226,9 @@ export class OrganizationStatusUtils {
    *
    * @since 1.0.0
    */
-  public static getAvailableTransitions(status: OrganizationStatus): OrganizationStatus[] {
+  public static getAvailableTransitions(
+    status: OrganizationStatus,
+  ): OrganizationStatus[] {
     return [...this.TRANSITION_MATRIX[status]];
   }
 
@@ -230,7 +249,10 @@ export class OrganizationStatusUtils {
    * @since 1.0.0
    */
   public static isAvailable(status: OrganizationStatus): boolean {
-    return status !== OrganizationStatus.DISABLED && status !== OrganizationStatus.DELETED;
+    return (
+      status !== OrganizationStatus.DISABLED &&
+      status !== OrganizationStatus.DELETED
+    );
   }
 
   /**
@@ -252,4 +274,3 @@ export class OrganizationStatusUtils {
     return status === OrganizationStatus.ACTIVE;
   }
 }
-

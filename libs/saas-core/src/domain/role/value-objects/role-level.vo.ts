@@ -20,7 +20,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
+import { BaseValueObject } from "@hl8/hybrid-archi";
 
 export class RoleLevel extends BaseValueObject<number> {
   private static readonly MIN_LEVEL = 1;
@@ -33,12 +33,12 @@ export class RoleLevel extends BaseValueObject<number> {
    * @override
    */
   protected override validate(value: number): void {
-    this.validateInteger(value, '角色层级');
+    this.validateInteger(value, "角色层级");
     this.validateRange(
       value,
       RoleLevel.MIN_LEVEL,
       RoleLevel.MAX_LEVEL,
-      '角色层级'
+      "角色层级",
     );
   }
 

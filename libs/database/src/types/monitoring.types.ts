@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import type { PoolStats } from './connection.types.js';
+import type { PoolStats } from "./connection.types.js";
 
 /**
  * 健康检查结果接口
@@ -15,7 +15,7 @@ import type { PoolStats } from './connection.types.js';
  */
 export interface HealthCheckResult {
   /** 健康状态 */
-  status: 'healthy' | 'unhealthy' | 'degraded';
+  status: "healthy" | "unhealthy" | "degraded";
 
   /** 检查时间 */
   checkedAt: Date;

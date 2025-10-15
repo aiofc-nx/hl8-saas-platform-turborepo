@@ -2,8 +2,8 @@
  * @fileoverview Metrics 服务
  */
 
-import { Injectable } from '@nestjs/common';
-import { PrometheusService } from './prometheus.service.js';
+import { Injectable } from "@nestjs/common";
+import { PrometheusService } from "./prometheus.service.js";
 
 @Injectable()
 export class MetricsService {
@@ -23,7 +23,7 @@ export class MetricsService {
       method,
       path,
       status: status.toString(),
-      tenant_id: tenantId || 'unknown',
+      tenant_id: tenantId || "unknown",
     };
 
     // 增加请求计数

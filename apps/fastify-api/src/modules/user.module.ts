@@ -23,9 +23,9 @@
  * ```
  */
 
-import { Module } from '@nestjs/common';
-import { UserController } from '../controllers/user.controller.js';
-import { UserService } from '../services/user.service.js';
+import { Module } from "@nestjs/common";
+import { UserController } from "../controllers/user.controller.js";
+import { UserService } from "../services/user.service.js";
 
 @Module({
   controllers: [UserController],

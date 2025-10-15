@@ -1,5 +1,5 @@
-import tsEslint from 'typescript-eslint';
-import baseConfig from './eslint-base.config.mjs';
+import tsEslint from "typescript-eslint";
+import baseConfig from "./eslint-base.config.mjs";
 
 const tsConfig = tsEslint.configs.strict;
 

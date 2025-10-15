@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 /**
  * Redis 连接异常
@@ -42,7 +42,7 @@ export class RedisConnectionException extends HttpException {
     super(
       {
         message,
-        error: 'Redis Connection Error',
+        error: "Redis Connection Error",
         statusCode: HttpStatus.SERVICE_UNAVAILABLE,
         cause: cause?.message,
       },

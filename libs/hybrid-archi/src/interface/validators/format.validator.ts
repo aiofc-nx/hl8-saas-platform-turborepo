@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const FORMAT_VALIDATOR = 'Format Validator';
+export const FORMAT_VALIDATOR = "Format Validator";

@@ -6,7 +6,7 @@
  * @since 0.2.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 /**
  * 性能指标

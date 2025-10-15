@@ -8,14 +8,14 @@
  * @since 1.0.0
  */
 
-import { Module } from '@nestjs/common';
-import { DatabaseModule } from '@hl8/database';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
-import { MessagingModule } from '@hl8/messaging';
+import { Module } from "@nestjs/common";
+import { DatabaseModule } from "@hl8/database";
+import { CacheModule } from "@hl8/cache";
+import { LoggerModule } from "@hl8/logger";
+import { MessagingModule } from "@hl8/messaging";
 
-import { BaseRepositoryAdapter } from './base-repository.adapter';
-import { BaseAggregateRepositoryAdapter } from './base-aggregate-repository.adapter';
+import { BaseRepositoryAdapter } from "./base-repository.adapter";
+import { BaseAggregateRepositoryAdapter } from "./base-aggregate-repository.adapter";
 // import { DomainServiceAdapter } from './domain-service.adapter';
 
 /**

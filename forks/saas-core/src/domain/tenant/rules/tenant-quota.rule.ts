@@ -34,8 +34,8 @@
  * @since 1.0.0
  */
 
-import { TenantQuota } from '../value-objects/tenant-quota.vo';
-import { QUOTA_WARNING_THRESHOLDS } from '../../../constants/tenant.constants';
+import { TenantQuota } from "../value-objects/tenant-quota.vo";
+import { QUOTA_WARNING_THRESHOLDS } from "../../../constants/tenant.constants";
 
 /**
  * 配额使用情况
@@ -147,7 +147,10 @@ export class TenantQuotaRule {
    * @param {TenantQuota} quota - 租户配额
    * @returns {IQuotaUsage} 配额使用情况
    */
-  public getUserQuotaUsage(currentUserCount: number, quota: TenantQuota): IQuotaUsage {
+  public getUserQuotaUsage(
+    currentUserCount: number,
+    quota: TenantQuota,
+  ): IQuotaUsage {
     return this.getQuotaUsage(currentUserCount, quota.maxUsers);
   }
 
@@ -213,7 +216,7 @@ export class TenantQuotaRule {
       blockingReasons.push(
         `当前用户数（${currentUsage.userCount}）超出新配额（${newQuota.maxUsers}）`,
       );
-      exceededResources.push('users');
+      exceededResources.push("users");
       suggestedActions.push(
         `请删除或禁用 ${currentUsage.userCount - newQuota.maxUsers} 个用户`,
       );
@@ -224,7 +227,7 @@ export class TenantQuotaRule {
       blockingReasons.push(
         `当前存储空间（${currentUsage.storageMB}MB）超出新配额（${newQuota.maxStorageMB}MB）`,
       );
-      exceededResources.push('storage');
+      exceededResources.push("storage");
       suggestedActions.push(
         `请清理 ${currentUsage.storageMB - newQuota.maxStorageMB}MB 存储空间`,
       );
@@ -235,7 +238,7 @@ export class TenantQuotaRule {
       blockingReasons.push(
         `当前组织数（${currentUsage.organizationCount}）超出新配额（${newQuota.maxOrganizations}）`,
       );
-      exceededResources.push('organizations');
+      exceededResources.push("organizations");
       suggestedActions.push(
         `请删除 ${currentUsage.organizationCount - newQuota.maxOrganizations} 个组织`,
       );
@@ -303,11 +306,18 @@ export class TenantQuotaRule {
    * @returns {boolean}
    */
   private hasWarnings(
-    currentUsage: { userCount: number; storageMB: number; organizationCount: number },
+    currentUsage: {
+      userCount: number;
+      storageMB: number;
+      organizationCount: number;
+    },
     quota: TenantQuota,
   ): boolean {
     const userUsage = this.getUserQuotaUsage(currentUsage.userCount, quota);
-    const storageUsage = this.getStorageQuotaUsage(currentUsage.storageMB, quota);
+    const storageUsage = this.getStorageQuotaUsage(
+      currentUsage.storageMB,
+      quota,
+    );
     const orgUsage = this.getOrganizationQuotaUsage(
       currentUsage.organizationCount,
       quota,
@@ -325,17 +335,26 @@ export class TenantQuotaRule {
    * @returns {boolean}
    */
   private hasCriticalWarnings(
-    currentUsage: { userCount: number; storageMB: number; organizationCount: number },
+    currentUsage: {
+      userCount: number;
+      storageMB: number;
+      organizationCount: number;
+    },
     quota: TenantQuota,
   ): boolean {
     const userUsage = this.getUserQuotaUsage(currentUsage.userCount, quota);
-    const storageUsage = this.getStorageQuotaUsage(currentUsage.storageMB, quota);
+    const storageUsage = this.getStorageQuotaUsage(
+      currentUsage.storageMB,
+      quota,
+    );
     const orgUsage = this.getOrganizationQuotaUsage(
       currentUsage.organizationCount,
       quota,
     );
 
-    return userUsage.isCritical || storageUsage.isCritical || orgUsage.isCritical;
+    return (
+      userUsage.isCritical || storageUsage.isCritical || orgUsage.isCritical
+    );
   }
 
   /**
@@ -347,11 +366,18 @@ export class TenantQuotaRule {
    * @returns {boolean}
    */
   private isBlocked(
-    currentUsage: { userCount: number; storageMB: number; organizationCount: number },
+    currentUsage: {
+      userCount: number;
+      storageMB: number;
+      organizationCount: number;
+    },
     quota: TenantQuota,
   ): boolean {
     const userUsage = this.getUserQuotaUsage(currentUsage.userCount, quota);
-    const storageUsage = this.getStorageQuotaUsage(currentUsage.storageMB, quota);
+    const storageUsage = this.getStorageQuotaUsage(
+      currentUsage.storageMB,
+      quota,
+    );
     const orgUsage = this.getOrganizationQuotaUsage(
       currentUsage.organizationCount,
       quota,
@@ -360,4 +386,3 @@ export class TenantQuotaRule {
     return userUsage.isBlocked || storageUsage.isBlocked || orgUsage.isBlocked;
   }
 }
-

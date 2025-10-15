@@ -8,48 +8,48 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
-import { DatabaseService } from '@hl8/database';
-import { EventService, MessagingService } from '@hl8/messaging';
-import { TenantContextService } from '@hl8/multi-tenancy';
+import { Injectable } from "@nestjs/common";
+import { PinoLogger } from "@hl8/logger";
+import { CacheService } from "@hl8/cache";
+import { DatabaseService } from "@hl8/database";
+import { EventService, MessagingService } from "@hl8/messaging";
+import { TenantContextService } from "@hl8/multi-tenancy";
 
 // 导入所有适配器
-import { LoggerPortAdapter } from '../adapters/ports/logger-port.adapter';
-import { IdGeneratorPortAdapter } from '../adapters/ports/id-generator-port.adapter';
-import { TimeProviderPortAdapter } from '../adapters/ports/time-provider-port.adapter';
-import { ValidationPortAdapter } from '../adapters/ports/validation-port.adapter';
-import { ConfigurationPortAdapter } from '../adapters/ports/configuration-port.adapter';
-import { EventBusPortAdapter } from '../adapters/ports/event-bus-port.adapter';
+import { LoggerPortAdapter } from "../adapters/ports/logger-port.adapter";
+import { IdGeneratorPortAdapter } from "../adapters/ports/id-generator-port.adapter";
+import { TimeProviderPortAdapter } from "../adapters/ports/time-provider-port.adapter";
+import { ValidationPortAdapter } from "../adapters/ports/validation-port.adapter";
+import { ConfigurationPortAdapter } from "../adapters/ports/configuration-port.adapter";
+import { EventBusPortAdapter } from "../adapters/ports/event-bus-port.adapter";
 
-import { BaseRepositoryAdapter } from '../adapters/repositories/base-repository.adapter';
-import { BaseAggregateRepositoryAdapter } from '../adapters/repositories/base-aggregate-repository.adapter';
-import { DomainServiceAdapter } from '../adapters/services/domain-service.adapter';
+import { BaseRepositoryAdapter } from "../adapters/repositories/base-repository.adapter";
+import { BaseAggregateRepositoryAdapter } from "../adapters/repositories/base-aggregate-repository.adapter";
+import { DomainServiceAdapter } from "../adapters/services/domain-service.adapter";
 
-import { EventStoreAdapter } from '../adapters/event-store/event-store.adapter';
-import { MessageQueueAdapter } from '../adapters/message-queue/message-queue.adapter';
-import { CacheAdapter } from '../adapters/cache/cache.adapter';
-import { DatabaseAdapter } from '../adapters/database/database.adapter';
+import { EventStoreAdapter } from "../adapters/event-store/event-store.adapter";
+import { MessageQueueAdapter } from "../adapters/message-queue/message-queue.adapter";
+import { CacheAdapter } from "../adapters/cache/cache.adapter";
+import { DatabaseAdapter } from "../adapters/database/database.adapter";
 
 /**
  * 基础设施服务类型枚举
  */
 export enum InfrastructureServiceType {
   /** 端口适配器 */
-  PORT_ADAPTER = 'port_adapter',
+  PORT_ADAPTER = "port_adapter",
   /** 仓储适配器 */
-  REPOSITORY_ADAPTER = 'repository_adapter',
+  REPOSITORY_ADAPTER = "repository_adapter",
   /** 领域服务适配器 */
-  DOMAIN_SERVICE_ADAPTER = 'domain_service_adapter',
+  DOMAIN_SERVICE_ADAPTER = "domain_service_adapter",
   /** 事件存储适配器 */
-  EVENT_STORE_ADAPTER = 'event_store_adapter',
+  EVENT_STORE_ADAPTER = "event_store_adapter",
   /** 消息队列适配器 */
-  MESSAGE_QUEUE_ADAPTER = 'message_queue_adapter',
+  MESSAGE_QUEUE_ADAPTER = "message_queue_adapter",
   /** 缓存适配器 */
-  CACHE_ADAPTER = 'cache_adapter',
+  CACHE_ADAPTER = "cache_adapter",
   /** 数据库适配器 */
-  DATABASE_ADAPTER = 'database_adapter',
+  DATABASE_ADAPTER = "database_adapter",
 }
 
 /**
@@ -91,7 +91,7 @@ export interface IInfrastructureServiceRegistration {
   /** 最后访问时间 */
   lastAccessedAt: Date;
   /** 服务状态 */
-  status: 'created' | 'initializing' | 'running' | 'stopped' | 'error';
+  status: "created" | "initializing" | "running" | "stopped" | "error";
   /** 错误信息 */
   error?: string;
 }
@@ -118,7 +118,7 @@ export class InfrastructureFactory {
     private readonly databaseService: DatabaseService,
     private readonly eventService: EventService,
     private readonly messagingService: MessagingService,
-    private readonly tenantContextService: TenantContextService
+    private readonly tenantContextService: TenantContextService,
   ) {
     this.initializeServiceConstructors();
   }
@@ -140,13 +140,16 @@ export class InfrastructureFactory {
     try {
       // 创建服务实例
       const ServiceConstructor = this.serviceConstructors.get(
-        config.serviceType
+        config.serviceType,
       );
       if (!ServiceConstructor) {
         throw new Error(`未知的服务类型: ${config.serviceType}`);
       }
 
-      const instance = this.instantiateService(ServiceConstructor as { new (...args: unknown[]): unknown }, config);
+      const instance = this.instantiateService(
+        ServiceConstructor as { new (...args: unknown[]): unknown },
+        config,
+      );
 
       // 注册服务
       const registration: IInfrastructureServiceRegistration = {
@@ -157,7 +160,7 @@ export class InfrastructureFactory {
         initialized: false,
         createdAt: new Date(),
         lastAccessedAt: new Date(),
-        status: 'created',
+        status: "created",
       };
 
       this.services.set(config.serviceName, registration);
@@ -224,22 +227,25 @@ export class InfrastructureFactory {
     }
 
     try {
-      registration.status = 'initializing';
+      registration.status = "initializing";
 
       // 初始化服务
       if (
         registration.instance &&
-        typeof (registration.instance as { initialize?: () => Promise<void> }).initialize === 'function'
+        typeof (registration.instance as { initialize?: () => Promise<void> })
+          .initialize === "function"
       ) {
-        await (registration.instance as { initialize: () => Promise<void> }).initialize();
+        await (
+          registration.instance as { initialize: () => Promise<void> }
+        ).initialize();
       }
 
       registration.initialized = true;
-      registration.status = 'running';
+      registration.status = "running";
 
       this.logger.debug(`初始化基础设施服务成功: ${serviceName}`);
     } catch (error) {
-      registration.status = 'error';
+      registration.status = "error";
       registration.error =
         error instanceof Error ? error.message : String(error);
 
@@ -263,16 +269,17 @@ export class InfrastructureFactory {
       // 启动服务
       if (
         registration.instance &&
-        typeof (registration.instance as { start?: () => Promise<void> }).start === 'function'
+        typeof (registration.instance as { start?: () => Promise<void> })
+          .start === "function"
       ) {
         await (registration.instance as { start: () => Promise<void> }).start();
       }
 
-      registration.status = 'running';
+      registration.status = "running";
 
       this.logger.debug(`启动基础设施服务成功: ${serviceName}`);
     } catch (error) {
-      registration.status = 'error';
+      registration.status = "error";
       registration.error =
         error instanceof Error ? error.message : String(error);
 
@@ -296,16 +303,17 @@ export class InfrastructureFactory {
       // 停止服务
       if (
         registration.instance &&
-        typeof (registration.instance as { stop?: () => Promise<void> }).stop === 'function'
+        typeof (registration.instance as { stop?: () => Promise<void> })
+          .stop === "function"
       ) {
         await (registration.instance as { stop: () => Promise<void> }).stop();
       }
 
-      registration.status = 'stopped';
+      registration.status = "stopped";
 
       this.logger.debug(`停止基础设施服务成功: ${serviceName}`);
     } catch (error) {
-      registration.status = 'error';
+      registration.status = "error";
       registration.error =
         error instanceof Error ? error.message : String(error);
 
@@ -329,9 +337,12 @@ export class InfrastructureFactory {
       // 销毁服务
       if (
         registration.instance &&
-        typeof (registration.instance as { destroy?: () => Promise<void> }).destroy === 'function'
+        typeof (registration.instance as { destroy?: () => Promise<void> })
+          .destroy === "function"
       ) {
-        await (registration.instance as { destroy: () => Promise<void> }).destroy();
+        await (
+          registration.instance as { destroy: () => Promise<void> }
+        ).destroy();
       }
 
       // 移除服务注册
@@ -360,7 +371,7 @@ export class InfrastructureFactory {
    * @returns 服务注册信息
    */
   getServiceRegistration(
-    serviceName: string
+    serviceName: string,
   ): IInfrastructureServiceRegistration | null {
     return this.services.get(serviceName) || null;
   }
@@ -377,11 +388,11 @@ export class InfrastructureFactory {
       try {
         const isHealthy = await this.checkServiceHealth(
           serviceName,
-          registration.instance
+          registration.instance,
         );
         results[serviceName] = {
           healthy: isHealthy,
-          healthStatus: isHealthy ? 'healthy' : 'unhealthy',
+          healthStatus: isHealthy ? "healthy" : "unhealthy",
           serviceName,
           serviceType: registration.serviceType,
           createdAt: registration.createdAt,
@@ -391,7 +402,7 @@ export class InfrastructureFactory {
       } catch (error) {
         results[serviceName] = {
           healthy: false,
-          status: 'error',
+          status: "error",
           error: error instanceof Error ? error.message : String(error),
           serviceName,
         };
@@ -455,7 +466,7 @@ export class InfrastructureFactory {
     return {
       totalServices: services.length,
       activeServices: services.filter(
-        (s) => s.initialized && s.status === 'running'
+        (s) => s.initialized && s.status === "running",
       ).length,
       serviceTypes,
       serviceStatuses,
@@ -492,7 +503,7 @@ export class InfrastructureFactory {
       InfrastructureServiceType.DOMAIN_SERVICE_ADAPTER,
       {
         domain: DomainServiceAdapter,
-      }
+      },
     );
 
     // 事件存储适配器
@@ -500,7 +511,7 @@ export class InfrastructureFactory {
       InfrastructureServiceType.EVENT_STORE_ADAPTER,
       {
         eventStore: EventStoreAdapter,
-      }
+      },
     );
 
     // 消息队列适配器
@@ -508,7 +519,7 @@ export class InfrastructureFactory {
       InfrastructureServiceType.MESSAGE_QUEUE_ADAPTER,
       {
         messageQueue: MessageQueueAdapter,
-      }
+      },
     );
 
     // 缓存适配器
@@ -527,7 +538,7 @@ export class InfrastructureFactory {
    */
   private instantiateService(
     ServiceConstructor: new (...args: unknown[]) => unknown,
-    config: IInfrastructureServiceConfig
+    config: IInfrastructureServiceConfig,
   ): any {
     const serviceType = config.serviceType;
     const serviceName = config.serviceName;
@@ -564,21 +575,24 @@ export class InfrastructureFactory {
   /**
    * 创建端口适配器
    */
-  private createPortAdapter(serviceName: string, options: Record<string, unknown>): any {
-    const adapterType = options['adapterType'] || 'logger';
+  private createPortAdapter(
+    serviceName: string,
+    options: Record<string, unknown>,
+  ): any {
+    const adapterType = options["adapterType"] || "logger";
 
     switch (adapterType) {
-      case 'logger':
+      case "logger":
         return new LoggerPortAdapter(this.logger);
-      case 'idGenerator':
+      case "idGenerator":
         return new IdGeneratorPortAdapter();
-      case 'timeProvider':
+      case "timeProvider":
         return new TimeProviderPortAdapter();
-      case 'validation':
+      case "validation":
         return new ValidationPortAdapter();
-      case 'configuration':
-        return new ConfigurationPortAdapter(options['configService'] as any);
-      case 'eventBus':
+      case "configuration":
+        return new ConfigurationPortAdapter(options["configService"] as any);
+      case "eventBus":
         return new EventBusPortAdapter(this.eventService);
       default:
         throw new Error(`不支持的端口适配器类型: ${adapterType}`);
@@ -588,26 +602,29 @@ export class InfrastructureFactory {
   /**
    * 创建仓储适配器
    */
-  private createRepositoryAdapter(serviceName: string, options: Record<string, unknown>): any {
-    const adapterType = options['adapterType'] || 'base';
+  private createRepositoryAdapter(
+    serviceName: string,
+    options: Record<string, unknown>,
+  ): any {
+    const adapterType = options["adapterType"] || "base";
 
     switch (adapterType) {
-      case 'base':
+      case "base":
         return new BaseRepositoryAdapter(
           this.databaseService,
           this.cacheService,
           this.logger,
-          (options['entityName'] as string) || 'Entity',
-          options
+          (options["entityName"] as string) || "Entity",
+          options,
         );
-      case 'aggregate':
+      case "aggregate":
         return new BaseAggregateRepositoryAdapter(
           this.databaseService,
           this.cacheService,
           this.logger,
           this.eventService,
-          (options['entityName'] as string) || 'Aggregate',
-          options
+          (options["entityName"] as string) || "Aggregate",
+          options,
         );
       default:
         throw new Error(`不支持的仓储适配器类型: ${adapterType}`);
@@ -617,12 +634,15 @@ export class InfrastructureFactory {
   /**
    * 创建领域服务适配器
    */
-  private createDomainServiceAdapter(serviceName: string, options: Record<string, unknown>): any {
+  private createDomainServiceAdapter(
+    serviceName: string,
+    options: Record<string, unknown>,
+  ): any {
     return new DomainServiceAdapter(
       this.logger,
       this.cacheService,
       serviceName,
-      options
+      options,
     );
   }
 
@@ -634,7 +654,7 @@ export class InfrastructureFactory {
       this.databaseService,
       this.cacheService,
       this.logger,
-      options
+      options,
     );
   }
 
@@ -646,7 +666,7 @@ export class InfrastructureFactory {
       this.messagingService,
       this.cacheService,
       this.logger,
-      options
+      options,
     );
   }
 
@@ -669,17 +689,17 @@ export class InfrastructureFactory {
    */
   private async checkServiceHealth(
     serviceName: string,
-    instance: any
+    instance: any,
   ): Promise<boolean> {
     try {
       // 检查服务是否有健康检查方法
-      if (instance && typeof instance.healthCheck === 'function') {
+      if (instance && typeof instance.healthCheck === "function") {
         return await instance.healthCheck();
       }
 
       // 检查服务是否有状态属性
-      if (instance && typeof instance.status === 'string') {
-        return instance.status === 'running';
+      if (instance && typeof instance.status === "string") {
+        return instance.status === "running";
       }
 
       // 默认认为服务健康

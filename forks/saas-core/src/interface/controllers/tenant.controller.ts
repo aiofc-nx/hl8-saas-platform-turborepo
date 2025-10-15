@@ -32,19 +32,19 @@ import {
   Query,
   HttpCode,
   HttpStatus,
-} from '@nestjs/common';
-import { CommandBus, QueryBus, EntityId } from '@hl8/hybrid-archi';
-import { TenantAggregate } from '../../domain/tenant/aggregates/tenant.aggregate';
-import { CreateTenantDto } from '../dtos/tenant/create-tenant.dto';
-import { UpdateTenantDto } from '../dtos/tenant/update-tenant.dto';
-import { TenantResponseDto } from '../dtos/tenant/tenant-response.dto';
-import { TenantListResponseDto } from '../dtos/tenant/tenant-list-response.dto';
-import { CreateTenantCommand } from '../../application/cqrs/commands/tenant/create-tenant.command';
-import { UpgradeTenantCommand } from '../../application/cqrs/commands/tenant/upgrade-tenant.command';
-import { GetTenantQuery } from '../../application/cqrs/queries/tenant/get-tenant.query';
-import { ListTenantsQuery } from '../../application/cqrs/queries/tenant/list-tenants.query';
+} from "@nestjs/common";
+import { CommandBus, QueryBus, EntityId } from "@hl8/hybrid-archi";
+import { TenantAggregate } from "../../domain/tenant/aggregates/tenant.aggregate";
+import { CreateTenantDto } from "../dtos/tenant/create-tenant.dto";
+import { UpdateTenantDto } from "../dtos/tenant/update-tenant.dto";
+import { TenantResponseDto } from "../dtos/tenant/tenant-response.dto";
+import { TenantListResponseDto } from "../dtos/tenant/tenant-list-response.dto";
+import { CreateTenantCommand } from "../../application/cqrs/commands/tenant/create-tenant.command";
+import { UpgradeTenantCommand } from "../../application/cqrs/commands/tenant/upgrade-tenant.command";
+import { GetTenantQuery } from "../../application/cqrs/queries/tenant/get-tenant.query";
+import { ListTenantsQuery } from "../../application/cqrs/queries/tenant/list-tenants.query";
 
-@Controller('api/tenants')
+@Controller("api/tenants")
 export class TenantController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -59,20 +59,20 @@ export class TenantController {
    */
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Body() dto: CreateTenantDto,
-  ): Promise<{ id: string }> {
+  async create(@Body() dto: CreateTenantDto): Promise<{ id: string }> {
     // TODO: 从认证上下文获取 tenantId 和 userId
     const command = new CreateTenantCommand(
-      '', // tenantId - 创建租户时可为空
-      'system', // userId - TODO: 从认证上下文获取
+      "", // tenantId - 创建租户时可为空
+      "system", // userId - TODO: 从认证上下文获取
       dto.code,
       dto.name,
       dto.domain,
       dto.type,
     );
 
-    const tenantId = await this.commandBus.execute(command) as unknown as EntityId;
+    const tenantId = (await this.commandBus.execute(
+      command,
+    )) as unknown as EntityId;
     return { id: tenantId.toString() };
   }
 
@@ -82,10 +82,10 @@ export class TenantController {
    * @param {string} id - 租户ID
    * @returns {Promise<TenantResponseDto>} 租户详情
    */
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<TenantResponseDto> {
+  @Get(":id")
+  async findOne(@Param("id") id: string): Promise<TenantResponseDto> {
     // TODO: 从认证上下文获取 tenantId 和 userId
-    const query = new GetTenantQuery('', 'system', id);
+    const query = new GetTenantQuery("", "system", id);
     const aggregate = await this.queryBus.execute(query);
 
     if (!aggregate) {
@@ -104,11 +104,11 @@ export class TenantController {
    */
   @Get()
   async findAll(
-    @Query('page') page = 1,
-    @Query('pageSize') pageSize = 20,
+    @Query("page") page = 1,
+    @Query("pageSize") pageSize = 20,
   ): Promise<TenantListResponseDto> {
     // TODO: 从认证上下文获取 tenantId 和 userId
-    const query = new ListTenantsQuery('', 'system', page, pageSize);
+    const query = new ListTenantsQuery("", "system", page, pageSize);
     const aggregates = await this.queryBus.execute(query);
 
     // TODO: 获取总数
@@ -129,10 +129,10 @@ export class TenantController {
    * @param {UpdateTenantDto} dto - 更新数据
    * @returns {Promise<void>}
    */
-  @Patch(':id')
+  @Patch(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
   async update(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() dto: UpdateTenantDto,
   ): Promise<void> {
     // TODO: 实现更新租户逻辑
@@ -144,9 +144,9 @@ export class TenantController {
    * @param {string} id - 租户ID
    * @returns {Promise<void>}
    */
-  @Post(':id/activate')
+  @Post(":id/activate")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async activate(@Param('id') id: string): Promise<void> {
+  async activate(@Param("id") id: string): Promise<void> {
     // TODO: 实现激活租户逻辑
   }
 
@@ -157,16 +157,16 @@ export class TenantController {
    * @param {object} body - 升级参数
    * @returns {Promise<void>}
    */
-  @Post(':id/upgrade')
+  @Post(":id/upgrade")
   @HttpCode(HttpStatus.NO_CONTENT)
   async upgrade(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() body: { type: string },
   ): Promise<void> {
     // TODO: 从认证上下文获取 tenantId 和 userId
     const command = new UpgradeTenantCommand(
-      '', // tenantId - TODO: 从上下文获取
-      'system', // userId - TODO: 从认证上下文获取
+      "", // tenantId - TODO: 从上下文获取
+      "system", // userId - TODO: 从认证上下文获取
       id, // targetTenantId
       body.type as any, // targetType
     );
@@ -180,10 +180,9 @@ export class TenantController {
    * @param {string} id - 租户ID
    * @returns {Promise<void>}
    */
-  @Delete(':id')
+  @Delete(":id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id') id: string): Promise<void> {
+  async delete(@Param("id") id: string): Promise<void> {
     // TODO: 实现删除租户逻辑
   }
 }
-

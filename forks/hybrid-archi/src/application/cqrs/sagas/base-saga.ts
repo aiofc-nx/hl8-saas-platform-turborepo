@@ -71,21 +71,21 @@
  *
  * @since 1.0.0
  */
-import { Injectable } from '@nestjs/common';
-import { Observable, of, throwError } from 'rxjs';
-import { map, catchError, switchMap, tap } from 'rxjs/operators';
-import type { PinoLogger } from '@hl8/logger';
+import { Injectable } from "@nestjs/common";
+import { Observable, of, throwError } from "rxjs";
+import { map, catchError, switchMap, tap } from "rxjs/operators";
+import type { PinoLogger } from "@hl8/logger";
 
 // 定义 LogContext 枚举
 enum LogContext {
-  SYSTEM = 'SYSTEM',
-  BUSINESS = 'BUSINESS',
-  AUTH = 'AUTH',
-  DATABASE = 'DATABASE',
-  EXTERNAL = 'EXTERNAL',
-  CACHE = 'CACHE',
-  PERFORMANCE = 'PERFORMANCE',
-  HTTP_REQUEST = 'HTTP_REQUEST',
+  SYSTEM = "SYSTEM",
+  BUSINESS = "BUSINESS",
+  AUTH = "AUTH",
+  DATABASE = "DATABASE",
+  EXTERNAL = "EXTERNAL",
+  CACHE = "CACHE",
+  PERFORMANCE = "PERFORMANCE",
+  HTTP_REQUEST = "HTTP_REQUEST",
 }
 import {
   ISaga,
@@ -94,7 +94,7 @@ import {
   ISagaConfiguration,
   SagaStatus,
   SagaStepStatus,
-} from './saga.interface';
+} from "./saga.interface";
 
 /**
  * 基础 Saga 实现
@@ -112,7 +112,7 @@ export abstract class BaseSaga implements ISaga {
     public readonly timeout?: number,
     public readonly maxRetries = 3,
     public readonly retryDelay = 1000,
-    protected readonly logger?: PinoLogger
+    protected readonly logger?: PinoLogger,
   ) {
     this.configuration = {
       enabled: true,
@@ -140,7 +140,7 @@ export abstract class BaseSaga implements ISaga {
     this.configuration = { ...this.configuration, ...config };
     this.logger?.debug(
       `Saga ${this.sagaType} configuration updated`,
-      LogContext.SYSTEM
+      LogContext.SYSTEM,
     );
   }
 
@@ -155,10 +155,10 @@ export abstract class BaseSaga implements ISaga {
    * 执行 Saga
    */
   public execute(
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Observable<ISagaExecutionContext> {
     if (!this.configuration.enabled) {
-      return throwError(() => new Error('Saga is disabled'));
+      return throwError(() => new Error("Saga is disabled"));
     }
 
     this.logger?.info(
@@ -168,7 +168,7 @@ export abstract class BaseSaga implements ISaga {
         sagaId: context.sagaId,
         sagaType: this.sagaType,
         stepCount: context.steps.length,
-      }
+      },
     );
 
     return this.executeSteps(context).pipe(
@@ -183,7 +183,7 @@ export abstract class BaseSaga implements ISaga {
               ? updatedContext.endTime.getTime() -
                 updatedContext.startTime.getTime()
               : 0,
-          }
+          },
         );
       }),
       catchError((error) => {
@@ -194,10 +194,10 @@ export abstract class BaseSaga implements ISaga {
             sagaId: context.sagaId,
             error: (error as Error).message,
           },
-          error as Error
+          error as Error,
         );
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -205,10 +205,10 @@ export abstract class BaseSaga implements ISaga {
    * 补偿 Saga
    */
   public compensate(
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Observable<ISagaExecutionContext> {
     if (!this.enableCompensation) {
-      return throwError(() => new Error('Compensation is disabled'));
+      return throwError(() => new Error("Compensation is disabled"));
     }
 
     this.logger?.info(
@@ -217,7 +217,7 @@ export abstract class BaseSaga implements ISaga {
       {
         sagaId: context.sagaId,
         sagaType: this.sagaType,
-      }
+      },
     );
 
     context.status = SagaStatus.COMPENSATING;
@@ -230,7 +230,7 @@ export abstract class BaseSaga implements ISaga {
           {
             sagaId: updatedContext.sagaId,
             status: updatedContext.status,
-          }
+          },
         );
       }),
       catchError((error) => {
@@ -241,10 +241,10 @@ export abstract class BaseSaga implements ISaga {
             sagaId: context.sagaId,
             error: (error as Error).message,
           },
-          error as Error
+          error as Error,
         );
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -252,7 +252,7 @@ export abstract class BaseSaga implements ISaga {
    * 处理超时
    */
   public handleTimeout(
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Observable<ISagaExecutionContext> {
     if (!this.enableTimeout) {
       return of(context);
@@ -281,7 +281,7 @@ export abstract class BaseSaga implements ISaga {
   public validate(): boolean {
     try {
       // 验证基本配置
-      if (!this.sagaType || this.sagaType.trim() === '') {
+      if (!this.sagaType || this.sagaType.trim() === "") {
         return false;
       }
 
@@ -303,7 +303,7 @@ export abstract class BaseSaga implements ISaga {
         `Saga validation failed: ${this.sagaType}`,
         LogContext.SYSTEM,
         { error: (error as Error).message },
-        error as Error
+        error as Error,
       );
       return false;
     }
@@ -326,7 +326,7 @@ export abstract class BaseSaga implements ISaga {
       this.logger?.debug(
         `Added step to saga ${this.sagaType}: ${step.stepName}`,
         LogContext.SYSTEM,
-        { stepId: step.stepId, stepName: step.stepName }
+        { stepId: step.stepId, stepName: step.stepName },
       );
     }
   }
@@ -341,7 +341,7 @@ export abstract class BaseSaga implements ISaga {
       this.logger?.debug(
         `Removed step from saga ${this.sagaType}: ${removedStep.stepName}`,
         LogContext.SYSTEM,
-        { stepId: removedStep.stepId, stepName: removedStep.stepName }
+        { stepId: removedStep.stepId, stepName: removedStep.stepName },
       );
       return true;
     }
@@ -370,7 +370,7 @@ export abstract class BaseSaga implements ISaga {
     this.logger?.debug(
       `Saga status updated: ${this.sagaType}`,
       LogContext.SYSTEM,
-      { status }
+      { status },
     );
   }
 
@@ -386,7 +386,7 @@ export abstract class BaseSaga implements ISaga {
    */
   public async executeStepById(
     stepId: string,
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Promise<{ success: boolean; data?: unknown; error?: string }> {
     const step = this.getStep(stepId);
     if (!step) {
@@ -409,7 +409,7 @@ export abstract class BaseSaga implements ISaga {
    */
   public async compensateStepById(
     stepId: string,
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Promise<{ success: boolean; data?: unknown; error?: string }> {
     const step = this.getStep(stepId);
     if (!step) {
@@ -422,7 +422,7 @@ export abstract class BaseSaga implements ISaga {
     try {
       const result = await this.executeCompensationStep(
         step,
-        context
+        context,
       ).toPromise();
       return { success: true, data: result };
     } catch (error) {
@@ -440,7 +440,7 @@ export abstract class BaseSaga implements ISaga {
       this.logger?.debug(
         `Updated step in saga ${this.sagaType}: ${step.stepName}`,
         LogContext.SYSTEM,
-        { stepId: step.stepId, stepName: step.stepName }
+        { stepId: step.stepId, stepName: step.stepName },
       );
       return true;
     }
@@ -467,7 +467,7 @@ export abstract class BaseSaga implements ISaga {
    */
   protected abstract executeStep(
     step: ISagaStep,
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Observable<unknown>;
 
   /**
@@ -475,14 +475,14 @@ export abstract class BaseSaga implements ISaga {
    */
   protected abstract executeCompensationStep(
     step: ISagaStep,
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Observable<unknown>;
 
   /**
    * 执行所有步骤
    */
   private executeSteps(
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Observable<ISagaExecutionContext> {
     context.status = SagaStatus.RUNNING;
     context.currentStepIndex = 0;
@@ -498,7 +498,7 @@ export abstract class BaseSaga implements ISaga {
           updatedContext.endTime = new Date();
         }
         return updatedContext;
-      })
+      }),
     );
   }
 
@@ -507,7 +507,7 @@ export abstract class BaseSaga implements ISaga {
    */
   private executeStepAtIndex(
     context: ISagaExecutionContext,
-    stepIndex: number
+    stepIndex: number,
   ): Observable<ISagaExecutionContext> {
     if (stepIndex >= context.steps.length) {
       return of(context);
@@ -540,7 +540,7 @@ export abstract class BaseSaga implements ISaga {
             stepId: step.stepId,
             stepName: step.stepName,
             duration: step.endTime.getTime() - step.startTime!.getTime(),
-          }
+          },
         );
 
         // 继续执行下一步
@@ -560,7 +560,7 @@ export abstract class BaseSaga implements ISaga {
             stepName: step.stepName,
             error: (error as Error).message,
           },
-          error as Error
+          error as Error,
         );
 
         // 如果启用补偿，触发补偿
@@ -573,7 +573,7 @@ export abstract class BaseSaga implements ISaga {
         context.error = (error as Error).message;
         context.endTime = new Date();
         return of(context);
-      })
+      }),
     );
   }
 
@@ -581,7 +581,7 @@ export abstract class BaseSaga implements ISaga {
    * 执行补偿
    */
   private executeCompensation(
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): Observable<ISagaExecutionContext> {
     // 从当前步骤开始向前补偿
     const compensationSteps = context.steps
@@ -600,7 +600,7 @@ export abstract class BaseSaga implements ISaga {
         updatedContext.status = SagaStatus.COMPENSATED;
         updatedContext.endTime = new Date();
         return updatedContext;
-      })
+      }),
     );
   }
 
@@ -610,7 +610,7 @@ export abstract class BaseSaga implements ISaga {
   private executeCompensationSteps(
     context: ISagaExecutionContext,
     compensationSteps: ISagaStep[],
-    stepIndex: number
+    stepIndex: number,
   ): Observable<ISagaExecutionContext> {
     if (stepIndex >= compensationSteps.length) {
       return of(context);
@@ -626,7 +626,7 @@ export abstract class BaseSaga implements ISaga {
         sagaId: context.sagaId,
         stepId: step.stepId,
         stepName: step.stepName,
-      }
+      },
     );
 
     return this.executeCompensationStep(step, context).pipe(
@@ -641,14 +641,14 @@ export abstract class BaseSaga implements ISaga {
             sagaId: context.sagaId,
             stepId: step.stepId,
             stepName: step.stepName,
-          }
+          },
         );
 
         // 继续执行下一个补偿步骤
         return this.executeCompensationSteps(
           context,
           compensationSteps,
-          stepIndex + 1
+          stepIndex + 1,
         );
       }),
       catchError((error) => {
@@ -661,16 +661,16 @@ export abstract class BaseSaga implements ISaga {
             stepName: step.stepName,
             error: (error as Error).message,
           },
-          error as Error
+          error as Error,
         );
 
         // 补偿失败，但继续执行其他补偿步骤
         return this.executeCompensationSteps(
           context,
           compensationSteps,
-          stepIndex + 1
+          stepIndex + 1,
         );
-      })
+      }),
     );
   }
 

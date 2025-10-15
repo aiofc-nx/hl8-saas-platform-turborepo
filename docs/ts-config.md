@@ -27,7 +27,7 @@
 
 ```typescript
 // 明确的导入/导出
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 export class AppModule {}
 ```
 

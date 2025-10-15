@@ -6,7 +6,7 @@
  */
 
 // 事件总线
-export * from './event-bus.interface';
+export * from "./event-bus.interface";
 
 // 事件发布服务
-export * from './event-publisher.service';
+export * from "./event-publisher.service";

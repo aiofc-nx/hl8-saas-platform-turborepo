@@ -6,11 +6,10 @@
  */
 
 // 租户业务特定类型和枚举
-export * from './tenant-type.enum.js';
+export * from "./tenant-type.enum.js";
 
 // 租户基础值对象
-export * from './tenant-code.vo.js';
-export * from './tenant-domain.vo.js';
-export * from './tenant-quota.vo.js';
-export * from './tenant-status.vo.js';
-
+export * from "./tenant-code.vo.js";
+export * from "./tenant-domain.vo.js";
+export * from "./tenant-quota.vo.js";
+export * from "./tenant-status.vo.js";

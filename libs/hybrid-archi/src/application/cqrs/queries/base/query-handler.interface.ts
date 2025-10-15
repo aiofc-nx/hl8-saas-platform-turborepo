@@ -77,7 +77,7 @@
  *
  * @since 1.0.0
  */
-import { BaseQuery, IQueryResult } from './base-query';
+import { BaseQuery, IQueryResult } from "./base-query";
 
 /**
  * 查询处理器接口

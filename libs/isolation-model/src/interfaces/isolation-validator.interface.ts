@@ -6,9 +6,9 @@
  * @since 1.0.0
  */
 
-import type { IsolationContext } from '../entities/isolation-context.entity.js';
-import type { IsolationLevel } from '../enums/isolation-level.enum.js';
-import type { SharingLevel } from '../enums/sharing-level.enum.js';
+import type { IsolationContext } from "../entities/isolation-context.entity.js";
+import type { IsolationLevel } from "../enums/isolation-level.enum.js";
+import type { SharingLevel } from "../enums/sharing-level.enum.js";
 
 export interface IIsolationValidator {
   /**

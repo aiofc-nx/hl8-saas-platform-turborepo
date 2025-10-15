@@ -9,7 +9,7 @@ services:
       MYSQL_DATABASE: realworld_api
       MYSQL_ROOT_PASSWORD: 12345678
     ports:
-      - '13306:3306'
+      - "13306:3306"
     networks:
       - nestjs-turbo-network
 
@@ -17,14 +17,14 @@ services:
     image: redis/redis-stack:latest
     restart: always
     ports:
-      - '6379:6379'
-      - '8001:8001'
+      - "6379:6379"
+      - "8001:8001"
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
     environment:
-      REDIS_ARGS: '--requirepass redispass'
+      REDIS_ARGS: "--requirepass redispass"
     networks:
       - nestjs-turbo-network
 

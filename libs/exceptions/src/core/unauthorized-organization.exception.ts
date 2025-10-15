@@ -4,13 +4,13 @@
  * @since 0.2.0
  */
 
-import { AbstractHttpException } from './abstract-http.exception.js';
+import { AbstractHttpException } from "./abstract-http.exception.js";
 
 export class UnauthorizedOrganizationException extends AbstractHttpException {
   constructor(organizationId: string) {
     super(
-      'UNAUTHORIZED_ORGANIZATION',
-      '未授权的组织访问',
+      "UNAUTHORIZED_ORGANIZATION",
+      "未授权的组织访问",
       `您没有权限访问组织 "${organizationId}"`,
       403,
       { organizationId },

@@ -12,10 +12,10 @@ import {
   PipeTransform,
   ArgumentMetadata,
   BadRequestException,
-} from '@nestjs/common';
-import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
-import type { ILoggerService  } from '../../shared/interfaces';
+} from "@nestjs/common";
+import { validate } from "class-validator";
+import { plainToClass } from "class-transformer";
+import type { ILoggerService } from "../../shared/interfaces";
 
 /**
  * 数据验证管道
@@ -36,7 +36,10 @@ export class ValidationPipe implements PipeTransform<unknown> {
    * @returns 转换后的值
    * @throws {BadRequestException} 验证失败
    */
-  async transform(value: unknown, metadata: ArgumentMetadata): Promise<unknown> {
+  async transform(
+    value: unknown,
+    metadata: ArgumentMetadata,
+  ): Promise<unknown> {
     const { type, metatype, data } = metadata;
 
     // 跳过基础类型
@@ -51,12 +54,12 @@ export class ValidationPipe implements PipeTransform<unknown> {
       // 2. 数据验证
       const validationResult = await this.validateValue(
         transformedValue,
-        metatype
+        metatype,
       );
 
       if (!validationResult.isValid) {
         throw new BadRequestException({
-          message: '数据验证失败',
+          message: "数据验证失败",
           errors: validationResult.errors,
           field: data,
         });
@@ -65,17 +68,17 @@ export class ValidationPipe implements PipeTransform<unknown> {
       // 3. 安全清理
       const sanitizedValue = this.sanitizeValue(validationResult.value);
 
-      this.logger.debug('数据验证通过');
+      this.logger.debug("数据验证通过");
 
       return sanitizedValue;
     } catch (error) {
-      this.logger.error('数据验证失败');
+      this.logger.error("数据验证失败");
 
       if (error instanceof BadRequestException) {
         throw error;
       }
 
-      throw new BadRequestException('请求参数格式错误');
+      throw new BadRequestException("请求参数格式错误");
     }
   }
 
@@ -90,12 +93,12 @@ export class ValidationPipe implements PipeTransform<unknown> {
    */
   private transformValue(value: unknown, metatype: unknown): unknown {
     // 字符串转换
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       value = value.trim();
     }
 
     // 数字转换
-    if (metatype === Number && typeof value === 'string') {
+    if (metatype === Number && typeof value === "string") {
       const num = Number(value);
       if (!isNaN(num)) {
         return num;
@@ -103,12 +106,12 @@ export class ValidationPipe implements PipeTransform<unknown> {
     }
 
     // 布尔转换
-    if (metatype === Boolean && typeof value === 'string') {
-      return value.toLowerCase() === 'true';
+    if (metatype === Boolean && typeof value === "string") {
+      return value.toLowerCase() === "true";
     }
 
     // 日期转换
-    if (metatype === Date && typeof value === 'string') {
+    if (metatype === Date && typeof value === "string") {
       const date = new Date(value);
       if (!isNaN(date.getTime())) {
         return date;
@@ -116,7 +119,7 @@ export class ValidationPipe implements PipeTransform<unknown> {
     }
 
     // 对象转换
-    if (typeof value === 'object' && value !== null && metatype !== Object) {
+    if (typeof value === "object" && value !== null && metatype !== Object) {
       return plainToClass(metatype as { new (): unknown }, value as object);
     }
 
@@ -134,7 +137,7 @@ export class ValidationPipe implements PipeTransform<unknown> {
    */
   private async validateValue(
     value: unknown,
-    metatype: unknown
+    metatype: unknown,
   ): Promise<{
     isValid: boolean;
     value: unknown;
@@ -171,17 +174,17 @@ export class ValidationPipe implements PipeTransform<unknown> {
    * @returns 清理后的值
    */
   private sanitizeValue(value: unknown): unknown {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       // XSS防护
       value = value
-        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-        .replace(/<[^>]*>/g, '');
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+        .replace(/<[^>]*>/g, "");
 
       // SQL注入防护
-      value = (value as string).replace(/'/g, "''").replace(/;/g, '');
+      value = (value as string).replace(/'/g, "''").replace(/;/g, "");
     }
 
-    if (typeof value === 'object' && value !== null) {
+    if (typeof value === "object" && value !== null) {
       // 递归清理对象属性
       const sanitized: Record<string, unknown> = {};
       for (const [key, val] of Object.entries(value)) {

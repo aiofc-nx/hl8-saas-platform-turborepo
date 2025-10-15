@@ -63,9 +63,9 @@ pnpm add @hl8/caching @hl8/isolation-model ioredis
 ### 1. 配置模块
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { CachingModule } from '@hl8/caching';
-import { IsolationModule } from '@hl8/nestjs-isolation';
+import { Module } from "@nestjs/common";
+import { CachingModule } from "@hl8/caching";
+import { IsolationModule } from "@hl8/nestjs-isolation";
 
 @Module({
   imports: [
@@ -75,11 +75,11 @@ import { IsolationModule } from '@hl8/nestjs-isolation';
     // 配置缓存模块
     CachingModule.forRoot({
       redis: {
-        host: 'localhost',
+        host: "localhost",
         port: 6379,
       },
       ttl: 3600, // 默认 TTL（秒）
-      keyPrefix: 'hl8:cache:',
+      keyPrefix: "hl8:cache:",
     }),
   ],
 })
@@ -89,25 +89,25 @@ export class AppModule {}
 ### 2. 使用装饰器
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { Cacheable, CacheEvict, CachePut } from '@hl8/caching';
+import { Injectable } from "@nestjs/common";
+import { Cacheable, CacheEvict, CachePut } from "@hl8/caching";
 
 @Injectable()
 export class UserService {
   // 自动缓存
-  @Cacheable('user')
+  @Cacheable("user")
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
 
   // 更新后刷新缓存
-  @CachePut('user')
+  @CachePut("user")
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
 
   // 删除后清除缓存
-  @CacheEvict('user')
+  @CacheEvict("user")
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete(id);
   }
@@ -214,7 +214,7 @@ async refreshUserCache(id: string): Promise<User> {
 ## 📊 性能监控
 
 ```typescript
-import { CacheMetricsService } from '@hl8/caching';
+import { CacheMetricsService } from "@hl8/caching";
 
 @Injectable()
 export class CacheMonitorService {
@@ -246,11 +246,11 @@ CachingModule.forRootAsync({
   inject: [ConfigService],
   useFactory: async (config: ConfigService) => ({
     redis: {
-      host: config.get('REDIS_HOST'),
-      port: config.get('REDIS_PORT'),
-      password: config.get('REDIS_PASSWORD'),
+      host: config.get("REDIS_HOST"),
+      port: config.get("REDIS_PORT"),
+      password: config.get("REDIS_PASSWORD"),
     },
-    ttl: config.get('CACHE_TTL'),
+    ttl: config.get("CACHE_TTL"),
   }),
 });
 ```
@@ -264,14 +264,14 @@ export class MyService {
 
   async getData(key: string) {
     // 尝试从缓存获取
-    let data = await this.cache.get<MyData>('mydata', key);
+    let data = await this.cache.get<MyData>("mydata", key);
 
     if (!data) {
       // 从数据源获取
       data = await this.fetchFromSource(key);
 
       // 存入缓存
-      await this.cache.set('mydata', key, data, 1800);
+      await this.cache.set("mydata", key, data, 1800);
     }
 
     return data;
@@ -283,10 +283,10 @@ export class MyService {
 
 ```typescript
 // 清除所有用户缓存
-await cacheService.clear('user:*');
+await cacheService.clear("user:*");
 
 // 清除特定模式
-await cacheService.clear('temp:*');
+await cacheService.clear("temp:*");
 ```
 
 ---

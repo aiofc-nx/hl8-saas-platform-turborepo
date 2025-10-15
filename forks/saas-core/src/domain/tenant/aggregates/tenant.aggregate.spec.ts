@@ -4,52 +4,52 @@
  * @description 测试租户聚合根的业务逻辑和一致性管理
  */
 
-import { EntityId } from '@hl8/hybrid-archi';
-import { TenantStatus } from '../value-objects/tenant-status.vo';
-import { TenantAggregate } from './tenant.aggregate';
-import { TenantCode } from '../value-objects/tenant-code.vo';
-import { TenantDomain } from '../value-objects/tenant-domain.vo';
-import { TenantQuota } from '../value-objects/tenant-quota.vo';
-import { TenantType } from '../value-objects/tenant-type.enum';
+import { EntityId } from "@hl8/hybrid-archi";
+import { TenantStatus } from "../value-objects/tenant-status.vo";
+import { TenantAggregate } from "./tenant.aggregate";
+import { TenantCode } from "../value-objects/tenant-code.vo";
+import { TenantDomain } from "../value-objects/tenant-domain.vo";
+import { TenantQuota } from "../value-objects/tenant-quota.vo";
+import { TenantType } from "../value-objects/tenant-type.enum";
 
-describe('TenantAggregate', () => {
+describe("TenantAggregate", () => {
   let aggregateId: EntityId;
   let tenantCode: TenantCode;
   let tenantDomain: TenantDomain;
 
   beforeEach(() => {
     aggregateId = EntityId.generate();
-    tenantCode = TenantCode.create('testcorp2024');
-    tenantDomain = TenantDomain.create('testcorp.example.com');
+    tenantCode = TenantCode.create("testcorp2024");
+    tenantDomain = TenantDomain.create("testcorp.example.com");
   });
 
-  describe('create', () => {
-    it('应该创建新的租户聚合根', () => {
+  describe("create", () => {
+    it("应该创建新的租户聚合根", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corporation',
+        "Test Corporation",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
       expect(aggregate).toBeDefined();
       expect(aggregate.id).toEqual(aggregateId);
       expect(aggregate.getCode()).toEqual(tenantCode);
-      expect(aggregate.getName()).toBe('Test Corporation');
+      expect(aggregate.getName()).toBe("Test Corporation");
       expect(aggregate.getType()).toBe(TenantType.FREE);
       expect(aggregate.getStatus()).toBe(TenantStatus.PENDING);
     });
 
-    it('应该为免费租户设置正确的默认配额', () => {
+    it("应该为免费租户设置正确的默认配额", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corporation',
+        "Test Corporation",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
       const config = aggregate.getConfiguration();
@@ -60,14 +60,14 @@ describe('TenantAggregate', () => {
       expect(quota.maxOrganizations).toBe(1);
     });
 
-    it('应该为企业租户设置正确的默认配额', () => {
+    it("应该为企业租户设置正确的默认配额", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Enterprise Corp',
+        "Enterprise Corp",
         tenantDomain,
         TenantType.ENTERPRISE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
       const config = aggregate.getConfiguration();
@@ -79,189 +79,191 @@ describe('TenantAggregate', () => {
     });
   });
 
-  describe('updateName', () => {
-    it('应该成功更新租户名称', () => {
+  describe("updateName", () => {
+    it("应该成功更新租户名称", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Old Name',
+        "Old Name",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
-      aggregate.updateName('New Name', 'admin-123');
+      aggregate.updateName("New Name", "admin-123");
 
-      expect(aggregate.getName()).toBe('New Name');
+      expect(aggregate.getName()).toBe("New Name");
     });
   });
 
-  describe('activate', () => {
-    it('应该成功激活试用租户', () => {
+  describe("activate", () => {
+    it("应该成功激活试用租户", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
-      aggregate.activate('admin-123');
+      aggregate.activate("admin-123");
 
       expect(aggregate.getStatus()).toBe(TenantStatus.ACTIVE);
       expect(aggregate.isActive()).toBe(true);
     });
   });
 
-  describe('upgrade', () => {
-    it('应该成功从免费版升级到基础版', () => {
+  describe("upgrade", () => {
+    it("应该成功从免费版升级到基础版", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
-      aggregate.upgrade(TenantType.BASIC, 'admin-123');
+      aggregate.upgrade(TenantType.BASIC, "admin-123");
 
       expect(aggregate.getType()).toBe(TenantType.BASIC);
-      
+
       const quota = aggregate.getConfiguration().getQuota();
       expect(quota.maxUsers).toBe(50);
       expect(quota.maxStorageMB).toBe(1024);
     });
 
-    it('应该支持跨级升级', () => {
+    it("应该支持跨级升级", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
-      aggregate.upgrade(TenantType.ENTERPRISE, 'admin-123');
+      aggregate.upgrade(TenantType.ENTERPRISE, "admin-123");
 
       expect(aggregate.getType()).toBe(TenantType.ENTERPRISE);
     });
 
-    it('应该在尝试降级时抛出错误', () => {
+    it("应该在尝试降级时抛出错误", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.PROFESSIONAL,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
-      expect(() => aggregate.upgrade(TenantType.BASIC, 'admin-123')).toThrow();
+      expect(() => aggregate.upgrade(TenantType.BASIC, "admin-123")).toThrow();
     });
 
-    it('应该在同级转换时抛出错误', () => {
+    it("应该在同级转换时抛出错误", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.BASIC,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
-      expect(() => aggregate.upgrade(TenantType.BASIC, 'admin-123')).toThrow();
+      expect(() => aggregate.upgrade(TenantType.BASIC, "admin-123")).toThrow();
     });
   });
 
-  describe('downgrade', () => {
-    it('应该成功从专业版降级到基础版', () => {
+  describe("downgrade", () => {
+    it("应该成功从专业版降级到基础版", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.PROFESSIONAL,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
-      aggregate.downgrade(TenantType.BASIC, 'admin-123');
+      aggregate.downgrade(TenantType.BASIC, "admin-123");
 
       expect(aggregate.getType()).toBe(TenantType.BASIC);
-      
+
       const quota = aggregate.getConfiguration().getQuota();
       expect(quota.maxUsers).toBe(50);
     });
 
-    it('应该在尝试升级时抛出错误', () => {
+    it("应该在尝试升级时抛出错误", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.BASIC,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
-      expect(() => aggregate.downgrade(TenantType.PROFESSIONAL, 'admin-123')).toThrow();
+      expect(() =>
+        aggregate.downgrade(TenantType.PROFESSIONAL, "admin-123"),
+      ).toThrow();
     });
   });
 
-  describe('suspend and resume', () => {
-    it('应该成功暂停和恢复租户', () => {
+  describe("suspend and resume", () => {
+    it("应该成功暂停和恢复租户", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
       // 先激活
-      aggregate.activate('admin-123');
+      aggregate.activate("admin-123");
       expect(aggregate.isActive()).toBe(true);
 
       // 暂停
-      aggregate.suspend('Payment overdue', 'admin-123');
+      aggregate.suspend("Payment overdue", "admin-123");
       expect(aggregate.getStatus()).toBe(TenantStatus.SUSPENDED);
 
       // 恢复
-      aggregate.resume('admin-123');
+      aggregate.resume("admin-123");
       expect(aggregate.isActive()).toBe(true);
     });
   });
 
-  describe('configuration management', () => {
-    it('应该成功启用和禁用功能', () => {
+  describe("configuration management", () => {
+    it("应该成功启用和禁用功能", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
       // 启用功能
-      aggregate.enableFeature('custom_branding', 'admin-123');
-      expect(aggregate.isFeatureEnabled('custom_branding')).toBe(true);
+      aggregate.enableFeature("custom_branding", "admin-123");
+      expect(aggregate.isFeatureEnabled("custom_branding")).toBe(true);
 
       // 禁用功能
-      aggregate.disableFeature('custom_branding', 'admin-123');
-      expect(aggregate.isFeatureEnabled('custom_branding')).toBe(false);
+      aggregate.disableFeature("custom_branding", "admin-123");
+      expect(aggregate.isFeatureEnabled("custom_branding")).toBe(false);
     });
 
-    it('应该成功更新自定义配额', () => {
+    it("应该成功更新自定义配额", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Custom Corp',
+        "Custom Corp",
         tenantDomain,
         TenantType.CUSTOM,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
       const customQuota = TenantQuota.create({
@@ -272,7 +274,7 @@ describe('TenantAggregate', () => {
         maxApiCallsPerDay: 5000000,
       });
 
-      aggregate.updateQuota(customQuota, 'admin-123');
+      aggregate.updateQuota(customQuota, "admin-123");
 
       const quota = aggregate.getConfiguration().getQuota();
       expect(quota.maxUsers).toBe(10000);
@@ -280,15 +282,15 @@ describe('TenantAggregate', () => {
     });
   });
 
-  describe('quota checking', () => {
-    it('应该正确检查用户配额', () => {
+  describe("quota checking", () => {
+    it("应该正确检查用户配额", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
       // 免费版最多5个用户
@@ -298,24 +300,23 @@ describe('TenantAggregate', () => {
     });
   });
 
-  describe('toObject', () => {
-    it('应该正确序列化聚合根', () => {
+  describe("toObject", () => {
+    it("应该正确序列化聚合根", () => {
       const aggregate = TenantAggregate.create(
         aggregateId,
         tenantCode,
-        'Test Corp',
+        "Test Corp",
         tenantDomain,
         TenantType.FREE,
-        { createdBy: 'system' },
+        { createdBy: "system" },
       );
 
       const obj = aggregate.toObject();
 
-      expect(obj).toHaveProperty('id');
-      expect(obj).toHaveProperty('tenant');
-      expect(obj).toHaveProperty('configuration');
-      expect(obj).toHaveProperty('version');
+      expect(obj).toHaveProperty("id");
+      expect(obj).toHaveProperty("tenant");
+      expect(obj).toHaveProperty("configuration");
+      expect(obj).toHaveProperty("version");
     });
   });
 });
-

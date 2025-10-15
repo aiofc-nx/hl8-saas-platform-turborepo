@@ -41,7 +41,7 @@
 import {
   IUseCase,
   IUseCaseContext,
-} from '../../use-cases/base/use-case.interface';
+} from "../../use-cases/base/use-case.interface";
 
 /**
  * 中间件执行上下文接口
@@ -75,7 +75,7 @@ export interface IMiddlewareContext {
   /**
    * 中间件执行状态
    */
-  status: 'pending' | 'executing' | 'completed' | 'failed';
+  status: "pending" | "executing" | "completed" | "failed";
 }
 
 /**
@@ -238,12 +238,12 @@ export class MiddlewareChain {
       useCaseContext,
       shared: {},
       startTime: Date.now(),
-      status: 'pending',
+      status: "pending",
     };
 
     try {
       // 执行前置中间件
-      context.status = 'executing';
+      context.status = "executing";
       for (const middleware of this.middlewares.filter((m) => m.enabled)) {
         const shouldContinue = await middleware.before(context);
         if (!shouldContinue) {
@@ -253,7 +253,7 @@ export class MiddlewareChain {
 
       // 执行用例
       const result = await useCase.execute(request);
-      context.status = 'completed';
+      context.status = "completed";
 
       // 执行后置中间件
       for (const middleware of this.middlewares
@@ -264,7 +264,7 @@ export class MiddlewareChain {
 
       return result;
     } catch (error) {
-      context.status = 'failed';
+      context.status = "failed";
       const err = error instanceof Error ? error : new Error(String(error));
 
       // 执行异常处理中间件
@@ -310,11 +310,11 @@ export class MiddlewareChain {
  */
 export class ValidationMiddleware extends BaseMiddleware {
   constructor() {
-    super('ValidationMiddleware', 1000); // 高优先级
+    super("ValidationMiddleware", 1000); // 高优先级
   }
 
   override async before(context: IMiddlewareContext): Promise<boolean> {
-    this.log('debug', '开始验证请求参数', {
+    this.log("debug", "开始验证请求参数", {
       useCaseName: context.useCase.getUseCaseName(),
       requestType: context.request?.constructor?.name,
     });
@@ -329,11 +329,11 @@ export class ValidationMiddleware extends BaseMiddleware {
  */
 export class AuthorizationMiddleware extends BaseMiddleware {
   constructor() {
-    super('AuthorizationMiddleware', 900); // 高优先级
+    super("AuthorizationMiddleware", 900); // 高优先级
   }
 
   override async before(context: IMiddlewareContext): Promise<boolean> {
-    this.log('debug', '开始权限验证', {
+    this.log("debug", "开始权限验证", {
       useCaseName: context.useCase.getUseCaseName(),
       userId: context.useCaseContext.user?.id,
       requiredPermissions: context.useCase.getRequiredPermissions?.() ?? [],
@@ -349,7 +349,7 @@ export class AuthorizationMiddleware extends BaseMiddleware {
  */
 export class AuditLogMiddleware extends BaseMiddleware {
   constructor() {
-    super('AuditLogMiddleware', 100); // 低优先级，最后执行
+    super("AuditLogMiddleware", 100); // 低优先级，最后执行
   }
 
   override async after(
@@ -359,7 +359,7 @@ export class AuditLogMiddleware extends BaseMiddleware {
   ): Promise<void> {
     const executionTime = Date.now() - context.startTime;
 
-    this.log('info', '用例执行完成', {
+    this.log("info", "用例执行完成", {
       useCaseName: context.useCase.getUseCaseName(),
       executionTime,
       success: !error,
@@ -375,7 +375,7 @@ export class AuditLogMiddleware extends BaseMiddleware {
  */
 export class PerformanceMonitorMiddleware extends BaseMiddleware {
   constructor(private readonly slowThreshold = 1000) {
-    super('PerformanceMonitorMiddleware', 200);
+    super("PerformanceMonitorMiddleware", 200);
   }
 
   override async after(
@@ -386,7 +386,7 @@ export class PerformanceMonitorMiddleware extends BaseMiddleware {
     const executionTime = Date.now() - context.startTime;
 
     if (executionTime > this.slowThreshold) {
-      this.log('warn', '检测到慢用例执行', {
+      this.log("warn", "检测到慢用例执行", {
         useCaseName: context.useCase.getUseCaseName(),
         executionTime,
         threshold: this.slowThreshold,

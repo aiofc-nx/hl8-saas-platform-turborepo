@@ -30,14 +30,14 @@ import {
   OrganizationId,
   TenantId,
   UserId,
-} from '@hl8/isolation-model';
-import { Global, Module } from '@nestjs/common';
-import { ClsModule } from 'nestjs-cls';
-import { IsolationGuard } from './guards/isolation.guard.js';
-import { IsolationContextService } from './services/isolation-context.service.js';
-import { MultiLevelIsolationService } from './services/multi-level-isolation.service.js';
+} from "@hl8/isolation-model";
+import { Global, Module } from "@nestjs/common";
+import { ClsModule } from "nestjs-cls";
+import { IsolationGuard } from "./guards/isolation.guard.js";
+import { IsolationContextService } from "./services/isolation-context.service.js";
+import { MultiLevelIsolationService } from "./services/multi-level-isolation.service.js";
 
-const ISOLATION_CONTEXT_KEY = 'ISOLATION_CONTEXT';
+const ISOLATION_CONTEXT_KEY = "ISOLATION_CONTEXT";
 
 /**
  * 请求对象接口（简化版）
@@ -76,7 +76,7 @@ export class IsolationModule {
             mount: true,
             generateId: true,
             idGenerator: (req: RequestWithHeaders) =>
-              (req.headers?.['x-request-id'] as string) ??
+              (req.headers?.["x-request-id"] as string) ??
               `req-${Date.now()}-${Math.random().toString(36).substring(7)}`,
             // 在 CLS 上下文设置后，立即提取隔离上下文
             setup: (cls, req: RequestWithHeaders) => {
@@ -87,10 +87,10 @@ export class IsolationModule {
                   return Array.isArray(value) ? value[0] : value;
                 };
 
-                const tenantId = extractHeader('x-tenant-id');
-                const orgId = extractHeader('x-organization-id');
-                const deptId = extractHeader('x-department-id');
-                const userId = extractHeader('x-user-id');
+                const tenantId = extractHeader("x-tenant-id");
+                const orgId = extractHeader("x-organization-id");
+                const deptId = extractHeader("x-department-id");
+                const userId = extractHeader("x-user-id");
 
                 // 创建隔离上下文（按层级优先级判断）
                 let context: IsolationContext;

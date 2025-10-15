@@ -22,7 +22,7 @@ export const DATABASE_ERROR_CODES = {
    * @description 无法建立数据库连接
    * @httpStatus 503
    */
-  CONNECTION_ERROR: 'DATABASE_CONNECTION_ERROR',
+  CONNECTION_ERROR: "DATABASE_CONNECTION_ERROR",
 
   /**
    * 数据库查询错误
@@ -30,7 +30,7 @@ export const DATABASE_ERROR_CODES = {
    * @description 查询执行失败
    * @httpStatus 500
    */
-  QUERY_ERROR: 'DATABASE_QUERY_ERROR',
+  QUERY_ERROR: "DATABASE_QUERY_ERROR",
 
   /**
    * 数据库事务错误
@@ -38,7 +38,7 @@ export const DATABASE_ERROR_CODES = {
    * @description 事务执行失败
    * @httpStatus 500
    */
-  TRANSACTION_ERROR: 'DATABASE_TRANSACTION_ERROR',
+  TRANSACTION_ERROR: "DATABASE_TRANSACTION_ERROR",
 
   /**
    * 隔离上下文缺失
@@ -46,7 +46,7 @@ export const DATABASE_ERROR_CODES = {
    * @description 需要隔离上下文但未提供
    * @httpStatus 400
    */
-  ISOLATION_CONTEXT_MISSING: 'ISOLATION_CONTEXT_MISSING',
+  ISOLATION_CONTEXT_MISSING: "ISOLATION_CONTEXT_MISSING",
 } as const;
 
 /**

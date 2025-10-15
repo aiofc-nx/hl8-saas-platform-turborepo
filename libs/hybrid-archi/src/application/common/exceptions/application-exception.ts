@@ -58,34 +58,34 @@
  * 应用层异常类型枚举
  */
 export enum ApplicationExceptionType {
-  VALIDATION = 'validation',
-  BUSINESS_LOGIC = 'business_logic',
-  AUTHORIZATION = 'authorization',
-  RESOURCE_NOT_FOUND = 'resource_not_found',
-  CONCURRENCY = 'concurrency',
-  EXTERNAL_SERVICE = 'external_service',
-  CONFIGURATION = 'configuration',
-  INFRASTRUCTURE = 'infrastructure',
+  VALIDATION = "validation",
+  BUSINESS_LOGIC = "business_logic",
+  AUTHORIZATION = "authorization",
+  RESOURCE_NOT_FOUND = "resource_not_found",
+  CONCURRENCY = "concurrency",
+  EXTERNAL_SERVICE = "external_service",
+  CONFIGURATION = "configuration",
+  INFRASTRUCTURE = "infrastructure",
 }
 
 /**
  * 应用层异常严重级别枚举
  */
 export enum ApplicationExceptionSeverity {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical',
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+  CRITICAL = "critical",
 }
 
 /**
  * 应用层异常恢复策略枚举
  */
 export enum ApplicationExceptionRecoveryStrategy {
-  NONE = 'none',
-  RETRY = 'retry',
-  FALLBACK = 'fallback',
-  COMPENSATE = 'compensate',
+  NONE = "none",
+  RETRY = "retry",
+  FALLBACK = "fallback",
+  COMPENSATE = "compensate",
 }
 
 /**
@@ -237,13 +237,13 @@ export abstract class BaseApplicationException extends Error {
   getRecoveryAdvice(): string {
     switch (this.recoveryStrategy) {
       case ApplicationExceptionRecoveryStrategy.RETRY:
-        return '请稍后重试';
+        return "请稍后重试";
       case ApplicationExceptionRecoveryStrategy.FALLBACK:
-        return '系统将使用备用方案';
+        return "系统将使用备用方案";
       case ApplicationExceptionRecoveryStrategy.COMPENSATE:
-        return '系统将执行补偿操作';
+        return "系统将执行补偿操作";
       default:
-        return '请联系系统管理员';
+        return "请联系系统管理员";
     }
   }
 
@@ -378,7 +378,7 @@ export class ConcurrencyConflictException extends BaseApplicationException {
   ) {
     super(
       message,
-      'CONCURRENCY_CONFLICT',
+      "CONCURRENCY_CONFLICT",
       ApplicationExceptionType.CONCURRENCY,
       { resourceId, expectedVersion, actualVersion, ...context },
       ApplicationExceptionSeverity.HIGH,

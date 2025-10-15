@@ -30,13 +30,13 @@ MikroORM 提供了强大的过滤器机制，可以自动在所有查询中注�
 ```typescript
 // src/infrastructure/persistence/filters/tenant.filter.ts
 
-import { Filter, EntityManager } from '@mikro-orm/core';
+import { Filter, EntityManager } from "@mikro-orm/core";
 
 export class TenantFilter implements Filter {
   /**
    * 过滤器名称
    */
-  static readonly FILTER_NAME = 'tenant';
+  static readonly FILTER_NAME = "tenant";
 
   /**
    * 当前租户 ID（从上下文获取）
@@ -55,7 +55,7 @@ export class TenantFilter implements Filter {
    */
   getCondition() {
     if (!this.tenantId) {
-      throw new Error('租户上下文未设置');
+      throw new Error("租户上下文未设置");
     }
 
     return {
@@ -77,9 +77,9 @@ export class TenantFilter implements Filter {
 ```typescript
 // src/saas-core.module.ts
 
-import { Module, OnModuleInit } from '@nestjs/common';
-import { MikroORM } from '@mikro-orm/core';
-import { TenantFilter } from './infrastructure/persistence/filters/tenant.filter';
+import { Module, OnModuleInit } from "@nestjs/common";
+import { MikroORM } from "@mikro-orm/core";
+import { TenantFilter } from "./infrastructure/persistence/filters/tenant.filter";
 
 @Module({
   // ...
@@ -89,10 +89,10 @@ export class SaasCoreModule implements OnModuleInit {
 
   async onModuleInit() {
     // 注册租户过滤器
-    this.orm.config.get('filters').tenant = TenantFilter;
-    
+    this.orm.config.get("filters").tenant = TenantFilter;
+
     // 默认启用过滤器
-    this.orm.em.setFilterParams('tenant', { tenantId: null });
+    this.orm.em.setFilterParams("tenant", { tenantId: null });
   }
 }
 ```
@@ -102,8 +102,13 @@ export class SaasCoreModule implements OnModuleInit {
 ```typescript
 // src/interface/interceptors/tenant-context.interceptor.ts
 
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
-import { EntityManager } from '@mikro-orm/core';
+import {
+  Injectable,
+  NestInterceptor,
+  ExecutionContext,
+  CallHandler,
+} from "@nestjs/common";
+import { EntityManager } from "@mikro-orm/core";
 
 @Injectable()
 export class TenantContextInterceptor implements NestInterceptor {
@@ -115,7 +120,7 @@ export class TenantContextInterceptor implements NestInterceptor {
 
     if (tenantId) {
       // 为当前请求设置租户过滤器
-      this.em.setFilterParams('tenant', { tenantId });
+      this.em.setFilterParams("tenant", { tenantId });
     }
 
     return next.handle();
@@ -140,7 +145,7 @@ const users = await this.em.find(UserOrmEntity, {});
 const allUsers = await this.em.find(
   UserOrmEntity,
   {},
-  { filters: { tenant: false } }
+  { filters: { tenant: false } },
 );
 ```
 
@@ -153,10 +158,10 @@ const allUsers = await this.em.find(
 ```typescript
 // src/application/authorization/ability.factory.ts
 
-import { Ability, AbilityBuilder, AbilityClass } from '@casl/ability';
+import { Ability, AbilityBuilder, AbilityClass } from "@casl/ability";
 
-export type Action = 'manage' | 'create' | 'read' | 'update' | 'delete';
-export type Subject = 'User' | 'Tenant' | 'Organization' | 'Department' | 'all';
+export type Action = "manage" | "create" | "read" | "update" | "delete";
+export type Subject = "User" | "Tenant" | "Organization" | "Department" | "all";
 
 export type AppAbility = Ability<[Action, Subject]>;
 
@@ -164,18 +169,18 @@ export type AppAbility = Ability<[Action, Subject]>;
 export class AbilityFactory {
   createForUser(user: UserAggregate, roles: RoleAggregate[]) {
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(
-      Ability as AbilityClass<AppAbility>
+      Ability as AbilityClass<AppAbility>,
     );
 
     // 超级管理员拥有所有权限
     if (user.isSuperAdmin()) {
-      can('manage', 'all');
+      can("manage", "all");
       return build();
     }
 
     // 基于角色构建权限
-    roles.forEach(role => {
-      role.getPermissions().forEach(permission => {
+    roles.forEach((role) => {
+      role.getPermissions().forEach((permission) => {
         can(
           permission.getAction().value as Action,
           permission.getResource() as Subject,
@@ -184,8 +189,8 @@ export class AbilityFactory {
     });
 
     // 用户始终可以读取和更新自己的信息
-    can('read', 'User', { id: user.id.toString() });
-    can('update', 'User', { id: user.id.toString() });
+    can("read", "User", { id: user.id.toString() });
+    can("update", "User", { id: user.id.toString() });
 
     return build();
   }
@@ -197,9 +202,14 @@ export class AbilityFactory {
 ```typescript
 // src/interface/guards/ability.guard.ts
 
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { AbilityFactory } from '../../application/authorization/ability.factory';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { AbilityFactory } from "../../application/authorization/ability.factory";
 
 export interface RequiredAbility {
   action: Action;
@@ -215,7 +225,7 @@ export class AbilityGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredAbility = this.reflector.get<RequiredAbility>(
-      'ability',
+      "ability",
       context.getHandler(),
     );
 
@@ -243,7 +253,7 @@ export class AbilityGuard implements CanActivate {
     );
 
     if (!allowed) {
-      throw new ForbiddenException('权限不足');
+      throw new ForbiddenException("权限不足");
     }
 
     return true;
@@ -256,35 +266,35 @@ export class AbilityGuard implements CanActivate {
 ```typescript
 // src/interface/decorators/check-ability.decorator.ts
 
-import { SetMetadata } from '@nestjs/common';
-import { RequiredAbility } from '../guards/ability.guard';
+import { SetMetadata } from "@nestjs/common";
+import { RequiredAbility } from "../guards/ability.guard";
 
 export const CheckAbility = (ability: RequiredAbility) =>
-  SetMetadata('ability', ability);
+  SetMetadata("ability", ability);
 ```
 
 ### 在控制器中使用
 
 ```typescript
-@Controller('api/users')
+@Controller("api/users")
 @UseGuards(JwtAuthGuard, AbilityGuard)
 export class UserController {
   @Get()
-  @CheckAbility({ action: 'read', subject: 'User' })
+  @CheckAbility({ action: "read", subject: "User" })
   async listUsers() {
     // 自动检查权限和租户隔离
     return await this.userService.findAll();
   }
 
   @Post()
-  @CheckAbility({ action: 'create', subject: 'User' })
+  @CheckAbility({ action: "create", subject: "User" })
   async createUser(@Body() data: CreateUserDto) {
     return await this.userService.create(data);
   }
 
-  @Delete(':id')
-  @CheckAbility({ action: 'delete', subject: 'User' })
-  async deleteUser(@Param('id') id: string) {
+  @Delete(":id")
+  @CheckAbility({ action: "delete", subject: "User" })
+  async deleteUser(@Param("id") id: string) {
     return await this.userService.delete(id);
   }
 }
@@ -298,7 +308,7 @@ export class UserController {
 // src/infrastructure/persistence/filters/soft-delete.filter.ts
 
 export class SoftDeleteFilter implements Filter {
-  static readonly FILTER_NAME = 'softDelete';
+  static readonly FILTER_NAME = "softDelete";
 
   getCondition() {
     return {
@@ -318,11 +328,11 @@ export class SoftDeleteFilter implements Filter {
 // src/infrastructure/persistence/filters/active-only.filter.ts
 
 export class ActiveOnlyFilter implements Filter {
-  static readonly FILTER_NAME = 'activeOnly';
+  static readonly FILTER_NAME = "activeOnly";
 
   getCondition() {
     return {
-      status: 'ACTIVE',
+      status: "ACTIVE",
     };
   }
 
@@ -341,10 +351,10 @@ const users = await this.em.find(
   {},
   {
     filters: {
-      tenant: true,      // 租户隔离
-      softDelete: true,  // 排除已删除
+      tenant: true, // 租户隔离
+      softDelete: true, // 排除已删除
     },
-  }
+  },
 );
 
 // 仅应用租户过滤器
@@ -356,7 +366,7 @@ const allUsersIncludingDeleted = await this.em.find(
       tenant: true,
       softDelete: false,
     },
-  }
+  },
 );
 
 // 禁用所有过滤器（超级管理员操作）
@@ -365,7 +375,7 @@ const allData = await this.em.find(
   {},
   {
     filters: false,
-  }
+  },
 );
 ```
 
@@ -404,7 +414,7 @@ async createUser(data: CreateUserDto, currentUser: User) {
   if (!this.canCreateUser(currentUser)) {
     throw new ForbiddenException();
   }
-  
+
   // 创建用户
 }
 ```
@@ -430,12 +440,12 @@ async getAllTenants() {
 const ability = this.abilityFactory.createForUser(user, roles);
 
 // 检查是否可以更新特定用户
-if (ability.can('update', subject('User', { id: targetUserId }))) {
+if (ability.can("update", subject("User", { id: targetUserId }))) {
   // 允许更新
 }
 
 // 检查是否可以删除自己部门的数据
-if (ability.can('delete', subject('Department', { id: deptId }))) {
+if (ability.can("delete", subject("Department", { id: deptId }))) {
   // 允许删除
 }
 ```
@@ -449,27 +459,27 @@ if (ability.can('delete', subject('Department', { id: deptId }))) {
 export class DynamicAbilityFactory {
   createForUser(user: UserAggregate, roles: RoleAggregate[]) {
     const { can, cannot, build } = new AbilityBuilder<AppAbility>(
-      Ability as AbilityClass<AppAbility>
+      Ability as AbilityClass<AppAbility>,
     );
 
     // 部门经理可以管理自己部门的数据
-    if (user.hasRole('department-manager')) {
+    if (user.hasRole("department-manager")) {
       const deptIds = user.getManagedDepartmentIds();
-      
-      can('manage', 'User', { departmentId: { $in: deptIds } });
-      can('read', 'Department', { id: { $in: deptIds } });
+
+      can("manage", "User", { departmentId: { $in: deptIds } });
+      can("read", "Department", { id: { $in: deptIds } });
     }
 
     // 租户管理员可以管理租户内所有数据
-    if (user.hasRole('tenant-admin')) {
-      can('manage', 'User');
-      can('manage', 'Organization');
-      can('manage', 'Department');
+    if (user.hasRole("tenant-admin")) {
+      can("manage", "User");
+      can("manage", "Organization");
+      can("manage", "Department");
     }
 
     // 平台管理员拥有所有权限
     if (user.isPlatformAdmin()) {
-      can('manage', 'all');
+      can("manage", "all");
     }
 
     return build();
@@ -487,7 +497,7 @@ export class SecureUserService {
     const ability = this.abilityFactory.createForUser(currentUser);
 
     // 获取用户可以访问的条件
-    const conditions = ability.rulesFor('read', 'User');
+    const conditions = ability.rulesFor("read", "User");
 
     // 合并到查询条件
     const queryConditions = {
@@ -611,18 +621,18 @@ async getAllTenants(@CurrentUser() admin: User) {
 export class DocumentAbilityFactory {
   createForUser(user: UserAggregate) {
     const { can, build } = new AbilityBuilder<AppAbility>(
-      Ability as AbilityClass<AppAbility>
+      Ability as AbilityClass<AppAbility>,
     );
 
     // 用户可以读取所有文档
-    can('read', 'Document');
+    can("read", "Document");
 
     // 用户可以创建文档
-    can('create', 'Document');
+    can("create", "Document");
 
     // 用户可以编辑和删除自己创建的文档
-    can('update', 'Document', { createdBy: user.id.toString() });
-    can('delete', 'Document', { createdBy: user.id.toString() });
+    can("update", "Document", { createdBy: user.id.toString() });
+    can("delete", "Document", { createdBy: user.id.toString() });
 
     return build();
   }
@@ -637,14 +647,12 @@ export class DocumentAbilityFactory {
 // 在 Redis 中缓存租户配置
 @Injectable()
 export class CachedTenantFilter {
-  constructor(
-    private readonly redis: RedisService,
-  ) {}
+  constructor(private readonly redis: RedisService) {}
 
   async getTenantConfig(tenantId: string) {
     // 先从缓存获取
     const cached = await this.redis.get(`tenant:${tenantId}:config`);
-    
+
     if (cached) {
       return JSON.parse(cached);
     }
@@ -658,7 +666,7 @@ export class CachedTenantFilter {
     await this.redis.set(
       `tenant:${tenantId}:config`,
       JSON.stringify(config),
-      'EX',
+      "EX",
       3600, // 1小时过期
     );
 
@@ -687,7 +695,7 @@ export class CachedAbilityFactory {
     const ability = this.buildAbility(user, roles);
 
     // 缓存
-    await this.redis.set(cacheKey, serializeAbility(ability), 'EX', 300);
+    await this.redis.set(cacheKey, serializeAbility(ability), "EX", 300);
 
     return ability;
   }
@@ -699,17 +707,17 @@ export class CachedAbilityFactory {
 确保在租户和状态字段上创建索引：
 
 ```typescript
-@Entity({ tableName: 'users' })
+@Entity({ tableName: "users" })
 export class UserOrmEntity {
-  @Property({ type: 'uuid' })
+  @Property({ type: "uuid" })
   @Index() // ← 租户过滤器索引
   tenantId!: string;
 
-  @Property({ type: 'varchar' })
+  @Property({ type: "varchar" })
   @Index() // ← 状态过滤器索引
   status!: string;
 
-  @Property({ type: 'uuid', nullable: true })
+  @Property({ type: "uuid", nullable: true })
   @Index() // ← 部门权限索引
   departmentId?: string;
 }
@@ -729,8 +737,8 @@ export class UserOrmEntity {
 
 ```typescript
 // 调试代码
-console.log('Filters:', this.em.config.get('filters'));
-console.log('Tenant ID:', this.em.getFilterParams('tenant'));
+console.log("Filters:", this.em.config.get("filters"));
+console.log("Tenant ID:", this.em.getFilterParams("tenant"));
 ```
 
 ### 问题：权限检查不生效
@@ -746,8 +754,8 @@ console.log('Tenant ID:', this.em.getFilterParams('tenant'));
 ```typescript
 // 调试权限
 const ability = this.abilityFactory.createForUser(user, roles);
-console.log('Can read User?', ability.can('read', 'User'));
-console.log('Rules:', ability.rules);
+console.log("Can read User?", ability.can("read", "User"));
+console.log("Rules:", ability.rules);
 ```
 
 ### 问题：性能问题

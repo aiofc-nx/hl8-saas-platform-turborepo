@@ -52,13 +52,13 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { TenantStatus } from '../value-objects/tenant-status.vo';
-import { PinoLogger } from '@hl8/logger';
-import { TenantCode } from '../value-objects/tenant-code.vo';
-import { TenantDomain } from '../value-objects/tenant-domain.vo';
-import { TenantType } from '../value-objects/tenant-type.enum';
-import { TENANT_STATUS_TRANSITIONS } from '../../../constants/tenant.constants';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { TenantStatus } from "../value-objects/tenant-status.vo";
+import { PinoLogger } from "@hl8/logger";
+import { TenantCode } from "../value-objects/tenant-code.vo";
+import { TenantDomain } from "../value-objects/tenant-domain.vo";
+import { TenantType } from "../value-objects/tenant-type.enum";
+import { TENANT_STATUS_TRANSITIONS } from "../../../constants/tenant.constants";
 
 /**
  * 租户实体
@@ -121,7 +121,7 @@ export class Tenant extends BaseEntity {
   ): Tenant {
     // 新租户默认为试用状态
     const status = TenantStatus.PENDING;
-    
+
     // 如果是试用状态，设置试用结束时间（30天后）
     const trialEndsAt = new Date();
     trialEndsAt.setDate(trialEndsAt.getDate() + 30);
@@ -276,9 +276,11 @@ export class Tenant extends BaseEntity {
     this.validateStatusTransition(TenantStatus.SUSPENDED);
     this._status = TenantStatus.SUSPENDED;
     this.updateTimestamp();
-    
+
     // 记录暂停原因到日志
-    this.logger.warn(`租户已暂停 - tenantId: ${this.id.toString()}, reason: ${reason}, updatedBy: ${updatedBy}`);
+    this.logger.warn(
+      `租户已暂停 - tenantId: ${this.id.toString()}, reason: ${reason}, updatedBy: ${updatedBy}`,
+    );
   }
 
   /**
@@ -291,7 +293,7 @@ export class Tenant extends BaseEntity {
    */
   public resume(updatedBy?: string): void {
     if (this._status !== TenantStatus.SUSPENDED) {
-      throw new Error('只有暂停状态的租户可以恢复');
+      throw new Error("只有暂停状态的租户可以恢复");
     }
     this._status = TenantStatus.ACTIVE;
     this.updateTimestamp();
@@ -333,10 +335,10 @@ export class Tenant extends BaseEntity {
    */
   private validateName(name: string): void {
     if (!name || name.trim().length === 0) {
-      throw new Error('租户名称不能为空');
+      throw new Error("租户名称不能为空");
     }
     if (name.length > 100) {
-      throw new Error('租户名称不能超过100字符');
+      throw new Error("租户名称不能超过100字符");
     }
   }
 
@@ -457,4 +459,3 @@ export class Tenant extends BaseEntity {
     };
   }
 }
-

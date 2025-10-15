@@ -5,11 +5,11 @@
  * @since 1.0.0
  */
 
-import { SetMetadata } from '@nestjs/common';
+import { SetMetadata } from "@nestjs/common";
 import {
   PERMISSIONS_KEY,
   ROLES_KEY,
-} from '../../guards/common/permission.guard';
+} from "../../guards/common/permission.guard";
 
 /**
  * 权限装饰器
@@ -37,7 +37,7 @@ export const RequireRoles = (...roles: string[]) =>
  * @description 标记接口为公开访问，无需认证
  * @returns 装饰器函数
  */
-export const Public = () => SetMetadata('isPublic', true);
+export const Public = () => SetMetadata("isPublic", true);
 
 /**
  * 租户隔离装饰器
@@ -45,4 +45,4 @@ export const Public = () => SetMetadata('isPublic', true);
  * @description 标记接口需要租户隔离
  * @returns 装饰器函数
  */
-export const TenantIsolation = () => SetMetadata('tenantIsolation', true);
+export const TenantIsolation = () => SetMetadata("tenantIsolation", true);

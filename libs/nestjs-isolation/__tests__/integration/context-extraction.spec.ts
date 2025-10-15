@@ -17,34 +17,34 @@
  * @group integration
  */
 
-import { IsolationLevel } from '@hl8/isolation-model';
-import { Controller, Get, INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import request from 'supertest';
-import { IsolationModule } from '../../src/isolation.module.js';
-import { IsolationContextService } from '../../src/services/isolation-context.service.js';
+import { IsolationLevel } from "@hl8/isolation-model";
+import { Controller, Get, INestApplication } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import request from "supertest";
+import { IsolationModule } from "../../src/isolation.module.js";
+import { IsolationContextService } from "../../src/services/isolation-context.service.js";
 
 // 测试用的有效 UUID v4
-const UUID_TENANT = '550e8400-e29b-41d4-a716-446655440000';
-const UUID_ORG = '6ba7b810-9dad-41d1-80b4-00c04fd430c8';
-const UUID_DEPT = '7c9e6679-7425-40de-944b-e07fc1f90ae7';
-const UUID_USER = 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11';
+const UUID_TENANT = "550e8400-e29b-41d4-a716-446655440000";
+const UUID_ORG = "6ba7b810-9dad-41d1-80b4-00c04fd430c8";
+const UUID_DEPT = "7c9e6679-7425-40de-944b-e07fc1f90ae7";
+const UUID_USER = "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11";
 
 /**
  * 测试控制器
  *
  * @description 用于测试上下文提取的简单控制器
  */
-@Controller('test')
+@Controller("test")
 class TestController {
   constructor(private readonly contextService: IsolationContextService) {}
 
-  @Get('context')
+  @Get("context")
   getContext() {
     const context = this.contextService.getIsolationContext();
 
     if (!context) {
-      return { error: 'No context found' };
+      return { error: "No context found" };
     }
 
     return {
@@ -58,7 +58,7 @@ class TestController {
   }
 }
 
-describe('IsolationModule - Context Extraction Integration', () => {
+describe("IsolationModule - Context Extraction Integration", () => {
   let app: INestApplication;
   let contextService: IsolationContextService;
 
@@ -80,10 +80,10 @@ describe('IsolationModule - Context Extraction Integration', () => {
     await app.close();
   });
 
-  describe('平台级上下文', () => {
-    it('应该在没有任何标识符时创建平台级上下文', async () => {
+  describe("平台级上下文", () => {
+    it("应该在没有任何标识符时创建平台级上下文", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
+        .get("/test/context")
         .expect(200);
 
       expect(response.body).toEqual({
@@ -97,11 +97,11 @@ describe('IsolationModule - Context Extraction Integration', () => {
     });
   });
 
-  describe('租户级上下文', () => {
-    it('应该从 X-Tenant-Id 请求头提取租户级上下文', async () => {
+  describe("租户级上下文", () => {
+    it("应该从 X-Tenant-Id 请求头提取租户级上下文", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', UUID_TENANT)
+        .get("/test/context")
+        .set("X-Tenant-Id", UUID_TENANT)
         .expect(200);
 
       expect(response.body).toEqual({
@@ -115,12 +115,12 @@ describe('IsolationModule - Context Extraction Integration', () => {
     });
   });
 
-  describe('组织级上下文', () => {
-    it('应该从请求头提取组织级上下文', async () => {
+  describe("组织级上下文", () => {
+    it("应该从请求头提取组织级上下文", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', UUID_TENANT)
-        .set('X-Organization-Id', UUID_ORG)
+        .get("/test/context")
+        .set("X-Tenant-Id", UUID_TENANT)
+        .set("X-Organization-Id", UUID_ORG)
         .expect(200);
 
       expect(response.body).toEqual({
@@ -133,10 +133,10 @@ describe('IsolationModule - Context Extraction Integration', () => {
       });
     });
 
-    it('应该在缺少租户 ID 时降级处理', async () => {
+    it("应该在缺少租户 ID 时降级处理", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Organization-Id', UUID_ORG) // 缺少租户 ID
+        .get("/test/context")
+        .set("X-Organization-Id", UUID_ORG) // 缺少租户 ID
         .expect(200);
 
       // 应该降级到平台级
@@ -145,13 +145,13 @@ describe('IsolationModule - Context Extraction Integration', () => {
     });
   });
 
-  describe('部门级上下文', () => {
-    it('应该从请求头提取部门级上下文', async () => {
+  describe("部门级上下文", () => {
+    it("应该从请求头提取部门级上下文", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', UUID_TENANT)
-        .set('X-Organization-Id', UUID_ORG)
-        .set('X-Department-Id', UUID_DEPT)
+        .get("/test/context")
+        .set("X-Tenant-Id", UUID_TENANT)
+        .set("X-Organization-Id", UUID_ORG)
+        .set("X-Department-Id", UUID_DEPT)
         .expect(200);
 
       expect(response.body).toEqual({
@@ -164,11 +164,11 @@ describe('IsolationModule - Context Extraction Integration', () => {
       });
     });
 
-    it('应该在缺少组织 ID 时降级处理', async () => {
+    it("应该在缺少组织 ID 时降级处理", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', UUID_TENANT)
-        .set('X-Department-Id', UUID_DEPT) // 缺少组织 ID
+        .get("/test/context")
+        .set("X-Tenant-Id", UUID_TENANT)
+        .set("X-Department-Id", UUID_DEPT) // 缺少组织 ID
         .expect(200);
 
       // 应该降级到租户级
@@ -177,11 +177,11 @@ describe('IsolationModule - Context Extraction Integration', () => {
     });
   });
 
-  describe('用户级上下文', () => {
-    it('应该从 X-User-Id 提取用户级上下文（无租户）', async () => {
+  describe("用户级上下文", () => {
+    it("应该从 X-User-Id 提取用户级上下文（无租户）", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-User-Id', UUID_USER)
+        .get("/test/context")
+        .set("X-User-Id", UUID_USER)
         .expect(200);
 
       expect(response.body).toEqual({
@@ -194,11 +194,11 @@ describe('IsolationModule - Context Extraction Integration', () => {
       });
     });
 
-    it('应该提取用户级上下文（有租户）', async () => {
+    it("应该提取用户级上下文（有租户）", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-User-Id', UUID_USER)
-        .set('X-Tenant-Id', UUID_TENANT)
+        .get("/test/context")
+        .set("X-User-Id", UUID_USER)
+        .set("X-Tenant-Id", UUID_TENANT)
         .expect(200);
 
       expect(response.body).toEqual({
@@ -212,11 +212,11 @@ describe('IsolationModule - Context Extraction Integration', () => {
     });
   });
 
-  describe('错误处理', () => {
-    it('应该在 UUID 格式无效时降级到平台级', async () => {
+  describe("错误处理", () => {
+    it("应该在 UUID 格式无效时降级到平台级", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', 'invalid-uuid') // 无效 UUID
+        .get("/test/context")
+        .set("X-Tenant-Id", "invalid-uuid") // 无效 UUID
         .expect(200);
 
       // 应该降级到平台级
@@ -224,11 +224,11 @@ describe('IsolationModule - Context Extraction Integration', () => {
       expect(response.body.isEmpty).toBe(true);
     });
 
-    it('应该处理多个无效标识符', async () => {
+    it("应该处理多个无效标识符", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', 'invalid')
-        .set('X-Organization-Id', 'also-invalid')
+        .get("/test/context")
+        .set("X-Tenant-Id", "invalid")
+        .set("X-Organization-Id", "also-invalid")
         .expect(200);
 
       // 应该降级到平台级
@@ -236,11 +236,11 @@ describe('IsolationModule - Context Extraction Integration', () => {
     });
   });
 
-  describe('请求头大小写', () => {
-    it('应该正确处理小写请求头', async () => {
+  describe("请求头大小写", () => {
+    it("应该正确处理小写请求头", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('x-tenant-id', UUID_TENANT) // 小写
+        .get("/test/context")
+        .set("x-tenant-id", UUID_TENANT) // 小写
         .expect(200);
 
       expect(response.body.level).toBe(IsolationLevel.TENANT);
@@ -248,33 +248,33 @@ describe('IsolationModule - Context Extraction Integration', () => {
     });
   });
 
-  describe('层级优先级', () => {
-    it('部门级应该优先于组织级', async () => {
+  describe("层级优先级", () => {
+    it("部门级应该优先于组织级", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', UUID_TENANT)
-        .set('X-Organization-Id', UUID_ORG)
-        .set('X-Department-Id', UUID_DEPT)
+        .get("/test/context")
+        .set("X-Tenant-Id", UUID_TENANT)
+        .set("X-Organization-Id", UUID_ORG)
+        .set("X-Department-Id", UUID_DEPT)
         .expect(200);
 
       expect(response.body.level).toBe(IsolationLevel.DEPARTMENT);
     });
 
-    it('组织级应该优先于租户级', async () => {
+    it("组织级应该优先于租户级", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', UUID_TENANT)
-        .set('X-Organization-Id', UUID_ORG)
+        .get("/test/context")
+        .set("X-Tenant-Id", UUID_TENANT)
+        .set("X-Organization-Id", UUID_ORG)
         .expect(200);
 
       expect(response.body.level).toBe(IsolationLevel.ORGANIZATION);
     });
 
-    it('租户级应该优先于用户级（当两者都存在时）', async () => {
+    it("租户级应该优先于用户级（当两者都存在时）", async () => {
       const response = await request(app.getHttpServer())
-        .get('/test/context')
-        .set('X-Tenant-Id', UUID_TENANT)
-        .set('X-User-Id', UUID_USER)
+        .get("/test/context")
+        .set("X-Tenant-Id", UUID_TENANT)
+        .set("X-User-Id", UUID_USER)
         .expect(200);
 
       // 当有租户ID和用户ID时，应该创建带租户的用户级上下文

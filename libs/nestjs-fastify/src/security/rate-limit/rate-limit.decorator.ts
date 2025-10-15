@@ -43,11 +43,11 @@
  * @module security/rate-limit
  */
 
-import { SetMetadata, applyDecorators } from '@nestjs/common';
+import { SetMetadata, applyDecorators } from "@nestjs/common";
 import type {
   RATE_LIMIT_METADATA_KEY,
   RateLimitOptions,
-} from './types/rate-limit-options.js';
+} from "./types/rate-limit-options.js";
 
 /**
  * 速率限制装饰器
@@ -152,34 +152,34 @@ export const RateLimit = (
 ): MethodDecorator & ClassDecorator => {
   // 验证必需参数
   if (!options.max || options.max <= 0) {
-    throw new Error('RateLimit 装饰器必须指定 max 参数且 > 0');
+    throw new Error("RateLimit 装饰器必须指定 max 参数且 > 0");
   }
 
   if (!options.timeWindow || options.timeWindow <= 0) {
-    throw new Error('RateLimit 装饰器必须指定 timeWindow 参数且 > 0');
+    throw new Error("RateLimit 装饰器必须指定 timeWindow 参数且 > 0");
   }
 
   // 验证自定义策略
-  if (options.strategy === 'custom' && !options.keyGenerator) {
-    throw new Error('RateLimit 装饰器使用 custom 策略时必须提供 keyGenerator');
+  if (options.strategy === "custom" && !options.keyGenerator) {
+    throw new Error("RateLimit 装饰器使用 custom 策略时必须提供 keyGenerator");
   }
 
   // 设置默认值
   const fullOptions: RateLimitOptions = {
     max: options.max,
     timeWindow: options.timeWindow,
-    strategy: options.strategy || 'ip',
+    strategy: options.strategy || "ip",
     keyGenerator: options.keyGenerator,
     redis: options.redis,
     skipOnError: options.skipOnError ?? true,
-    errorMessage: options.errorMessage || '请求过于频繁，请稍后再试',
+    errorMessage: options.errorMessage || "请求过于频繁，请稍后再试",
     addHeaders: options.addHeaders ?? true,
   };
 
   // 使用 applyDecorators 支持多个装饰器组合
   return applyDecorators(
     SetMetadata(
-      'rate-limit:options' as typeof RATE_LIMIT_METADATA_KEY,
+      "rate-limit:options" as typeof RATE_LIMIT_METADATA_KEY,
       fullOptions,
     ),
   );
@@ -209,7 +209,7 @@ export const RateLimitByIp = (
   return RateLimit({
     max,
     timeWindow,
-    strategy: 'ip',
+    strategy: "ip",
   });
 };
 
@@ -241,7 +241,7 @@ export const RateLimitByTenant = (
   return RateLimit({
     max,
     timeWindow,
-    strategy: 'tenant',
+    strategy: "tenant",
   });
 };
 
@@ -277,6 +277,6 @@ export const RateLimitByUser = (
   return RateLimit({
     max,
     timeWindow,
-    strategy: 'user',
+    strategy: "user",
   });
 };

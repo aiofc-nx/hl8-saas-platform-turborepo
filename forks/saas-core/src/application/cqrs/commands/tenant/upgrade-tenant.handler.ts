@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-import { CommandHandler, ICommandHandler } from '@hl8/hybrid-archi';
-import { UpgradeTenantCommand } from './upgrade-tenant.command';
-import { UpgradeTenantUseCase } from '../../../use-cases/tenant/upgrade-tenant.use-case';
+import { CommandHandler, ICommandHandler } from "@hl8/hybrid-archi";
+import { UpgradeTenantCommand } from "./upgrade-tenant.command";
+import { UpgradeTenantUseCase } from "../../../use-cases/tenant/upgrade-tenant.use-case";
 
 // @CommandHandler('UpgradeTenantCommand') // TODO: 修复装饰器类型问题
 export class UpgradeTenantHandler
@@ -23,4 +23,3 @@ export class UpgradeTenantHandler
     });
   }
 }
-

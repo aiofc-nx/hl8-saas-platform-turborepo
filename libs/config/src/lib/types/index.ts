@@ -44,10 +44,10 @@
  */
 
 // 基础配置类型
-export * from './config.types.js';
+export * from "./config.types.js";
 
 // 加载器类型
-export * from './loader.types.js';
+export * from "./loader.types.js";
 
 // 缓存类型
-export * from './cache.types.js';
+export * from "./cache.types.js";

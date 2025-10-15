@@ -8,9 +8,9 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 // import { DatabaseService } from '@hl8/database'; // 暂时注释，等待模块就绪
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 数据库配置接口
@@ -47,9 +47,9 @@ export interface IDatabaseConfig {
  */
 export enum DatabaseType {
   /** PostgreSQL */
-  POSTGRESQL = 'postgresql',
+  POSTGRESQL = "postgresql",
   /** MongoDB */
-  MONGODB = 'mongodb',
+  MONGODB = "mongodb",
 }
 
 /**
@@ -74,10 +74,10 @@ export interface IQueryOptions {
 export interface ITransactionOptions {
   /** 事务隔离级别 */
   isolationLevel?:
-    | 'READ_UNCOMMITTED'
-    | 'READ_COMMITTED'
-    | 'REPEATABLE_READ'
-    | 'SERIALIZABLE';
+    | "READ_UNCOMMITTED"
+    | "READ_COMMITTED"
+    | "REPEATABLE_READ"
+    | "SERIALIZABLE";
   /** 事务超时（毫秒） */
   timeout?: number;
   /** 是否只读事务 */
@@ -106,7 +106,7 @@ export class DatabaseAdapter {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly logger: PinoLogger,
-    config: Partial<IDatabaseConfig> = {}
+    config: Partial<IDatabaseConfig> = {},
   ) {
     this.config = {
       enablePostgreSQL: config.enablePostgreSQL ?? true,
@@ -135,7 +135,7 @@ export class DatabaseAdapter {
   async query<T = unknown>(
     query: string,
     params: unknown[] = [],
-    options: IQueryOptions = {}
+    options: IQueryOptions = {},
   ): Promise<T[]> {
     const startTime = Date.now();
     const queryId = this.generateQueryId();
@@ -170,8 +170,8 @@ export class DatabaseAdapter {
       let result: T[];
       if (
         typeof (this.databaseService as unknown as Record<string, unknown>)[
-          'query'
-        ] === 'function'
+          "query"
+        ] === "function"
       ) {
         result = await (
           this.databaseService as unknown as {
@@ -179,8 +179,8 @@ export class DatabaseAdapter {
           }
         ).query(query, params);
       } else {
-        console.warn('DatabaseService不支持query方法');
-        throw new Error('DatabaseService不支持query方法');
+        console.warn("DatabaseService不支持query方法");
+        throw new Error("DatabaseService不支持query方法");
       }
 
       // 缓存查询结果
@@ -189,7 +189,7 @@ export class DatabaseAdapter {
         this.setQueryCache(
           cacheKey,
           result,
-          options.cacheTtl || this.config.queryCacheTtl
+          options.cacheTtl || this.config.queryCacheTtl,
         );
       }
 
@@ -237,7 +237,7 @@ export class DatabaseAdapter {
    */
   async transaction<T>(
     callback: (transaction: unknown) => Promise<T>,
-    options: ITransactionOptions = {}
+    options: ITransactionOptions = {},
   ): Promise<T> {
     const transactionId = this.generateTransactionId();
 
@@ -252,7 +252,7 @@ export class DatabaseAdapter {
       let result: T;
       try {
         // 尝试调用DatabaseService的transaction方法
-        if (typeof (this.databaseService as any).transaction === 'function') {
+        if (typeof (this.databaseService as any).transaction === "function") {
           result = await (this.databaseService as any).transaction(callback, {
             isolationLevel: options.isolationLevel,
             timeout: options.timeout,
@@ -260,13 +260,13 @@ export class DatabaseAdapter {
           });
         } else {
           // 如果没有transaction方法，直接执行回调
-          this.logger.warn('DatabaseService不支持事务，直接执行操作', {
+          this.logger.warn("DatabaseService不支持事务，直接执行操作", {
             transactionId,
           });
           result = await callback({} as unknown);
         }
       } catch (error) {
-        this.logger.error('事务执行失败', error, { transactionId });
+        this.logger.error("事务执行失败", error, { transactionId });
         throw error;
       }
 
@@ -294,10 +294,10 @@ export class DatabaseAdapter {
   async insert<T = unknown>(
     table: string,
     data: T | T[],
-    options: IQueryOptions = {}
+    options: IQueryOptions = {},
   ): Promise<unknown> {
     const startTime = Date.now();
-    const operationId = this.generateOperationId('insert');
+    const operationId = this.generateOperationId("insert");
 
     try {
       this.logger.debug(`插入数据: ${operationId}`, {
@@ -310,8 +310,8 @@ export class DatabaseAdapter {
       let result: unknown;
       if (
         typeof (this.databaseService as unknown as Record<string, unknown>)[
-          'insert'
-        ] === 'function'
+          "insert"
+        ] === "function"
       ) {
         result = await (
           this.databaseService as unknown as {
@@ -319,8 +319,8 @@ export class DatabaseAdapter {
           }
         ).insert(table, data);
       } else {
-        console.warn('DatabaseService不支持insert方法');
-        throw new Error('DatabaseService不支持insert方法');
+        console.warn("DatabaseService不支持insert方法");
+        throw new Error("DatabaseService不支持insert方法");
       }
 
       const operationTime = Date.now() - startTime;
@@ -356,10 +356,10 @@ export class DatabaseAdapter {
     table: string,
     data: Partial<T>,
     where: unknown,
-    options: IQueryOptions = {}
+    options: IQueryOptions = {},
   ): Promise<unknown> {
     const startTime = Date.now();
-    const operationId = this.generateOperationId('update');
+    const operationId = this.generateOperationId("update");
 
     try {
       this.logger.debug(`更新数据: ${operationId}`);
@@ -368,21 +368,21 @@ export class DatabaseAdapter {
       let result: unknown;
       if (
         typeof (this.databaseService as unknown as Record<string, unknown>)[
-          'update'
-        ] === 'function'
+          "update"
+        ] === "function"
       ) {
         result = await (
           this.databaseService as unknown as {
             update: (
               table: string,
               data: Partial<T>,
-              where: unknown
+              where: unknown,
             ) => Promise<unknown>;
           }
         ).update(table, data, where);
       } else {
-        console.warn('DatabaseService不支持update方法');
-        throw new Error('DatabaseService不支持update方法');
+        console.warn("DatabaseService不支持update方法");
+        throw new Error("DatabaseService不支持update方法");
       }
 
       const operationTime = Date.now() - startTime;
@@ -416,10 +416,10 @@ export class DatabaseAdapter {
   async delete(
     table: string,
     where: unknown,
-    options: IQueryOptions = {}
+    options: IQueryOptions = {},
   ): Promise<unknown> {
     const startTime = Date.now();
-    const operationId = this.generateOperationId('delete');
+    const operationId = this.generateOperationId("delete");
 
     try {
       this.logger.debug(`删除数据: ${operationId}`, {
@@ -432,8 +432,8 @@ export class DatabaseAdapter {
       let result: unknown;
       if (
         typeof (this.databaseService as unknown as Record<string, unknown>)[
-          'delete'
-        ] === 'function'
+          "delete"
+        ] === "function"
       ) {
         result = await (
           this.databaseService as unknown as {
@@ -441,8 +441,8 @@ export class DatabaseAdapter {
           }
         ).delete(table, where);
       } else {
-        console.warn('DatabaseService不支持delete方法');
-        throw new Error('DatabaseService不支持delete方法');
+        console.warn("DatabaseService不支持delete方法");
+        throw new Error("DatabaseService不支持delete方法");
       }
 
       const operationTime = Date.now() - startTime;
@@ -476,10 +476,10 @@ export class DatabaseAdapter {
   async find<T = unknown>(
     table: string,
     where: unknown = {},
-    options: IQueryOptions = {}
+    options: IQueryOptions = {},
   ): Promise<T[]> {
     const startTime = Date.now();
-    const operationId = this.generateOperationId('find');
+    const operationId = this.generateOperationId("find");
 
     try {
       this.logger.debug(`查找数据: ${operationId}`, {
@@ -492,8 +492,8 @@ export class DatabaseAdapter {
       let result: T[];
       if (
         typeof (this.databaseService as unknown as Record<string, unknown>)[
-          'find'
-        ] === 'function'
+          "find"
+        ] === "function"
       ) {
         result = await (
           this.databaseService as unknown as {
@@ -501,8 +501,8 @@ export class DatabaseAdapter {
           }
         ).find(table, where);
       } else {
-        console.warn('DatabaseService不支持find方法');
-        throw new Error('DatabaseService不支持find方法');
+        console.warn("DatabaseService不支持find方法");
+        throw new Error("DatabaseService不支持find方法");
       }
 
       const operationTime = Date.now() - startTime;
@@ -536,10 +536,10 @@ export class DatabaseAdapter {
   async findOne<T = unknown>(
     table: string,
     where: unknown = {},
-    options: IQueryOptions = {}
+    options: IQueryOptions = {},
   ): Promise<T | null> {
     const startTime = Date.now();
-    const operationId = this.generateOperationId('findOne');
+    const operationId = this.generateOperationId("findOne");
 
     try {
       this.logger.debug(`查找单条数据: ${operationId}`, {
@@ -552,8 +552,8 @@ export class DatabaseAdapter {
       let result: T | null;
       if (
         typeof (this.databaseService as unknown as Record<string, unknown>)[
-          'findOne'
-        ] === 'function'
+          "findOne"
+        ] === "function"
       ) {
         result = await (
           this.databaseService as unknown as {
@@ -561,8 +561,8 @@ export class DatabaseAdapter {
           }
         ).findOne(table, where);
       } else {
-        console.warn('DatabaseService不支持findOne方法');
-        throw new Error('DatabaseService不支持findOne方法');
+        console.warn("DatabaseService不支持findOne方法");
+        throw new Error("DatabaseService不支持findOne方法");
       }
 
       const operationTime = Date.now() - startTime;
@@ -596,10 +596,10 @@ export class DatabaseAdapter {
   async count(
     table: string,
     where: unknown = {},
-    options: IQueryOptions = {}
+    options: IQueryOptions = {},
   ): Promise<number> {
     const startTime = Date.now();
-    const operationId = this.generateOperationId('count');
+    const operationId = this.generateOperationId("count");
 
     try {
       this.logger.debug(`计数: ${operationId}`, {
@@ -612,8 +612,8 @@ export class DatabaseAdapter {
       let result: number;
       if (
         typeof (this.databaseService as unknown as Record<string, unknown>)[
-          'count'
-        ] === 'function'
+          "count"
+        ] === "function"
       ) {
         result = await (
           this.databaseService as unknown as {
@@ -621,8 +621,8 @@ export class DatabaseAdapter {
           }
         ).count(table, where);
       } else {
-        console.warn('DatabaseService不支持count方法');
-        throw new Error('DatabaseService不支持count方法');
+        console.warn("DatabaseService不支持count方法");
+        throw new Error("DatabaseService不支持count方法");
       }
 
       const operationTime = Date.now() - startTime;
@@ -693,7 +693,7 @@ export class DatabaseAdapter {
    */
   clearQueryCache(): void {
     this.queryCache.clear();
-    this.logger.debug('查询缓存已清理');
+    this.logger.debug("查询缓存已清理");
   }
 
   // ==================== 私有方法 ====================
@@ -726,7 +726,7 @@ export class DatabaseAdapter {
    */
   private getQueryCacheKey(query: string, params: any[]): string {
     const paramsHash = JSON.stringify(params);
-    return `query:${Buffer.from(query + paramsHash).toString('base64')}`;
+    return `query:${Buffer.from(query + paramsHash).toString("base64")}`;
   }
 
   /**

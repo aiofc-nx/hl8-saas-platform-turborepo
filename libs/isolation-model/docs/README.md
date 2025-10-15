@@ -150,31 +150,31 @@ import {
   OrganizationId,
   DepartmentId,
   UserId,
-} from '@hl8/isolation-model';
+} from "@hl8/isolation-model";
 
 // 1. 平台级（无隔离）
 const platformContext = IsolationContext.platform();
 
 // 2. 租户级
-const tenantContext = IsolationContext.tenant(TenantId.create('tenant-123'));
+const tenantContext = IsolationContext.tenant(TenantId.create("tenant-123"));
 
 // 3. 组织级
 const orgContext = IsolationContext.organization(
-  TenantId.create('tenant-123'),
-  OrganizationId.create('org-456'),
+  TenantId.create("tenant-123"),
+  OrganizationId.create("org-456"),
 );
 
 // 4. 部门级
 const deptContext = IsolationContext.department(
-  TenantId.create('tenant-123'),
-  OrganizationId.create('org-456'),
-  DepartmentId.create('dept-789'),
+  TenantId.create("tenant-123"),
+  OrganizationId.create("org-456"),
+  DepartmentId.create("dept-789"),
 );
 
 // 5. 用户级
 const userContext = IsolationContext.user(
-  UserId.create('user-001'),
-  TenantId.create('tenant-123'), // 可选
+  UserId.create("user-001"),
+  TenantId.create("tenant-123"), // 可选
 );
 ```
 
@@ -183,15 +183,15 @@ const userContext = IsolationContext.user(
 ```typescript
 // 检查层级
 if (context.isTenantLevel()) {
-  console.log('Tenant ID:', context.tenantId?.value);
+  console.log("Tenant ID:", context.tenantId?.value);
 }
 
 // 构建缓存 key
-const cacheKey = context.buildCacheKey('user', 'list');
+const cacheKey = context.buildCacheKey("user", "list");
 // tenant:tenant-123:user:list
 
 // 获取层级
-console.log('Level:', context.level); // IsolationLevel.TENANT
+console.log("Level:", context.level); // IsolationLevel.TENANT
 ```
 
 ---
@@ -239,38 +239,38 @@ USER = 4           ← 按用户隔离
 
 ```typescript
 // TenantId - 租户 ID
-const tenantId = TenantId.create('tenant-123');
+const tenantId = TenantId.create("tenant-123");
 console.log(tenantId.value); // 'tenant-123'
 
 // OrganizationId - 组织 ID
-const orgId = OrganizationId.create('org-456');
+const orgId = OrganizationId.create("org-456");
 
 // DepartmentId - 部门 ID
-const deptId = DepartmentId.create('dept-789');
+const deptId = DepartmentId.create("dept-789");
 
 // UserId - 用户 ID
-const userId = UserId.create('user-001');
+const userId = UserId.create("user-001");
 
 // EntityId - 通用实体 ID（基类）
-const entityId = EntityId.create('entity-123');
+const entityId = EntityId.create("entity-123");
 ```
 
 #### 值对象特性
 
 ```typescript
 // 1. 不可变性
-const tenantId = TenantId.create('tenant-123');
+const tenantId = TenantId.create("tenant-123");
 // tenantId.value = 'other';  // ❌ 编译错误，只读属性
 
 // 2. 值相等
-const id1 = TenantId.create('tenant-123');
-const id2 = TenantId.create('tenant-123');
+const id1 = TenantId.create("tenant-123");
+const id2 = TenantId.create("tenant-123");
 console.log(id1.equals(id2)); // true（值相等）
 console.log(id1 === id2); // false（不同对象）
 
 // 3. 类型安全
-const tenantId = TenantId.create('tenant-123');
-const orgId = OrganizationId.create('tenant-123');
+const tenantId = TenantId.create("tenant-123");
+const orgId = OrganizationId.create("tenant-123");
 // tenantId === orgId  // ❌ 编译错误，类型不匹配
 ```
 
@@ -321,20 +321,20 @@ interface IsolationContext {
 ### 构建缓存 Key
 
 ```typescript
-const context = IsolationContext.tenant(TenantId.create('tenant-123'));
+const context = IsolationContext.tenant(TenantId.create("tenant-123"));
 
 // 构建缓存 key
-const userListKey = context.buildCacheKey('user', 'list');
+const userListKey = context.buildCacheKey("user", "list");
 // → 'tenant:tenant-123:user:list'
 
-const userDetailKey = context.buildCacheKey('user', 'detail', 'user-001');
+const userDetailKey = context.buildCacheKey("user", "detail", "user-001");
 // → 'tenant:tenant-123:user:detail:user-001'
 
 // 不同层级的 key 格式
-platformContext.buildCacheKey('config');
+platformContext.buildCacheKey("config");
 // → 'platform:config'
 
-orgContext.buildCacheKey('employee', 'list');
+orgContext.buildCacheKey("employee", "list");
 // → 'tenant:tenant-123:org:org-456:employee:list'
 ```
 
@@ -342,8 +342,8 @@ orgContext.buildCacheKey('employee', 'list');
 
 ```typescript
 const context = IsolationContext.organization(
-  TenantId.create('tenant-123'),
-  OrganizationId.create('org-456'),
+  TenantId.create("tenant-123"),
+  OrganizationId.create("org-456"),
 );
 
 const filter = context.buildDatabaseFilter();
@@ -361,7 +361,7 @@ const users = await userRepo.find({
 ### 访问权限检查
 
 ```typescript
-const context = IsolationContext.tenant(TenantId.create('tenant-123'));
+const context = IsolationContext.tenant(TenantId.create("tenant-123"));
 
 // 检查是否满足访问要求
 context.canAccess(IsolationLevel.PLATFORM); // true
@@ -391,7 +391,7 @@ class TenantId extends EntityId {
 }
 
 // 使用
-const tenantId = TenantId.create('tenant-123');
+const tenantId = TenantId.create("tenant-123");
 console.log(tenantId.value); // 'tenant-123'
 console.log(tenantId.toString()); // 'tenant-123'
 ```
@@ -519,20 +519,20 @@ enum SharingLevel {
 ### 场景1：缓存 Key 构建
 
 ```typescript
-import { IsolationContext, TenantId } from '@hl8/isolation-model';
+import { IsolationContext, TenantId } from "@hl8/isolation-model";
 
 // 在缓存服务中
 class CacheService {
   async get(key: string, context: IsolationContext) {
     // 根据隔离上下文构建完整的 key
-    const fullKey = context.buildCacheKey('cache', key);
+    const fullKey = context.buildCacheKey("cache", key);
     return this.redis.get(fullKey);
   }
 }
 
 // 使用
-const context = IsolationContext.tenant(TenantId.create('tenant-123'));
-const userList = await cacheService.get('user:list', context);
+const context = IsolationContext.tenant(TenantId.create("tenant-123"));
+const userList = await cacheService.get("user:list", context);
 // 实际 key: 'tenant:tenant-123:cache:user:list'
 ```
 
@@ -541,7 +541,7 @@ const userList = await cacheService.get('user:list', context);
 ### 场景2：数据库查询过滤
 
 ```typescript
-import { IsolationContext } from '@hl8/isolation-model';
+import { IsolationContext } from "@hl8/isolation-model";
 
 class UserRepository {
   async findAll(context: IsolationContext) {
@@ -559,7 +559,7 @@ class UserRepository {
 ### 场景3：日志上下文
 
 ```typescript
-import { IsolationContext } from '@hl8/isolation-model';
+import { IsolationContext } from "@hl8/isolation-model";
 
 class Logger {
   log(message: string, context: IsolationContext) {
@@ -579,7 +579,7 @@ class Logger {
 ### 场景4：访问控制
 
 ```typescript
-import { IsolationContext, IsolationLevel } from '@hl8/isolation-model';
+import { IsolationContext, IsolationLevel } from "@hl8/isolation-model";
 
 class AccessControl {
   canAccessResource(
@@ -591,7 +591,7 @@ class AccessControl {
 }
 
 // 使用
-const userContext = IsolationContext.tenant(TenantId.create('tenant-123'));
+const userContext = IsolationContext.tenant(TenantId.create("tenant-123"));
 
 // 可以访问平台级和租户级资源
 accessControl.canAccessResource(userContext, IsolationLevel.PLATFORM); // true
@@ -607,10 +607,10 @@ accessControl.canAccessResource(userContext, IsolationLevel.ORGANIZATION); // fa
 
 ```typescript
 // 与 @hl8/nestjs-isolation 集成
-import { IsolationContext } from '@hl8/isolation-model';
-import { CurrentContext } from '@hl8/nestjs-isolation';
+import { IsolationContext } from "@hl8/isolation-model";
+import { CurrentContext } from "@hl8/nestjs-isolation";
 
-@Controller('users')
+@Controller("users")
 export class UserController {
   @Get()
   async getUsers(@CurrentContext() context: IsolationContext) {
@@ -667,16 +667,16 @@ interface IsolationContext {
   tenantId?: string;
 }
 
-const context = { level: 1, tenantId: 'tenant-123' };
+const context = { level: 1, tenantId: "tenant-123" };
 
 // 需要自己构建 cacheKey
 const cacheKey = `tenant:${context.tenantId}:user:list`;
 
 // ✅ 实体（充血模型）
-const context = IsolationContext.tenant(TenantId.create('tenant-123'));
+const context = IsolationContext.tenant(TenantId.create("tenant-123"));
 
 // 业务逻辑封装在实体中
-const cacheKey = context.buildCacheKey('user', 'list');
+const cacheKey = context.buildCacheKey("user", "list");
 
 // 优势：
 // ✅ 业务逻辑集中
@@ -696,8 +696,8 @@ const cacheKey = context.buildCacheKey('user', 'list');
 class TenantId extends EntityId {
   static create(value: string): TenantId {
     // 验证逻辑（可以根据需要自定义）
-    if (!value || value.trim() === '') {
-      throw new IsolationValidationError('Tenant ID cannot be empty');
+    if (!value || value.trim() === "") {
+      throw new IsolationValidationError("Tenant ID cannot be empty");
     }
 
     return new TenantId(value);
@@ -706,7 +706,7 @@ class TenantId extends EntityId {
 
 // 使用时自动验证
 try {
-  const tenantId = TenantId.create(''); // ← 抛出错误
+  const tenantId = TenantId.create(""); // ← 抛出错误
 } catch (error) {
   console.error(error.message); // 'Tenant ID cannot be empty'
 }
@@ -719,13 +719,13 @@ try {
 **A**: 不可以，IsolationContext 是不可变的：
 
 ```typescript
-const context = IsolationContext.tenant(TenantId.create('tenant-123'));
+const context = IsolationContext.tenant(TenantId.create("tenant-123"));
 
 // ❌ 不能修改
 // context.tenantId = TenantId.create('other');  // 编译错误
 
 // ✅ 如果需要不同的上下文，创建新的
-const newContext = IsolationContext.tenant(TenantId.create('tenant-456'));
+const newContext = IsolationContext.tenant(TenantId.create("tenant-456"));
 ```
 
 **不可变的好处**：
@@ -743,10 +743,10 @@ const newContext = IsolationContext.tenant(TenantId.create('tenant-456'));
 
 ```typescript
 // 在 Express 中
-import { IsolationContext, TenantId } from '@hl8/isolation-model';
+import { IsolationContext, TenantId } from "@hl8/isolation-model";
 
-app.get('/users', (req, res) => {
-  const tenantId = req.headers['x-tenant-id'];
+app.get("/users", (req, res) => {
+  const tenantId = req.headers["x-tenant-id"];
   const context = IsolationContext.tenant(TenantId.create(tenantId));
 
   const users = await userService.findByContext(context);
@@ -754,8 +754,8 @@ app.get('/users', (req, res) => {
 });
 
 // 在纯 Node.js 中
-const context = IsolationContext.tenant(TenantId.create('tenant-123'));
-const cacheKey = context.buildCacheKey('data');
+const context = IsolationContext.tenant(TenantId.create("tenant-123"));
+const cacheKey = context.buildCacheKey("data");
 ```
 
 ---
@@ -768,11 +768,11 @@ const cacheKey = context.buildCacheKey('data');
 import {
   ContextCreatedEvent,
   ContextSwitchedEvent,
-} from '@hl8/isolation-model';
+} from "@hl8/isolation-model";
 
 // 上下文创建事件
 const event = new ContextCreatedEvent(context, new Date(), {
-  source: 'api-request',
+  source: "api-request",
 });
 
 // 可以用于：
@@ -789,7 +789,7 @@ const event = new ContextCreatedEvent(context, new Date(), {
 
 ```typescript
 // ✅ 好的做法
-const context = IsolationContext.tenant(TenantId.create('tenant-123'));
+const context = IsolationContext.tenant(TenantId.create("tenant-123"));
 
 // ❌ 避免直接 new（构造函数可能是私有的）
 // const context = new IsolationContext(...);
@@ -807,7 +807,7 @@ if (context.isTenantLevel()) {
 }
 
 // ❌ 避免
-const tenantId = context.tenantId?.value || 'default'; // 不应该有默认值
+const tenantId = context.tenantId?.value || "default"; // 不应该有默认值
 ```
 
 ---
@@ -816,7 +816,7 @@ const tenantId = context.tenantId?.value || 'default'; // 不应该有默认值
 
 ```typescript
 // ✅ 好的做法：使用实体的方法
-const cacheKey = context.buildCacheKey('user', 'list');
+const cacheKey = context.buildCacheKey("user", "list");
 
 // ❌ 避免：自己构建
 const cacheKey = `${context.level}:${context.tenantId?.value}:user:list`;
@@ -843,11 +843,11 @@ class Service {
 
 ```typescript
 // ✅ 好的做法
-const id1 = TenantId.create('tenant-123');
-const id2 = TenantId.create('tenant-123');
+const id1 = TenantId.create("tenant-123");
+const id2 = TenantId.create("tenant-123");
 
 if (id1.equals(id2)) {
-  console.log('Same tenant');
+  console.log("Same tenant");
 }
 
 // ❌ 避免

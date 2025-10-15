@@ -8,15 +8,15 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { LoggerModule } from '@hl8/nestjs-fastify';
-import { CacheModule } from '@hl8/caching';
-import { DatabaseModule } from '@hl8/database';
-import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
-import { MultiTenancyModule } from '@hl8/nestjs-isolation';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { LoggerModule } from "@hl8/nestjs-fastify";
+import { CacheModule } from "@hl8/caching";
+import { DatabaseModule } from "@hl8/database";
+import { MessagingModule } from "@hl8/nestjs-fastify/messaging";
+import { MultiTenancyModule } from "@hl8/nestjs-isolation";
 
-import { InfrastructureFactory } from './infrastructure.factory';
-import { InfrastructureManager } from './infrastructure.manager';
+import { InfrastructureFactory } from "./infrastructure.factory";
+import { InfrastructureManager } from "./infrastructure.manager";
 
 /**
  * 基础设施工厂模块选项
@@ -52,7 +52,7 @@ export class InfrastructureFactoriesModule {
    * @returns 基础设施工厂模块
    */
   static forRoot(
-    options: InfrastructureFactoriesModuleOptions = {}
+    options: InfrastructureFactoriesModuleOptions = {},
   ): DynamicModule {
     const providers: Provider[] = [];
     const imports: DynamicModule[] = [];
@@ -64,13 +64,13 @@ export class InfrastructureFactoriesModule {
         redis: {} as any,
       }),
       DatabaseModule.forRoot({ mikroORM: {} as any }),
-      MessagingModule.forRoot({ adapter: 'memory' as any }),
+      MessagingModule.forRoot({ adapter: "memory" as any }),
       MultiTenancyModule.forRoot({
         context: {} as any,
         isolation: {} as any,
         middleware: {} as any,
         security: {} as any,
-      })
+      }),
     );
 
     // 添加管理组件
@@ -97,7 +97,7 @@ export class InfrastructureFactoriesModule {
    * @returns 基础设施工厂模块
    */
   static forRootAsync(
-    options: InfrastructureFactoriesModuleOptions = {}
+    options: InfrastructureFactoriesModuleOptions = {},
   ): DynamicModule {
     const providers: Provider[] = [];
     const imports: DynamicModule[] = [];
@@ -109,13 +109,13 @@ export class InfrastructureFactoriesModule {
         redis: {} as any,
       }),
       DatabaseModule.forRoot({ mikroORM: {} as any }),
-      MessagingModule.forRoot({ adapter: 'memory' as any }),
+      MessagingModule.forRoot({ adapter: "memory" as any }),
       MultiTenancyModule.forRoot({
         context: {} as any,
         isolation: {} as any,
         middleware: {} as any,
         security: {} as any,
-      })
+      }),
     );
 
     // 添加管理组件

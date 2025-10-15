@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const GRAPHQL_UTILS = 'GraphQL Utils System';
+export const GRAPHQL_UTILS = "GraphQL Utils System";

@@ -19,64 +19,63 @@ import {
   Unique,
   Index,
   OneToOne,
-} from '@hl8/database';
+} from "@hl8/database";
 
-@Entity({ tableName: 'tenants' })
+@Entity({ tableName: "tenants" })
 export class TenantOrmEntity {
-  @PrimaryKey({ type: 'uuid' })
+  @PrimaryKey({ type: "uuid" })
   id!: string;
 
-  @Property({ type: 'varchar', length: 20 })
+  @Property({ type: "varchar", length: 20 })
   @Unique()
   @Index()
   code!: string;
 
-  @Property({ type: 'varchar', length: 100 })
+  @Property({ type: "varchar", length: 100 })
   name!: string;
 
-  @Property({ type: 'varchar', length: 255 })
+  @Property({ type: "varchar", length: 255 })
   @Unique()
   @Index()
   domain!: string;
 
-  @Property({ type: 'varchar', length: 20 })
+  @Property({ type: "varchar", length: 20 })
   @Index()
   type!: string;
 
-  @Property({ type: 'varchar', length: 20 })
+  @Property({ type: "varchar", length: 20 })
   @Index()
   status!: string;
 
-  @Property({ type: 'timestamp', nullable: true })
+  @Property({ type: "timestamp", nullable: true })
   trialEndsAt?: Date;
 
-  @Property({ type: 'timestamp', nullable: true })
+  @Property({ type: "timestamp", nullable: true })
   activatedAt?: Date;
 
   // 审计字段
-  @Property({ type: 'uuid' })
+  @Property({ type: "uuid" })
   @Index()
   tenantId!: string;
 
-  @Property({ type: 'timestamp' })
+  @Property({ type: "timestamp" })
   createdAt!: Date;
 
-  @Property({ type: 'timestamp' })
+  @Property({ type: "timestamp" })
   updatedAt!: Date;
 
-  @Property({ type: 'timestamp', nullable: true })
+  @Property({ type: "timestamp", nullable: true })
   deletedAt?: Date;
 
-  @Property({ type: 'varchar', length: 50 })
+  @Property({ type: "varchar", length: 50 })
   createdBy!: string;
 
-  @Property({ type: 'varchar', length: 50 })
+  @Property({ type: "varchar", length: 50 })
   updatedBy!: string;
 
-  @Property({ type: 'varchar', length: 50, nullable: true })
+  @Property({ type: "varchar", length: 50, nullable: true })
   deletedBy?: string;
 
-  @Property({ type: 'int', default: 1 })
+  @Property({ type: "int", default: 1 })
   version!: number;
 }
-

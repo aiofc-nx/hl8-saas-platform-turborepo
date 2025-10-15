@@ -5,21 +5,21 @@
  * @since 1.0.0
  */
 
-import { UserRole, UserRoleUtils } from './user-role.vo';
+import { UserRole, UserRoleUtils } from "./user-role.vo";
 
-describe('UserRole枚举', () => {
-  describe('枚举值', () => {
-    it('应该定义所有角色类型', () => {
+describe("UserRole枚举", () => {
+  describe("枚举值", () => {
+    it("应该定义所有角色类型", () => {
       // Assert
-      expect(UserRole.PLATFORM_ADMIN).toBe('PLATFORM_ADMIN');
-      expect(UserRole.TENANT_ADMIN).toBe('TENANT_ADMIN');
-      expect(UserRole.ORGANIZATION_ADMIN).toBe('ORGANIZATION_ADMIN');
-      expect(UserRole.DEPARTMENT_ADMIN).toBe('DEPARTMENT_ADMIN');
-      expect(UserRole.REGULAR_USER).toBe('REGULAR_USER');
-      expect(UserRole.GUEST_USER).toBe('GUEST_USER');
+      expect(UserRole.PLATFORM_ADMIN).toBe("PLATFORM_ADMIN");
+      expect(UserRole.TENANT_ADMIN).toBe("TENANT_ADMIN");
+      expect(UserRole.ORGANIZATION_ADMIN).toBe("ORGANIZATION_ADMIN");
+      expect(UserRole.DEPARTMENT_ADMIN).toBe("DEPARTMENT_ADMIN");
+      expect(UserRole.REGULAR_USER).toBe("REGULAR_USER");
+      expect(UserRole.GUEST_USER).toBe("GUEST_USER");
     });
 
-    it('应该包含6种角色类型', () => {
+    it("应该包含6种角色类型", () => {
       // Act
       const roles = Object.values(UserRole);
 
@@ -29,50 +29,50 @@ describe('UserRole枚举', () => {
   });
 });
 
-describe('UserRoleUtils工具类', () => {
-  describe('hasPermission', () => {
-    it('应该验证平台管理员拥有平台管理权限', () => {
+describe("UserRoleUtils工具类", () => {
+  describe("hasPermission", () => {
+    it("应该验证平台管理员拥有平台管理权限", () => {
       // Act
       const result = UserRoleUtils.hasPermission(
         UserRole.PLATFORM_ADMIN,
-        'manage_platform'
+        "manage_platform",
       );
 
       // Assert
       expect(result).toBe(true);
     });
 
-    it('应该验证租户管理员拥有租户管理权限', () => {
+    it("应该验证租户管理员拥有租户管理权限", () => {
       // Act
       const result = UserRoleUtils.hasPermission(
         UserRole.TENANT_ADMIN,
-        'manage_tenant'
+        "manage_tenant",
       );
 
       // Assert
       expect(result).toBe(true);
     });
 
-    it('应该验证普通用户没有管理权限', () => {
+    it("应该验证普通用户没有管理权限", () => {
       // Act
       const result = UserRoleUtils.hasPermission(
         UserRole.REGULAR_USER,
-        'manage_tenant'
+        "manage_tenant",
       );
 
       // Assert
       expect(result).toBe(false);
     });
 
-    it('应该验证访客用户只有查看权限', () => {
+    it("应该验证访客用户只有查看权限", () => {
       // Act
       const hasViewPermission = UserRoleUtils.hasPermission(
         UserRole.GUEST_USER,
-        'view_public_info'
+        "view_public_info",
       );
       const hasManagePermission = UserRoleUtils.hasPermission(
         UserRole.GUEST_USER,
-        'manage_tenant'
+        "manage_tenant",
       );
 
       // Assert
@@ -80,22 +80,22 @@ describe('UserRoleUtils工具类', () => {
       expect(hasManagePermission).toBe(false);
     });
 
-    it('应该验证组织管理员拥有组织管理权限', () => {
+    it("应该验证组织管理员拥有组织管理权限", () => {
       // Act
       const result = UserRoleUtils.hasPermission(
         UserRole.ORGANIZATION_ADMIN,
-        'manage_organization'
+        "manage_organization",
       );
 
       // Assert
       expect(result).toBe(true);
     });
 
-    it('应该验证部门管理员拥有部门管理权限', () => {
+    it("应该验证部门管理员拥有部门管理权限", () => {
       // Act
       const result = UserRoleUtils.hasPermission(
         UserRole.DEPARTMENT_ADMIN,
-        'manage_department'
+        "manage_department",
       );
 
       // Assert
@@ -103,107 +103,107 @@ describe('UserRoleUtils工具类', () => {
     });
   });
 
-  describe('canManage', () => {
-    it('应该验证平台管理员可以管理所有角色', () => {
+  describe("canManage", () => {
+    it("应该验证平台管理员可以管理所有角色", () => {
       // Act & Assert
       expect(
-        UserRoleUtils.canManage(UserRole.PLATFORM_ADMIN, UserRole.TENANT_ADMIN)
+        UserRoleUtils.canManage(UserRole.PLATFORM_ADMIN, UserRole.TENANT_ADMIN),
       ).toBe(true);
       expect(
         UserRoleUtils.canManage(
           UserRole.PLATFORM_ADMIN,
-          UserRole.ORGANIZATION_ADMIN
-        )
+          UserRole.ORGANIZATION_ADMIN,
+        ),
       ).toBe(true);
       expect(
         UserRoleUtils.canManage(
           UserRole.PLATFORM_ADMIN,
-          UserRole.DEPARTMENT_ADMIN
-        )
+          UserRole.DEPARTMENT_ADMIN,
+        ),
       ).toBe(true);
       expect(
-        UserRoleUtils.canManage(UserRole.PLATFORM_ADMIN, UserRole.REGULAR_USER)
+        UserRoleUtils.canManage(UserRole.PLATFORM_ADMIN, UserRole.REGULAR_USER),
       ).toBe(true);
       expect(
-        UserRoleUtils.canManage(UserRole.PLATFORM_ADMIN, UserRole.GUEST_USER)
+        UserRoleUtils.canManage(UserRole.PLATFORM_ADMIN, UserRole.GUEST_USER),
       ).toBe(true);
     });
 
-    it('应该验证租户管理员可以管理租户内角色', () => {
+    it("应该验证租户管理员可以管理租户内角色", () => {
       // Act & Assert
       expect(
         UserRoleUtils.canManage(
           UserRole.TENANT_ADMIN,
-          UserRole.ORGANIZATION_ADMIN
-        )
+          UserRole.ORGANIZATION_ADMIN,
+        ),
       ).toBe(true);
       expect(
         UserRoleUtils.canManage(
           UserRole.TENANT_ADMIN,
-          UserRole.DEPARTMENT_ADMIN
-        )
+          UserRole.DEPARTMENT_ADMIN,
+        ),
       ).toBe(true);
       expect(
-        UserRoleUtils.canManage(UserRole.TENANT_ADMIN, UserRole.REGULAR_USER)
+        UserRoleUtils.canManage(UserRole.TENANT_ADMIN, UserRole.REGULAR_USER),
       ).toBe(true);
       expect(
-        UserRoleUtils.canManage(UserRole.TENANT_ADMIN, UserRole.GUEST_USER)
+        UserRoleUtils.canManage(UserRole.TENANT_ADMIN, UserRole.GUEST_USER),
       ).toBe(true);
     });
 
-    it('应该验证租户管理员不能管理平台管理员', () => {
+    it("应该验证租户管理员不能管理平台管理员", () => {
       // Act
       const result = UserRoleUtils.canManage(
         UserRole.TENANT_ADMIN,
-        UserRole.PLATFORM_ADMIN
+        UserRole.PLATFORM_ADMIN,
       );
 
       // Assert
       expect(result).toBe(false);
     });
 
-    it('应该验证组织管理员可以管理部门和普通用户', () => {
+    it("应该验证组织管理员可以管理部门和普通用户", () => {
       // Act & Assert
       expect(
         UserRoleUtils.canManage(
           UserRole.ORGANIZATION_ADMIN,
-          UserRole.DEPARTMENT_ADMIN
-        )
+          UserRole.DEPARTMENT_ADMIN,
+        ),
       ).toBe(true);
       expect(
         UserRoleUtils.canManage(
           UserRole.ORGANIZATION_ADMIN,
-          UserRole.REGULAR_USER
-        )
+          UserRole.REGULAR_USER,
+        ),
       ).toBe(true);
       expect(
         UserRoleUtils.canManage(
           UserRole.ORGANIZATION_ADMIN,
-          UserRole.GUEST_USER
-        )
+          UserRole.GUEST_USER,
+        ),
       ).toBe(true);
     });
 
-    it('应该验证部门管理员可以管理普通用户', () => {
+    it("应该验证部门管理员可以管理普通用户", () => {
       // Act
       const result = UserRoleUtils.canManage(
         UserRole.DEPARTMENT_ADMIN,
-        UserRole.REGULAR_USER
+        UserRole.REGULAR_USER,
       );
 
       // Assert
       expect(result).toBe(true);
     });
 
-    it('应该验证普通用户可以管理访客用户', () => {
+    it("应该验证普通用户可以管理访客用户", () => {
       // Act
       const canManageGuest = UserRoleUtils.canManage(
         UserRole.REGULAR_USER,
-        UserRole.GUEST_USER
+        UserRole.GUEST_USER,
       );
       const canManageDept = UserRoleUtils.canManage(
         UserRole.REGULAR_USER,
-        UserRole.DEPARTMENT_ADMIN
+        UserRole.DEPARTMENT_ADMIN,
       );
 
       // Assert
@@ -213,50 +213,50 @@ describe('UserRoleUtils工具类', () => {
       expect(canManageDept).toBe(false);
     });
 
-    it('应该验证访客用户不能管理任何角色', () => {
+    it("应该验证访客用户不能管理任何角色", () => {
       // Act & Assert
       expect(
-        UserRoleUtils.canManage(UserRole.GUEST_USER, UserRole.REGULAR_USER)
+        UserRoleUtils.canManage(UserRole.GUEST_USER, UserRole.REGULAR_USER),
       ).toBe(false);
       expect(
-        UserRoleUtils.canManage(UserRole.GUEST_USER, UserRole.GUEST_USER)
+        UserRoleUtils.canManage(UserRole.GUEST_USER, UserRole.GUEST_USER),
       ).toBe(false);
     });
   });
 
-  describe('getPermissions', () => {
-    it('应该返回平台管理员的权限列表', () => {
+  describe("getPermissions", () => {
+    it("应该返回平台管理员的权限列表", () => {
       // Act
       const permissions = UserRoleUtils.getPermissions(UserRole.PLATFORM_ADMIN);
 
       // Assert
-      expect(permissions).toContain('manage_platform');
-      expect(permissions).toContain('manage_all_tenants');
-      expect(permissions).toContain('manage_all_users');
+      expect(permissions).toContain("manage_platform");
+      expect(permissions).toContain("manage_all_tenants");
+      expect(permissions).toContain("manage_all_users");
       expect(permissions.length).toBeGreaterThan(0);
     });
 
-    it('应该返回租户管理员的权限列表', () => {
+    it("应该返回租户管理员的权限列表", () => {
       // Act
       const permissions = UserRoleUtils.getPermissions(UserRole.TENANT_ADMIN);
 
       // Assert
-      expect(permissions).toContain('manage_tenant');
-      expect(permissions).toContain('manage_tenant_users');
+      expect(permissions).toContain("manage_tenant");
+      expect(permissions).toContain("manage_tenant_users");
       expect(permissions.length).toBeGreaterThan(0);
     });
 
-    it('应该返回普通用户的权限列表', () => {
+    it("应该返回普通用户的权限列表", () => {
       // Act
       const permissions = UserRoleUtils.getPermissions(UserRole.REGULAR_USER);
 
       // Assert
-      expect(permissions).toContain('view_own_profile');
-      expect(permissions).toContain('update_own_profile');
+      expect(permissions).toContain("view_own_profile");
+      expect(permissions).toContain("update_own_profile");
       expect(permissions.length).toBeGreaterThan(0);
     });
 
-    it('应该返回权限的副本而不是原始数组', () => {
+    it("应该返回权限的副本而不是原始数组", () => {
       // Act
       const permissions1 = UserRoleUtils.getPermissions(UserRole.TENANT_ADMIN);
       const permissions2 = UserRoleUtils.getPermissions(UserRole.TENANT_ADMIN);
@@ -267,62 +267,62 @@ describe('UserRoleUtils工具类', () => {
     });
   });
 
-  describe('getDescription', () => {
-    it('应该返回平台管理员的中文描述', () => {
+  describe("getDescription", () => {
+    it("应该返回平台管理员的中文描述", () => {
       // Act
       const description = UserRoleUtils.getDescription(UserRole.PLATFORM_ADMIN);
 
       // Assert
-      expect(description).toBe('平台管理员');
+      expect(description).toBe("平台管理员");
     });
 
-    it('应该返回租户管理员的中文描述', () => {
+    it("应该返回租户管理员的中文描述", () => {
       // Act
       const description = UserRoleUtils.getDescription(UserRole.TENANT_ADMIN);
 
       // Assert
-      expect(description).toBe('租户管理员');
+      expect(description).toBe("租户管理员");
     });
 
-    it('应该返回组织管理员的中文描述', () => {
+    it("应该返回组织管理员的中文描述", () => {
       // Act
       const description = UserRoleUtils.getDescription(
-        UserRole.ORGANIZATION_ADMIN
+        UserRole.ORGANIZATION_ADMIN,
       );
 
       // Assert
-      expect(description).toBe('组织管理员');
+      expect(description).toBe("组织管理员");
     });
 
-    it('应该返回部门管理员的中文描述', () => {
+    it("应该返回部门管理员的中文描述", () => {
       // Act
       const description = UserRoleUtils.getDescription(
-        UserRole.DEPARTMENT_ADMIN
+        UserRole.DEPARTMENT_ADMIN,
       );
 
       // Assert
-      expect(description).toBe('部门管理员');
+      expect(description).toBe("部门管理员");
     });
 
-    it('应该返回普通用户的中文描述', () => {
+    it("应该返回普通用户的中文描述", () => {
       // Act
       const description = UserRoleUtils.getDescription(UserRole.REGULAR_USER);
 
       // Assert
-      expect(description).toBe('普通用户');
+      expect(description).toBe("普通用户");
     });
 
-    it('应该返回访客用户的中文描述', () => {
+    it("应该返回访客用户的中文描述", () => {
       // Act
       const description = UserRoleUtils.getDescription(UserRole.GUEST_USER);
 
       // Assert
-      expect(description).toBe('访客用户');
+      expect(description).toBe("访客用户");
     });
   });
 
-  describe('getLevel', () => {
-    it('应该返回正确的角色层级', () => {
+  describe("getLevel", () => {
+    it("应该返回正确的角色层级", () => {
       // Act & Assert
       expect(UserRoleUtils.getLevel(UserRole.PLATFORM_ADMIN)).toBe(100);
       expect(UserRoleUtils.getLevel(UserRole.TENANT_ADMIN)).toBe(80);
@@ -332,7 +332,7 @@ describe('UserRoleUtils工具类', () => {
       expect(UserRoleUtils.getLevel(UserRole.GUEST_USER)).toBe(10);
     });
 
-    it('应该验证角色层级顺序正确', () => {
+    it("应该验证角色层级顺序正确", () => {
       // Act
       const platformLevel = UserRoleUtils.getLevel(UserRole.PLATFORM_ADMIN);
       const tenantLevel = UserRoleUtils.getLevel(UserRole.TENANT_ADMIN);
@@ -350,8 +350,8 @@ describe('UserRoleUtils工具类', () => {
     });
   });
 
-  describe('isAdmin', () => {
-    it('应该识别平台管理员为管理员角色', () => {
+  describe("isAdmin", () => {
+    it("应该识别平台管理员为管理员角色", () => {
       // Act
       const result = UserRoleUtils.isAdmin(UserRole.PLATFORM_ADMIN);
 
@@ -359,7 +359,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别租户管理员为管理员角色', () => {
+    it("应该识别租户管理员为管理员角色", () => {
       // Act
       const result = UserRoleUtils.isAdmin(UserRole.TENANT_ADMIN);
 
@@ -367,7 +367,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别组织管理员为管理员角色', () => {
+    it("应该识别组织管理员为管理员角色", () => {
       // Act
       const result = UserRoleUtils.isAdmin(UserRole.ORGANIZATION_ADMIN);
 
@@ -375,7 +375,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别部门管理员为管理员角色', () => {
+    it("应该识别部门管理员为管理员角色", () => {
       // Act
       const result = UserRoleUtils.isAdmin(UserRole.DEPARTMENT_ADMIN);
 
@@ -383,7 +383,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别普通用户不是管理员角色', () => {
+    it("应该识别普通用户不是管理员角色", () => {
       // Act
       const result = UserRoleUtils.isAdmin(UserRole.REGULAR_USER);
 
@@ -391,7 +391,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(false);
     });
 
-    it('应该识别访客用户不是管理员角色', () => {
+    it("应该识别访客用户不是管理员角色", () => {
       // Act
       const result = UserRoleUtils.isAdmin(UserRole.GUEST_USER);
 
@@ -400,8 +400,8 @@ describe('UserRoleUtils工具类', () => {
     });
   });
 
-  describe('isPlatformRole', () => {
-    it('应该识别平台管理员为平台级角色', () => {
+  describe("isPlatformRole", () => {
+    it("应该识别平台管理员为平台级角色", () => {
       // Act
       const result = UserRoleUtils.isPlatformRole(UserRole.PLATFORM_ADMIN);
 
@@ -409,22 +409,22 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别其他角色不是平台级角色', () => {
+    it("应该识别其他角色不是平台级角色", () => {
       // Act & Assert
       expect(UserRoleUtils.isPlatformRole(UserRole.TENANT_ADMIN)).toBe(false);
       expect(UserRoleUtils.isPlatformRole(UserRole.ORGANIZATION_ADMIN)).toBe(
-        false
+        false,
       );
       expect(UserRoleUtils.isPlatformRole(UserRole.DEPARTMENT_ADMIN)).toBe(
-        false
+        false,
       );
       expect(UserRoleUtils.isPlatformRole(UserRole.REGULAR_USER)).toBe(false);
       expect(UserRoleUtils.isPlatformRole(UserRole.GUEST_USER)).toBe(false);
     });
   });
 
-  describe('isTenantRole', () => {
-    it('应该识别租户管理员为租户级角色', () => {
+  describe("isTenantRole", () => {
+    it("应该识别租户管理员为租户级角色", () => {
       // Act
       const result = UserRoleUtils.isTenantRole(UserRole.TENANT_ADMIN);
 
@@ -432,7 +432,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别组织管理员为租户级角色', () => {
+    it("应该识别组织管理员为租户级角色", () => {
       // Act
       const result = UserRoleUtils.isTenantRole(UserRole.ORGANIZATION_ADMIN);
 
@@ -440,7 +440,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别部门管理员为租户级角色', () => {
+    it("应该识别部门管理员为租户级角色", () => {
       // Act
       const result = UserRoleUtils.isTenantRole(UserRole.DEPARTMENT_ADMIN);
 
@@ -448,7 +448,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别普通用户为租户级角色', () => {
+    it("应该识别普通用户为租户级角色", () => {
       // Act
       const result = UserRoleUtils.isTenantRole(UserRole.REGULAR_USER);
 
@@ -456,7 +456,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(true);
     });
 
-    it('应该识别平台管理员不是租户级角色', () => {
+    it("应该识别平台管理员不是租户级角色", () => {
       // Act
       const result = UserRoleUtils.isTenantRole(UserRole.PLATFORM_ADMIN);
 
@@ -464,7 +464,7 @@ describe('UserRoleUtils工具类', () => {
       expect(result).toBe(false);
     });
 
-    it('应该识别访客用户不是租户级角色', () => {
+    it("应该识别访客用户不是租户级角色", () => {
       // Act
       const result = UserRoleUtils.isTenantRole(UserRole.GUEST_USER);
 
@@ -473,8 +473,8 @@ describe('UserRoleUtils工具类', () => {
     });
   });
 
-  describe('getAdminRoles', () => {
-    it('应该返回所有管理员角色', () => {
+  describe("getAdminRoles", () => {
+    it("应该返回所有管理员角色", () => {
       // Act
       const adminRoles = UserRoleUtils.getAdminRoles();
 
@@ -486,7 +486,7 @@ describe('UserRoleUtils工具类', () => {
       expect(adminRoles).toHaveLength(4);
     });
 
-    it('应该不包含普通用户和访客用户', () => {
+    it("应该不包含普通用户和访客用户", () => {
       // Act
       const adminRoles = UserRoleUtils.getAdminRoles();
 
@@ -496,4 +496,3 @@ describe('UserRoleUtils工具类', () => {
     });
   });
 });
-

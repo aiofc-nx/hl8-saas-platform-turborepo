@@ -7,10 +7,10 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { EntityId } from '@hl8/isolation-model';
-import type { IPureLogger } from '@hl8/pure-logger';
-import { USER_LOGIN_ATTEMPTS } from '../../../constants/user.constants.js';
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model";
+import type { IPureLogger } from "@hl8/pure-logger";
+import { USER_LOGIN_ATTEMPTS } from "../../../constants/user.constants.js";
 
 export class UserCredentials extends BaseEntity {
   constructor(
@@ -60,12 +60,12 @@ export class UserCredentials extends BaseEntity {
 
   public recordFailedLogin(): void {
     this._failedLoginAttempts++;
-    
+
     if (this._failedLoginAttempts >= USER_LOGIN_ATTEMPTS.MAX_ATTEMPTS) {
       const lockoutMinutes = USER_LOGIN_ATTEMPTS.LOCK_DURATION;
       this._lockedUntil = new Date(Date.now() + lockoutMinutes * 60 * 1000);
     }
-    
+
     this.updateTimestamp();
   }
 
@@ -104,4 +104,3 @@ export class UserCredentials extends BaseEntity {
     };
   }
 }
-

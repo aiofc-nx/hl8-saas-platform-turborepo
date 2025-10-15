@@ -8,15 +8,15 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/logger';
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "@hl8/database";
+import { PinoLogger } from "@hl8/logger";
 import {
   DatabaseAdapter,
   IDatabaseConfig,
   DatabaseType,
-} from './database.adapter';
-import { DatabaseFactory, IDatabaseRegistration } from './database.factory';
+} from "./database.adapter";
+import { DatabaseFactory, IDatabaseRegistration } from "./database.factory";
 
 /**
  * 数据库管理器配置
@@ -60,7 +60,7 @@ export class DatabaseManager {
     private readonly databaseService: DatabaseService,
     private readonly logger: PinoLogger,
     private readonly databaseFactory: DatabaseFactory,
-    config: Partial<IDatabaseManagerConfig> = {}
+    config: Partial<IDatabaseManagerConfig> = {},
   ) {
     this.config = {
       enableAutoCleanup: config.enableAutoCleanup ?? true,
@@ -89,7 +89,7 @@ export class DatabaseManager {
   createDatabase(
     databaseName: string,
     databaseType: DatabaseType,
-    config: Partial<IDatabaseConfig> = {}
+    config: Partial<IDatabaseConfig> = {},
   ): DatabaseAdapter {
     this.logger.debug(`创建数据库: ${databaseName}`, {
       databaseType,
@@ -99,7 +99,7 @@ export class DatabaseManager {
     const database = this.databaseFactory.createDatabase(
       databaseName,
       databaseType,
-      config
+      config,
     );
 
     // 自动连接
@@ -131,12 +131,12 @@ export class DatabaseManager {
   getOrCreateDatabase(
     databaseName: string,
     databaseType: DatabaseType,
-    config: Partial<IDatabaseConfig> = {}
+    config: Partial<IDatabaseConfig> = {},
   ): DatabaseAdapter {
     return this.databaseFactory.getOrCreateDatabase(
       databaseName,
       databaseType,
-      config
+      config,
     );
   }
 
@@ -177,7 +177,7 @@ export class DatabaseManager {
    */
   updateDatabaseConfiguration(
     databaseName: string,
-    config: Partial<IDatabaseConfig>
+    config: Partial<IDatabaseConfig>,
   ): void {
     this.logger.debug(`更新数据库配置: ${databaseName}`, { config });
     this.databaseFactory.updateDatabaseConfiguration(databaseName, config);
@@ -206,7 +206,7 @@ export class DatabaseManager {
    * @returns 健康检查结果
    */
   async healthCheckAllDatabases(): Promise<Record<string, any>> {
-    this.logger.debug('开始健康检查所有数据库');
+    this.logger.debug("开始健康检查所有数据库");
     return await this.databaseFactory.healthCheckAllDatabases();
   }
 
@@ -216,9 +216,9 @@ export class DatabaseManager {
    * @returns 清理的数据库数量
    */
   async cleanupExpiredDatabases(): Promise<number> {
-    this.logger.debug('开始清理过期数据库');
+    this.logger.debug("开始清理过期数据库");
     return await this.databaseFactory.cleanupExpiredDatabases(
-      this.config.maxDatabaseAge
+      this.config.maxDatabaseAge,
     );
   }
 
@@ -323,7 +323,7 @@ export class DatabaseManager {
       } catch (error) {
         this.logger.error(
           `断开数据库连接失败: ${database.databaseName}`,
-          error
+          error,
         );
       }
     }
@@ -359,7 +359,7 @@ export class DatabaseManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动数据库管理器');
+    this.logger.info("启动数据库管理器");
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -381,7 +381,7 @@ export class DatabaseManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止数据库管理器');
+    this.logger.info("停止数据库管理器");
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -406,7 +406,7 @@ export class DatabaseManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁数据库管理器');
+    this.logger.info("销毁数据库管理器");
 
     // 停止管理器
     this.stop();
@@ -427,7 +427,7 @@ export class DatabaseManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化数据库管理器', {
+    this.logger.debug("初始化数据库管理器", {
       config: this.config,
     });
   }
@@ -443,7 +443,7 @@ export class DatabaseManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个数据库`);
         }
       } catch (error) {
-        this.logger.error('自动清理失败', error);
+        this.logger.error("自动清理失败", error);
       }
     }, this.config.cleanupInterval);
   }
@@ -456,16 +456,16 @@ export class DatabaseManager {
       try {
         const healthResults = await this.healthCheckAllDatabases();
         const unhealthyDatabases = Object.entries(healthResults).filter(
-          ([, result]) => !result.healthy
+          ([, result]) => !result.healthy,
         );
 
         if (unhealthyDatabases.length > 0) {
-          this.logger.warn('发现不健康的数据库', {
+          this.logger.warn("发现不健康的数据库", {
             unhealthyDatabases: unhealthyDatabases.map(([name]) => name),
           });
         }
       } catch (error) {
-        this.logger.error('健康检查失败', error);
+        this.logger.error("健康检查失败", error);
       }
     }, this.config.healthCheckInterval);
   }
@@ -477,12 +477,12 @@ export class DatabaseManager {
     this.statisticsTimer = setInterval(async () => {
       try {
         const allStats = await this.getAllDatabaseStatistics();
-        this.logger.debug('数据库统计信息收集完成', {
+        this.logger.debug("数据库统计信息收集完成", {
           databaseCount: Object.keys(allStats).length,
           statistics: allStats,
         });
       } catch (error) {
-        this.logger.error('统计收集失败', error);
+        this.logger.error("统计收集失败", error);
       }
     }, this.config.statisticsInterval);
   }
@@ -502,12 +502,12 @@ export class DatabaseManager {
         retryCount++;
         this.logger.warn(
           `数据库连接失败，重试 ${retryCount}/${this.config.connectionRetryCount}: ${databaseName}`,
-          error
+          error,
         );
 
         if (retryCount < this.config.connectionRetryCount) {
           await new Promise((resolve) =>
-            setTimeout(resolve, this.config.connectionRetryInterval)
+            setTimeout(resolve, this.config.connectionRetryInterval),
           );
         }
       }

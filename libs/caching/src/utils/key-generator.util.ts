@@ -55,9 +55,9 @@ export function generateKey(
   parts: (string | number | null | undefined)[],
 ): string {
   return parts
-    .filter((part) => part !== null && part !== undefined && part !== '')
+    .filter((part) => part !== null && part !== undefined && part !== "")
     .map((part) => sanitizeKey(String(part)))
-    .join(':');
+    .join(":");
 }
 
 /**
@@ -85,17 +85,17 @@ export function sanitizeKey(key: string): string {
   return (
     key
       // 移除空格
-      .replace(/\s+/g, '')
+      .replace(/\s+/g, "")
       // 移除换行符和制表符
-      .replace(/[\r\n\t]/g, '')
+      .replace(/[\r\n\t]/g, "")
       // 移除控制字符
-      .replace(/[\x00-\x1F\x7F]/g, '')
+      .replace(/[\x00-\x1F\x7F]/g, "")
       // 只保留字母、数字、下划线、横线、冒号
-      .replace(/[^a-zA-Z0-9_:-]/g, '')
+      .replace(/[^a-zA-Z0-9_:-]/g, "")
       // 移除连续的冒号
-      .replace(/:+/g, ':')
+      .replace(/:+/g, ":")
       // 移除开头和结尾的冒号
-      .replace(/^:+|:+$/g, '')
+      .replace(/^:+|:+$/g, "")
   );
 }
 
@@ -119,7 +119,7 @@ export function sanitizeKey(key: string): string {
  * ```
  */
 export function isValidKey(key: string): boolean {
-  if (!key || key.trim() === '') {
+  if (!key || key.trim() === "") {
     return false;
   }
 
@@ -147,5 +147,5 @@ export function isValidKey(key: string): boolean {
  */
 export function generatePattern(prefix: string, pattern: string): string {
   const parts = [prefix, pattern].filter(Boolean);
-  return parts.join(':');
+  return parts.join(":");
 }

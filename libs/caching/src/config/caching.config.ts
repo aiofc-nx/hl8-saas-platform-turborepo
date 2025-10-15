@@ -17,7 +17,7 @@
  * @since 1.0.0
  */
 
-import { Type } from 'class-transformer';
+import { Type } from "class-transformer";
 import {
   IsBoolean,
   IsNumber,
@@ -26,7 +26,7 @@ import {
   Max,
   Min,
   ValidateNested,
-} from 'class-validator';
+} from "class-validator";
 
 /**
  * Redis 配置类
@@ -36,7 +36,7 @@ export class RedisConfig {
    * Redis 主机地址
    */
   @IsString()
-  host: string = 'localhost';
+  host: string = "localhost";
 
   /**
    * Redis 端口

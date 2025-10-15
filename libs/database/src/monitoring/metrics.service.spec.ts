@@ -4,11 +4,11 @@
  * @description 测试 MetricsService 的性能监控功能
  */
 
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { Test, TestingModule } from '@nestjs/testing';
-import { MetricsService } from './metrics.service.js';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { Test, TestingModule } from "@nestjs/testing";
+import { MetricsService } from "./metrics.service.js";
 
-describe('MetricsService', () => {
+describe("MetricsService", () => {
   let service: MetricsService;
   let mockLogger: jest.Mocked<FastifyLoggerService>;
 
@@ -31,21 +31,21 @@ describe('MetricsService', () => {
     service = module.get<MetricsService>(MetricsService);
   });
 
-  describe('recordQuery', () => {
-    it('应该记录普通查询', () => {
+  describe("recordQuery", () => {
+    it("应该记录普通查询", () => {
       service.recordQuery({
         duration: 500,
-        query: 'SELECT * FROM users',
+        query: "SELECT * FROM users",
       });
 
       const slowQueries = service.getSlowQueries();
       expect(slowQueries).toHaveLength(0);
     });
 
-    it('应该记录慢查询', () => {
+    it("应该记录慢查询", () => {
       service.recordQuery({
         duration: 2000,
-        query: 'SELECT * FROM users',
+        query: "SELECT * FROM users",
         executedAt: new Date(),
         isSlow: true,
       });
@@ -54,12 +54,12 @@ describe('MetricsService', () => {
       expect(slowQueries).toHaveLength(1);
       expect(slowQueries[0].duration).toBe(2000);
       expect(mockLogger.warn).toHaveBeenCalledWith(
-        '检测到慢查询',
+        "检测到慢查询",
         expect.objectContaining({ duration: 2000 }),
       );
     });
 
-    it('应该维护慢查询队列大小上限', () => {
+    it("应该维护慢查询队列大小上限", () => {
       // 记录超过队列大小的慢查询
       for (let i = 0; i < 150; i++) {
         service.recordQuery({
@@ -75,8 +75,8 @@ describe('MetricsService', () => {
     });
   });
 
-  describe('getSlowQueries', () => {
-    it('应该返回指定数量的慢查询', () => {
+  describe("getSlowQueries", () => {
+    it("应该返回指定数量的慢查询", () => {
       for (let i = 0; i < 50; i++) {
         service.recordQuery({
           duration: 2000,
@@ -90,7 +90,7 @@ describe('MetricsService', () => {
       expect(queries).toHaveLength(10);
     });
 
-    it('应该返回所有慢查询', () => {
+    it("应该返回所有慢查询", () => {
       for (let i = 0; i < 5; i++) {
         service.recordQuery({
           duration: 2000,
@@ -105,8 +105,8 @@ describe('MetricsService', () => {
     });
   });
 
-  describe('getDatabaseMetrics', () => {
-    it('应该返回数据库整体指标', () => {
+  describe("getDatabaseMetrics", () => {
+    it("应该返回数据库整体指标", () => {
       service.recordQuery({
         duration: 100,
         executedAt: new Date(),
@@ -141,8 +141,8 @@ describe('MetricsService', () => {
     });
   });
 
-  describe('事务统计', () => {
-    it('应该正确记录事务提交', () => {
+  describe("事务统计", () => {
+    it("应该正确记录事务提交", () => {
       service.recordTransactionCommit();
       service.recordTransactionCommit();
 
@@ -159,7 +159,7 @@ describe('MetricsService', () => {
       expect(metrics.transactions.committed).toBe(2);
     });
 
-    it('应该正确记录事务回滚', () => {
+    it("应该正确记录事务回滚", () => {
       service.recordTransactionRollback();
 
       const mockPoolStats = {

@@ -8,22 +8,22 @@
  * @since 1.0.0
  */
 
-import { EntityId  } from '@hl8/isolation-model';
+import { EntityId } from "@hl8/isolation-model";
 
 /**
  * 权限作用域枚举
  */
 export enum PermissionScope {
   /** 系统级权限 */
-  SYSTEM = 'system',
+  SYSTEM = "system",
   /** 租户级权限 */
-  TENANT = 'tenant',
+  TENANT = "tenant",
   /** 组织级权限 */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
   /** 部门级权限 */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
   /** 资源级权限 */
-  RESOURCE = 'resource',
+  RESOURCE = "resource",
 }
 
 /**
@@ -31,15 +31,15 @@ export enum PermissionScope {
  */
 export enum PermissionType {
   /** 操作权限 */
-  OPERATION = 'operation',
+  OPERATION = "operation",
   /** 数据权限 */
-  DATA = 'data',
+  DATA = "data",
   /** 功能权限 */
-  FEATURE = 'feature',
+  FEATURE = "feature",
   /** 配置权限 */
-  CONFIGURATION = 'configuration',
+  CONFIGURATION = "configuration",
   /** 管理权限 */
-  MANAGEMENT = 'management',
+  MANAGEMENT = "management",
 }
 
 /**
@@ -118,7 +118,7 @@ export interface IPermissionManager {
   hasPermission(
     userId: EntityId,
     permissionCode: string,
-    context?: Record<string, unknown>
+    context?: Record<string, unknown>,
   ): Promise<boolean>;
 
   /**
@@ -130,7 +130,7 @@ export interface IPermissionManager {
    */
   getUserPermissions(
     userId: EntityId,
-    context?: Record<string, unknown>
+    context?: Record<string, unknown>,
   ): Promise<IBasePermission[]>;
 
   /**
@@ -144,6 +144,6 @@ export interface IPermissionManager {
   checkPermissions(
     userId: EntityId,
     permissionCodes: string[],
-    context?: Record<string, unknown>
+    context?: Record<string, unknown>,
   ): Promise<Record<string, boolean>>;
 }

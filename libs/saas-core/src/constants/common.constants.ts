@@ -54,23 +54,23 @@ export const CACHE_TTL = {
  */
 export const CACHE_KEY_PREFIXES = {
   /** 应用前缀 */
-  APP: 'saas-core',
+  APP: "saas-core",
   /** 租户前缀 */
-  TENANT: 'tenant',
+  TENANT: "tenant",
   /** 用户前缀 */
-  USER: 'user',
+  USER: "user",
   /** 组织前缀 */
-  ORGANIZATION: 'organization',
+  ORGANIZATION: "organization",
   /** 部门前缀 */
-  DEPARTMENT: 'department',
+  DEPARTMENT: "department",
   /** 角色前缀 */
-  ROLE: 'role',
+  ROLE: "role",
   /** 权限前缀 */
-  PERMISSION: 'permission',
+  PERMISSION: "permission",
   /** 会话前缀 */
-  SESSION: 'session',
+  SESSION: "session",
   /** 令牌前缀 */
-  TOKEN: 'token',
+  TOKEN: "token",
 } as const;
 
 /**
@@ -102,11 +102,11 @@ export const PAGINATION_CONFIG = {
  */
 export const SORTING_CONFIG = {
   /** 默认排序字段 */
-  DEFAULT_SORT_BY: 'createdAt',
+  DEFAULT_SORT_BY: "createdAt",
   /** 默认排序方向 */
-  DEFAULT_SORT_ORDER: 'DESC',
+  DEFAULT_SORT_ORDER: "DESC",
   /** 允许的排序方向 */
-  ALLOWED_SORT_ORDERS: ['ASC', 'DESC'] as const,
+  ALLOWED_SORT_ORDERS: ["ASC", "DESC"] as const,
 } as const;
 
 /**
@@ -118,9 +118,9 @@ export const SORTING_CONFIG = {
  */
 export const API_CONFIG = {
   /** API版本 */
-  API_VERSION: 'v1',
+  API_VERSION: "v1",
   /** API前缀 */
-  API_PREFIX: '/api',
+  API_PREFIX: "/api",
   /** 默认超时时间（毫秒） */
   DEFAULT_TIMEOUT: 30000,
   /** 长时间操作超时（毫秒） */
@@ -162,14 +162,14 @@ export const FILE_UPLOAD_LIMITS = {
   /** 头像文件最大大小（字节） */
   MAX_AVATAR_SIZE: 2 * 1024 * 1024, // 2MB
   /** 允许的图片格式 */
-  ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+  ALLOWED_IMAGE_TYPES: ["image/jpeg", "image/png", "image/gif", "image/webp"],
   /** 允许的文档格式 */
   ALLOWED_DOCUMENT_TYPES: [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ],
 } as const;
 
@@ -182,15 +182,15 @@ export const FILE_UPLOAD_LIMITS = {
  */
 export const DATETIME_FORMATS = {
   /** ISO 8601标准格式 */
-  ISO: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+  ISO: "YYYY-MM-DDTHH:mm:ss.SSSZ",
   /** 日期格式 */
-  DATE: 'YYYY-MM-DD',
+  DATE: "YYYY-MM-DD",
   /** 时间格式 */
-  TIME: 'HH:mm:ss',
+  TIME: "HH:mm:ss",
   /** 日期时间格式 */
-  DATETIME: 'YYYY-MM-DD HH:mm:ss',
+  DATETIME: "YYYY-MM-DD HH:mm:ss",
   /** 友好格式 */
-  FRIENDLY: 'YYYY年MM月DD日 HH:mm',
+  FRIENDLY: "YYYY年MM月DD日 HH:mm",
 } as const;
 
 /**
@@ -202,21 +202,21 @@ export const DATETIME_FORMATS = {
  */
 export const TIMEZONE_CONFIG = {
   /** 默认时区 */
-  DEFAULT_TIMEZONE: 'Asia/Shanghai',
+  DEFAULT_TIMEZONE: "Asia/Shanghai",
   /** UTC时区 */
-  UTC_TIMEZONE: 'UTC',
+  UTC_TIMEZONE: "UTC",
   /** 支持的时区列表 */
   SUPPORTED_TIMEZONES: [
-    'Asia/Shanghai',
-    'Asia/Tokyo',
-    'Asia/Seoul',
-    'Asia/Hong_Kong',
-    'Asia/Singapore',
-    'America/New_York',
-    'America/Los_Angeles',
-    'Europe/London',
-    'Europe/Paris',
-    'UTC',
+    "Asia/Shanghai",
+    "Asia/Tokyo",
+    "Asia/Seoul",
+    "Asia/Hong_Kong",
+    "Asia/Singapore",
+    "America/New_York",
+    "America/Los_Angeles",
+    "Europe/London",
+    "Europe/Paris",
+    "UTC",
   ],
 } as const;
 
@@ -229,11 +229,11 @@ export const TIMEZONE_CONFIG = {
  */
 export const LANGUAGE_CONFIG = {
   /** 默认语言 */
-  DEFAULT_LANGUAGE: 'zh-CN',
+  DEFAULT_LANGUAGE: "zh-CN",
   /** 回退语言 */
-  FALLBACK_LANGUAGE: 'en-US',
+  FALLBACK_LANGUAGE: "en-US",
   /** 支持的语言列表 */
-  SUPPORTED_LANGUAGES: ['zh-CN', 'en-US', 'ja-JP', 'ko-KR'],
+  SUPPORTED_LANGUAGES: ["zh-CN", "en-US", "ja-JP", "ko-KR"],
 } as const;
 
 /**
@@ -327,7 +327,7 @@ export const REGEX_PATTERNS = {
  */
 export const DEFAULT_VALUES = {
   /** 字符串默认值 */
-  STRING: '',
+  STRING: "",
   /** 数字默认值 */
   NUMBER: 0,
   /** 布尔默认值 */
@@ -349,17 +349,17 @@ export const DEFAULT_VALUES = {
  */
 export const ENV_KEYS = {
   /** Node环境 */
-  NODE_ENV: 'NODE_ENV',
+  NODE_ENV: "NODE_ENV",
   /** 应用端口 */
-  PORT: 'PORT',
+  PORT: "PORT",
   /** 数据库URL */
-  DATABASE_URL: 'DATABASE_URL',
+  DATABASE_URL: "DATABASE_URL",
   /** Redis URL */
-  REDIS_URL: 'REDIS_URL',
+  REDIS_URL: "REDIS_URL",
   /** JWT密钥 */
-  JWT_SECRET: 'JWT_SECRET',
+  JWT_SECRET: "JWT_SECRET",
   /** API密钥 */
-  API_KEY: 'API_KEY',
+  API_KEY: "API_KEY",
 } as const;
 
 /**
@@ -371,12 +371,11 @@ export const ENV_KEYS = {
  */
 export const APP_ENVIRONMENTS = {
   /** 开发环境 */
-  DEVELOPMENT: 'development',
+  DEVELOPMENT: "development",
   /** 测试环境 */
-  TEST: 'test',
+  TEST: "test",
   /** 预发布环境 */
-  STAGING: 'staging',
+  STAGING: "staging",
   /** 生产环境 */
-  PRODUCTION: 'production',
+  PRODUCTION: "production",
 } as const;
-

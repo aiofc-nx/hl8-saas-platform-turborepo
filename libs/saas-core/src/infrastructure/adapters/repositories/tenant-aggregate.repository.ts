@@ -7,16 +7,16 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityManager } from '@hl8/database';
-import { EntityId } from '@hl8/hybrid-archi';
-import { ITenantAggregateRepository } from '../../../domain/tenant/repositories/tenant-aggregate.repository.interface';
-import { TenantAggregate } from '../../../domain/tenant/aggregates/tenant.aggregate';
-import { TenantCode } from '../../../domain/tenant/value-objects/tenant-code.vo';
-import { TenantDomain } from '../../../domain/tenant/value-objects/tenant-domain.vo';
-import { TenantMapper } from '../../mappers/tenant.mapper';
-import { TenantOrmEntity } from '../../persistence/entities/tenant.orm-entity.js';
-import { TenantConfigurationOrmEntity } from '../../persistence/entities/tenant-configuration.orm-entity.js';
+import { Injectable } from "@nestjs/common";
+import { EntityManager } from "@hl8/database";
+import { EntityId } from "@hl8/hybrid-archi";
+import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface";
+import { TenantAggregate } from "../../../domain/tenant/aggregates/tenant.aggregate";
+import { TenantCode } from "../../../domain/tenant/value-objects/tenant-code.vo";
+import { TenantDomain } from "../../../domain/tenant/value-objects/tenant-domain.vo";
+import { TenantMapper } from "../../mappers/tenant.mapper";
+import { TenantOrmEntity } from "../../persistence/entities/tenant.orm-entity.js";
+import { TenantConfigurationOrmEntity } from "../../persistence/entities/tenant-configuration.orm-entity.js";
 
 @Injectable()
 export class TenantAggregateRepository implements ITenantAggregateRepository {
@@ -33,8 +33,9 @@ export class TenantAggregateRepository implements ITenantAggregateRepository {
 
     if (existingTenant) {
       // 更新现有实体：直接修改已追踪实体的属性
-      const { tenant: newTenantData, config: newConfigData } = this.mapper.toOrmEntities(aggregate);
-      
+      const { tenant: newTenantData, config: newConfigData } =
+        this.mapper.toOrmEntities(aggregate);
+
       // 手动更新租户字段（不创建新对象）
       existingTenant.code = newTenantData.code;
       existingTenant.name = newTenantData.name;
@@ -48,11 +49,14 @@ export class TenantAggregateRepository implements ITenantAggregateRepository {
       existingTenant.updatedBy = newTenantData.updatedBy;
       existingTenant.deletedBy = newTenantData.deletedBy;
       existingTenant.version = newTenantData.version;
-      
+
       // 更新配置
-      const existingConfig = await this.em.findOne(TenantConfigurationOrmEntity, {
-        tenant: { id: aggregate.id.toString() },
-      });
+      const existingConfig = await this.em.findOne(
+        TenantConfigurationOrmEntity,
+        {
+          tenant: { id: aggregate.id.toString() },
+        },
+      );
 
       if (existingConfig) {
         existingConfig.maxUsers = newConfigData.maxUsers;
@@ -142,7 +146,7 @@ export class TenantAggregateRepository implements ITenantAggregateRepository {
     const tenantOrms = await this.em.find(
       TenantOrmEntity,
       {},
-      { offset, limit, orderBy: { createdAt: 'DESC' } },
+      { offset, limit, orderBy: { createdAt: "DESC" } },
     );
 
     const aggregates: TenantAggregate[] = [];
@@ -189,4 +193,3 @@ export class TenantAggregateRepository implements ITenantAggregateRepository {
     return await this.em.count(TenantOrmEntity, {});
   }
 }
-

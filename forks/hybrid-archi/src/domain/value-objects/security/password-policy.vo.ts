@@ -35,14 +35,14 @@
  *   requireSpecialChars: true,
  *   maxAge: 90 // 天
  * });
- * 
+ *
  * const isValid = policy.validatePassword('MySecure123!');
  * ```
  *
  * @since 1.0.0
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object";
 
 /**
  * 密码策略属性接口
@@ -52,37 +52,37 @@ import { BaseValueObject } from '../base-value-object';
 export interface PasswordPolicyProps {
   /** 最小长度 */
   minLength: number;
-  
+
   /** 最大长度 */
   maxLength: number;
-  
+
   /** 是否要求大写字母 */
   requireUppercase: boolean;
-  
+
   /** 是否要求小写字母 */
   requireLowercase: boolean;
-  
+
   /** 是否要求数字 */
   requireNumbers: boolean;
-  
+
   /** 是否要求特殊字符 */
   requireSpecialChars: boolean;
-  
+
   /** 密码有效期（天） */
   maxAge: number;
-  
+
   /** 密码历史记录数量 */
   historyCount: number;
-  
+
   /** 是否检查常见弱密码 */
   checkCommonPasswords: boolean;
-  
+
   /** 是否检查用户名包含 */
   checkUsernameInclusion: boolean;
-  
+
   /** 允许的特殊字符 */
   allowedSpecialChars?: string;
-  
+
   /** 禁止的特殊字符 */
   forbiddenSpecialChars?: string;
 }
@@ -95,18 +95,18 @@ export interface PasswordPolicyProps {
 export interface PasswordValidationResult {
   /** 是否有效 */
   isValid: boolean;
-  
+
   /** 错误消息列表 */
   errors: string[];
-  
+
   /** 警告消息列表 */
   warnings: string[];
-  
+
   /** 强度评分（0-100） */
   strengthScore: number;
-  
+
   /** 强度等级 */
-  strengthLevel: 'weak' | 'medium' | 'strong' | 'very_strong';
+  strengthLevel: "weak" | "medium" | "strong" | "very_strong";
 }
 
 /**
@@ -133,16 +133,16 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    */
   protected override validate(props: PasswordPolicyProps): void {
     if (props.minLength < 1 || props.minLength > props.maxLength) {
-      throw new Error('密码最小长度必须大于0且不超过最大长度');
+      throw new Error("密码最小长度必须大于0且不超过最大长度");
     }
     if (props.maxLength > 256) {
-      throw new Error('密码最大长度不能超过256');
+      throw new Error("密码最大长度不能超过256");
     }
     if (props.maxAge < 0) {
-      throw new Error('密码最大使用期限不能为负数');
+      throw new Error("密码最大使用期限不能为负数");
     }
     if (props.historyCount < 0) {
-      throw new Error('密码历史记录数不能为负数');
+      throw new Error("密码历史记录数不能为负数");
     }
   }
 
@@ -181,8 +181,8 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
       historyCount: 5,
       checkCommonPasswords: true,
       checkUsernameInclusion: true,
-      allowedSpecialChars: '!@#$%^&*()_+-=[]{}|;:,.<>?',
-      forbiddenSpecialChars: ''
+      allowedSpecialChars: "!@#$%^&*()_+-=[]{}|;:,.<>?",
+      forbiddenSpecialChars: "",
     });
   }
 
@@ -212,8 +212,8 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
       historyCount: 3,
       checkCommonPasswords: false,
       checkUsernameInclusion: false,
-      allowedSpecialChars: '!@#$%^&*()_+-=[]{}|;:,.<>?',
-      forbiddenSpecialChars: ''
+      allowedSpecialChars: "!@#$%^&*()_+-=[]{}|;:,.<>?",
+      forbiddenSpecialChars: "",
     });
   }
 
@@ -243,8 +243,8 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
       historyCount: 10,
       checkCommonPasswords: true,
       checkUsernameInclusion: true,
-      allowedSpecialChars: '!@#$%^&*()_+-=[]{}|;:,.<>?',
-      forbiddenSpecialChars: ''
+      allowedSpecialChars: "!@#$%^&*()_+-=[]{}|;:,.<>?",
+      forbiddenSpecialChars: "",
     });
   }
 
@@ -269,7 +269,10 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    *
    * @since 1.0.0
    */
-  public validatePassword(password: string, username?: string): PasswordValidationResult {
+  public validatePassword(
+    password: string,
+    username?: string,
+  ): PasswordValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
     let strengthScore = 0;
@@ -284,30 +287,37 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
 
     // 字符类型检查
     if (this.props.requireUppercase && !/[A-Z]/.test(password)) {
-      errors.push('密码必须包含至少一个大写字母');
+      errors.push("密码必须包含至少一个大写字母");
     }
     if (this.props.requireLowercase && !/[a-z]/.test(password)) {
-      errors.push('密码必须包含至少一个小写字母');
+      errors.push("密码必须包含至少一个小写字母");
     }
     if (this.props.requireNumbers && !/[0-9]/.test(password)) {
-      errors.push('密码必须包含至少一个数字');
+      errors.push("密码必须包含至少一个数字");
     }
     if (this.props.requireSpecialChars) {
-      const specialChars = this.props.allowedSpecialChars || '!@#$%^&*()_+-=[]{}|;:,.<>?';
-      const specialCharRegex = new RegExp(`[${specialChars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}]`);
+      const specialChars =
+        this.props.allowedSpecialChars || "!@#$%^&*()_+-=[]{}|;:,.<>?";
+      const specialCharRegex = new RegExp(
+        `[${specialChars.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}]`,
+      );
       if (!specialCharRegex.test(password)) {
-        errors.push('密码必须包含至少一个特殊字符');
+        errors.push("密码必须包含至少一个特殊字符");
       }
     }
 
     // 用户名包含检查
-    if (this.props.checkUsernameInclusion && username && password.toLowerCase().includes(username.toLowerCase())) {
-      errors.push('密码不能包含用户名');
+    if (
+      this.props.checkUsernameInclusion &&
+      username &&
+      password.toLowerCase().includes(username.toLowerCase())
+    ) {
+      errors.push("密码不能包含用户名");
     }
 
     // 常见弱密码检查
     if (this.props.checkCommonPasswords && this.isCommonPassword(password)) {
-      errors.push('密码过于简单，请使用更复杂的密码');
+      errors.push("密码过于简单，请使用更复杂的密码");
     }
 
     // 计算强度评分
@@ -318,7 +328,7 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
 
     // 生成警告
     if (strengthScore < 60) {
-      warnings.push('密码强度较弱，建议使用更复杂的密码');
+      warnings.push("密码强度较弱，建议使用更复杂的密码");
     }
 
     return {
@@ -326,7 +336,7 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
       errors,
       warnings,
       strengthScore,
-      strengthLevel
+      strengthLevel,
     };
   }
 
@@ -378,11 +388,13 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    *
    * @since 1.0.0
    */
-  private getStrengthLevel(score: number): 'weak' | 'medium' | 'strong' | 'very_strong' {
-    if (score < 30) return 'weak';
-    if (score < 60) return 'medium';
-    if (score < 80) return 'strong';
-    return 'very_strong';
+  private getStrengthLevel(
+    score: number,
+  ): "weak" | "medium" | "strong" | "very_strong" {
+    if (score < 30) return "weak";
+    if (score < 60) return "medium";
+    if (score < 80) return "strong";
+    return "very_strong";
   }
 
   /**
@@ -397,10 +409,26 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    */
   private isCommonPassword(password: string): boolean {
     const commonPasswords = [
-      'password', '123456', '123456789', '12345678', '12345',
-      '1234567', '1234567890', 'qwerty', 'abc123', 'password123',
-      'admin', 'letmein', 'welcome', 'monkey', '1234567890',
-      'dragon', 'master', 'hello', 'freedom', 'whatever'
+      "password",
+      "123456",
+      "123456789",
+      "12345678",
+      "12345",
+      "1234567",
+      "1234567890",
+      "qwerty",
+      "abc123",
+      "password123",
+      "admin",
+      "letmein",
+      "welcome",
+      "monkey",
+      "1234567890",
+      "dragon",
+      "master",
+      "hello",
+      "freedom",
+      "whatever",
     ];
 
     return commonPasswords.includes(password.toLowerCase());
@@ -418,19 +446,19 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    */
   private validateProps(props: PasswordPolicyProps): void {
     if (props.minLength < 1 || props.minLength > 128) {
-      throw new Error('密码最小长度必须在1-128之间');
+      throw new Error("密码最小长度必须在1-128之间");
     }
 
     if (props.maxLength < props.minLength || props.maxLength > 128) {
-      throw new Error('密码最大长度必须大于等于最小长度且不超过128');
+      throw new Error("密码最大长度必须大于等于最小长度且不超过128");
     }
 
     if (props.maxAge < 1 || props.maxAge > 365) {
-      throw new Error('密码有效期必须在1-365天之间');
+      throw new Error("密码有效期必须在1-365天之间");
     }
 
     if (props.historyCount < 0 || props.historyCount > 50) {
-      throw new Error('密码历史记录数量必须在0-50之间');
+      throw new Error("密码历史记录数量必须在0-50之间");
     }
   }
 
@@ -552,7 +580,7 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    * @since 1.0.0
    */
   public getAllowedSpecialChars(): string {
-    return this.props.allowedSpecialChars || '';
+    return this.props.allowedSpecialChars || "";
   }
 
   /**
@@ -563,7 +591,7 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    * @since 1.0.0
    */
   public getForbiddenSpecialChars(): string {
-    return this.props.forbiddenSpecialChars || '';
+    return this.props.forbiddenSpecialChars || "";
   }
 
   /**

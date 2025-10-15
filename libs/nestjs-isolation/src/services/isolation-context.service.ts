@@ -24,11 +24,11 @@ import {
   OrganizationId,
   TenantId,
   UserId,
-} from '@hl8/isolation-model';
-import { Injectable } from '@nestjs/common';
-import { ClsService } from 'nestjs-cls';
+} from "@hl8/isolation-model";
+import { Injectable } from "@nestjs/common";
+import { ClsService } from "nestjs-cls";
 
-const ISOLATION_CONTEXT_KEY = 'ISOLATION_CONTEXT';
+const ISOLATION_CONTEXT_KEY = "ISOLATION_CONTEXT";
 
 @Injectable()
 export class IsolationContextService implements IIsolationContextProvider {

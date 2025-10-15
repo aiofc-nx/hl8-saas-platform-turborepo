@@ -37,7 +37,7 @@ export const ROLE_CODE_VALIDATION = {
   /** 格式：字母数字下划线冒号 */
   PATTERN: /^[a-zA-Z0-9_:]+$/,
   /** 错误消息 */
-  ERROR_MESSAGE: '角色代码必须是2-50位的字母、数字、下划线或冒号组合',
+  ERROR_MESSAGE: "角色代码必须是2-50位的字母、数字、下划线或冒号组合",
 } as const;
 
 /**
@@ -51,7 +51,7 @@ export const ROLE_NAME_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 100,
   /** 错误消息 */
-  ERROR_MESSAGE: '角色名称长度必须在1-100字符之间',
+  ERROR_MESSAGE: "角色名称长度必须在1-100字符之间",
 } as const;
 
 /**
@@ -63,7 +63,7 @@ export const ROLE_DESCRIPTION_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 500,
   /** 错误消息 */
-  ERROR_MESSAGE: '角色描述不能超过500字符',
+  ERROR_MESSAGE: "角色描述不能超过500字符",
 } as const;
 
 /**
@@ -76,35 +76,35 @@ export const ROLE_DESCRIPTION_VALIDATION = {
 export const ROLE_LEVEL_CONFIG = {
   /** 平台级（最高权限） */
   PLATFORM: {
-    level: 'PLATFORM',
+    level: "PLATFORM",
     priority: 1,
-    name: '平台级角色',
-    description: '平台超级管理员，拥有所有权限',
-    canManageLevels: ['PLATFORM', 'TENANT', 'ORGANIZATION', 'DEPARTMENT'],
+    name: "平台级角色",
+    description: "平台超级管理员，拥有所有权限",
+    canManageLevels: ["PLATFORM", "TENANT", "ORGANIZATION", "DEPARTMENT"],
   },
   /** 租户级 */
   TENANT: {
-    level: 'TENANT',
+    level: "TENANT",
     priority: 2,
-    name: '租户级角色',
-    description: '租户管理员，管理租户内所有资源',
-    canManageLevels: ['TENANT', 'ORGANIZATION', 'DEPARTMENT'],
+    name: "租户级角色",
+    description: "租户管理员，管理租户内所有资源",
+    canManageLevels: ["TENANT", "ORGANIZATION", "DEPARTMENT"],
   },
   /** 组织级 */
   ORGANIZATION: {
-    level: 'ORGANIZATION',
+    level: "ORGANIZATION",
     priority: 3,
-    name: '组织级角色',
-    description: '组织管理员，管理组织内资源',
-    canManageLevels: ['ORGANIZATION', 'DEPARTMENT'],
+    name: "组织级角色",
+    description: "组织管理员，管理组织内资源",
+    canManageLevels: ["ORGANIZATION", "DEPARTMENT"],
   },
   /** 部门级 */
   DEPARTMENT: {
-    level: 'DEPARTMENT',
+    level: "DEPARTMENT",
     priority: 4,
-    name: '部门级角色',
-    description: '部门经理，管理部门内资源',
-    canManageLevels: ['DEPARTMENT'],
+    name: "部门级角色",
+    description: "部门经理，管理部门内资源",
+    canManageLevels: ["DEPARTMENT"],
   },
 } as const;
 
@@ -118,49 +118,49 @@ export const ROLE_LEVEL_CONFIG = {
 export const SYSTEM_ROLES = {
   /** 超级管理员 */
   SUPER_ADMIN: {
-    code: 'platform:super-admin',
-    name: '超级管理员',
-    level: 'PLATFORM',
+    code: "platform:super-admin",
+    name: "超级管理员",
+    level: "PLATFORM",
     isSystem: true,
     isDefault: false,
   },
   /** 平台管理员 */
   PLATFORM_ADMIN: {
-    code: 'platform:admin',
-    name: '平台管理员',
-    level: 'PLATFORM',
+    code: "platform:admin",
+    name: "平台管理员",
+    level: "PLATFORM",
     isSystem: true,
     isDefault: false,
   },
   /** 租户管理员 */
   TENANT_ADMIN: {
-    code: 'tenant:admin',
-    name: '租户管理员',
-    level: 'TENANT',
+    code: "tenant:admin",
+    name: "租户管理员",
+    level: "TENANT",
     isSystem: true,
     isDefault: true, // 新租户创建者默认角色
   },
   /** 组织管理员 */
   ORGANIZATION_ADMIN: {
-    code: 'organization:admin',
-    name: '组织管理员',
-    level: 'ORGANIZATION',
+    code: "organization:admin",
+    name: "组织管理员",
+    level: "ORGANIZATION",
     isSystem: true,
     isDefault: false,
   },
   /** 部门经理 */
   DEPARTMENT_MANAGER: {
-    code: 'department:manager',
-    name: '部门经理',
-    level: 'DEPARTMENT',
+    code: "department:manager",
+    name: "部门经理",
+    level: "DEPARTMENT",
     isSystem: true,
     isDefault: false,
   },
   /** 普通用户 */
   MEMBER: {
-    code: 'tenant:member',
-    name: '普通成员',
-    level: 'TENANT',
+    code: "tenant:member",
+    name: "普通成员",
+    level: "TENANT",
     isSystem: true,
     isDefault: true, // 新用户默认角色
   },
@@ -188,8 +188,8 @@ export const ROLE_PERMISSION_LIMITS = {
  * @constant
  */
 export const ROLE_STATUS_TRANSITIONS = {
-  ACTIVE: ['INACTIVE', 'DELETED'],
-  INACTIVE: ['ACTIVE', 'DELETED'],
+  ACTIVE: ["INACTIVE", "DELETED"],
+  INACTIVE: ["ACTIVE", "DELETED"],
   DELETED: [], // 已删除状态不可转换
 } as const;
 
@@ -223,9 +223,9 @@ export const ROLE_INHERITANCE_RULES = {
   ENABLE_INHERITANCE: true,
   /** 继承层级关系 */
   INHERITANCE_HIERARCHY: {
-    PLATFORM: ['TENANT', 'ORGANIZATION', 'DEPARTMENT'],
-    TENANT: ['ORGANIZATION', 'DEPARTMENT'],
-    ORGANIZATION: ['DEPARTMENT'],
+    PLATFORM: ["TENANT", "ORGANIZATION", "DEPARTMENT"],
+    TENANT: ["ORGANIZATION", "DEPARTMENT"],
+    ORGANIZATION: ["DEPARTMENT"],
     DEPARTMENT: [],
   },
 } as const;
@@ -243,7 +243,7 @@ export const ROLE_CACHE_CONFIG = {
   /** 用户角色列表缓存TTL（秒） */
   USER_ROLES_TTL: 900, // 15分钟
   /** 缓存键前缀 */
-  KEY_PREFIX: 'role',
+  KEY_PREFIX: "role",
 } as const;
 
 /**
@@ -255,19 +255,19 @@ export const ROLE_CACHE_CONFIG = {
  */
 export const ROLE_MANAGEMENT_PERMISSIONS = {
   /** 创建角色 */
-  CREATE: 'role:create',
+  CREATE: "role:create",
   /** 读取角色 */
-  READ: 'role:read',
+  READ: "role:read",
   /** 更新角色 */
-  UPDATE: 'role:update',
+  UPDATE: "role:update",
   /** 删除角色 */
-  DELETE: 'role:delete',
+  DELETE: "role:delete",
   /** 分配权限 */
-  ASSIGN_PERMISSIONS: 'role:assign-permissions',
+  ASSIGN_PERMISSIONS: "role:assign-permissions",
   /** 分配角色给用户 */
-  ASSIGN_TO_USER: 'role:assign',
+  ASSIGN_TO_USER: "role:assign",
   /** 撤销用户角色 */
-  REVOKE_FROM_USER: 'role:revoke',
+  REVOKE_FROM_USER: "role:revoke",
 } as const;
 
 /**
@@ -291,4 +291,3 @@ export const ROLE_AUDIT_CONFIG = {
   /** 审计日志保留天数 */
   RETENTION_DAYS: 365,
 } as const;
-

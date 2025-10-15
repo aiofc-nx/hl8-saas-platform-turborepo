@@ -31,51 +31,51 @@
 export enum UserRole {
   /**
    * 平台管理员
-   * 
+   *
    * @description 系统最高权限角色
    * 可以管理所有租户、用户和系统配置
    */
-  PLATFORM_ADMIN = 'PLATFORM_ADMIN',
+  PLATFORM_ADMIN = "PLATFORM_ADMIN",
 
   /**
    * 租户管理员
-   * 
+   *
    * @description 租户内最高权限角色
    * 可以管理租户内的所有用户、组织和部门
    */
-  TENANT_ADMIN = 'TENANT_ADMIN',
+  TENANT_ADMIN = "TENANT_ADMIN",
 
   /**
    * 组织管理员
-   * 
+   *
    * @description 组织内管理权限角色
    * 可以管理组织内的用户和部门
    */
-  ORGANIZATION_ADMIN = 'ORGANIZATION_ADMIN',
+  ORGANIZATION_ADMIN = "ORGANIZATION_ADMIN",
 
   /**
    * 部门管理员
-   * 
+   *
    * @description 部门内管理权限角色
    * 可以管理部门内的用户
    */
-  DEPARTMENT_ADMIN = 'DEPARTMENT_ADMIN',
+  DEPARTMENT_ADMIN = "DEPARTMENT_ADMIN",
 
   /**
    * 普通用户
-   * 
+   *
    * @description 基础权限角色
    * 可以执行基本的业务操作
    */
-  REGULAR_USER = 'REGULAR_USER',
+  REGULAR_USER = "REGULAR_USER",
 
   /**
    * 访客用户
-   * 
+   *
    * @description 只读权限角色
    * 只能查看信息，不能执行修改操作
    */
-  GUEST_USER = 'GUEST_USER'
+  GUEST_USER = "GUEST_USER",
 }
 
 /**
@@ -89,7 +89,7 @@ export enum UserRole {
 export class UserRoleUtils {
   /**
    * 角色层级定义
-   * 
+   *
    * @description 定义角色的层级关系
    * 数值越大，权限越高
    */
@@ -99,52 +99,49 @@ export class UserRoleUtils {
     [UserRole.ORGANIZATION_ADMIN]: 60,
     [UserRole.DEPARTMENT_ADMIN]: 40,
     [UserRole.REGULAR_USER]: 20,
-    [UserRole.GUEST_USER]: 10
+    [UserRole.GUEST_USER]: 10,
   };
 
   /**
    * 角色权限定义
-   * 
+   *
    * @description 定义每个角色的权限列表
    */
   private static readonly ROLE_PERMISSIONS: Record<UserRole, string[]> = {
     [UserRole.PLATFORM_ADMIN]: [
-      'manage_platform',
-      'manage_all_tenants',
-      'manage_all_users',
-      'manage_system_config',
-      'view_system_logs',
-      'manage_platform_users'
+      "manage_platform",
+      "manage_all_tenants",
+      "manage_all_users",
+      "manage_system_config",
+      "view_system_logs",
+      "manage_platform_users",
     ],
     [UserRole.TENANT_ADMIN]: [
-      'manage_tenant',
-      'manage_tenant_users',
-      'manage_tenant_organizations',
-      'manage_tenant_departments',
-      'view_tenant_logs',
-      'manage_tenant_config'
+      "manage_tenant",
+      "manage_tenant_users",
+      "manage_tenant_organizations",
+      "manage_tenant_departments",
+      "view_tenant_logs",
+      "manage_tenant_config",
     ],
     [UserRole.ORGANIZATION_ADMIN]: [
-      'manage_organization',
-      'manage_organization_users',
-      'manage_organization_departments',
-      'view_organization_logs'
+      "manage_organization",
+      "manage_organization_users",
+      "manage_organization_departments",
+      "view_organization_logs",
     ],
     [UserRole.DEPARTMENT_ADMIN]: [
-      'manage_department',
-      'manage_department_users',
-      'view_department_logs'
+      "manage_department",
+      "manage_department_users",
+      "view_department_logs",
     ],
     [UserRole.REGULAR_USER]: [
-      'view_own_profile',
-      'update_own_profile',
-      'view_assigned_resources',
-      'use_basic_features'
+      "view_own_profile",
+      "update_own_profile",
+      "view_assigned_resources",
+      "use_basic_features",
     ],
-    [UserRole.GUEST_USER]: [
-      'view_public_info',
-      'view_limited_resources'
-    ]
+    [UserRole.GUEST_USER]: ["view_public_info", "view_limited_resources"],
   };
 
   /**
@@ -159,7 +156,7 @@ export class UserRoleUtils {
    * @example
    * ```typescript
    * const hasPermission = UserRoleUtils.hasPermission(
-   *   UserRole.TENANT_ADMIN, 
+   *   UserRole.TENANT_ADMIN,
    *   'manage_tenant_users'
    * ); // true
    * ```
@@ -184,14 +181,17 @@ export class UserRoleUtils {
    * @example
    * ```typescript
    * const canManage = UserRoleUtils.canManage(
-   *   UserRole.TENANT_ADMIN, 
+   *   UserRole.TENANT_ADMIN,
    *   UserRole.REGULAR_USER
    * ); // true
    * ```
    *
    * @since 1.0.0
    */
-  public static canManage(managerRole: UserRole, targetRole: UserRole): boolean {
+  public static canManage(
+    managerRole: UserRole,
+    targetRole: UserRole,
+  ): boolean {
     const managerLevel = this.ROLE_HIERARCHY[managerRole];
     const targetLevel = this.ROLE_HIERARCHY[targetRole];
     return managerLevel > targetLevel;
@@ -235,12 +235,12 @@ export class UserRoleUtils {
    */
   public static getDescription(role: UserRole): string {
     const descriptions: Record<UserRole, string> = {
-      [UserRole.PLATFORM_ADMIN]: '平台管理员',
-      [UserRole.TENANT_ADMIN]: '租户管理员',
-      [UserRole.ORGANIZATION_ADMIN]: '组织管理员',
-      [UserRole.DEPARTMENT_ADMIN]: '部门管理员',
-      [UserRole.REGULAR_USER]: '普通用户',
-      [UserRole.GUEST_USER]: '访客用户'
+      [UserRole.PLATFORM_ADMIN]: "平台管理员",
+      [UserRole.TENANT_ADMIN]: "租户管理员",
+      [UserRole.ORGANIZATION_ADMIN]: "组织管理员",
+      [UserRole.DEPARTMENT_ADMIN]: "部门管理员",
+      [UserRole.REGULAR_USER]: "普通用户",
+      [UserRole.GUEST_USER]: "访客用户",
     };
 
     return descriptions[role];
@@ -283,7 +283,10 @@ export class UserRoleUtils {
    * @since 1.0.0
    */
   public static isAdmin(role: UserRole): boolean {
-    return this.ROLE_HIERARCHY[role] >= this.ROLE_HIERARCHY[UserRole.DEPARTMENT_ADMIN];
+    return (
+      this.ROLE_HIERARCHY[role] >=
+      this.ROLE_HIERARCHY[UserRole.DEPARTMENT_ADMIN]
+    );
   }
 
   /**
@@ -321,7 +324,12 @@ export class UserRoleUtils {
    * @since 1.0.0
    */
   public static isTenantRole(role: UserRole): boolean {
-    return [UserRole.TENANT_ADMIN, UserRole.ORGANIZATION_ADMIN, UserRole.DEPARTMENT_ADMIN, UserRole.REGULAR_USER].includes(role);
+    return [
+      UserRole.TENANT_ADMIN,
+      UserRole.ORGANIZATION_ADMIN,
+      UserRole.DEPARTMENT_ADMIN,
+      UserRole.REGULAR_USER,
+    ].includes(role);
   }
 
   /**
@@ -341,7 +349,11 @@ export class UserRoleUtils {
    */
   public static getAdminRoles(): UserRole[] {
     return Object.keys(this.ROLE_HIERARCHY)
-      .filter(role => this.ROLE_HIERARCHY[role as UserRole] >= this.ROLE_HIERARCHY[UserRole.DEPARTMENT_ADMIN])
-      .map(role => role as UserRole);
+      .filter(
+        (role) =>
+          this.ROLE_HIERARCHY[role as UserRole] >=
+          this.ROLE_HIERARCHY[UserRole.DEPARTMENT_ADMIN],
+      )
+      .map((role) => role as UserRole);
   }
 }

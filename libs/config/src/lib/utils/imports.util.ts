@@ -6,8 +6,8 @@
  * @since 1.0.0
  */
 
-import { plainToClass } from 'class-transformer';
-import { validateSync } from 'class-validator';
+import { plainToClass } from "class-transformer";
+import { validateSync } from "class-validator";
 
 /**
  * 导出验证同步函数

@@ -1,12 +1,12 @@
 /**
  * 组织成员实体
  *
- * @class OrganizationMember  
+ * @class OrganizationMember
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { PinoLogger } from "@hl8/logger";
 
 export class OrganizationMember extends BaseEntity {
   constructor(
@@ -57,4 +57,3 @@ export class OrganizationMember extends BaseEntity {
     this.updateTimestamp();
   }
 }
-

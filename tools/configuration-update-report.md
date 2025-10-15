@@ -9,15 +9,19 @@
 ### 1. package.json 更新
 
 #### 模块系统迁移
+
 - **从**: `"type": "commonjs"`
 - **到**: `"type": "module"`
 
 #### 导出配置更新
+
 - **从**: 简单的 `main` 和 `types` 字段
 - **到**: 完整的 `exports` 配置，支持 ES 模块
 
 #### 依赖关系更新
+
 **hybrid-archi 新依赖**:
+
 ```json
 {
   "@hl8/database": "workspace:*",
@@ -29,6 +33,7 @@
 ```
 
 **saas-core 新依赖**:
+
 ```json
 {
   "@hl8/hybrid-archi": "workspace:*",
@@ -41,7 +46,9 @@
 ```
 
 #### 脚本配置
+
 添加了标准化的构建和测试脚本：
+
 - `build`: TypeScript 编译
 - `build:swc`: SWC 编译（性能优化）
 - `clean`: 清理构建产物
@@ -55,15 +62,19 @@
 ### 2. tsconfig.json 更新
 
 #### 基础配置
+
 - **从**: `"extends": "../../tsconfig.base.json"`
 - **到**: `"extends": "@repo/typescript-config/nestjs.json"`
 
 #### 模块配置
+
 - **模块系统**: `"module": "NodeNext"`
 - **模块解析**: `"moduleResolution": "NodeNext"`
 
 #### 路径映射
+
 添加了完整的路径映射配置：
+
 ```json
 {
   "paths": {
@@ -78,23 +89,28 @@
 ```
 
 #### 包含/排除配置
+
 - **包含**: `["src"]`
 - **排除**: `["node_modules", "test", "dist", "**/*spec.ts"]`
 
 ### 3. ESLint 配置更新
 
 #### 配置文件
+
 - **从**: `eslint.config.cjs` (CommonJS)
 - **到**: `eslint.config.mjs` (ES 模块)
 
 #### 配置内容
+
 - **从**: 复杂的自定义配置
 - **到**: 统一的 `@repo/eslint-config/eslint-nest.config.mjs`
 
 ### 4. 新增配置文件
 
 #### tsconfig.build.json
+
 为两个模块都创建了构建专用的 TypeScript 配置：
+
 ```json
 {
   "extends": "./tsconfig.json",
@@ -105,21 +121,25 @@
 ## 技术改进
 
 ### 1. 模块系统现代化
+
 - 迁移到 ES 模块，支持 Tree Shaking
 - 更好的性能和兼容性
 - 符合现代 JavaScript 标准
 
 ### 2. 依赖管理优化
+
 - 移除旧的基础设施模块依赖
 - 添加新的基础设施模块依赖
 - 统一依赖版本管理
 
 ### 3. 构建系统改进
+
 - 支持 SWC 编译（更快的构建速度）
 - 标准化的构建脚本
 - 更好的开发体验
 
 ### 4. 代码质量保证
+
 - 统一的 ESLint 配置
 - 标准化的测试配置
 - 类型检查集成
@@ -127,20 +147,24 @@
 ## 兼容性说明
 
 ### 1. Node.js 版本要求
+
 - 最低版本: Node.js >= 20
 - 推荐版本: Node.js >= 22
 
 ### 2. TypeScript 版本
+
 - 使用: TypeScript ^5.7.3
 - 支持: 最新的 TypeScript 特性
 
 ### 3. 构建工具
+
 - SWC: 用于快速编译
 - TypeScript: 用于类型检查和声明文件生成
 
 ## 验证清单
 
 ### ✅ 已完成的验证
+
 - [x] package.json 格式正确
 - [x] tsconfig.json 配置有效
 - [x] ESLint 配置正确
@@ -149,6 +173,7 @@
 - [x] 脚本命令标准化
 
 ### 🔄 待验证项目
+
 - [ ] 构建测试
 - [ ] 依赖安装测试
 - [ ] 类型检查测试

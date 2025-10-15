@@ -64,15 +64,18 @@
  * @since 1.0.0
  */
 
-import type { IUseCase, IUseCaseContext  } from './use-case.interface';
+import type { IUseCase, IUseCaseContext } from "./use-case.interface";
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from "@nestjs/common";
 import {
   USE_CASE_ERROR_CODES,
   TENANT_ERROR_CODES,
   DEFAULT_ENVIRONMENT,
-} from '../../../constants';
+} from "../../../constants";
 
 /**
  * 用例执行结果
@@ -126,9 +129,9 @@ export abstract class BaseUseCase<TRequest, TResponse>
   constructor(
     useCaseName: string,
     useCaseDescription: string,
-    useCaseVersion = '1.0.0',
+    useCaseVersion = "1.0.0",
     requiredPermissions: string[] = [],
-    logger?: FastifyLoggerService
+    logger?: FastifyLoggerService,
   ) {
     this.useCaseName = useCaseName;
     this.useCaseDescription = useCaseDescription;
@@ -183,7 +186,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
    */
   protected abstract executeUseCase(
     request: TRequest,
-    context: IUseCaseContext
+    context: IUseCaseContext,
   ): Promise<TResponse>;
 
   /**
@@ -251,17 +254,17 @@ export abstract class BaseUseCase<TRequest, TResponse>
 
     const userPermissions = context.user.permissions || [];
     const hasAllPermissions = this.requiredPermissions.every((permission) =>
-      userPermissions.includes(permission)
+      userPermissions.includes(permission),
     );
 
     if (!hasAllPermissions) {
       const missingPermissions = this.requiredPermissions.filter(
-        (permission) => !userPermissions.includes(permission)
+        (permission) => !userPermissions.includes(permission),
       );
       throw new Error(
         `[${this.useCaseName}] 权限不足，缺少权限: ${missingPermissions.join(
-          ', '
-        )}`
+          ", ",
+        )}`,
       );
     }
   }
@@ -282,9 +285,9 @@ export abstract class BaseUseCase<TRequest, TResponse>
         timestamp: new Date(),
       },
       system: {
-        service: 'aiofix-saas',
-        version: '1.0.0',
-        environment: process.env['NODE_ENV'] || DEFAULT_ENVIRONMENT,
+        service: "aiofix-saas",
+        version: "1.0.0",
+        environment: process.env["NODE_ENV"] || DEFAULT_ENVIRONMENT,
       },
     };
 
@@ -294,21 +297,21 @@ export abstract class BaseUseCase<TRequest, TResponse>
       if (tenantContext) {
         baseContext.tenant = {
           id: tenantContext.tenantId.toString(),
-          name: (tenantContext.metadata?.['tenantName'] as string) || 'Unknown',
+          name: (tenantContext.metadata?.["tenantName"] as string) || "Unknown",
         };
 
         if (tenantContext.userId) {
           baseContext.user = {
             id: tenantContext.userId,
-            name: (tenantContext.metadata?.['userName'] as string) || 'Unknown',
+            name: (tenantContext.metadata?.["userName"] as string) || "Unknown",
             permissions:
-              (tenantContext.metadata?.['permissions'] as string[]) || [],
+              (tenantContext.metadata?.["permissions"] as string[]) || [],
           };
         }
       }
     } catch (error) {
       // 如果获取租户上下文失败，记录警告但不影响用例执行
-      console.warn('Failed to get tenant context for use case:', error);
+      console.warn("Failed to get tenant context for use case:", error);
     }
 
     return baseContext;
@@ -363,7 +366,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     request: TRequest,
     response: TResponse,
     context: IUseCaseContext,
-    executionTime: number
+    executionTime: number,
   ): void {
     this.logger.log(`Use case completed successfully: ${this.useCaseName}`);
   }
@@ -375,7 +378,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     request: TRequest,
     error: any,
     context: IUseCaseContext,
-    executionTime: number
+    executionTime: number,
   ): void {
     this.logger.error(`Use case failed: ${this.useCaseName}`, error);
   }
@@ -403,7 +406,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
   protected throwValidationError(
     message: string,
     validationErrors: string[],
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): never {
     throw new BadRequestException(message);
   }
@@ -421,7 +424,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     message: string,
     requiredPermissions: string[],
     userPermissions: string[],
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): never {
     throw new BadRequestException(message);
   }
@@ -437,7 +440,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
   protected throwBusinessError(
     message: string,
     businessRule: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): never {
     throw new InternalServerErrorException(message);
   }
@@ -453,7 +456,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
   protected throwExecutionError(
     message: string,
     operation: string,
-    details?: Record<string, unknown>
+    details?: Record<string, unknown>,
   ): never {
     throw new InternalServerErrorException(message);
   }
@@ -469,7 +472,7 @@ export abstract class BaseUseCaseError extends Error {
   constructor(
     message: string,
     public readonly useCaseName: string,
-    public readonly context?: IUseCaseContext
+    public readonly context?: IUseCaseContext,
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -481,13 +484,13 @@ export abstract class BaseUseCaseError extends Error {
  */
 export class UseCaseValidationError extends BaseUseCaseError {
   readonly errorCode = USE_CASE_ERROR_CODES.VALIDATION_ERROR;
-  readonly errorType = 'validation';
+  readonly errorType = "validation";
 
   constructor(
     message: string,
     useCaseName: string,
     public readonly validationErrors: string[],
-    context?: IUseCaseContext
+    context?: IUseCaseContext,
   ) {
     super(message, useCaseName, context);
   }
@@ -498,13 +501,13 @@ export class UseCaseValidationError extends BaseUseCaseError {
  */
 export class UseCaseExecutionError extends BaseUseCaseError {
   readonly errorCode = USE_CASE_ERROR_CODES.EXECUTION_ERROR;
-  readonly errorType = 'execution';
+  readonly errorType = "execution";
 
   constructor(
     message: string,
     useCaseName: string,
     public readonly originalError?: Error,
-    context?: IUseCaseContext
+    context?: IUseCaseContext,
   ) {
     super(message, useCaseName, context);
   }
@@ -515,14 +518,14 @@ export class UseCaseExecutionError extends BaseUseCaseError {
  */
 export class PermissionDeniedError extends BaseUseCaseError {
   readonly errorCode = USE_CASE_ERROR_CODES.PERMISSION_ERROR;
-  readonly errorType = 'permission';
+  readonly errorType = "permission";
 
   constructor(
     message: string,
     useCaseName: string,
     public readonly requiredPermissions: string[],
     public readonly userPermissions: string[],
-    context?: IUseCaseContext
+    context?: IUseCaseContext,
   ) {
     super(message, useCaseName, context);
   }

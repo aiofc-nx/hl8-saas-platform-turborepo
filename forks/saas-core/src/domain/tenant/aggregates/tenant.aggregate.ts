@@ -46,15 +46,19 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { TenantStatus } from '../value-objects/tenant-status.vo';
-import { PinoLogger } from '@hl8/logger';
-import { Tenant } from '../entities/tenant.entity';
-import { TenantConfiguration } from '../entities/tenant-configuration.entity';
-import { TenantCode } from '../value-objects/tenant-code.vo';
-import { TenantDomain } from '../value-objects/tenant-domain.vo';
-import { TenantQuota } from '../value-objects/tenant-quota.vo';
-import { TenantType } from '../value-objects/tenant-type.enum';
+import {
+  TenantAwareAggregateRoot,
+  EntityId,
+  IPartialAuditInfo,
+} from "@hl8/hybrid-archi";
+import { TenantStatus } from "../value-objects/tenant-status.vo";
+import { PinoLogger } from "@hl8/logger";
+import { Tenant } from "../entities/tenant.entity";
+import { TenantConfiguration } from "../entities/tenant-configuration.entity";
+import { TenantCode } from "../value-objects/tenant-code.vo";
+import { TenantDomain } from "../value-objects/tenant-domain.vo";
+import { TenantQuota } from "../value-objects/tenant-quota.vo";
+import { TenantType } from "../value-objects/tenant-type.enum";
 
 /**
  * 租户聚合根
@@ -127,12 +131,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     );
 
     // 创建聚合根
-    const aggregate = new TenantAggregate(
-      id,
-      tenant,
-      configuration,
-      auditInfo,
-    );
+    const aggregate = new TenantAggregate(id, tenant, configuration, auditInfo);
 
     // 发布租户创建事件
     // 注意：实际的事件将在实现事件类后添加
@@ -141,7 +140,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     // );
 
     // 记录租户创建日志
-    aggregate.logTenantOperation('租户已创建', {
+    aggregate.logTenantOperation("租户已创建", {
       code: code.value,
       name,
       type,
@@ -233,7 +232,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     // );
 
     // 记录操作
-    this.logTenantOperation('租户名称已更新', {
+    this.logTenantOperation("租户名称已更新", {
       newName: name,
       updatedBy,
     });
@@ -272,7 +271,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
 
     // 更新启用功能
     const newFeatures = TenantAggregate.getDefaultFeaturesForType(newType);
-    newFeatures.forEach(feature => {
+    newFeatures.forEach((feature) => {
       this._configuration.enableFeature(feature, updatedBy);
     });
 
@@ -282,7 +281,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     // );
 
     // 记录操作
-    this.logTenantOperation('租户已升级', {
+    this.logTenantOperation("租户已升级", {
       fromType: currentType,
       toType: newType,
       updatedBy,
@@ -329,7 +328,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     // );
 
     // 记录操作
-    this.logTenantOperation('租户已降级', {
+    this.logTenantOperation("租户已降级", {
       fromType: currentType,
       toType: newType,
       updatedBy,
@@ -356,7 +355,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     // );
 
     // 记录操作
-    this.logTenantOperation('租户已激活', { updatedBy });
+    this.logTenantOperation("租户已激活", { updatedBy });
   }
 
   /**
@@ -380,7 +379,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     // );
 
     // 记录操作
-    this.logTenantOperation('租户已暂停', { reason, updatedBy });
+    this.logTenantOperation("租户已暂停", { reason, updatedBy });
   }
 
   /**
@@ -403,7 +402,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     // );
 
     // 记录操作
-    this.logTenantOperation('租户已恢复', { updatedBy });
+    this.logTenantOperation("租户已恢复", { updatedBy });
   }
 
   // ============================================================================
@@ -426,7 +425,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     this._configuration.updateQuota(quota, updatedBy);
 
     // 记录操作
-    this.logTenantOperation('租户配额已更新', {
+    this.logTenantOperation("租户配额已更新", {
       quota: quota.toJSON(),
       updatedBy,
     });
@@ -441,7 +440,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
   public enableFeature(feature: string, updatedBy: string): void {
     this.ensureTenantContext();
     this._configuration.enableFeature(feature, updatedBy);
-    this.logTenantOperation('功能已启用', { feature, updatedBy });
+    this.logTenantOperation("功能已启用", { feature, updatedBy });
   }
 
   /**
@@ -453,7 +452,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
   public disableFeature(feature: string, updatedBy: string): void {
     this.ensureTenantContext();
     this._configuration.disableFeature(feature, updatedBy);
-    this.logTenantOperation('功能已禁用', { feature, updatedBy });
+    this.logTenantOperation("功能已禁用", { feature, updatedBy });
   }
 
   // ============================================================================
@@ -501,7 +500,10 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    * @param {TenantType} newType - 新类型
    * @throws {Error} 当升级路径不允许时抛出错误
    */
-  private validateUpgradePath(currentType: TenantType, newType: TenantType): void {
+  private validateUpgradePath(
+    currentType: TenantType,
+    newType: TenantType,
+  ): void {
     const hierarchy = [
       TenantType.FREE,
       TenantType.BASIC,
@@ -526,7 +528,10 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    * @param {TenantType} newType - 新类型
    * @throws {Error} 当降级路径不允许时抛出错误
    */
-  private validateDowngradePath(currentType: TenantType, newType: TenantType): void {
+  private validateDowngradePath(
+    currentType: TenantType,
+    newType: TenantType,
+  ): void {
     const hierarchy = [
       TenantType.FREE,
       TenantType.BASIC,
@@ -553,35 +558,35 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    */
   private static getDefaultFeaturesForType(type: TenantType): string[] {
     const featureMap: Record<TenantType, string[]> = {
-      [TenantType.FREE]: ['basic_features'],
-      [TenantType.BASIC]: ['basic_features', 'advanced_auth'],
+      [TenantType.FREE]: ["basic_features"],
+      [TenantType.BASIC]: ["basic_features", "advanced_auth"],
       [TenantType.PROFESSIONAL]: [
-        'basic_features',
-        'advanced_auth',
-        'advanced_reporting',
-        'api_access',
+        "basic_features",
+        "advanced_auth",
+        "advanced_reporting",
+        "api_access",
       ],
       [TenantType.ENTERPRISE]: [
-        'basic_features',
-        'advanced_auth',
-        'advanced_reporting',
-        'api_access',
-        'sso',
-        'audit_logs',
+        "basic_features",
+        "advanced_auth",
+        "advanced_reporting",
+        "api_access",
+        "sso",
+        "audit_logs",
       ],
       [TenantType.CUSTOM]: [
-        'basic_features',
-        'advanced_auth',
-        'advanced_reporting',
-        'api_access',
-        'sso',
-        'audit_logs',
-        'custom_branding',
-        'dedicated_support',
+        "basic_features",
+        "advanced_auth",
+        "advanced_reporting",
+        "api_access",
+        "sso",
+        "audit_logs",
+        "custom_branding",
+        "dedicated_support",
       ],
     };
 
-    return featureMap[type] || ['basic_features'];
+    return featureMap[type] || ["basic_features"];
   }
 
   /**
@@ -598,4 +603,3 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     };
   }
 }
-

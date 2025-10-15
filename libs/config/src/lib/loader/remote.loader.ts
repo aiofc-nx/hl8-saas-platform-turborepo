@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-import { CONFIG_DEFAULTS } from '../constants.js';
-import { ErrorHandler } from '../errors/index.js';
-import { AsyncConfigLoader } from '../interfaces/typed-config-module-options.interface.js';
+import { CONFIG_DEFAULTS } from "../constants.js";
+import { ErrorHandler } from "../errors/index.js";
+import { AsyncConfigLoader } from "../interfaces/typed-config-module-options.interface.js";
 
 /**
  * 远程加载器选项接口
@@ -22,7 +22,7 @@ export interface RemoteLoaderOptions {
    * @description Axios 请求配置
    */
   requestConfig?: {
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    method?: "GET" | "POST" | "PUT" | "DELETE";
     headers?: Record<string, string>;
     timeout?: number;
     auth?: {
@@ -39,7 +39,7 @@ export interface RemoteLoaderOptions {
    * 使用 any 符合宪章 IX 允许场景：HTTP 响应类型未知。
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- HTTP 响应类型未知（宪章 IX 允许场景：第三方库集成）
-  type?: 'json' | 'yaml' | 'yml' | ((response: any) => string);
+  type?: "json" | "yaml" | "yml" | ((response: any) => string);
 
   /**
    * 响应映射函数
@@ -103,7 +103,7 @@ export const remoteLoader = (
 ): AsyncConfigLoader => {
   const {
     requestConfig = {},
-    type = 'json',
+    type = "json",
     mapResponse = (response) => response.data,
     shouldRetry = (response) => response.status !== 200,
     retries = CONFIG_DEFAULTS.RETRY_ATTEMPTS,
@@ -133,7 +133,7 @@ export const remoteLoader = (
     }
 
     throw ErrorHandler.handleNetworkError(
-      lastError || new Error('Unknown network error'),
+      lastError || new Error("Unknown network error"),
       url,
       { retries, retryInterval, attempt: retries + 1 },
     );
@@ -156,10 +156,10 @@ async function makeRequest(
   // 这里应该使用实际的 HTTP 客户端，如 axios 或 fetch
   // 为了简化，这里使用 fetch API
   const response = await fetch(url, {
-    method: (config['method'] as string) || 'GET',
+    method: (config["method"] as string) || "GET",
     headers: {
-      'Content-Type': 'application/json',
-      ...((config['headers'] as Record<string, string>) || {}),
+      "Content-Type": "application/json",
+      ...((config["headers"] as Record<string, string>) || {}),
     },
     // 移除 timeout 属性，因为 fetch 不支持
   });
@@ -192,13 +192,13 @@ function parseConfig(
   data: any,
   type: string | ((response: any) => string),
 ): Record<string, any> {
-  const configType = typeof type === 'function' ? type(data) : type;
+  const configType = typeof type === "function" ? type(data) : type;
 
   switch (configType) {
-    case 'json':
-      return typeof data === 'string' ? JSON.parse(data) : data;
-    case 'yaml':
-    case 'yml':
+    case "json":
+      return typeof data === "string" ? JSON.parse(data) : data;
+    case "yaml":
+    case "yml":
       // 这里需要 yaml 解析器
       return data;
     default:

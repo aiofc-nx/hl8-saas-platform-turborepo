@@ -33,7 +33,7 @@
  *     if (!isAuthenticated) {
  *       throw new UnauthorizedException('认证失败');
  *     }
- *     
+ *
  *     // 继续处理
  *     await next();
  *   }
@@ -43,12 +43,13 @@
  * @since 1.0.0
  */
 
-import type { ILoggerService,
+import type {
+  ILoggerService,
   IMetricsService,
   IWebSocketContext,
   IWebSocketClient,
-} from '../../shared/interfaces';
-import { TenantId } from '@hl8/isolation-model';
+} from "../../shared/interfaces";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * WebSocket中间件接口
@@ -69,7 +70,7 @@ export interface IWebSocketMiddleware {
   use(
     context: IWebSocketContext,
     client: IWebSocketClient,
-    next: () => Promise<void>
+    next: () => Promise<void>,
   ): Promise<void>;
 
   /**
@@ -92,7 +93,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.middlewareName = this.constructor.name;
   }
@@ -110,7 +111,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
   async use(
     context: IWebSocketContext,
     client: IWebSocketClient,
-    next: () => Promise<void>
+    next: () => Promise<void>,
   ): Promise<void> {
     const startTime = Date.now();
 
@@ -143,7 +144,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
   protected abstract process(
     context: IWebSocketContext,
     client: IWebSocketClient,
-    next: () => Promise<void>
+    next: () => Promise<void>,
   ): Promise<void>;
 
   /**
@@ -169,7 +170,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
   protected logSuccess(
     context: IWebSocketContext,
     client: IWebSocketClient,
-    startTime: number
+    startTime: number,
   ): void {
     const duration = Date.now() - startTime;
 
@@ -177,11 +178,11 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
 
     // 记录性能指标
     this.metricsService?.incrementCounter(
-      `websocket_middleware_${this.middlewareName.toLowerCase()}_success_total`
+      `websocket_middleware_${this.middlewareName.toLowerCase()}_success_total`,
     );
     this.metricsService?.recordHistogram(
       `websocket_middleware_${this.middlewareName.toLowerCase()}_duration_ms`,
-      duration
+      duration,
     );
   }
 
@@ -199,7 +200,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
     context: IWebSocketContext,
     client: IWebSocketClient,
     error: unknown,
-    startTime: number
+    startTime: number,
   ): void {
     const duration = Date.now() - startTime;
 
@@ -207,7 +208,8 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
-      `websocket_middleware_${this.middlewareName.toLowerCase()}_error_total`);
+      `websocket_middleware_${this.middlewareName.toLowerCase()}_error_total`,
+    );
   }
 }
 
@@ -230,24 +232,24 @@ export class AuthMiddleware extends BaseWebSocketMiddleware {
   protected async process(
     context: IWebSocketContext,
     client: IWebSocketClient,
-    next: () => Promise<void>
+    next: () => Promise<void>,
   ): Promise<void> {
     // 提取认证令牌
     const token = this.extractToken(client);
     if (!token) {
-      throw new Error('缺少认证令牌');
+      throw new Error("缺少认证令牌");
     }
 
     // 验证令牌
     const payload = await this.verifyToken(token);
     if (!payload) {
-      throw new Error('认证令牌无效');
+      throw new Error("认证令牌无效");
     }
 
     // 验证用户状态
     const user = await this.validateUser((payload as { sub: string }).sub);
     if (!user || !user.isActive()) {
-      throw new Error('用户状态无效');
+      throw new Error("用户状态无效");
     }
 
     // 更新上下文
@@ -271,9 +273,7 @@ export class AuthMiddleware extends BaseWebSocketMiddleware {
     const headers = client.handshake.headers;
 
     return (
-      auth?.token || 
-      headers?.authorization?.replace('Bearer ', '') || 
-      null
+      auth?.token || headers?.authorization?.replace("Bearer ", "") || null
     );
   }
 
@@ -288,7 +288,7 @@ export class AuthMiddleware extends BaseWebSocketMiddleware {
   private async verifyToken(token: string): Promise<unknown> {
     // 这里应该实现JWT令牌验证
     // 实际实现中会调用JWT服务
-    this.logger.debug('验证JWT令牌');
+    this.logger.debug("验证JWT令牌");
     return null; // 占位符实现
   }
 
@@ -300,10 +300,16 @@ export class AuthMiddleware extends BaseWebSocketMiddleware {
    * @param userId - 用户ID
    * @returns 用户实体或null
    */
-  private async validateUser(userId: string): Promise<{ getId(): { getValue(): string }; getTenantId(): string; isActive(): boolean } | null> {
+  private async validateUser(
+    userId: string,
+  ): Promise<{
+    getId(): { getValue(): string };
+    getTenantId(): string;
+    isActive(): boolean;
+  } | null> {
     // 这里应该调用用户服务验证用户状态
     // 实际实现中会从数据库或缓存中获取用户信息
-    this.logger.debug('验证用户状态');
+    this.logger.debug("验证用户状态");
     return null; // 占位符实现
   }
 }
@@ -318,7 +324,7 @@ export class AuthorizationMiddleware extends BaseWebSocketMiddleware {
     logger: ILoggerService,
     metricsService?: IMetricsService,
     private readonly requiredRoles: string[] = [],
-    private readonly requiredPermissions: string[] = []
+    private readonly requiredPermissions: string[] = [],
   ) {
     super(logger, metricsService);
   }
@@ -336,25 +342,29 @@ export class AuthorizationMiddleware extends BaseWebSocketMiddleware {
   protected async process(
     context: IWebSocketContext,
     client: IWebSocketClient,
-    next: () => Promise<void>
+    next: () => Promise<void>,
   ): Promise<void> {
     // 验证角色权限
     if (this.requiredRoles.length > 0) {
       const userRoles = context.userRoles || [];
-      const hasRequiredRole = this.requiredRoles.some(role => userRoles.includes(role));
-      
+      const hasRequiredRole = this.requiredRoles.some((role) =>
+        userRoles.includes(role),
+      );
+
       if (!hasRequiredRole) {
-        throw new Error(`需要角色权限: ${this.requiredRoles.join(', ')}`);
+        throw new Error(`需要角色权限: ${this.requiredRoles.join(", ")}`);
       }
     }
 
     // 验证功能权限
     if (this.requiredPermissions.length > 0) {
       const userPermissions = context.userPermissions || [];
-      const hasRequiredPermission = this.requiredPermissions.some(permission => userPermissions.includes(permission));
-      
+      const hasRequiredPermission = this.requiredPermissions.some(
+        (permission) => userPermissions.includes(permission),
+      );
+
       if (!hasRequiredPermission) {
-        throw new Error(`需要权限: ${this.requiredPermissions.join(', ')}`);
+        throw new Error(`需要权限: ${this.requiredPermissions.join(", ")}`);
       }
     }
 
@@ -382,17 +392,17 @@ export class WebSocketLoggingMiddleware extends BaseWebSocketMiddleware {
   protected async process(
     context: IWebSocketContext,
     client: IWebSocketClient,
-    next: () => Promise<void>
+    next: () => Promise<void>,
   ): Promise<void> {
-    this.logger.log('WebSocket连接处理开始');
+    this.logger.log("WebSocket连接处理开始");
 
     try {
       await next();
-      
-      this.logger.log('WebSocket连接处理成功');
+
+      this.logger.log("WebSocket连接处理成功");
     } catch (error) {
-      this.logger.error('WebSocket连接处理失败');
-      
+      this.logger.error("WebSocket连接处理失败");
+
       throw error;
     }
   }
@@ -432,7 +442,7 @@ export class WebSocketMiddlewareChain {
   async execute(
     context: IWebSocketContext,
     client: IWebSocketClient,
-    finalHandler: () => Promise<void>
+    finalHandler: () => Promise<void>,
   ): Promise<void> {
     let index = 0;
 
@@ -456,7 +466,7 @@ export class WebSocketMiddlewareChain {
    * @returns 中间件名称数组
    */
   getMiddlewareNames(): string[] {
-    return this.middlewares.map(middleware => middleware.getMiddlewareName());
+    return this.middlewares.map((middleware) => middleware.getMiddlewareName());
   }
 
   /**

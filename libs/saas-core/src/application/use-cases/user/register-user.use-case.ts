@@ -7,11 +7,11 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId, Username, Email, PhoneNumber } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { UserAggregate } from '../../../domain/user/aggregates/user.aggregate';
-import { IUserAggregateRepository } from '../../../domain/user/repositories/user-aggregate.repository.interface';
+import { Injectable } from "@nestjs/common";
+import { EntityId, Username, Email, PhoneNumber } from "@hl8/hybrid-archi";
+import { ICommandUseCase } from "../base/use-case.interface";
+import { UserAggregate } from "../../../domain/user/aggregates/user.aggregate";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface";
 
 export interface IRegisterUserCommand {
   username: string;
@@ -43,7 +43,7 @@ export class RegisterUserUseCase
 
     // TODO: 实际需要对密码进行哈希处理
     const passwordHash = command.password; // 示例，实际使用 bcrypt
-    const passwordSalt = 'salt'; // 示例
+    const passwordSalt = "salt"; // 示例
 
     const userId = EntityId.generate();
     const aggregate = UserAggregate.create(
@@ -53,11 +53,10 @@ export class RegisterUserUseCase
       phoneNumber,
       passwordHash,
       passwordSalt,
-      { createdBy: 'system' },
+      { createdBy: "system" },
     );
 
     await this.userRepository.save(aggregate);
     return userId;
   }
 }
-

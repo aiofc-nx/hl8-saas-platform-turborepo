@@ -85,10 +85,10 @@ pnpm add @hl8/config
 ### 基础使用
 
 ```typescript
-import { TypedConfigModule, fileLoader, dotenvLoader } from '@hl8/config';
-import { Module } from '@nestjs/common';
-import { Type } from 'class-transformer';
-import { IsString, IsNumber, ValidateNested } from 'class-validator';
+import { TypedConfigModule, fileLoader, dotenvLoader } from "@hl8/config";
+import { Module } from "@nestjs/common";
+import { Type } from "class-transformer";
+import { IsString, IsNumber, ValidateNested } from "class-validator";
 
 // 1. 定义配置类
 export class DatabaseConfig {
@@ -112,8 +112,8 @@ export class AppConfig {
     TypedConfigModule.forRoot({
       schema: AppConfig,
       load: [
-        fileLoader({ path: './config/app.yml' }),
-        dotenvLoader({ separator: '__' }),
+        fileLoader({ path: "./config/app.yml" }),
+        dotenvLoader({ separator: "__" }),
       ],
     }),
   ],
@@ -155,8 +155,8 @@ TypedConfigModule.forRoot({
 
 ```typescript
 fileLoader({
-  path: './config/app.yml', // 文件路径
-  encoding: 'utf8', // 编码
+  path: "./config/app.yml", // 文件路径
+  encoding: "utf8", // 编码
 });
 ```
 
@@ -166,8 +166,8 @@ fileLoader({
 
 ```typescript
 dotenvLoader({
-  path: '.env', // .env 文件路径
-  separator: '__', // 嵌套分隔符
+  path: ".env", // .env 文件路径
+  separator: "__", // 嵌套分隔符
   expandVariables: true, // 变量扩展
 });
 ```
@@ -183,8 +183,8 @@ DB_PORT=${PORT}                # 环境变量
 
 ```typescript
 remoteLoader({
-  url: 'https://config-server.com/api/config',
-  headers: { Authorization: 'Bearer token' },
+  url: "https://config-server.com/api/config",
+  headers: { Authorization: "Bearer token" },
   timeout: 5000,
 });
 ```
@@ -193,8 +193,8 @@ remoteLoader({
 
 ```typescript
 directoryLoader({
-  path: './config',
-  pattern: '**/*.yml',
+  path: "./config",
+  pattern: "**/*.yml",
 });
 ```
 

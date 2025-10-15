@@ -43,23 +43,23 @@
  *
  * @since 1.0.0
  */
-import { Injectable } from '@nestjs/common';
-import type { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 // 定义 LogContext 枚举
 enum LogContext {
-  SYSTEM = 'SYSTEM',
-  BUSINESS = 'BUSINESS',
-  AUTH = 'AUTH',
-  DATABASE = 'DATABASE',
-  EXTERNAL = 'EXTERNAL',
-  CACHE = 'CACHE',
-  PERFORMANCE = 'PERFORMANCE',
-  HTTP_REQUEST = 'HTTP_REQUEST',
+  SYSTEM = "SYSTEM",
+  BUSINESS = "BUSINESS",
+  AUTH = "AUTH",
+  DATABASE = "DATABASE",
+  EXTERNAL = "EXTERNAL",
+  CACHE = "CACHE",
+  PERFORMANCE = "PERFORMANCE",
+  HTTP_REQUEST = "HTTP_REQUEST",
 }
-import { ModuleRef } from '@nestjs/core';
-import type { ICommandBus, IQueryBus, IEventBus } from '../cqrs/bus';
-import { IExplorerResult, IHandlerInfo } from './core-explorer.service';
+import { ModuleRef } from "@nestjs/core";
+import type { ICommandBus, IQueryBus, IEventBus } from "../cqrs/bus";
+import { IExplorerResult, IHandlerInfo } from "./core-explorer.service";
 
 /**
  * 注册状态接口
@@ -178,7 +178,7 @@ export class AutoRegistrationService {
     private readonly logger: FastifyLoggerService,
     private readonly commandBus?: ICommandBus,
     private readonly queryBus?: IQueryBus,
-    private readonly eventBus?: IEventBus
+    private readonly eventBus?: IEventBus,
   ) {}
 
   /**
@@ -190,7 +190,7 @@ export class AutoRegistrationService {
    */
   public async registerHandlers(
     explorerResult: IExplorerResult,
-    options: IRegistrationOptions = {}
+    options: IRegistrationOptions = {},
   ): Promise<IRegistrationStatus> {
     const startTime = Date.now();
     const defaultOptions: IRegistrationOptions = {
@@ -204,7 +204,7 @@ export class AutoRegistrationService {
       ...options,
     };
 
-    this.logger.log('Starting handler registration...', { context: "SYSTEM" });
+    this.logger.log("Starting handler registration...", { context: "SYSTEM" });
 
     // 初始化注册状态
     this.registrationStatus = {
@@ -249,8 +249,8 @@ export class AutoRegistrationService {
         registrationPromises.push(
           this.registerCommandHandlers(
             explorerResult.commandHandlers,
-            defaultOptions
-          )
+            defaultOptions,
+          ),
         );
       }
 
@@ -258,8 +258,8 @@ export class AutoRegistrationService {
         registrationPromises.push(
           this.registerQueryHandlers(
             explorerResult.queryHandlers,
-            defaultOptions
-          )
+            defaultOptions,
+          ),
         );
       }
 
@@ -267,14 +267,17 @@ export class AutoRegistrationService {
         registrationPromises.push(
           this.registerEventHandlers(
             explorerResult.eventHandlers,
-            defaultOptions
-          )
+            defaultOptions,
+          ),
         );
       }
 
       if (explorerResult.sagaHandlers.length > 0) {
         registrationPromises.push(
-          this.registerSagaHandlers(explorerResult.sagaHandlers, defaultOptions)
+          this.registerSagaHandlers(
+            explorerResult.sagaHandlers,
+            defaultOptions,
+          ),
         );
       }
 
@@ -284,23 +287,29 @@ export class AutoRegistrationService {
       this.registrationStatus!.completed = true;
       this.registrationStatus!.registrationTime = Date.now() - startTime;
 
-      this.logger.log(`Handler registration completed in ${this.registrationStatus.registrationTime}ms`, { ...{ registrationTime: this.registrationStatus.registrationTime }, context: "SYSTEM" });
+      this.logger.log(
+        `Handler registration completed in ${this.registrationStatus.registrationTime}ms`,
+        {
+          ...{ registrationTime: this.registrationStatus.registrationTime },
+          context: "SYSTEM",
+        },
+      );
       this.logger.log(
         `Registered: ${this.registrationStatus.registeredHandlers}, Failed: ${this.registrationStatus.failedHandlers}`,
         { context: "SYSTEM" },
         {
           registeredHandlers: this.registrationStatus.registeredHandlers,
           failedHandlers: this.registrationStatus.failedHandlers,
-        }
+        },
       );
 
       return this.registrationStatus;
     } catch (error) {
       this.logger.error(
-        'Handler registration failed',
+        "Handler registration failed",
         { context: "SYSTEM" },
         {},
-        error as Error
+        error as Error,
       );
       throw error;
     }
@@ -322,17 +331,19 @@ export class AutoRegistrationService {
    */
   private async registerCommandHandlers(
     handlers: IHandlerInfo[],
-    options: IRegistrationOptions
+    options: IRegistrationOptions,
   ): Promise<void> {
     if (!this.commandBus) {
-      this.logger.warn(
-        'Command bus not available, skipping command handlers',
-        { context: "SYSTEM" }
-      );
+      this.logger.warn("Command bus not available, skipping command handlers", {
+        context: "SYSTEM",
+      });
       return;
     }
 
-    this.logger.log(`Registering ${handlers.length} command handlers...`, { ...{ handlerCount: handlers.length }, context: "SYSTEM" });
+    this.logger.log(`Registering ${handlers.length} command handlers...`, {
+      ...{ handlerCount: handlers.length },
+      context: "SYSTEM",
+    });
 
     for (const handler of handlers) {
       try {
@@ -341,7 +352,7 @@ export class AutoRegistrationService {
           options.validateHandlers &&
           !(await this.validateHandler(handler, options))
         ) {
-          throw new Error('Handler validation failed');
+          throw new Error("Handler validation failed");
         }
 
         // 获取处理器实例
@@ -355,9 +366,12 @@ export class AutoRegistrationService {
         this.registrationStatus!.registeredHandlers++;
         this.registrationStatus!.details.commandHandlers.registered++;
 
-        this.logger.debug(`Registered command handler: ${handler.handlerName}`, { ...{ handlerName: handler.handlerName }, context: "SYSTEM" });
+        this.logger.debug(
+          `Registered command handler: ${handler.handlerName}`,
+          { ...{ handlerName: handler.handlerName }, context: "SYSTEM" },
+        );
       } catch (error) {
-        this.handleRegistrationError(handler, error as Error, 'command');
+        this.handleRegistrationError(handler, error as Error, "command");
       }
     }
   }
@@ -369,17 +383,19 @@ export class AutoRegistrationService {
    */
   private async registerQueryHandlers(
     handlers: IHandlerInfo[],
-    options: IRegistrationOptions
+    options: IRegistrationOptions,
   ): Promise<void> {
     if (!this.queryBus) {
-      this.logger.warn(
-        'Query bus not available, skipping query handlers',
-        { context: "SYSTEM" }
-      );
+      this.logger.warn("Query bus not available, skipping query handlers", {
+        context: "SYSTEM",
+      });
       return;
     }
 
-    this.logger.log(`Registering ${handlers.length} query handlers...`, { ...{ handlerCount: handlers.length }, context: "SYSTEM" });
+    this.logger.log(`Registering ${handlers.length} query handlers...`, {
+      ...{ handlerCount: handlers.length },
+      context: "SYSTEM",
+    });
 
     for (const handler of handlers) {
       try {
@@ -388,7 +404,7 @@ export class AutoRegistrationService {
           options.validateHandlers &&
           !(await this.validateHandler(handler, options))
         ) {
-          throw new Error('Handler validation failed');
+          throw new Error("Handler validation failed");
         }
 
         // 获取处理器实例
@@ -402,9 +418,12 @@ export class AutoRegistrationService {
         this.registrationStatus!.registeredHandlers++;
         this.registrationStatus!.details.queryHandlers.registered++;
 
-        this.logger.debug(`Registered query handler: ${handler.handlerName}`, { ...{ handlerName: handler.handlerName }, context: "SYSTEM" });
+        this.logger.debug(`Registered query handler: ${handler.handlerName}`, {
+          ...{ handlerName: handler.handlerName },
+          context: "SYSTEM",
+        });
       } catch (error) {
-        this.handleRegistrationError(handler, error as Error, 'query');
+        this.handleRegistrationError(handler, error as Error, "query");
       }
     }
   }
@@ -416,17 +435,19 @@ export class AutoRegistrationService {
    */
   private async registerEventHandlers(
     handlers: IHandlerInfo[],
-    options: IRegistrationOptions
+    options: IRegistrationOptions,
   ): Promise<void> {
     if (!this.eventBus) {
-      this.logger.warn(
-        'Event bus not available, skipping event handlers',
-        { context: "SYSTEM" }
-      );
+      this.logger.warn("Event bus not available, skipping event handlers", {
+        context: "SYSTEM",
+      });
       return;
     }
 
-    this.logger.log(`Registering ${handlers.length} event handlers...`, { ...{ handlerCount: handlers.length }, context: "SYSTEM" });
+    this.logger.log(`Registering ${handlers.length} event handlers...`, {
+      ...{ handlerCount: handlers.length },
+      context: "SYSTEM",
+    });
 
     for (const handler of handlers) {
       try {
@@ -435,7 +456,7 @@ export class AutoRegistrationService {
           options.validateHandlers &&
           !(await this.validateHandler(handler, options))
         ) {
-          throw new Error('Handler validation failed');
+          throw new Error("Handler validation failed");
         }
 
         // 获取处理器实例
@@ -449,9 +470,12 @@ export class AutoRegistrationService {
         this.registrationStatus!.registeredHandlers++;
         this.registrationStatus!.details.eventHandlers.registered++;
 
-        this.logger.debug(`Registered event handler: ${handler.handlerName}`, { ...{ handlerName: handler.handlerName }, context: "SYSTEM" });
+        this.logger.debug(`Registered event handler: ${handler.handlerName}`, {
+          ...{ handlerName: handler.handlerName },
+          context: "SYSTEM",
+        });
       } catch (error) {
-        this.handleRegistrationError(handler, error as Error, 'event');
+        this.handleRegistrationError(handler, error as Error, "event");
       }
     }
   }
@@ -463,9 +487,12 @@ export class AutoRegistrationService {
    */
   private async registerSagaHandlers(
     handlers: IHandlerInfo[],
-    options: IRegistrationOptions
+    options: IRegistrationOptions,
   ): Promise<void> {
-    this.logger.log(`Registering ${handlers.length} saga handlers...`, { ...{ handlerCount: handlers.length }, context: "SYSTEM" });
+    this.logger.log(`Registering ${handlers.length} saga handlers...`, {
+      ...{ handlerCount: handlers.length },
+      context: "SYSTEM",
+    });
 
     for (const handler of handlers) {
       try {
@@ -474,7 +501,7 @@ export class AutoRegistrationService {
           options.validateHandlers &&
           !(await this.validateHandler(handler, options))
         ) {
-          throw new Error('Handler validation failed');
+          throw new Error("Handler validation failed");
         }
 
         // 获取处理器实例
@@ -482,13 +509,16 @@ export class AutoRegistrationService {
 
         // 注册 Saga 处理器（这里需要实现具体的 Saga 管理器）
         // 暂时只记录日志
-        this.logger.debug(`Registered saga handler: ${handler.handlerName}`, { ...{ handlerName: handler.handlerName }, context: "SYSTEM" });
+        this.logger.debug(`Registered saga handler: ${handler.handlerName}`, {
+          ...{ handlerName: handler.handlerName },
+          context: "SYSTEM",
+        });
 
         // 更新状态
         this.registrationStatus!.registeredHandlers++;
         this.registrationStatus!.details.sagaHandlers.registered++;
       } catch (error) {
-        this.handleRegistrationError(handler, error as Error, 'saga');
+        this.handleRegistrationError(handler, error as Error, "saga");
       }
     }
   }
@@ -500,7 +530,7 @@ export class AutoRegistrationService {
    */
   private async validateHandler(
     handler: IHandlerInfo,
-    options: IRegistrationOptions
+    options: IRegistrationOptions,
   ): Promise<boolean> {
     try {
       // 基本验证
@@ -515,9 +545,18 @@ export class AutoRegistrationService {
 
       return true;
     } catch (error) {
-      this.logger.warn(`Handler validation failed for ${handler.handlerName}: ${
+      this.logger.warn(
+        `Handler validation failed for ${handler.handlerName}: ${
           (error as Error).message
-        }`, { ...{ handlerName: handler.handlerName, error: (error as Error).message }, context: "SYSTEM" });
+        }`,
+        {
+          ...{
+            handlerName: handler.handlerName,
+            error: (error as Error).message,
+          },
+          context: "SYSTEM",
+        },
+      );
       return false;
     }
   }
@@ -535,7 +574,7 @@ export class AutoRegistrationService {
       this.logger.warn(
         `Failed to get handler instance from DI container for ${handler.handlerName}, trying direct instantiation`,
         { context: "SYSTEM" },
-        { handlerName: handler.handlerName }
+        { handlerName: handler.handlerName },
       );
       return new handler.handlerClass();
     }
@@ -549,7 +588,7 @@ export class AutoRegistrationService {
   private handleRegistrationError(
     handler: IHandlerInfo,
     error: Error,
-    handlerType: 'command' | 'query' | 'event' | 'saga'
+    handlerType: "command" | "query" | "event" | "saga",
   ): void {
     const errorMessage = `${handler.handlerName}: ${error.message}`;
 
@@ -568,7 +607,7 @@ export class AutoRegistrationService {
       `Failed to register ${handlerType} handler ${handler.handlerName}: ${error.message}`,
       { context: "SYSTEM" },
       { handlerName: handler.handlerName, handlerType, error: error.message },
-      error
+      error,
     );
   }
 }

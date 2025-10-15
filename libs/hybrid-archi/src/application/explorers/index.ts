@@ -6,13 +6,13 @@
  */
 
 // 核心发现服务
-export * from './core-explorer.service';
+export * from "./core-explorer.service";
 
 // 自动注册服务
-export * from './auto-registration.service';
+export * from "./auto-registration.service";
 
 // 模块扫描器服务
-export * from './module-scanner.service';
+export * from "./module-scanner.service";
 
 // 依赖注入集成服务
-export * from './di-integration.service';
+export * from "./di-integration.service";

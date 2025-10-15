@@ -190,13 +190,13 @@ export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
   // 读操作：自动缓存
-  @Cacheable('user')
+  @Cacheable("user")
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
 
   // 列表查询：自定义键和 TTL
-  @Cacheable('user', {
+  @Cacheable("user", {
     keyGenerator: (filters) => `list:${JSON.stringify(filters)}`,
     ttl: 600,
   })
@@ -205,29 +205,29 @@ export class UserService {
   }
 
   // 更新操作：更新数据并刷新缓存
-  @CachePut('user')
+  @CachePut("user")
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
 
   // 删除操作：清除缓存
-  @CacheEvict('user')
+  @CacheEvict("user")
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete(id);
   }
 
   // 批量操作：清除所有用户缓存
-  @CacheEvict('user', { allEntries: true })
+  @CacheEvict("user", { allEntries: true })
   async importUsers(users: User[]): Promise<void> {
     await this.repository.bulkInsert(users);
   }
 
   // 定时刷新：强制更新缓存
-  @CachePut('user', {
+  @CachePut("user", {
     keyGenerator: (id) => id,
     ttl: 3600,
   })
-  @Cron('0 */5 * * * *') // 每 5 分钟
+  @Cron("0 */5 * * * *") // 每 5 分钟
   async refreshUserCache(id: string): Promise<User> {
     return this.repository.findOne(id);
   }

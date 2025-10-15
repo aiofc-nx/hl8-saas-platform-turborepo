@@ -12,18 +12,18 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { TenantStatus } from '../../domain/tenant/value-objects/tenant-status.vo';
-import { TenantAggregate } from '../../domain/tenant/aggregates/tenant.aggregate';
-import { Tenant } from '../../domain/tenant/entities/tenant.entity';
-import { TenantConfiguration } from '../../domain/tenant/entities/tenant-configuration.entity';
-import { TenantCode } from '../../domain/tenant/value-objects/tenant-code.vo';
-import { TenantDomain } from '../../domain/tenant/value-objects/tenant-domain.vo';
-import { TenantQuota } from '../../domain/tenant/value-objects/tenant-quota.vo';
-import { TenantType } from '../../domain/tenant/value-objects/tenant-type.enum';
-import { TenantOrmEntity } from '../persistence/entities/tenant.orm-entity';
-import { TenantConfigurationOrmEntity } from '../persistence/entities/tenant-configuration.orm-entity';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/hybrid-archi";
+import { TenantStatus } from "../../domain/tenant/value-objects/tenant-status.vo";
+import { TenantAggregate } from "../../domain/tenant/aggregates/tenant.aggregate";
+import { Tenant } from "../../domain/tenant/entities/tenant.entity";
+import { TenantConfiguration } from "../../domain/tenant/entities/tenant-configuration.entity";
+import { TenantCode } from "../../domain/tenant/value-objects/tenant-code.vo";
+import { TenantDomain } from "../../domain/tenant/value-objects/tenant-domain.vo";
+import { TenantQuota } from "../../domain/tenant/value-objects/tenant-quota.vo";
+import { TenantType } from "../../domain/tenant/value-objects/tenant-type.enum";
+import { TenantOrmEntity } from "../persistence/entities/tenant.orm-entity";
+import { TenantConfigurationOrmEntity } from "../persistence/entities/tenant-configuration.orm-entity";
 
 @Injectable()
 export class TenantMapper {
@@ -139,4 +139,3 @@ export class TenantMapper {
     );
   }
 }
-

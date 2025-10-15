@@ -50,11 +50,11 @@
  * @since 0.2.0
  */
 
-import fastifyCors from '@fastify/cors';
-import { FastifyAdapter } from '@nestjs/platform-fastify';
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { requestIdPlugin } from '../plugins/request-id.plugin.js';
-import { RequestIdStrategy } from '../utils/request-id.generator.js';
+import fastifyCors from "@fastify/cors";
+import { FastifyAdapter } from "@nestjs/platform-fastify";
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { requestIdPlugin } from "../plugins/request-id.plugin.js";
+import { RequestIdStrategy } from "../utils/request-id.generator.js";
 
 /**
  * 企业级 Fastify 适配器选项
@@ -166,11 +166,11 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
       enablePerformanceMonitoring:
         options.enablePerformanceMonitoring !== false,
       enableHealthCheck: options.enableHealthCheck !== false,
-      healthCheckPath: options.healthCheckPath || '/health',
+      healthCheckPath: options.healthCheckPath || "/health",
       enableRequestId: options.enableRequestId !== false,
       requestIdOptions: {
         strategy: RequestIdStrategy.UUID,
-        headerName: 'X-Request-Id',
+        headerName: "X-Request-Id",
         generateOnMissing: true,
         includeInResponse: true,
         includeInLogs: true,
@@ -236,16 +236,16 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     const defaultCorsOptions = {
       origin: true,
       credentials: true,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
       allowedHeaders: [
-        'Content-Type',
-        'Authorization',
-        'X-Tenant-Id',
-        'X-Organization-Id',
-        'X-Department-Id',
-        'X-User-Id',
+        "Content-Type",
+        "Authorization",
+        "X-Tenant-Id",
+        "X-Organization-Id",
+        "X-Department-Id",
+        "X-User-Id",
       ],
-      exposedHeaders: ['X-Request-Id'],
+      exposedHeaders: ["X-Request-Id"],
       maxAge: 86400, // 24 hours
     };
 
@@ -263,10 +263,10 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
    */
   private async registerSecurity(instance: FastifyInstance): Promise<void> {
     // 安全头配置（简化实现，生产环境建议安装 @fastify/helmet）
-    instance.addHook('onSend', async (request, reply) => {
-      reply.header('X-Content-Type-Options', 'nosniff');
-      reply.header('X-Frame-Options', 'DENY');
-      reply.header('X-XSS-Protection', '1; mode=block');
+    instance.addHook("onSend", async (request, reply) => {
+      reply.header("X-Content-Type-Options", "nosniff");
+      reply.header("X-Frame-Options", "DENY");
+      reply.header("X-XSS-Protection", "1; mode=block");
     });
   }
 
@@ -279,21 +279,21 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
   private registerPerformanceMonitoring(instance: FastifyInstance): void {
     // 请求开始时记录时间
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fastify request 对象需要扩展属性（宪章 IX 允许场景：第三方库集成）
-    instance.addHook('onRequest', async (request: any) => {
+    instance.addHook("onRequest", async (request: any) => {
       request.startTime = Date.now();
     });
 
     // 响应结束时计算耗时
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Fastify request 对象需要扩展属性（宪章 IX 允许场景：第三方库集成）
     instance.addHook(
-      'onResponse',
+      "onResponse",
       async (request: any, reply: FastifyReply) => {
         const duration = Date.now() - (request.startTime || Date.now());
 
         // 记录性能指标
         if (instance.log) {
           instance.log.info({
-            type: 'performance',
+            type: "performance",
             method: request.method,
             url: request.url,
             statusCode: reply.statusCode,
@@ -317,10 +317,10 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     const max = options.max || 100; // 默认 100 次请求
 
     instance.addHook(
-      'onRequest',
+      "onRequest",
       async (request: FastifyRequest, reply: FastifyReply) => {
         const key = options.perTenant
-          ? `${request.headers['x-tenant-id'] || 'unknown'}`
+          ? `${request.headers["x-tenant-id"] || "unknown"}`
           : `${request.ip}`;
 
         const now = Date.now();
@@ -331,8 +331,8 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
         if (count >= max) {
           reply.code(429).send({
             statusCode: 429,
-            error: 'Too Many Requests',
-            message: '请求过于频繁，请稍后再试',
+            error: "Too Many Requests",
+            message: "请求过于频繁，请稍后再试",
           });
           return;
         }
@@ -359,26 +359,26 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     const resetTimeout = options.resetTimeout || 60000; // 默认 1 分钟后重置
 
     instance.addHook(
-      'onError',
+      "onError",
       async (request: FastifyRequest, reply: FastifyReply, error: Error) => {
         const route = `${request.method}:${request.url}`;
         let state = this.circuitBreakerState.get(route);
 
         if (!state) {
-          state = { failures: 0, state: 'CLOSED', lastFailure: Date.now() };
+          state = { failures: 0, state: "CLOSED", lastFailure: Date.now() };
           this.circuitBreakerState.set(route, state);
         }
 
         state.failures += 1;
         state.lastFailure = Date.now();
 
-        if (state.failures >= threshold && state.state === 'CLOSED') {
-          state.state = 'OPEN';
+        if (state.failures >= threshold && state.state === "CLOSED") {
+          state.state = "OPEN";
           instance.log?.warn(`熔断器打开: ${route}`);
 
           // 自动重置熔断器
           setTimeout(() => {
-            state!.state = 'HALF_OPEN';
+            state!.state = "HALF_OPEN";
             state!.failures = 0;
             instance.log?.info(`熔断器进入半开状态: ${route}`);
           }, resetTimeout);
@@ -387,16 +387,16 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
     );
 
     instance.addHook(
-      'onRequest',
+      "onRequest",
       async (request: FastifyRequest, reply: FastifyReply) => {
         const route = `${request.method}:${request.url}`;
         const state = this.circuitBreakerState.get(route);
 
-        if (state && state.state === 'OPEN') {
+        if (state && state.state === "OPEN") {
           reply.code(503).send({
             statusCode: 503,
-            error: 'Service Unavailable',
-            message: '服务暂时不可用，请稍后再试',
+            error: "Service Unavailable",
+            message: "服务暂时不可用，请稍后再试",
           });
         }
       },
@@ -423,7 +423,7 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
   private registerHealthCheck(instance: FastifyInstance): void {
     instance.get(this.adapterOptions.healthCheckPath!, async () => {
       return {
-        status: 'ok',
+        status: "ok",
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
         memory: process.memoryUsage(),
@@ -439,6 +439,6 @@ export class EnterpriseFastifyAdapter extends FastifyAdapter {
  */
 interface CircuitBreakerState {
   failures: number;
-  state: 'CLOSED' | 'OPEN' | 'HALF_OPEN';
+  state: "CLOSED" | "OPEN" | "HALF_OPEN";
   lastFailure: number;
 }

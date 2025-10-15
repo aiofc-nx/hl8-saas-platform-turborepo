@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 // import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 
 /**
@@ -17,8 +17,8 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 export const CurrentTenant = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<any>();
-    return request['tenantId'];
-  }
+    return request["tenantId"];
+  },
 );
 
 /**
@@ -30,8 +30,8 @@ export const CurrentTenant = createParamDecorator(
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<any>();
-    return request['user'];
-  }
+    return request["user"];
+  },
 );
 
 /**
@@ -44,10 +44,10 @@ export const TenantContext = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<any>();
     return {
-      tenantId: request['tenantId'],
-      userId: request['user']?.id,
-      userRoles: request['user']?.roles || [],
-      userPermissions: request['user']?.permissions || [],
+      tenantId: request["tenantId"],
+      userId: request["user"]?.id,
+      userRoles: request["user"]?.roles || [],
+      userPermissions: request["user"]?.permissions || [],
     };
-  }
+  },
 );

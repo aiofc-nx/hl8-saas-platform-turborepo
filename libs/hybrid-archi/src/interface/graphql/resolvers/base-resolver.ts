@@ -44,10 +44,11 @@
  *
  * @since 1.0.0
  */
-import type { ILoggerService,
+import type {
+  ILoggerService,
   IMetricsService,
   IGraphQLContext,
- } from '../../shared/interfaces';
+} from "../../shared/interfaces";
 
 export abstract class BaseResolver {
   protected readonly requestId: string;
@@ -56,7 +57,7 @@ export abstract class BaseResolver {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.requestId = this.generateRequestId();
     this.correlationId = this.generateCorrelationId();
@@ -74,7 +75,7 @@ export abstract class BaseResolver {
    */
   protected async handleQuery<TResult>(
     queryExecutor: () => Promise<TResult>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TResult> {
     this.getGraphQLContext();
 
@@ -107,7 +108,7 @@ export abstract class BaseResolver {
    */
   protected async handleMutation<TResult>(
     mutationExecutor: () => Promise<TResult>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TResult> {
     this.getGraphQLContext();
 
@@ -140,7 +141,7 @@ export abstract class BaseResolver {
    */
   protected async handleSubscription<TResult>(
     subscriptionExecutor: () => Promise<TResult>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TResult> {
     this.getGraphQLContext();
 
@@ -175,8 +176,8 @@ export abstract class BaseResolver {
     return {
       requestId: this.requestId,
       correlationId: this.correlationId,
-      userId: 'current-user-id',
-      tenantId: 'current-tenant-id',
+      userId: "current-user-id",
+      tenantId: "current-tenant-id",
       timestamp: new Date(),
     };
   }
@@ -196,11 +197,11 @@ export abstract class BaseResolver {
 
     // 记录性能指标
     this.metricsService?.incrementCounter(
-      `graphql_${operationName}_success_total`
+      `graphql_${operationName}_success_total`,
     );
     this.metricsService?.recordHistogram(
       `graphql_${operationName}_duration_ms`,
-      duration
+      duration,
     );
   }
 
@@ -219,7 +220,8 @@ export abstract class BaseResolver {
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
-      `graphql_${operationName}_error_total`);
+      `graphql_${operationName}_error_total`,
+    );
   }
 
   /**

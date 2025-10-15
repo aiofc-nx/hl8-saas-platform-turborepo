@@ -24,7 +24,7 @@
  * @since 1.0.0
  */
 
-import type { CacheKey } from '../value-objects/cache-key.vo.js';
+import type { CacheKey } from "../value-objects/cache-key.vo.js";
 
 export class CacheInvalidatedEvent {
   /** 事件发生时间 */
@@ -49,7 +49,7 @@ export class CacheInvalidatedEvent {
    * @returns 事件名称
    */
   getEventName(): string {
-    return 'cache.invalidated';
+    return "cache.invalidated";
   }
 
   /**

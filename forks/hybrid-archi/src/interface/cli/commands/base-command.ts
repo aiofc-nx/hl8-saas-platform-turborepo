@@ -6,7 +6,7 @@
  *
  * @since 1.0.0
  */
-import { ILoggerService, IMetricsService } from '../../shared/interfaces';
+import { ILoggerService, IMetricsService } from "../../shared/interfaces";
 
 export abstract class CliBaseCommand {
   protected readonly requestId: string;
@@ -15,7 +15,7 @@ export abstract class CliBaseCommand {
 
   constructor(
     protected readonly logger: ILoggerService,
-    protected readonly metricsService?: IMetricsService
+    protected readonly metricsService?: IMetricsService,
   ) {
     this.requestId = this.generateRequestId();
     this.correlationId = this.generateCorrelationId();
@@ -33,7 +33,7 @@ export abstract class CliBaseCommand {
    */
   protected async handleCommand<TResult>(
     commandExecutor: () => Promise<TResult>,
-    operationName = 'unknown'
+    operationName = "unknown",
   ): Promise<TResult> {
     this.logger.info(`开始执行CLI命令: ${operationName}`, {
       requestId: this.requestId,
@@ -80,7 +80,7 @@ export abstract class CliBaseCommand {
     this.metricsService?.incrementCounter(`cli_${operationName}_success_total`);
     this.metricsService?.recordHistogram(
       `cli_${operationName}_duration_ms`,
-      duration
+      duration,
     );
   }
 
@@ -107,7 +107,7 @@ export abstract class CliBaseCommand {
     // 记录错误指标
     this.metricsService?.incrementCounter(`cli_${operationName}_error_total`, {
       error_type:
-        error instanceof Error ? error.constructor.name : 'UnknownError',
+        error instanceof Error ? error.constructor.name : "UnknownError",
     });
   }
 

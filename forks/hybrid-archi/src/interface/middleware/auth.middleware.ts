@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const AUTH_MIDDLEWARE = 'Auth Middleware';
+export const AUTH_MIDDLEWARE = "Auth Middleware";

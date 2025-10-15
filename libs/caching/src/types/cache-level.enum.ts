@@ -33,17 +33,17 @@
  */
 export enum CacheLevel {
   /** 平台级缓存 */
-  PLATFORM = 'platform',
+  PLATFORM = "platform",
 
   /** 租户级缓存 */
-  TENANT = 'tenant',
+  TENANT = "tenant",
 
   /** 组织级缓存 */
-  ORGANIZATION = 'organization',
+  ORGANIZATION = "organization",
 
   /** 部门级缓存 */
-  DEPARTMENT = 'department',
+  DEPARTMENT = "department",
 
   /** 用户级缓存 */
-  USER = 'user',
+  USER = "user",
 }

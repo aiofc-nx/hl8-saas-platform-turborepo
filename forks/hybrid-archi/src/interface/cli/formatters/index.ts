@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const CLI_FORMATTERS = 'CLI Formatters System';
+export const CLI_FORMATTERS = "CLI Formatters System";

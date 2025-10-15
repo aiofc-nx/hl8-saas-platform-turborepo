@@ -52,7 +52,7 @@
 export enum UserRole {
   /**
    * 超级管理员
-   * 
+   *
    * 平台最高权限角色，具有以下权限：
    * - 管理所有租户
    * - 访问系统配置
@@ -60,11 +60,11 @@ export enum UserRole {
    * - 查看系统统计和日志
    * - 执行系统维护操作
    */
-  SUPER_ADMIN = 'super_admin',
+  SUPER_ADMIN = "super_admin",
 
   /**
    * 租户管理员
-   * 
+   *
    * 租户内的最高权限角色，具有以下权限：
    * - 管理租户内所有用户
    * - 配置租户设置
@@ -72,11 +72,11 @@ export enum UserRole {
    * - 分配用户角色
    * - 查看租户统计和日志
    */
-  TENANT_ADMIN = 'tenant_admin',
+  TENANT_ADMIN = "tenant_admin",
 
   /**
    * 组织管理员
-   * 
+   *
    * 组织内的管理角色，具有以下权限：
    * - 管理组织内用户
    * - 配置组织设置
@@ -84,11 +84,11 @@ export enum UserRole {
    * - 分配部门角色
    * - 查看组织统计
    */
-  ORGANIZATION_ADMIN = 'organization_admin',
+  ORGANIZATION_ADMIN = "organization_admin",
 
   /**
    * 部门经理
-   * 
+   *
    * 部门内的管理角色，具有以下权限：
    * - 管理部门内用户
    * - 配置部门设置
@@ -96,11 +96,11 @@ export enum UserRole {
    * - 查看部门统计
    * - 审批部门事务
    */
-  DEPARTMENT_MANAGER = 'department_manager',
+  DEPARTMENT_MANAGER = "department_manager",
 
   /**
    * 普通用户
-   * 
+   *
    * 基础用户角色，具有以下权限：
    * - 访问个人资源
    * - 编辑个人资料
@@ -108,18 +108,18 @@ export enum UserRole {
    * - 参与协作功能
    * - 使用基础功能
    */
-  USER = 'user',
+  USER = "user",
 
   /**
    * 访客
-   * 
+   *
    * 受限访问角色，具有以下权限：
    * - 查看公开内容
    * - 基础浏览功能
    * - 受限的交互功能
    * - 无数据修改权限
    */
-  GUEST = 'guest',
+  GUEST = "guest",
 }
 
 /**
@@ -158,10 +158,7 @@ export class UserRoleUtils {
    * @returns 普通用户角色的数组
    */
   static getRegularRoles(): UserRole[] {
-    return [
-      UserRole.USER,
-      UserRole.GUEST,
-    ];
+    return [UserRole.USER, UserRole.GUEST];
   }
 
   /**
@@ -242,14 +239,14 @@ export class UserRoleUtils {
    */
   static getDisplayName(role: UserRole): string {
     const displayNames: Record<UserRole, string> = {
-      [UserRole.SUPER_ADMIN]: '超级管理员',
-      [UserRole.TENANT_ADMIN]: '租户管理员',
-      [UserRole.ORGANIZATION_ADMIN]: '组织管理员',
-      [UserRole.DEPARTMENT_MANAGER]: '部门经理',
-      [UserRole.USER]: '普通用户',
-      [UserRole.GUEST]: '访客',
+      [UserRole.SUPER_ADMIN]: "超级管理员",
+      [UserRole.TENANT_ADMIN]: "租户管理员",
+      [UserRole.ORGANIZATION_ADMIN]: "组织管理员",
+      [UserRole.DEPARTMENT_MANAGER]: "部门经理",
+      [UserRole.USER]: "普通用户",
+      [UserRole.GUEST]: "访客",
     };
-    return displayNames[role] || '未知角色';
+    return displayNames[role] || "未知角色";
   }
 
   /**
@@ -260,14 +257,14 @@ export class UserRoleUtils {
    */
   static getDescription(role: UserRole): string {
     const descriptions: Record<UserRole, string> = {
-      [UserRole.SUPER_ADMIN]: '平台最高权限，管理所有租户和系统配置',
-      [UserRole.TENANT_ADMIN]: '租户内最高权限，管理租户内所有资源',
-      [UserRole.ORGANIZATION_ADMIN]: '组织内管理权限，管理组织架构和用户',
-      [UserRole.DEPARTMENT_MANAGER]: '部门内管理权限，管理部门事务和用户',
-      [UserRole.USER]: '基础用户权限，访问个人资源和协作功能',
-      [UserRole.GUEST]: '受限访问权限，只能查看公开内容',
+      [UserRole.SUPER_ADMIN]: "平台最高权限，管理所有租户和系统配置",
+      [UserRole.TENANT_ADMIN]: "租户内最高权限，管理租户内所有资源",
+      [UserRole.ORGANIZATION_ADMIN]: "组织内管理权限，管理组织架构和用户",
+      [UserRole.DEPARTMENT_MANAGER]: "部门内管理权限，管理部门事务和用户",
+      [UserRole.USER]: "基础用户权限，访问个人资源和协作功能",
+      [UserRole.GUEST]: "受限访问权限，只能查看公开内容",
     };
-    return descriptions[role] || '未知角色描述';
+    return descriptions[role] || "未知角色描述";
   }
 
   /**
@@ -314,38 +311,36 @@ export class UserRoleUtils {
 
     // 根据角色定义权限映射
     const rolePermissions: Record<UserRole, string[]> = {
-      [UserRole.SUPER_ADMIN]: ['*'], // 所有权限
+      [UserRole.SUPER_ADMIN]: ["*"], // 所有权限
       [UserRole.TENANT_ADMIN]: [
-        'tenant.manage',
-        'tenant.configure',
-        'organization.manage',
-        'department.manage',
-        'user.manage',
-        'role.assign',
+        "tenant.manage",
+        "tenant.configure",
+        "organization.manage",
+        "department.manage",
+        "user.manage",
+        "role.assign",
       ],
       [UserRole.ORGANIZATION_ADMIN]: [
-        'organization.manage',
-        'department.manage',
-        'user.manage',
-        'role.assign',
+        "organization.manage",
+        "department.manage",
+        "user.manage",
+        "role.assign",
       ],
       [UserRole.DEPARTMENT_MANAGER]: [
-        'department.manage',
-        'user.manage',
-        'task.assign',
+        "department.manage",
+        "user.manage",
+        "task.assign",
       ],
       [UserRole.USER]: [
-        'profile.edit',
-        'content.view',
-        'collaboration.participate',
+        "profile.edit",
+        "content.view",
+        "collaboration.participate",
       ],
-      [UserRole.GUEST]: [
-        'content.view.public',
-      ],
+      [UserRole.GUEST]: ["content.view.public"],
     };
 
     const permissions = rolePermissions[role] || [];
-    return permissions.includes('*') || permissions.includes(operation);
+    return permissions.includes("*") || permissions.includes(operation);
   }
 
   /**
@@ -373,37 +368,34 @@ export class UserRoleUtils {
    */
   static getPermissions(role: UserRole): string[] {
     const rolePermissions: Record<UserRole, string[]> = {
-      [UserRole.SUPER_ADMIN]: ['*'], // 所有权限
+      [UserRole.SUPER_ADMIN]: ["*"], // 所有权限
       [UserRole.TENANT_ADMIN]: [
-        'tenant.manage',
-        'tenant.configure',
-        'organization.manage',
-        'department.manage',
-        'user.manage',
-        'role.assign',
+        "tenant.manage",
+        "tenant.configure",
+        "organization.manage",
+        "department.manage",
+        "user.manage",
+        "role.assign",
       ],
       [UserRole.ORGANIZATION_ADMIN]: [
-        'organization.manage',
-        'department.manage',
-        'user.manage',
-        'role.assign',
+        "organization.manage",
+        "department.manage",
+        "user.manage",
+        "role.assign",
       ],
       [UserRole.DEPARTMENT_MANAGER]: [
-        'department.manage',
-        'user.manage',
-        'task.assign',
+        "department.manage",
+        "user.manage",
+        "task.assign",
       ],
       [UserRole.USER]: [
-        'profile.edit',
-        'content.view',
-        'collaboration.participate',
+        "profile.edit",
+        "content.view",
+        "collaboration.participate",
       ],
-      [UserRole.GUEST]: [
-        'content.view.public',
-      ],
+      [UserRole.GUEST]: ["content.view.public"],
     };
 
     return rolePermissions[role] || [];
   }
 }
-

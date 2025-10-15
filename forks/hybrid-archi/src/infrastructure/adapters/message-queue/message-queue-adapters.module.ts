@@ -8,14 +8,14 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { MessagingModule } from '@hl8/messaging';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { MessagingModule } from "@hl8/messaging";
+import { CacheModule } from "@hl8/cache";
+import { LoggerModule } from "@hl8/logger";
 
-import { MessageQueueAdapter } from './message-queue.adapter';
-import { MessageQueueFactory } from './message-queue.factory';
-import { MessageQueueManager } from './message-queue.manager';
+import { MessageQueueAdapter } from "./message-queue.adapter";
+import { MessageQueueFactory } from "./message-queue.factory";
+import { MessageQueueManager } from "./message-queue.manager";
 
 /**
  * 消息队列适配器模块选项
@@ -57,18 +57,18 @@ export class MessageQueueAdaptersModule {
    * @returns 消息队列适配器模块
    */
   static forRoot(
-    options: MessageQueueAdaptersModuleOptions = {}
+    options: MessageQueueAdaptersModuleOptions = {},
   ): DynamicModule {
     const providers: Provider[] = [];
     const imports: DynamicModule[] = [];
 
     // 添加基础模块
     imports.push(
-      MessagingModule.forRoot({ adapter: 'memory' as any }),
+      MessagingModule.forRoot({ adapter: "memory" as any }),
       CacheModule.forRoot({
         redis: {} as any,
       }),
-      LoggerModule.forRoot({})
+      LoggerModule.forRoot({}),
     );
 
     // 添加管理组件
@@ -78,7 +78,7 @@ export class MessageQueueAdaptersModule {
     // 根据选项动态添加提供者
     if (options.enableMessageQueue !== false) {
       providers.push({
-        provide: 'IMessageQueue',
+        provide: "IMessageQueue",
         useClass: MessageQueueAdapter,
       });
     }
@@ -98,18 +98,18 @@ export class MessageQueueAdaptersModule {
    * @returns 消息队列适配器模块
    */
   static forRootAsync(
-    options: MessageQueueAdaptersModuleOptions = {}
+    options: MessageQueueAdaptersModuleOptions = {},
   ): DynamicModule {
     const providers: Provider[] = [];
     const imports: DynamicModule[] = [];
 
     // 添加基础模块
     imports.push(
-      MessagingModule.forRoot({ adapter: 'memory' as any }),
+      MessagingModule.forRoot({ adapter: "memory" as any }),
       CacheModule.forRoot({
         redis: {} as any,
       }),
-      LoggerModule.forRoot({})
+      LoggerModule.forRoot({}),
     );
 
     // 添加管理组件
@@ -119,7 +119,7 @@ export class MessageQueueAdaptersModule {
     // 根据选项动态添加提供者
     if (options.enableMessageQueue !== false) {
       providers.push({
-        provide: 'IMessageQueue',
+        provide: "IMessageQueue",
         useClass: MessageQueueAdapter,
       });
     }

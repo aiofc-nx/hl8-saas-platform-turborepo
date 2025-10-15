@@ -8,15 +8,15 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@hl8/database';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { EventStoreAdapter, IEventStoreConfig } from './event-store.adapter';
+import { Injectable } from "@nestjs/common";
+import { DatabaseService } from "@hl8/database";
+import { CacheService } from "@hl8/cache";
+import { PinoLogger } from "@hl8/logger";
+import { EventStoreAdapter, IEventStoreConfig } from "./event-store.adapter";
 import {
   EventStoreFactory,
   IEventStoreRegistration,
-} from './event-store.factory';
+} from "./event-store.factory";
 
 /**
  * 事件存储管理器配置
@@ -55,7 +55,7 @@ export class EventStoreManager {
     private readonly cacheService: CacheService,
     private readonly logger: PinoLogger,
     private readonly storeFactory: EventStoreFactory,
-    config: Partial<IEventStoreManagerConfig> = {}
+    config: Partial<IEventStoreManagerConfig> = {},
   ) {
     this.config = {
       enableAutoCleanup: config.enableAutoCleanup ?? true,
@@ -81,7 +81,7 @@ export class EventStoreManager {
   createStore(
     storeName: string,
     storeType: string,
-    config: Partial<IEventStoreConfig> = {}
+    config: Partial<IEventStoreConfig> = {},
   ): EventStoreAdapter {
     this.logger.debug(`创建事件存储: ${storeName}`, {
       storeType,
@@ -112,7 +112,7 @@ export class EventStoreManager {
   getOrCreateStore(
     storeName: string,
     storeType: string,
-    config: Partial<IEventStoreConfig> = {}
+    config: Partial<IEventStoreConfig> = {},
   ): EventStoreAdapter {
     return this.storeFactory.getOrCreateStore(storeName, storeType, config);
   }
@@ -154,7 +154,7 @@ export class EventStoreManager {
    */
   updateStoreConfiguration(
     storeName: string,
-    config: Partial<IEventStoreConfig>
+    config: Partial<IEventStoreConfig>,
   ): void {
     this.logger.debug(`更新事件存储配置: ${storeName}`, { config });
     this.storeFactory.updateStoreConfiguration(storeName, config);
@@ -182,7 +182,7 @@ export class EventStoreManager {
    * @returns 健康检查结果
    */
   async healthCheckAllStores(): Promise<Record<string, any>> {
-    this.logger.debug('开始健康检查所有事件存储');
+    this.logger.debug("开始健康检查所有事件存储");
     return await this.storeFactory.healthCheckAllStores();
   }
 
@@ -192,9 +192,9 @@ export class EventStoreManager {
    * @returns 清理的存储数量
    */
   async cleanupExpiredStores(): Promise<number> {
-    this.logger.debug('开始清理过期事件存储');
+    this.logger.debug("开始清理过期事件存储");
     return await this.storeFactory.cleanupExpiredStores(
-      this.config.maxStoreAge
+      this.config.maxStoreAge,
     );
   }
 
@@ -204,7 +204,7 @@ export class EventStoreManager {
    * @returns 清理的事件数量
    */
   async cleanupExpiredEvents(): Promise<number> {
-    this.logger.debug('开始清理过期事件');
+    this.logger.debug("开始清理过期事件");
 
     let totalCleaned = 0;
     const stores = this.getAllStores();
@@ -253,7 +253,7 @@ export class EventStoreManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动事件存储管理器');
+    this.logger.info("启动事件存储管理器");
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -275,7 +275,7 @@ export class EventStoreManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止事件存储管理器');
+    this.logger.info("停止事件存储管理器");
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -300,7 +300,7 @@ export class EventStoreManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁事件存储管理器');
+    this.logger.info("销毁事件存储管理器");
 
     // 停止管理器
     this.stop();
@@ -318,7 +318,7 @@ export class EventStoreManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化事件存储管理器', {
+    this.logger.debug("初始化事件存储管理器", {
       config: this.config,
     });
   }
@@ -334,7 +334,7 @@ export class EventStoreManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个存储`);
         }
       } catch (error) {
-        this.logger.error('自动清理失败', error);
+        this.logger.error("自动清理失败", error);
       }
     }, this.config.cleanupInterval);
   }
@@ -347,16 +347,16 @@ export class EventStoreManager {
       try {
         const healthResults = await this.healthCheckAllStores();
         const unhealthyStores = Object.entries(healthResults).filter(
-          ([, result]) => !result.healthy
+          ([, result]) => !result.healthy,
         );
 
         if (unhealthyStores.length > 0) {
-          this.logger.warn('发现不健康的事件存储', {
+          this.logger.warn("发现不健康的事件存储", {
             unhealthyStores: unhealthyStores.map(([name]) => name),
           });
         }
       } catch (error) {
-        this.logger.error('健康检查失败', error);
+        this.logger.error("健康检查失败", error);
       }
     }, this.config.healthCheckInterval);
   }
@@ -372,7 +372,7 @@ export class EventStoreManager {
           this.logger.debug(`事件清理完成: ${cleanedCount} 个事件`);
         }
       } catch (error) {
-        this.logger.error('事件清理失败', error);
+        this.logger.error("事件清理失败", error);
       }
     }, this.config.eventCleanupInterval);
   }

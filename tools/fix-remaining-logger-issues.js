@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile, readdir } from 'node:fs/promises';
-import { join, extname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFile, writeFile, readdir } from "node:fs/promises";
+import { join, extname } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
-const REPO_ROOT = join(__dirname, '..');
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const REPO_ROOT = join(__dirname, "..");
 
 async function getAllTsFiles(dir) {
   let files = [];
@@ -15,7 +15,11 @@ async function getAllTsFiles(dir) {
     const fullPath = join(dir, item.name);
     if (item.isDirectory()) {
       files = files.concat(await getAllTsFiles(fullPath));
-    } else if (item.isFile() && extname(item.name) === '.ts' && !item.name.endsWith('.d.ts')) {
+    } else if (
+      item.isFile() &&
+      extname(item.name) === ".ts" &&
+      !item.name.endsWith(".d.ts")
+    ) {
       files.push(fullPath);
     }
   }
@@ -23,12 +27,13 @@ async function getAllTsFiles(dir) {
 }
 
 async function fixRemainingLoggerIssues(filePath) {
-  let content = await readFile(filePath, 'utf-8');
+  let content = await readFile(filePath, "utf-8");
   let hasChanges = false;
 
   // 修复类型导入
-  const typeLoggerImportRegex = /import type\s*{\s*Logger\s*}\s*from\s*['"]@nestjs\/common['"];?/g;
-  
+  const typeLoggerImportRegex =
+    /import type\s*{\s*Logger\s*}\s*from\s*['"]@nestjs\/common['"];?/g;
+
   if (typeLoggerImportRegex.test(content)) {
     content = content.replace(typeLoggerImportRegex, (match) => {
       hasChanges = true;
@@ -44,17 +49,18 @@ async function fixRemainingLoggerIssues(filePath) {
       const beforeMatch = content.substring(0, content.indexOf(match));
       const typeContext = beforeMatch.match(/(:|\?|\[|\]|,|\s)(Logger)\s*$/);
       const importContext = beforeMatch.match(/import.*Logger.*from/);
-      
+
       if (typeContext || importContext) {
         hasChanges = true;
-        return 'FastifyLoggerService';
+        return "FastifyLoggerService";
       }
       return match;
     });
   }
 
   // 修复 Logger 构造函数调用
-  const loggerConstructorRegex = /new FastifyLoggerService\((['"][^'"]*['"])\)/g;
+  const loggerConstructorRegex =
+    /new FastifyLoggerService\((['"][^'"]*['"])\)/g;
   if (loggerConstructorRegex.test(content)) {
     content = content.replace(loggerConstructorRegex, (match, context) => {
       hasChanges = true;
@@ -64,17 +70,19 @@ async function fixRemainingLoggerIssues(filePath) {
 
   if (hasChanges) {
     await writeFile(filePath, content);
-    console.log(`✅ Fixed remaining Logger issues in: ${filePath.replace(REPO_ROOT, '.')}`);
+    console.log(
+      `✅ Fixed remaining Logger issues in: ${filePath.replace(REPO_ROOT, ".")}`,
+    );
   }
   return hasChanges;
 }
 
 async function main() {
-  console.log('🚀 修复剩余的 Logger 问题...');
-  
-  const hybridArchiPath = join(REPO_ROOT, 'libs', 'hybrid-archi', 'src');
+  console.log("🚀 修复剩余的 Logger 问题...");
+
+  const hybridArchiPath = join(REPO_ROOT, "libs", "hybrid-archi", "src");
   const files = await getAllTsFiles(hybridArchiPath);
-  
+
   let fixedCount = 0;
   for (const file of files) {
     if (await fixRemainingLoggerIssues(file)) {

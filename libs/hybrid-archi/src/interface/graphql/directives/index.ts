@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const GRAPHQL_DIRECTIVES = 'GraphQL Directives System';
+export const GRAPHQL_DIRECTIVES = "GraphQL Directives System";

@@ -42,21 +42,21 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
-import { TENANT_CODE_VALIDATION } from '../../../constants/tenant.constants';
+import { BaseValueObject } from "@hl8/hybrid-archi";
+import { TENANT_CODE_VALIDATION } from "../../../constants/tenant.constants";
 
 export class TenantCode extends BaseValueObject<string> {
   /**
    * 系统保留的租户代码
    */
   private static readonly RESERVED_CODES = [
-    'admin',
-    'api',
-    'www',
-    'system',
-    'platform',
-    'support',
-    'help',
+    "admin",
+    "api",
+    "www",
+    "system",
+    "platform",
+    "support",
+    "help",
   ];
 
   /**
@@ -67,26 +67,26 @@ export class TenantCode extends BaseValueObject<string> {
    */
   protected override validate(value: string): void {
     // 使用继承的验证辅助方法
-    this.validateNotEmpty(value, '租户代码');
+    this.validateNotEmpty(value, "租户代码");
     this.validateLength(
       value,
       TENANT_CODE_VALIDATION.MIN_LENGTH,
       TENANT_CODE_VALIDATION.MAX_LENGTH,
-      '租户代码'
+      "租户代码",
     );
     this.validatePattern(
       value,
       TENANT_CODE_VALIDATION.PATTERN,
-      '租户代码只能包含小写字母、数字和连字符'
+      "租户代码只能包含小写字母、数字和连字符",
     );
 
     // 租户特定的验证规则
-    if (value.startsWith('-') || value.endsWith('-')) {
-      throw new Error('租户代码不能以连字符开头或结尾');
+    if (value.startsWith("-") || value.endsWith("-")) {
+      throw new Error("租户代码不能以连字符开头或结尾");
     }
 
-    if (value.includes('--')) {
-      throw new Error('租户代码不能包含连续的连字符');
+    if (value.includes("--")) {
+      throw new Error("租户代码不能包含连续的连字符");
     }
 
     // 保留词检查

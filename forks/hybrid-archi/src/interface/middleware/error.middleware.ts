@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const ERROR_MIDDLEWARE = 'Error Middleware';
+export const ERROR_MIDDLEWARE = "Error Middleware";

@@ -58,21 +58,21 @@
  * @since 1.0.0
  */
 
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
-import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
-import { ClsModule } from 'nestjs-cls';
-import { ConnectionManager } from './connection/connection.manager.js';
-import { POOL_DEFAULTS } from './constants/defaults.js';
-import { DI_TOKENS } from './constants/tokens.js';
-import { DatabaseIsolationService } from './isolation/isolation.service.js';
-import { HealthCheckService } from './monitoring/health-check.service.js';
-import { MetricsService } from './monitoring/metrics.service.js';
-import { TransactionService } from './transaction/transaction.service.js';
+import { MikroOrmModule } from "@mikro-orm/nestjs";
+import { PostgreSqlDriver } from "@mikro-orm/postgresql";
+import { DynamicModule, Global, Module, Provider } from "@nestjs/common";
+import { ClsModule } from "nestjs-cls";
+import { ConnectionManager } from "./connection/connection.manager.js";
+import { POOL_DEFAULTS } from "./constants/defaults.js";
+import { DI_TOKENS } from "./constants/tokens.js";
+import { DatabaseIsolationService } from "./isolation/isolation.service.js";
+import { HealthCheckService } from "./monitoring/health-check.service.js";
+import { MetricsService } from "./monitoring/metrics.service.js";
+import { TransactionService } from "./transaction/transaction.service.js";
 import type {
   DatabaseModuleAsyncOptions,
   DatabaseModuleOptions,
-} from './types/module.types.js';
+} from "./types/module.types.js";
 
 /**
  * 数据库管理模块

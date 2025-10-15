@@ -53,10 +53,10 @@
  *
  * @since 1.0.0
  */
-import { Injectable } from '@nestjs/common';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import { IEventHandler } from '../events/base/event-handler.interface';
-import { IEventBus, IMiddleware, IMessageContext } from './cqrs-bus.interface';
+import { Injectable } from "@nestjs/common";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
+import { IEventHandler } from "../events/base/event-handler.interface";
+import { IEventBus, IMiddleware, IMessageContext } from "./cqrs-bus.interface";
 
 /**
  * 事件处理器注册信息
@@ -102,7 +102,7 @@ export class EventBus implements IEventBus {
     const context: IMessageContext = {
       messageId: event.eventId.toString(),
       tenantId: event.tenantId,
-      userId: '', // 事件可能没有用户ID
+      userId: "", // 事件可能没有用户ID
       messageType: eventType,
       createdAt: event.occurredAt,
       metadata: {},
@@ -132,7 +132,7 @@ export class EventBus implements IEventBus {
       // 并行处理所有处理器
       const promises = allHandlers.map(async ({ handler }) => {
         try {
-          if (typeof handler === 'function') {
+          if (typeof handler === "function") {
             // 订阅处理器
             await handler(event);
           } else {
@@ -169,10 +169,10 @@ export class EventBus implements IEventBus {
         } catch (error) {
           // 记录错误但不中断其他处理器
           // TODO: 使用日志服务替代 console.error
-           
+
           console.error(`Error handling event ${eventType}:`, error);
 
-          if (typeof handler !== 'function') {
+          if (typeof handler !== "function") {
             const eventHandler = handler as IEventHandler;
             await eventHandler.handleFailure(event, error as Error);
           }
@@ -447,7 +447,6 @@ export class EventBus implements IEventBus {
    * @returns Promise
    */
   private sleep(ms: number): Promise<void> {
-     
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 

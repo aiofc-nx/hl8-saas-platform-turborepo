@@ -29,10 +29,10 @@
  * export class TenantDomain extends Domain {
  *   protected override validate(value: string): void {
  *     super.validate(value);  // 通用验证
- *     
+ *
  *     // 租户特定验证
  *     this.validateLength(value, 3, 253, '租户域名');
- *     
+ *
  *     // 检查是否为子域名
  *     if (value.split('.').length > 4) {
  *       throw new Error('子域名层级不能超过4级');
@@ -51,7 +51,7 @@
  * @since 1.1.0
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from "../base-value-object";
 
 export abstract class Domain extends BaseValueObject<string> {
   /**
@@ -62,11 +62,11 @@ export abstract class Domain extends BaseValueObject<string> {
    * @override
    */
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '域名');
+    this.validateNotEmpty(value, "域名");
     this.validatePattern(
       value,
       /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*\.[a-z]{2,}$/,
-      '域名格式不正确'
+      "域名格式不正确",
     );
   }
 
@@ -81,4 +81,3 @@ export abstract class Domain extends BaseValueObject<string> {
     return value.toLowerCase().trim();
   }
 }
-

@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const SERIALIZATION_TRANSFORMER = 'Serialization Transformer';
+export const SERIALIZATION_TRANSFORMER = "Serialization Transformer";

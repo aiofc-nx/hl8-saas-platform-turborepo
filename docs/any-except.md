@@ -22,12 +22,12 @@ function dangerousAdd(a: any, b: any): any {
 }
 
 // 编译时不会报错，但运行时可能出错
-const result1 = dangerousAdd(1, '2'); // "12" 而不是 3
+const result1 = dangerousAdd(1, "2"); // "12" 而不是 3
 const result2 = dangerousAdd(null, undefined); // NaN
 const result3 = dangerousAdd({}, 2); // "[object Object]2"
 
 // 失去自动补全和类型检查
-const processed = dangerousAdd('hello', 5);
+const processed = dangerousAdd("hello", 5);
 processed.toUpperCase(); // 运行时可能出错，但编译时不报错
 ```
 
@@ -110,7 +110,7 @@ type UserHandler = AsyncDataTransformer<typeof fetchUser>;
 ```typescript
 // ❌ 问题代码：类型推断与运行时分支不匹配
 function problematicTransform<T>(value: T): T extends string ? number : T {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value.length as any; // 需要断言
   }
   return value as any;
@@ -120,14 +120,14 @@ function problematicTransform<T>(value: T): T extends string ? number : T {
 type TransformResult<T> = T extends string ? number : T;
 
 function safeTransform<T>(value: T): TransformResult<T> {
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return (value as string).length as TransformResult<T>;
   }
   return value as TransformResult<T>;
 }
 
 // 使用示例
-const resultA = safeTransform('hello'); // number
+const resultA = safeTransform("hello"); // number
 const resultB = safeTransform(42); // number
 const resultC = safeTransform({ data: true }); // { data: boolean }
 ```
@@ -146,14 +146,14 @@ function parseJSONSafely<T = unknown>(jsonString: string): T {
 }
 
 // 对应的单元测试
-describe('parseJSONSafely', () => {
-  it('should parse valid JSON', () => {
+describe("parseJSONSafely", () => {
+  it("should parse valid JSON", () => {
     const result = parseJSONSafely<{ name: string }>('{"name": "John"}');
-    expect(result).toEqual({ name: 'John' });
+    expect(result).toEqual({ name: "John" });
   });
 
-  it('should return null for invalid JSON', () => {
-    const result = parseJSONSafely('invalid json');
+  it("should return null for invalid JSON", () => {
+    const result = parseJSONSafely("invalid json");
     expect(result).toBeNull();
   });
 });
@@ -166,16 +166,16 @@ describe('parseJSONSafely', () => {
 ```typescript
 // ✅ 使用 unknown 替代 any
 function safeProcessor(data: unknown): string {
-  if (typeof data === 'string') {
+  if (typeof data === "string") {
     return data.toUpperCase();
   }
-  if (typeof data === 'number') {
+  if (typeof data === "number") {
     return data.toString();
   }
-  if (data && typeof data === 'object' && 'message' in data) {
+  if (data && typeof data === "object" && "message" in data) {
     return String((data as any).message);
   }
-  return 'Unknown data';
+  return "Unknown data";
 }
 ```
 
@@ -201,7 +201,7 @@ function mergeEntities<T extends Entity>(
 function isEntityArray<T extends Entity>(data: unknown): data is T[] {
   return (
     Array.isArray(data) &&
-    data.every((item) => item && typeof item === 'object' && 'id' in item)
+    data.every((item) => item && typeof item === "object" && "id" in item)
   );
 }
 ```

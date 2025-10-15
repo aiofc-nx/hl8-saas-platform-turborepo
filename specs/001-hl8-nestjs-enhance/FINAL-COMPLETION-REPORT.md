@@ -407,7 +407,7 @@ export class IsolationContext {
 }
 
 // 业务代码使用：
-const key = context.buildCacheKey('users', 'list'); // 简洁！
+const key = context.buildCacheKey("users", "list"); // 简洁！
 const canAccess = context.canAccess(dataContext, false); // 清晰！
 ```
 
@@ -550,9 +550,9 @@ curl -H "X-Tenant-Id: 123e4567-e89b-42d3-a456-426614174000" \
 ### 1. 应用配置
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { IsolationModule } from '@hl8/nestjs-isolation';
-import { CachingModule } from '@hl8/nestjs-caching';
+import { Module } from "@nestjs/common";
+import { IsolationModule } from "@hl8/nestjs-isolation";
+import { CachingModule } from "@hl8/nestjs-caching";
 
 @Module({
   imports: [
@@ -562,11 +562,11 @@ import { CachingModule } from '@hl8/nestjs-caching';
     // 2. 配置缓存模块（自动隔离）
     CachingModule.forRoot({
       redis: {
-        host: 'localhost',
+        host: "localhost",
         port: 6379,
       },
       ttl: 3600,
-      keyPrefix: 'hl8:cache:',
+      keyPrefix: "hl8:cache:",
     }),
   ],
 })
@@ -576,8 +576,8 @@ export class AppModule {}
 ### 2. 业务服务
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { CacheService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { CacheService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class UserService {
@@ -585,18 +585,18 @@ export class UserService {
 
   async getUsers(): Promise<User[]> {
     // 🎯 自动使用隔离上下文！
-    let users = await this.cacheService.get<User[]>('user', 'list');
+    let users = await this.cacheService.get<User[]>("user", "list");
 
     if (!users) {
       users = await this.repository.findAll();
-      await this.cacheService.set('user', 'list', users, 1800);
+      await this.cacheService.set("user", "list", users, 1800);
     }
 
     return users;
   }
 
   async clearUserCache(): Promise<void> {
-    await this.cacheService.del('user', 'list');
+    await this.cacheService.del("user", "list");
   }
 }
 ```

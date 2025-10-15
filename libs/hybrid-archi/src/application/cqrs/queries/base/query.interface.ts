@@ -1,4 +1,4 @@
-import { TenantId } from '@hl8/isolation-model';
+import { TenantId } from "@hl8/isolation-model";
 /**
  * 查询接口
  *

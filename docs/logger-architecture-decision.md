@@ -218,8 +218,8 @@ export class LoggerService {
 
 ```typescript
 // ❌ 用户困惑：该用哪个？
-import { LoggerService } from '@hl8/nestjs-infra'; // 通用，有隔离上下文
-import { FastifyLoggerService } from '@hl8/nestjs-fastify'; // Fastify，无隔离上下文
+import { LoggerService } from "@hl8/nestjs-infra"; // 通用，有隔离上下文
+import { FastifyLoggerService } from "@hl8/nestjs-fastify"; // Fastify，无隔离上下文
 
 // 性能好 vs 功能完整？选哪个？
 ```
@@ -228,7 +228,7 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify'; // Fastify，无隔�
 
 ```typescript
 // ✅ 清晰：Fastify 应用用这个
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 // 两全其美：
 // - ⚡ 性能最优（零开销）
@@ -242,8 +242,8 @@ import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 ### Fastify 应用（推荐）
 
 ```typescript
-import { FastifyLoggingModule } from '@hl8/nestjs-fastify';
-import { IsolationModule } from '@hl8/nestjs-infra';
+import { FastifyLoggingModule } from "@hl8/nestjs-fastify";
+import { IsolationModule } from "@hl8/nestjs-infra";
 
 @Module({
   imports: [
@@ -257,14 +257,14 @@ export class AppModule {}
 ### Express 应用
 
 ```typescript
-import { LoggingModule } from '@hl8/nestjs-infra';
-import { IsolationModule } from '@hl8/nestjs-infra';
+import { LoggingModule } from "@hl8/nestjs-infra";
+import { IsolationModule } from "@hl8/nestjs-infra";
 
 @Module({
   imports: [
     LoggingModule.forRoot({
       // ← 通用 Logger
-      level: 'info',
+      level: "info",
       prettyPrint: false,
     }),
     IsolationModule.forRoot(),
@@ -277,13 +277,13 @@ export class AppModule {}
 
 ```typescript
 // 使用 @nestjs/common/Logger 即可
-import { Logger } from '@nestjs/common';
+import { Logger } from "@nestjs/common";
 
 export class MyService {
   private readonly logger = new Logger(MyService.name);
 
   doSomething() {
-    this.logger.log('Task completed');
+    this.logger.log("Task completed");
   }
 }
 ```

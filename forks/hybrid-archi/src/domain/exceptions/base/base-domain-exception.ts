@@ -59,22 +59,22 @@
  * 领域异常类型枚举
  */
 export enum DomainExceptionType {
-  BUSINESS_RULE = 'business_rule',
-  VALIDATION = 'validation',
-  STATE = 'state',
-  PERMISSION = 'permission',
-  CONCURRENCY = 'concurrency',
-  NOT_FOUND = 'not_found',
+  BUSINESS_RULE = "business_rule",
+  VALIDATION = "validation",
+  STATE = "state",
+  PERMISSION = "permission",
+  CONCURRENCY = "concurrency",
+  NOT_FOUND = "not_found",
 }
 
 /**
  * 领域异常严重级别枚举
  */
 export enum DomainExceptionSeverity {
-  LOW = 'low',
-  MEDIUM = 'medium',
-  HIGH = 'high',
-  CRITICAL = 'critical',
+  LOW = "low",
+  MEDIUM = "medium",
+  HIGH = "high",
+  CRITICAL = "critical",
 }
 
 /**

@@ -38,12 +38,12 @@
  * @since 1.0.0
  */
 
-import { SetMetadata, UseInterceptors, applyDecorators } from '@nestjs/common';
+import { SetMetadata, UseInterceptors, applyDecorators } from "@nestjs/common";
 import {
   CACHEABLE_KEY,
   CacheInterceptor,
   CacheableMetadata,
-} from '../interceptors/cache.interceptor.js';
+} from "../interceptors/cache.interceptor.js";
 
 export interface CacheableOptions {
   /**

@@ -39,7 +39,7 @@ export interface EmailAttachment {
   filename: string;
   content: Buffer | string;
   contentType: string;
-  disposition?: 'attachment' | 'inline';
+  disposition?: "attachment" | "inline";
   cid?: string;
 }
 
@@ -48,7 +48,7 @@ export interface EmailAttachment {
  */
 export interface EmailSendResult {
   messageId: string;
-  status: 'sent' | 'failed' | 'pending';
+  status: "sent" | "failed" | "pending";
   error?: string;
   timestamp: Date;
 }
@@ -105,7 +105,7 @@ export interface IEmailServiceAdapter {
    * @returns 发送结果
    */
   sendTemplateEmail(
-    templateEmail: TemplateEmailMessage
+    templateEmail: TemplateEmailMessage,
   ): Promise<EmailSendResult>;
 
   /**
@@ -169,7 +169,7 @@ export interface EmailSendStats {
  * 邮件服务配置接口
  */
 export interface EmailServiceConfig {
-  provider: 'smtp' | 'sendgrid' | 'ses' | 'mailgun';
+  provider: "smtp" | "sendgrid" | "ses" | "mailgun";
   host?: string;
   port?: number;
   username?: string;

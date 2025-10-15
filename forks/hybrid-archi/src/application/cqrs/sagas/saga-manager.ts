@@ -53,23 +53,23 @@
  *
  * @since 1.0.0
  */
-import { Injectable, Inject } from '@nestjs/common';
-import { Observable, of, throwError } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
-import type { PinoLogger } from '@hl8/logger';
+import { Injectable, Inject } from "@nestjs/common";
+import { Observable, of, throwError } from "rxjs";
+import { map, catchError, tap } from "rxjs/operators";
+import type { PinoLogger } from "@hl8/logger";
 
 // 定义 LogContext 枚举
 enum LogContext {
-  SYSTEM = 'SYSTEM',
-  BUSINESS = 'BUSINESS',
-  AUTH = 'AUTH',
-  DATABASE = 'DATABASE',
-  EXTERNAL = 'EXTERNAL',
-  CACHE = 'CACHE',
-  PERFORMANCE = 'PERFORMANCE',
-  HTTP_REQUEST = 'HTTP_REQUEST',
+  SYSTEM = "SYSTEM",
+  BUSINESS = "BUSINESS",
+  AUTH = "AUTH",
+  DATABASE = "DATABASE",
+  EXTERNAL = "EXTERNAL",
+  CACHE = "CACHE",
+  PERFORMANCE = "PERFORMANCE",
+  HTTP_REQUEST = "HTTP_REQUEST",
 }
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 // 简化的上下文类型定义
 interface IAsyncContext {
   getTenantId?(): string;
@@ -85,7 +85,7 @@ import {
   ISagaEvent,
   ISagaEventHandler,
   SagaStatus,
-} from './saga.interface';
+} from "./saga.interface";
 
 /**
  * 核心 Saga 管理器
@@ -127,7 +127,7 @@ export class SagaManager implements ISagaManager {
   private _cleanupTimer?: ReturnType<typeof globalThis.setInterval>;
   private _monitoringTimer?: ReturnType<typeof globalThis.setInterval>;
 
-  constructor(@Inject('ILoggerService') private readonly logger: PinoLogger) {}
+  constructor(@Inject("ILoggerService") private readonly logger: PinoLogger) {}
 
   /**
    * 启动 Saga
@@ -135,10 +135,10 @@ export class SagaManager implements ISagaManager {
   public startSaga(
     sagaType: string,
     data: Record<string, unknown>,
-    context?: IAsyncContext
+    context?: IAsyncContext,
   ): Observable<ISagaExecutionContext> {
     if (!this._isStarted) {
-      return throwError(() => new Error('Saga manager is not started'));
+      return throwError(() => new Error("Saga manager is not started"));
     }
 
     const saga = this.sagas.get(sagaType);
@@ -164,7 +164,7 @@ export class SagaManager implements ISagaManager {
     };
 
     this.executionContexts.set(sagaId, executionContext);
-    this.updateStatistics(executionContext, 'started');
+    this.updateStatistics(executionContext, "started");
 
     this.logger.info(`Starting saga: ${sagaType}`, LogContext.SYSTEM, {
       sagaId,
@@ -175,18 +175,18 @@ export class SagaManager implements ISagaManager {
     return saga.execute(executionContext).pipe(
       tap((updatedContext) => {
         this.executionContexts.set(sagaId, updatedContext);
-        this.updateStatistics(updatedContext, 'completed');
-        this.emitSagaEvent('saga.completed', updatedContext);
+        this.updateStatistics(updatedContext, "completed");
+        this.emitSagaEvent("saga.completed", updatedContext);
       }),
       catchError((error) => {
         executionContext.status = SagaStatus.FAILED;
         executionContext.error = (error as Error).message;
         executionContext.endTime = new Date();
         this.executionContexts.set(sagaId, executionContext);
-        this.updateStatistics(executionContext, 'failed');
-        this.emitSagaEvent('saga.failed', executionContext);
+        this.updateStatistics(executionContext, "failed");
+        this.emitSagaEvent("saga.failed", executionContext);
         return throwError(() => error);
-      })
+      }),
     );
   }
 
@@ -203,8 +203,8 @@ export class SagaManager implements ISagaManager {
       context.status = SagaStatus.CANCELLED;
       context.endTime = new Date();
       this.executionContexts.set(sagaId, context);
-      this.updateStatistics(context, 'cancelled');
-      this.emitSagaEvent('saga.cancelled', context);
+      this.updateStatistics(context, "cancelled");
+      this.emitSagaEvent("saga.cancelled", context);
 
       this.logger.info(`Saga stopped: ${context.sagaType}`, LogContext.SYSTEM, {
         sagaId,
@@ -239,14 +239,14 @@ export class SagaManager implements ISagaManager {
     this.logger.info(
       `Compensating saga: ${context.sagaType}`,
       LogContext.SYSTEM,
-      { sagaId, sagaType: context.sagaType }
+      { sagaId, sagaType: context.sagaType },
     );
 
     return saga.compensate(context).pipe(
       tap((updatedContext) => {
         this.executionContexts.set(sagaId, updatedContext);
-        this.updateStatistics(updatedContext, 'compensated');
-        this.emitSagaEvent('saga.compensated', updatedContext);
+        this.updateStatistics(updatedContext, "compensated");
+        this.emitSagaEvent("saga.compensated", updatedContext);
       }),
       map(() => true),
       catchError((error) => {
@@ -258,10 +258,10 @@ export class SagaManager implements ISagaManager {
             sagaType: context.sagaType,
             error: (error as Error).message,
           },
-          error as Error
+          error as Error,
         );
         return of(false);
-      })
+      }),
     );
   }
 
@@ -336,11 +336,11 @@ export class SagaManager implements ISagaManager {
    */
   public async start(): Promise<void> {
     if (this._isStarted) {
-      this.logger.warn('Saga manager is already started', LogContext.SYSTEM);
+      this.logger.warn("Saga manager is already started", LogContext.SYSTEM);
       return;
     }
 
-    this.logger.info('Starting saga manager...', LogContext.SYSTEM);
+    this.logger.info("Starting saga manager...", LogContext.SYSTEM);
 
     // 启动清理定时器
     this._cleanupTimer = globalThis.setInterval(() => {
@@ -353,7 +353,7 @@ export class SagaManager implements ISagaManager {
     }, 30000); // 每30秒更新一次统计
 
     this._isStarted = true;
-    this.logger.info('Saga manager started successfully', LogContext.SYSTEM);
+    this.logger.info("Saga manager started successfully", LogContext.SYSTEM);
   }
 
   /**
@@ -361,11 +361,11 @@ export class SagaManager implements ISagaManager {
    */
   public async stop(): Promise<void> {
     if (!this._isStarted) {
-      this.logger.warn('Saga manager is not started', LogContext.SYSTEM);
+      this.logger.warn("Saga manager is not started", LogContext.SYSTEM);
       return;
     }
 
-    this.logger.info('Stopping saga manager...', LogContext.SYSTEM);
+    this.logger.info("Stopping saga manager...", LogContext.SYSTEM);
 
     // 停止定时器
     if (this._cleanupTimer) {
@@ -389,7 +389,7 @@ export class SagaManager implements ISagaManager {
     this.executionContexts.clear();
 
     this._isStarted = false;
-    this.logger.info('Saga manager stopped successfully', LogContext.SYSTEM);
+    this.logger.info("Saga manager stopped successfully", LogContext.SYSTEM);
   }
 
   /**
@@ -414,7 +414,7 @@ export class SagaManager implements ISagaManager {
     this.logger.debug(
       `Registered saga event handler: ${handler.name}`,
       LogContext.SYSTEM,
-      { handlerName: handler.name, eventType: handler.eventType }
+      { handlerName: handler.name, eventType: handler.eventType },
     );
   }
 
@@ -427,7 +427,7 @@ export class SagaManager implements ISagaManager {
       this.logger.debug(
         `Unregistered saga event handler: ${handlerName}`,
         LogContext.SYSTEM,
-        { handlerName }
+        { handlerName },
       );
     }
     return removed;
@@ -457,7 +457,7 @@ export class SagaManager implements ISagaManager {
       this.logger.debug(
         `Cleaned up ${expiredContexts.length} expired saga contexts`,
         LogContext.SYSTEM,
-        { expiredCount: expiredContexts.length }
+        { expiredCount: expiredContexts.length },
       );
     }
   }
@@ -467,7 +467,7 @@ export class SagaManager implements ISagaManager {
    */
   private updateStatistics(
     context?: ISagaExecutionContext,
-    action?: string
+    action?: string,
   ): void {
     if (context && action) {
       this.statistics.totalSagas++;
@@ -496,7 +496,7 @@ export class SagaManager implements ISagaManager {
         (this.statistics.byStatus[context.status] || 0) + 1;
 
       // 按租户统计
-      const tenantId = context.context?.getTenantId?.() || 'unknown';
+      const tenantId = context.context?.getTenantId?.() || "unknown";
       this.statistics.byTenant[tenantId] =
         (this.statistics.byTenant[tenantId] || 0) + 1;
 
@@ -531,14 +531,14 @@ export class SagaManager implements ISagaManager {
    */
   private emitSagaEvent(
     eventType: string,
-    context: ISagaExecutionContext
+    context: ISagaExecutionContext,
   ): void {
     const event: ISagaEvent = {
       eventType,
       sagaId: context.sagaId,
       data: context.data,
       timestamp: new Date(),
-      source: 'saga-manager',
+      source: "saga-manager",
       metadata: {
         sagaType: context.sagaType,
         status: context.status,
@@ -559,7 +559,7 @@ export class SagaManager implements ISagaManager {
                 sagaId: context.sagaId,
                 eventType,
                 handlerName: handler.name,
-              }
+              },
             );
           },
           error: (error) => {
@@ -572,7 +572,7 @@ export class SagaManager implements ISagaManager {
                 handlerName: handler.name,
                 error: (error as Error).message,
               },
-              error as Error
+              error as Error,
             );
           },
         });

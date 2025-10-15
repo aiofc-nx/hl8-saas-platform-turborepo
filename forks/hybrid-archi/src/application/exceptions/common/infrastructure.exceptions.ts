@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { ApplicationException } from './application.exception';
+import { ApplicationException } from "./application.exception";
 
 /**
  * 基础设施异常
@@ -16,11 +16,11 @@ export class InfrastructureException extends ApplicationException {
   constructor(service: string, reason: string) {
     super(
       `基础设施服务不可用: ${service} - ${reason}`,
-      'INFRASTRUCTURE_UNAVAILABLE',
+      "INFRASTRUCTURE_UNAVAILABLE",
       {
         service,
         reason,
-      }
+      },
     );
   }
 }
@@ -32,7 +32,7 @@ export class InfrastructureException extends ApplicationException {
  */
 export class DatabaseException extends ApplicationException {
   constructor(operation: string, reason: string) {
-    super(`数据库操作失败: ${operation} - ${reason}`, 'DATABASE_ERROR', {
+    super(`数据库操作失败: ${operation} - ${reason}`, "DATABASE_ERROR", {
       operation,
       reason,
     });
@@ -46,7 +46,7 @@ export class DatabaseException extends ApplicationException {
  */
 export class CacheException extends ApplicationException {
   constructor(operation: string, reason: string) {
-    super(`缓存操作失败: ${operation} - ${reason}`, 'CACHE_ERROR', {
+    super(`缓存操作失败: ${operation} - ${reason}`, "CACHE_ERROR", {
       operation,
       reason,
     });
@@ -60,7 +60,7 @@ export class CacheException extends ApplicationException {
  */
 export class MessageQueueException extends ApplicationException {
   constructor(operation: string, reason: string) {
-    super(`消息队列操作失败: ${operation} - ${reason}`, 'MESSAGE_QUEUE_ERROR', {
+    super(`消息队列操作失败: ${operation} - ${reason}`, "MESSAGE_QUEUE_ERROR", {
       operation,
       reason,
     });
@@ -76,12 +76,12 @@ export class ExternalServiceException extends ApplicationException {
   constructor(service: string, operation: string, reason: string) {
     super(
       `外部服务调用失败: ${service}.${operation} - ${reason}`,
-      'EXTERNAL_SERVICE_ERROR',
+      "EXTERNAL_SERVICE_ERROR",
       {
         service,
         operation,
         reason,
-      }
+      },
     );
   }
 }

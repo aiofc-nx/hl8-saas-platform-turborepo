@@ -8,9 +8,9 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { CacheService } from '@hl8/caching';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 缓存配置接口
@@ -63,11 +63,11 @@ export interface ICacheStatistics {
  */
 export enum CacheLevel {
   /** 内存缓存 */
-  MEMORY = 'memory',
+  MEMORY = "memory",
   /** Redis缓存 */
-  REDIS = 'redis',
+  REDIS = "redis",
   /** 分布式缓存 */
-  DISTRIBUTED = 'distributed',
+  DISTRIBUTED = "distributed",
 }
 
 /**
@@ -95,7 +95,7 @@ export class CacheAdapter {
   constructor(
     private readonly cacheService: CacheService,
     private readonly logger: FastifyLoggerService,
-    config: Partial<ICacheConfig> = {}
+    config: Partial<ICacheConfig> = {},
   ) {
     this.config = {
       enableMemoryCache: config.enableMemoryCache ?? true,
@@ -106,7 +106,7 @@ export class CacheAdapter {
       enableCompression: config.enableCompression ?? false,
       enableEncryption: config.enableEncryption ?? false,
       enableStatistics: config.enableStatistics ?? true,
-      keyPrefix: config.keyPrefix ?? 'hybrid-archi',
+      keyPrefix: config.keyPrefix ?? "hybrid-archi",
       enableWarmup: config.enableWarmup ?? false,
     };
   }
@@ -169,7 +169,7 @@ export class CacheAdapter {
     key: string,
     value: T,
     ttl?: number,
-    level?: CacheLevel
+    level?: CacheLevel,
   ): Promise<void> {
     const startTime = Date.now();
     const fullKey = this.getFullKey(key);
@@ -278,7 +278,7 @@ export class CacheAdapter {
    */
   async mget<T = any>(
     keys: string[],
-    level?: CacheLevel
+    level?: CacheLevel,
   ): Promise<Record<string, T | null>> {
     const startTime = Date.now();
     const fullKeys = keys.map((key) => this.getFullKey(key));
@@ -334,7 +334,7 @@ export class CacheAdapter {
   async mset<T = any>(
     data: Record<string, T>,
     ttl?: number,
-    level?: CacheLevel
+    level?: CacheLevel,
   ): Promise<void> {
     const startTime = Date.now();
     const actualTtl = ttl || this.config.defaultTtl;
@@ -353,7 +353,7 @@ export class CacheAdapter {
           keyCount: Object.keys(data).length,
           ttl: actualTtl,
           level,
-        }
+        },
       );
       throw error;
     }
@@ -379,9 +379,8 @@ export class CacheAdapter {
       }
 
       if (level === CacheLevel.DISTRIBUTED || !level) {
-        deletedCount += await this.deletePatternFromDistributedCache(
-          fullPattern
-        );
+        deletedCount +=
+          await this.deletePatternFromDistributedCache(fullPattern);
       }
 
       this.logger.debug(`按模式删除缓存成功: ${pattern}`);
@@ -417,7 +416,7 @@ export class CacheAdapter {
 
       this.logger.debug(`清除缓存成功`);
     } catch (error) {
-      this.logger.error('清除缓存失败', error, {
+      this.logger.error("清除缓存失败", error, {
         level,
       });
       throw error;
@@ -460,7 +459,7 @@ export class CacheAdapter {
 
       this.logger.debug(`缓存预热成功: ${Object.keys(data).length}`);
     } catch (error) {
-      this.logger.error('缓存预热失败', error, {
+      this.logger.error("缓存预热失败", error, {
         keyCount: Object.keys(data).length,
       });
       throw error;
@@ -569,7 +568,7 @@ export class CacheAdapter {
   private async setToMemoryCache(
     key: string,
     value: any,
-    ttl: number
+    ttl: number,
   ): Promise<void> {
     if (!this.config.enableMemoryCache) {
       return;
@@ -634,7 +633,7 @@ export class CacheAdapter {
   private async setToRedisCache(
     key: string,
     value: any,
-    ttl: number
+    ttl: number,
   ): Promise<void> {
     if (!this.config.enableRedisCache) {
       return;
@@ -684,7 +683,7 @@ export class CacheAdapter {
   private async setToDistributedCache(
     key: string,
     value: any,
-    ttl: number
+    ttl: number,
   ): Promise<void> {
     if (!this.config.enableDistributedCache) {
       return;
@@ -728,10 +727,10 @@ export class CacheAdapter {
     }
 
     // 使用兼容性检查调用 clear 方法
-    if (typeof (this.cacheService as any).clear === 'function') {
+    if (typeof (this.cacheService as any).clear === "function") {
       await (this.cacheService as any).clear();
     } else {
-      console.warn('CacheService不支持clear方法');
+      console.warn("CacheService不支持clear方法");
     }
   }
 
@@ -751,7 +750,7 @@ export class CacheAdapter {
    * 驱逐最旧的内存缓存
    */
   private evictOldestMemoryCache(): void {
-    let oldestKey = '';
+    let oldestKey = "";
     let oldestTime = Date.now();
 
     for (const [key, item] of this.memoryCache) {
@@ -774,7 +773,7 @@ export class CacheAdapter {
       return 0;
     }
 
-    const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+    const regex = new RegExp(pattern.replace(/\*/g, ".*"));
     let deletedCount = 0;
 
     for (const key of this.memoryCache.keys()) {
@@ -799,15 +798,15 @@ export class CacheAdapter {
     // 由于CacheService可能没有deletePattern方法，我们提供一个基础实现
     try {
       // 尝试调用CacheService的deletePattern方法
-      if (typeof (this.cacheService as any).deletePattern === 'function') {
+      if (typeof (this.cacheService as any).deletePattern === "function") {
         return await (this.cacheService as any).deletePattern(pattern);
       }
 
       // 如果没有deletePattern方法，返回0
-      this.logger.warn('CacheService不支持deletePattern方法');
+      this.logger.warn("CacheService不支持deletePattern方法");
       return 0;
     } catch (error) {
-      this.logger.error('Redis模式删除失败', error, { pattern });
+      this.logger.error("Redis模式删除失败", error, { pattern });
       return 0;
     }
   }
@@ -816,7 +815,7 @@ export class CacheAdapter {
    * 从分布式缓存按模式删除
    */
   private async deletePatternFromDistributedCache(
-    pattern: string
+    pattern: string,
   ): Promise<number> {
     if (!this.config.enableDistributedCache) {
       return 0;

@@ -22,19 +22,19 @@
  * ```
  */
 
-import { EnterpriseFastifyAdapter } from '@hl8/nestjs-fastify';
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppModule } from './app.module.js';
-import { AppConfig } from './config/app.config.js';
+import { EnterpriseFastifyAdapter } from "@hl8/nestjs-fastify";
+import { ValidationPipe } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { AppModule } from "./app.module.js";
+import { AppConfig } from "./config/app.config.js";
 import {
   cleanupSensitiveEnvVars,
   deepFreeze,
   getSafeConfigCopy,
   isFrozen,
-} from './config/config-security.util.js';
-import { setupSwagger } from './swagger.js';
+} from "./config/config-security.util.js";
+import { setupSwagger } from "./swagger.js";
 
 /**
  * 应用启动入口
@@ -52,8 +52,8 @@ async function bootstrap(): Promise<void> {
     enablePerformanceMonitoring: true,
     enableHealthCheck: false,
     enableSecurity: true,
-    enableRateLimit: process.env.NODE_ENV === 'production',
-    enableCircuitBreaker: process.env.NODE_ENV === 'production',
+    enableRateLimit: process.env.NODE_ENV === "production",
+    enableCircuitBreaker: process.env.NODE_ENV === "production",
   });
 
   // 创建应用实例
@@ -73,7 +73,7 @@ async function bootstrap(): Promise<void> {
 
   // 1. 深度冻结配置对象（防止运行时修改）
   deepFreeze(config);
-  console.log('[Security] Configuration frozen:', isFrozen(config));
+  console.log("[Security] Configuration frozen:", isFrozen(config));
 
   // 2. 生产环境清理敏感环境变量
   if (config.isProduction) {
@@ -84,7 +84,7 @@ async function bootstrap(): Promise<void> {
   if (config.isDevelopment) {
     const safeConfig = getSafeConfigCopy(config);
     console.log(
-      '[Config] Loaded configuration:',
+      "[Config] Loaded configuration:",
       JSON.stringify(safeConfig, null, 2),
     );
   }
@@ -116,7 +116,7 @@ async function bootstrap(): Promise<void> {
 
   // 使用配置中的端口（而不是直接读取 process.env）
   const port = config.PORT;
-  const host = '0.0.0.0';
+  const host = "0.0.0.0";
 
   await app.listen(port, host);
 
@@ -124,11 +124,11 @@ async function bootstrap(): Promise<void> {
   // 📝 启动信息
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  const displayHost = 'localhost';
+  const displayHost = "localhost";
 
-  console.log('\n' + '='.repeat(70));
-  console.log('🚀 HL8 SAAS Platform - Application Started Successfully');
-  console.log('='.repeat(70));
+  console.log("\n" + "=".repeat(70));
+  console.log("🚀 HL8 SAAS Platform - Application Started Successfully");
+  console.log("=".repeat(70));
   console.log(`📍 Local:        http://${displayHost}:${port}`);
   console.log(`🌐 Network:      http://${host}:${port}`);
 
@@ -137,7 +137,7 @@ async function bootstrap(): Promise<void> {
     console.log(`📄 OpenAPI JSON: http://${displayHost}:${port}/api-docs-json`);
   }
 
-  console.log('='.repeat(70));
+  console.log("=".repeat(70));
   console.log(`✅ Environment:  ${config.NODE_ENV}`); // 使用配置而不是 process.env
   console.log(`⚡ Powered by:   Fastify + NestJS`);
   console.log(`🔒 Security:     Enhanced (config frozen)`);
@@ -146,13 +146,13 @@ async function bootstrap(): Promise<void> {
     console.log(`🔐 Protection:   Sensitive env vars cleaned`);
   }
 
-  console.log('='.repeat(70) + '\n');
+  console.log("=".repeat(70) + "\n");
 }
 
 /**
  * 启动应用并处理错误
  */
 bootstrap().catch((error) => {
-  console.error('❌ Failed to start application:', error);
+  console.error("❌ Failed to start application:", error);
   process.exit(1);
 });

@@ -8,13 +8,13 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { DatabaseModule } from '@hl8/database';
-import { LoggerModule } from '@hl8/logger';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { DatabaseModule } from "@hl8/database";
+import { LoggerModule } from "@hl8/logger";
 
-import { DatabaseAdapter } from './database.adapter';
-import { DatabaseFactory } from './database.factory';
-import { DatabaseManager } from './database.manager';
+import { DatabaseAdapter } from "./database.adapter";
+import { DatabaseFactory } from "./database.factory";
+import { DatabaseManager } from "./database.manager";
 
 /**
  * 数据库适配器模块选项
@@ -66,7 +66,7 @@ export class DatabaseAdaptersModule {
     // 添加基础模块
     imports.push(
       DatabaseModule.forRoot({ mikroORM: {} as any }),
-      LoggerModule.forRoot({})
+      LoggerModule.forRoot({}),
     );
 
     // 添加管理组件
@@ -75,7 +75,7 @@ export class DatabaseAdaptersModule {
 
     // 根据选项动态添加提供者
     if (options.enableDatabase !== false) {
-      providers.push({ provide: 'IDatabase', useClass: DatabaseAdapter });
+      providers.push({ provide: "IDatabase", useClass: DatabaseAdapter });
     }
 
     return {
@@ -93,7 +93,7 @@ export class DatabaseAdaptersModule {
    * @returns 数据库适配器模块
    */
   static forRootAsync(
-    options: DatabaseAdaptersModuleOptions = {}
+    options: DatabaseAdaptersModuleOptions = {},
   ): DynamicModule {
     const providers: Provider[] = [];
     const imports: DynamicModule[] = [];
@@ -101,7 +101,7 @@ export class DatabaseAdaptersModule {
     // 添加基础模块
     imports.push(
       DatabaseModule.forRoot({ mikroORM: {} as any }),
-      LoggerModule.forRoot({})
+      LoggerModule.forRoot({}),
     );
 
     // 添加管理组件
@@ -110,7 +110,7 @@ export class DatabaseAdaptersModule {
 
     // 根据选项动态添加提供者
     if (options.enableDatabase !== false) {
-      providers.push({ provide: 'IDatabase', useClass: DatabaseAdapter });
+      providers.push({ provide: "IDatabase", useClass: DatabaseAdapter });
     }
 
     return {

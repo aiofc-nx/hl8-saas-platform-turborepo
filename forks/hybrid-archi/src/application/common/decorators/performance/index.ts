@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-export type { IPerformanceMonitorOptions } from './performance.decorator';
+export type { IPerformanceMonitorOptions } from "./performance.decorator";
 export {
   PerformanceMonitor,
   getPerformanceMonitorMetadata,
   PERFORMANCE_MONITOR_METADATA_KEY,
-} from './performance.decorator';
+} from "./performance.decorator";

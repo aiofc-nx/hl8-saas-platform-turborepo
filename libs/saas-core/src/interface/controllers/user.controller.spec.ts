@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CommandBus, QueryBus } from '@hl8/hybrid-archi';
-import { UserController } from './user.controller';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CommandBus, QueryBus } from "@hl8/hybrid-archi";
+import { UserController } from "./user.controller";
 
-describe('UserController', () => {
+describe("UserController", () => {
   let controller: UserController;
 
   beforeEach(async () => {
@@ -17,8 +17,7 @@ describe('UserController', () => {
     controller = module.get<UserController>(UserController);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(controller).toBeDefined();
   });
 });
-

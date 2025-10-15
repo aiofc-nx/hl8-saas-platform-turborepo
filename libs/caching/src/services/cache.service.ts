@@ -23,14 +23,14 @@
  * @since 1.0.0
  */
 
-import { IsolationContext } from '@hl8/isolation-model';
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { ClsService } from 'nestjs-cls';
-import { CacheEntry } from '../domain/value-objects/cache-entry.vo.js';
-import { CacheKey } from '../domain/value-objects/cache-key.vo.js';
-import { RedisService } from './redis.service.js';
+import { IsolationContext } from "@hl8/isolation-model";
+import { Inject, Injectable, Logger } from "@nestjs/common";
+import { ClsService } from "nestjs-cls";
+import { CacheEntry } from "../domain/value-objects/cache-entry.vo.js";
+import { CacheKey } from "../domain/value-objects/cache-key.vo.js";
+import { RedisService } from "./redis.service.js";
 
-export const CACHE_OPTIONS = 'CACHE_OPTIONS';
+export const CACHE_OPTIONS = "CACHE_OPTIONS";
 
 interface CacheServiceOptions {
   ttl?: number;
@@ -50,7 +50,7 @@ export class CacheService {
     private readonly options: CacheServiceOptions,
   ) {
     this.defaultTTL = options.ttl ?? 3600;
-    this.keyPrefix = options.keyPrefix ?? 'hl8:cache:';
+    this.keyPrefix = options.keyPrefix ?? "hl8:cache:";
   }
 
   /**
@@ -197,7 +197,7 @@ export class CacheService {
       const pattern = `${this.keyPrefix}*`;
       return await this.clearByPattern(pattern);
     } catch (error) {
-      this.logger.error('清空所有缓存失败', undefined, {
+      this.logger.error("清空所有缓存失败", undefined, {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
       });
@@ -291,16 +291,16 @@ export class CacheService {
    */
   private async clearByPattern(pattern: string): Promise<number> {
     const redis = this.redisService.getClient();
-    let cursor = '0';
+    let cursor = "0";
     let deletedCount = 0;
 
     do {
       // 使用 SCAN 而非 KEYS，避免阻塞
       const [nextCursor, keys] = await redis.scan(
         cursor,
-        'MATCH',
+        "MATCH",
         pattern,
-        'COUNT',
+        "COUNT",
         100, // 每次扫描 100 个
       );
 
@@ -311,7 +311,7 @@ export class CacheService {
         const result = await redis.del(...keys);
         deletedCount += result;
       }
-    } while (cursor !== '0');
+    } while (cursor !== "0");
 
     this.logger.log(`根据模式清除缓存: ${pattern}, 删除 ${deletedCount} 个键`);
 
@@ -342,7 +342,7 @@ export class CacheService {
    * @private
    */
   private getIsolationContext(): IsolationContext {
-    const context = this.cls.get<IsolationContext>('ISOLATION_CONTEXT');
+    const context = this.cls.get<IsolationContext>("ISOLATION_CONTEXT");
     return context ?? IsolationContext.platform();
   }
 }

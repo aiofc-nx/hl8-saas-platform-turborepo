@@ -8,9 +8,9 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { ILoggerPort } from '../../../application/ports/shared/shared-ports.interface';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { ILoggerPort } from "../../../application/ports/shared/shared-ports.interface";
 
 /**
  * 日志端口适配器
@@ -61,7 +61,7 @@ export class LoggerPortAdapter implements ILoggerPort {
   error(
     message: string,
     error?: Error,
-    context?: Record<string, unknown>
+    context?: Record<string, unknown>,
   ): void {
     this.logger.error(message, error, context);
   }
@@ -82,7 +82,7 @@ export class LoggerPortAdapter implements ILoggerPort {
    *
    * @param level - 日志级别
    */
-  setLevel(level: 'debug' | 'info' | 'warn' | 'error'): void {
+  setLevel(level: "debug" | "info" | "warn" | "error"): void {
     // 注意：具体的日志级别设置取决于底层日志服务的实现
     // 这里提供接口兼容性，实际实现可能需要根据具体的日志服务调整
     console.log(`设置日志级别: ${level}`);
@@ -95,7 +95,7 @@ export class LoggerPortAdapter implements ILoggerPort {
    */
   getLevel(): string {
     // 注意：具体的日志级别获取取决于底层日志服务的实现
-    return 'info';
+    return "info";
   }
 
   /**

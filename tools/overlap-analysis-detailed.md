@@ -1,7 +1,7 @@
 # 重叠内容详细分析报告
 
 **生成时间**: 2025-10-14T18:47:56.200Z  
-**分析工具**: analyze-overlap.js  
+**分析工具**: analyze-overlap.js
 
 ## 概览
 
@@ -14,16 +14,19 @@
 ### TenantId (class)
 
 **hybrid-archi 位置**: `libs/hybrid-archi/src/domain/value-objects/ids/tenant-id.vo.ts`
+
 ```typescript
 export class TenantId
 ```
 
 **isolation-model 位置**: `libs/isolation-model/src/value-objects/entity-id.vo.ts`
+
 ```typescript
 export class TenantId
 ```
 
 **建议处理方案**:
+
 - 如果两个实现完全相同，建议统一到 isolation-model
 - 如果实现不同，需要评估哪个更符合业务需求
 - 考虑将通用实现移到 hybrid-archi，业务特定实现保留在 isolation-model
@@ -33,16 +36,19 @@ export class TenantId
 ### TenantId (entity-id)
 
 **hybrid-archi 位置**: `libs/hybrid-archi/src/domain/value-objects/ids/tenant-id.vo.ts`
+
 ```typescript
 export class TenantId
 ```
 
 **isolation-model 位置**: `libs/isolation-model/src/value-objects/entity-id.vo.ts`
+
 ```typescript
 export class TenantId
 ```
 
 **建议处理方案**:
+
 - 如果两个实现完全相同，建议统一到 isolation-model
 - 如果实现不同，需要评估哪个更符合业务需求
 - 考虑将通用实现移到 hybrid-archi，业务特定实现保留在 isolation-model
@@ -52,16 +58,19 @@ export class TenantId
 ### UserId (class)
 
 **hybrid-archi 位置**: `libs/hybrid-archi/src/domain/value-objects/ids/user-id.vo.ts`
+
 ```typescript
 export class UserId
 ```
 
 **isolation-model 位置**: `libs/isolation-model/src/value-objects/user-id.vo.ts`
+
 ```typescript
 export class UserId
 ```
 
 **建议处理方案**:
+
 - 如果两个实现完全相同，建议统一到 isolation-model
 - 如果实现不同，需要评估哪个更符合业务需求
 - 考虑将通用实现移到 hybrid-archi，业务特定实现保留在 isolation-model
@@ -71,16 +80,19 @@ export class UserId
 ### UserId (entity-id)
 
 **hybrid-archi 位置**: `libs/hybrid-archi/src/domain/value-objects/ids/user-id.vo.ts`
+
 ```typescript
 export class UserId
 ```
 
 **isolation-model 位置**: `libs/isolation-model/src/value-objects/user-id.vo.ts`
+
 ```typescript
 export class UserId
 ```
 
 **建议处理方案**:
+
 - 如果两个实现完全相同，建议统一到 isolation-model
 - 如果实现不同，需要评估哪个更符合业务需求
 - 考虑将通用实现移到 hybrid-archi，业务特定实现保留在 isolation-model
@@ -90,11 +102,13 @@ export class UserId
 ## 模块内容统计
 
 ### hybrid-archi 项目类型分布
+
 - **class**: 739 个
 - **value-object**: 8 个
 - **entity-id**: 2 个
 
 ### isolation-model 项目类型分布
+
 - **class**: 16 个
 - **entity-id**: 3 个
 

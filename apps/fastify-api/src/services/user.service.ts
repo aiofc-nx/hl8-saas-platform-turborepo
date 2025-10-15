@@ -49,11 +49,11 @@ import {
   IsolationLevel,
   Transactional,
   TransactionService,
-} from '@hl8/database/index.js';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify/index.js';
-import { EntityManager } from '@mikro-orm/core';
-import { Injectable } from '@nestjs/common';
-import { User } from '../entities/user.entity.js';
+} from "@hl8/database/index.js";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify/index.js";
+import { EntityManager } from "@mikro-orm/core";
+import { Injectable } from "@nestjs/common";
+import { User } from "../entities/user.entity.js";
 
 /**
  * 创建用户 DTO
@@ -104,12 +104,12 @@ export class UserService {
   @Transactional()
   @IsolationAware(IsolationLevel.TENANT)
   async createUser(dto: CreateUserDto): Promise<User> {
-    this.logger.log('创建用户', { dto });
+    this.logger.log("创建用户", { dto });
 
     // 从隔离上下文获取租户 ID
     const tenantId = this.isolationService.getTenantId();
     if (!tenantId) {
-      throw new Error('Tenant ID is required');
+      throw new Error("Tenant ID is required");
     }
 
     const user = new User();
@@ -123,7 +123,7 @@ export class UserService {
 
     await this.em.persistAndFlush(user);
 
-    this.logger.log('用户创建成功', { userId: user.id });
+    this.logger.log("用户创建成功", { userId: user.id });
 
     return user;
   }
@@ -139,11 +139,11 @@ export class UserService {
   @Transactional()
   @IsolationAware(IsolationLevel.TENANT)
   async createMany(dtos: CreateUserDto[]): Promise<User[]> {
-    this.logger.log('批量创建用户', { count: dtos.length });
+    this.logger.log("批量创建用户", { count: dtos.length });
 
     const tenantId = this.isolationService.getTenantId();
     if (!tenantId) {
-      throw new Error('Tenant ID is required');
+      throw new Error("Tenant ID is required");
     }
 
     const users = dtos.map((dto) => {
@@ -160,7 +160,7 @@ export class UserService {
 
     await this.em.persistAndFlush(users);
 
-    this.logger.log('批量创建用户成功', { count: users.length });
+    this.logger.log("批量创建用户成功", { count: users.length });
 
     return users;
   }
@@ -184,7 +184,7 @@ export class UserService {
       deletedAt: null, // 排除已删除的用户
     });
 
-    this.logger.log('查询用户列表', { count: users.length });
+    this.logger.log("查询用户列表", { count: users.length });
 
     return users;
   }
@@ -234,7 +234,7 @@ export class UserService {
 
     await this.em.flush();
 
-    this.logger.log('用户更新成功', { userId: id });
+    this.logger.log("用户更新成功", { userId: id });
 
     return user;
   }
@@ -256,7 +256,7 @@ export class UserService {
     user.softDelete();
     await this.em.flush();
 
-    this.logger.log('用户已软删除', { userId: id });
+    this.logger.log("用户已软删除", { userId: id });
 
     return true;
   }
@@ -287,7 +287,7 @@ export class UserService {
     user.restore();
     await this.em.flush();
 
-    this.logger.log('用户已恢复', { userId: id });
+    this.logger.log("用户已恢复", { userId: id });
 
     return true;
   }

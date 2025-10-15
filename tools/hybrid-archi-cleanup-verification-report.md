@@ -2,27 +2,31 @@
 
 **验证日期**: 2025-01-27  
 **验证范围**: `libs/hybrid-archi` 模块  
-**验证目标**: 验证业务特定组件已成功移除，架构基础库变得纯粹  
+**验证目标**: 验证业务特定组件已成功移除，架构基础库变得纯粹
 
 ## 清理成果总结
 
 ### ✅ 已成功移除的业务特定组件
 
 #### 1. 租户相关组件
+
 - **TenantType** (`tenant-type.vo.ts`) - ✅ 已删除
 - **TenantTypeUtils** - ✅ 已删除
 - **相关测试文件** - ✅ 已删除
 
 #### 2. 用户角色相关组件
+
 - **UserRole** (`user-role.vo.ts`) - ✅ 已删除
 - **UserRoleUtils** - ✅ 已删除
 - **相关测试文件** - ✅ 已删除
 
 #### 3. 权限定义组件
+
 - **PermissionDefinitions** (`permission-definitions.vo.ts`) - ✅ 已删除
 - **PermissionDefinitionsUtils** - ✅ 已删除
 
 #### 4. 重复的用户状态组件
+
 - **UserStatus** (`user-status.vo.ts`) - ✅ 已删除（业务特定版本）
 - **UserStatusUtils** - ✅ 已删除（业务特定版本）
 - **相关测试文件** - ✅ 已删除
@@ -30,11 +34,13 @@
 ### ✅ 已更新的配置文件
 
 #### 1. 索引文件更新
+
 - **types/index.ts** - ✅ 已更新，移除业务特定组件导出
 - **statuses/index.ts** - ✅ 已更新，移除 UserStatus 导出
 - **README.md** - ✅ 已更新，反映最新变更
 
 #### 2. 文档更新
+
 - **value-objects/README.md** - ✅ 已更新，记录移除的组件
 - **业务特定组件分析报告** - ✅ 已生成
 
@@ -43,30 +49,35 @@
 ### ✅ 保留的通用架构组件
 
 #### 1. 领域层组件
+
 - **BaseEntity** - ✅ 存在且完整
 - **BaseAggregateRoot** - ✅ 存在且完整
 - **BaseValueObject** - ✅ 存在且完整
 - **BaseDomainEvent** - ✅ 存在且完整
 
 #### 2. 应用层组件
+
 - **CQRS 总线** - ✅ 完整 (CommandBus, QueryBus, EventBus)
 - **命令处理器** - ✅ 完整
 - **查询处理器** - ✅ 完整
 - **事件处理器** - ✅ 完整
 
 #### 3. 通用值对象
+
 - **身份验证类** - ✅ Email, Username, PhoneNumber, Password
 - **通用状态** - ✅ UserStatus (通用枚举版本)
 - **安全策略** - ✅ PasswordPolicy, MfaType, MfaStatus
 - **审计日志** - ✅ AuditEventType
 
 #### 4. 基础设施层组件
+
 - **数据库适配器** - ✅ 完整
 - **缓存适配器** - ✅ 完整
 - **事件存储适配器** - ✅ 完整
 - **消息队列适配器** - ✅ 完整
 
 #### 5. 接口层组件
+
 - **基础控制器** - ✅ 完整
 - **基础解析器** - ✅ 完整
 - **基础网关** - ✅ 完整
@@ -79,33 +90,39 @@
 **失败原因分析**：
 
 #### 1. NodeNext 模块系统问题 (主要问题)
+
 ```
 error TS2834: Relative import paths need explicit file extensions in ECMAScript imports when '--moduleResolution' is 'node16' or 'nodenext'.
 ```
+
 - **影响范围**: 所有相对导入路径
 - **解决方案**: 需要在 User Story 3 (CommonJS 到 NodeNext 迁移) 中解决
 - **示例修复**:
+
   ```typescript
   // 修复前
-  import { BaseEntity } from './base-entity';
-  
+  import { BaseEntity } from "./base-entity";
+
   // 修复后
-  import { BaseEntity } from './base-entity.js';
+  import { BaseEntity } from "./base-entity.js";
   ```
 
 #### 2. 旧基础设施模块依赖问题
+
 ```
 error TS2307: Cannot find module '@hl8/cache' or its corresponding type declarations.
 error TS2307: Cannot find module '@hl8/logger' or its corresponding type declarations.
 error TS2307: Cannot find module '@hl8/messaging' or its corresponding type declarations.
 error TS2307: Cannot find module '@hl8/config' or its corresponding type declarations.
 ```
+
 - **影响范围**: 基础设施适配器层
 - **解决方案**: 需要在 User Story 4 (重构 saas-core) 中更新为新基础设施模块
 
 ### ✅ 业务特定组件清理成功
 
 **重要成就**：
+
 - ✅ 所有业务特定组件已成功移除
 - ✅ 模块边界变得清晰
 - ✅ 架构基础库变得纯粹
@@ -116,16 +133,19 @@ error TS2307: Cannot find module '@hl8/config' or its corresponding type declara
 ### ✅ 清晰的职责分离
 
 #### hybrid-archi (架构基础库)
+
 - ✅ **职责**: 提供通用的架构设计模式和基础组件
 - ✅ **包含**: Clean Architecture、DDD、CQRS、ES、EDA 核心实现
 - ✅ **不包含**: 任何业务特定组件
 
 #### saas-core (业务模块)
+
 - ✅ **职责**: 实现 SAAS 平台的核心业务功能
 - ✅ **包含**: 租户管理、用户管理、组织架构、角色权限
 - ✅ **依赖**: hybrid-archi 作为架构基础
 
 #### isolation-model (隔离模型)
+
 - ✅ **职责**: 提供多层级数据隔离的领域模型
 - ✅ **包含**: 隔离策略、数据分类、访问控制
 - ✅ **依赖**: hybrid-archi 作为架构基础
@@ -137,9 +157,9 @@ graph TD
     A[saas-core] --> B[hybrid-archi]
     A --> C[isolation-model]
     C --> B
-    
+
     B --> D[通用架构组件]
-    
+
     style A fill:#e1f5fe
     style B fill:#f3e5f5
     style C fill:#fff3e0
@@ -163,6 +183,7 @@ graph TD
 ### 验证标准
 
 #### 成功标准
+
 - [ ] hybrid-archi 能够成功构建
 - [ ] 只导出通用架构组件
 - [ ] 没有业务特定组件引用
@@ -170,6 +191,7 @@ graph TD
 - [ ] 依赖关系正确
 
 #### 测试验证
+
 - [ ] 创建测试项目引用 hybrid-archi
 - [ ] 验证能够成功导入通用架构组件
 - [ ] 验证无法导入业务特定组件

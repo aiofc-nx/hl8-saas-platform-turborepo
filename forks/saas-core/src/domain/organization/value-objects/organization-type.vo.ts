@@ -31,28 +31,28 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
-import { ORGANIZATION_TYPE_CONFIG } from '../../../constants/organization.constants';
+import { BaseValueObject } from "@hl8/hybrid-archi";
+import { ORGANIZATION_TYPE_CONFIG } from "../../../constants/organization.constants";
 
 /**
  * 组织类型枚举
  */
 export type OrganizationTypeValue =
-  | 'PROFESSIONAL_COMMITTEE'
-  | 'PROJECT_TEAM'
-  | 'QUALITY_CONTROL'
-  | 'PERFORMANCE_TEAM'
-  | 'CUSTOM';
+  | "PROFESSIONAL_COMMITTEE"
+  | "PROJECT_TEAM"
+  | "QUALITY_CONTROL"
+  | "PERFORMANCE_TEAM"
+  | "CUSTOM";
 
 /**
  * 所有允许的组织类型
  */
 const ALLOWED_TYPES: readonly OrganizationTypeValue[] = [
-  'PROFESSIONAL_COMMITTEE',
-  'PROJECT_TEAM',
-  'QUALITY_CONTROL',
-  'PERFORMANCE_TEAM',
-  'CUSTOM',
+  "PROFESSIONAL_COMMITTEE",
+  "PROJECT_TEAM",
+  "QUALITY_CONTROL",
+  "PERFORMANCE_TEAM",
+  "CUSTOM",
 ] as const;
 
 export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
@@ -63,12 +63,8 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    * @override
    */
   protected override validate(value: OrganizationTypeValue): void {
-    this.validateNotEmpty(value, '组织类型');
-    this.validateEnum(
-      value,
-      ALLOWED_TYPES as unknown as string[],
-      '组织类型'
-    );
+    this.validateNotEmpty(value, "组织类型");
+    this.validateEnum(value, ALLOWED_TYPES as unknown as string[], "组织类型");
   }
 
   // ============ 静态工厂方法 ============
@@ -77,35 +73,35 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    * 创建专业委员会类型
    */
   public static professionalCommittee(): OrganizationType {
-    return OrganizationType.create('PROFESSIONAL_COMMITTEE');
+    return OrganizationType.create("PROFESSIONAL_COMMITTEE");
   }
 
   /**
    * 创建项目团队类型
    */
   public static projectTeam(): OrganizationType {
-    return OrganizationType.create('PROJECT_TEAM');
+    return OrganizationType.create("PROJECT_TEAM");
   }
 
   /**
    * 创建质量控制类型
    */
   public static qualityControl(): OrganizationType {
-    return OrganizationType.create('QUALITY_CONTROL');
+    return OrganizationType.create("QUALITY_CONTROL");
   }
 
   /**
    * 创建绩效管理类型
    */
   public static performanceTeam(): OrganizationType {
-    return OrganizationType.create('PERFORMANCE_TEAM');
+    return OrganizationType.create("PERFORMANCE_TEAM");
   }
 
   /**
    * 创建自定义类型
    */
   public static custom(): OrganizationType {
-    return OrganizationType.create('CUSTOM');
+    return OrganizationType.create("CUSTOM");
   }
 
   // ============ 类型检查方法 ============
@@ -114,35 +110,35 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    * 是否为专业委员会
    */
   public isProfessionalCommittee(): boolean {
-    return this._value === 'PROFESSIONAL_COMMITTEE';
+    return this._value === "PROFESSIONAL_COMMITTEE";
   }
 
   /**
    * 是否为项目团队
    */
   public isProjectTeam(): boolean {
-    return this._value === 'PROJECT_TEAM';
+    return this._value === "PROJECT_TEAM";
   }
 
   /**
    * 是否为质量控制
    */
   public isQualityControl(): boolean {
-    return this._value === 'QUALITY_CONTROL';
+    return this._value === "QUALITY_CONTROL";
   }
 
   /**
    * 是否为绩效管理
    */
   public isPerformanceTeam(): boolean {
-    return this._value === 'PERFORMANCE_TEAM';
+    return this._value === "PERFORMANCE_TEAM";
   }
 
   /**
    * 是否为自定义类型
    */
   public isCustom(): boolean {
-    return this._value === 'CUSTOM';
+    return this._value === "CUSTOM";
   }
 
   // ============ 辅助方法 ============
@@ -167,7 +163,7 @@ export class OrganizationType extends BaseValueObject<OrganizationTypeValue> {
    */
   public getDescription(): string {
     const config = ORGANIZATION_TYPE_CONFIG[this._value];
-    return config?.description || '';
+    return config?.description || "";
   }
 
   /**

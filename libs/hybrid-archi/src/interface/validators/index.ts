@@ -7,13 +7,13 @@
  */
 
 // 数据验证器
-export * from './data.validator';
+export * from "./data.validator";
 
 // 格式验证器
-export * from './format.validator';
+export * from "./format.validator";
 
 // 业务验证器
-export * from './business.validator';
+export * from "./business.validator";
 
 // 安全验证器
-export * from './security.validator';
+export * from "./security.validator";

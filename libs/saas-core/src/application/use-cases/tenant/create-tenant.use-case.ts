@@ -39,14 +39,14 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { TenantAggregate } from '../../../domain/tenant/aggregates/tenant.aggregate';
-import { ITenantAggregateRepository } from '../../../domain/tenant/repositories/tenant-aggregate.repository.interface';
-import { TenantCode } from '../../../domain/tenant/value-objects/tenant-code.vo';
-import { TenantDomain } from '../../../domain/tenant/value-objects/tenant-domain.vo';
-import { TenantType } from '../../../domain/tenant/value-objects/tenant-type.enum';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/hybrid-archi";
+import { ICommandUseCase } from "../base/use-case.interface";
+import { TenantAggregate } from "../../../domain/tenant/aggregates/tenant.aggregate";
+import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface";
+import { TenantCode } from "../../../domain/tenant/value-objects/tenant-code.vo";
+import { TenantDomain } from "../../../domain/tenant/value-objects/tenant-domain.vo";
+import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum";
 
 /**
  * 创建租户命令
@@ -76,9 +76,7 @@ export interface ICreateTenantCommand {
 export class CreateTenantUseCase
   implements ICommandUseCase<ICreateTenantCommand, EntityId>
 {
-  constructor(
-    private readonly tenantRepository: ITenantAggregateRepository,
-  ) {}
+  constructor(private readonly tenantRepository: ITenantAggregateRepository) {}
 
   /**
    * 执行创建租户用例
@@ -140,4 +138,3 @@ export class CreateTenantUseCase
     }
   }
 }
-

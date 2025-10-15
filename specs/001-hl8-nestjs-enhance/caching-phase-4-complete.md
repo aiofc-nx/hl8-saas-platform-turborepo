@@ -44,16 +44,16 @@
 @Injectable()
 export class UserService {
   // 基础用法
-  @Cacheable('user')
+  @Cacheable("user")
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
 
   // 高级用法
-  @Cacheable('user', {
+  @Cacheable("user", {
     keyGenerator: (id: string) => `profile:${id}`,
     ttl: 1800,
-    condition: (id: string) => id !== 'admin',
+    condition: (id: string) => id !== "admin",
     cacheNull: true,
   })
   async getUserProfile(id: string): Promise<UserProfile | null> {
@@ -82,13 +82,13 @@ export class UserService {
 @Injectable()
 export class UserService {
   // 更新后清除缓存
-  @CacheEvict('user')
+  @CacheEvict("user")
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     return this.repository.update(id, data);
   }
 
   // 删除前清除缓存
-  @CacheEvict('user', {
+  @CacheEvict("user", {
     keyGenerator: (id: string) => id,
     beforeInvocation: true,
   })
@@ -97,7 +97,7 @@ export class UserService {
   }
 
   // 清除所有用户缓存
-  @CacheEvict('user', {
+  @CacheEvict("user", {
     allEntries: true,
   })
   async resetAllUsers(): Promise<void> {
@@ -124,13 +124,13 @@ export class UserService {
 ```typescript
 @Injectable()
 export class UserService {
-  @Cacheable('user')
+  @Cacheable("user")
   async getUserById(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
 
   // 更新数据并刷新缓存
-  @CachePut('user')
+  @CachePut("user")
   async updateUser(id: string, data: UpdateUserDto): Promise<User> {
     const user = await this.repository.update(id, data);
     // 缓存自动更新，getUserById 将获取到最新数据
@@ -138,11 +138,11 @@ export class UserService {
   }
 
   // 定时刷新缓存
-  @CachePut('user', {
+  @CachePut("user", {
     keyGenerator: (id: string) => id,
     ttl: 3600,
   })
-  @Cron('0 */5 * * * *') // 每 5 分钟
+  @Cron("0 */5 * * * *") // 每 5 分钟
   async refreshUserCache(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
@@ -436,19 +436,19 @@ Coverage:    46.06% (装饰器代码待测试)
 @Injectable()
 export class UserService {
   // GET: 读缓存
-  @Cacheable('user')
+  @Cacheable("user")
   async getUser(id: string): Promise<User> {
     return this.repository.findOne(id);
   }
 
   // UPDATE: 更新缓存
-  @CachePut('user')
+  @CachePut("user")
   async updateUser(id: string, data: any): Promise<User> {
     return this.repository.update(id, data);
   }
 
   // DELETE: 清除缓存
-  @CacheEvict('user')
+  @CacheEvict("user")
   async deleteUser(id: string): Promise<void> {
     await this.repository.delete(id);
   }

@@ -63,7 +63,7 @@ RateLimitModule.forRoot({
 });
 
 // 装饰器用法
-@Controller('users')
+@Controller("users")
 @RateLimit({ max: 1000, timeWindow: 60000 })
 export class UserController {
   @Get()
@@ -120,9 +120,9 @@ SecurityModule.forRoot({
 
 ```typescript
 CorsModule.forRoot({
-  origin: ['https://app.example.com'],
+  origin: ["https://app.example.com"],
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ["GET", "POST", "PUT", "DELETE"],
 });
 ```
 
@@ -146,7 +146,7 @@ CorsModule.forRoot({
 CompressionModule.forRoot({
   threshold: 1024, // 1KB 以上才压缩
   level: 6, // 压缩级别
-  encodings: ['br', 'gzip', 'deflate'],
+  encodings: ["br", "gzip", "deflate"],
 });
 ```
 
@@ -170,7 +170,7 @@ CompressionModule.forRoot({
 ```typescript
 MetricsModule.forRoot({
   defaultLabels: {
-    app: 'hl8-saas',
+    app: "hl8-saas",
   },
   includeTenantMetrics: true,
 });

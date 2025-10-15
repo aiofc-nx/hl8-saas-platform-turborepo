@@ -72,9 +72,9 @@ import {
   HttpException,
   Injectable,
   Optional,
-} from '@nestjs/common';
-import { ProblemDetails } from '../core/abstract-http.exception.js';
-import type { ILoggerService } from './http-exception.filter.js';
+} from "@nestjs/common";
+import { ProblemDetails } from "../core/abstract-http.exception.js";
+import type { ILoggerService } from "./http-exception.filter.js";
 
 /**
  * 全局异常过滤器
@@ -96,7 +96,7 @@ export class AnyExceptionFilter implements ExceptionFilter {
   ) {
     // 如果未指定，根据环境变量判断
     if (this.isProduction === undefined) {
-      this.isProduction = process.env.NODE_ENV === 'production';
+      this.isProduction = process.env.NODE_ENV === "production";
     }
   }
 
@@ -115,34 +115,34 @@ export class AnyExceptionFilter implements ExceptionFilter {
 
     // 确定状态码
     let status = 500;
-    let errorCode = 'INTERNAL_SERVER_ERROR';
-    let title = '服务器内部错误';
-    let detail = '处理请求时发生未预期的错误';
+    let errorCode = "INTERNAL_SERVER_ERROR";
+    let title = "服务器内部错误";
+    let detail = "处理请求时发生未预期的错误";
 
     // 如果是 NestJS 内置 HttpException，保留其状态码
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
 
-      if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+      if (typeof exceptionResponse === "object" && exceptionResponse !== null) {
         const resp = exceptionResponse as any;
         title = resp.error || resp.message || title;
         detail = Array.isArray(resp.message)
-          ? resp.message.join(', ')
+          ? resp.message.join(", ")
           : resp.message || detail;
-      } else if (typeof exceptionResponse === 'string') {
+      } else if (typeof exceptionResponse === "string") {
         detail = exceptionResponse;
       }
     }
 
     // 构造 RFC7807 格式响应
     const problemDetails: ProblemDetails = {
-      type: 'https://docs.hl8.com/errors#INTERNAL_SERVER_ERROR',
+      type: "https://docs.hl8.com/errors#INTERNAL_SERVER_ERROR",
       title,
       detail: this.isProduction ? detail : this.getDetailedError(exception),
       status,
       errorCode,
-      instance: request.id || request.headers?.['x-request-id'],
+      instance: request.id || request.headers?.["x-request-id"],
     };
 
     // 记录日志
@@ -151,7 +151,7 @@ export class AnyExceptionFilter implements ExceptionFilter {
     // 发送响应（Fastify 使用 .code() 方法）
     response
       .code(status)
-      .header('Content-Type', 'application/problem+json; charset=utf-8')
+      .header("Content-Type", "application/problem+json; charset=utf-8")
       .send(problemDetails);
   }
 
@@ -168,7 +168,7 @@ export class AnyExceptionFilter implements ExceptionFilter {
       return `${exception.message}\n\n堆栈追踪:\n${exception.stack}`;
     }
 
-    if (typeof exception === 'string') {
+    if (typeof exception === "string") {
       return exception;
     }
 
@@ -196,11 +196,11 @@ export class AnyExceptionFilter implements ExceptionFilter {
     const logContext = {
       exception: problemDetails,
       request: {
-        id: request.id || request.headers?.['x-request-id'],
+        id: request.id || request.headers?.["x-request-id"],
         method: request.method,
         url: request.url,
         ip: request.ip,
-        userAgent: request.headers?.['user-agent'],
+        userAgent: request.headers?.["user-agent"],
       },
       exceptionType:
         exception instanceof Error

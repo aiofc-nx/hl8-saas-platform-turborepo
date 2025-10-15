@@ -4,7 +4,7 @@
  * @description 测试 EventHandler 装饰器的功能
  * @since 1.0.0
  */
-import 'reflect-metadata';
+import "reflect-metadata";
 import {
   EventHandler,
   isEventHandler,
@@ -13,10 +13,10 @@ import {
   supportsEventType,
   getEventHandlerMetadata,
   EventHandlerClass,
-} from './event-handler.decorator';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
-import { IEventHandler } from '../../application/cqrs/events/base/event-handler.interface';
-import { EntityId } from '../../domain/value-objects/entity-id';
+} from "./event-handler.decorator";
+import { BaseDomainEvent } from "../../domain/events/base/base-domain-event";
+import { IEventHandler } from "../../application/cqrs/events/base/event-handler.interface";
+import { EntityId } from "../../domain/value-objects/entity-id";
 
 // 测试用的事件类
 class TestEvent extends BaseDomainEvent {
@@ -24,13 +24,13 @@ class TestEvent extends BaseDomainEvent {
     aggregateId: EntityId,
     aggregateVersion: number,
     tenantId: EntityId,
-    public readonly testEventData: { message: string }
+    public readonly testEventData: { message: string },
   ) {
     super(aggregateId, aggregateVersion, tenantId);
   }
 
   get eventType(): string {
-    return 'TestEvent';
+    return "TestEvent";
   }
 
   override get eventData(): Record<string, unknown> {
@@ -47,7 +47,7 @@ class TestEventHandlerWithoutDecorator implements IEventHandler<TestEvent> {
   }
 
   getSupportedEventType(): string {
-    return 'TestEvent';
+    return "TestEvent";
   }
 
   getPriority(): number {
@@ -73,7 +73,7 @@ class TestEventHandlerWithoutDecorator implements IEventHandler<TestEvent> {
   shouldRetry(
     _event: TestEvent,
     _error: Error,
-    _attemptCount: number
+    _attemptCount: number,
   ): boolean {
     return false;
   }
@@ -113,14 +113,14 @@ class TestEventHandlerWithoutDecorator implements IEventHandler<TestEvent> {
 
 // 测试用的事件处理器类（使用基础装饰器）
 // @ts-expect-error - TypeScript 装饰器签名误报
-@EventHandler('TestEvent')
+@EventHandler("TestEvent")
 class BasicTestEventHandler implements IEventHandler<TestEvent> {
   async handle(_event: TestEvent): Promise<void> {
     console.log(`Handling event: ${_event.testEventData.message}`);
   }
 
   getSupportedEventType(): string {
-    return 'TestEvent';
+    return "TestEvent";
   }
 
   getPriority(): number {
@@ -146,7 +146,7 @@ class BasicTestEventHandler implements IEventHandler<TestEvent> {
   shouldRetry(
     _event: TestEvent,
     _error: Error,
-    _attemptCount: number
+    _attemptCount: number,
   ): boolean {
     return false;
   }
@@ -186,7 +186,7 @@ class BasicTestEventHandler implements IEventHandler<TestEvent> {
 
 // 测试用的事件处理器类（使用高级装饰器）
 // @ts-expect-error - TypeScript 装饰器签名误报
-@EventHandler('AdvancedTestEvent', {
+@EventHandler("AdvancedTestEvent", {
   priority: 10,
   timeout: 5000,
   retry: {
@@ -195,21 +195,21 @@ class BasicTestEventHandler implements IEventHandler<TestEvent> {
     backoffMultiplier: 1.5,
   },
   multiTenant: {
-    tenantResolver: async (_context: unknown): Promise<string> => 'test-tenant',
+    tenantResolver: async (_context: unknown): Promise<string> => "test-tenant",
   },
   performanceMonitor: {
     thresholds: {
       warning: 1000,
       error: 5000,
     },
-    metrics: ['processing_time', 'event_count'],
+    metrics: ["processing_time", "event_count"],
   },
   enableLogging: true,
   enableAudit: true,
   enablePerformanceMonitor: true,
   enableIdempotency: true,
   enableDeadLetterQueue: true,
-  orderingKey: 'aggregateId',
+  orderingKey: "aggregateId",
   eventFilter: (event) => event !== null && event !== undefined,
   customConfig: {
     batchSize: 10,
@@ -218,11 +218,11 @@ class BasicTestEventHandler implements IEventHandler<TestEvent> {
 })
 class AdvancedTestEventHandler implements IEventHandler<TestEvent> {
   async handle(event: TestEvent): Promise<void> {
-    console.log(`Advanced handling event: ${event.eventData['message']}`);
+    console.log(`Advanced handling event: ${event.eventData["message"]}`);
   }
 
   getSupportedEventType(): string {
-    return 'AdvancedTestEvent';
+    return "AdvancedTestEvent";
   }
 
   getPriority(): number {
@@ -248,7 +248,7 @@ class AdvancedTestEventHandler implements IEventHandler<TestEvent> {
   shouldRetry(
     _event: TestEvent,
     _error: Error,
-    _attemptCount: number
+    _attemptCount: number,
   ): boolean {
     return _attemptCount < 5;
   }
@@ -291,76 +291,76 @@ class InvalidEventHandler {
   // 缺少 handle 方法
 }
 
-describe('EventHandler装饰器', () => {
-  describe('基础装饰器功能', () => {
-    it('应该正确标记事件处理器类', () => {
+describe("EventHandler装饰器", () => {
+  describe("基础装饰器功能", () => {
+    it("应该正确标记事件处理器类", () => {
       expect(isEventHandler(BasicTestEventHandler)).toBe(true);
       expect(isEventHandler(TestEventHandlerWithoutDecorator)).toBe(false);
     });
 
-    it('应该正确设置事件类型', () => {
-      expect(getEventType(BasicTestEventHandler)).toBe('TestEvent');
+    it("应该正确设置事件类型", () => {
+      expect(getEventType(BasicTestEventHandler)).toBe("TestEvent");
       expect(getEventType(TestEventHandlerWithoutDecorator)).toBeUndefined();
     });
 
-    it('应该正确设置静态属性', () => {
+    it("应该正确设置静态属性", () => {
       expect(
-        (BasicTestEventHandler as unknown as { eventType: string }).eventType
-      ).toBe('TestEvent');
+        (BasicTestEventHandler as unknown as { eventType: string }).eventType,
+      ).toBe("TestEvent");
       expect(
-        (BasicTestEventHandler as unknown as { priority: number }).priority
+        (BasicTestEventHandler as unknown as { priority: number }).priority,
       ).toBe(0);
       expect(
         typeof (BasicTestEventHandler as unknown as { supports: unknown })
-          .supports
-      ).toBe('function');
+          .supports,
+      ).toBe("function");
       expect(
         typeof (BasicTestEventHandler as unknown as { getMetadata: unknown })
-          .getMetadata
-      ).toBe('function');
+          .getMetadata,
+      ).toBe("function");
     });
 
-    it('应该正确检查事件类型支持', () => {
+    it("应该正确检查事件类型支持", () => {
       expect(
         (
           BasicTestEventHandler as unknown as {
             supports: (type: string) => boolean;
           }
-        ).supports('TestEvent')
+        ).supports("TestEvent"),
       ).toBe(true);
       expect(
         (
           BasicTestEventHandler as unknown as {
             supports: (type: string) => boolean;
           }
-        ).supports('OtherEvent')
+        ).supports("OtherEvent"),
       ).toBe(false);
     });
 
-    it('应该正确获取元数据', () => {
+    it("应该正确获取元数据", () => {
       const metadata = (
         BasicTestEventHandler as unknown as {
           getMetadata: () => { eventType: string; priority: number };
         }
       ).getMetadata();
       expect(metadata).toBeDefined();
-      expect(metadata.eventType).toBe('TestEvent');
+      expect(metadata.eventType).toBe("TestEvent");
       expect(metadata.priority).toBe(0);
     });
   });
 
-  describe('高级装饰器功能', () => {
-    it('应该正确设置优先级', () => {
+  describe("高级装饰器功能", () => {
+    it("应该正确设置优先级", () => {
       expect(getEventHandlerPriority(AdvancedTestEventHandler)).toBe(10);
       expect(
-        (AdvancedTestEventHandler as unknown as { priority: number }).priority
+        (AdvancedTestEventHandler as unknown as { priority: number }).priority,
       ).toBe(10);
     });
 
-    it('应该正确设置完整配置', () => {
+    it("应该正确设置完整配置", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
       expect(metadata).toBeDefined();
-      expect(metadata?.eventType).toBe('AdvancedTestEvent');
+      expect(metadata?.eventType).toBe("AdvancedTestEvent");
       expect(metadata?.priority).toBe(10);
       expect(metadata?.timeout).toBe(5000);
       expect(metadata?.retry).toBeDefined();
@@ -371,11 +371,11 @@ describe('EventHandler装饰器', () => {
       expect(metadata?.enablePerformanceMonitor).toBe(true);
       expect(metadata?.enableIdempotency).toBe(true);
       expect(metadata?.enableDeadLetterQueue).toBe(true);
-      expect(metadata?.orderingKey).toBe('aggregateId');
+      expect(metadata?.orderingKey).toBe("aggregateId");
       expect(metadata?.customConfig).toBeDefined();
     });
 
-    it('应该正确设置重试配置', () => {
+    it("应该正确设置重试配置", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
       const retry = metadata?.retry;
       expect(retry?.maxRetries).toBe(5);
@@ -383,13 +383,13 @@ describe('EventHandler装饰器', () => {
       expect(retry?.backoffMultiplier).toBe(1.5);
     });
 
-    it('应该正确设置多租户配置', () => {
+    it("应该正确设置多租户配置", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
       const multiTenant = metadata?.multiTenant;
-      expect(typeof multiTenant?.tenantResolver).toBe('function');
+      expect(typeof multiTenant?.tenantResolver).toBe("function");
     });
 
-    it('应该正确设置性能监控配置', () => {
+    it("应该正确设置性能监控配置", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
       const performanceMonitor = metadata?.performanceMonitor;
       expect(performanceMonitor?.thresholds).toEqual({
@@ -397,15 +397,15 @@ describe('EventHandler装饰器', () => {
         error: 5000,
       });
       expect(performanceMonitor?.metrics).toEqual([
-        'processing_time',
-        'event_count',
+        "processing_time",
+        "event_count",
       ]);
     });
 
-    it('应该正确设置事件过滤器', () => {
+    it("应该正确设置事件过滤器", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
       const eventFilter = metadata?.eventFilter;
-      expect(typeof eventFilter).toBe('function');
+      expect(typeof eventFilter).toBe("function");
 
       if (eventFilter) {
         expect(eventFilter({})).toBe(true);
@@ -414,65 +414,65 @@ describe('EventHandler装饰器', () => {
       }
     });
 
-    it('应该正确设置自定义配置', () => {
+    it("应该正确设置自定义配置", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
       const customConfig = metadata?.customConfig;
-      expect(customConfig?.['batchSize']).toBe(10);
-      expect(customConfig?.['enableBatching']).toBe(true);
+      expect(customConfig?.["batchSize"]).toBe(10);
+      expect(customConfig?.["enableBatching"]).toBe(true);
     });
   });
 
-  describe('工具函数', () => {
-    it('supportsEventType 应该正确检查事件类型支持', () => {
-      expect(supportsEventType(BasicTestEventHandler, 'TestEvent')).toBe(true);
-      expect(supportsEventType(BasicTestEventHandler, 'OtherEvent')).toBe(
-        false
+  describe("工具函数", () => {
+    it("supportsEventType 应该正确检查事件类型支持", () => {
+      expect(supportsEventType(BasicTestEventHandler, "TestEvent")).toBe(true);
+      expect(supportsEventType(BasicTestEventHandler, "OtherEvent")).toBe(
+        false,
       );
       expect(
-        supportsEventType(AdvancedTestEventHandler, 'AdvancedTestEvent')
+        supportsEventType(AdvancedTestEventHandler, "AdvancedTestEvent"),
       ).toBe(true);
-      expect(supportsEventType(AdvancedTestEventHandler, 'TestEvent')).toBe(
-        false
+      expect(supportsEventType(AdvancedTestEventHandler, "TestEvent")).toBe(
+        false,
       );
     });
 
-    it('应该正确处理未标记的类', () => {
+    it("应该正确处理未标记的类", () => {
       expect(isEventHandler(TestEventHandlerWithoutDecorator)).toBe(false);
       expect(getEventType(TestEventHandlerWithoutDecorator)).toBeUndefined();
       expect(
-        getEventHandlerPriority(TestEventHandlerWithoutDecorator)
+        getEventHandlerPriority(TestEventHandlerWithoutDecorator),
       ).toBeUndefined();
       expect(
-        supportsEventType(TestEventHandlerWithoutDecorator, 'TestEvent')
+        supportsEventType(TestEventHandlerWithoutDecorator, "TestEvent"),
       ).toBe(false);
       expect(
-        getEventHandlerMetadata(TestEventHandlerWithoutDecorator)
+        getEventHandlerMetadata(TestEventHandlerWithoutDecorator),
       ).toBeUndefined();
     });
   });
 
-  describe('错误处理', () => {
-    it('应该拒绝没有 handle 方法的类', () => {
+  describe("错误处理", () => {
+    it("应该拒绝没有 handle 方法的类", () => {
       expect(() => {
         // @ts-expect-error - TypeScript 装饰器签名误报
-        @EventHandler('InvalidEvent')
+        @EventHandler("InvalidEvent")
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         class TestInvalidHandlerClass extends InvalidEventHandler {}
       }).toThrow(
-        'Event handler TestInvalidHandlerClass must implement handle method'
+        "Event handler TestInvalidHandlerClass must implement handle method",
       );
     });
 
-    it('应该处理空的选项对象', () => {
+    it("应该处理空的选项对象", () => {
       // @ts-expect-error - TypeScript 装饰器签名误报
-      @EventHandler('EmptyOptionsEvent', {})
+      @EventHandler("EmptyOptionsEvent", {})
       class EmptyOptionsHandler implements IEventHandler<TestEvent> {
         async handle(_event: TestEvent): Promise<void> {
           console.log(`Handling event: ${_event.testEventData.message}`);
         }
 
         getSupportedEventType(): string {
-          return 'EmptyOptionsEvent';
+          return "EmptyOptionsEvent";
         }
 
         getPriority(): number {
@@ -498,7 +498,7 @@ describe('EventHandler装饰器', () => {
         shouldRetry(
           _event: TestEvent,
           _error: Error,
-          _attemptCount: number
+          _attemptCount: number,
         ): boolean {
           return false;
         }
@@ -537,24 +537,24 @@ describe('EventHandler装饰器', () => {
       }
 
       expect(isEventHandler(EmptyOptionsHandler)).toBe(true);
-      expect(getEventType(EmptyOptionsHandler)).toBe('EmptyOptionsEvent');
+      expect(getEventType(EmptyOptionsHandler)).toBe("EmptyOptionsEvent");
       expect(getEventHandlerPriority(EmptyOptionsHandler)).toBe(0);
     });
   });
 
-  describe('边界情况', () => {
-    it('应该处理特殊字符的事件类型', () => {
+  describe("边界情况", () => {
+    it("应该处理特殊字符的事件类型", () => {
       // @ts-expect-error - TypeScript 装饰器签名误报
-      @EventHandler('Special-Event_Type.123')
+      @EventHandler("Special-Event_Type.123")
       class SpecialEventHandler implements IEventHandler<TestEvent> {
         async handle(_event: TestEvent): Promise<void> {
           console.log(
-            `Handling special event: ${_event.testEventData.message}`
+            `Handling special event: ${_event.testEventData.message}`,
           );
         }
 
         getSupportedEventType(): string {
-          return 'Special-Event_Type.123';
+          return "Special-Event_Type.123";
         }
 
         getPriority(): number {
@@ -580,7 +580,7 @@ describe('EventHandler装饰器', () => {
         shouldRetry(
           _event: TestEvent,
           _error: Error,
-          _attemptCount: number
+          _attemptCount: number,
         ): boolean {
           return false;
         }
@@ -618,22 +618,22 @@ describe('EventHandler装饰器', () => {
         }
       }
 
-      expect(getEventType(SpecialEventHandler)).toBe('Special-Event_Type.123');
+      expect(getEventType(SpecialEventHandler)).toBe("Special-Event_Type.123");
       expect(
-        supportsEventType(SpecialEventHandler, 'Special-Event_Type.123')
+        supportsEventType(SpecialEventHandler, "Special-Event_Type.123"),
       ).toBe(true);
     });
 
-    it('应该处理负数优先级', () => {
+    it("应该处理负数优先级", () => {
       // @ts-expect-error - TypeScript 装饰器签名误报
-      @EventHandler('NegativePriorityEvent', { priority: -5 })
+      @EventHandler("NegativePriorityEvent", { priority: -5 })
       class NegativePriorityHandler implements IEventHandler<TestEvent> {
         async handle(_event: TestEvent): Promise<void> {
           console.log(`Handling event: ${_event.testEventData.message}`);
         }
 
         getSupportedEventType(): string {
-          return 'NegativePriorityEvent';
+          return "NegativePriorityEvent";
         }
 
         getPriority(): number {
@@ -659,7 +659,7 @@ describe('EventHandler装饰器', () => {
         shouldRetry(
           _event: TestEvent,
           _error: Error,
-          _attemptCount: number
+          _attemptCount: number,
         ): boolean {
           return false;
         }
@@ -699,13 +699,13 @@ describe('EventHandler装饰器', () => {
 
       expect(getEventHandlerPriority(NegativePriorityHandler)).toBe(-5);
       expect(
-        (NegativePriorityHandler as unknown as { priority: number }).priority
+        (NegativePriorityHandler as unknown as { priority: number }).priority,
       ).toBe(-5);
     });
 
-    it('应该处理大数值配置', () => {
+    it("应该处理大数值配置", () => {
       // @ts-expect-error - TypeScript 装饰器签名误报
-      @EventHandler('LargeNumbersEvent', {
+      @EventHandler("LargeNumbersEvent", {
         priority: Number.MAX_SAFE_INTEGER,
         timeout: Number.MAX_SAFE_INTEGER,
       })
@@ -715,7 +715,7 @@ describe('EventHandler装饰器', () => {
         }
 
         getSupportedEventType(): string {
-          return 'LargeNumbersEvent';
+          return "LargeNumbersEvent";
         }
 
         getPriority(): number {
@@ -741,7 +741,7 @@ describe('EventHandler装饰器', () => {
         shouldRetry(
           _event: TestEvent,
           _error: Error,
-          _attemptCount: number
+          _attemptCount: number,
         ): boolean {
           return false;
         }
@@ -784,26 +784,26 @@ describe('EventHandler装饰器', () => {
       expect(metadata?.timeout).toBe(Number.MAX_SAFE_INTEGER);
     });
 
-    it('应该处理复杂的事件过滤器', () => {
+    it("应该处理复杂的事件过滤器", () => {
       // @ts-expect-error - TypeScript 装饰器签名误报
-      @EventHandler('ComplexFilterEvent', {
+      @EventHandler("ComplexFilterEvent", {
         eventFilter: (event) => {
           if (!event) return false;
-          if (typeof event !== 'object') return false;
+          if (typeof event !== "object") return false;
           return (
-            'eventType' in event && event.eventType === 'ComplexFilterEvent'
+            "eventType" in event && event.eventType === "ComplexFilterEvent"
           );
         },
       })
       class ComplexFilterHandler implements IEventHandler<TestEvent> {
         async handle(_event: TestEvent): Promise<void> {
           console.log(
-            `Handling filtered event: ${_event.testEventData.message}`
+            `Handling filtered event: ${_event.testEventData.message}`,
           );
         }
 
         getSupportedEventType(): string {
-          return 'ComplexFilterEvent';
+          return "ComplexFilterEvent";
         }
 
         getPriority(): number {
@@ -829,7 +829,7 @@ describe('EventHandler装饰器', () => {
         shouldRetry(
           _event: TestEvent,
           _error: Error,
-          _attemptCount: number
+          _attemptCount: number,
         ): boolean {
           return false;
         }
@@ -869,41 +869,42 @@ describe('EventHandler装饰器', () => {
 
       const metadata = getEventHandlerMetadata(ComplexFilterHandler);
       const eventFilter = metadata?.eventFilter;
-      expect(typeof eventFilter).toBe('function');
+      expect(typeof eventFilter).toBe("function");
 
       if (eventFilter) {
         expect(eventFilter(null)).toBe(false);
         expect(eventFilter(undefined)).toBe(false);
-        expect(eventFilter('string')).toBe(false);
-        expect(eventFilter({ eventType: 'ComplexFilterEvent' })).toBe(true);
-        expect(eventFilter({ eventType: 'OtherEvent' })).toBe(false);
+        expect(eventFilter("string")).toBe(false);
+        expect(eventFilter({ eventType: "ComplexFilterEvent" })).toBe(true);
+        expect(eventFilter({ eventType: "OtherEvent" })).toBe(false);
         expect(eventFilter({})).toBe(false);
       }
     });
   });
 
-  describe('类型检查', () => {
-    it('应该正确定义 EventHandlerClass 类型', () => {
+  describe("类型检查", () => {
+    it("应该正确定义 EventHandlerClass 类型", () => {
       const handlerClass =
         BasicTestEventHandler as unknown as EventHandlerClass<TestEvent>;
 
       expect((handlerClass as unknown as { eventType: string }).eventType).toBe(
-        'TestEvent'
+        "TestEvent",
       );
       expect((handlerClass as unknown as { priority: number }).priority).toBe(
-        0
+        0,
       );
       expect(
-        typeof (handlerClass as unknown as { supports: unknown }).supports
-      ).toBe('function');
+        typeof (handlerClass as unknown as { supports: unknown }).supports,
+      ).toBe("function");
       expect(
-        typeof (handlerClass as unknown as { getMetadata: unknown }).getMetadata
-      ).toBe('function');
+        typeof (handlerClass as unknown as { getMetadata: unknown })
+          .getMetadata,
+      ).toBe("function");
     });
 
-    it('应该支持泛型事件类型', () => {
+    it("应该支持泛型事件类型", () => {
       // @ts-expect-error - TypeScript 装饰器签名误报
-      @EventHandler('GenericEvent')
+      @EventHandler("GenericEvent")
       class GenericEventHandler<T extends BaseDomainEvent>
         implements IEventHandler<T>
       {
@@ -912,7 +913,7 @@ describe('EventHandler装饰器', () => {
         }
 
         getSupportedEventType(): string {
-          return 'GenericEvent';
+          return "GenericEvent";
         }
 
         getPriority(): number {
@@ -973,29 +974,29 @@ describe('EventHandler装饰器', () => {
       }
 
       expect(isEventHandler(GenericEventHandler)).toBe(true);
-      expect(getEventType(GenericEventHandler)).toBe('GenericEvent');
+      expect(getEventType(GenericEventHandler)).toBe("GenericEvent");
     });
   });
 
-  describe('事件处理特性测试', () => {
-    it('应该正确处理幂等性配置', () => {
+  describe("事件处理特性测试", () => {
+    it("应该正确处理幂等性配置", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
       expect(metadata?.enableIdempotency).toBe(true);
     });
 
-    it('应该正确处理死信队列配置', () => {
+    it("应该正确处理死信队列配置", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
       expect(metadata?.enableDeadLetterQueue).toBe(true);
     });
 
-    it('应该正确处理排序键配置', () => {
+    it("应该正确处理排序键配置", () => {
       const metadata = getEventHandlerMetadata(AdvancedTestEventHandler);
-      expect(metadata?.orderingKey).toBe('aggregateId');
+      expect(metadata?.orderingKey).toBe("aggregateId");
     });
 
-    it('应该正确处理批量处理配置', () => {
+    it("应该正确处理批量处理配置", () => {
       // @ts-expect-error - TypeScript 装饰器签名误报
-      @EventHandler('BatchEvent', {
+      @EventHandler("BatchEvent", {
         customConfig: {
           enableBatching: true,
           batchSize: 50,
@@ -1008,7 +1009,7 @@ describe('EventHandler装饰器', () => {
         }
 
         getSupportedEventType(): string {
-          return 'BatchEvent';
+          return "BatchEvent";
         }
 
         getPriority(): number {
@@ -1034,7 +1035,7 @@ describe('EventHandler装饰器', () => {
         shouldRetry(
           _event: TestEvent,
           _error: Error,
-          _attemptCount: number
+          _attemptCount: number,
         ): boolean {
           return false;
         }
@@ -1074,9 +1075,9 @@ describe('EventHandler装饰器', () => {
 
       const metadata = getEventHandlerMetadata(BatchEventHandler);
       const customConfig = metadata?.customConfig;
-      expect(customConfig?.['enableBatching']).toBe(true);
-      expect(customConfig?.['batchSize']).toBe(50);
-      expect(customConfig?.['batchTimeout']).toBe(5000);
+      expect(customConfig?.["enableBatching"]).toBe(true);
+      expect(customConfig?.["batchSize"]).toBe(50);
+      expect(customConfig?.["batchTimeout"]).toBe(5000);
     });
   });
 });

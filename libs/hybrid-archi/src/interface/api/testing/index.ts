@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const API_TESTING = 'API Testing System';
+export const API_TESTING = "API Testing System";

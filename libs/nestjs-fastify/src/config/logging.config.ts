@@ -59,7 +59,7 @@
  * @since 0.1.0
  */
 
-import { IsBoolean, IsIn, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsIn, IsOptional, IsString } from "class-validator";
 
 /**
  * 日志级别类型
@@ -67,13 +67,13 @@ import { IsBoolean, IsIn, IsOptional, IsString } from 'class-validator';
  * @description 定义支持的日志级别
  */
 export type LogLevel =
-  | 'fatal'
-  | 'error'
-  | 'warn'
-  | 'info'
-  | 'debug'
-  | 'trace'
-  | 'silent';
+  | "fatal"
+  | "error"
+  | "warn"
+  | "info"
+  | "debug"
+  | "trace"
+  | "silent";
 
 /**
  * 日志配置类
@@ -95,9 +95,9 @@ export class LoggingConfig {
    *
    * @default 'info'
    */
-  @IsIn(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
+  @IsIn(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
   @IsOptional()
-  level: LogLevel = 'info';
+  level: LogLevel = "info";
 
   /**
    * 是否使用美化输出

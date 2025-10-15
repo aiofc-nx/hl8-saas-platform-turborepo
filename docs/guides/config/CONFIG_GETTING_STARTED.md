@@ -24,8 +24,8 @@ CACHING__REDIS__PORT=6379
 ### 步骤 2：在服务中注入配置
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { AppConfig } from './config/app.config.js';
+import { Injectable } from "@nestjs/common";
+import { AppConfig } from "./config/app.config.js";
 
 @Injectable()
 export class MyService {

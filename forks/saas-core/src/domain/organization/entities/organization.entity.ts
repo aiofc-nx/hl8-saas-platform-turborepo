@@ -5,10 +5,10 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { OrganizationStatus } from '../value-objects/organization-status.vo';
-import { PinoLogger } from '@hl8/logger';
-import { OrganizationType } from '../value-objects/organization-type.vo';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { OrganizationStatus } from "../value-objects/organization-status.vo";
+import { PinoLogger } from "@hl8/logger";
+import { OrganizationType } from "../value-objects/organization-type.vo";
 
 export class Organization extends BaseEntity {
   constructor(
@@ -94,4 +94,3 @@ export class Organization extends BaseEntity {
     };
   }
 }
-

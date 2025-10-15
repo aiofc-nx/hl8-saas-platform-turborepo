@@ -41,15 +41,15 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 import {
   ILoggerService,
   IUser,
   IUserContext,
   IRole,
   IPermission,
-} from '../../shared/interfaces';
+} from "../../shared/interfaces";
 
 /**
  * JWT服务接口
@@ -70,7 +70,7 @@ export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
-    private readonly logger: ILoggerService
+    private readonly logger: ILoggerService,
   ) {}
 
   /**
@@ -84,13 +84,13 @@ export class JwtAuthGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const traceId = request.headers['x-trace-id'] || this.generateTraceId();
+    const traceId = request.headers["x-trace-id"] || this.generateTraceId();
 
     try {
       // 1. 提取JWT令牌
       const token = this.extractTokenFromHeader(request);
       if (!token) {
-        throw new UnauthorizedException('缺少认证令牌');
+        throw new UnauthorizedException("缺少认证令牌");
       }
 
       // 2. 验证JWT令牌
@@ -99,28 +99,28 @@ export class JwtAuthGuard implements CanActivate {
       // 3. 验证用户状态
       const user = await this.validateUser((payload as { sub: string }).sub);
       if (!user || !user.isActive()) {
-        throw new UnauthorizedException('用户账户无效或已禁用');
+        throw new UnauthorizedException("用户账户无效或已禁用");
       }
 
       // 4. 设置请求上下文
       request.user = this.createUserContext(user);
       request.traceId = traceId;
 
-      this.logger.debug('JWT认证成功', {
+      this.logger.debug("JWT认证成功", {
         userId: user.getId().getValue(),
         traceId,
       });
 
       return true;
     } catch (error) {
-      this.logger.warn('JWT认证失败', {
+      this.logger.warn("JWT认证失败", {
         traceId,
         error: error instanceof Error ? error.message : String(error),
-        userAgent: request.headers['user-agent'],
+        userAgent: request.headers["user-agent"],
         ip: request.ip,
       });
 
-      throw new UnauthorizedException('认证失败');
+      throw new UnauthorizedException("认证失败");
     }
   }
 
@@ -132,16 +132,18 @@ export class JwtAuthGuard implements CanActivate {
    * @param request - HTTP请求
    * @returns JWT令牌或null
    */
-  private extractTokenFromHeader(request: { headers: { authorization?: string } }): string | null {
+  private extractTokenFromHeader(request: {
+    headers: { authorization?: string };
+  }): string | null {
     const authHeader = request.headers.authorization;
 
     if (!authHeader) {
       return null;
     }
 
-    const [type, token] = authHeader.split(' ');
+    const [type, token] = authHeader.split(" ");
 
-    return type === 'Bearer' ? token : null;
+    return type === "Bearer" ? token : null;
   }
 
   /**

@@ -61,8 +61,8 @@
  * @since 1.0.0
  */
 
-import { IQuery } from '../base/query.interface';
-import { IQueryResult } from '../base/base-query';
+import { IQuery } from "../base/query.interface";
+import { IQueryResult } from "../base/base-query";
 
 /**
  * 查询处理器接口

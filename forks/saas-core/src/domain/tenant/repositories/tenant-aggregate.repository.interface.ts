@@ -36,10 +36,10 @@
  * @since 1.0.0
  */
 
-import { TenantAggregate } from '../aggregates/tenant.aggregate';
-import { TenantCode } from '../value-objects/tenant-code.vo';
-import { TenantDomain } from '../value-objects/tenant-domain.vo';
-import { EntityId } from '@hl8/hybrid-archi';
+import { TenantAggregate } from "../aggregates/tenant.aggregate";
+import { TenantCode } from "../value-objects/tenant-code.vo";
+import { TenantDomain } from "../value-objects/tenant-domain.vo";
+import { EntityId } from "@hl8/hybrid-archi";
 
 /**
  * 租户聚合根仓储接口
@@ -155,4 +155,3 @@ export interface ITenantAggregateRepository {
    */
   count(): Promise<number>;
 }
-

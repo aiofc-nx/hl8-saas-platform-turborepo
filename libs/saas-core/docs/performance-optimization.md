@@ -67,26 +67,30 @@
 const tenants = await this.em.find(TenantOrmEntity, {});
 for (const tenant of tenants) {
   const config = await this.em.findOne(TenantConfigurationOrmEntity, {
-    tenant: { id: tenant.id }
+    tenant: { id: tenant.id },
   });
 }
 
 // ✅ 使用 populate 预加载
-const tenants = await this.em.find(TenantOrmEntity, {}, {
-  populate: ['configuration'],
-});
+const tenants = await this.em.find(
+  TenantOrmEntity,
+  {},
+  {
+    populate: ["configuration"],
+  },
+);
 ```
 
 #### 2. 使用 QB（Query Builder）优化复杂查询
 
 ```typescript
 // 复杂查询使用 Query Builder
-const qb = this.em.createQueryBuilder(TenantOrmEntity, 't');
+const qb = this.em.createQueryBuilder(TenantOrmEntity, "t");
 const result = await qb
-  .select('*')
+  .select("*")
   .where({ status: TenantStatus.ACTIVE })
   .andWhere({ type: { $in: [TenantType.PROFESSIONAL, TenantType.ENTERPRISE] } })
-  .orderBy({ createdAt: 'DESC' })
+  .orderBy({ createdAt: "DESC" })
   .limit(20)
   .getResult();
 ```
@@ -120,14 +124,14 @@ export class TenantConfigCache {
   async get(tenantId: string) {
     const key = `tenant:${tenantId}:config`;
     const cached = await this.redis.get(key);
-    
+
     if (cached) {
       return JSON.parse(cached);
     }
 
     const config = await this.loadFromDatabase(tenantId);
-    await this.redis.set(key, JSON.stringify(config), 'EX', 3600);
-    
+    await this.redis.set(key, JSON.stringify(config), "EX", 3600);
+
     return config;
   }
 
@@ -145,14 +149,14 @@ export class UserAbilityCache {
   async get(userId: string) {
     const key = `user:${userId}:ability`;
     const cached = await this.redis.get(key);
-    
+
     if (cached) {
       return deserializeAbility(cached);
     }
 
     const ability = await this.buildAbility(userId);
-    await this.redis.set(key, serializeAbility(ability), 'EX', 300);
-    
+    await this.redis.set(key, serializeAbility(ability), "EX", 300);
+
     return ability;
   }
 }
@@ -164,8 +168,8 @@ export class UserAbilityCache {
 // mikro-orm.config.ts
 export default {
   pool: {
-    min: 10,           // 最小连接数
-    max: 50,           // 最大连接数
+    min: 10, // 最小连接数
+    max: 50, // 最大连接数
     acquireTimeoutMillis: 30000,
     idleTimeoutMillis: 30000,
   },
@@ -176,38 +180,38 @@ export default {
 
 基于我们的集成测试结果：
 
-| 操作 | 平均时间 | 备注 |
-|-----|---------|------|
-| 创建租户 | ~160ms | 包括配置创建 |
-| 查询租户（ID） | ~150ms | 使用主键索引 |
-| 查询租户（代码） | ~145ms | 使用唯一索引 |
-| 更新租户状态 | ~125ms | 简单更新操作 |
-| 批量查询（50条） | ~800ms | 分页查询 |
+| 操作             | 平均时间 | 备注         |
+| ---------------- | -------- | ------------ |
+| 创建租户         | ~160ms   | 包括配置创建 |
+| 查询租户（ID）   | ~150ms   | 使用主键索引 |
+| 查询租户（代码） | ~145ms   | 使用唯一索引 |
+| 更新租户状态     | ~125ms   | 简单更新操作 |
+| 批量查询（50条） | ~800ms   | 分页查询     |
 
 ## 🎯 性能优化清单
 
 ### 数据库层
 
-- [X] 主键字段使用 UUID
-- [X] 常用查询字段添加索引
-- [X] 复合索引覆盖常用组合查询
-- [X] 软删除字段添加索引
-- [X] 租户ID字段添加索引（多租户隔离）
+- [x] 主键字段使用 UUID
+- [x] 常用查询字段添加索引
+- [x] 复合索引覆盖常用组合查询
+- [x] 软删除字段添加索引
+- [x] 租户ID字段添加索引（多租户隔离）
 - [ ] 分区表（大数据量场景）
 - [ ] 读写分离（高并发场景）
 
 ### ORM 层
 
-- [X] 避免 N+1 查询（使用 populate）
-- [X] 批量操作优化
-- [X] 使用 Query Builder 处理复杂查询
-- [X] 连接池配置
+- [x] 避免 N+1 查询（使用 populate）
+- [x] 批量操作优化
+- [x] 使用 Query Builder 处理复杂查询
+- [x] 连接池配置
 - [ ] 二级缓存配置
 - [ ] 查询结果缓存
 
 ### 应用层
 
-- [X] 租户配置缓存
+- [x] 租户配置缓存
 - [ ] 用户权限缓存
 - [ ] 部门树结构缓存
 - [ ] 热点数据预加载
@@ -263,7 +267,7 @@ export class TenantService {
     await this.repository.save(tenant);
 
     // 异步：执行升级（通过队列）
-    await this.queue.add('tenant-upgrade', {
+    await this.queue.add("tenant-upgrade", {
       tenantId: id,
       newType: type,
     });

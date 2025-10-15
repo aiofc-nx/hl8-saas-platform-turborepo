@@ -20,13 +20,13 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { EntityId } from '@hl8/isolation-model';
-import { Username, Email, PhoneNumber } from '../value-objects/index.js';
-import type { IPureLogger } from '@hl8/pure-logger';
-import { User } from '../entities/user.entity.js';
-import { UserProfile } from '../entities/user-profile.entity.js';
-import { UserCredentials } from '../entities/user-credentials.entity.js';
+import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model";
+import { Username, Email, PhoneNumber } from "../value-objects/index.js";
+import type { IPureLogger } from "@hl8/pure-logger";
+import { User } from "../entities/user.entity.js";
+import { UserProfile } from "../entities/user-profile.entity.js";
+import { UserCredentials } from "../entities/user-credentials.entity.js";
 
 export class UserAggregate extends TenantAwareAggregateRoot {
   constructor(
@@ -77,7 +77,7 @@ export class UserAggregate extends TenantAwareAggregateRoot {
   public verifyEmail(updatedBy: string): void {
     this.ensureTenantContext();
     this._user.verifyEmail(updatedBy);
-    this.logTenantOperation('用户邮箱已验证', { userId: this.id.toString() });
+    this.logTenantOperation("用户邮箱已验证", { userId: this.id.toString() });
   }
 
   public authenticate(passwordHash: string): boolean {
@@ -91,9 +91,9 @@ export class UserAggregate extends TenantAwareAggregateRoot {
 
   public recordFailedLogin(): void {
     this._credentials.recordFailedLogin();
-    
+
     if (this._credentials.isLocked()) {
-      this._user.lock('登录失败次数过多', 'system');
+      this._user.lock("登录失败次数过多", "system");
     }
   }
 
@@ -106,4 +106,3 @@ export class UserAggregate extends TenantAwareAggregateRoot {
     };
   }
 }
-

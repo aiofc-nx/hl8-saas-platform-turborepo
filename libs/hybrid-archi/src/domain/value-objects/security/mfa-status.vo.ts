@@ -39,51 +39,51 @@
 export enum MfaStatus {
   /**
    * 未启用状态
-   * 
+   *
    * @description 用户尚未启用MFA
    * 此时用户只能使用密码进行认证
    */
-  DISABLED = 'DISABLED',
+  DISABLED = "DISABLED",
 
   /**
    * 等待设置状态
-   * 
+   *
    * @description MFA已开始设置但尚未完成
    * 用户需要完成MFA设置流程才能激活
    */
-  PENDING_SETUP = 'PENDING_SETUP',
+  PENDING_SETUP = "PENDING_SETUP",
 
   /**
    * 活跃状态
-   * 
+   *
    * @description MFA已激活并正常使用
    * 用户登录时需要提供MFA验证码
    */
-  ACTIVE = 'ACTIVE',
+  ACTIVE = "ACTIVE",
 
   /**
    * 暂停状态
-   * 
+   *
    * @description MFA被暂停使用
    * 通常由管理员操作，需要重新激活
    */
-  SUSPENDED = 'SUSPENDED',
+  SUSPENDED = "SUSPENDED",
 
   /**
    * 过期状态
-   * 
+   *
    * @description MFA已过期
    * 需要重新设置MFA才能继续使用
    */
-  EXPIRED = 'EXPIRED',
+  EXPIRED = "EXPIRED",
 
   /**
    * 失败状态
-   * 
+   *
    * @description MFA设置失败
    * 需要重新开始设置流程
    */
-  FAILED = 'FAILED'
+  FAILED = "FAILED",
 }
 
 /**
@@ -97,22 +97,30 @@ export enum MfaStatus {
 export class MfaStatusUtils {
   /**
    * 状态转换矩阵
-   * 
+   *
    * @description 定义允许的状态转换
    * 键为当前状态，值为可转换到的状态数组
    */
   private static readonly TRANSITION_MATRIX: Record<MfaStatus, MfaStatus[]> = {
     [MfaStatus.DISABLED]: [MfaStatus.PENDING_SETUP],
-    [MfaStatus.PENDING_SETUP]: [MfaStatus.ACTIVE, MfaStatus.FAILED, MfaStatus.DISABLED],
-    [MfaStatus.ACTIVE]: [MfaStatus.SUSPENDED, MfaStatus.EXPIRED, MfaStatus.DISABLED],
+    [MfaStatus.PENDING_SETUP]: [
+      MfaStatus.ACTIVE,
+      MfaStatus.FAILED,
+      MfaStatus.DISABLED,
+    ],
+    [MfaStatus.ACTIVE]: [
+      MfaStatus.SUSPENDED,
+      MfaStatus.EXPIRED,
+      MfaStatus.DISABLED,
+    ],
     [MfaStatus.SUSPENDED]: [MfaStatus.ACTIVE, MfaStatus.DISABLED],
     [MfaStatus.EXPIRED]: [MfaStatus.PENDING_SETUP, MfaStatus.DISABLED],
-    [MfaStatus.FAILED]: [MfaStatus.PENDING_SETUP, MfaStatus.DISABLED]
+    [MfaStatus.FAILED]: [MfaStatus.PENDING_SETUP, MfaStatus.DISABLED],
   };
 
   /**
    * 状态优先级定义
-   * 
+   *
    * @description 定义状态的优先级，用于状态比较
    * 数值越大，优先级越高
    */
@@ -122,7 +130,7 @@ export class MfaStatusUtils {
     [MfaStatus.FAILED]: 2,
     [MfaStatus.EXPIRED]: 3,
     [MfaStatus.SUSPENDED]: 4,
-    [MfaStatus.ACTIVE]: 5
+    [MfaStatus.ACTIVE]: 5,
   };
 
   /**
@@ -142,7 +150,10 @@ export class MfaStatusUtils {
    *
    * @since 1.0.0
    */
-  public static canTransition(fromStatus: MfaStatus, toStatus: MfaStatus): boolean {
+  public static canTransition(
+    fromStatus: MfaStatus,
+    toStatus: MfaStatus,
+  ): boolean {
     const allowedTransitions = this.TRANSITION_MATRIX[fromStatus];
     return allowedTransitions.includes(toStatus);
   }
@@ -284,10 +295,13 @@ export class MfaStatusUtils {
    *
    * @since 1.0.0
    */
-  public static comparePriority(status1: MfaStatus, status2: MfaStatus): number {
+  public static comparePriority(
+    status1: MfaStatus,
+    status2: MfaStatus,
+  ): number {
     const priority1 = this.STATUS_PRIORITIES[status1];
     const priority2 = this.STATUS_PRIORITIES[status2];
-    
+
     if (priority1 < priority2) return -1;
     if (priority1 > priority2) return 1;
     return 0;
@@ -311,12 +325,12 @@ export class MfaStatusUtils {
    */
   public static getDescription(status: MfaStatus): string {
     const descriptions: Record<MfaStatus, string> = {
-      [MfaStatus.DISABLED]: '未启用',
-      [MfaStatus.PENDING_SETUP]: '等待设置',
-      [MfaStatus.ACTIVE]: '已激活',
-      [MfaStatus.SUSPENDED]: '已暂停',
-      [MfaStatus.EXPIRED]: '已过期',
-      [MfaStatus.FAILED]: '设置失败'
+      [MfaStatus.DISABLED]: "未启用",
+      [MfaStatus.PENDING_SETUP]: "等待设置",
+      [MfaStatus.ACTIVE]: "已激活",
+      [MfaStatus.SUSPENDED]: "已暂停",
+      [MfaStatus.EXPIRED]: "已过期",
+      [MfaStatus.FAILED]: "设置失败",
     };
 
     return descriptions[status];
@@ -340,12 +354,18 @@ export class MfaStatusUtils {
    */
   public static getDetailedDescription(status: MfaStatus): string {
     const descriptions: Record<MfaStatus, string> = {
-      [MfaStatus.DISABLED]: '用户尚未启用MFA，此时用户只能使用密码进行认证。建议用户启用MFA以提高账户安全性。',
-      [MfaStatus.PENDING_SETUP]: 'MFA已开始设置但尚未完成，用户需要完成MFA设置流程才能激活。请按照提示完成设置。',
-      [MfaStatus.ACTIVE]: 'MFA已激活并正常使用，用户登录时需要提供MFA验证码。这是MFA的最佳使用状态。',
-      [MfaStatus.SUSPENDED]: 'MFA被暂停使用，通常由管理员操作。需要管理员重新激活才能继续使用MFA。',
-      [MfaStatus.EXPIRED]: 'MFA已过期，需要重新设置MFA才能继续使用。请重新开始MFA设置流程。',
-      [MfaStatus.FAILED]: 'MFA设置失败，需要重新开始设置流程。请检查设置过程中的错误信息。'
+      [MfaStatus.DISABLED]:
+        "用户尚未启用MFA，此时用户只能使用密码进行认证。建议用户启用MFA以提高账户安全性。",
+      [MfaStatus.PENDING_SETUP]:
+        "MFA已开始设置但尚未完成，用户需要完成MFA设置流程才能激活。请按照提示完成设置。",
+      [MfaStatus.ACTIVE]:
+        "MFA已激活并正常使用，用户登录时需要提供MFA验证码。这是MFA的最佳使用状态。",
+      [MfaStatus.SUSPENDED]:
+        "MFA被暂停使用，通常由管理员操作。需要管理员重新激活才能继续使用MFA。",
+      [MfaStatus.EXPIRED]:
+        "MFA已过期，需要重新设置MFA才能继续使用。请重新开始MFA设置流程。",
+      [MfaStatus.FAILED]:
+        "MFA设置失败，需要重新开始设置流程。请检查设置过程中的错误信息。",
     };
 
     return descriptions[status];
@@ -369,12 +389,12 @@ export class MfaStatusUtils {
    */
   public static getActionSuggestion(status: MfaStatus): string {
     const suggestions: Record<MfaStatus, string> = {
-      [MfaStatus.DISABLED]: '建议启用MFA以提高账户安全性',
-      [MfaStatus.PENDING_SETUP]: '请完成MFA设置流程',
-      [MfaStatus.ACTIVE]: 'MFA运行正常，无需操作',
-      [MfaStatus.SUSPENDED]: '请联系管理员重新激活MFA',
-      [MfaStatus.EXPIRED]: '请重新设置MFA',
-      [MfaStatus.FAILED]: '请重新开始MFA设置流程'
+      [MfaStatus.DISABLED]: "建议启用MFA以提高账户安全性",
+      [MfaStatus.PENDING_SETUP]: "请完成MFA设置流程",
+      [MfaStatus.ACTIVE]: "MFA运行正常，无需操作",
+      [MfaStatus.SUSPENDED]: "请联系管理员重新激活MFA",
+      [MfaStatus.EXPIRED]: "请重新设置MFA",
+      [MfaStatus.FAILED]: "请重新开始MFA设置流程",
     };
 
     return suggestions[status];
@@ -398,12 +418,12 @@ export class MfaStatusUtils {
    */
   public static getIconName(status: MfaStatus): string {
     const icons: Record<MfaStatus, string> = {
-      [MfaStatus.DISABLED]: 'x-circle',
-      [MfaStatus.PENDING_SETUP]: 'clock',
-      [MfaStatus.ACTIVE]: 'check-circle',
-      [MfaStatus.SUSPENDED]: 'pause-circle',
-      [MfaStatus.EXPIRED]: 'exclamation-triangle',
-      [MfaStatus.FAILED]: 'x-circle'
+      [MfaStatus.DISABLED]: "x-circle",
+      [MfaStatus.PENDING_SETUP]: "clock",
+      [MfaStatus.ACTIVE]: "check-circle",
+      [MfaStatus.SUSPENDED]: "pause-circle",
+      [MfaStatus.EXPIRED]: "exclamation-triangle",
+      [MfaStatus.FAILED]: "x-circle",
     };
 
     return icons[status];
@@ -425,14 +445,19 @@ export class MfaStatusUtils {
    *
    * @since 1.0.0
    */
-  public static getColorTheme(status: MfaStatus): 'success' | 'warning' | 'danger' | 'info' | 'secondary' {
-    const colors: Record<MfaStatus, 'success' | 'warning' | 'danger' | 'info' | 'secondary'> = {
-      [MfaStatus.DISABLED]: 'secondary',
-      [MfaStatus.PENDING_SETUP]: 'warning',
-      [MfaStatus.ACTIVE]: 'success',
-      [MfaStatus.SUSPENDED]: 'warning',
-      [MfaStatus.EXPIRED]: 'danger',
-      [MfaStatus.FAILED]: 'danger'
+  public static getColorTheme(
+    status: MfaStatus,
+  ): "success" | "warning" | "danger" | "info" | "secondary" {
+    const colors: Record<
+      MfaStatus,
+      "success" | "warning" | "danger" | "info" | "secondary"
+    > = {
+      [MfaStatus.DISABLED]: "secondary",
+      [MfaStatus.PENDING_SETUP]: "warning",
+      [MfaStatus.ACTIVE]: "success",
+      [MfaStatus.SUSPENDED]: "warning",
+      [MfaStatus.EXPIRED]: "danger",
+      [MfaStatus.FAILED]: "danger",
     };
 
     return colors[status];
@@ -490,7 +515,9 @@ export class MfaStatusUtils {
    * @since 1.0.0
    */
   public static getValidStatuses(): MfaStatus[] {
-    return this.getAllStatuses().filter(status => this.canAuthenticate(status));
+    return this.getAllStatuses().filter((status) =>
+      this.canAuthenticate(status),
+    );
   }
 
   /**
@@ -508,8 +535,8 @@ export class MfaStatusUtils {
    * @since 1.0.0
    */
   public static getActionRequiredStatuses(): MfaStatus[] {
-    return this.getAllStatuses().filter(status => 
-      this.needsSetup(status) || this.needsAdminAction(status)
+    return this.getAllStatuses().filter(
+      (status) => this.needsSetup(status) || this.needsAdminAction(status),
     );
   }
 }

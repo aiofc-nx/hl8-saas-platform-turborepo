@@ -47,11 +47,11 @@
  * 映射器类型枚举
  */
 export enum MapperType {
-  DOMAIN = 'domain',
-  AGGREGATE = 'aggregate',
-  VALUE_OBJECT = 'value_object',
-  DTO = 'dto',
-  EVENT = 'event',
+  DOMAIN = "domain",
+  AGGREGATE = "aggregate",
+  VALUE_OBJECT = "value_object",
+  DTO = "dto",
+  EVENT = "event",
 }
 
 /**
@@ -210,7 +210,7 @@ export interface IDtoMapperOptions {
 /**
  * 映射器元数据键
  */
-export const MAPPER_METADATA_KEY = Symbol('mapper');
+export const MAPPER_METADATA_KEY = Symbol("mapper");
 
 /**
  * 领域映射器装饰器
@@ -226,7 +226,7 @@ export function DomainMapper(options: IDomainMapperOptions): ClassDecorator {
       sourceType: options.domainType,
       targetType: options.persistenceType,
       description: options.description || `${options.domainType} 领域映射器`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       bidirectional: true,
       category: options.category,
       tags: options.tags,
@@ -252,7 +252,7 @@ export function AggregateMapper(options: IDomainMapperOptions): ClassDecorator {
       sourceType: options.domainType,
       targetType: options.persistenceType,
       description: options.description || `${options.domainType} 聚合根映射器`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       bidirectional: true,
       category: options.category,
       tags: options.tags,
@@ -281,7 +281,7 @@ export function ValueObjectMapper(
       targetType: options.primitiveType,
       description:
         options.description || `${options.valueObjectType} 值对象映射器`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       bidirectional: true,
     };
 
@@ -304,7 +304,7 @@ export function DtoMapper(options: IDtoMapperOptions): ClassDecorator {
       sourceType: options.domainType,
       targetType: options.dtoType,
       description: options.description || `${options.domainType} DTO映射器`,
-      version: options.version || '1.0.0',
+      version: options.version || "1.0.0",
       bidirectional: true,
     };
 

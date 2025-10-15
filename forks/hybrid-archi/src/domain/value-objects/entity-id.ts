@@ -5,4 +5,4 @@
  * @since 1.0.0
  */
 
-export { EntityId } from '@hl8/common';
+export { EntityId } from "@hl8/common";

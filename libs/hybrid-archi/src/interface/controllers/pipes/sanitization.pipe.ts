@@ -6,4 +6,4 @@
  */
 
 // 占位符文件
-export const SANITIZATION_PIPE = 'Sanitization Pipe';
+export const SANITIZATION_PIPE = "Sanitization Pipe";

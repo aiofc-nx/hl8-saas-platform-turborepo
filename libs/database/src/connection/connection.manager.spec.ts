@@ -4,13 +4,13 @@
  * @description 测试 ConnectionManager 的核心功能
  */
 
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { MikroORM } from '@mikro-orm/core';
-import { Test, TestingModule } from '@nestjs/testing';
-import { DatabaseConnectionException } from '../exceptions/database-connection.exception.js';
-import { ConnectionManager } from './connection.manager.js';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { MikroORM } from "@mikro-orm/core";
+import { Test, TestingModule } from "@nestjs/testing";
+import { DatabaseConnectionException } from "../exceptions/database-connection.exception.js";
+import { ConnectionManager } from "./connection.manager.js";
 
-describe('ConnectionManager', () => {
+describe("ConnectionManager", () => {
   let manager: ConnectionManager;
   let mockOrm: jest.Mocked<MikroORM>;
   let mockLogger: jest.Mocked<FastifyLoggerService>;
@@ -29,10 +29,10 @@ describe('ConnectionManager', () => {
       config: {
         get: jest.fn((key: string) => {
           const config: any = {
-            type: 'postgresql',
-            host: 'localhost',
+            type: "postgresql",
+            host: "localhost",
             port: 5432,
-            dbName: 'test_db',
+            dbName: "test_db",
           };
           return config[key];
         }),
@@ -56,21 +56,21 @@ describe('ConnectionManager', () => {
     manager = module.get<ConnectionManager>(ConnectionManager);
   });
 
-  describe('connect', () => {
-    it('应该成功建立连接', async () => {
+  describe("connect", () => {
+    it("应该成功建立连接", async () => {
       await manager.connect();
 
       expect(mockLogger.log).toHaveBeenCalledWith(
-        '数据库连接成功',
+        "数据库连接成功",
         expect.objectContaining({
-          host: 'localhost',
-          database: 'test_db',
+          host: "localhost",
+          database: "test_db",
         }),
       );
     });
 
-    it('应该在连接失败时抛出异常', async () => {
-      mockOrm.isConnected.mockRejectedValue(new Error('Connection failed'));
+    it("应该在连接失败时抛出异常", async () => {
+      mockOrm.isConnected.mockRejectedValue(new Error("Connection failed"));
 
       await expect(manager.connect()).rejects.toThrow(
         DatabaseConnectionException,
@@ -78,16 +78,16 @@ describe('ConnectionManager', () => {
     });
   });
 
-  describe('disconnect', () => {
-    it('应该优雅关闭连接', async () => {
+  describe("disconnect", () => {
+    it("应该优雅关闭连接", async () => {
       await manager.disconnect();
 
       expect(mockOrm.close).toHaveBeenCalledWith(true);
-      expect(mockLogger.log).toHaveBeenCalledWith('数据库连接已关闭');
+      expect(mockLogger.log).toHaveBeenCalledWith("数据库连接已关闭");
     });
 
-    it('应该处理关闭失败的情况', async () => {
-      mockOrm.close.mockRejectedValue(new Error('Close failed'));
+    it("应该处理关闭失败的情况", async () => {
+      mockOrm.close.mockRejectedValue(new Error("Close failed"));
 
       await expect(manager.disconnect()).rejects.toThrow(
         DatabaseConnectionException,
@@ -95,24 +95,24 @@ describe('ConnectionManager', () => {
     });
   });
 
-  describe('isConnected', () => {
-    it('应该返回连接状态', async () => {
+  describe("isConnected", () => {
+    it("应该返回连接状态", async () => {
       const connected = await manager.isConnected();
       expect(connected).toBe(true);
       expect(mockOrm.isConnected).toHaveBeenCalled();
     });
   });
 
-  describe('getConnectionInfo', () => {
-    it('应该返回连接信息', async () => {
+  describe("getConnectionInfo", () => {
+    it("应该返回连接信息", async () => {
       const info = await manager.getConnectionInfo();
 
-      expect(info).toHaveProperty('status');
-      expect(info).toHaveProperty('type');
-      expect(info).toHaveProperty('host');
-      expect(info).toHaveProperty('port');
-      expect(info).toHaveProperty('database');
-      expect(info).toHaveProperty('poolStats');
+      expect(info).toHaveProperty("status");
+      expect(info).toHaveProperty("type");
+      expect(info).toHaveProperty("host");
+      expect(info).toHaveProperty("port");
+      expect(info).toHaveProperty("database");
+      expect(info).toHaveProperty("poolStats");
     });
   });
 });

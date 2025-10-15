@@ -1,13 +1,13 @@
-import nextra from 'nextra';
+import nextra from "nextra";
 
 const withNextra = nextra({
   latex: true,
   defaultShowCopyCode: true,
-  contentDirBasePath: '/docs',
+  contentDirBasePath: "/docs",
 });
 
-const isProd = process.env.NODE_ENV === 'production';
-const basePath = '/nestjs-turbo';
+const isProd = process.env.NODE_ENV === "production";
+const basePath = "/nestjs-turbo";
 
 const nextConfig = {
   reactStrictMode: true,
@@ -16,7 +16,7 @@ const nextConfig = {
     assetPrefix: basePath,
     trailingSlash: true,
   }),
-  output: 'export',
+  output: "export",
   images: {
     unoptimized: true,
   },

@@ -2,7 +2,7 @@
  * 部门闭包表实体
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
 
 export class DepartmentClosure extends BaseEntity {
   constructor(
@@ -42,4 +42,3 @@ export class DepartmentClosure extends BaseEntity {
     return this._depth;
   }
 }
-

@@ -1,4 +1,4 @@
-import type { MethodDecoratorTarget } from '../types';
+import type { MethodDecoratorTarget } from "../types";
 
 /**
  * 缓存装饰器
@@ -74,7 +74,7 @@ export interface ICacheableOptions {
 /**
  * 缓存装饰器元数据键
  */
-export const CACHEABLE_METADATA_KEY = Symbol('cacheable');
+export const CACHEABLE_METADATA_KEY = Symbol("cacheable");
 
 /**
  * 缓存装饰器

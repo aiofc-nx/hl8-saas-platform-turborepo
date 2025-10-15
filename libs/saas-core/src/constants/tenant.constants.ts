@@ -40,7 +40,7 @@ export const TENANT_CODE_VALIDATION = {
   /** 格式：小写字母和数字 */
   PATTERN: /^[a-z0-9]+$/,
   /** 错误消息 */
-  ERROR_MESSAGE: '租户代码必须是3-20位的小写字母和数字组合',
+  ERROR_MESSAGE: "租户代码必须是3-20位的小写字母和数字组合",
 } as const;
 
 /**
@@ -54,7 +54,7 @@ export const TENANT_NAME_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 100,
   /** 错误消息 */
-  ERROR_MESSAGE: '租户名称长度必须在1-100字符之间',
+  ERROR_MESSAGE: "租户名称长度必须在1-100字符之间",
 } as const;
 
 /**
@@ -70,7 +70,7 @@ export const TENANT_DOMAIN_VALIDATION = {
   /** 最大长度 */
   MAX_LENGTH: 253,
   /** 错误消息 */
-  ERROR_MESSAGE: '租户域名格式不正确',
+  ERROR_MESSAGE: "租户域名格式不正确",
 } as const;
 
 /**
@@ -159,11 +159,11 @@ export const QUOTA_WARNING_THRESHOLDS = {
  * @constant
  */
 export const TENANT_STATUS_TRANSITIONS: Record<string, readonly string[]> = {
-  CREATING: ['PENDING', 'DISABLED'],
-  PENDING: ['ACTIVE', 'DISABLED'],
-  ACTIVE: ['SUSPENDED', 'DISABLED'],
-  SUSPENDED: ['ACTIVE', 'DISABLED'],
-  DISABLED: ['ACTIVE'],
+  CREATING: ["PENDING", "DISABLED"],
+  PENDING: ["ACTIVE", "DISABLED"],
+  ACTIVE: ["SUSPENDED", "DISABLED"],
+  SUSPENDED: ["ACTIVE", "DISABLED"],
+  DISABLED: ["ACTIVE"],
   DELETED: [], // 已删除状态不可转换
 } as const;
 
@@ -175,10 +175,10 @@ export const TENANT_STATUS_TRANSITIONS: Record<string, readonly string[]> = {
  * @constant
  */
 export const TENANT_UPGRADE_PATHS: Record<string, readonly string[]> = {
-  FREE: ['BASIC', 'PROFESSIONAL', 'ENTERPRISE', 'CUSTOM'],
-  BASIC: ['PROFESSIONAL', 'ENTERPRISE', 'CUSTOM'],
-  PROFESSIONAL: ['ENTERPRISE', 'CUSTOM'],
-  ENTERPRISE: ['CUSTOM'],
+  FREE: ["BASIC", "PROFESSIONAL", "ENTERPRISE", "CUSTOM"],
+  BASIC: ["PROFESSIONAL", "ENTERPRISE", "CUSTOM"],
+  PROFESSIONAL: ["ENTERPRISE", "CUSTOM"],
+  ENTERPRISE: ["CUSTOM"],
   CUSTOM: [], // 定制版不可再升级
 } as const;
 
@@ -190,10 +190,10 @@ export const TENANT_UPGRADE_PATHS: Record<string, readonly string[]> = {
  * @constant
  */
 export const TENANT_DOWNGRADE_PATHS: Record<string, readonly string[]> = {
-  CUSTOM: ['ENTERPRISE', 'PROFESSIONAL', 'BASIC', 'FREE'],
-  ENTERPRISE: ['PROFESSIONAL', 'BASIC', 'FREE'],
-  PROFESSIONAL: ['BASIC', 'FREE'],
-  BASIC: ['FREE'],
+  CUSTOM: ["ENTERPRISE", "PROFESSIONAL", "BASIC", "FREE"],
+  ENTERPRISE: ["PROFESSIONAL", "BASIC", "FREE"],
+  PROFESSIONAL: ["BASIC", "FREE"],
+  BASIC: ["FREE"],
   FREE: [], // 免费版不可降级
 } as const;
 
@@ -222,6 +222,5 @@ export const TENANT_CACHE_CONFIG = {
   /** 租户信息缓存TTL（秒） */
   INFO_TTL: 1800, // 30分钟
   /** 缓存键前缀 */
-  KEY_PREFIX: 'tenant',
+  KEY_PREFIX: "tenant",
 } as const;
-

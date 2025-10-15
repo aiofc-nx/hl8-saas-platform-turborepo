@@ -262,7 +262,7 @@ new EnterpriseFastifyAdapter({
   enableSecurity: true, // 启用安全头
   enablePerformanceMonitoring: true, // 性能监控
   enableHealthCheck: true, // 健康检查
-  healthCheckPath: '/health', // 健康检查路径
+  healthCheckPath: "/health", // 健康检查路径
   enableRateLimit: true, // 速率限制（生产环境）
   rateLimitOptions: {
     max: 100, // 每分钟最多 100 个请求
@@ -275,7 +275,7 @@ new EnterpriseFastifyAdapter({
 
 ```typescript
 LoggingModule.forRoot({
-  level: 'debug', // debug | info | warn | error
+  level: "debug", // debug | info | warn | error
   prettyPrint: true, // 开发环境美化输出
 });
 ```
@@ -285,13 +285,13 @@ LoggingModule.forRoot({
 ```typescript
 CachingModule.forRoot({
   redis: {
-    host: 'localhost',
+    host: "localhost",
     port: 6379,
     password: undefined,
     db: 0,
   },
   ttl: 3600, // 默认 TTL（秒）
-  keyPrefix: 'hl8:cache:',
+  keyPrefix: "hl8:cache:",
 });
 ```
 

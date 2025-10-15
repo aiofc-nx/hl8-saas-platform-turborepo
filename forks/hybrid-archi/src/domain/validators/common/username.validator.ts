@@ -35,14 +35,14 @@ export class UsernameValidator {
    */
   public static validateFormat(
     username: string,
-    options: UsernameValidationOptions = {}
+    options: UsernameValidationOptions = {},
   ): UsernameValidationResult {
     const {
       minLength = 3,
       maxLength = 20,
       allowNumbers = true,
       allowSpecialChars = true,
-      specialChars = '_-',
+      specialChars = "_-",
       checkReservedWords = true,
     } = options;
 
@@ -50,7 +50,7 @@ export class UsernameValidator {
 
     // 基本验证
     if (!username || username.trim().length === 0) {
-      errors.push('用户名不能为空');
+      errors.push("用户名不能为空");
       return { isValid: false, errors };
     }
 
@@ -72,12 +72,12 @@ export class UsernameValidator {
     } else if (allowNumbers) {
       const validChars = /^[a-zA-Z0-9]+$/;
       if (!validChars.test(username)) {
-        errors.push('用户名只能包含字母和数字');
+        errors.push("用户名只能包含字母和数字");
       }
     } else {
       const validChars = /^[a-zA-Z]+$/;
       if (!validChars.test(username)) {
-        errors.push('用户名只能包含字母');
+        errors.push("用户名只能包含字母");
       }
     }
 
@@ -85,7 +85,7 @@ export class UsernameValidator {
     if (allowSpecialChars) {
       const specialCharRegex = new RegExp(`[${specialChars}]{2,}`);
       if (specialCharRegex.test(username)) {
-        errors.push('用户名不能包含连续的特殊字符');
+        errors.push("用户名不能包含连续的特殊字符");
       }
     }
 
@@ -116,44 +116,44 @@ export class UsernameValidator {
     error?: string;
   } {
     const reservedWords = [
-      'admin',
-      'administrator',
-      'root',
-      'system',
-      'user',
-      'guest',
-      'api',
-      'www',
-      'mail',
-      'ftp',
-      'support',
-      'help',
-      'info',
-      'test',
-      'demo',
-      'sample',
-      'example',
-      'null',
-      'undefined',
-      'true',
-      'false',
-      'yes',
-      'no',
-      'on',
-      'off',
-      'login',
-      'logout',
-      'register',
-      'signup',
-      'signin',
-      'signout',
-      'profile',
-      'account',
-      'settings',
-      'config',
-      'configuration',
-      'setup',
-      'install',
+      "admin",
+      "administrator",
+      "root",
+      "system",
+      "user",
+      "guest",
+      "api",
+      "www",
+      "mail",
+      "ftp",
+      "support",
+      "help",
+      "info",
+      "test",
+      "demo",
+      "sample",
+      "example",
+      "null",
+      "undefined",
+      "true",
+      "false",
+      "yes",
+      "no",
+      "on",
+      "off",
+      "login",
+      "logout",
+      "register",
+      "signup",
+      "signin",
+      "signout",
+      "profile",
+      "account",
+      "settings",
+      "config",
+      "configuration",
+      "setup",
+      "install",
     ];
 
     if (reservedWords.includes(username.toLowerCase())) {
@@ -175,7 +175,7 @@ export class UsernameValidator {
   public static validateUniqueness(
     username: string,
     existingUsernames: string[],
-    caseSensitive = false
+    caseSensitive = false,
   ): { isValid: boolean; error?: string } {
     const comparisonUsername = caseSensitive
       ? username
@@ -201,19 +201,19 @@ export class UsernameValidator {
    */
   public static validateInternationalization(
     username: string,
-    allowUnicode = false
+    allowUnicode = false,
   ): { isValid: boolean; error?: string } {
     if (!allowUnicode) {
       // 只允许ASCII字符
       const asciiRegex = /^[\x20-\x7E]+$/;
       if (!asciiRegex.test(username)) {
-        return { isValid: false, error: '用户名只能包含ASCII字符' };
+        return { isValid: false, error: "用户名只能包含ASCII字符" };
       }
     } else {
       // 允许Unicode字符，但排除一些特殊字符
       const unicodeRegex = /^[\p{L}\p{N}_-]+$/u;
       if (!unicodeRegex.test(username)) {
-        return { isValid: false, error: '用户名包含非法字符' };
+        return { isValid: false, error: "用户名包含非法字符" };
       }
     }
 
@@ -230,7 +230,7 @@ export class UsernameValidator {
    */
   public static validateUsernamePolicy(
     username: string,
-    policy: UsernamePolicy
+    policy: UsernamePolicy,
   ): UsernameValidationResult {
     const options: UsernameValidationOptions = {
       minLength: policy.minLength,

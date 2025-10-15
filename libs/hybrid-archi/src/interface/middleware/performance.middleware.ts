@@ -5,9 +5,9 @@
  * @since 1.1.0
  */
 
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware } from "@nestjs/common";
 // import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 性能监控中间件配置
@@ -80,9 +80,9 @@ export class PerformanceMiddleware implements NestMiddleware {
 
   constructor(
     private readonly logger: FastifyLoggerService,
-    config?: IPerformanceMiddlewareConfig
+    config?: IPerformanceMiddlewareConfig,
   ) {
-    this.logger.debug({ requestId: 'PerformanceMiddleware' });
+    this.logger.debug({ requestId: "PerformanceMiddleware" });
     this.config = {
       slowRequestThreshold: config?.slowRequestThreshold || 1000,
       enablePerformanceLog: config?.enablePerformanceLog ?? true,
@@ -105,7 +105,7 @@ export class PerformanceMiddleware implements NestMiddleware {
     const { method, url } = req;
 
     // 监听响应完成事件
-    res.raw.on('finish', () => {
+    res.raw.on("finish", () => {
       const endTime = Date.now();
       const duration = endTime - startTime;
       const statusCode = res.statusCode;
@@ -120,25 +120,25 @@ export class PerformanceMiddleware implements NestMiddleware {
       };
 
       // 添加租户上下文（如可用）
-      const tenantId = req['tenantId'];
+      const tenantId = req["tenantId"];
       if (tenantId) {
-        performanceData['tenantId'] = tenantId;
+        performanceData["tenantId"] = tenantId;
       }
 
       // 添加用户信息（如可用）
-      const user = req['user'];
+      const user = req["user"];
       if (user?.id) {
-        performanceData['userId'] = user.id;
+        performanceData["userId"] = user.id;
       }
 
       // 添加请求大小（如启用）
-      if (this.config.enableRequestSizeLog && req.headers['content-length']) {
-        performanceData['requestSize'] = req.headers['content-length'];
+      if (this.config.enableRequestSizeLog && req.headers["content-length"]) {
+        performanceData["requestSize"] = req.headers["content-length"];
       }
 
       // 记录性能日志
       if (this.config.enablePerformanceLog) {
-        this.logger.log('Request performance', performanceData);
+        this.logger.log("Request performance", performanceData);
       }
 
       // 慢请求告警
@@ -148,11 +148,10 @@ export class PerformanceMiddleware implements NestMiddleware {
         slowThreshold !== undefined &&
         duration > slowThreshold
       ) {
-        this.logger.warn('Slow request detected');
+        this.logger.warn("Slow request detected");
       }
     });
 
     next();
   }
 }
-

@@ -98,7 +98,7 @@ __tests__/
 **示例**：
 
 ```typescript
-describe('AuthService', () => {
+describe("AuthService", () => {
   let authService: AuthService;
   let mockUserRepository: jest.Mocked<UserRepository>;
 
@@ -113,11 +113,11 @@ describe('AuthService', () => {
     jest.clearAllMocks();
   });
 
-  it('should register a new user', async () => {
+  it("should register a new user", async () => {
     // 测试逻辑
   });
 
-  it('should throw error for duplicate email', async () => {
+  it("should throw error for duplicate email", async () => {
     // 测试逻辑
   });
 });
@@ -169,21 +169,21 @@ export function validatePassword(password: string): boolean {
 }
 
 // src/utils/password.spec.ts
-describe('validatePassword', () => {
-  it('should return true for valid password', () => {
-    expect(validatePassword('Password123')).toBe(true);
+describe("validatePassword", () => {
+  it("should return true for valid password", () => {
+    expect(validatePassword("Password123")).toBe(true);
   });
 
-  it('should return false for short password', () => {
-    expect(validatePassword('Pass1')).toBe(false);
+  it("should return false for short password", () => {
+    expect(validatePassword("Pass1")).toBe(false);
   });
 
-  it('should return false for password without uppercase', () => {
-    expect(validatePassword('password123')).toBe(false);
+  it("should return false for password without uppercase", () => {
+    expect(validatePassword("password123")).toBe(false);
   });
 
-  it('should return false for password without number', () => {
-    expect(validatePassword('Password')).toBe(false);
+  it("should return false for password without number", () => {
+    expect(validatePassword("Password")).toBe(false);
   });
 });
 ```
@@ -209,7 +209,7 @@ describe('validatePassword', () => {
 
 ```typescript
 // __tests__/integration/auth/auth-flow.integration.spec.ts
-describe('Authentication Flow', () => {
+describe("Authentication Flow", () => {
   let app: INestApplication;
   let userRepository: Repository<User>;
 
@@ -234,30 +234,30 @@ describe('Authentication Flow', () => {
     await userRepository.clear();
   });
 
-  it('should register and login user', async () => {
+  it("should register and login user", async () => {
     // 1. 注册用户
     const registerResponse = await request(app.getHttpServer())
-      .post('/auth/register')
+      .post("/auth/register")
       .send({
-        email: 'test@example.com',
-        password: 'Password123',
-        name: 'Test User',
+        email: "test@example.com",
+        password: "Password123",
+        name: "Test User",
       })
       .expect(201);
 
-    expect(registerResponse.body).toHaveProperty('id');
+    expect(registerResponse.body).toHaveProperty("id");
 
     // 2. 登录用户
     const loginResponse = await request(app.getHttpServer())
-      .post('/auth/login')
+      .post("/auth/login")
       .send({
-        email: 'test@example.com',
-        password: 'Password123',
+        email: "test@example.com",
+        password: "Password123",
       })
       .expect(200);
 
-    expect(loginResponse.body).toHaveProperty('accessToken');
-    expect(loginResponse.body).toHaveProperty('refreshToken');
+    expect(loginResponse.body).toHaveProperty("accessToken");
+    expect(loginResponse.body).toHaveProperty("refreshToken");
   });
 });
 ```
@@ -282,7 +282,7 @@ describe('Authentication Flow', () => {
 
 ```typescript
 // __tests__/e2e/auth/complete-auth-flow.e2e.spec.ts
-describe('Complete Authentication Flow (E2E)', () => {
+describe("Complete Authentication Flow (E2E)", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -298,32 +298,32 @@ describe('Complete Authentication Flow (E2E)', () => {
     await app.close();
   });
 
-  it('should complete full authentication flow', async () => {
+  it("should complete full authentication flow", async () => {
     const email = `test-${Date.now()}@example.com`;
 
     // 1. 用户注册
     const registerResponse = await request(app.getHttpServer())
-      .post('/auth/register')
+      .post("/auth/register")
       .send({
         email,
-        password: 'Password123',
-        name: 'Test User',
+        password: "Password123",
+        name: "Test User",
       })
       .expect(201);
 
     // 2. 邮箱确认（模拟）
     const confirmToken = registerResponse.body.confirmToken;
     await request(app.getHttpServer())
-      .post('/auth/confirm-email')
+      .post("/auth/confirm-email")
       .send({ token: confirmToken })
       .expect(200);
 
     // 3. 用户登录
     const loginResponse = await request(app.getHttpServer())
-      .post('/auth/login')
+      .post("/auth/login")
       .send({
         email,
-        password: 'Password123',
+        password: "Password123",
       })
       .expect(200);
 
@@ -331,26 +331,26 @@ describe('Complete Authentication Flow (E2E)', () => {
 
     // 4. 访问受保护资源
     await request(app.getHttpServer())
-      .get('/users/profile')
-      .set('Authorization', `Bearer ${accessToken}`)
+      .get("/users/profile")
+      .set("Authorization", `Bearer ${accessToken}`)
       .expect(200);
 
     // 5. 修改密码
     await request(app.getHttpServer())
-      .post('/auth/change-password')
-      .set('Authorization', `Bearer ${accessToken}`)
+      .post("/auth/change-password")
+      .set("Authorization", `Bearer ${accessToken}`)
       .send({
-        oldPassword: 'Password123',
-        newPassword: 'NewPassword456',
+        oldPassword: "Password123",
+        newPassword: "NewPassword456",
       })
       .expect(200);
 
     // 6. 使用新密码登录
     await request(app.getHttpServer())
-      .post('/auth/login')
+      .post("/auth/login")
       .send({
         email,
-        password: 'NewPassword456',
+        password: "NewPassword456",
       })
       .expect(200);
   });
@@ -480,21 +480,21 @@ it('should redirect to home after successful login', () => { ... });
 所有测试应遵循 AAA 模式：
 
 ```typescript
-it('should register a new user', async () => {
+it("should register a new user", async () => {
   // Arrange（准备）：设置测试数据和依赖
   const registerDto = {
-    email: 'test@example.com',
-    password: 'Password123',
-    name: 'Test User',
+    email: "test@example.com",
+    password: "Password123",
+    name: "Test User",
   };
   mockUserRepository.findOne.mockResolvedValue(null);
-  mockUserRepository.save.mockResolvedValue({ id: '1', ...registerDto });
+  mockUserRepository.save.mockResolvedValue({ id: "1", ...registerDto });
 
   // Act（执行）：调用被测试的方法
   const result = await authService.register(registerDto);
 
   // Assert（断言）：验证结果
-  expect(result).toHaveProperty('id');
+  expect(result).toHaveProperty("id");
   expect(result.email).toBe(registerDto.email);
   expect(mockUserRepository.save).toHaveBeenCalledTimes(1);
 });
@@ -524,7 +524,7 @@ const stubEmailService = {
 
 ```typescript
 const emailService = new EmailService();
-jest.spyOn(emailService, 'sendEmail');
+jest.spyOn(emailService, "sendEmail");
 ```
 
 ### 边界条件测试
@@ -532,20 +532,20 @@ jest.spyOn(emailService, 'sendEmail');
 确保测试覆盖边界条件：
 
 ```typescript
-describe('validateAge', () => {
-  it('should return true for age 18', () => {
+describe("validateAge", () => {
+  it("should return true for age 18", () => {
     expect(validateAge(18)).toBe(true);
   });
 
-  it('should return false for age 17', () => {
+  it("should return false for age 17", () => {
     expect(validateAge(17)).toBe(false);
   });
 
-  it('should return false for negative age', () => {
+  it("should return false for negative age", () => {
     expect(validateAge(-1)).toBe(false);
   });
 
-  it('should return false for age 0', () => {
+  it("should return false for age 0", () => {
     expect(validateAge(0)).toBe(false);
   });
 });
@@ -556,22 +556,22 @@ describe('validateAge', () => {
 测试异常情况和错误处理：
 
 ```typescript
-it('should throw error when user not found', async () => {
+it("should throw error when user not found", async () => {
   mockUserRepository.findOne.mockResolvedValue(null);
 
   await expect(
-    authService.login('nonexistent@example.com', 'password'),
-  ).rejects.toThrow('User not found');
+    authService.login("nonexistent@example.com", "password"),
+  ).rejects.toThrow("User not found");
 });
 
-it('should throw error for invalid password', async () => {
-  const user = { email: 'test@example.com', password: 'hashedPassword' };
+it("should throw error for invalid password", async () => {
+  const user = { email: "test@example.com", password: "hashedPassword" };
   mockUserRepository.findOne.mockResolvedValue(user);
   mockPasswordService.compare.mockResolvedValue(false);
 
   await expect(
-    authService.login('test@example.com', 'wrongPassword'),
-  ).rejects.toThrow('Invalid password');
+    authService.login("test@example.com", "wrongPassword"),
+  ).rejects.toThrow("Invalid password");
 });
 ```
 
@@ -632,7 +632,7 @@ export default {
       lines: 80,
       statements: 80,
     },
-    './src/features/**/': {
+    "./src/features/**/": {
       branches: 80,
       functions: 90,
       lines: 90,
@@ -708,22 +708,22 @@ pnpm test:coverage
 
 ```typescript
 // ❌ 不好：测试实现细节
-it('should call fetchUser and then fetchProfile', () => {
-  const spy1 = jest.spyOn(service, 'fetchUser');
-  const spy2 = jest.spyOn(service, 'fetchProfile');
+it("should call fetchUser and then fetchProfile", () => {
+  const spy1 = jest.spyOn(service, "fetchUser");
+  const spy2 = jest.spyOn(service, "fetchProfile");
 
-  service.getUserProfile('1');
+  service.getUserProfile("1");
 
   expect(spy1).toHaveBeenCalled();
   expect(spy2).toHaveBeenCalled();
 });
 
 // ✅ 好：测试行为和结果
-it('should return user profile with email and name', async () => {
-  const profile = await service.getUserProfile('1');
+it("should return user profile with email and name", async () => {
+  const profile = await service.getUserProfile("1");
 
-  expect(profile).toHaveProperty('email');
-  expect(profile).toHaveProperty('name');
+  expect(profile).toHaveProperty("email");
+  expect(profile).toHaveProperty("name");
 });
 ```
 
@@ -731,13 +731,13 @@ it('should return user profile with email and name', async () => {
 
 ```typescript
 // ❌ 不好：无意义的测试数据
-const user = { email: 'a@b.c', password: '123' };
+const user = { email: "a@b.c", password: "123" };
 
 // ✅ 好：有意义的测试数据
 const user = {
-  email: 'john.doe@example.com',
-  password: 'SecurePassword123',
-  name: 'John Doe',
+  email: "john.doe@example.com",
+  password: "SecurePassword123",
+  name: "John Doe",
 };
 ```
 
@@ -747,23 +747,23 @@ const user = {
 // ❌ 不好：测试间有依赖
 let userId: string;
 
-it('should create user', async () => {
+it("should create user", async () => {
   const user = await service.createUser(userData);
   userId = user.id; // 共享状态
 });
 
-it('should get user by id', async () => {
+it("should get user by id", async () => {
   const user = await service.getUserById(userId); // 依赖上一个测试
   expect(user).toBeDefined();
 });
 
 // ✅ 好：每个测试独立
-it('should create user', async () => {
+it("should create user", async () => {
   const user = await service.createUser(userData);
-  expect(user).toHaveProperty('id');
+  expect(user).toHaveProperty("id");
 });
 
-it('should get user by id', async () => {
+it("should get user by id", async () => {
   const createdUser = await service.createUser(userData);
   const user = await service.getUserById(createdUser.id);
   expect(user).toBeDefined();
@@ -776,29 +776,29 @@ it('should get user by id', async () => {
 // 创建测试辅助函数
 function createMockUser(overrides = {}) {
   return {
-    id: '1',
-    email: 'test@example.com',
-    name: 'Test User',
-    password: 'hashedPassword',
+    id: "1",
+    email: "test@example.com",
+    name: "Test User",
+    password: "hashedPassword",
     ...overrides,
   };
 }
 
 // 在测试中使用
-it('should update user email', async () => {
-  const user = createMockUser({ email: 'old@example.com' });
+it("should update user email", async () => {
+  const user = createMockUser({ email: "old@example.com" });
   mockRepository.findOne.mockResolvedValue(user);
 
-  const result = await service.updateEmail(user.id, 'new@example.com');
+  const result = await service.updateEmail(user.id, "new@example.com");
 
-  expect(result.email).toBe('new@example.com');
+  expect(result.email).toBe("new@example.com");
 });
 ```
 
 ### 6. 使用 beforeEach 进行初始化
 
 ```typescript
-describe('AuthService', () => {
+describe("AuthService", () => {
   let service: AuthService;
   let mockRepository: jest.Mocked<UserRepository>;
 
@@ -815,15 +815,15 @@ describe('AuthService', () => {
 
 ```typescript
 // ✅ 使用 async/await
-it('should register user', async () => {
+it("should register user", async () => {
   const result = await service.register(userData);
-  expect(result).toHaveProperty('id');
+  expect(result).toHaveProperty("id");
 });
 
 // ✅ 使用 Promise
-it('should register user', () => {
+it("should register user", () => {
   return service.register(userData).then((result) => {
-    expect(result).toHaveProperty('id');
+    expect(result).toHaveProperty("id");
   });
 });
 ```

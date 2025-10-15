@@ -294,22 +294,22 @@ else { /* 降级策略 */ }
 ### 业务服务中使用
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { Injectable } from "@nestjs/common";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 @Injectable()
 export class UserService {
   constructor(private readonly logger: FastifyLoggerService) {}
 
   async createUser(data: CreateUserDto) {
-    this.logger.log('开始创建用户', { email: data.email });
+    this.logger.log("开始创建用户", { email: data.email });
 
     try {
       const user = await this.userRepository.save(data);
-      this.logger.log('用户创建成功', { userId: user.id });
+      this.logger.log("用户创建成功", { userId: user.id });
       return user;
     } catch (error) {
-      this.logger.error('用户创建失败', error.stack, { email: data.email });
+      this.logger.error("用户创建失败", error.stack, { email: data.email });
       throw error;
     }
   }
@@ -493,10 +493,10 @@ new FastifyLoggerService(pinoLogger, isolationService);
 
 4. **使用结构化日志**
    ```typescript
-   this.logger.log('操作完成', {
-     userId: '123',
-     action: 'create',
-     resource: 'order',
+   this.logger.log("操作完成", {
+     userId: "123",
+     action: "create",
+     resource: "order",
    });
    ```
 
@@ -506,8 +506,8 @@ new FastifyLoggerService(pinoLogger, isolationService);
 
    ```typescript
    // ❌ 错误
-   const logger = new Logger('MyService');
-   const pino = require('pino')();
+   const logger = new Logger("MyService");
+   const pino = require("pino")();
    ```
 
 2. **不要同时启用多个日志模块**
@@ -521,7 +521,7 @@ new FastifyLoggerService(pinoLogger, isolationService);
 3. **不要使用 console.log**
    ```typescript
    // ❌ 错误
-   console.log('Something happened');
+   console.log("Something happened");
    ```
 
 ---
@@ -531,13 +531,13 @@ new FastifyLoggerService(pinoLogger, isolationService);
 ### NestJS 内置 Logger
 
 ```typescript
-import { Logger } from '@nestjs/common';
+import { Logger } from "@nestjs/common";
 
 export class MyService {
   private logger = new Logger(MyService.name);
 
   doSomething() {
-    this.logger.log('Something'); // ❌ 无隔离上下文
+    this.logger.log("Something"); // ❌ 无隔离上下文
   }
 }
 ```
@@ -553,13 +553,13 @@ export class MyService {
 ### @hl8/nestjs-infra/LoggerService
 
 ```typescript
-import { LoggerService } from '@hl8/nestjs-infra';
+import { LoggerService } from "@hl8/nestjs-infra";
 
 export class MyService {
   constructor(private logger: LoggerService) {}
 
   doSomething() {
-    this.logger.log('Something'); // ✅ 有隔离上下文
+    this.logger.log("Something"); // ✅ 有隔离上下文
   }
 }
 ```
@@ -575,13 +575,13 @@ export class MyService {
 ### FastifyLoggerService (本架构)
 
 ```typescript
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 export class MyService {
   constructor(private logger: FastifyLoggerService) {}
 
   doSomething() {
-    this.logger.log('Something'); // ✅ 零开销 + 隔离上下文
+    this.logger.log("Something"); // ✅ 零开销 + 隔离上下文
   }
 }
 ```

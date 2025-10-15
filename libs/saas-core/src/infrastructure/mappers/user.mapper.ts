@@ -2,7 +2,7 @@
  * 用户映射器（简化版本）
  */
 
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class UserMapper {
@@ -10,4 +10,3 @@ export class UserMapper {
   // toOrmEntities(aggregate): { user, profile, credentials }
   // toDomainAggregate(userOrm, profileOrm, credentialsOrm): UserAggregate
 }
-

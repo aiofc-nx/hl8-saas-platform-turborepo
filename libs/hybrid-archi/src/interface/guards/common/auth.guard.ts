@@ -10,9 +10,9 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { JwtService } from '@nestjs/jwt';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { JwtService } from "@nestjs/jwt";
 // import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 
 /**
@@ -38,7 +38,7 @@ import { JwtService } from '@nestjs/jwt';
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly reflector: Reflector
+    private readonly reflector: Reflector,
   ) {}
 
   /**
@@ -54,8 +54,8 @@ export class AuthGuard implements CanActivate {
 
       // 检查是否为公开接口
       const isPublic = this.reflector.get<boolean>(
-        'isPublic',
-        context.getHandler()
+        "isPublic",
+        context.getHandler(),
       );
       if (isPublic) {
         return true;
@@ -64,25 +64,25 @@ export class AuthGuard implements CanActivate {
       // 验证JWT令牌
       const token = this.extractTokenFromHeader(request);
       if (!token) {
-        throw new UnauthorizedException('未提供认证令牌');
+        throw new UnauthorizedException("未提供认证令牌");
       }
 
       // 验证令牌
       const payload = await this.jwtService.verifyAsync(token);
       if (!payload) {
-        throw new UnauthorizedException('无效的认证令牌');
+        throw new UnauthorizedException("无效的认证令牌");
       }
 
       // 设置用户信息到请求上下文
-      request['user'] = payload;
-      request['tenantId'] = payload.tenantId;
+      request["user"] = payload;
+      request["tenantId"] = payload.tenantId;
 
       return true;
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         throw error;
       }
-      throw new UnauthorizedException('认证失败');
+      throw new UnauthorizedException("认证失败");
     }
   }
 
@@ -95,7 +95,7 @@ export class AuthGuard implements CanActivate {
    * @private
    */
   private extractTokenFromHeader(request: any): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const [type, token] = request.headers.authorization?.split(" ") ?? [];
+    return type === "Bearer" ? token : undefined;
   }
 }

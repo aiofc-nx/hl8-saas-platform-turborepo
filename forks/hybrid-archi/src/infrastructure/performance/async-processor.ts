@@ -8,9 +8,9 @@
  * @since 1.0.0
  */
 
-import { Injectable, Inject } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+import { Injectable, Inject } from "@nestjs/common";
+import { PinoLogger } from "@hl8/logger";
+import { CacheService } from "@hl8/cache";
 
 /**
  * 异步处理器配置
@@ -42,17 +42,17 @@ export interface AsyncProcessorConfig {
  * 任务状态
  */
 export type TaskStatus =
-  | 'pending'
-  | 'running'
-  | 'completed'
-  | 'failed'
-  | 'cancelled'
-  | 'retrying';
+  | "pending"
+  | "running"
+  | "completed"
+  | "failed"
+  | "cancelled"
+  | "retrying";
 
 /**
  * 任务优先级
  */
-export type TaskPriority = 'low' | 'normal' | 'high' | 'critical';
+export type TaskPriority = "low" | "normal" | "high" | "critical";
 
 /**
  * 任务信息
@@ -131,7 +131,8 @@ export class AsyncProcessor {
   constructor(
     private readonly logger: PinoLogger,
     private readonly cacheService: CacheService,
-    @Inject('AsyncProcessorConfig') private readonly config: AsyncProcessorConfig
+    @Inject("AsyncProcessorConfig")
+    private readonly config: AsyncProcessorConfig,
   ) {
     this.startProcessor();
   }
@@ -153,14 +154,14 @@ export class AsyncProcessor {
       timeout?: number;
       maxRetries?: number;
       metadata?: Record<string, any>;
-    } = {}
+    } = {},
   ): Promise<string> {
     const taskId = this.generateTaskId();
     const task: TaskInfo = {
       id: taskId,
       name,
-      status: 'pending',
-      priority: options.priority || 'normal',
+      status: "pending",
+      priority: options.priority || "normal",
       payload,
       createdAt: new Date(),
       retryCount: 0,
@@ -180,7 +181,7 @@ export class AsyncProcessor {
       this.stats.lastActivity = new Date();
       this.updateStats();
 
-      this.logger.info('任务已提交', {
+      this.logger.info("任务已提交", {
         taskId,
         name,
         priority: task.priority,
@@ -189,7 +190,7 @@ export class AsyncProcessor {
 
       return taskId;
     } catch (error) {
-      this.logger.error('提交任务失败', error, { taskId, name });
+      this.logger.error("提交任务失败", error, { taskId, name });
       throw error;
     }
   }
@@ -216,18 +217,18 @@ export class AsyncProcessor {
     try {
       const task = this.tasks.get(taskId);
       if (!task) {
-        this.logger.warn('任务不存在', { taskId });
+        this.logger.warn("任务不存在", { taskId });
         return false;
       }
 
-      if (task.status === 'running') {
+      if (task.status === "running") {
         // 正在运行的任务需要特殊处理
-        this.logger.warn('无法取消正在运行的任务', { taskId });
+        this.logger.warn("无法取消正在运行的任务", { taskId });
         return false;
       }
 
       // 更新任务状态
-      task.status = 'cancelled';
+      task.status = "cancelled";
       task.completedAt = new Date();
 
       // 从队列中移除
@@ -238,10 +239,10 @@ export class AsyncProcessor {
       this.stats.cancelledTasks++;
       this.updateStats();
 
-      this.logger.info('任务已取消', { taskId });
+      this.logger.info("任务已取消", { taskId });
       return true;
     } catch (error) {
-      this.logger.error('取消任务失败', error, { taskId });
+      this.logger.error("取消任务失败", error, { taskId });
       return false;
     }
   }
@@ -259,11 +260,11 @@ export class AsyncProcessor {
       return null;
     }
 
-    if (task.status === 'completed') {
+    if (task.status === "completed") {
       return task.result;
     }
 
-    if (task.status === 'failed') {
+    if (task.status === "failed") {
       throw task.error;
     }
 
@@ -313,7 +314,7 @@ export class AsyncProcessor {
       this.processorTimer = null;
     }
 
-    this.logger.info('异步处理器已停止');
+    this.logger.info("异步处理器已停止");
   }
 
   /**
@@ -327,11 +328,11 @@ export class AsyncProcessor {
     let cleanedCount = 0;
     const tasksToClean = Array.from(this.tasks.values()).filter(
       (task) =>
-        (task.status === 'completed' ||
-          task.status === 'failed' ||
-          task.status === 'cancelled') &&
+        (task.status === "completed" ||
+          task.status === "failed" ||
+          task.status === "cancelled") &&
         task.completedAt &&
-        task.completedAt < olderThan
+        task.completedAt < olderThan,
     );
 
     for (const task of tasksToClean) {
@@ -339,7 +340,7 @@ export class AsyncProcessor {
       cleanedCount++;
     }
 
-    this.logger.info('已完成任务清理完成', {
+    this.logger.info("已完成任务清理完成", {
       cleanedCount,
       remainingTasks: this.tasks.size,
     });
@@ -361,11 +362,11 @@ export class AsyncProcessor {
       try {
         await this.processTasks();
       } catch (error) {
-        this.logger.error('处理任务失败', error);
+        this.logger.error("处理任务失败", error);
       }
     }, 100); // 每100ms检查一次
 
-    this.logger.info('异步处理器已启动', {
+    this.logger.info("异步处理器已启动", {
       maxConcurrency: this.config.maxConcurrency,
       queueSize: this.config.queueSize,
     });
@@ -412,7 +413,7 @@ export class AsyncProcessor {
    */
   private async executeTask(task: TaskInfo): Promise<void> {
     const startTime = Date.now();
-    task.status = 'running';
+    task.status = "running";
     task.startedAt = new Date();
 
     this.runningTasks.add(task.id);
@@ -426,7 +427,7 @@ export class AsyncProcessor {
       const result = await this.executeTaskHandler(task);
 
       // 任务执行成功
-      task.status = 'completed';
+      task.status = "completed";
       task.completedAt = new Date();
       task.result = result;
 
@@ -437,7 +438,7 @@ export class AsyncProcessor {
       this.executionTimes.push(executionTime);
       this.updateStats();
 
-      this.logger.info('任务执行成功', {
+      this.logger.info("任务执行成功", {
         taskId: task.id,
         name: task.name,
         executionTime,
@@ -449,17 +450,17 @@ export class AsyncProcessor {
 
       if (task.retryCount < task.maxRetries) {
         // 重试任务
-        task.status = 'retrying';
+        task.status = "retrying";
         this.stats.retryingTasks++;
 
         // 延迟后重新加入队列
         setTimeout(() => {
-          task.status = 'pending';
+          task.status = "pending";
           this.addToQueue(task);
           this.stats.retryingTasks--;
         }, this.config.retryInterval);
 
-        this.logger.warn('任务执行失败，将重试', {
+        this.logger.warn("任务执行失败，将重试", {
           taskId: task.id,
           name: task.name,
           retryCount: task.retryCount,
@@ -468,11 +469,11 @@ export class AsyncProcessor {
         });
       } else {
         // 任务最终失败
-        task.status = 'failed';
+        task.status = "failed";
         task.completedAt = new Date();
         this.stats.failedTasks++;
 
-        this.logger.error('任务执行最终失败', {
+        this.logger.error("任务执行最终失败", {
           taskId: task.id,
           name: task.name,
           retryCount: task.retryCount,
@@ -505,7 +506,7 @@ export class AsyncProcessor {
    */
   private addToQueue(task: TaskInfo): void {
     if (this.taskQueue.length >= this.config.queueSize) {
-      throw new Error('任务队列已满');
+      throw new Error("任务队列已满");
     }
 
     this.taskQueue.push(task);

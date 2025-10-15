@@ -6,12 +6,12 @@
  * @since 1.0.0
  */
 
-import * as crypto from 'crypto';
-import * as fs from 'fs';
-import * as path from 'path';
-import { promisify } from 'util';
-import { CacheEventType } from '../constants.js';
-import { ConfigLogger } from '../services/config-logger.service.js';
+import * as crypto from "crypto";
+import * as fs from "fs";
+import * as path from "path";
+import { promisify } from "util";
+import { CacheEventType } from "../constants.js";
+import { ConfigLogger } from "../services/config-logger.service.js";
 import {
   CacheEntry,
   CacheEvent,
@@ -19,8 +19,8 @@ import {
   CacheProvider,
   CacheStats,
   FileCacheOptions,
-} from '../types/cache.types.js';
-import { ConfigRecord } from '../types/config.types.js';
+} from "../types/cache.types.js";
+import { ConfigRecord } from "../types/config.types.js";
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -52,7 +52,7 @@ export class FileCacheProvider implements CacheProvider {
 
   constructor(private options: FileCacheOptions) {
     this.cacheDir =
-      options.cacheDir || path.join(process.cwd(), '.cache', 'config');
+      options.cacheDir || path.join(process.cwd(), ".cache", "config");
     this.initializeCacheDirectory();
   }
 
@@ -73,7 +73,7 @@ export class FileCacheProvider implements CacheProvider {
       if (!(await this.fileExists(filePath))) {
         this.stats.misses++;
         this.updateHitRate();
-        this.emitEvent('miss', key);
+        this.emitEvent("miss", key);
         return null;
       }
 
@@ -82,7 +82,7 @@ export class FileCacheProvider implements CacheProvider {
       if (!entry) {
         this.stats.misses++;
         this.updateHitRate();
-        this.emitEvent('miss', key);
+        this.emitEvent("miss", key);
         return null;
       }
 
@@ -91,7 +91,7 @@ export class FileCacheProvider implements CacheProvider {
         await this.delete(key);
         this.stats.misses++;
         this.updateHitRate();
-        this.emitEvent('expire', key);
+        this.emitEvent("expire", key);
         return null;
       }
 
@@ -103,12 +103,12 @@ export class FileCacheProvider implements CacheProvider {
       this.stats.hits++;
       this.updateHitRate();
       this.updateAverageAccessTime(Date.now() - startTime);
-      this.emitEvent('hit', key);
+      this.emitEvent("hit", key);
 
       return entry.value;
     } catch (error) {
-      this.emitEvent('miss', key, {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      this.emitEvent("miss", key, {
+        error: error instanceof Error ? error.message : "Unknown error",
       });
       return null;
     }
@@ -146,10 +146,10 @@ export class FileCacheProvider implements CacheProvider {
 
       await this.writeCacheEntry(filePath, entry);
       this.updateStats();
-      this.emitEvent('set', key, { size, ttl });
+      this.emitEvent("set", key, { size, ttl });
     } catch (error) {
-      this.emitEvent('set', key, {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      this.emitEvent("set", key, {
+        error: error instanceof Error ? error.message : "Unknown error",
       });
       throw error;
     }
@@ -170,14 +170,14 @@ export class FileCacheProvider implements CacheProvider {
       if (await this.fileExists(filePath)) {
         await unlink(filePath);
         this.updateStats();
-        this.emitEvent('delete', key);
+        this.emitEvent("delete", key);
         return true;
       }
 
       return false;
     } catch (error) {
-      this.emitEvent('delete', key, {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      this.emitEvent("delete", key, {
+        error: error instanceof Error ? error.message : "Unknown error",
       });
       return false;
     }
@@ -194,7 +194,7 @@ export class FileCacheProvider implements CacheProvider {
       const files = await readdir(this.cacheDir);
 
       for (const file of files) {
-        if (file.endsWith('.cache')) {
+        if (file.endsWith(".cache")) {
           await unlink(path.join(this.cacheDir, file));
         }
       }
@@ -209,10 +209,10 @@ export class FileCacheProvider implements CacheProvider {
         topKeys: [],
       };
 
-      this.emitEvent('clear', 'all');
+      this.emitEvent("clear", "all");
     } catch (error) {
-      this.emitEvent('clear', 'all', {
-        error: error instanceof Error ? error.message : 'Unknown error',
+      this.emitEvent("clear", "all", {
+        error: error instanceof Error ? error.message : "Unknown error",
       });
       throw error;
     }
@@ -305,7 +305,7 @@ export class FileCacheProvider implements CacheProvider {
         mode: this.options.fileMode || 0o755,
       });
     } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') {
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
         throw error;
       }
     }
@@ -321,7 +321,7 @@ export class FileCacheProvider implements CacheProvider {
    * @since 1.0.0
    */
   private getFilePath(key: string): string {
-    const hash = crypto.createHash('md5').update(key).digest('hex');
+    const hash = crypto.createHash("md5").update(key).digest("hex");
     const fileName = `${hash}.cache`;
     return path.join(this.cacheDir, fileName);
   }
@@ -355,7 +355,7 @@ export class FileCacheProvider implements CacheProvider {
    */
   private async readCacheEntry(filePath: string): Promise<CacheEntry | null> {
     try {
-      const data = await readFile(filePath, 'utf8');
+      const data = await readFile(filePath, "utf8");
       const entry = JSON.parse(data) as CacheEntry;
 
       // 转换日期字符串为 Date 对象
@@ -385,7 +385,7 @@ export class FileCacheProvider implements CacheProvider {
     entry: CacheEntry,
   ): Promise<void> {
     const data = JSON.stringify(entry);
-    await writeFile(filePath, data, 'utf8');
+    await writeFile(filePath, data, "utf8");
   }
 
   /**
@@ -411,7 +411,7 @@ export class FileCacheProvider implements CacheProvider {
   private async updateStats(): Promise<void> {
     try {
       const files = await readdir(this.cacheDir);
-      const cacheFiles = files.filter((file) => file.endsWith('.cache'));
+      const cacheFiles = files.filter((file) => file.endsWith(".cache"));
 
       this.stats.totalEntries = cacheFiles.length;
 
@@ -493,7 +493,7 @@ export class FileCacheProvider implements CacheProvider {
           listener(event);
         } catch (error) {
           const logger = ConfigLogger.getInstance();
-          logger.error('缓存事件监听器错误', {
+          logger.error("缓存事件监听器错误", {
             event: event.type,
             error: error instanceof Error ? error.message : String(error),
             stack: error instanceof Error ? error.stack : undefined,

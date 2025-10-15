@@ -47,13 +47,13 @@
  * @since 1.0.0
  */
 
-import { IsolationLevel } from '../enums/isolation-level.enum.js';
-import { SharingLevel } from '../enums/sharing-level.enum.js';
-import { IsolationValidationError } from '../errors/isolation-validation.error.js';
-import type { DepartmentId } from '../value-objects/department-id.vo.js';
-import type { OrganizationId } from '../value-objects/organization-id.vo.js';
-import type { TenantId } from '../value-objects/tenant-id.vo.js';
-import type { UserId } from '../value-objects/user-id.vo.js';
+import { IsolationLevel } from "../enums/isolation-level.enum.js";
+import { SharingLevel } from "../enums/sharing-level.enum.js";
+import { IsolationValidationError } from "../errors/isolation-validation.error.js";
+import type { DepartmentId } from "../value-objects/department-id.vo.js";
+import type { OrganizationId } from "../value-objects/organization-id.vo.js";
+import type { TenantId } from "../value-objects/tenant-id.vo.js";
+import type { UserId } from "../value-objects/user-id.vo.js";
 
 /**
  * 隔离上下文实体
@@ -191,8 +191,8 @@ export class IsolationContext {
     // 组织级必须有租户
     if (this.organizationId && !this.tenantId) {
       throw new IsolationValidationError(
-        '组织级上下文必须包含租户 ID',
-        'INVALID_ORGANIZATION_CONTEXT',
+        "组织级上下文必须包含租户 ID",
+        "INVALID_ORGANIZATION_CONTEXT",
         { organizationId: this.organizationId?.getValue() },
       );
     }
@@ -200,8 +200,8 @@ export class IsolationContext {
     // 部门级必须有租户和组织
     if (this.departmentId && (!this.tenantId || !this.organizationId)) {
       throw new IsolationValidationError(
-        '部门级上下文必须包含租户 ID 和组织 ID',
-        'INVALID_DEPARTMENT_CONTEXT',
+        "部门级上下文必须包含租户 ID 和组织 ID",
+        "INVALID_DEPARTMENT_CONTEXT",
         {
           departmentId: this.departmentId?.getValue(),
           hasTenant: !!this.tenantId,
@@ -308,18 +308,18 @@ export class IsolationContext {
 
     switch (this.getIsolationLevel()) {
       case IsolationLevel.PLATFORM:
-        parts.push('platform', namespace, key);
+        parts.push("platform", namespace, key);
         break;
 
       case IsolationLevel.TENANT:
-        parts.push('tenant', this.tenantId!.getValue(), namespace, key);
+        parts.push("tenant", this.tenantId!.getValue(), namespace, key);
         break;
 
       case IsolationLevel.ORGANIZATION:
         parts.push(
-          'tenant',
+          "tenant",
           this.tenantId!.getValue(),
-          'org',
+          "org",
           this.organizationId!.getValue(),
           namespace,
           key,
@@ -328,11 +328,11 @@ export class IsolationContext {
 
       case IsolationLevel.DEPARTMENT:
         parts.push(
-          'tenant',
+          "tenant",
           this.tenantId!.getValue(),
-          'org',
+          "org",
           this.organizationId!.getValue(),
-          'dept',
+          "dept",
           this.departmentId!.getValue(),
           namespace,
           key,
@@ -342,20 +342,20 @@ export class IsolationContext {
       case IsolationLevel.USER:
         if (this.tenantId) {
           parts.push(
-            'tenant',
+            "tenant",
             this.tenantId.getValue(),
-            'user',
+            "user",
             this.userId!.getValue(),
             namespace,
             key,
           );
         } else {
-          parts.push('user', this.userId!.getValue(), namespace, key);
+          parts.push("user", this.userId!.getValue(), namespace, key);
         }
         break;
     }
 
-    return parts.join(':');
+    return parts.join(":");
   }
 
   /**
@@ -565,8 +565,8 @@ export class IsolationContext {
   switchOrganization(newOrganizationId: OrganizationId): IsolationContext {
     if (!this.tenantId) {
       throw new IsolationValidationError(
-        '切换组织需要租户上下文',
-        'SWITCH_ORGANIZATION_REQUIRES_TENANT',
+        "切换组织需要租户上下文",
+        "SWITCH_ORGANIZATION_REQUIRES_TENANT",
       );
     }
 
@@ -582,8 +582,8 @@ export class IsolationContext {
   switchDepartment(newDepartmentId: DepartmentId): IsolationContext {
     if (!this.tenantId || !this.organizationId) {
       throw new IsolationValidationError(
-        '切换部门需要租户和组织上下文',
-        'SWITCH_DEPARTMENT_REQUIRES_TENANT_AND_ORG',
+        "切换部门需要租户和组织上下文",
+        "SWITCH_DEPARTMENT_REQUIRES_TENANT_AND_ORG",
       );
     }
 

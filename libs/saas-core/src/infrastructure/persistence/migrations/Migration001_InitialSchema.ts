@@ -15,7 +15,7 @@
 
 // 注意：由于 TypeScript 项目引用的限制，这里直接从 @mikro-orm/migrations 导入
 // @hl8/database 已经包含此依赖，不违反宪章要求
-import { Migration } from '@mikro-orm/migrations';
+import { Migration } from "@mikro-orm/migrations";
 
 export class Migration001_InitialSchema extends Migration {
   override async up(): Promise<void> {
@@ -69,7 +69,9 @@ export class Migration001_InitialSchema extends Migration {
       );
     `);
 
-    this.addSql(`CREATE INDEX idx_tenant_config_tenant_id ON tenant_configurations(tenant_id);`);
+    this.addSql(
+      `CREATE INDEX idx_tenant_config_tenant_id ON tenant_configurations(tenant_id);`,
+    );
 
     // 创建事件存储表
     this.addSql(`
@@ -87,9 +89,15 @@ export class Migration001_InitialSchema extends Migration {
       );
     `);
 
-    this.addSql(`CREATE INDEX idx_event_store_aggregate ON event_store(aggregate_type, aggregate_id);`);
-    this.addSql(`CREATE INDEX idx_event_store_tenant_id ON event_store(tenant_id);`);
-    this.addSql(`CREATE INDEX idx_event_store_version ON event_store(aggregate_type, aggregate_id, version);`);
+    this.addSql(
+      `CREATE INDEX idx_event_store_aggregate ON event_store(aggregate_type, aggregate_id);`,
+    );
+    this.addSql(
+      `CREATE INDEX idx_event_store_tenant_id ON event_store(tenant_id);`,
+    );
+    this.addSql(
+      `CREATE INDEX idx_event_store_version ON event_store(aggregate_type, aggregate_id, version);`,
+    );
 
     // 创建快照存储表
     this.addSql(`
@@ -104,8 +112,12 @@ export class Migration001_InitialSchema extends Migration {
       );
     `);
 
-    this.addSql(`CREATE INDEX idx_snapshot_store_aggregate ON snapshot_store(aggregate_type, aggregate_id);`);
-    this.addSql(`CREATE INDEX idx_snapshot_store_version ON snapshot_store(aggregate_type, aggregate_id, version DESC);`);
+    this.addSql(
+      `CREATE INDEX idx_snapshot_store_aggregate ON snapshot_store(aggregate_type, aggregate_id);`,
+    );
+    this.addSql(
+      `CREATE INDEX idx_snapshot_store_version ON snapshot_store(aggregate_type, aggregate_id, version DESC);`,
+    );
   }
 
   override async down(): Promise<void> {
@@ -116,4 +128,3 @@ export class Migration001_InitialSchema extends Migration {
     this.addSql(`DROP TABLE IF EXISTS tenants;`);
   }
 }
-

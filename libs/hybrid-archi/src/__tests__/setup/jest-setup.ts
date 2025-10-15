@@ -1,12 +1,12 @@
 /**
  * Jest 测试环境设置
- * 
+ *
  * 在测试环境初始化后、测试运行前执行
  * 用于设置全局测试配置和模拟
  */
 
 // 设置测试环境变量
-process.env.NODE_ENV = 'test';
+process.env.NODE_ENV = "test";
 
 // 全局测试超时设置
 jest.setTimeout(30000);

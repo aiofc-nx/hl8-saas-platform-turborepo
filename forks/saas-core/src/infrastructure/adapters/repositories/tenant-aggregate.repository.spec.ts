@@ -2,11 +2,11 @@
  * 租户聚合根仓储适配器单元测试
  */
 
-import { EntityManager } from '@mikro-orm/core';
-import { TenantAggregateRepository } from './tenant-aggregate.repository';
-import { TenantMapper } from '../../mappers/tenant.mapper';
+import { EntityManager } from "@mikro-orm/core";
+import { TenantAggregateRepository } from "./tenant-aggregate.repository";
+import { TenantMapper } from "../../mappers/tenant.mapper";
 
-describe('TenantAggregateRepository', () => {
+describe("TenantAggregateRepository", () => {
   let repository: TenantAggregateRepository;
   let mockEm: jest.Mocked<EntityManager>;
   let mapper: TenantMapper;
@@ -25,10 +25,9 @@ describe('TenantAggregateRepository', () => {
     repository = new TenantAggregateRepository(mockEm, mapper);
   });
 
-  it('应该定义仓储', () => {
+  it("应该定义仓储", () => {
     expect(repository).toBeDefined();
   });
 
   // TODO: 添加更多测试
 });
-

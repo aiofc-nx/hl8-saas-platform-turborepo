@@ -24,7 +24,7 @@
  * @description 装饰器元数据接口定义
  * @since 1.0.0
  */
-import { DecoratorType, HandlerType } from './metadata.constants';
+import { DecoratorType, HandlerType } from "./metadata.constants";
 
 /**
  * 基础元数据接口
@@ -199,22 +199,22 @@ export interface ITransactionConfig {
    * 事务传播行为
    */
   propagation?:
-    | 'REQUIRED'
-    | 'REQUIRES_NEW'
-    | 'SUPPORTS'
-    | 'NOT_SUPPORTED'
-    | 'NEVER'
-    | 'MANDATORY'
-    | 'NESTED';
+    | "REQUIRED"
+    | "REQUIRES_NEW"
+    | "SUPPORTS"
+    | "NOT_SUPPORTED"
+    | "NEVER"
+    | "MANDATORY"
+    | "NESTED";
 
   /**
    * 事务隔离级别
    */
   isolation?:
-    | 'READ_UNCOMMITTED'
-    | 'READ_COMMITTED'
-    | 'REPEATABLE_READ'
-    | 'SERIALIZABLE';
+    | "READ_UNCOMMITTED"
+    | "READ_COMMITTED"
+    | "REPEATABLE_READ"
+    | "SERIALIZABLE";
 
   /**
    * 事务超时时间（秒）
@@ -244,7 +244,7 @@ export interface IMultiTenantConfig {
   /**
    * 租户标识符来源
    */
-  tenantSource?: 'header' | 'parameter' | 'context' | 'custom';
+  tenantSource?: "header" | "parameter" | "context" | "custom";
 
   /**
    * 租户标识符键名
@@ -274,17 +274,17 @@ export interface IDataIsolationConfig {
   /**
    * 隔离级别
    */
-  level?: 'TENANT' | 'ORGANIZATION' | 'DEPARTMENT' | 'PERSONAL' | 'PUBLIC';
+  level?: "TENANT" | "ORGANIZATION" | "DEPARTMENT" | "PERSONAL" | "PUBLIC";
 
   /**
    * 数据敏感性
    */
-  sensitivity?: 'PUBLIC' | 'INTERNAL' | 'CONFIDENTIAL' | 'RESTRICTED';
+  sensitivity?: "PUBLIC" | "INTERNAL" | "CONFIDENTIAL" | "RESTRICTED";
 
   /**
    * 隔离策略
    */
-  strategy?: 'AUTO' | 'MANUAL' | 'CUSTOM';
+  strategy?: "AUTO" | "MANUAL" | "CUSTOM";
 
   /**
    * 自定义隔离器

@@ -62,8 +62,8 @@
  *
  * @since 1.0.0
  */
-import { EntityId } from '@hl8/isolation-model';
-import { TenantId } from '@hl8/isolation-model';
+import { EntityId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model";
 
 export abstract class BaseCommand {
   private readonly _commandId: EntityId;
@@ -323,19 +323,19 @@ export abstract class BaseCommand {
    */
   protected validate(): void {
     if (!this._commandId || this._commandId.isEmpty()) {
-      throw new Error('Command ID cannot be null or empty');
+      throw new Error("Command ID cannot be null or empty");
     }
 
     if (!this._tenantId) {
-      throw new Error('Tenant ID cannot be null or empty');
+      throw new Error("Tenant ID cannot be null or empty");
     }
 
     if (!this._userId) {
-      throw new Error('User ID cannot be null or empty');
+      throw new Error("User ID cannot be null or empty");
     }
 
     if (this._commandVersion < 1) {
-      throw new Error('Command version must be greater than 0');
+      throw new Error("Command version must be greater than 0");
     }
   }
 }

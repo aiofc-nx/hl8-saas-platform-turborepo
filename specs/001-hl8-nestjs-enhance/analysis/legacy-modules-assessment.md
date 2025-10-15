@@ -606,11 +606,11 @@ libs/nestjs-infra/
 
 ```typescript
 // 整合前：需要导入多个包
-import { CacheModule } from '@hl8/cache';
-import { TypedConfigModule } from '@hl8/config';
-import { LoggerModule } from '@hl8/logger';
-import { MultiTenancyModule } from '@hl8/multi-tenancy';
-import { FastifyProModule } from '@hl8/fastify-pro';
+import { CacheModule } from "@hl8/cache";
+import { TypedConfigModule } from "@hl8/config";
+import { LoggerModule } from "@hl8/logger";
+import { MultiTenancyModule } from "@hl8/multi-tenancy";
+import { FastifyProModule } from "@hl8/fastify-pro";
 
 // 整合后：统一导入
 import {
@@ -619,7 +619,7 @@ import {
   LoggingModule,
   MultiTenancyModule,
   EnterpriseFastifyAdapter,
-} from '@hl8/nestjs-infra';
+} from "@hl8/nestjs-infra";
 ```
 
 **版本管理**：

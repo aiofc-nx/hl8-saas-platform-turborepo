@@ -1,4 +1,4 @@
-import type { MethodDecoratorTarget } from '../types/index';
+import type { MethodDecoratorTarget } from "../types/index";
 
 /**
  * 审计日志装饰器
@@ -75,7 +75,7 @@ export interface IAuditLogOptions {
 /**
  * 审计日志装饰器元数据键
  */
-export const AUDIT_LOG_METADATA_KEY = Symbol('auditLog');
+export const AUDIT_LOG_METADATA_KEY = Symbol("auditLog");
 
 /**
  * 审计日志装饰器

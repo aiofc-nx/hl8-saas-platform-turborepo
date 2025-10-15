@@ -60,9 +60,9 @@
  * @since 1.0.0
  */
 
-import { EntityId  } from '@hl8/isolation-model';
-import { IEntity } from '../../entities/base/entity.interface';
-import { TenantId } from '@hl8/isolation-model';
+import { EntityId } from "@hl8/isolation-model";
+import { IEntity } from "../../entities/base/entity.interface";
+import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 基础仓储接口
@@ -245,7 +245,7 @@ export interface IRepositoryQueryOptions {
   /**
    * 排序方向
    */
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 
   /**
    * 过滤条件
@@ -324,8 +324,8 @@ export abstract class BaseRepositoryError extends Error {
  * 并发冲突异常
  */
 export class ConcurrencyError extends BaseRepositoryError {
-  readonly errorCode = 'CONCURRENCY_ERROR';
-  readonly errorType = 'concurrency';
+  readonly errorCode = "CONCURRENCY_ERROR";
+  readonly errorType = "concurrency";
 
   constructor(
     message: string,
@@ -342,8 +342,8 @@ export class ConcurrencyError extends BaseRepositoryError {
  * 实体未找到异常
  */
 export class EntityNotFoundError extends BaseRepositoryError {
-  readonly errorCode = 'ENTITY_NOT_FOUND';
-  readonly errorType = 'notFound';
+  readonly errorCode = "ENTITY_NOT_FOUND";
+  readonly errorType = "notFound";
 
   constructor(
     message: string,
@@ -359,8 +359,8 @@ export class EntityNotFoundError extends BaseRepositoryError {
  * 数据验证异常
  */
 export class ValidationError extends BaseRepositoryError {
-  readonly errorCode = 'VALIDATION_ERROR';
-  readonly errorType = 'validation';
+  readonly errorCode = "VALIDATION_ERROR";
+  readonly errorType = "validation";
 
   constructor(
     message: string,

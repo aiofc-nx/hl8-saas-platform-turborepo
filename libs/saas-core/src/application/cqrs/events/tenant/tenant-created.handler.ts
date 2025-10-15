@@ -13,8 +13,8 @@
  * @since 1.0.0
  */
 
-import { EventHandler, IEventHandler } from '@hl8/hybrid-archi';
-import { TenantCreatedEvent } from '../../../../domain/tenant/events/tenant-created.event';
+import { EventHandler, IEventHandler } from "@hl8/hybrid-archi";
+import { TenantCreatedEvent } from "../../../../domain/tenant/events/tenant-created.event";
 
 // @EventHandler('TenantCreated') // TODO: 修复装饰器类型问题
 export class TenantCreatedHandler implements IEventHandler<TenantCreatedEvent> {
@@ -24,8 +24,7 @@ export class TenantCreatedHandler implements IEventHandler<TenantCreatedEvent> {
     // - 创建默认组织
     // - 创建根部门
     // - 记录审计日志
-    
-    console.log('租户创建事件:', event.toJSON());
+
+    console.log("租户创建事件:", event.toJSON());
   }
 }
-

@@ -31,16 +31,16 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Global, Module } from '@nestjs/common';
-import { CacheSerializationException } from './exceptions/cache-serialization.exception.js';
-import { CacheInterceptor } from './interceptors/cache.interceptor.js';
-import { CacheMetricsService } from './monitoring/cache-metrics.service.js';
-import { CACHE_OPTIONS, CacheService } from './services/cache.service.js';
-import { REDIS_OPTIONS, RedisService } from './services/redis.service.js';
+import { DynamicModule, Global, Module } from "@nestjs/common";
+import { CacheSerializationException } from "./exceptions/cache-serialization.exception.js";
+import { CacheInterceptor } from "./interceptors/cache.interceptor.js";
+import { CacheMetricsService } from "./monitoring/cache-metrics.service.js";
+import { CACHE_OPTIONS, CacheService } from "./services/cache.service.js";
+import { REDIS_OPTIONS, RedisService } from "./services/redis.service.js";
 import type {
   CachingModuleAsyncOptions,
   CachingModuleOptions,
-} from './types/cache-options.interface.js';
+} from "./types/cache-options.interface.js";
 
 @Global()
 @Module({})
@@ -120,7 +120,7 @@ export class CachingModule {
               return config.redis;
             }
             throw new CacheSerializationException(
-              'useFactory is required for async configuration',
+              "useFactory is required for async configuration",
             );
           },
           inject: options.inject || [],
@@ -137,7 +137,7 @@ export class CachingModule {
               };
             }
             throw new CacheSerializationException(
-              'useFactory is required for async configuration',
+              "useFactory is required for async configuration",
             );
           },
           inject: options.inject || [],

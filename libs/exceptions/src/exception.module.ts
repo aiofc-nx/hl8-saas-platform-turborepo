@@ -46,18 +46,18 @@
  * @packageDocumentation
  */
 
-import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { APP_FILTER } from "@nestjs/core";
 import {
   DEFAULT_EXCEPTION_OPTIONS,
   EXCEPTION_MODULE_OPTIONS,
   ExceptionModuleAsyncOptions,
   ExceptionModuleOptions,
   ExceptionOptionsFactory,
-} from './config/exception.config.js';
-import { AnyExceptionFilter } from './filters/any-exception.filter.js';
-import { HttpExceptionFilter } from './filters/http-exception.filter.js';
-import { DefaultMessageProvider } from './providers/default-message.provider.js';
+} from "./config/exception.config.js";
+import { AnyExceptionFilter } from "./filters/any-exception.filter.js";
+import { HttpExceptionFilter } from "./filters/http-exception.filter.js";
+import { DefaultMessageProvider } from "./providers/default-message.provider.js";
 
 /**
  * 异常处理模块

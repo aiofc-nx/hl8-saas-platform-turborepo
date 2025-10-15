@@ -6,10 +6,10 @@
  */
 
 // 权限装饰器
-export * from './permissions.decorator';
+export * from "./permissions.decorator";
 
 // 租户装饰器
-export * from './tenant.decorator';
+export * from "./tenant.decorator";
 
 // 缓存装饰器
-export * from './cache.decorator';
+export * from "./cache.decorator";

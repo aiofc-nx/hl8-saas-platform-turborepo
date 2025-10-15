@@ -6,5 +6,4 @@
  */
 
 // 权限业务特定类型和枚举
-export * from './permission-definitions.enum.js';
-
+export * from "./permission-definitions.enum.js";

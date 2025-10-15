@@ -67,15 +67,15 @@ hybrid-archi 提供了统一的混合架构设计模式，确保所有业务模�
 
 ```typescript
 // 所有业务模块都基于相同的基础组件
-import { 
-  BaseEntity,           // 基础实体
-  BaseAggregateRoot,    // 基础聚合根
-  BaseValueObject,      // 基础值对象
-  BaseDomainEvent,      // 基础领域事件
-  CommandBus,           // 命令总线
-  QueryBus,             // 查询总线
-  EventBus              // 事件总线
-} from '@hl8/hybrid-archi';
+import {
+  BaseEntity, // 基础实体
+  BaseAggregateRoot, // 基础聚合根
+  BaseValueObject, // 基础值对象
+  BaseDomainEvent, // 基础领域事件
+  CommandBus, // 命令总线
+  QueryBus, // 查询总线
+  EventBus, // 事件总线
+} from "@hl8/hybrid-archi";
 ```
 
 ### 2. 通用功能组件
@@ -214,7 +214,7 @@ packages/hybrid-archi/src/
 #### 1. 创建值对象
 
 ```typescript
-import { BaseValueObject } from '@hl8/hybrid-archi';
+import { BaseValueObject } from "@hl8/hybrid-archi";
 
 /**
  * 邮箱值对象
@@ -236,7 +236,7 @@ export class Email extends BaseValueObject {
   protected validate(): void {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this._value)) {
-      throw new Error('Invalid email format');
+      throw new Error("Invalid email format");
     }
   }
 
@@ -250,8 +250,8 @@ export class Email extends BaseValueObject {
 #### 2. 创建实体
 
 ```typescript
-import { BaseEntity, EntityId } from '@hl8/hybrid-archi';
-import { Email } from '../value-objects/email.vo';
+import { BaseEntity, EntityId } from "@hl8/hybrid-archi";
+import { Email } from "../value-objects/email.vo";
 
 /**
  * 用户实体
@@ -261,18 +261,15 @@ export class User extends BaseEntity {
     id: EntityId,
     private _name: string,
     private _email: Email,
-    auditInfo: IPartialAuditInfo
+    auditInfo: IPartialAuditInfo,
   ) {
     super(id, auditInfo);
   }
 
   static create(name: string, email: Email): User {
-    const user = new User(
-      EntityId.generate(),
-      name,
-      email,
-      { createdBy: 'system' }
-    );
+    const user = new User(EntityId.generate(), name, email, {
+      createdBy: "system",
+    });
     return user;
   }
 
@@ -299,12 +296,12 @@ export class User extends BaseEntity {
 #### 3. 创建聚合根
 
 ```typescript
-import { 
-  BaseAggregateRoot, 
+import {
+  BaseAggregateRoot,
   EntityId,
-  BaseDomainEvent 
-} from '@hl8/hybrid-archi';
-import { User } from '../entities/user.entity';
+  BaseDomainEvent,
+} from "@hl8/hybrid-archi";
+import { User } from "../entities/user.entity";
 
 /**
  * 用户聚合根
@@ -313,24 +310,29 @@ export class UserAggregate extends BaseAggregateRoot {
   private constructor(
     id: EntityId,
     private _user: User,
-    auditInfo: IPartialAuditInfo
+    auditInfo: IPartialAuditInfo,
   ) {
     super(id, auditInfo);
   }
 
   static create(name: string, email: Email): UserAggregate {
     const user = User.create(name, email);
-    const aggregate = new UserAggregate(
-      user.id,
-      user,
-      { createdBy: 'system', tenantId: 'tenant-123' }
-    );
-    
+    const aggregate = new UserAggregate(user.id, user, {
+      createdBy: "system",
+      tenantId: "tenant-123",
+    });
+
     // 发布领域事件
     aggregate.addDomainEvent(
-      new UserCreatedEvent(aggregate.id, 1, aggregate.tenantId, name, email.value)
+      new UserCreatedEvent(
+        aggregate.id,
+        1,
+        aggregate.tenantId,
+        name,
+        email.value,
+      ),
     );
-    
+
     return aggregate;
   }
 
@@ -338,7 +340,12 @@ export class UserAggregate extends BaseAggregateRoot {
   updateUserEmail(newEmail: Email): void {
     this._user.updateEmail(newEmail);
     this.addDomainEvent(
-      new UserEmailUpdatedEvent(this.id, this.version, this.tenantId, newEmail.value)
+      new UserEmailUpdatedEvent(
+        this.id,
+        this.version,
+        this.tenantId,
+        newEmail.value,
+      ),
     );
   }
 
@@ -351,7 +358,7 @@ export class UserAggregate extends BaseAggregateRoot {
 #### 4. 实现用例（CQRS）
 
 ```typescript
-import { IUseCase, CommandBus, QueryBus } from '@hl8/hybrid-archi';
+import { IUseCase, CommandBus, QueryBus } from "@hl8/hybrid-archi";
 
 /**
  * 创建用户命令
@@ -361,13 +368,13 @@ export class CreateUserCommand extends BaseCommand {
     public readonly name: string,
     public readonly email: string,
     tenantId: string,
-    userId: string
+    userId: string,
   ) {
     super(tenantId, userId);
   }
 
   get commandType(): string {
-    return 'CreateUser';
+    return "CreateUser";
   }
 }
 
@@ -377,35 +384,35 @@ export class CreateUserCommand extends BaseCommand {
 export class CreateUserUseCase implements IUseCase<CreateUserCommand, UserDto> {
   constructor(
     private readonly commandBus: CommandBus,
-    private readonly userRepository: IUserRepository
+    private readonly userRepository: IUserRepository,
   ) {}
 
   async execute(command: CreateUserCommand): Promise<UserDto> {
     // 1. 创建值对象
     const email = Email.create(command.email);
-    
+
     // 2. 创建聚合根
     const userAggregate = UserAggregate.create(command.name, email);
-    
+
     // 3. 保存到仓储
     await this.userRepository.save(userAggregate);
-    
+
     // 4. 发布领域事件
     const events = userAggregate.getUncommittedEvents();
     for (const event of events) {
       await this.commandBus.publishEvent(event);
     }
-    
+
     // 5. 返回 DTO
     return UserDto.fromAggregate(userAggregate);
   }
 
   getUseCaseName(): string {
-    return 'CreateUser';
+    return "CreateUser";
   }
 
   getUseCaseDescription(): string {
-    return '创建新用户';
+    return "创建新用户";
   }
 }
 ```
@@ -423,7 +430,7 @@ export class CreateUserUseCase implements IUseCase<CreateUserCommand, UserDto> {
 ```typescript
 /**
  * 基础实体类
- * 
+ *
  * 特点：
  * - 具有唯一标识符
  * - 生命周期管理
@@ -433,9 +440,9 @@ export class CreateUserUseCase implements IUseCase<CreateUserCommand, UserDto> {
 export abstract class BaseEntity implements IEntity {
   protected constructor(
     private readonly _id: EntityId,
-    private readonly _auditInfo: IAuditInfo
+    private readonly _auditInfo: IAuditInfo,
   ) {}
-  
+
   // 相等性基于 ID
   equals(other: BaseEntity): boolean {
     return this._id.equals(other._id);
@@ -448,7 +455,7 @@ export abstract class BaseEntity implements IEntity {
 ```typescript
 /**
  * 基础聚合根类
- * 
+ *
  * 特点：
  * - 管理一致性边界
  * - 发布领域事件
@@ -458,11 +465,11 @@ export abstract class BaseEntity implements IEntity {
 export abstract class BaseAggregateRoot extends BaseEntity {
   private _domainEvents: BaseDomainEvent[] = [];
   private _version: number = 0;
-  
+
   addDomainEvent(event: BaseDomainEvent): void {
     this._domainEvents.push(event);
   }
-  
+
   getUncommittedEvents(): readonly BaseDomainEvent[] {
     return this._domainEvents;
   }
@@ -474,7 +481,7 @@ export abstract class BaseAggregateRoot extends BaseEntity {
 ```typescript
 /**
  * 基础值对象类
- * 
+ *
  * 特点：
  * - 不可变
  * - 相等性基于值
@@ -485,7 +492,7 @@ export abstract class BaseValueObject {
   equals(other: BaseValueObject): boolean {
     return this.arePropertiesEqual(other);
   }
-  
+
   protected abstract arePropertiesEqual(other: BaseValueObject): boolean;
 }
 ```
@@ -520,7 +527,9 @@ export class CommandBus {
 
 // 查询总线
 export class QueryBus {
-  async execute<TQuery extends BaseQuery, TResult>(query: TQuery): Promise<TResult>;
+  async execute<TQuery extends BaseQuery, TResult>(
+    query: TQuery,
+  ): Promise<TResult>;
 }
 ```
 
@@ -564,20 +573,20 @@ export interface IEventStore {
 #### 控制器
 
 ```typescript
-@Controller('users')
+@Controller("users")
 export class UserController extends BaseController {
   constructor(private readonly createUserUseCase: CreateUserUseCase) {
     super();
   }
 
   @Post()
-  @RequirePermissions('user:create')
+  @RequirePermissions("user:create")
   async createUser(@Body() dto: CreateUserDto): Promise<UserDto> {
     const command = new CreateUserCommand(
       dto.name,
       dto.email,
       this.getTenantId(),
-      this.getUserId()
+      this.getUserId(),
     );
     return await this.createUserUseCase.execute(command);
   }
@@ -599,14 +608,14 @@ export class UserController extends BaseController {
 export class Order extends BaseEntity {
   // ✅ 好的做法
   private _status: OrderStatus;
-  
+
   cancel(): void {
     if (this._status !== OrderStatus.Pending) {
-      throw new Error('Only pending orders can be cancelled');
+      throw new Error("Only pending orders can be cancelled");
     }
     this._status = OrderStatus.Cancelled;
   }
-  
+
   // ❌ 不好的做法
   set status(value: OrderStatus) {
     this._status = value;
@@ -624,17 +633,17 @@ export class Order extends BaseEntity {
 ```typescript
 export class OrderAggregate extends BaseAggregateRoot {
   private _orderItems: OrderItem[] = [];
-  
+
   // ✅ 好的做法：协调内部实体
   addItem(productId: string, quantity: number): void {
     const item = OrderItem.create(productId, quantity);
     this._orderItems.push(item);
     this.addDomainEvent(new OrderItemAddedEvent(...));
   }
-  
+
   // ✅ 好的做法：通过 ID 引用其他聚合
   private _customerId: EntityId;
-  
+
   // ❌ 不好的做法：直接引用其他聚合
   // private _customer: CustomerAggregate;
 }
@@ -674,39 +683,41 @@ export class GetOrderQuery extends BaseQuery {
 
 #### 使用决策
 
-| 场景 | 使用 | 原因 |
-|------|------|------|
-| 聚合根发布领域事件 | EventBus | 微秒级延迟，高性能 |
-| CQRS 读写模型同步 | EventBus | 进程内通信，严格顺序 |
-| 跨服务/微服务通信 | @hl8/messaging | 松耦合，支持分布式 |
-| 异步任务（发邮件） | @hl8/messaging | 持久化，可靠传递 |
+| 场景               | 使用           | 原因                 |
+| ------------------ | -------------- | -------------------- |
+| 聚合根发布领域事件 | EventBus       | 微秒级延迟，高性能   |
+| CQRS 读写模型同步  | EventBus       | 进程内通信，严格顺序 |
+| 跨服务/微服务通信  | @hl8/messaging | 松耦合，支持分布式   |
+| 异步任务（发邮件） | @hl8/messaging | 持久化，可靠传递     |
 
 #### 示例对比
 
 ```typescript
 // ✅ 使用 EventBus：领域事件
-@EventHandler('TenantCreated')
+@EventHandler("TenantCreated")
 export class TenantCreatedHandler implements IEventHandler<TenantCreatedEvent> {
   async handle(event: TenantCreatedEvent): Promise<void> {
     // 更新读模型、触发其他领域逻辑
-    console.log('租户已创建:', event.aggregateId);
+    console.log("租户已创建:", event.aggregateId);
   }
 }
 
 // ✅ 使用 @hl8/messaging：集成事件
-@EventHandler('TenantCreated')
-export class TenantIntegrationHandler implements IEventHandler<TenantCreatedEvent> {
+@EventHandler("TenantCreated")
+export class TenantIntegrationHandler
+  implements IEventHandler<TenantCreatedEvent>
+{
   constructor(
-    @Optional() private readonly messagingService?: MessagingService
+    @Optional() private readonly messagingService?: MessagingService,
   ) {}
 
   async handle(event: TenantCreatedEvent): Promise<void> {
     // 1. 处理领域逻辑（EventBus）
     // ...
-    
+
     // 2. 发布集成事件到消息队列（Messaging）
     if (this.messagingService) {
-      await this.messagingService.publish('integration.tenant.created', {
+      await this.messagingService.publish("integration.tenant.created", {
         tenantId: event.aggregateId.toString(),
       });
     }
@@ -731,11 +742,11 @@ export class User extends BaseEntity {
   constructor(
     id: EntityId,
     private _name: string,
-    auditInfo: IPartialAuditInfo  // 包含 tenantId
+    auditInfo: IPartialAuditInfo, // 包含 tenantId
   ) {
     super(id, auditInfo);
   }
-  
+
   // 租户 ID 自动管理
   get tenantId(): string {
     return this.auditInfo.tenantId;
@@ -759,10 +770,10 @@ export class Order extends BaseEntity {
     this._status = OrderStatus.Cancelled;
     this.addDomainEvent(new OrderCancelledEvent(this.id));
   }
-  
+
   private ensureCanBeCancelled(): void {
     if (this._status !== OrderStatus.Pending) {
-      throw new Error('Cannot cancel non-pending order');
+      throw new Error("Cannot cancel non-pending order");
     }
   }
 }
@@ -771,7 +782,7 @@ export class Order extends BaseEntity {
 export class OrderService {
   cancel(order: Order): void {
     if (order.status !== OrderStatus.Pending) {
-      throw new Error('Cannot cancel non-pending order');
+      throw new Error("Cannot cancel non-pending order");
     }
     order.status = OrderStatus.Cancelled;
   }
@@ -812,11 +823,11 @@ export class OrderItem extends BaseEntity {
 export class Money extends BaseValueObject {
   private constructor(
     private readonly _amount: number,
-    private readonly _currency: string
+    private readonly _currency: string,
   ) {
     super();
   }
-  
+
   add(other: Money): Money {
     this.ensureSameCurrency(other);
     return new Money(this._amount + other._amount, this._currency);
@@ -826,7 +837,7 @@ export class Money extends BaseValueObject {
 // ❌ 不好的做法
 export class Money extends BaseValueObject {
   private _amount: number;
-  
+
   setAmount(amount: number): void {
     this._amount = amount;
   }
@@ -843,13 +854,13 @@ export class User extends BaseEntity {
     if (this._status === UserStatus.Active) {
       return;
     }
-    
+
     this._status = UserStatus.Active;
     this._activatedAt = new Date();
-    
+
     // ✅ 发布领域事件
     this.addDomainEvent(
-      new UserActivatedEvent(this.id, this.version, this.tenantId)
+      new UserActivatedEvent(this.id, this.version, this.tenantId),
     );
   }
 }
@@ -867,14 +878,14 @@ export class OrderAggregate extends BaseAggregateRoot {
     order.addDomainEvent(new OrderCreatedEvent(...));
     return order;
   }
-  
+
   // 从事件流重建
   static fromEvents(events: DomainEvent[]): OrderAggregate {
     const order = new OrderAggregate(...);
     events.forEach(event => order.apply(event));
     return order;
   }
-  
+
   // 应用事件到聚合
   private apply(event: DomainEvent): void {
     switch (event.type) {
@@ -924,8 +935,8 @@ export {
   BaseValueObject,
   BaseDomainEvent,
   IDomainService,
-  IRepository
-} from '@hl8/hybrid-archi';
+  IRepository,
+} from "@hl8/hybrid-archi";
 
 // 应用层
 export {
@@ -935,8 +946,8 @@ export {
   CQRSBus,
   IUseCase,
   ICommand,
-  IQuery
-} from '@hl8/hybrid-archi';
+  IQuery,
+} from "@hl8/hybrid-archi";
 
 // 接口层
 export {
@@ -944,8 +955,8 @@ export {
   RequirePermissions,
   TenantContext,
   CurrentUser,
-  JwtAuthGuard
-} from '@hl8/hybrid-archi';
+  JwtAuthGuard,
+} from "@hl8/hybrid-archi";
 ```
 
 详细的 API 文档请查看：[API Documentation](docs/api/README.md)
@@ -997,7 +1008,7 @@ export class OrderProcessSaga extends BaseSaga {
 
 // ✅ 使用领域事件
 export class InventoryEventHandler {
-  @EventHandler('OrderCreated')
+  @EventHandler("OrderCreated")
   async handle(event: OrderCreatedEvent): Promise<void> {
     await this.inventoryService.reduceStock(event.items);
   }
@@ -1010,14 +1021,14 @@ export class InventoryEventHandler {
 
 ```typescript
 // 1. 聚合根自动包含租户 ID
-const user = UserAggregate.create('张三', email);
+const user = UserAggregate.create("张三", email);
 console.log(user.tenantId); // 自动注入
 
 // 2. 仓储自动过滤租户数据
 const users = await userRepository.findAll(); // 只返回当前租户的数据
 
 // 3. 守卫自动验证租户
-@Controller('users')
+@Controller("users")
 @UseGuards(TenantIsolationGuard)
 export class UserController {
   // 自动验证租户权限
@@ -1029,14 +1040,14 @@ export class UserController {
 **A**: 使用 Jest 进行单元测试：
 
 ```typescript
-describe('User', () => {
-  it('应该能够激活用户', () => {
+describe("User", () => {
+  it("应该能够激活用户", () => {
     // Arrange
-    const user = User.create('张三', Email.create('test@example.com'));
-    
+    const user = User.create("张三", Email.create("test@example.com"));
+
     // Act
     user.activate();
-    
+
     // Assert
     expect(user.status).toBe(UserStatus.Active);
     expect(user.domainEvents).toHaveLength(2); // Created + Activated

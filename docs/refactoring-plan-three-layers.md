@@ -206,7 +206,7 @@ import {
   EntityId,
   IsolationContext,
   AbstractHttpException,
-} from '@hl8/platform';
+} from "@hl8/platform";
 ```
 
 ---
@@ -234,14 +234,14 @@ import {
   AbstractHttpException,
   EntityId,
   IsolationContext,
-} from '@hl8/platform';
+} from "@hl8/platform";
 
 // 从 nestjs-infra 复用模块
 import {
   CachingModule,
   IsolationModule,
   TypedConfigModule,
-} from '@hl8/nestjs-infra';
+} from "@hl8/nestjs-infra";
 ```
 
 ---
@@ -458,10 +458,10 @@ pnpm test
 
 ```typescript
 // 之前
-import { EntityId } from '../shared/value-objects/entity-id.vo.js';
+import { EntityId } from "../shared/value-objects/entity-id.vo.js";
 
 // 之后
-import { EntityId } from '@hl8/platform';
+import { EntityId } from "@hl8/platform";
 ```
 
 **3. 移除 shared 目录**:
@@ -474,11 +474,11 @@ rm -rf libs/nestjs-infra/src/shared
 
 ```typescript
 // 重新导出 platform 的核心类型
-export * from '@hl8/platform';
+export * from "@hl8/platform";
 
 // 导出 NestJS 模块
-export * from './exceptions/index.js';
-export * from './logging/index.js';
+export * from "./exceptions/index.js";
+export * from "./logging/index.js";
 // ...
 ```
 
@@ -512,10 +512,10 @@ pnpm test
 
 ```typescript
 // 从 platform 导入核心
-import { AbstractHttpException, EntityId } from '@hl8/platform';
+import { AbstractHttpException, EntityId } from "@hl8/platform";
 
 // 从 nestjs-infra 复用
-import { CachingModule, IsolationModule } from '@hl8/nestjs-infra';
+import { CachingModule, IsolationModule } from "@hl8/nestjs-infra";
 ```
 
 ---
@@ -541,7 +541,7 @@ import {
   FastifyLoggingModule,
   CachingModule,
   IsolationModule,
-} from '@hl8/nestjs-fastify';
+} from "@hl8/nestjs-fastify";
 ```
 
 ---

@@ -52,7 +52,6 @@
  * @since 1.0.0
  */
 
-
 /**
  * 读仓储端口接口
  *
@@ -156,7 +155,7 @@ export interface IQueryOptions {
    */
   sort?: {
     field: string;
-    direction: 'asc' | 'desc';
+    direction: "asc" | "desc";
   }[];
 
   /**
@@ -194,7 +193,7 @@ export interface IPaginationOptions {
    */
   sort?: {
     field: string;
-    direction: 'asc' | 'desc';
+    direction: "asc" | "desc";
   }[];
 }
 
@@ -252,7 +251,7 @@ export interface IAggregationConfig {
    */
   aggregations: {
     field: string;
-    operation: 'count' | 'sum' | 'avg' | 'min' | 'max';
+    operation: "count" | "sum" | "avg" | "min" | "max";
     alias?: string;
   }[];
 

@@ -7,8 +7,8 @@
  * @since 1.0.0
  */
 
-import { BaseCommand } from '@hl8/hybrid-archi';
-import { TenantType } from '../../../../domain/tenant/value-objects/tenant-type.enum';
+import { BaseCommand } from "@hl8/hybrid-archi";
+import { TenantType } from "../../../../domain/tenant/value-objects/tenant-type.enum";
 
 export class CreateTenantCommand extends BaseCommand {
   constructor(
@@ -23,7 +23,6 @@ export class CreateTenantCommand extends BaseCommand {
   }
 
   get commandType(): string {
-    return 'CreateTenantCommand';
+    return "CreateTenantCommand";
   }
 }
-

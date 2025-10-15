@@ -49,19 +49,19 @@
  * @since 1.0.0
  */
 
-import { SetMetadata, applyDecorators } from '@nestjs/common';
+import { SetMetadata, applyDecorators } from "@nestjs/common";
 
 /**
  * 权限检查元数据键
  */
-export const PERMISSIONS_KEY = 'permissions';
-export const PERMISSION_LOGIC_KEY = 'permission_logic';
-export const OWNERSHIP_KEY = 'ownership';
+export const PERMISSIONS_KEY = "permissions";
+export const PERMISSION_LOGIC_KEY = "permission_logic";
+export const OWNERSHIP_KEY = "ownership";
 
 /**
  * 权限逻辑类型
  */
-export type PermissionLogic = 'AND' | 'OR';
+export type PermissionLogic = "AND" | "OR";
 
 /**
  * 权限要求接口
@@ -86,7 +86,7 @@ export interface PermissionRequirement {
  */
 export function RequirePermissions(
   permissions: string | string[],
-  logic: PermissionLogic = 'AND'
+  logic: PermissionLogic = "AND",
 ): MethodDecorator {
   const permissionArray = Array.isArray(permissions)
     ? permissions
@@ -94,7 +94,7 @@ export function RequirePermissions(
 
   return applyDecorators(
     SetMetadata(PERMISSIONS_KEY, permissionArray),
-    SetMetadata(PERMISSION_LOGIC_KEY, logic)
+    SetMetadata(PERMISSION_LOGIC_KEY, logic),
   );
 }
 
@@ -110,7 +110,7 @@ export function RequirePermissions(
  */
 export function RequireOwnership(
   resourceField: string,
-  userField: string
+  userField: string,
 ): MethodDecorator {
   return SetMetadata(OWNERSHIP_KEY, {
     resourceField,
@@ -126,7 +126,7 @@ export function RequireOwnership(
  * @returns 装饰器
  */
 export function RequireAdmin(): MethodDecorator {
-  return RequirePermissions('admin:full');
+  return RequirePermissions("admin:full");
 }
 
 /**
@@ -137,7 +137,7 @@ export function RequireAdmin(): MethodDecorator {
  * @returns 装饰器
  */
 export function RequireTenantAdmin(): MethodDecorator {
-  return RequirePermissions('tenant:admin');
+  return RequirePermissions("tenant:admin");
 }
 
 /**
@@ -148,7 +148,7 @@ export function RequireTenantAdmin(): MethodDecorator {
  * @returns 装饰器
  */
 export function RequireOrganizationAdmin(): MethodDecorator {
-  return RequirePermissions('organization:admin');
+  return RequirePermissions("organization:admin");
 }
 
 /**
@@ -159,7 +159,7 @@ export function RequireOrganizationAdmin(): MethodDecorator {
  * @returns 装饰器
  */
 export function RequireDepartmentAdmin(): MethodDecorator {
-  return RequirePermissions('department:admin');
+  return RequirePermissions("department:admin");
 }
 
 /**
@@ -171,11 +171,11 @@ export function RequireDepartmentAdmin(): MethodDecorator {
  * @returns 装饰器
  */
 export function RequireMultiplePermissions(
-  requirements: PermissionRequirement[]
+  requirements: PermissionRequirement[],
 ): MethodDecorator {
   return applyDecorators(
     SetMetadata(PERMISSIONS_KEY, requirements),
-    SetMetadata(PERMISSION_LOGIC_KEY, 'MULTIPLE')
+    SetMetadata(PERMISSION_LOGIC_KEY, "MULTIPLE"),
   );
 }
 
@@ -188,9 +188,9 @@ export function RequireMultiplePermissions(
  * @returns 装饰器
  */
 export function RequireDynamicPermissions(
-  permissionResolver: (context: unknown) => string[]
+  permissionResolver: (context: unknown) => string[],
 ): MethodDecorator {
-  return SetMetadata('dynamic_permissions', permissionResolver);
+  return SetMetadata("dynamic_permissions", permissionResolver);
 }
 
 /**
@@ -203,12 +203,12 @@ export function RequireDynamicPermissions(
  * @returns 装饰器
  */
 export function ExcludePermissions(
-  permissions: string | string[]
+  permissions: string | string[],
 ): MethodDecorator {
   const permissionArray = Array.isArray(permissions)
     ? permissions
     : [permissions];
-  return SetMetadata('exclude_permissions', permissionArray);
+  return SetMetadata("exclude_permissions", permissionArray);
 }
 
 /**
@@ -222,9 +222,9 @@ export function ExcludePermissions(
  */
 export function RequirePermissionsIf(
   condition: (context: unknown) => boolean,
-  permissions: string | string[]
+  permissions: string | string[],
 ): MethodDecorator {
-  return SetMetadata('conditional_permissions', {
+  return SetMetadata("conditional_permissions", {
     condition,
     permissions: Array.isArray(permissions) ? permissions : [permissions],
   });

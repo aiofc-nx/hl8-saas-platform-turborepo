@@ -118,14 +118,12 @@
  * @since 1.1.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
-import { IPartialAuditInfo } from '../../entities/base/audit-info';
-import { PinoLogger } from '@hl8/logger';
-import { BaseAggregateRoot } from './base-aggregate-root';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import {
-  GeneralBadRequestException,
-} from '@hl8/common';
+import { EntityId } from "../../value-objects/entity-id";
+import { IPartialAuditInfo } from "../../entities/base/audit-info";
+import { PinoLogger } from "@hl8/logger";
+import { BaseAggregateRoot } from "./base-aggregate-root";
+import { BaseDomainEvent } from "../../events/base/base-domain-event";
+import { GeneralBadRequestException } from "@hl8/common";
 
 /**
  * 租户感知聚合根基类
@@ -197,7 +195,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
   protected constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger
+    logger?: PinoLogger,
   ) {
     super(id, auditInfo, logger);
 
@@ -252,16 +250,16 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
     if (
       !this.tenantId ||
       !this.tenantId.value ||
-      this.tenantId.value.trim() === ''
+      this.tenantId.value.trim() === ""
     ) {
       throw new GeneralBadRequestException(
-        'Tenant context required',
-        '租户上下文缺失，所有操作必须在租户上下文中执行',
+        "Tenant context required",
+        "租户上下文缺失，所有操作必须在租户上下文中执行",
         {
           aggregateType: this.constructor.name,
           aggregateId: this.id.toString(),
-          reason: 'Missing or invalid tenant ID',
-        }
+          reason: "Missing or invalid tenant ID",
+        },
       );
     }
   }
@@ -328,11 +326,11 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
    */
   protected ensureSameTenant(
     entityTenantId: EntityId,
-    entityType: string = 'Entity'
+    entityType: string = "Entity",
   ): void {
     if (!this.tenantId.equals(entityTenantId)) {
       throw new GeneralBadRequestException(
-        'Cross-tenant operation not allowed',
+        "Cross-tenant operation not allowed",
         `无法操作其他租户的${entityType}，数据隔离策略禁止跨租户操作`,
         {
           aggregateType: this.constructor.name,
@@ -340,8 +338,8 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
           aggregateTenantId: this.tenantId.toString(),
           entityTenantId: entityTenantId.toString(),
           entityType,
-          operation: 'cross-tenant-check',
-        }
+          operation: "cross-tenant-check",
+        },
       );
     }
   }
@@ -410,8 +408,8 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
     eventFactory: (
       aggregateId: EntityId,
       version: number,
-      tenantId: EntityId
-    ) => BaseDomainEvent
+      tenantId: EntityId,
+    ) => BaseDomainEvent,
   ): void {
     const event = eventFactory(this.id, this.version, this.tenantId);
     this.addDomainEvent(event);
@@ -553,7 +551,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
    */
   protected logTenantOperation(
     message: string,
-    data?: Record<string, unknown>
+    data?: Record<string, unknown>,
   ): void {
     this.logger.info(message, {
       aggregateType: this.constructor.name,
@@ -612,4 +610,3 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
     };
   }
 }
-

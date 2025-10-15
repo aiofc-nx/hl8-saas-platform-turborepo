@@ -50,9 +50,9 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../../domain/value-objects/entity-id';
-import { IAggregateRoot } from '../../../domain/aggregates/base/aggregate-root.interface';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { EntityId } from "../../../domain/value-objects/entity-id";
+import { IAggregateRoot } from "../../../domain/aggregates/base/aggregate-root.interface";
+import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event";
 
 /**
  * 写仓储端口接口
@@ -347,7 +347,7 @@ export interface IEmailNotification {
   body: string;
   isHtml?: boolean;
   attachments?: IEmailAttachment[];
-  priority?: 'low' | 'normal' | 'high';
+  priority?: "low" | "normal" | "high";
 }
 
 /**
@@ -365,7 +365,7 @@ export interface IEmailAttachment {
 export interface ISmsNotification {
   to: string[];
   message: string;
-  priority?: 'low' | 'normal' | 'high';
+  priority?: "low" | "normal" | "high";
 }
 
 /**
@@ -376,7 +376,7 @@ export interface IPushNotification {
   title: string;
   body: string;
   data?: Record<string, unknown>;
-  priority?: 'low' | 'normal' | 'high';
+  priority?: "low" | "normal" | "high";
 }
 
 /**

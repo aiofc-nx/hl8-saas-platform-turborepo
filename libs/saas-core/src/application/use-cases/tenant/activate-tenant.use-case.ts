@@ -7,10 +7,10 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { ITenantAggregateRepository } from '../../../domain/tenant/repositories/tenant-aggregate.repository.interface';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/hybrid-archi";
+import { ICommandUseCase } from "../base/use-case.interface";
+import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface";
 
 export interface IActivateTenantCommand {
   tenantId: string;
@@ -39,4 +39,3 @@ export class ActivateTenantUseCase
     await this.tenantRepository.save(aggregate);
   }
 }
-

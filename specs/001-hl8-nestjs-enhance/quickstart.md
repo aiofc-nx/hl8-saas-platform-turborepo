@@ -48,20 +48,20 @@ pnpm add @hl8/nestjs-caching
 
 ```typescript
 // src/app.module.ts
-import { Module } from '@nestjs/common';
-import { CachingModule } from '@hl8/nestjs-caching';
+import { Module } from "@nestjs/common";
+import { CachingModule } from "@hl8/nestjs-caching";
 
 @Module({
   imports: [
     CachingModule.forRoot({
       redis: {
-        host: 'localhost',
+        host: "localhost",
         port: 6379,
-        password: 'your-password', // 可选
+        password: "your-password", // 可选
         db: 0,
       },
       defaultTTL: 3600, // 默认 1 小时
-      keyPrefix: 'hl8:cache:',
+      keyPrefix: "hl8:cache:",
       enableMetrics: true,
     }),
   ],
@@ -75,8 +75,8 @@ export class AppModule {}
 
 ```typescript
 // src/users/user.service.ts
-import { Injectable } from '@nestjs/common';
-import { CacheService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { CacheService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class UserService {
@@ -85,7 +85,7 @@ export class UserService {
   async getUserProfile(userId: string) {
     // 尝试从缓存获取
     const cached = await this.cacheService.get<UserProfile>(
-      'user',
+      "user",
       `profile:${userId}`,
     );
 
@@ -97,7 +97,7 @@ export class UserService {
     const profile = await this.userRepository.findOne(userId);
 
     // 缓存结果（30 分钟）
-    await this.cacheService.set('user', `profile:${userId}`, profile, 1800);
+    await this.cacheService.set("user", `profile:${userId}`, profile, 1800);
 
     return profile;
   }
@@ -122,8 +122,8 @@ pnpm run dev
 ### @Cacheable - 自动缓存
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { Cacheable } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { Cacheable } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class UserService {
@@ -133,12 +133,12 @@ export class UserService {
    * - 首次调用：执行方法并缓存结果
    * - 再次调用：直接返回缓存，不执行方法
    */
-  @Cacheable('user', {
+  @Cacheable("user", {
     keyGenerator: (userId: string) => `profile:${userId}`,
     ttl: 1800, // 30 分钟
   })
   async getUserProfile(userId: string): Promise<UserProfile> {
-    console.log('从数据库加载...'); // 首次调用时输出
+    console.log("从数据库加载..."); // 首次调用时输出
     return this.userRepository.findOne(userId);
   }
 }
@@ -147,15 +147,15 @@ export class UserService {
 ### @CacheEvict - 清除缓存
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { CacheEvict } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { CacheEvict } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class UserService {
   /**
    * 更新用户时自动清除缓存
    */
-  @CacheEvict('user', {
+  @CacheEvict("user", {
     keyGenerator: (userId: string) => `profile:${userId}`,
   })
   async updateUserProfile(
@@ -169,7 +169,7 @@ export class UserService {
   /**
    * 删除用户时清除所有相关缓存
    */
-  @CacheEvict('user', {
+  @CacheEvict("user", {
     allEntries: true, // 清除 user 命名空间下的所有缓存
   })
   async deleteUser(userId: string): Promise<void> {
@@ -181,15 +181,15 @@ export class UserService {
 ### @CachePut - 强制更新缓存
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { CachePut } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { CachePut } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class UserService {
   /**
    * 创建用户后立即缓存
    */
-  @CachePut('user', {
+  @CachePut("user", {
     keyGenerator: (user: User) => `profile:${user.id}`,
     ttl: 3600,
   })
@@ -220,8 +220,8 @@ export class UserService {
 ### 自动隔离示例
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { CacheService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { CacheService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class DataService {
@@ -232,7 +232,7 @@ export class DataService {
     // 如果当前用户属于租户 t123，组织 o456，部门 d789
     // 生成的键: hl8:cache:tenant:t123:org:o456:dept:d789:data:list
 
-    return this.cacheService.get('data', 'list');
+    return this.cacheService.get("data", "list");
   }
 }
 ```
@@ -251,8 +251,8 @@ export class DataService {
 ### 清除租户缓存
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { CacheService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { CacheService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class TenantService {
@@ -277,7 +277,7 @@ export class TenantService {
    * 仅清除租户的用户缓存
    */
   async refreshUserCache(tenantId: string): Promise<void> {
-    const count = await this.cacheService.clearTenantCache(tenantId, 'user');
+    const count = await this.cacheService.clearTenantCache(tenantId, "user");
     console.log(`清除了 ${count} 个用户缓存`);
   }
 }
@@ -305,28 +305,28 @@ async reorganize(tenantId: string, orgId: string): Promise<void> {
 
 ```typescript
 // src/app.module.ts
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CachingModule } from '@hl8/nestjs-caching';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { CachingModule } from "@hl8/nestjs-caching";
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ".env",
     }),
     CachingModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         redis: {
-          host: configService.get('REDIS_HOST', 'localhost'),
-          port: configService.get('REDIS_PORT', 6379),
-          password: configService.get('REDIS_PASSWORD'),
-          db: configService.get('REDIS_DB', 0),
+          host: configService.get("REDIS_HOST", "localhost"),
+          port: configService.get("REDIS_PORT", 6379),
+          password: configService.get("REDIS_PASSWORD"),
+          db: configService.get("REDIS_DB", 0),
           connectTimeout: 10000,
         },
-        defaultTTL: configService.get('CACHE_DEFAULT_TTL', 3600),
-        keyPrefix: configService.get('CACHE_KEY_PREFIX', 'hl8:cache:'),
+        defaultTTL: configService.get("CACHE_DEFAULT_TTL", 3600),
+        keyPrefix: configService.get("CACHE_KEY_PREFIX", "hl8:cache:"),
         enableMetrics: true,
       }),
       inject: [ConfigService],
@@ -360,9 +360,9 @@ CACHE_KEY_PREFIX=hl8:cache:
 
 ```typescript
 // src/monitoring/monitoring.service.ts
-import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { CacheMetricsService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { CacheMetricsService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class MonitoringService {
@@ -375,7 +375,7 @@ export class MonitoringService {
   reportCacheMetrics() {
     const metrics = this.metricsService.getMetrics();
 
-    console.log('=== 缓存性能指标 ===');
+    console.log("=== 缓存性能指标 ===");
     console.log(`命中率: ${(metrics.hitRate * 100).toFixed(2)}%`);
     console.log(`平均延迟: ${metrics.averageLatency.toFixed(2)}ms`);
     console.log(`总操作: ${metrics.totalOperations}`);
@@ -391,10 +391,10 @@ export class MonitoringService {
 
 ```typescript
 // src/health/health.controller.ts
-import { Controller, Get } from '@nestjs/common';
-import { RedisService } from '@hl8/nestjs-caching';
+import { Controller, Get } from "@nestjs/common";
+import { RedisService } from "@hl8/nestjs-caching";
 
-@Controller('health')
+@Controller("health")
 export class HealthController {
   constructor(private readonly redisService: RedisService) {}
 
@@ -403,8 +403,8 @@ export class HealthController {
     const redisHealthy = await this.redisService.healthCheck();
 
     return {
-      status: redisHealthy ? 'ok' : 'error',
-      redis: redisHealthy ? 'up' : 'down',
+      status: redisHealthy ? "ok" : "error",
+      redis: redisHealthy ? "up" : "down",
     };
   }
 }
@@ -419,8 +419,8 @@ export class HealthController {
 如果需要使用 `CacheService` 未提供的 Redis 功能：
 
 ```typescript
-import { Injectable } from '@nestjs/common';
-import { RedisService } from '@hl8/nestjs-caching';
+import { Injectable } from "@nestjs/common";
+import { RedisService } from "@hl8/nestjs-caching";
 
 @Injectable()
 export class LeaderboardService {
@@ -430,7 +430,7 @@ export class LeaderboardService {
     const redis = this.redisService.getClient();
 
     // 使用 Redis 的 Sorted Set
-    await redis.zadd('leaderboard', score, userId);
+    await redis.zadd("leaderboard", score, userId);
   }
 
   async getTopUsers(
@@ -440,10 +440,10 @@ export class LeaderboardService {
 
     // 获取排行榜前 N 名
     const results = await redis.zrevrange(
-      'leaderboard',
+      "leaderboard",
       0,
       limit - 1,
-      'WITHSCORES',
+      "WITHSCORES",
     );
 
     const leaderboard = [];
@@ -467,11 +467,11 @@ export class LeaderboardService {
 
 ```typescript
 // src/users/user.service.spec.ts
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
-import { CacheService } from '@hl8/nestjs-caching';
+import { Test, TestingModule } from "@nestjs/testing";
+import { UserService } from "./user.service";
+import { CacheService } from "@hl8/nestjs-caching";
 
-describe('UserService', () => {
+describe("UserService", () => {
   let service: UserService;
   let cacheService: CacheService;
 
@@ -494,19 +494,19 @@ describe('UserService', () => {
     cacheService = module.get<CacheService>(CacheService);
   });
 
-  it('should cache user profile', async () => {
-    const userId = 'u999';
-    const profile = { id: userId, name: '张三' };
+  it("should cache user profile", async () => {
+    const userId = "u999";
+    const profile = { id: userId, name: "张三" };
 
     // Mock 缓存未命中
-    jest.spyOn(cacheService, 'get').mockResolvedValue(null);
-    jest.spyOn(cacheService, 'set').mockResolvedValue(undefined);
+    jest.spyOn(cacheService, "get").mockResolvedValue(null);
+    jest.spyOn(cacheService, "set").mockResolvedValue(undefined);
 
     const result = await service.getUserProfile(userId);
 
-    expect(cacheService.get).toHaveBeenCalledWith('user', `profile:${userId}`);
+    expect(cacheService.get).toHaveBeenCalledWith("user", `profile:${userId}`);
     expect(cacheService.set).toHaveBeenCalledWith(
-      'user',
+      "user",
       `profile:${userId}`,
       expect.any(Object),
       1800,
@@ -519,11 +519,11 @@ describe('UserService', () => {
 
 ```typescript
 // __tests__/integration/caching.spec.ts
-import { Test, TestingModule } from '@nestjs/testing';
-import { CachingModule, CacheService } from '@hl8/nestjs-caching';
-import Redis from 'ioredis-mock';
+import { Test, TestingModule } from "@nestjs/testing";
+import { CachingModule, CacheService } from "@hl8/nestjs-caching";
+import Redis from "ioredis-mock";
 
-describe('Caching Integration', () => {
+describe("Caching Integration", () => {
   let cacheService: CacheService;
 
   beforeAll(async () => {
@@ -531,11 +531,11 @@ describe('Caching Integration', () => {
       imports: [
         CachingModule.forRoot({
           redis: {
-            host: 'localhost',
+            host: "localhost",
             port: 6379,
           },
           defaultTTL: 60,
-          keyPrefix: 'test:cache:',
+          keyPrefix: "test:cache:",
         }),
       ],
     }).compile();
@@ -543,18 +543,18 @@ describe('Caching Integration', () => {
     cacheService = module.get<CacheService>(CacheService);
   });
 
-  it('should set and get cache', async () => {
-    await cacheService.set('test', 'key1', { value: 'test' }, 60);
-    const result = await cacheService.get('test', 'key1');
+  it("should set and get cache", async () => {
+    await cacheService.set("test", "key1", { value: "test" }, 60);
+    const result = await cacheService.get("test", "key1");
 
-    expect(result).toEqual({ value: 'test' });
+    expect(result).toEqual({ value: "test" });
   });
 
-  it('should delete cache', async () => {
-    await cacheService.set('test', 'key2', { value: 'test' }, 60);
-    await cacheService.del('test', 'key2');
+  it("should delete cache", async () => {
+    await cacheService.set("test", "key2", { value: "test" }, 60);
+    await cacheService.del("test", "key2");
 
-    const result = await cacheService.get('test', 'key2');
+    const result = await cacheService.get("test", "key2");
     expect(result).toBeNull();
   });
 });
@@ -619,36 +619,36 @@ GeneralBadRequestException: 租户 ID 缺失
 
 ```typescript
 // ✅ 根据数据变更频率设置 TTL
-await cacheService.set('user', 'profile', data, 1800); // 配置数据: 30 分钟
-await cacheService.set('product', 'price', data, 300); // 价格数据: 5 分钟
-await cacheService.set('article', 'detail', data, 3600); // 文章: 1 小时
+await cacheService.set("user", "profile", data, 1800); // 配置数据: 30 分钟
+await cacheService.set("product", "price", data, 300); // 价格数据: 5 分钟
+await cacheService.set("article", "detail", data, 3600); // 文章: 1 小时
 
 // ❌ 避免使用过长的 TTL
-await cacheService.set('user', 'session', data, 86400 * 30); // 30 天（太长）
+await cacheService.set("user", "session", data, 86400 * 30); // 30 天（太长）
 ```
 
 ### 2. 使用命名空间
 
 ```typescript
 // ✅ 使用清晰的命名空间
-'user'; // 用户相关
-'product'; // 产品相关
-'order'; // 订单相关
+"user"; // 用户相关
+"product"; // 产品相关
+"order"; // 订单相关
 
 // ❌ 避免混合命名空间
-'user-product'; // 不清晰
-'data'; // 过于宽泛
+"user-product"; // 不清晰
+"data"; // 过于宽泛
 ```
 
 ### 3. 批量操作优化
 
 ```typescript
 // ✅ 使用批量清除
-await cacheService.clearTenantCache('t123', 'user');
+await cacheService.clearTenantCache("t123", "user");
 
 // ❌ 避免循环操作
 for (const userId of userIds) {
-  await cacheService.del('user', `profile:${userId}`); // 性能差
+  await cacheService.del("user", `profile:${userId}`); // 性能差
 }
 ```
 
@@ -657,15 +657,15 @@ for (const userId of userIds) {
 ```typescript
 // ✅ 处理缓存异常
 try {
-  return await cacheService.get('user', 'profile');
+  return await cacheService.get("user", "profile");
 } catch (error) {
-  logger.error('缓存读取失败', error);
+  logger.error("缓存读取失败", error);
   // 降级到数据库查询
   return this.userRepository.findOne();
 }
 
 // ❌ 不处理异常
-const cached = await cacheService.get('user', 'profile'); // 可能抛出异常
+const cached = await cacheService.get("user", "profile"); // 可能抛出异常
 ```
 
 ---

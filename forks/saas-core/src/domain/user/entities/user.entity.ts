@@ -43,10 +43,10 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { Username, Email, PhoneNumber, UserStatus } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { USER_STATUS_TRANSITIONS } from '../../../constants/user.constants';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { Username, Email, PhoneNumber, UserStatus } from "@hl8/hybrid-archi";
+import { PinoLogger } from "@hl8/logger";
+import { USER_STATUS_TRANSITIONS } from "../../../constants/user.constants";
 
 /**
  * 用户实体
@@ -161,12 +161,12 @@ export class User extends BaseEntity {
    */
   public verifyEmail(updatedBy?: string): void {
     this._emailVerified = true;
-    
+
     // 如果状态是 PENDING，自动激活为 ACTIVE
     if (this._status === UserStatus.PENDING) {
       this._status = UserStatus.ACTIVE;
     }
-    
+
     this.updateTimestamp();
   }
 
@@ -190,8 +190,10 @@ export class User extends BaseEntity {
     this.validateStatusTransition(UserStatus.DISABLED);
     this._status = UserStatus.DISABLED;
     this.updateTimestamp();
-    
-    this.logger.warn(`用户已禁用 - userId: ${this.id.toString()}, reason: ${reason}`);
+
+    this.logger.warn(
+      `用户已禁用 - userId: ${this.id.toString()}, reason: ${reason}`,
+    );
   }
 
   /**
@@ -201,7 +203,7 @@ export class User extends BaseEntity {
    */
   public enable(updatedBy?: string): void {
     if (this._status !== UserStatus.DISABLED) {
-      throw new Error('只有禁用状态的用户可以启用');
+      throw new Error("只有禁用状态的用户可以启用");
     }
     this._status = UserStatus.ACTIVE;
     this.updateTimestamp();
@@ -226,7 +228,7 @@ export class User extends BaseEntity {
    */
   public unlock(updatedBy?: string): void {
     if (this._status !== UserStatus.LOCKED) {
-      throw new Error('只有锁定状态的用户可以解锁');
+      throw new Error("只有锁定状态的用户可以解锁");
     }
     this._status = UserStatus.ACTIVE;
     this.updateTimestamp();
@@ -316,4 +318,3 @@ export class User extends BaseEntity {
     };
   }
 }
-

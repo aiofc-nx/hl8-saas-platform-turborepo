@@ -43,13 +43,13 @@
  * @since 1.0.0
  */
 
-import { FastifyLoggerService } from '@hl8/nestjs-fastify';
-import { EntityManager, MikroORM } from '@mikro-orm/core';
-import { Injectable } from '@nestjs/common';
-import { ClsService } from 'nestjs-cls';
-import { v4 as uuidv4 } from 'uuid';
-import { DatabaseTransactionException } from '../exceptions/database-transaction.exception.js';
-import type { TransactionOptions } from '../types/transaction.types.js';
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { EntityManager, MikroORM } from "@mikro-orm/core";
+import { Injectable } from "@nestjs/common";
+import { ClsService } from "nestjs-cls";
+import { v4 as uuidv4 } from "uuid";
+import { DatabaseTransactionException } from "../exceptions/database-transaction.exception.js";
+import type { TransactionOptions } from "../types/transaction.types.js";
 
 @Injectable()
 export class TransactionService {
@@ -58,7 +58,7 @@ export class TransactionService {
     private readonly cls: ClsService,
     private readonly logger: FastifyLoggerService,
   ) {
-    this.logger.log('TransactionService 初始化');
+    this.logger.log("TransactionService 初始化");
   }
 
   /**
@@ -86,43 +86,43 @@ export class TransactionService {
     options?: TransactionOptions,
   ): Promise<T> {
     // 检查是否已在事务中
-    const existingEm = this.cls.get<EntityManager>('entityManager');
+    const existingEm = this.cls.get<EntityManager>("entityManager");
     if (existingEm) {
-      this.logger.debug('检测到现有事务，复用 EntityManager');
+      this.logger.debug("检测到现有事务，复用 EntityManager");
       return callback(existingEm);
     }
 
     const transactionId = uuidv4();
     const startTime = Date.now();
 
-    this.logger.log('开始事务', { transactionId, options });
+    this.logger.log("开始事务", { transactionId, options });
 
     try {
       const em = this.orm.em.fork();
 
       const result = await em.transactional(async (transactionEm) => {
         // 将事务 EM 存储到上下文
-        this.cls.set('entityManager', transactionEm);
-        this.cls.set('transactionId', transactionId);
+        this.cls.set("entityManager", transactionEm);
+        this.cls.set("transactionId", transactionId);
 
         try {
           return await callback(transactionEm);
         } finally {
           // 清理上下文
-          this.cls.set('entityManager', undefined);
-          this.cls.set('transactionId', undefined);
+          this.cls.set("entityManager", undefined);
+          this.cls.set("transactionId", undefined);
         }
       });
 
       const duration = Date.now() - startTime;
-      this.logger.log('事务提交成功', { transactionId, duration });
+      this.logger.log("事务提交成功", { transactionId, duration });
 
       return result;
     } catch (error) {
       const duration = Date.now() - startTime;
 
       // 记录技术错误日志用于监控和调试
-      this.logger.error('事务执行失败，已回滚', undefined, {
+      this.logger.error("事务执行失败，已回滚", undefined, {
         transactionId,
         duration,
         err:
@@ -136,7 +136,7 @@ export class TransactionService {
       });
 
       // 抛出业务异常
-      throw new DatabaseTransactionException('事务执行失败，所有操作已回滚', {
+      throw new DatabaseTransactionException("事务执行失败，所有操作已回滚", {
         transactionId,
         duration,
       });
@@ -160,7 +160,7 @@ export class TransactionService {
    * ```
    */
   getTransactionEntityManager(): EntityManager | undefined {
-    return this.cls.get<EntityManager>('entityManager');
+    return this.cls.get<EntityManager>("entityManager");
   }
 
   /**
@@ -171,7 +171,7 @@ export class TransactionService {
    * @returns 是否在事务中
    */
   isInTransaction(): boolean {
-    return this.cls.get<EntityManager>('entityManager') !== undefined;
+    return this.cls.get<EntityManager>("entityManager") !== undefined;
   }
 
   /**
@@ -182,6 +182,6 @@ export class TransactionService {
    * @returns 事务 ID，如果不在事务中则返回 undefined
    */
   getTransactionId(): string | undefined {
-    return this.cls.get<string>('transactionId');
+    return this.cls.get<string>("transactionId");
   }
 }

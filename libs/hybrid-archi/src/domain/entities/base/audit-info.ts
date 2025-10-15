@@ -33,7 +33,7 @@
  * @example
  * ```typescript
  * import { EntityId  } from '@hl8/isolation-model';
- * 
+ *
  * const auditInfo: AuditInfo = {
  *   createdBy: 'user-123',
  *   updatedBy: 'user-123',
@@ -53,8 +53,8 @@
  *
  * @since 1.0.0
  */
-import { EntityId  } from '@hl8/isolation-model';
-import { TenantId } from '@hl8/isolation-model';
+import { EntityId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model";
 
 export interface IAuditInfo {
   /**
@@ -144,7 +144,7 @@ export interface IAuditInfo {
    *
    * @description 最后操作类型
    */
-  lastOperation: 'CREATE' | 'UPDATE' | 'DELETE' | 'RESTORE';
+  lastOperation: "CREATE" | "UPDATE" | "DELETE" | "RESTORE";
 
   /**
    * 最后操作 IP 地址
@@ -174,7 +174,7 @@ export interface IAuditInfo {
    *
    * @description 最后操作来源
    */
-  lastOperationSource: 'WEB' | 'API' | 'CLI' | 'SYSTEM' | null;
+  lastOperationSource: "WEB" | "API" | "CLI" | "SYSTEM" | null;
 
   /**
    * 删除原因
@@ -220,7 +220,7 @@ export interface IPartialAuditInfo {
   /**
    * 最后操作类型
    */
-  lastOperation?: 'CREATE' | 'UPDATE' | 'DELETE' | 'RESTORE';
+  lastOperation?: "CREATE" | "UPDATE" | "DELETE" | "RESTORE";
 
   /**
    * 最后操作 IP 地址
@@ -235,7 +235,7 @@ export interface IPartialAuditInfo {
   /**
    * 最后操作来源
    */
-  lastOperationSource?: 'WEB' | 'API' | 'CLI' | 'SYSTEM' | null;
+  lastOperationSource?: "WEB" | "API" | "CLI" | "SYSTEM" | null;
 
   /**
    * 删除原因
@@ -308,10 +308,10 @@ export class AuditInfoBuilder {
    * @returns 构建器实例
    */
   public withLastOperation(
-    operation: 'CREATE' | 'UPDATE' | 'DELETE' | 'RESTORE',
+    operation: "CREATE" | "UPDATE" | "DELETE" | "RESTORE",
     ip?: string | null,
     userAgent?: string | null,
-    source?: 'WEB' | 'API' | 'CLI' | 'SYSTEM' | null,
+    source?: "WEB" | "API" | "CLI" | "SYSTEM" | null,
   ): AuditInfoBuilder {
     this.auditInfo.lastOperation = operation;
     this.auditInfo.lastOperationIp = ip || null;
@@ -343,13 +343,13 @@ export class AuditInfoBuilder {
       createdBy:
         this.auditInfo.createdBy !== undefined
           ? this.auditInfo.createdBy
-          : 'system',
+          : "system",
       updatedBy:
         this.auditInfo.updatedBy !== undefined
           ? this.auditInfo.updatedBy
           : this.auditInfo.createdBy !== undefined
             ? this.auditInfo.createdBy
-            : 'system',
+            : "system",
       deletedBy: null,
       createdAt: now,
       updatedAt: now,
@@ -360,7 +360,7 @@ export class AuditInfoBuilder {
           : TenantId.generate(),
       version:
         this.auditInfo.version !== undefined ? this.auditInfo.version : 1,
-      lastOperation: this.auditInfo.lastOperation || 'CREATE',
+      lastOperation: this.auditInfo.lastOperation || "CREATE",
       lastOperationIp: this.auditInfo.lastOperationIp || null,
       lastOperationUserAgent: this.auditInfo.lastOperationUserAgent || null,
       lastOperationSource: this.auditInfo.lastOperationSource || null,

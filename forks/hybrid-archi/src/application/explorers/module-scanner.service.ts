@@ -7,22 +7,22 @@
  * @description 模块扫描器服务，用于发现和扫描项目模块
  * @since 1.0.0
  */
-import { Injectable } from '@nestjs/common';
-import type { PinoLogger } from '@hl8/logger';
+import { Injectable } from "@nestjs/common";
+import type { PinoLogger } from "@hl8/logger";
 
 // 定义 LogContext 枚举
 enum LogContext {
-  SYSTEM = 'SYSTEM',
-  BUSINESS = 'BUSINESS',
-  AUTH = 'AUTH',
-  DATABASE = 'DATABASE',
-  EXTERNAL = 'EXTERNAL',
-  CACHE = 'CACHE',
-  PERFORMANCE = 'PERFORMANCE',
-  HTTP_REQUEST = 'HTTP_REQUEST',
+  SYSTEM = "SYSTEM",
+  BUSINESS = "BUSINESS",
+  AUTH = "AUTH",
+  DATABASE = "DATABASE",
+  EXTERNAL = "EXTERNAL",
+  CACHE = "CACHE",
+  PERFORMANCE = "PERFORMANCE",
+  HTTP_REQUEST = "HTTP_REQUEST",
 }
-import { Type } from '@nestjs/common';
-import * as path from 'path';
+import { Type } from "@nestjs/common";
+import * as path from "path";
 // import * as fs from 'fs';
 // import * as glob from 'glob';
 
@@ -48,7 +48,7 @@ export interface IModuleInfo {
   /**
    * 模块类型
    */
-  moduleType: 'root' | 'feature' | 'shared' | 'core' | 'unknown';
+  moduleType: "root" | "feature" | "shared" | "core" | "unknown";
 
   /**
    * 模块元数据
@@ -165,11 +165,11 @@ export class ModuleScannerService {
 
   private readonly defaultOptions: IScanOptions = {
     depth: 10,
-    excludePatterns: ['node_modules', '.git', 'dist', 'build', 'coverage'],
-    includePatterns: ['**/*.module.ts', '**/*.module.js'],
+    excludePatterns: ["node_modules", ".git", "dist", "build", "coverage"],
+    includePatterns: ["**/*.module.ts", "**/*.module.js"],
     includeNodeModules: false,
     recursive: true,
-    extensions: ['.ts', '.js'],
+    extensions: [".ts", ".js"],
     analyzeDependencies: true,
     detectCircularDependencies: true,
   };
@@ -179,10 +179,10 @@ export class ModuleScannerService {
    */
   public async scanPath(
     scanPath: string,
-    options: IScanOptions = {}
+    options: IScanOptions = {},
   ): Promise<IModuleInfo[]> {
     const mergedOptions = { ...this.defaultOptions, ...options };
-    this.logger.info('Scanning path: ' + scanPath, LogContext.SYSTEM, {
+    this.logger.info("Scanning path: " + scanPath, LogContext.SYSTEM, {
       scanPath,
     });
 
@@ -195,17 +195,17 @@ export class ModuleScannerService {
       }
 
       this.logger.info(
-        'Found ' + modules.length + ' modules',
+        "Found " + modules.length + " modules",
         LogContext.SYSTEM,
-        { moduleCount: modules.length }
+        { moduleCount: modules.length },
       );
       return modules;
     } catch (error) {
       this.logger.error(
-        'Failed to scan path ' + scanPath,
+        "Failed to scan path " + scanPath,
         LogContext.SYSTEM,
         { scanPath },
-        error as Error
+        error as Error,
       );
       throw error;
     }
@@ -216,17 +216,17 @@ export class ModuleScannerService {
    */
   public async scanPattern(
     pattern: string,
-    options: IScanOptions = {}
+    options: IScanOptions = {},
   ): Promise<IModuleInfo[]> {
     const mergedOptions = { ...this.defaultOptions, ...options };
-    this.logger.info('Scanning pattern: ' + pattern, LogContext.SYSTEM, {
+    this.logger.info("Scanning pattern: " + pattern, LogContext.SYSTEM, {
       pattern,
     });
 
     try {
       const moduleFiles = await this.findModuleFilesByPattern(
         pattern,
-        mergedOptions
+        mergedOptions,
       );
       const modules = await this.loadModules(moduleFiles, mergedOptions);
 
@@ -235,17 +235,17 @@ export class ModuleScannerService {
       }
 
       this.logger.info(
-        'Found ' + modules.length + ' modules matching pattern',
+        "Found " + modules.length + " modules matching pattern",
         LogContext.SYSTEM,
-        { moduleCount: modules.length, pattern }
+        { moduleCount: modules.length, pattern },
       );
       return modules;
     } catch (error) {
       this.logger.error(
-        'Failed to scan pattern ' + pattern,
+        "Failed to scan pattern " + pattern,
         LogContext.SYSTEM,
         { pattern },
-        error as Error
+        error as Error,
       );
       throw error;
     }
@@ -255,7 +255,7 @@ export class ModuleScannerService {
    * 分析模块依赖关系
    */
   public async analyzeDependencies(
-    modules: IModuleInfo[]
+    modules: IModuleInfo[],
   ): Promise<IDependencyGraph> {
     const graph: IDependencyGraph = {
       modules: new Map(),
@@ -305,9 +305,9 @@ export class ModuleScannerService {
    */
   private async findModuleFiles(
     scanPath: string,
-    options: IScanOptions
+    options: IScanOptions,
   ): Promise<string[]> {
-    const patterns = options.includePatterns || ['**/*.module.ts'];
+    const patterns = options.includePatterns || ["**/*.module.ts"];
     const excludePatterns = options.excludePatterns || [];
 
     const allFiles: string[] = [];
@@ -326,7 +326,7 @@ export class ModuleScannerService {
    */
   private async findModuleFilesByPattern(
     pattern: string,
-    options: IScanOptions
+    options: IScanOptions,
   ): Promise<string[]> {
     const excludePatterns = options.excludePatterns || [];
     return await this.globFiles(pattern, excludePatterns);
@@ -337,7 +337,7 @@ export class ModuleScannerService {
    */
   private async globFiles(
     _pattern: string,
-    _excludePatterns: string[]
+    _excludePatterns: string[],
   ): Promise<string[]> {
     // 暂时返回空数组，因为 glob 依赖还没有正确安装
     // 在实际实现中，这里应该使用 glob 库来查找文件
@@ -349,7 +349,7 @@ export class ModuleScannerService {
    */
   private async loadModules(
     moduleFiles: string[],
-    _options: IScanOptions
+    _options: IScanOptions,
   ): Promise<IModuleInfo[]> {
     const modules: IModuleInfo[] = [];
 
@@ -361,12 +361,12 @@ export class ModuleScannerService {
         }
       } catch (error) {
         this.logger.warn(
-          'Failed to load module from ' +
+          "Failed to load module from " +
             filePath +
-            ': ' +
+            ": " +
             (error as Error).message,
           LogContext.SYSTEM,
-          { filePath, error: (error as Error).message }
+          { filePath, error: (error as Error).message },
         );
       }
     }
@@ -378,7 +378,7 @@ export class ModuleScannerService {
    * 从文件加载模块
    */
   private async loadModuleFromFile(
-    filePath: string
+    filePath: string,
   ): Promise<IModuleInfo | null> {
     try {
       const moduleName = path.basename(filePath, path.extname(filePath));
@@ -401,12 +401,12 @@ export class ModuleScannerService {
       };
     } catch (error) {
       this.logger.warn(
-        'Failed to load module from file ' +
+        "Failed to load module from file " +
           filePath +
-          ': ' +
+          ": " +
           (error as Error).message,
         LogContext.SYSTEM,
-        { filePath, error: (error as Error).message }
+        { filePath, error: (error as Error).message },
       );
       return null;
     }
@@ -416,7 +416,7 @@ export class ModuleScannerService {
    * 分析模块依赖关系
    */
   private async analyzeModuleDependencies(
-    modules: IModuleInfo[]
+    modules: IModuleInfo[],
   ): Promise<void> {
     for (const module of modules) {
       module.dependencies = [];
@@ -427,7 +427,7 @@ export class ModuleScannerService {
       if (module.metadata.imports) {
         for (const importedModule of module.metadata.imports) {
           const importedModuleInfo = modules.find(
-            (m) => m.moduleClass === importedModule
+            (m) => m.moduleClass === importedModule,
           );
           if (importedModuleInfo) {
             module.dependencies.push(importedModuleInfo);
@@ -564,26 +564,26 @@ export class ModuleScannerService {
    * 确定模块类型
    */
   private determineModuleType(
-    moduleName: string
-  ): 'root' | 'feature' | 'shared' | 'core' | 'unknown' {
+    moduleName: string,
+  ): "root" | "feature" | "shared" | "core" | "unknown" {
     const name = moduleName.toLowerCase();
 
-    if (name.includes('app') || name.includes('root')) {
-      return 'root';
+    if (name.includes("app") || name.includes("root")) {
+      return "root";
     }
 
-    if (name.includes('core')) {
-      return 'core';
+    if (name.includes("core")) {
+      return "core";
     }
 
-    if (name.includes('shared') || name.includes('common')) {
-      return 'shared';
+    if (name.includes("shared") || name.includes("common")) {
+      return "shared";
     }
 
-    if (name.includes('feature') || name.includes('module')) {
-      return 'feature';
+    if (name.includes("feature") || name.includes("module")) {
+      return "feature";
     }
 
-    return 'unknown';
+    return "unknown";
   }
 }

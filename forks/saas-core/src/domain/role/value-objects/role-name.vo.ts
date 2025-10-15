@@ -19,7 +19,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '@hl8/hybrid-archi';
+import { BaseValueObject } from "@hl8/hybrid-archi";
 
 export class RoleName extends BaseValueObject<string> {
   /**
@@ -29,12 +29,12 @@ export class RoleName extends BaseValueObject<string> {
    * @override
    */
   protected override validate(value: string): void {
-    this.validateNotEmpty(value, '角色名称');
-    this.validateLength(value, 2, 50, '角色名称');
+    this.validateNotEmpty(value, "角色名称");
+    this.validateLength(value, 2, 50, "角色名称");
     this.validatePattern(
       value,
       /^[\u4e00-\u9fa5a-zA-Z0-9_]+$/,
-      '角色名称只能包含中英文、数字和下划线'
+      "角色名称只能包含中英文、数字和下划线",
     );
   }
 

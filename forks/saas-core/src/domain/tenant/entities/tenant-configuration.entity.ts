@@ -42,9 +42,9 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from '@hl8/hybrid-archi';
-import { PinoLogger } from '@hl8/logger';
-import { TenantQuota } from '../value-objects/tenant-quota.vo';
+import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { PinoLogger } from "@hl8/logger";
+import { TenantQuota } from "../value-objects/tenant-quota.vo";
 
 /**
  * 租户配置实体
@@ -94,13 +94,7 @@ export class TenantConfiguration extends BaseEntity {
     enabledFeatures: string[] = [],
     auditInfo: IPartialAuditInfo,
   ): TenantConfiguration {
-    return new TenantConfiguration(
-      id,
-      quota,
-      enabledFeatures,
-      {},
-      auditInfo,
-    );
+    return new TenantConfiguration(id, quota, enabledFeatures, {}, auditInfo);
   }
 
   // ============================================================================
@@ -323,4 +317,3 @@ export class TenantConfiguration extends BaseEntity {
     };
   }
 }
-

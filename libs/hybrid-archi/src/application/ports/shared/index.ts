@@ -18,4 +18,4 @@ export type {
   ISanitizationRules,
   IConfigurationPort,
   IEventBusPort,
-} from './shared-ports.interface';
+} from "./shared-ports.interface";

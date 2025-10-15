@@ -3,13 +3,13 @@ info:
   title: SAAS 平台核心模块重构 API
   description: |
     基于 HL8 SAAS 平台宪章的核心模块重构 API 规范。
-    
+
     ## 重构目标
     - 清理 hybrid-archi 架构基础库中的业务特定组件
     - 处理 libs/isolation-model 与 hybrid-archi 的重叠内容
     - 重构 saas-core 业务模块以适配新的基础设施模块
     - 建立清晰的模块边界和职责划分
-    
+
     ## 架构原则
     - Clean Architecture + DDD + CQRS + ES + EDA
     - 中文优先原则
@@ -52,26 +52,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ModuleAnalysisRequest'
+              $ref: "#/components/schemas/ModuleAnalysisRequest"
       responses:
-        '200':
+        "200":
           description: 分析结果
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ModuleAnalysisResponse'
-        '400':
+                $ref: "#/components/schemas/ModuleAnalysisResponse"
+        "400":
           description: 请求参数错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: 服务器内部错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /modules/{moduleName}/clean:
     post:
@@ -93,26 +93,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CleanModuleRequest'
+              $ref: "#/components/schemas/CleanModuleRequest"
       responses:
-        '200':
+        "200":
           description: 清理结果
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CleanModuleResponse'
-        '400':
+                $ref: "#/components/schemas/CleanModuleResponse"
+        "400":
           description: 请求参数错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: 服务器内部错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /modules/{moduleName}/dependencies:
     put:
@@ -134,26 +134,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateDependenciesRequest'
+              $ref: "#/components/schemas/UpdateDependenciesRequest"
       responses:
-        '200':
+        "200":
           description: 依赖更新结果
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpdateDependenciesResponse'
-        '400':
+                $ref: "#/components/schemas/UpdateDependenciesResponse"
+        "400":
           description: 请求参数错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: 服务器内部错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /refactoring/status:
     get:
@@ -163,18 +163,18 @@ paths:
       description: 获取当前重构过程的整体状态
       operationId: getRefactoringStatus
       responses:
-        '200':
+        "200":
           description: 重构状态
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RefactoringStatusResponse'
-        '500':
+                $ref: "#/components/schemas/RefactoringStatusResponse"
+        "500":
           description: 服务器内部错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /refactoring/validate:
     post:
@@ -188,26 +188,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ValidationRequest'
+              $ref: "#/components/schemas/ValidationRequest"
       responses:
-        '200':
+        "200":
           description: 验证结果
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationResponse'
-        '400':
+                $ref: "#/components/schemas/ValidationResponse"
+        "400":
           description: 请求参数错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: 服务器内部错误
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   schemas:
@@ -269,12 +269,12 @@ components:
           type: array
           description: 重叠内容列表
           items:
-            $ref: '#/components/schemas/OverlapItem'
+            $ref: "#/components/schemas/OverlapItem"
         recommendations:
           type: array
           description: 处理建议
           items:
-            $ref: '#/components/schemas/Recommendation'
+            $ref: "#/components/schemas/Recommendation"
         analysisTime:
           type: string
           format: date-time
@@ -402,7 +402,7 @@ components:
           type: array
           description: 已迁移的组件
           items:
-            $ref: '#/components/schemas/MigratedComponent'
+            $ref: "#/components/schemas/MigratedComponent"
         cleanupTime:
           type: string
           format: date-time
@@ -449,13 +449,21 @@ components:
           description: 旧依赖列表
           items:
             type: string
-          example: ["@hl8/database", "@hl8/cache", "@hl8/logger", "@hl8/multi-tenancy"]
+          example:
+            ["@hl8/database", "@hl8/cache", "@hl8/logger", "@hl8/multi-tenancy"]
         newDependencies:
           type: array
           description: 新依赖列表
           items:
             type: string
-          example: ["@hl8/database", "@hl8/caching", "@hl8/nestjs-fastify/logging", "@hl8/nestjs-isolation", "@hl8/exceptions"]
+          example:
+            [
+              "@hl8/database",
+              "@hl8/caching",
+              "@hl8/nestjs-fastify/logging",
+              "@hl8/nestjs-isolation",
+              "@hl8/exceptions",
+            ]
         options:
           type: object
           description: 更新选项
@@ -492,7 +500,7 @@ components:
           type: array
           description: 已更新的依赖
           items:
-            $ref: '#/components/schemas/DependencyUpdate'
+            $ref: "#/components/schemas/DependencyUpdate"
         updateTime:
           type: string
           format: date-time
@@ -539,12 +547,22 @@ components:
         currentPhase:
           type: string
           description: 当前阶段
-          enum: [analysis, planning, cleaning, overlap-handling, migration, testing, documentation, completed]
+          enum:
+            [
+              analysis,
+              planning,
+              cleaning,
+              overlap-handling,
+              migration,
+              testing,
+              documentation,
+              completed,
+            ]
         modules:
           type: array
           description: 模块状态
           items:
-            $ref: '#/components/schemas/ModuleStatus'
+            $ref: "#/components/schemas/ModuleStatus"
         progress:
           type: object
           description: 进度信息
@@ -579,7 +597,7 @@ components:
           type: array
           description: 任务列表
           items:
-            $ref: '#/components/schemas/TaskStatus'
+            $ref: "#/components/schemas/TaskStatus"
         lastUpdated:
           type: string
           format: date-time
@@ -622,7 +640,14 @@ components:
         validationType:
           type: string
           description: 验证类型
-          enum: [functionality, boundaries, dependencies, performance, documentation]
+          enum:
+            [
+              functionality,
+              boundaries,
+              dependencies,
+              performance,
+              documentation,
+            ]
         modules:
           type: array
           description: 要验证的模块
@@ -666,7 +691,7 @@ components:
           type: array
           description: 验证结果
           items:
-            $ref: '#/components/schemas/ValidationResult'
+            $ref: "#/components/schemas/ValidationResult"
         validationTime:
           type: string
           format: date-time
@@ -686,7 +711,14 @@ components:
         validationType:
           type: string
           description: 验证类型
-          enum: [functionality, boundaries, dependencies, performance, documentation]
+          enum:
+            [
+              functionality,
+              boundaries,
+              dependencies,
+              performance,
+              documentation,
+            ]
         status:
           type: string
           description: 验证状态

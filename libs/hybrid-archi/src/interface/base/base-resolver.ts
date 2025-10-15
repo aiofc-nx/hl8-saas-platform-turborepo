@@ -29,7 +29,7 @@ export interface IPaginationArgs {
   limit?: number;
   search?: string;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 /**
@@ -68,7 +68,7 @@ export abstract class BaseResolver {
    */
   protected createSuccessResponse<T>(
     data: T,
-    message = '操作成功'
+    message = "操作成功",
   ): IGraphQLResponse<T> {
     return {
       success: true,
@@ -103,11 +103,11 @@ export abstract class BaseResolver {
     limit: number;
     search?: string;
     sortBy?: string;
-    sortOrder: 'asc' | 'desc';
+    sortOrder: "asc" | "desc";
   } {
     const page = Math.max(1, args.page || 1);
     const limit = Math.min(100, Math.max(1, args.limit || 10));
-    const sortOrder = args.sortOrder === 'desc' ? 'desc' : 'asc';
+    const sortOrder = args.sortOrder === "desc" ? "desc" : "asc";
 
     return {
       page,
@@ -125,7 +125,10 @@ export abstract class BaseResolver {
    * @param context - GraphQL上下文
    * @returns 用户信息
    */
-  protected getUserFromContext(context: { req?: { user?: unknown }; user?: unknown }): unknown {
+  protected getUserFromContext(context: {
+    req?: { user?: unknown };
+    user?: unknown;
+  }): unknown {
     return context.req?.user || context.user;
   }
 
@@ -136,7 +139,10 @@ export abstract class BaseResolver {
    * @param context - GraphQL上下文
    * @returns 租户信息
    */
-  protected getTenantFromContext(context: { req?: { tenantId?: string }; tenantId?: string }): string | undefined {
+  protected getTenantFromContext(context: {
+    req?: { tenantId?: string };
+    tenantId?: string;
+  }): string | undefined {
     return context.req?.tenantId || context.tenantId;
   }
 }

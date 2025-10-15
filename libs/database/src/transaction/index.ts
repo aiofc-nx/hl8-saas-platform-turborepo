@@ -6,5 +6,5 @@
  * @since 1.0.0
  */
 
-export * from './transaction.service.js';
-export * from './transactional.decorator.js';
+export * from "./transaction.service.js";
+export * from "./transactional.decorator.js";

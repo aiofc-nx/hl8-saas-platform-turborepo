@@ -7,10 +7,9 @@
  * @since 1.0.0
  */
 
-export * from './tenant-created.event';
-export * from './tenant-activated.event';
-export * from './tenant-suspended.event';
-export * from './tenant-upgraded.event';
-export * from './tenant-downgraded.event';
-export * from './tenant-deleted.event';
-
+export * from "./tenant-created.event";
+export * from "./tenant-activated.event";
+export * from "./tenant-suspended.event";
+export * from "./tenant-upgraded.event";
+export * from "./tenant-downgraded.event";
+export * from "./tenant-deleted.event";

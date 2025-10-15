@@ -6,4 +6,4 @@
  * @since 1.0.0
  */
 
-export * from './connection.manager.js';
+export * from "./connection.manager.js";

@@ -27,42 +27,42 @@ export const DI_TOKENS = {
    *
    * @description 用于注入模块配置
    */
-  MODULE_OPTIONS: 'DATABASE_MODULE_OPTIONS',
+  MODULE_OPTIONS: "DATABASE_MODULE_OPTIONS",
 
   /**
    * 连接管理器令牌
    *
    * @description 用于注入连接管理器实例
    */
-  CONNECTION_MANAGER: 'DATABASE_CONNECTION_MANAGER',
+  CONNECTION_MANAGER: "DATABASE_CONNECTION_MANAGER",
 
   /**
    * 事务服务令牌
    *
    * @description 用于注入事务服务实例
    */
-  TRANSACTION_SERVICE: 'DATABASE_TRANSACTION_SERVICE',
+  TRANSACTION_SERVICE: "DATABASE_TRANSACTION_SERVICE",
 
   /**
    * 隔离服务令牌
    *
    * @description 用于注入隔离服务实例
    */
-  ISOLATION_SERVICE: 'DATABASE_ISOLATION_SERVICE',
+  ISOLATION_SERVICE: "DATABASE_ISOLATION_SERVICE",
 
   /**
    * 健康检查服务令牌
    *
    * @description 用于注入健康检查服务实例
    */
-  HEALTH_CHECK_SERVICE: 'DATABASE_HEALTH_CHECK_SERVICE',
+  HEALTH_CHECK_SERVICE: "DATABASE_HEALTH_CHECK_SERVICE",
 
   /**
    * 性能指标服务令牌
    *
    * @description 用于注入性能指标服务实例
    */
-  METRICS_SERVICE: 'DATABASE_METRICS_SERVICE',
+  METRICS_SERVICE: "DATABASE_METRICS_SERVICE",
 } as const;
 
 /**

@@ -7,12 +7,12 @@
  * @since 1.0.0
  */
 
-import { Injectable } from '@nestjs/common';
-import { EntityId } from '@hl8/hybrid-archi';
-import { ICommandUseCase } from '../base/use-case.interface';
-import { ITenantAggregateRepository } from '../../../domain/tenant/repositories/tenant-aggregate.repository.interface';
-import { TenantUpgradeService } from '../../../domain/tenant/services/tenant-upgrade.service';
-import { TenantType } from '../../../domain/tenant/value-objects/tenant-type.enum';
+import { Injectable } from "@nestjs/common";
+import { EntityId } from "@hl8/hybrid-archi";
+import { ICommandUseCase } from "../base/use-case.interface";
+import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface";
+import { TenantUpgradeService } from "../../../domain/tenant/services/tenant-upgrade.service";
+import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum";
 
 export interface IUpgradeTenantCommand {
   tenantId: string;
@@ -46,4 +46,3 @@ export class UpgradeTenantUseCase
     await this.tenantRepository.save(aggregate);
   }
 }
-

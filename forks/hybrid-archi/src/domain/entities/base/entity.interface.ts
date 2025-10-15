@@ -63,8 +63,8 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
-import { IBaseEntity } from './base-entity.interface';
+import { EntityId } from "../../value-objects/entity-id";
+import { IBaseEntity } from "./base-entity.interface";
 
 /**
  * 实体接口

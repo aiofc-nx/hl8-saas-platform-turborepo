@@ -1,6 +1,6 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFastifyApplication } from '@nestjs/platform-fastify';
-import { AppConfig } from './config/app.config.js';
+import { ValidationPipe } from "@nestjs/common";
+import { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { AppConfig } from "./config/app.config.js";
 
 /**
  * 初始化 NestJS 应用
@@ -51,22 +51,22 @@ export const bootstrap = async (app: NestFastifyApplication): Promise<void> => {
 
   // 启动应用并监听配置的端口
   const port = appConfig.PORT;
-  const host = process.env.HOST || '0.0.0.0';
+  const host = process.env.HOST || "0.0.0.0";
 
   await app.listen(port, host);
 
   // 输出启动信息
-  const displayHost = host === '0.0.0.0' ? 'localhost' : host;
+  const displayHost = host === "0.0.0.0" ? "localhost" : host;
 
-  console.log('\n' + '='.repeat(70));
-  console.log('🚀 HL8 SAAS Platform - Application Started Successfully');
-  console.log('='.repeat(70));
+  console.log("\n" + "=".repeat(70));
+  console.log("🚀 HL8 SAAS Platform - Application Started Successfully");
+  console.log("=".repeat(70));
   console.log(`📍 Local:        http://${displayHost}:${port}`);
   console.log(`🌐 Network:      http://${host}:${port}`);
   console.log(`📚 API Docs:     http://${displayHost}:${port}/api-docs`);
   console.log(`📄 OpenAPI JSON: http://${displayHost}:${port}/api-docs-json`);
-  console.log('='.repeat(70));
-  console.log(`✅ Environment:  ${process.env.NODE_ENV || 'development'}`);
+  console.log("=".repeat(70));
+  console.log(`✅ Environment:  ${process.env.NODE_ENV || "development"}`);
   console.log(`⚡ Powered by:   Fastify + NestJS`);
-  console.log('='.repeat(70) + '\n');
+  console.log("=".repeat(70) + "\n");
 };
