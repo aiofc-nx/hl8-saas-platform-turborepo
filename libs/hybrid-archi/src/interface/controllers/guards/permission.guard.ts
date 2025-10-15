@@ -14,7 +14,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ILoggerService, IUserContext } from '../../shared/interfaces';
+import { ILoggerService, IUserContext } from '../../shared/interfaces.js';
 
 /**
  * 权限控制守卫

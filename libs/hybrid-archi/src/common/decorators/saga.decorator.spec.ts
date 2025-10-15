@@ -14,8 +14,8 @@ import {
   supportsSagaType,
   getSagaMetadata,
 } from './saga.decorator';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
-import { EntityId } from '../../domain/value-objects/entity-id';
+import { BaseDomainEvent } from '../../domain/events/base/base-domain-event.js';
+import { EntityId } from '../../domain/value-objects/entity-id.js';
 
 // 测试用的事件类
 class TestSagaEvent extends BaseDomainEvent {

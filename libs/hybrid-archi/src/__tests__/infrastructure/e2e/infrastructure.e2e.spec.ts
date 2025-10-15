@@ -6,11 +6,11 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerModule } from '@hl8/logger';
-import { CacheModule } from '@hl8/cache';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { CacheModule } from '@hl8/caching';
 import { DatabaseModule } from '@hl8/database';
-import { MessagingModule } from '@hl8/messaging';
-import { MultiTenancyModule } from '@hl8/multi-tenancy';
+import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
+import { MultiTenancyModule } from '@hl8/nestjs-isolation';
 import { InfrastructureFactoriesModule } from '../../../infrastructure/factories/infrastructure-factories.module';
 import { PortAdaptersModule } from '../../../infrastructure/adapters/ports/port-adapters.module';
 import { CacheAdaptersModule } from '../../../infrastructure/adapters/cache/cache-adapters.module';

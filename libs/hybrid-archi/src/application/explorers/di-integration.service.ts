@@ -42,7 +42,7 @@
  * @since 1.0.0
  */
 import { Injectable, DynamicModule } from '@nestjs/common';
-import type { PinoLogger } from '@hl8/logger';
+import type { PinoLogger } from '@hl8/nestjs-fastify/logging';
 
 // 定义 LogContext 枚举
 enum LogContext {

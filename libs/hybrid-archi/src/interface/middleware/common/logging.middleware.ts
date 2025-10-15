@@ -6,7 +6,7 @@
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/fastify-pro';
+import { FastifyRequest, FastifyReply } from '@hl8/nestjs-fastify';
 
 /**
  * 日志中间件

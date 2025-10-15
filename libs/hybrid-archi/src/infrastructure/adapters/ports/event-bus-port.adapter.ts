@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { EventService } from '@hl8/messaging';
+import { EventService } from '@hl8/nestjs-fastify/messaging';
 import { IEventBusPort } from '../../../application/ports/shared/shared-ports.interface';
 
 /**

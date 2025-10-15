@@ -8,7 +8,7 @@
  */
 
 import { IAuditInfo, IPartialAuditInfo, AuditInfoBuilder } from './audit-info.js';
-import { EntityId } from '../../value-objects/entity-id';
+import { EntityId } from '../../value-objects/entity-id.js';
 
 describe('AuditInfo', () => {
   describe('IAuditInfo 接口', () => {

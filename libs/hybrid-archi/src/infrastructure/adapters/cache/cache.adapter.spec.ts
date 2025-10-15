@@ -6,8 +6,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
+import { CacheService } from '@hl8/caching';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import {
   CacheAdapter,
   ICacheConfig,

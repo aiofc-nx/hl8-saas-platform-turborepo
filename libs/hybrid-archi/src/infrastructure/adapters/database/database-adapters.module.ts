@@ -10,7 +10,7 @@
 
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { DatabaseModule } from '@hl8/database';
-import { LoggerModule } from '@hl8/logger';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
 
 import { DatabaseAdapter } from './database.adapter';
 import { DatabaseFactory } from './database.factory';

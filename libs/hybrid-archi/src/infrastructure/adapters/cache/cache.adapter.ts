@@ -9,8 +9,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
+import { CacheService } from '@hl8/caching';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 
 /**
  * 缓存配置接口

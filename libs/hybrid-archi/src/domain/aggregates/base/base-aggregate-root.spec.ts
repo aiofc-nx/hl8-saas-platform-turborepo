@@ -9,10 +9,10 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { BaseAggregateRoot } from './base-aggregate-root.js';
-import { EntityId } from '../../value-objects/entity-id';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import { PinoLogger } from '@hl8/logger';
-import { TenantContextService } from '@hl8/multi-tenancy';
+import { EntityId } from '../../value-objects/entity-id.js';
+import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { TenantContextService } from '@hl8/nestjs-isolation';
 
 describe('BaseAggregateRoot', () => {
   let aggregate: TestAggregate;

@@ -14,7 +14,7 @@ import {
   Index,
   OneToOne,
 } from '@hl8/database';
-import { TenantOrmEntity } from './tenant.orm-entity';
+import { TenantOrmEntity } from './tenant.orm-entity.js';
 
 @Entity({ tableName: 'tenant_configurations' })
 export class TenantConfigurationOrmEntity {

@@ -12,7 +12,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { FastifyRequest } from '@hl8/fastify-pro';
+import { FastifyRequest } from '@hl8/nestjs-fastify';
 
 /**
  * 权限装饰器元数据键

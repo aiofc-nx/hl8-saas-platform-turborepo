@@ -14,9 +14,9 @@ import {
   getEventHandlerMetadata,
   EventHandlerClass,
 } from './event-handler.decorator';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
+import { BaseDomainEvent } from '../../domain/events/base/base-domain-event.js';
 import { IEventHandler } from '../../application/cqrs/events/base/event-handler.interface';
-import { EntityId } from '../../domain/value-objects/entity-id';
+import { EntityId } from '../../domain/value-objects/entity-id.js';
 
 // 测试用的事件类
 class TestEvent extends BaseDomainEvent {

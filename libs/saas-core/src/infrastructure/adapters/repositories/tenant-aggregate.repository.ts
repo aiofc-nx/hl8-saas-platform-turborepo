@@ -15,8 +15,8 @@ import { TenantAggregate } from '../../../domain/tenant/aggregates/tenant.aggreg
 import { TenantCode } from '../../../domain/tenant/value-objects/tenant-code.vo';
 import { TenantDomain } from '../../../domain/tenant/value-objects/tenant-domain.vo';
 import { TenantMapper } from '../../mappers/tenant.mapper';
-import { TenantOrmEntity } from '../../persistence/entities/tenant.orm-entity';
-import { TenantConfigurationOrmEntity } from '../../persistence/entities/tenant-configuration.orm-entity';
+import { TenantOrmEntity } from '../../persistence/entities/tenant.orm-entity.js';
+import { TenantConfigurationOrmEntity } from '../../persistence/entities/tenant-configuration.orm-entity.js';
 
 @Injectable()
 export class TenantAggregateRepository implements ITenantAggregateRepository {

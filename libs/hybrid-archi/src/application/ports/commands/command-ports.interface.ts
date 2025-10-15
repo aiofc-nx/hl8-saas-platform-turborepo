@@ -50,9 +50,9 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 import { IAggregateRoot } from '../../../domain/aggregates/base/aggregate-root.interface';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
 
 /**
  * 写仓储端口接口

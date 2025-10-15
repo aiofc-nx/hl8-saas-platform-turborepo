@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { FastifyRequest } from '@hl8/fastify-pro';
+import { FastifyRequest } from '@hl8/nestjs-fastify';
 
 /**
  * 认证守卫

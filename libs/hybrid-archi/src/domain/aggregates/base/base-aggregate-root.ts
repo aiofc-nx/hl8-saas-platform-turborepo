@@ -88,12 +88,12 @@
  *
  * @since 1.0.0
  */
-import { BaseEntity } from '../../entities/base/base-entity';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import { EntityId } from '../../value-objects/entity-id';
-import { IPartialAuditInfo } from '../../entities/base/audit-info';
-import { ITenantContext } from '@hl8/multi-tenancy';
-import { PinoLogger } from '@hl8/logger';
+import { BaseEntity } from '../../entities/base/base-entity.js';
+import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
+import { EntityId } from '../../value-objects/entity-id.js';
+import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
+import { ITenantContext } from '@hl8/nestjs-isolation';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { IAggregateRoot } from './aggregate-root.interface';
 
 export abstract class BaseAggregateRoot extends BaseEntity implements IAggregateRoot {

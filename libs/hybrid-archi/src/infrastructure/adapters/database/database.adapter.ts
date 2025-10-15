@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 
 /**
  * 数据库配置接口

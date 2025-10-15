@@ -9,11 +9,11 @@
  */
 
 import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { LoggerModule } from '@hl8/logger';
-import { CacheModule } from '@hl8/cache';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { CacheModule } from '@hl8/caching';
 import { DatabaseModule } from '@hl8/database';
-import { MessagingModule } from '@hl8/messaging';
-import { MultiTenancyModule } from '@hl8/multi-tenancy';
+import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
+import { MultiTenancyModule } from '@hl8/nestjs-isolation';
 
 import { InfrastructureFactory } from './infrastructure.factory';
 import { InfrastructureManager } from './infrastructure.manager';

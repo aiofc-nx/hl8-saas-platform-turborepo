@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 import { IIdGeneratorPort } from '../../../application/ports/shared/shared-ports.interface';
 
 /**

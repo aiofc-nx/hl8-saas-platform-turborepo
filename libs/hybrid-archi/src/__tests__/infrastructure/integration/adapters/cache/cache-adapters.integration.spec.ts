@@ -6,8 +6,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
+import { CacheModule } from '@hl8/caching';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
 import { CacheAdaptersModule } from '../../../../../infrastructure/adapters/cache/cache-adapters.module';
 import { CacheAdapter } from '../../../../../infrastructure/adapters/cache/cache.adapter';
 import { CacheFactory } from '../../../../../infrastructure/adapters/cache/cache.factory';

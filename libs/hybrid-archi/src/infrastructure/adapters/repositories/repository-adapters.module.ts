@@ -10,9 +10,9 @@
 
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '@hl8/database';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
-import { MessagingModule } from '@hl8/messaging';
+import { CacheModule } from '@hl8/caching';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
 
 import { BaseRepositoryAdapter } from './base-repository.adapter';
 import { BaseAggregateRepositoryAdapter } from './base-aggregate-repository.adapter';

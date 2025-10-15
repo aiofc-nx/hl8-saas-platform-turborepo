@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { ILoggerPort } from '../../../application/ports/shared/shared-ports.interface';
 
 /**

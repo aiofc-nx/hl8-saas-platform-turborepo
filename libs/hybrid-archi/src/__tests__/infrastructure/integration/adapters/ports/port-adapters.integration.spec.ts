@@ -6,9 +6,9 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerModule } from '@hl8/logger';
-import { TypedConfigModule } from '@hl8/config';
-import { MessagingModule } from '@hl8/messaging';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
 import { PortAdaptersModule } from '../../../../../infrastructure/adapters/ports/port-adapters.module';
 import { LoggerPortAdapter } from '../../../../../infrastructure/adapters/ports/logger-port.adapter';
 import { IdGeneratorPortAdapter } from '../../../../../infrastructure/adapters/ports/id-generator-port.adapter';

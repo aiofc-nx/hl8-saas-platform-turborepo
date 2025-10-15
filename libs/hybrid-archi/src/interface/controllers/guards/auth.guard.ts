@@ -49,7 +49,7 @@ import {
   IUserContext,
   IRole,
   IPermission,
-} from '../../shared/interfaces';
+} from '../../shared/interfaces.js';
 
 /**
  * JWT服务接口

@@ -6,7 +6,7 @@
  *
  * @example
  * ```typescript
- * import { INFRASTRUCTURE_CONSTANTS } from '../constants';
+ * import { INFRASTRUCTURE_CONSTANTS } from '../constants.js';
  *
  * // 使用缓存常量
  * const cacheConfig = {
@@ -22,7 +22,7 @@ import {
   INFRASTRUCTURE_CONSTANTS,
   INFRASTRUCTURE_ERROR_MESSAGES,
   INFRASTRUCTURE_DEFAULT_CONFIG,
-} from '../constants';
+} from '../constants.js';
 
 /**
  * 缓存适配器常量使用示例

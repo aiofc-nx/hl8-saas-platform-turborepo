@@ -7,7 +7,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import {
   DatabaseAdapter,
   IDatabaseConfig,

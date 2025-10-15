@@ -5,5 +5,5 @@
  * @since 1.0.0
  */
 
-export * from '../../../../domain/events/base/base-domain-event';
+export * from '../../../../domain/events/base/base-domain-event.js';
 export * from './event-handler.interface';

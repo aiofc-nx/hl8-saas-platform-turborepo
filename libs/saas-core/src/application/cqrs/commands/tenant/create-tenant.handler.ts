@@ -9,7 +9,7 @@
 
 import { CommandHandler, ICommandHandler } from '@hl8/hybrid-archi';
 import { CreateTenantCommand } from './create-tenant.command';
-import { CreateTenantUseCase } from '../../../use-cases/tenant/create-tenant.use-case';
+import { CreateTenantUseCase } from '../../../use-cases/tenant/create-tenant.use-case.js';
 import { EntityId } from '@hl8/hybrid-archi';
 
 // @CommandHandler('CreateTenantCommand') // TODO: 修复装饰器类型问题

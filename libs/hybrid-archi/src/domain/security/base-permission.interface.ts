@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../value-objects/entity-id';
+import { EntityId } from '../value-objects/entity-id.js';
 
 /**
  * 权限作用域枚举

@@ -6,7 +6,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { LoggerPortAdapter } from './logger-port.adapter';
 
 describe('LoggerPortAdapter', () => {

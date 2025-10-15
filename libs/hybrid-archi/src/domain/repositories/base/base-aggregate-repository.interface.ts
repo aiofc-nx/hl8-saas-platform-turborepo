@@ -58,9 +58,9 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
+import { EntityId } from '../../value-objects/entity-id.js';
 import { IAggregateRoot } from '../../aggregates/base/aggregate-root.interface';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
+import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
 import {
   IRepository,
   IRepositoryQueryOptions,

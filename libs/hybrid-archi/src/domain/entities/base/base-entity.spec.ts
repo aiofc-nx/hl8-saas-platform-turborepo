@@ -13,13 +13,13 @@
  * @since 1.0.0
  */
 
-import { BaseEntity } from '../../../domain/entities/base/base-entity';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { BaseEntity } from '../../../domain/entities/base/base-entity.js';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 import {
   IPartialAuditInfo,
-} from '../../../domain/entities/base/audit-info';
-import { PinoLogger } from '@hl8/logger';
-import { GeneralBadRequestException } from '@hl8/common';
+} from '../../../domain/entities/base/audit-info.js';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { GeneralBadRequestException } from '@hl8/isolation-model';
 
 // 测试用的具体实体类
 class TestEntity extends BaseEntity {

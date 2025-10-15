@@ -9,10 +9,10 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommandBus } from './command-bus.js';
-import { BaseCommand } from '../commands/base/base-command';
+import { BaseCommand } from '../commands/base/base-command.js';
 import { ICommandHandler } from '../commands/base/command-handler.interface';
-import { PinoLogger } from '@hl8/logger';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 
 // 测试用的有效UUID
 const TEST_TENANT_ID = EntityId.generate().toString();

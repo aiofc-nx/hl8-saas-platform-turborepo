@@ -44,14 +44,14 @@
  * @since 1.0.0
  */
 import { Injectable } from '@nestjs/common';
-import { BaseCommand } from '../commands/base/base-command';
+import { BaseCommand } from '../commands/base/base-command.js';
 import { ICommandHandler } from '../commands/base/command-handler.interface';
 import {
   ICommandBus,
   IMiddleware,
   IMessageContext,
 } from './cqrs-bus.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 
 /**
  * 命令总线实现

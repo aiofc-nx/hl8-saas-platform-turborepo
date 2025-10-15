@@ -10,9 +10,9 @@
 
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { CacheService } from '@hl8/caching';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
 
 /**
  * 事件存储配置接口

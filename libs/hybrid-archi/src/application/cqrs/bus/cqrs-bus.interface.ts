@@ -34,13 +34,13 @@
  * @description CQRS 总线接口，定义消息处理的标准行为
  * @since 1.0.0
  */
-import { BaseCommand } from '../commands/base/base-command';
-import { BaseQuery, IQueryResult } from '../queries/base/base-query';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { BaseCommand } from '../commands/base/base-command.js';
+import { BaseQuery, IQueryResult } from '../queries/base/base-query.js';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
 import { ICommandHandler } from '../commands/base/command-handler.interface';
 import { IQueryHandler } from '../queries/base/query-handler.interface';
 import { IEventHandler } from '../events/base/event-handler.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 
 /**
  * 消息处理上下文接口

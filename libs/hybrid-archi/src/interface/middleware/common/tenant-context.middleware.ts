@@ -6,13 +6,13 @@
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/fastify-pro';
-import { PinoLogger } from '@hl8/logger';
-import { TenantContextService} from '@hl8/multi-tenancy';
+import { FastifyRequest, FastifyReply } from '@hl8/nestjs-fastify';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { TenantContextService} from '@hl8/nestjs-isolation';
 import {
   GeneralBadRequestException,
-} from '@hl8/common';
-import { EntityId } from '../../../domain/value-objects';
+} from '@hl8/isolation-model';
+import { EntityId } from '../../../domain/value-objects.js';
 
 /**
  * 租户上下文中间件

@@ -18,7 +18,7 @@ export {
 } from './domain-event.interface';
 
 // 重新导出常用类型 - 避免重复导出
-// export type { EntityId } from '../../value-objects/entity-id';
+// export type { EntityId } from '../../value-objects/entity-id.js';
 
 // 领域事件类型别名 - 需要先导入IDomainEvent
 import { IDomainEvent } from './domain-event.interface';

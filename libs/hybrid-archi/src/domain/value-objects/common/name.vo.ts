@@ -50,7 +50,7 @@
  * @since 1.1.0
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from '../base-value-object.js';
 
 export abstract class Name extends BaseValueObject<string> {
   /**

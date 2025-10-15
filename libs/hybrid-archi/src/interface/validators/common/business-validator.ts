@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 
 /**
  * 验证结果接口

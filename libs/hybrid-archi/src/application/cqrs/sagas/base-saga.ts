@@ -74,7 +74,7 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, of, throwError } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
-import type { PinoLogger } from '@hl8/logger';
+import type { PinoLogger } from '@hl8/nestjs-fastify/logging';
 
 // 定义 LogContext 枚举
 enum LogContext {

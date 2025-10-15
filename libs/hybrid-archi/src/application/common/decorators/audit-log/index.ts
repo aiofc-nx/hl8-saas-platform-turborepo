@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-export type { IAuditLogOptions } from './audit-log.decorator';
+export type { IAuditLogOptions } from './audit-log.decorator.js';
 export {
   AuditLog,
   getAuditLogMetadata,
   AUDIT_LOG_METADATA_KEY,
-} from './audit-log.decorator';
+} from './audit-log.decorator.js';

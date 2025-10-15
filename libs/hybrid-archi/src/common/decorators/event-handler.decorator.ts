@@ -48,7 +48,7 @@
  * @since 1.0.0
  */
 import 'reflect-metadata';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
+import { BaseDomainEvent } from '../../domain/events/base/base-domain-event.js';
 import { IEventHandler } from '../../application/cqrs/events/base/event-handler.interface';
 import {
   setEventHandlerMetadata,

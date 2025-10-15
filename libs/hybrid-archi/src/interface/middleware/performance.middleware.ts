@@ -6,8 +6,8 @@
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/fastify-pro';
-import { PinoLogger } from '@hl8/logger';
+import { FastifyRequest, FastifyReply } from '@hl8/nestjs-fastify';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 
 /**
  * 性能监控中间件配置

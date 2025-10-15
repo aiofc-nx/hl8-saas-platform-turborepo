@@ -69,16 +69,16 @@
  *
  * @since 1.0.0
  */
-import { EntityId } from '../../value-objects/entity-id';
+import { EntityId } from '../../value-objects/entity-id.js';
 import { IAuditInfo, IPartialAuditInfo } from './audit-info.js';
 import { IEntity } from './entity.interface';
-import { TenantContextService, ITenantContext } from '@hl8/multi-tenancy';
-import { PinoLogger } from '@hl8/logger';
+import { TenantContextService, ITenantContext } from '@hl8/nestjs-isolation';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import {
   GeneralBadRequestException,
   GeneralInternalServerException,
-} from '@hl8/common';
-import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from '../../../constants';
+} from '@hl8/isolation-model';
+import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from '../../../constants.js';
 
 export abstract class BaseEntity implements IEntity {
   private readonly _id: EntityId;

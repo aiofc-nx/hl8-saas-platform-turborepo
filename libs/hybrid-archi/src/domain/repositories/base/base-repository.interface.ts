@@ -60,7 +60,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
+import { EntityId } from '../../value-objects/entity-id.js';
 import { IEntity } from '../../entities/base/entity.interface';
 
 /**

@@ -7,7 +7,7 @@
  */
 
 import { EntityId, Email } from '@hl8/hybrid-archi';
-import { LoginUserUseCase, ILoginUserCommand } from './login-user.use-case';
+import { LoginUserUseCase, ILoginUserCommand } from './login-user.use-case.js';
 import { IUserAggregateRepository } from '../../../domain/user/repositories/user-aggregate.repository.interface';
 import { UserAggregate } from '../../../domain/user/aggregates/user.aggregate';
 

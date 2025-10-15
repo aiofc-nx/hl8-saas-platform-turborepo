@@ -7,7 +7,7 @@
  */
 
 import { EntityId } from '@hl8/hybrid-archi';
-import { ActivateTenantUseCase, IActivateTenantCommand } from './activate-tenant.use-case';
+import { ActivateTenantUseCase, IActivateTenantCommand } from './activate-tenant.use-case.js';
 import { ITenantAggregateRepository } from '../../../domain/tenant/repositories/tenant-aggregate.repository.interface';
 import { TenantAggregate } from '../../../domain/tenant/aggregates/tenant.aggregate';
 

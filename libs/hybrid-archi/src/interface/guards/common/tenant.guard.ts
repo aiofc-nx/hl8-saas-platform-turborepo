@@ -11,7 +11,7 @@ import {
   ExecutionContext,
   BadRequestException,
 } from '@nestjs/common';
-import { FastifyRequest } from '@hl8/fastify-pro';
+import { FastifyRequest } from '@hl8/nestjs-fastify';
 
 /**
  * 租户守卫

@@ -65,18 +65,18 @@
  */
 
 import { IUseCase, IUseCaseContext } from './use-case.interface';
-import { TenantContextService, ITenantContext } from '@hl8/multi-tenancy';
-import { PinoLogger } from '@hl8/logger';
+import { TenantContextService, ITenantContext } from '@hl8/nestjs-isolation';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import {
   GeneralBadRequestException,
   GeneralInternalServerException,
   GeneralNotFoundException,
-} from '@hl8/common';
+} from '@hl8/isolation-model';
 import {
   USE_CASE_ERROR_CODES,
   TENANT_ERROR_CODES,
   DEFAULT_ENVIRONMENT,
-} from '../../../constants';
+} from '../../../constants.js';
 
 /**
  * 用例执行结果

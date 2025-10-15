@@ -54,7 +54,7 @@ import {
   IUser,
   IWebSocketClient,
   IJwtPayload,
-} from '../../shared/interfaces';
+} from '../../shared/interfaces.js';
 
 export abstract class BaseGateway {
   protected readonly requestId: string;

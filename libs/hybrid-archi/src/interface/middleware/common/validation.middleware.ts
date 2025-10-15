@@ -10,7 +10,7 @@ import {
   NestMiddleware,
   BadRequestException,
 } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/fastify-pro';
+import { FastifyRequest, FastifyReply } from '@hl8/nestjs-fastify';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 

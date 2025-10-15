@@ -10,12 +10,12 @@
 
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { EventService } from '@hl8/messaging';
-import { EntityId } from '../../../domain/value-objects/entity-id';
-import { BaseAggregateRoot } from '../../../domain/aggregates/base/base-aggregate-root';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { CacheService } from '@hl8/caching';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { EventService } from '@hl8/nestjs-fastify/messaging';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
+import { BaseAggregateRoot } from '../../../domain/aggregates/base/base-aggregate-root.js';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
 import { IEntity } from '../../../domain/entities/base/entity.interface';
 import {
   IRepository,

@@ -9,4 +9,4 @@ export type {
   DecoratorTarget,
   ClassConstructor,
   MethodDecoratorTarget,
-} from './decorator-target.type';
+} from './decorator-target.type.js';

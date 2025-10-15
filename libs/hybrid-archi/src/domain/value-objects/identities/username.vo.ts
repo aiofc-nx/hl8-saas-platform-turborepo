@@ -21,7 +21,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '../base-value-object';
+import { BaseValueObject } from '../base-value-object.js';
 
 export class Username extends BaseValueObject<string> {
   /**

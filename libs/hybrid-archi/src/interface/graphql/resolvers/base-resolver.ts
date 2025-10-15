@@ -48,7 +48,7 @@ import {
   ILoggerService,
   IMetricsService,
   IGraphQLContext,
-} from '../../shared/interfaces';
+} from '../../shared/interfaces.js';
 
 export abstract class BaseResolver {
   protected readonly requestId: string;

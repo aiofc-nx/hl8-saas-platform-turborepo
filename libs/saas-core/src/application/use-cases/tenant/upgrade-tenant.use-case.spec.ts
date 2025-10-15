@@ -7,7 +7,7 @@
  */
 
 import { EntityId } from '@hl8/hybrid-archi';
-import { UpgradeTenantUseCase, IUpgradeTenantCommand } from './upgrade-tenant.use-case';
+import { UpgradeTenantUseCase, IUpgradeTenantCommand } from './upgrade-tenant.use-case.js';
 import { ITenantAggregateRepository } from '../../../domain/tenant/repositories/tenant-aggregate.repository.interface';
 import { TenantAggregate } from '../../../domain/tenant/aggregates/tenant.aggregate';
 import { TenantType } from '../../../domain/tenant/value-objects/tenant-type.enum';

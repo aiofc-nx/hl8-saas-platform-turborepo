@@ -9,9 +9,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { MessagingService } from '@hl8/messaging';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
+import { MessagingService } from '@hl8/nestjs-fastify/messaging';
+import { CacheService } from '@hl8/caching';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,

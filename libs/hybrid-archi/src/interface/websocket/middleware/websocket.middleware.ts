@@ -48,7 +48,7 @@ import {
   IMetricsService,
   IWebSocketContext,
   IWebSocketClient,
-} from '../../shared/interfaces';
+} from '../../shared/interfaces.js';
 
 /**
  * WebSocket中间件接口

@@ -6,7 +6,7 @@
  */
 
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { FastifyRequest } from '@hl8/fastify-pro';
+import { FastifyRequest } from '@hl8/nestjs-fastify';
 
 /**
  * 当前租户装饰器

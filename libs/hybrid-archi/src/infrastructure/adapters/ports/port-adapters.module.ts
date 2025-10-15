@@ -9,9 +9,9 @@
  */
 
 import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { LoggerModule } from '@hl8/logger';
-import { TypedConfigModule } from '@hl8/config';
-import { MessagingModule } from '@hl8/messaging';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
 
 import { LoggerPortAdapter } from './logger-port.adapter';
 import { IdGeneratorPortAdapter } from './id-generator-port.adapter';

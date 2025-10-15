@@ -56,13 +56,13 @@
 
 import { BaseUseCase } from './base-use-case.js';
 import { IUseCaseContext } from './use-case.interface';
-import { TenantContextService, ITenantContext } from '@hl8/multi-tenancy';
-import { PinoLogger } from '@hl8/logger';
+import { TenantContextService, ITenantContext } from '@hl8/nestjs-isolation';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import {
   GeneralBadRequestException,
   GeneralInternalServerException,
-} from '@hl8/common';
-import { TENANT_ERROR_CODES } from '../../../constants';
+} from '@hl8/isolation-model';
+import { TENANT_ERROR_CODES } from '../../../constants.js';
 
 /**
  * 多租户感知的用例基类

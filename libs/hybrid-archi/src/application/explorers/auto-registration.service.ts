@@ -44,7 +44,7 @@
  * @since 1.0.0
  */
 import { Injectable } from '@nestjs/common';
-import type { PinoLogger } from '@hl8/logger';
+import type { PinoLogger } from '@hl8/nestjs-fastify/logging';
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -58,7 +58,7 @@ enum LogContext {
   HTTP_REQUEST = 'HTTP_REQUEST',
 }
 import { ModuleRef } from '@nestjs/core';
-import type { ICommandBus, IQueryBus, IEventBus } from '../cqrs/bus';
+import type { ICommandBus, IQueryBus, IEventBus } from '../cqrs/bus.js';
 import { IExplorerResult, IHandlerInfo } from './core-explorer.service';
 
 /**

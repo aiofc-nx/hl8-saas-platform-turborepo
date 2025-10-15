@@ -26,4 +26,4 @@ export type { IAuditInfo, IPartialAuditInfo } from './audit-info.js';
 export { AuditInfoBuilder } from './audit-info.js';
 
 // 重新导出常用类型
-export type { EntityId } from '../../value-objects/entity-id';
+export type { EntityId } from '../../value-objects/entity-id.js';

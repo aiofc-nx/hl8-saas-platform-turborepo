@@ -51,6 +51,16 @@ export {
 export { BaseCommand } from './application/cqrs/commands/base.js';
 export { BaseQuery } from './application/cqrs/queries/base.js';
 
+// CQRS 装饰器
+export { CommandHandler, Command } from './application/cqrs/commands/decorators.js';
+export { QueryHandler, Query } from './application/cqrs/queries/decorators.js';
+export { EventHandler, Event } from './application/cqrs/events/decorators.js';
+
+// CQRS 接口
+export { ICommandHandler } from './application/cqrs/commands/handlers.js';
+export { IQueryHandler } from './application/cqrs/queries/handlers.js';
+export { IEventHandler } from './application/cqrs/events/handlers.js';
+
 // 通用应用层组件导出
 export * from './application/exceptions/common.js';
 export * from './application/interfaces/common.js';
@@ -149,3 +159,6 @@ export * from './interface/base.js';
 
 // 对外类型导出（为其他模块提供统一的类型接口）
 export * from './types.js';
+
+// 从isolation-model重新导出ID值对象
+export { EntityId, TenantId, UserId } from '@hl8/isolation-model';

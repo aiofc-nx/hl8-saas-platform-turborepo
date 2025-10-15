@@ -64,7 +64,7 @@
  *
  * @since 1.0.0
  */
-import { EntityId } from '../../value-objects/entity-id';
+import { EntityId } from '../../value-objects/entity-id.js';
 
 export abstract class BaseDomainEvent {
   private readonly _eventId: EntityId;

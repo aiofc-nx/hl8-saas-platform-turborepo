@@ -9,8 +9,8 @@
  */
 
 import { Module } from '@nestjs/common';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
+import { CacheModule } from '@hl8/caching';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
 
 import { DomainServiceAdapter } from './domain-service.adapter';
 import { DomainServiceFactory } from './domain-service.factory';

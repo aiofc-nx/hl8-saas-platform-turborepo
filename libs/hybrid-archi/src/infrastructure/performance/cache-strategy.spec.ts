@@ -10,8 +10,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CacheStrategy } from './cache-strategy.js';
 import { CacheStrategyConfig } from './cache-strategy.js';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { CacheService } from '@hl8/caching';
 
 describe('CacheStrategy', () => {
   let cacheStrategy: CacheStrategy;

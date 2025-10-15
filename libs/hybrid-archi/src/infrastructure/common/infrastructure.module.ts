@@ -9,13 +9,13 @@
  */
 
 import { Module } from '@nestjs/common';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
-import { TypedConfigModule } from '@hl8/config';
-import { MessagingModule } from '@hl8/messaging';
-import { MultiTenancyModule } from '@hl8/multi-tenancy';
+import { CacheModule } from '@hl8/caching';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
+import { MultiTenancyModule } from '@hl8/nestjs-isolation';
 import { DatabaseModule } from '@hl8/database';
-import { FastifyProModule } from '@hl8/fastify-pro';
+import { FastifyProModule } from '@hl8/nestjs-fastify';
 
 import { InfrastructureServiceManager } from './base-infrastructure.adapter';
 

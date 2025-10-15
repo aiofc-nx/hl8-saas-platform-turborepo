@@ -13,7 +13,7 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import { ILoggerService, IUserContext } from '../../shared/interfaces';
+import { ILoggerService, IUserContext } from '../../shared/interfaces.js';
 
 /**
  * 租户隔离守卫

@@ -22,8 +22,8 @@ import { TenantCode } from '../../domain/tenant/value-objects/tenant-code.vo';
 import { TenantDomain } from '../../domain/tenant/value-objects/tenant-domain.vo';
 import { TenantQuota } from '../../domain/tenant/value-objects/tenant-quota.vo';
 import { TenantType } from '../../domain/tenant/value-objects/tenant-type.enum';
-import { TenantOrmEntity } from '../persistence/entities/tenant.orm-entity';
-import { TenantConfigurationOrmEntity } from '../persistence/entities/tenant-configuration.orm-entity';
+import { TenantOrmEntity } from '../persistence/entities/tenant.orm-entity.js';
+import { TenantConfigurationOrmEntity } from '../persistence/entities/tenant-configuration.orm-entity.js';
 
 @Injectable()
 export class TenantMapper {

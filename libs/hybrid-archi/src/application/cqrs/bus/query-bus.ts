@@ -50,10 +50,10 @@
  * @since 1.0.0
  */
 import { Injectable } from '@nestjs/common';
-import { BaseQuery, IQueryResult } from '../queries/base/base-query';
+import { BaseQuery, IQueryResult } from '../queries/base/base-query.js';
 import { IQueryHandler } from '../queries/base/query-handler.interface';
 import { IQueryBus, IMiddleware, IMessageContext } from './cqrs-bus.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 
 /**
  * 查询总线实现

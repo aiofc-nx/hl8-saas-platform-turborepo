@@ -49,7 +49,7 @@
  * @since 1.0.0
  */
 import 'reflect-metadata';
-import { BaseCommand } from '../../application/cqrs/commands/base/base-command';
+import { BaseCommand } from '../../application/cqrs/commands/base/base-command.js';
 import { ICommandHandler } from '../../application/cqrs/commands/base/command-handler.interface';
 import {
   setCommandHandlerMetadata,

@@ -15,9 +15,9 @@ import {
   EventStoreConfig,
 } from './common/event-store.interface';
 import { ISnapshotStore, Snapshot } from './common/snapshot-store.interface';
-// import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+// import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 
 /**

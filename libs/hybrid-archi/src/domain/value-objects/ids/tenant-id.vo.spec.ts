@@ -7,7 +7,7 @@
  */
 
 import { TenantId, InvalidTenantIdException } from './tenant-id.vo';
-import { EntityId } from '../entity-id';
+import { EntityId } from '../entity-id.js';
 
 describe('TenantId', () => {
   describe('构造函数', () => {

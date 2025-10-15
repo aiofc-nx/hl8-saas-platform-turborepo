@@ -9,11 +9,11 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
-import { EventService, MessagingService } from '@hl8/messaging';
-import { TenantContextService } from '@hl8/multi-tenancy';
+import { EventService, MessagingService } from '@hl8/nestjs-fastify/messaging';
+import { TenantContextService } from '@hl8/nestjs-isolation';
 
 // 导入所有适配器
 import { LoggerPortAdapter } from '../adapters/ports/logger-port.adapter';

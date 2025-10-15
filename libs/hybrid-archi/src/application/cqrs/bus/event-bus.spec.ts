@@ -6,10 +6,10 @@
  */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventBus } from './event-bus.js';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
 import { IEventHandler } from '../events/base/event-handler.interface';
 import { IMiddleware, IMessageContext } from './cqrs-bus.interface';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 
 /**
  * 测试事件类

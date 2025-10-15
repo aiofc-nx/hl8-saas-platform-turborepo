@@ -10,9 +10,9 @@
 
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
-import { CacheService } from '@hl8/cache';
-import { PinoLogger } from '@hl8/logger';
-import { EntityId } from '../../../domain/value-objects/entity-id';
+import { CacheService } from '@hl8/caching';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { EntityId } from '../../../domain/value-objects/entity-id.js';
 import { IEntity } from '../../../domain/entities/base/entity.interface';
 import {
   IRepository,

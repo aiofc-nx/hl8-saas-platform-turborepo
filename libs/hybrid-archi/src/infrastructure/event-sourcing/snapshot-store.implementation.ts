@@ -15,8 +15,8 @@ import {
   SnapshotStoreStats,
   SnapshotStoreConfig,
 } from './common/snapshot-store.interface';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 
 /**

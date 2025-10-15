@@ -47,7 +47,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { BaseDomainEvent } from '../../../../domain/events/base/base-domain-event';
+import { BaseDomainEvent } from '../../../../domain/events/base/base-domain-event.js';
 import {
   IEventProjector,
   IProjectorManager,

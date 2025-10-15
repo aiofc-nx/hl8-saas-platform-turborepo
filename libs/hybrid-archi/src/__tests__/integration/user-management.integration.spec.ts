@@ -9,21 +9,21 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
-import { TenantContextService } from '@hl8/multi-tenancy';
-// import { EventBus } from '@hl8/messaging';
+import { TenantContextService } from '@hl8/nestjs-isolation';
+// import { EventBus } from '@hl8/nestjs-fastify/messaging';
 
 // 导入混合架构组件
-import { BaseEntity, EntityId } from '../../domain';
-import { BaseUseCase } from '../../application';
-import { BaseController } from '../../interface';
-import { CacheStrategy } from '../../infrastructure/performance/cache-strategy';
-import { ConnectionPoolManager } from '../../infrastructure/performance/connection-pool';
-import { AsyncProcessor } from '../../infrastructure/performance/async-processor';
-import { EventMonitor } from '../../infrastructure/event-driven/event-monitor';
-import { DeadLetterQueueProcessor } from '../../infrastructure/event-driven/dead-letter-queue';
+import { BaseEntity, EntityId } from '../../domain.js';
+import { BaseUseCase } from '../../application.js';
+import { BaseController } from '../../interface.js';
+import { CacheStrategy } from '../../infrastructure/performance/cache-strategy.js';
+import { ConnectionPoolManager } from '../../infrastructure/performance/connection-pool.js';
+import { AsyncProcessor } from '../../infrastructure/performance/async-processor.js';
+import { EventMonitor } from '../../infrastructure/event-driven/event-monitor.js';
+import { DeadLetterQueueProcessor } from '../../infrastructure/event-driven/dead-letter-queue.js';
 
 describe('用户管理集成测试', () => {
   let app: INestApplication;

@@ -9,10 +9,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
-import { CacheService } from '@hl8/cache';
-import { TypedConfigModule } from '@hl8/config';
-import { EventService } from '@hl8/messaging';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { CacheService } from '@hl8/caching';
+import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+import { EventService } from '@hl8/nestjs-fastify/messaging';
 
 import { LoggerPortAdapter } from './logger-port.adapter';
 import { IdGeneratorPortAdapter } from './id-generator-port.adapter';

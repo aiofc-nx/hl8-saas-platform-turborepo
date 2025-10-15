@@ -118,14 +118,14 @@
  * @since 1.1.0
  */
 
-import { EntityId } from '../../value-objects/entity-id';
-import { IPartialAuditInfo } from '../../entities/base/audit-info';
-import { PinoLogger } from '@hl8/logger';
+import { EntityId } from '../../value-objects/entity-id.js';
+import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { BaseAggregateRoot } from './base-aggregate-root.js';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
+import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
 import {
   GeneralBadRequestException,
-} from '@hl8/common';
+} from '@hl8/isolation-model';
 
 /**
  * 租户感知聚合根基类

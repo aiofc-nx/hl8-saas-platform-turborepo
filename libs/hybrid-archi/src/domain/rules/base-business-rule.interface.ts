@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 
-import { EntityId } from '../value-objects/entity-id';
+import { EntityId } from '../value-objects/entity-id.js';
 
 /**
  * 业务规则类型枚举

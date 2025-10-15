@@ -10,8 +10,8 @@
 
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { DatabaseModule } from '@hl8/database';
-import { CacheModule } from '@hl8/cache';
-import { LoggerModule } from '@hl8/logger';
+import { CacheModule } from '@hl8/caching';
+import { LoggerModule } from '@hl8/nestjs-fastify/logging';
 
 import { EventStoreAdapter } from './event-store.adapter';
 import { EventStoreFactory } from './event-store.factory';

@@ -7,7 +7,7 @@
  */
 
 import { EntityId } from '@hl8/hybrid-archi';
-import { ActivateUserUseCase, IActivateUserCommand } from './activate-user.use-case';
+import { ActivateUserUseCase, IActivateUserCommand } from './activate-user.use-case.js';
 import { IUserAggregateRepository } from '../../../domain/user/repositories/user-aggregate.repository.interface';
 import { UserAggregate } from '../../../domain/user/aggregates/user.aggregate';
 

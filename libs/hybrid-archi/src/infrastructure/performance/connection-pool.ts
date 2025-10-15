@@ -9,7 +9,7 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import { PinoLogger } from '@hl8/logger';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import { DatabaseService } from '@hl8/database';
 
 /**

@@ -6,13 +6,13 @@
  */
 
 import { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root.js';
-import { EntityId } from '../../value-objects/entity-id';
-import { IPartialAuditInfo } from '../../entities/base/audit-info';
-import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import { PinoLogger } from '@hl8/logger';
+import { EntityId } from '../../value-objects/entity-id.js';
+import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
+import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
+import { PinoLogger } from '@hl8/nestjs-fastify/logging';
 import {
   GeneralBadRequestException,
-} from '@hl8/common';
+} from '@hl8/isolation-model';
 
 /**
  * 测试用聚合根
