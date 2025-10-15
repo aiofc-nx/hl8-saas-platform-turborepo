@@ -7,7 +7,7 @@
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
 // import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 // // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
 import { BadRequestException } from '@nestjs/common';
 import { EntityId } from '@hl8/isolation-model';
@@ -74,7 +74,7 @@ import { TenantId } from '@hl8/isolation-model';
 export class TenantContextMiddleware implements NestMiddleware {
   constructor(
     private readonly tenantContextService: any,
-    private readonly logger: Logger
+    private readonly logger: FastifyLoggerService
   ) {
     this.logger.debug({ requestId: 'TenantContextMiddleware' });
   }
@@ -128,15 +128,7 @@ export class TenantContextMiddleware implements NestMiddleware {
       const tenantIdString = this.extractTenantId(req);
 
       if (!tenantIdString) {
-        throw new BadRequestException(
-          'Tenant ID required',
-          '请求必须包含租户ID（通过请求头、查询参数或子域名）',
-          {
-            url: req.url,
-            method: req.method,
-            headers: this.sanitizeHeaders(req.headers),
-          }
-        );
+        throw new BadRequestException('请求必须包含租户ID（通过请求头、查询参数或子域名）');
       }
 
       // 2. 验证租户ID格式
@@ -308,14 +300,7 @@ export class TenantContextMiddleware implements NestMiddleware {
       /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
     if (!uuidV4Pattern.test(tenantId)) {
-      throw new BadRequestException(
-        'Invalid tenant ID format',
-        '租户ID格式无效，必须是有效的UUID v4格式',
-        {
-          tenantId,
-          expectedPattern: 'UUID v4 (xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx)',
-        }
-      );
+      throw new BadRequestException('租户ID格式无效，必须是有效的UUID v4格式');
     }
   }
 
@@ -340,16 +325,7 @@ export class TenantContextMiddleware implements NestMiddleware {
     if (userTenantId !== requestTenantId) {
       this.logger.warn('用户尝试访问其他租户');
 
-      throw new BadRequestException(
-        'Cross-tenant access denied',
-        '无权访问其他租户的资源',
-        {
-          userId,
-          userTenantId,
-          requestTenantId,
-          reason: 'tenant-mismatch',
-        }
-      );
+      throw new BadRequestException('无权访问其他租户的资源');
     }
   }
 

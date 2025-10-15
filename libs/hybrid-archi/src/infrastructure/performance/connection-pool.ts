@@ -9,7 +9,7 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { DatabaseService } from '@hl8/database';
 
 /**
@@ -113,7 +113,7 @@ export class ConnectionPoolManager {
   private validationTimer: NodeJS.Timeout | null = null;
 
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly databaseService: DatabaseService,
     @Inject('ConnectionPoolConfig') private readonly config: ConnectionPoolConfig
   ) {

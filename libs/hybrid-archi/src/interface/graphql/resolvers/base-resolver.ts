@@ -219,12 +219,7 @@ export abstract class BaseResolver {
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
-      `graphql_${operationName}_error_total`,
-      {
-        error_type:
-          error instanceof Error ? error.constructor.name : 'UnknownError',
-      }
-    );
+      `graphql_${operationName}_error_total`);
   }
 
   /**

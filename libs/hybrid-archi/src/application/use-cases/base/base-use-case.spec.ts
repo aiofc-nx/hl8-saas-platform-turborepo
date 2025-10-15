@@ -7,13 +7,13 @@
 
 import { BaseUseCase } from './base-use-case';
 import type { IUseCaseContext  } from './use-case.interface';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 // 创建具体的测试用例类
 class TestUseCase extends BaseUseCase<TestRequest, TestResponse> {
   constructor(
     permissions: string[] = [],
-    logger?: Logger
+    logger?: FastifyLoggerService
   ) {
     super('TestUseCase', '测试用例', '1.0.0', permissions, logger);
   }

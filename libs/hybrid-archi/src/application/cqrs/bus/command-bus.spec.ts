@@ -11,7 +11,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CommandBus } from './command-bus';
 import { BaseCommand } from '../commands/base/base-command';
 import type { ICommandHandler  } from '../commands/base/command-handler.interface';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { EntityId  } from '@hl8/isolation-model';
 import { TenantId } from '@hl8/isolation-model';
 
@@ -21,7 +21,7 @@ const TEST_USER_ID = 'test-user';
 
 describe('CommandBus', () => {
   let commandBus: CommandBus;
-  let logger: Logger;
+  let logger: FastifyLoggerService;
 
   class TestCommand extends BaseCommand {
     constructor(
@@ -115,7 +115,7 @@ describe('CommandBus', () => {
       providers: [
         CommandBus,
         {
-          provide: Logger,
+          provide: FastifyLoggerService,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),

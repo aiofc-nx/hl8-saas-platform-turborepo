@@ -6,10 +6,12 @@
  */
 
 // 基础仓储接口
-export {
+export type {
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
+} from './base-repository.interface';
+export {
   BaseRepositoryError,
   ConcurrencyError,
   EntityNotFoundError,
@@ -17,7 +19,7 @@ export {
 } from './base-repository.interface';
 
 // 聚合根仓储接口
-export {
+export type {
   IAggregateRepository,
   IAggregateSnapshot,
   IEventStoreRepository,
@@ -25,6 +27,6 @@ export {
 } from './base-aggregate-repository.interface';
 
 // 重新导出常用类型
-export type { EntityId } from '../../value-objects/entity-id';
+export type { EntityId } from '@hl8/isolation-model';
 export type { IAggregateRoot } from '../../aggregates/base/aggregate-root.interface';
 export type { BaseDomainEvent } from '../../events/base/base-domain-event';

@@ -11,7 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { MessagingService } from '@hl8/nestjs-fastify/messaging';
 import { CacheService } from '@hl8/caching';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,
@@ -56,7 +56,7 @@ export class MessageQueueManager {
   constructor(
     private readonly messagingService: MessagingService,
     private readonly cacheService: CacheService,
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly queueFactory: MessageQueueFactory,
     config: Partial<IMessageQueueManagerConfig> = {}
   ) {

@@ -274,12 +274,7 @@ export abstract class BaseGateway {
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
-      `websocket_${operationName}_error_total`,
-      {
-        error_type:
-          error instanceof Error ? error.constructor.name : 'UnknownError',
-      }
-    );
+      `websocket_${operationName}_error_total`);
   }
 
   /**

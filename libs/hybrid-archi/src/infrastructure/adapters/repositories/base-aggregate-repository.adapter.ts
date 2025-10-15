@@ -11,7 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { EventService } from '@hl8/nestjs-fastify/messaging';
 import { EntityId  } from '@hl8/isolation-model';
 import { BaseAggregateRoot } from '../../../domain/aggregates/base/base-aggregate-root';
@@ -57,7 +57,7 @@ export class BaseAggregateRepositoryAdapter<
   constructor(
     databaseService: DatabaseService,
     cacheService: CacheService,
-    logger: Logger,
+    logger: FastifyLoggerService,
     private readonly eventService: EventService,
     entityName: string,
     aggregateConfig: Partial<IAggregateRepositoryConfig> = {}

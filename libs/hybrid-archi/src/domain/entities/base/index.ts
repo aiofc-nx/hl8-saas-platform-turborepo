@@ -26,4 +26,4 @@ export type { IAuditInfo, IPartialAuditInfo } from './audit-info';
 export { AuditInfoBuilder } from './audit-info';
 
 // 重新导出常用类型
-export type { EntityId } from '../../value-objects/entity-id';
+export type { EntityId } from '@hl8/isolation-model';

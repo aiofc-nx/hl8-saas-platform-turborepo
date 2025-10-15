@@ -207,11 +207,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
-      `websocket_middleware_${this.middlewareName.toLowerCase()}_error_total`,
-      {
-        error_type: error instanceof Error ? error.constructor.name : 'UnknownError',
-      }
-    );
+      `websocket_middleware_${this.middlewareName.toLowerCase()}_error_total`);
   }
 }
 

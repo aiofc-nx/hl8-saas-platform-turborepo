@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import {
   InfrastructureFactory,
   IInfrastructureServiceConfig,
@@ -53,7 +53,7 @@ export class InfrastructureManager {
   private isInitialized = false;
 
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly infrastructureFactory: InfrastructureFactory,
     config: Partial<IInfrastructureManagerConfig> = {}
   ) {

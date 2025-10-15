@@ -6,7 +6,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { LoggerPortAdapter } from './logger-port.adapter';
 
 describe('LoggerPortAdapter', () => {
@@ -26,7 +26,7 @@ describe('LoggerPortAdapter', () => {
       providers: [
         LoggerPortAdapter,
         {
-          provide: Logger,
+          provide: FastifyLoggerService,
           useValue: mockLoggerInstance,
         },
       ],

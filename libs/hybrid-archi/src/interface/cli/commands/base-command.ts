@@ -88,10 +88,7 @@ export abstract class CliBaseCommand {
     this.logger.error(`CLI ${operationName}命令执行失败`);
 
     // 记录错误指标
-    this.metricsService?.incrementCounter(`cli_${operationName}_error_total`, {
-      error_type:
-        error instanceof Error ? error.constructor.name : 'UnknownError',
-    });
+    this.metricsService?.incrementCounter(`cli_${operationName}_error_total`);
   }
 
   /**

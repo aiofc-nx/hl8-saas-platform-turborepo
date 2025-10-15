@@ -11,13 +11,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BaseAggregateRoot } from './base-aggregate-root';
 import { EntityId  } from '@hl8/isolation-model';
 import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import { Logger } from '@nestjs/common';
+import type { IPureLogger } from '@hl8/pure-logger';
 import { TenantId } from '@hl8/isolation-model';
 // // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
 
 describe('BaseAggregateRoot', () => {
   let aggregate: TestAggregate;
-  let logger: Logger;
+  let logger: IPureLogger;
   let tenantContext: any;
 
   class TestEvent extends BaseDomainEvent {
@@ -78,7 +78,7 @@ describe('BaseAggregateRoot', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: Logger,
+          provide: IPureLogger,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),

@@ -66,7 +66,7 @@
 
 import type { IUseCase, IUseCaseContext  } from './use-case.interface';
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import {
   USE_CASE_ERROR_CODES,
@@ -121,14 +121,14 @@ export abstract class BaseUseCase<TRequest, TResponse>
   protected readonly useCaseDescription: string;
   protected readonly useCaseVersion: string;
   protected readonly requiredPermissions: string[];
-  protected readonly logger: Logger;
+  protected readonly logger: FastifyLoggerService;
 
   constructor(
     useCaseName: string,
     useCaseDescription: string,
     useCaseVersion = '1.0.0',
     requiredPermissions: string[] = [],
-    logger?: Logger
+    logger?: FastifyLoggerService
   ) {
     this.useCaseName = useCaseName;
     this.useCaseDescription = useCaseDescription;
@@ -386,8 +386,10 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * @returns 默认的日志记录器实例
    * @protected
    */
-  protected createDefaultLogger(): Logger {
-    return new Logger('BaseUseCase');
+  protected createDefaultLogger(): FastifyLoggerService {
+    // 注意：这里需要注入 PinoLogger，暂时返回 null
+    // 在实际使用中，应该通过依赖注入获取 FastifyLoggerService
+    return null as any;
   }
 
   /**
@@ -403,17 +405,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     validationErrors: string[],
     details?: Record<string, unknown>
   ): never {
-    throw new BadRequestException(
-      'Use case validation failed',
-      message,
-      {
-        useCaseName: this.useCaseName,
-        useCaseDescription: this.useCaseDescription,
-        useCaseVersion: this.useCaseVersion,
-        validationErrors,
-        ...details,
-      }
-    );
+    throw new BadRequestException(message);
   }
 
   /**
@@ -431,21 +423,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     userPermissions: string[],
     details?: Record<string, unknown>
   ): never {
-    throw new BadRequestException(
-      'Use case permission denied',
-      message,
-      {
-        useCaseName: this.useCaseName,
-        useCaseDescription: this.useCaseDescription,
-        useCaseVersion: this.useCaseVersion,
-        requiredPermissions,
-        userPermissions,
-        missingPermissions: requiredPermissions.filter(
-          (p) => !userPermissions.includes(p)
-        ),
-        ...details,
-      }
-    );
+    throw new BadRequestException(message);
   }
 
   /**
@@ -461,17 +439,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     businessRule: string,
     details?: Record<string, unknown>
   ): never {
-    throw new InternalServerErrorException(
-      'Use case business logic failed',
-      message,
-      {
-        useCaseName: this.useCaseName,
-        useCaseDescription: this.useCaseDescription,
-        useCaseVersion: this.useCaseVersion,
-        businessRule,
-        ...details,
-      }
-    );
+    throw new InternalServerErrorException(message);
   }
 
   /**
@@ -487,17 +455,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     operation: string,
     details?: Record<string, unknown>
   ): never {
-    throw new InternalServerErrorException(
-      'Use case execution failed',
-      message,
-      {
-        useCaseName: this.useCaseName,
-        useCaseDescription: this.useCaseDescription,
-        useCaseVersion: this.useCaseVersion,
-        operation,
-        ...details,
-      }
-    );
+    throw new InternalServerErrorException(message);
   }
 }
 

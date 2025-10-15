@@ -18,13 +18,13 @@ import { EntityId  } from '@hl8/isolation-model';
 import {
   IPartialAuditInfo,
 } from '../../../domain/entities/base/audit-info';
-import { Logger } from '@nestjs/common';
+import type { IPureLogger } from '@hl8/pure-logger';
 import { BadRequestException } from '@nestjs/common';
 import { TenantId } from '@hl8/isolation-model';
 
 // 测试用的具体实体类
 class TestEntity extends BaseEntity {
-  constructor(id: EntityId, auditInfo: IPartialAuditInfo, logger?: Logger) {
+  constructor(id: EntityId, auditInfo: IPartialAuditInfo, logger?: IPureLogger) {
     super(id, auditInfo, logger);
   }
 
@@ -42,7 +42,7 @@ class TestEntity extends BaseEntity {
 describe('BaseEntity', () => {
   let entityId: EntityId;
   let auditInfo: IPartialAuditInfo;
-  let logger: Logger;
+  let logger: IPureLogger;
 
   beforeEach(() => {
     entityId = TenantId.generate();
@@ -51,7 +51,7 @@ describe('BaseEntity', () => {
       tenantId: TenantId.generate(),
       version: 1,
     };
-    logger = new Logger({ level: 'error' as const });
+    logger = null as any // TODO: 注入 IPureLogger{ level: 'error' as const });
   });
 
   describe('构造函数', () => {

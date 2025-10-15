@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 /**
  * 缓存配置接口
@@ -94,7 +94,7 @@ export class CacheAdapter {
 
   constructor(
     private readonly cacheService: CacheService,
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     config: Partial<ICacheConfig> = {}
   ) {
     this.config = {

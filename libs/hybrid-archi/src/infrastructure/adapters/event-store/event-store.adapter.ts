@@ -11,7 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
 
 /**
@@ -132,7 +132,7 @@ export class EventStoreAdapter {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly cacheService: CacheService,
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     config: Partial<IEventStoreConfig> = {}
   ) {
     this.config = {

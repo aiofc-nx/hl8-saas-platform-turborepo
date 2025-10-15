@@ -7,7 +7,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { CacheService } from '@hl8/caching';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import {
   CacheAdapter,
   ICacheConfig,
@@ -39,7 +39,7 @@ describe('CacheAdapter', () => {
       providers: [
         {
           provide: CacheAdapter,
-          useFactory: (cacheService: CacheService, logger: Logger) => {
+          useFactory: (cacheService: CacheService, logger: FastifyLoggerService) => {
             return new CacheAdapter(cacheService, logger, {
               enableMemoryCache: true,
               enableRedisCache: true,
@@ -60,7 +60,7 @@ describe('CacheAdapter', () => {
           useValue: mockCacheServiceInstance,
         },
         {
-          provide: Logger,
+          provide: FastifyLoggerService,
           useValue: mockLoggerInstance,
         },
       ],

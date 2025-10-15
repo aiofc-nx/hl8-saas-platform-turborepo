@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import {
   DatabaseAdapter,
   IDatabaseConfig,
@@ -50,7 +50,7 @@ export class DatabaseFactory {
 
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly logger: Logger
+    private readonly logger: FastifyLoggerService
   ) {}
 
   /**

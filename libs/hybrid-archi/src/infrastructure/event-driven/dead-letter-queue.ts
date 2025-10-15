@@ -10,7 +10,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 
@@ -69,7 +69,7 @@ export class DeadLetterQueueProcessor {
   private processingTimer: NodeJS.Timeout | null = null;
 
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
     @Inject('DeadLetterQueueConfig') private readonly config: DeadLetterQueueConfig
@@ -376,22 +376,10 @@ export class DeadLetterQueueProcessor {
     this.retryStrategies.set('default');
 
     // 快速重试策略（用于临时错误）
-    this.retryStrategies.set('fast', {
-      maxRetries: 3,
-      initialDelay: 1000, // 1秒
-      backoffMultiplier: 2,
-      maxDelay: 10000, // 10秒
-      jitter: true,
-    });
+    this.retryStrategies.set('fast');
 
     // 慢速重试策略（用于系统错误）
-    this.retryStrategies.set('slow', {
-      maxRetries: 10,
-      initialDelay: 30000, // 30秒
-      backoffMultiplier: 1.5,
-      maxDelay: 3600000, // 1小时
-      jitter: true,
-    });
+    this.retryStrategies.set('slow');
   }
 
   /**

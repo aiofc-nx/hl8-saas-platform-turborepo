@@ -7,7 +7,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '@hl8/database';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import {
   DatabaseAdapter,
   IDatabaseConfig,
@@ -44,7 +44,7 @@ describe('DatabaseAdapter', () => {
           provide: DatabaseAdapter,
           useFactory: (
             databaseService: DatabaseService,
-            logger: Logger
+            logger: FastifyLoggerService
           ) => {
             return new DatabaseAdapter(databaseService, logger, {});
           },
@@ -55,7 +55,7 @@ describe('DatabaseAdapter', () => {
           useValue: mockDatabaseServiceInstance,
         },
         {
-          provide: Logger,
+          provide: FastifyLoggerService,
           useValue: mockLoggerInstance,
         },
       ],

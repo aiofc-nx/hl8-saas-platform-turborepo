@@ -14,4 +14,4 @@ export {
 } from './use-case.decorator';
 
 // 用例配置类型
-export { IUseCaseOptions, UseCaseType } from './use-case.decorator';
+export type { IUseCaseOptions, UseCaseType } from './use-case.decorator';

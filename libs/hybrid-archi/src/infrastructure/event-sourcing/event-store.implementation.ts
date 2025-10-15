@@ -16,7 +16,7 @@ import {
 } from './common/event-store.interface';
 import { ISnapshotStore, Snapshot } from './common/snapshot-store.interface';
 // import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 
@@ -38,7 +38,7 @@ export class EventStoreImplementation implements IEventStore {
   };
 
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
     private readonly snapshotStore: ISnapshotStore,

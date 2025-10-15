@@ -216,11 +216,7 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
-      `websocket_handler_${this.handlerName.toLowerCase()}_error_total`,
-      {
-        error_type: error instanceof Error ? error.constructor.name : 'UnknownError',
-      }
-    );
+      `websocket_handler_${this.handlerName.toLowerCase()}_error_total`);
   }
 }
 

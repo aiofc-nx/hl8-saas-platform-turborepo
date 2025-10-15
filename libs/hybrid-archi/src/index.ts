@@ -42,8 +42,12 @@ export {
   QueryBus,
   EventBus,
   CQRSBus,
+} from './application';
+export type {
   // 用例接口
   IUseCase,
+} from './application';
+export type {
   ICommand,
   IQuery,
 } from './application';
@@ -55,12 +59,12 @@ export { BaseQuery } from './application/cqrs/queries/base';
 // CQRS 装饰器
 export { CommandHandler, Command } from './application/cqrs/commands/decorators';
 export { QueryHandler, Query } from './application/cqrs/queries/decorators';
-export { EventHandler, Event } from './application/cqrs/events/decorators';
+// export { EventHandler, Event } from './application/cqrs/events/decorators'; // 暂时注释，等待实现
 
 // CQRS 接口
-export { ICommandHandler } from './application/cqrs/commands/handlers';
-export { IQueryHandler } from './application/cqrs/queries/handlers';
-export { IEventHandler } from './application/cqrs/events/handlers';
+export type { ICommandHandler } from './application/cqrs/commands/handlers';
+export type { IQueryHandler } from './application/cqrs/queries/handlers';
+// export type { IEventHandler } from './application/cqrs/events/handlers'; // 暂时注释，等待实现
 
 // 通用应用层组件导出
 export * from './application/exceptions/common';
@@ -76,8 +80,10 @@ export {
   BaseValueObject,
   // 领域事件
   BaseDomainEvent,
-  DomainEvent,
   // 领域服务
+} from './domain';
+export type {
+  DomainEvent,
   IDomainService,
 } from './domain';
 
@@ -86,20 +92,22 @@ export type { IAuditInfo, IPartialAuditInfo } from './domain/entities/base/audit
 export { AuditInfoBuilder } from './domain/entities/base/audit-info';
 
 // 仓储接口导出
-export {
+export type {
   // 基础仓储接口
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
-  BaseRepositoryError,
-  ConcurrencyError,
-  EntityNotFoundError,
-  ValidationError,
   // 聚合根仓储接口
   IAggregateRepository,
   IAggregateSnapshot,
   IEventStoreRepository,
   IReadModelRepository,
+} from './domain/repositories';
+export {
+  BaseRepositoryError,
+  ConcurrencyError,
+  EntityNotFoundError,
+  ValidationError,
 } from './domain/repositories';
 
 // 通用值对象导出（EntityId已在domain中导出）

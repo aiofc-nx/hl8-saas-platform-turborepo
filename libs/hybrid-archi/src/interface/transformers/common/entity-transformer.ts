@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 /**
  * 转换配置接口
@@ -100,7 +100,7 @@ export class EntityTransformer {
   private readonly configs = new Map<string, TransformConfig>();
   private readonly transformers = new Map<string, (value: any) => any>();
 
-  constructor(private readonly logger: Logger) {
+  constructor(private readonly logger: FastifyLoggerService) {
     this.initializeDefaultTransformers();
   }
 

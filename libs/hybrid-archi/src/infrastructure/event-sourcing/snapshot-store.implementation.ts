@@ -15,7 +15,7 @@ import {
   SnapshotStoreStats,
   SnapshotStoreConfig,
 } from './common/snapshot-store.interface';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 
@@ -37,7 +37,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   };
 
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
     private readonly config: SnapshotStoreConfig

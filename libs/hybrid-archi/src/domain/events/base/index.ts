@@ -9,7 +9,7 @@
 export { BaseDomainEvent } from './base-domain-event';
 
 // 领域事件接口
-export {
+export type {
   IDomainEvent,
   IDomainEventHandler,
   IDomainEventBus,

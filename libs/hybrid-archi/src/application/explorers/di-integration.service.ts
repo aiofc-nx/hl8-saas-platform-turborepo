@@ -42,7 +42,7 @@
  * @since 1.0.0
  */
 import { Injectable, DynamicModule } from '@nestjs/common';
-import type { Logger } from '@nestjs/common';
+import type { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -191,7 +191,7 @@ export class DIIntegrationService {
   };
 
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly _app: NestApplication,
     private readonly _moduleRef: ModuleRef,
     private readonly _explorerService: CoreExplorerService,
@@ -214,10 +214,7 @@ export class DIIntegrationService {
       includePatterns?: string[];
     } = {}
   ): Promise<IIntegrationStatus> {
-    this.logger.log(
-      'Initializing DI integration service...',
-      LogContext.SYSTEM
-    );
+    this.logger.log('Initializing DI integration service...', { context: "SYSTEM" });
 
     try {
       // 注册 Core 模块
@@ -237,15 +234,12 @@ export class DIIntegrationService {
       this.integrationStatus.initializedAt = new Date();
       this.integrationStatus.lastUpdatedAt = new Date();
 
-      this.logger.log(
-        'DI integration service initialized successfully',
-        LogContext.SYSTEM
-      );
+      this.logger.log('DI integration service initialized successfully', { context: "SYSTEM" });
       return this.integrationStatus;
     } catch (error) {
       this.logger.error(
         'Failed to initialize DI integration service',
-        LogContext.SYSTEM,
+        { context: "SYSTEM" },
         {},
         error as Error
       );
@@ -267,10 +261,7 @@ export class DIIntegrationService {
       // await this.app.register(coreModule);
 
       this.integrationStatus.registeredModules++;
-      this.logger.log(
-        'Core module registered successfully',
-        LogContext.SYSTEM
-      );
+      this.logger.log('Core module registered successfully', { context: "SYSTEM" });
     } catch (error) {
       this.addError('module', 'CoreModule', (error as Error).message);
       throw error;
@@ -319,7 +310,7 @@ export class DIIntegrationService {
       ];
       const includePatterns = config.includePatterns || ['**/*.module.ts'];
 
-      this.logger.log('Performing auto discovery...', LogContext.SYSTEM);
+      this.logger.log('Performing auto discovery...', { context: "SYSTEM" });
 
       // 扫描模块
       await this.scannerService.scanPath(scanPaths[0], {
@@ -332,7 +323,7 @@ export class DIIntegrationService {
 
       // this.integrationStatus.registeredHandlers = explorerResults.statistics.totalHandlers;
 
-      this.logger.log('Auto discovery completed', LogContext.SYSTEM);
+      this.logger.log('Auto discovery completed', { context: "SYSTEM" });
     } catch (error) {
       this.addError('handler', 'AutoDiscovery', (error as Error).message);
       throw error;
@@ -346,12 +337,12 @@ export class DIIntegrationService {
    */
   private async performAutoRegistration(): Promise<void> {
     try {
-      this.logger.log('Performing auto registration...', LogContext.SYSTEM);
+      this.logger.log('Performing auto registration...', { context: "SYSTEM" });
 
       // 这里需要获取之前发现的处理器结果
       // 由于这是一个简化的实现，我们暂时跳过具体的注册逻辑
 
-      this.logger.log('Auto registration completed', LogContext.SYSTEM);
+      this.logger.log('Auto registration completed', { context: "SYSTEM" });
     } catch (error) {
       this.addError('handler', 'AutoRegistration', (error as Error).message);
       throw error;
@@ -373,11 +364,7 @@ export class DIIntegrationService {
     } = {}
   ): Promise<void> {
     try {
-      this.logger.log(
-        `Registering ${handlers.length} handlers...`,
-        LogContext.SYSTEM,
-        { handlerCount: handlers.length }
-      );
+      this.logger.log(`Registering ${handlers.length} handlers...`, { ...{ handlerCount: handlers.length }, context: "SYSTEM" });
 
       for (const handler of handlers) {
         await this.registerHandler(handler, options);
@@ -386,15 +373,11 @@ export class DIIntegrationService {
       this.integrationStatus.registeredHandlers += handlers.length;
       this.integrationStatus.lastUpdatedAt = new Date();
 
-      this.logger.log(
-        `Successfully registered ${handlers.length} handlers`,
-        LogContext.SYSTEM,
-        { handlerCount: handlers.length }
-      );
+      this.logger.log(`Successfully registered ${handlers.length} handlers`, { ...{ handlerCount: handlers.length }, context: "SYSTEM" });
     } catch (error) {
       this.logger.error(
         'Failed to register handlers',
-        LogContext.SYSTEM,
+        { context: "SYSTEM" },
         {},
         error as Error
       );
@@ -447,13 +430,9 @@ export class DIIntegrationService {
   ): Promise<void> {
     // 这里需要实现具体的提供者注册逻辑
     // 由于这是一个复杂的实现，我们暂时只记录日志
-    this.logger.debug(
-      `Registering provider: ${handler.handlerName} with scope: ${
+    this.logger.debug(`Registering provider: ${handler.handlerName} with scope: ${
         scope || 'SINGLETON'
-      }`,
-      LogContext.SYSTEM,
-      { handlerName: handler.handlerName, scope: scope || 'SINGLETON' }
-    );
+      }`, { ...{ handlerName: handler.handlerName, scope: scope || 'SINGLETON' }, context: "SYSTEM" });
   }
 
   /**
@@ -467,21 +446,13 @@ export class DIIntegrationService {
     config: IModuleConfig
   ): Promise<void> {
     try {
-      this.logger.log(
-        `Configuring module: ${config.name}`,
-        LogContext.SYSTEM,
-        { moduleName: config.name }
-      );
+      this.logger.log(`Configuring module: ${config.name}`, { ...{ moduleName: config.name }, context: "SYSTEM" });
 
       // 这里需要实现模块配置逻辑
       // 由于这是一个复杂的实现，我们暂时只记录日志
-      this.logger.debug(
-        `Module ${config.name} configured with options: ${JSON.stringify(
+      this.logger.debug(`Module ${config.name} configured with options: ${JSON.stringify(
           config.options
-        )}`,
-        LogContext.SYSTEM,
-        { moduleName: config.name, options: config.options }
-      );
+        )}`, { ...{ moduleName: config.name, options: config.options }, context: "SYSTEM" });
 
       this.integrationStatus.lastUpdatedAt = new Date();
     } catch (error) {
@@ -527,7 +498,7 @@ export class DIIntegrationService {
       errors: [],
       lastUpdatedAt: new Date(),
     };
-    this.logger.log('Integration status reset', LogContext.SYSTEM);
+    this.logger.log('Integration status reset', { context: "SYSTEM" });
   }
 
   /**

@@ -9,7 +9,7 @@ import { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root';
 import { EntityId  } from '@hl8/isolation-model';
 import { IPartialAuditInfo } from '../../entities/base/audit-info';
 import { BaseDomainEvent } from '../../events/base/base-domain-event';
-import { Logger } from '@nestjs/common';
+import type { IPureLogger } from '@hl8/pure-logger';
 import { BadRequestException } from '@nestjs/common';
 import { TenantId } from '@hl8/isolation-model';
 
@@ -20,7 +20,7 @@ class TestAggregate extends TenantAwareAggregateRoot {
   constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: Logger
+    logger?: IPureLogger
   ) {
     super(id, auditInfo, logger);
   }
@@ -74,7 +74,7 @@ class TestEvent extends BaseDomainEvent {
 }
 
 describe('TenantAwareAggregateRoot', () => {
-  let mockLogger: Logger;
+  let mockLogger: IPureLogger;
   let validTenantId: EntityId;
   let validAuditInfo: IPartialAuditInfo;
 

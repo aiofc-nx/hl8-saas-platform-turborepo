@@ -10,12 +10,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CacheStrategy } from './cache-strategy';
 import { CacheStrategyConfig } from './cache-strategy';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { CacheService } from '@hl8/caching';
 
 describe('CacheStrategy', () => {
   let cacheStrategy: CacheStrategy;
-  let logger: Logger;
+  let logger: FastifyLoggerService;
   let cacheService: CacheService;
   let config: CacheStrategyConfig;
 
@@ -33,7 +33,7 @@ describe('CacheStrategy', () => {
       providers: [
         CacheStrategy,
         {
-          provide: Logger,
+          provide: FastifyLoggerService,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),

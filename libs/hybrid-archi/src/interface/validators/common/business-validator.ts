@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 /**
  * 验证结果接口
@@ -90,7 +90,7 @@ export class BusinessValidator {
   private readonly rules = new Map<string, BusinessRule>();
   private readonly ruleGroups = new Map<string, string[]>();
 
-  constructor(private readonly logger: Logger) {
+  constructor(private readonly logger: FastifyLoggerService) {
     this.initializeDefaultRules();
   }
 

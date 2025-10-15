@@ -10,7 +10,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { CacheService } from '@hl8/caching';
 
 /**
@@ -81,7 +81,7 @@ export class EventMonitor {
   private readonly successCounts = new Map<string, number>();
 
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     @Inject('EventAlertConfig') private readonly alertConfig: EventAlertConfig
   ) {}

@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { CacheAdapter, ICacheConfig } from './cache.adapter';
 
 /**
@@ -44,7 +44,7 @@ export class CacheFactory {
 
   constructor(
     private readonly cacheService: CacheService,
-    private readonly logger: Logger
+    private readonly logger: FastifyLoggerService
   ) {}
 
   /**

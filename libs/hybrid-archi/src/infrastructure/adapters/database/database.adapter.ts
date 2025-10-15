@@ -9,8 +9,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+// import { DatabaseService } from '@hl8/database'; // 暂时注释，等待模块就绪
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 
 /**
  * 数据库配置接口
@@ -362,11 +362,7 @@ export class DatabaseAdapter {
     const operationId = this.generateOperationId('update');
 
     try {
-      this.logger.debug(`更新数据: ${operationId}`, {
-        operationId,
-        table,
-        where,
-      });
+      this.logger.debug(`更新数据: ${operationId}`);
 
       // 使用兼容性检查调用 update 方法
       let result: unknown;

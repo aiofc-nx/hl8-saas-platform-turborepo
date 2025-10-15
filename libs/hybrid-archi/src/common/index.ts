@@ -13,14 +13,15 @@
 
 // 上下文管理系统 - 已删除，使用简化的类型定义
 
-// 错误处理机制 - 使用 @hl8/common/exceptions 模块
+// 错误处理机制 - 使用 NestJS 标准异常
 export {
   BadRequestException,
-  GeneralNotFoundException,
+  NotFoundException,
   InternalServerErrorException,
-  AnyExceptionFilter,
-  ExceptionModule,
-} from '@hl8/common';
+  UnauthorizedException,
+  ForbiddenException,
+  ConflictException,
+} from '@nestjs/common';
 
 // 错误处理机制 - 已删除，使用 @hl8/common 标准异常处理
 

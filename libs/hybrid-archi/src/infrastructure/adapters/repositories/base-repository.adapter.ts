@@ -11,7 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { EntityId  } from '@hl8/isolation-model';
 import { IEntity } from '../../../domain/entities/base/entity.interface';
 import type { IRepository,
@@ -55,7 +55,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   constructor(
     protected readonly databaseService: DatabaseService,
     protected readonly cacheService: CacheService,
-    protected readonly logger: Logger,
+    protected readonly logger: FastifyLoggerService,
     protected readonly entityName: string,
     config: Partial<IRepositoryConfig> = {}
   ) {

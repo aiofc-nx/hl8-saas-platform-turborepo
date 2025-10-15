@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { CacheService } from '@hl8/caching';
 import { IDomainService } from '../../../domain/services/base/domain-service.interface';
 
@@ -43,7 +43,7 @@ export class DomainServiceAdapter implements IDomainService {
   private readonly config: IDomainServiceConfig;
 
   constructor(
-    private readonly logger: Logger,
+    private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly serviceName: string,
     config: Partial<IDomainServiceConfig> = {}

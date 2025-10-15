@@ -68,7 +68,7 @@
  *     id: EntityId,
  *     tenant: Tenant,
  *     auditInfo: IPartialAuditInfo,
- *     logger?: Logger
+ *     logger?: IPureLogger
  *   ) {
  *     super(id, auditInfo, logger);
  *     this._tenant = tenant;
@@ -120,7 +120,7 @@
 
 import { EntityId  } from '@hl8/isolation-model';
 import { IPartialAuditInfo } from '../../entities/base/audit-info';
-import { Logger } from '@nestjs/common';
+import type { IPureLogger } from '@hl8/pure-logger';
 import { BaseAggregateRoot } from './base-aggregate-root';
 import { BaseDomainEvent } from '../../events/base/base-domain-event';
 import { BadRequestException } from '@nestjs/common';
@@ -196,7 +196,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
   protected constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: Logger
+    logger?: IPureLogger
   ) {
     super(id, auditInfo, logger);
 
@@ -250,18 +250,9 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
   protected ensureTenantContext(): void {
     if (
       !this.tenantId ||
-      !this.tenantId.value ||
-      this.tenantId.value.trim() === ''
+      this.tenantId.isEmpty()
     ) {
-      throw new BadRequestException(
-        'Tenant context required',
-        '租户上下文缺失，所有操作必须在租户上下文中执行',
-        {
-          aggregateType: this.constructor.name,
-          aggregateId: this.id.toString(),
-          reason: 'Missing or invalid tenant ID',
-        }
-      );
+      throw new BadRequestException('租户上下文缺失，所有操作必须在租户上下文中执行');
     }
   }
 
@@ -330,18 +321,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
     entityType: string = 'Entity'
   ): void {
     if (!this.tenantId.equals(entityTenantId)) {
-      throw new BadRequestException(
-        'Cross-tenant operation not allowed',
-        `无法操作其他租户的${entityType}，数据隔离策略禁止跨租户操作`,
-        {
-          aggregateType: this.constructor.name,
-          aggregateId: this.id.toString(),
-          aggregateTenantId: this.tenantId.toString(),
-          entityTenantId: entityTenantId.toString(),
-          entityType,
-          operation: 'cross-tenant-check',
-        }
-      );
+      throw new BadRequestException(`无法操作其他租户的${entityType}，数据隔离策略禁止跨租户操作`);
     }
   }
 

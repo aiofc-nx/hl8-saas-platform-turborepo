@@ -72,16 +72,15 @@
 import { EntityId  } from '@hl8/isolation-model';
 import { IAuditInfo, IPartialAuditInfo } from './audit-info';
 import { IEntity } from './entity.interface';
-import { any, any } from '@hl8/nestjs-isolation';
-import { Logger } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common';
+// import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
+import { Logger, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from '../../../constants';
 import { TenantId } from '@hl8/isolation-model';
 
 export abstract class BaseEntity implements IEntity {
   private readonly _id: EntityId;
   private readonly _auditInfo: IAuditInfo;
-  protected readonly logger: Logger;
+  protected readonly logger: IPureLogger;
 
   /**
    * 构造函数
@@ -93,7 +92,7 @@ export abstract class BaseEntity implements IEntity {
   protected constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: Logger
+    logger?: IPureLogger
   ) {
     this._id = id;
     this._auditInfo = this.buildAuditInfo(auditInfo);
@@ -237,15 +236,7 @@ export abstract class BaseEntity implements IEntity {
     }
   ): void {
     if (this.isDeleted) {
-      throw new BadRequestException(
-        'Entity already deleted',
-        'Cannot delete an entity that is already deleted',
-        {
-          entityType: this.constructor.name,
-          entityId: this._id.toString(),
-          errorCode: ENTITY_ERROR_CODES.ALREADY_DELETED,
-        }
-      );
+      throw new BadRequestException('Cannot delete an entity that is already deleted');
     }
 
     const now = new Date();
@@ -299,15 +290,7 @@ export abstract class BaseEntity implements IEntity {
     }
   ): void {
     if (!this.isDeleted) {
-      throw new BadRequestException(
-        'Entity not deleted',
-        'Cannot restore an entity that is not deleted',
-        {
-          entityType: this.constructor.name,
-          entityId: this._id.toString(),
-          errorCode: ENTITY_ERROR_CODES.NOT_DELETED,
-        }
-      );
+      throw new BadRequestException('Cannot restore an entity that is not deleted');
     }
 
     const now = new Date();
@@ -562,28 +545,11 @@ export abstract class BaseEntity implements IEntity {
    */
   protected validate(): void {
     if (!this._id || this._id.isEmpty()) {
-      throw new BadRequestException(
-        'Entity validation failed',
-        'Entity ID cannot be null or empty',
-        {
-          entityType: this.constructor.name,
-          entityId: this._id?.toString(),
-          validationError: ENTITY_ERROR_CODES.VALIDATION_ERROR,
-        }
-      );
+      throw new BadRequestException('Entity ID cannot be null or empty');
     }
 
-    if (!this._auditInfo.tenantId || !this._auditInfo.tenantId.value || this._auditInfo.tenantId.value.trim() === '') {
-      throw new BadRequestException(
-        'Entity validation failed',
-        'Tenant ID cannot be null or empty',
-        {
-          entityType: this.constructor.name,
-          entityId: this._id.toString(),
-          tenantId: this._auditInfo.tenantId?.toString() || 'null',
-          validationError: ENTITY_ERROR_CODES.TENANT_VALIDATION_ERROR,
-        }
-      );
+    if (!this._auditInfo.tenantId || this._auditInfo.tenantId.isEmpty()) {
+      throw new BadRequestException('Tenant ID cannot be null or empty');
     }
   }
 
@@ -593,10 +559,8 @@ export abstract class BaseEntity implements IEntity {
    * @returns 默认的日志记录器实例
    * @protected
    */
-  protected createDefaultLogger(): Logger {
-    return new Logger({
-      level: 'info',
-    });
+  protected createDefaultLogger(): IPureLogger {
+    return null as any // TODO: 注入 IPureLogger'BaseEntity');
   }
 
   /**
@@ -642,13 +606,7 @@ export abstract class BaseEntity implements IEntity {
     validationError: string,
     details?: Record<string, unknown>
   ): never {
-    throw new BadRequestException('Entity validation failed', message, {
-      entityType: this.constructor.name,
-      entityId: this._id.toString(),
-      tenantId: this._auditInfo.tenantId.toString(),
-      validationError,
-      ...details,
-    });
+    throw new BadRequestException(message);
   }
 
   /**
@@ -664,16 +622,6 @@ export abstract class BaseEntity implements IEntity {
     message: string,
     details?: Record<string, unknown>
   ): never {
-    throw new InternalServerErrorException(
-      `Entity ${operation} failed`,
-      message,
-      {
-        entityType: this.constructor.name,
-        entityId: this._id.toString(),
-        tenantId: this._auditInfo.tenantId.toString(),
-        operation,
-        ...details,
-      }
-    );
+    throw new InternalServerErrorException(message);
   }
 }

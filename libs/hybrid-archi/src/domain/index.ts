@@ -9,14 +9,17 @@
 // 值对象系统（基础组件，被其他组件引用）
 export * from './value-objects';
 
-// 实体系统
-export * from './entities';
+// 实体系统 - 避免重复导出 EntityId
+export { BaseEntity } from './entities';
+export type { IEntity, IAuditInfo, IPartialAuditInfo } from './entities';
 
-// 聚合根系统（基础组件和装饰器）
-export * from './aggregates';
+// 聚合根系统（基础组件和装饰器）- 避免重复导出 EntityId
+export { BaseAggregateRoot, TenantAwareAggregateRoot } from './aggregates';
+export type { IAggregateRoot, IAggregateRootFactory } from './aggregates';
 
-// 领域服务系统
-export * from './services';
+// 领域服务系统 - 避免重复导出 EntityId
+export { BaseDomainService } from './services';
+export type { IDomainService } from './services';
 
 // 领域事件系统
 export * from './events';

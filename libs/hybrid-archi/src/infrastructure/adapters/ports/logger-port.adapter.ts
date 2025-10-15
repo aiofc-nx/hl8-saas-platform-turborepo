@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { ILoggerPort } from '../../../application/ports/shared/shared-ports.interface';
 
 /**
@@ -19,7 +19,7 @@ import { ILoggerPort } from '../../../application/ports/shared/shared-ports.inte
  */
 @Injectable()
 export class LoggerPortAdapter implements ILoggerPort {
-  constructor(private readonly logger: Logger) {}
+  constructor(private readonly logger: FastifyLoggerService) {}
 
   /**
    * 记录调试日志

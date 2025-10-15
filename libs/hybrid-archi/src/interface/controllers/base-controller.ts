@@ -159,10 +159,7 @@ export abstract class BaseController {
     this.logger.error(`${operationName}操作失败`);
 
     // 记录错误指标
-    this.metricsService?.incrementCounter(`${operationName}_error_total`, {
-      error_type:
-        error instanceof Error ? error.constructor.name : 'UnknownError',
-    });
+    this.metricsService?.incrementCounter(`${operationName}_error_total`);
   }
 
   /**

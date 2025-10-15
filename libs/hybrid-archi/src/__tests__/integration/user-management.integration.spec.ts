@@ -9,7 +9,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, Injectable } from '@nestjs/common';
-import { Logger } from '@nestjs/common';
+import { FastifyLoggerService } from '@hl8/nestjs-fastify';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 // // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
@@ -276,7 +276,7 @@ describe('用户管理集成测试', () => {
         EventMonitor,
         DeadLetterQueueProcessor,
         {
-          provide: Logger,
+          provide: FastifyLoggerService,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),
