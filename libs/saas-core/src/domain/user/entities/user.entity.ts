@@ -26,7 +26,7 @@
  * @example
  * ```typescript
  * const user = User.create(
- *   EntityId.generate(),
+ *   TenantId.generate(),
  *   Username.create('johndoe'),
  *   Email.create('john@example.com'),
  *   { createdBy: 'system' }
@@ -54,6 +54,7 @@ import {
 import type { IPureLogger } from "@hl8/pure-logger";
 import { USER_STATUS_TRANSITIONS } from "../../../constants/user.constants.js";
 
+import { TenantId } from "@hl8/isolation-model";
 /**
  * 用户实体
  *

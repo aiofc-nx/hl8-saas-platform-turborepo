@@ -21,7 +21,7 @@
  */
 
 import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
-import { TenantType } from "../value-objects/tenant-type.enum";
+import { TenantType } from "../value-objects/tenant-type.enum.js";
 
 /**
  * 租户降级事件

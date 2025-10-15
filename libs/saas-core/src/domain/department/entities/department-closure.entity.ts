@@ -5,6 +5,7 @@
 import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
 import { EntityId } from "@hl8/isolation-model";
 
+import { TenantId } from "@hl8/isolation-model";
 export class DepartmentClosure extends BaseEntity {
   constructor(
     id: EntityId,
@@ -23,7 +24,7 @@ export class DepartmentClosure extends BaseEntity {
     auditInfo: IPartialAuditInfo,
   ): DepartmentClosure {
     return new DepartmentClosure(
-      EntityId.generate(),
+      TenantId.generate(),
       ancestor,
       descendant,
       depth,

@@ -1,277 +1,249 @@
 /**
  * 租户类型枚举
  *
- * @description 定义租户的不同类型，用于区分不同的业务模式和服务级别
- * @since 1.0.0
- */
-
-/**
- * 租户类型枚举
- *
- * 定义了平台支持的租户类型，每种类型对应不同的功能特性和服务级别：
+ * @description 定义租户的不同类型和对应的配额配置
  *
  * ## 业务规则
  *
- * ### 租户类型定义
- * - **TRIAL**: 试用租户 - 具有有限的功能和资源限制，用于产品试用
- * - **BASIC**: 基础租户 - 提供核心功能，适合小型团队使用
- * - **PROFESSIONAL**: 专业租户 - 提供完整功能，适合中型企业
- * - **ENTERPRISE**: 企业租户 - 提供所有功能和企业级支持，适合大型企业
- * - **CUSTOM**: 自定义租户 - 根据客户需求定制的特殊配置
+ * ### 租户类型
+ * - TRIAL: 试用版 - 30天试用期，基础功能
+ * - BASIC: 基础版 - 适合小型团队，基础功能
+ * - PROFESSIONAL: 专业版 - 适合中型企业，高级功能
+ * - ENTERPRISE: 企业版 - 适合大型企业，全部功能
  *
- * ### 类型转换规则
- * - 试用租户可以升级到任何付费类型
- * - 付费类型之间可以互相转换
- * - 降级操作需要满足特定的业务条件
- * - 自定义类型需要特殊的管理权限
- *
- * ### 功能权限规则
- * - 不同类型对应不同的功能权限集合
- * - 类型变更会触发权限重新计算
- * - 某些高级功能仅限特定类型使用
+ * ### 配额规则
+ * - 每个类型都有对应的用户数、存储空间、API调用限制
+ * - 升级时配额自动调整
+ * - 超出配额时会有相应的限制或警告
  *
  * @example
  * ```typescript
- * // 创建租户时指定类型
- * const tenant = new Tenant(
- *   tenantId,
- *   tenantCode,
- *   tenantName,
- *   TenantType.PROFESSIONAL
- * );
- *
- * // 检查租户类型权限
- * if (tenant.type === TenantType.ENTERPRISE) {
- *   // 启用企业级功能
- * }
- *
- * // 升级租户类型
- * tenant.upgrade(TenantType.ENTERPRISE);
+ * const tenantType = TenantType.PROFESSIONAL;
+ * const quota = TenantTypeUtils.getQuota(tenantType);
+ * console.log(quota.users); // 100
  * ```
+ *
+ * @enum {string}
+ * @since 1.0.0
  */
+
 export enum TenantType {
   /**
-   * 试用租户
+   * 试用版
    *
-   * 用于产品试用和评估，具有以下特点：
-   * - 功能限制：核心功能可用，高级功能受限
-   * - 资源限制：用户数量、存储空间、API调用次数有限制
-   * - 时间限制：通常有试用期限制
-   * - 支持级别：社区支持
+   * @description 30天试用期，体验基础功能
+   * - 用户数：最多 5 个
+   * - 存储空间：100 MB
+   * - API调用：1000 次/月
+   * - 功能：基础功能
    */
-  TRIAL = "trial",
+  TRIAL = "TRIAL",
 
   /**
-   * 基础租户
+   * 基础版
    *
-   * 适合小型团队和初创企业，提供：
-   * - 核心业务功能
-   * - 基础用户管理
-   * - 标准存储配额
-   * - 邮件支持
+   * @description 适合小型团队的基础版本
+   * - 用户数：最多 10 个
+   * - 存储空间：1 GB
+   * - API调用：10000 次/月
+   * - 功能：基础功能 + 基础集成
    */
-  BASIC = "basic",
+  BASIC = "BASIC",
 
   /**
-   * 专业租户
+   * 专业版
    *
-   * 适合中型企业和成长型团队，提供：
-   * - 完整业务功能
-   * - 高级用户管理
-   * - 扩展存储配额
-   * - 优先支持
-   * - 自定义配置选项
+   * @description 适合中型企业的专业版本
+   * - 用户数：最多 100 个
+   * - 存储空间：10 GB
+   * - API调用：100000 次/月
+   * - 功能：全部功能 + 高级集成
    */
-  PROFESSIONAL = "professional",
+  PROFESSIONAL = "PROFESSIONAL",
 
   /**
-   * 企业租户
+   * 企业版
    *
-   * 适合大型企业和企业级应用，提供：
-   * - 所有功能特性
-   * - 企业级用户管理
-   * - 无限制存储配额
-   * - 24/7 专属支持
-   * - 完全自定义配置
-   * - SLA 保障
+   * @description 适合大型企业的企业版本
+   * - 用户数：无限制
+   * - 存储空间：无限制
+   * - API调用：无限制
+   * - 功能：全部功能 + 定制化支持
    */
-  ENTERPRISE = "enterprise",
-
-  /**
-   * 自定义租户
-   *
-   * 根据客户特殊需求定制的租户类型：
-   * - 定制化功能配置
-   * - 特殊定价模式
-   * - 专属服务协议
-   * - 定制化集成方案
-   */
-  CUSTOM = "custom",
+  ENTERPRISE = "ENTERPRISE",
 }
 
 /**
  * 租户类型工具类
  *
- * @description 提供租户类型的验证、转换和比较功能
- * @since 1.0.0
+ * @description 提供租户类型相关的工具方法
  */
 export class TenantTypeUtils {
   /**
-   * 获取所有租户类型
+   * 获取租户类型的配额配置
    *
-   * @returns 所有租户类型的数组
+   * @description 根据租户类型返回对应的配额配置
+   * @param type - 租户类型
+   * @returns 配额配置
    */
-  static getAllTypes(): TenantType[] {
-    return Object.values(TenantType);
+  public static getQuota(type: TenantType): {
+    users: number;
+    storage: number; // MB
+    apiCalls: number; // 每月
+    features: string[];
+  } {
+    const quotas: Record<TenantType, any> = {
+      [TenantType.TRIAL]: {
+        users: 5,
+        storage: 100,
+        apiCalls: 1000,
+        features: ["basic"],
+      },
+      [TenantType.BASIC]: {
+        users: 10,
+        storage: 1024,
+        apiCalls: 10000,
+        features: ["basic", "basic_integration"],
+      },
+      [TenantType.PROFESSIONAL]: {
+        users: 100,
+        storage: 10240,
+        apiCalls: 100000,
+        features: ["basic", "basic_integration", "advanced", "advanced_integration"],
+      },
+      [TenantType.ENTERPRISE]: {
+        users: -1, // 无限制
+        storage: -1, // 无限制
+        apiCalls: -1, // 无限制
+        features: ["all"],
+      },
+    };
+
+    return quotas[type];
   }
 
   /**
-   * 获取付费租户类型
+   * 获取租户类型的显示名称
    *
-   * @returns 付费租户类型的数组
-   */
-  static getPaidTypes(): TenantType[] {
-    return [
-      TenantType.BASIC,
-      TenantType.PROFESSIONAL,
-      TenantType.ENTERPRISE,
-      TenantType.CUSTOM,
-    ];
-  }
-
-  /**
-   * 检查是否为试用租户
-   *
-   * @param type 租户类型
-   * @returns 是否为试用租户
-   */
-  static isTrial(type: TenantType): boolean {
-    return type === TenantType.TRIAL;
-  }
-
-  /**
-   * 检查是否为付费租户
-   *
-   * @param type 租户类型
-   * @returns 是否为付费租户
-   */
-  static isPaid(type: TenantType): boolean {
-    return this.getPaidTypes().includes(type);
-  }
-
-  /**
-   * 检查是否为自定义租户
-   *
-   * @param type 租户类型
-   * @returns 是否为自定义租户
-   */
-  static isCustom(type: TenantType): boolean {
-    return type === TenantType.CUSTOM;
-  }
-
-  /**
-   * 获取租户类型显示名称
-   *
-   * @param type 租户类型
+   * @description 返回租户类型的中文显示名称
+   * @param type - 租户类型
    * @returns 显示名称
    */
-  static getDisplayName(type: TenantType): string {
+  public static getDisplayName(type: TenantType): string {
     const displayNames: Record<TenantType, string> = {
       [TenantType.TRIAL]: "试用版",
       [TenantType.BASIC]: "基础版",
       [TenantType.PROFESSIONAL]: "专业版",
       [TenantType.ENTERPRISE]: "企业版",
-      [TenantType.CUSTOM]: "定制版",
     };
-    return displayNames[type] || "未知类型";
+
+    return displayNames[type];
   }
 
   /**
-   * 获取租户类型描述
+   * 获取租户类型的描述
    *
-   * @param type 租户类型
-   * @returns 类型描述
+   * @description 返回租户类型的详细描述
+   * @param type - 租户类型
+   * @returns 描述
    */
-  static getDescription(type: TenantType): string {
+  public static getDescription(type: TenantType): string {
     const descriptions: Record<TenantType, string> = {
-      [TenantType.TRIAL]: "产品试用和评估版本，功能有限",
-      [TenantType.BASIC]: "适合小型团队的基础版本",
-      [TenantType.PROFESSIONAL]: "适合中型企业的专业版本",
-      [TenantType.ENTERPRISE]: "适合大型企业的企业版本",
-      [TenantType.CUSTOM]: "根据客户需求定制的特殊版本",
+      [TenantType.TRIAL]: "30天试用期，体验基础功能，适合个人用户",
+      [TenantType.BASIC]: "适合小型团队的基础版本，包含基础功能",
+      [TenantType.PROFESSIONAL]: "适合中型企业的专业版本，包含高级功能",
+      [TenantType.ENTERPRISE]: "适合大型企业的企业版本，包含全部功能",
     };
-    return descriptions[type] || "未知类型描述";
+
+    return descriptions[type];
   }
 
   /**
-   * 验证租户类型
+   * 获取租户类型的价格（每月）
    *
-   * @param type 待验证的类型
-   * @returns 是否为有效的租户类型
+   * @description 返回租户类型的月租价格
+   * @param type - 租户类型
+   * @returns 价格（元）
    */
-  static isValid(type: string): type is TenantType {
+  public static getPrice(type: TenantType): number {
+    const prices: Record<TenantType, number> = {
+      [TenantType.TRIAL]: 0,
+      [TenantType.BASIC]: 99,
+      [TenantType.PROFESSIONAL]: 299,
+      [TenantType.ENTERPRISE]: 999,
+    };
+
+    return prices[type];
+  }
+
+  /**
+   * 检查是否可以升级到指定类型
+   *
+   * @description 检查从当前类型是否可以升级到目标类型
+   * @param fromType - 当前类型
+   * @param toType - 目标类型
+   * @returns 是否可以升级
+   */
+  public static canUpgrade(fromType: TenantType, toType: TenantType): boolean {
+    const typeOrder = [TenantType.TRIAL, TenantType.BASIC, TenantType.PROFESSIONAL, TenantType.ENTERPRISE];
+    const fromIndex = typeOrder.indexOf(fromType);
+    const toIndex = typeOrder.indexOf(toType);
+
+    return toIndex > fromIndex;
+  }
+
+  /**
+   * 检查是否可以降级到指定类型
+   *
+   * @description 检查从当前类型是否可以降级到目标类型
+   * @param fromType - 当前类型
+   * @param toType - 目标类型
+   * @returns 是否可以降级
+   */
+  public static canDowngrade(fromType: TenantType, toType: TenantType): boolean {
+    const typeOrder = [TenantType.TRIAL, TenantType.BASIC, TenantType.PROFESSIONAL, TenantType.ENTERPRISE];
+    const fromIndex = typeOrder.indexOf(fromType);
+    const toIndex = typeOrder.indexOf(toType);
+
+    return toIndex < fromIndex;
+  }
+
+  /**
+   * 获取租户类型的优先级
+   *
+   * @description 返回租户类型的优先级，用于排序
+   * @param type - 租户类型
+   * @returns 优先级（数值越大优先级越高）
+   */
+  public static getPriority(type: TenantType): number {
+    const priorities: Record<TenantType, number> = {
+      [TenantType.TRIAL]: 1,
+      [TenantType.BASIC]: 2,
+      [TenantType.PROFESSIONAL]: 3,
+      [TenantType.ENTERPRISE]: 4,
+    };
+
+    return priorities[type];
+  }
+
+  /**
+   * 检查租户类型是否有效
+   *
+   * @description 检查租户类型是否为有效值
+   * @param type - 租户类型
+   * @returns 是否有效
+   */
+  public static isValid(type: string): boolean {
     return Object.values(TenantType).includes(type as TenantType);
   }
 
   /**
-   * 比较租户类型等级
+   * 获取所有可用的租户类型
    *
-   * @param type1 第一个租户类型
-   * @param type2 第二个租户类型
-   * @returns 比较结果：-1 (type1 < type2), 0 (相等), 1 (type1 > type2)
+   * @description 返回所有可用的租户类型列表
+   * @returns 租户类型列表
    */
-  static compare(type1: TenantType, type2: TenantType): number {
-    const levels: Record<TenantType, number> = {
-      [TenantType.TRIAL]: 0,
-      [TenantType.BASIC]: 1,
-      [TenantType.PROFESSIONAL]: 2,
-      [TenantType.ENTERPRISE]: 3,
-      [TenantType.CUSTOM]: 4,
-    };
-    return levels[type1] - levels[type2];
-  }
-
-  /**
-   * 检查是否可以升级到目标类型
-   *
-   * @param fromType 当前类型
-   * @param toType 目标类型
-   * @returns 是否可以升级
-   */
-  static canUpgrade(fromType: TenantType, toType: TenantType): boolean {
-    // 试用版可以升级到任何付费版本
-    if (fromType === TenantType.TRIAL) {
-      return this.getPaidTypes().includes(toType);
-    }
-
-    // 付费版本之间可以互相转换
-    if (this.isPaid(fromType) && this.isPaid(toType)) {
-      return true;
-    }
-
-    // 其他情况不允许升级
-    return false;
-  }
-
-  /**
-   * 检查是否可以降级到目标类型
-   *
-   * @param fromType 当前类型
-   * @param toType 目标类型
-   * @returns 是否可以降级
-   */
-  static canDowngrade(fromType: TenantType, toType: TenantType): boolean {
-    // 不允许降级到试用版
-    if (toType === TenantType.TRIAL) {
-      return false;
-    }
-
-    // 付费版本之间可以互相转换
-    if (this.isPaid(fromType) && this.isPaid(toType)) {
-      return true;
-    }
-
-    // 其他情况不允许降级
-    return false;
+  public static getAllTypes(): TenantType[] {
+    return Object.values(TenantType);
   }
 }

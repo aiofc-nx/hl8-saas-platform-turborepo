@@ -34,8 +34,8 @@
  * @since 1.0.0
  */
 
-import { TenantQuota } from "../value-objects/tenant-quota.vo";
-import { QUOTA_WARNING_THRESHOLDS } from "../../../constants/tenant.constants";
+import { TenantQuota } from "../value-objects/tenant-quota.vo.js";
+import { QUOTA_WARNING_THRESHOLDS } from "../../../constants/tenant.constants.js";
 
 /**
  * 配额使用情况

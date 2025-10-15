@@ -41,13 +41,14 @@
 
 import { Injectable } from "@nestjs/common";
 import { EntityId } from "@hl8/hybrid-archi";
-import { ICommandUseCase } from "../base/use-case.interface";
-import { TenantAggregate } from "../../../domain/tenant/aggregates/tenant.aggregate";
-import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface";
-import { TenantCode } from "../../../domain/tenant/value-objects/tenant-code.vo";
-import { TenantDomain } from "../../../domain/tenant/value-objects/tenant-domain.vo";
-import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum";
+import { ICommandUseCase } from "../base/use-case.interface.js";
+import { TenantAggregate } from "../../../domain/tenant/aggregates/tenant.aggregate.js";
+import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
+import { TenantCode } from "../../../domain/tenant/value-objects/tenant-code.vo.js";
+import { TenantDomain } from "../../../domain/tenant/value-objects/tenant-domain.vo.js";
+import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum.js";
 
+import { TenantId } from "@hl8/isolation-model";
 /**
  * 创建租户命令
  *
@@ -95,7 +96,7 @@ export class CreateTenantUseCase
     await this.validateUniqueness(code, domain);
 
     // 3. 创建租户聚合根
-    const tenantId = EntityId.generate();
+    const tenantId = TenantId.generate();
     const aggregate = TenantAggregate.create(
       tenantId,
       code,

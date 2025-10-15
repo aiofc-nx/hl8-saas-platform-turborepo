@@ -37,8 +37,8 @@
  * @since 1.0.0
  */
 
-import { TenantType } from "../value-objects/tenant-type.enum";
-import { TenantQuota } from "../value-objects/tenant-quota.vo";
+import { TenantType } from "../value-objects/tenant-type.enum.js";
+import { TenantQuota } from "../value-objects/tenant-quota.vo.js";
 import {
   TenantQuotaRule,
   IDowngradeValidation,

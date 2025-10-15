@@ -7,8 +7,8 @@
 
 import { Injectable } from "@nestjs/common";
 import { EntityId } from "@hl8/hybrid-archi";
-import { ICommandUseCase } from "../base/use-case.interface";
-import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface";
+import { ICommandUseCase } from "../base/use-case.interface.js";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
 export interface IChangePasswordCommand {
   userId: string;
@@ -23,7 +23,7 @@ export class ChangePasswordUseCase
   constructor(private readonly userRepository: IUserAggregateRepository) {}
 
   async execute(command: IChangePasswordCommand): Promise<void> {
-    const userId = EntityId.fromString(command.userId);
+    const userId = EntityId.create(command.userId);
     const aggregate = await this.userRepository.findById(userId);
 
     if (!aggregate) {

@@ -34,15 +34,15 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 import { CommandBus, QueryBus, EntityId } from "@hl8/hybrid-archi";
-import { TenantAggregate } from "../../domain/tenant/aggregates/tenant.aggregate";
-import { CreateTenantDto } from "../dtos/tenant/create-tenant.dto";
-import { UpdateTenantDto } from "../dtos/tenant/update-tenant.dto";
-import { TenantResponseDto } from "../dtos/tenant/tenant-response.dto";
-import { TenantListResponseDto } from "../dtos/tenant/tenant-list-response.dto";
-import { CreateTenantCommand } from "../../application/cqrs/commands/tenant/create-tenant.command";
-import { UpgradeTenantCommand } from "../../application/cqrs/commands/tenant/upgrade-tenant.command";
-import { GetTenantQuery } from "../../application/cqrs/queries/tenant/get-tenant.query";
-import { ListTenantsQuery } from "../../application/cqrs/queries/tenant/list-tenants.query";
+import { TenantAggregate } from "../../domain/tenant/aggregates/tenant.aggregate.js";
+import { CreateTenantDto } from "../dtos/tenant/create-tenant.dto.js";
+import { UpdateTenantDto } from "../dtos/tenant/update-tenant.dto.js";
+import { TenantResponseDto } from "../dtos/tenant/tenant-response.dto.js";
+import { TenantListResponseDto } from "../dtos/tenant/tenant-list-response.dto.js";
+import { CreateTenantCommand } from "../../application/cqrs/commands/tenant/create-tenant.command.js";
+import { UpgradeTenantCommand } from "../../application/cqrs/commands/tenant/upgrade-tenant.command.js";
+import { GetTenantQuery } from "../../application/cqrs/queries/tenant/get-tenant.query.js";
+import { ListTenantsQuery } from "../../application/cqrs/queries/tenant/list-tenants.query.js";
 
 @Controller("api/tenants")
 export class TenantController {

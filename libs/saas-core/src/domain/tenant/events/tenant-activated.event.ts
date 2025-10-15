@@ -21,7 +21,7 @@
  */
 
 import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
-import { TenantStatus } from "../value-objects/tenant-status.vo";
+import { TenantStatus } from "../value-objects/tenant-status.vo.js";
 
 /**
  * 租户激活事件

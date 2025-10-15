@@ -1,24 +1,27 @@
-import { BaseQuery } from "@hl8/hybrid-archi";
+/**
+ * 获取用户查询
+ *
+ * @description 获取单个用户的查询对象
+ *
+ * @class GetUserQuery
+ * @since 1.0.0
+ */
 
-export class GetUserQuery extends BaseQuery {
-  constructor(
-    tenantId: string,
-    userId: string,
-    public readonly targetUserId: string,
-  ) {
-    super(tenantId, userId);
-  }
+import { IQuery } from "@hl8/hybrid-archi";
 
-  get queryType(): string {
-    return "GetUserQuery";
-  }
+export interface GetUserQueryParams {
+  /** 租户ID */
+  tenantId: string;
+  /** 用户ID */
+  userId: string;
+}
 
-  protected createCopyWithSortRules(sortRules: any[]): this {
-    const copy = new GetUserQuery(
-      this.tenantId,
-      this.userId,
-      this.targetUserId,
-    );
-    return copy as this;
+export class GetUserQuery implements IQuery {
+  public readonly tenantId: string;
+  public readonly userId: string;
+
+  constructor(params: GetUserQueryParams) {
+    this.tenantId = params.tenantId;
+    this.userId = params.userId;
   }
 }

@@ -7,8 +7,8 @@
 
 import { Injectable } from "@nestjs/common";
 import { EntityId } from "@hl8/hybrid-archi";
-import { ICommandUseCase } from "../base/use-case.interface";
-import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface";
+import { ICommandUseCase } from "../base/use-case.interface.js";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
 export interface IActivateUserCommand {
   userId: string;
@@ -22,7 +22,7 @@ export class ActivateUserUseCase
   constructor(private readonly userRepository: IUserAggregateRepository) {}
 
   async execute(command: IActivateUserCommand): Promise<void> {
-    const userId = EntityId.fromString(command.userId);
+    const userId = EntityId.create(command.userId);
     const aggregate = await this.userRepository.findById(userId);
 
     if (!aggregate) {

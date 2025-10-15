@@ -6,7 +6,7 @@
  */
 
 import { IsString, IsOptional, Length } from "class-validator";
-import { TENANT_NAME_VALIDATION } from "../../../constants/tenant.constants";
+import { TENANT_NAME_VALIDATION } from "../../../constants/tenant.constants.js";
 
 export class UpdateTenantDto {
   @IsString()

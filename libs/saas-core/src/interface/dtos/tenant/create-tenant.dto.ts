@@ -8,7 +8,7 @@
  */
 
 import { IsString, IsEnum, Length, Matches, IsNotEmpty } from "class-validator";
-import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum";
+import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum.js";
 import {
   TENANT_CODE_VALIDATION,
   TENANT_NAME_VALIDATION,

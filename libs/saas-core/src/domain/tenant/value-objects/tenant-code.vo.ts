@@ -5,93 +5,84 @@
  *
  * ## 业务规则
  *
- * ### 格式要求
- * - 长度：3-20字符
- * - 格式：小写字母+数字+连字符
- * - 唯一性：全局唯一（由应用层验证）
- *
- * ### 验证规则
- * - 不能为空
- * - 必须符合长度要求
- * - 必须匹配正则表达式
- * - 不能使用保留词
- *
- * ## 使用场景
- *
- * 租户代码用于：
- * - 租户的唯一标识（业务层面）
- * - 租户子域名生成
- * - 租户URL路径标识
+ * ### 租户代码规则
+ * - 长度：3-20 字符
+ * - 格式：字母、数字、连字符
+ * - 不能以数字开头
+ * - 不能使用系统保留词
+ * - 自动转换为小写
+ * - 全局唯一性
  *
  * @example
  * ```typescript
- * // 创建租户代码（使用继承的 create 方法）
- * const code = TenantCode.create('acme2024');
- *
- * // 获取原始值（使用继承的 value 属性）
- * console.log(code.value); // 'acme2024'
- *
- * // 验证租户代码
- * if (TenantCode.isValid('invalid CODE')) {
- *   // 不会执行，因为包含大写和空格
- * }
+ * const tenantCode = TenantCode.create('acme-2024');
+ * console.log(tenantCode.value); // 'acme-2024'
  * ```
  *
  * @class TenantCode
  * @since 1.0.0
- * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
 import { BaseValueObject } from "@hl8/hybrid-archi";
-import { TENANT_CODE_VALIDATION } from "../../../constants/tenant.constants";
 
 export class TenantCode extends BaseValueObject<string> {
   /**
-   * 系统保留的租户代码
+   * 系统保留租户代码
    */
   private static readonly RESERVED_CODES = [
     "admin",
+    "system",
+    "root",
     "api",
     "www",
-    "system",
-    "platform",
-    "support",
-    "help",
+    "app",
+    "web",
+    "mobile",
+    "test",
+    "demo",
+    "dev",
+    "staging",
+    "prod",
+    "production",
+    "main",
+    "master",
+    "default",
+    "public",
+    "internal",
+    "external",
   ];
 
   /**
-   * 验证租户代码
+   * 验证租户代码格式
    *
    * @protected
    * @override
    */
-  protected override validate(value: string): void {
-    // 使用继承的验证辅助方法
+  protected validate(value: string): void {
     this.validateNotEmpty(value, "租户代码");
-    this.validateLength(
-      value,
-      TENANT_CODE_VALIDATION.MIN_LENGTH,
-      TENANT_CODE_VALIDATION.MAX_LENGTH,
-      "租户代码",
-    );
+    this.validateLength(value, 3, 20, "租户代码");
+
     this.validatePattern(
       value,
-      TENANT_CODE_VALIDATION.PATTERN,
-      "租户代码只能包含小写字母、数字和连字符",
+      /^[a-zA-Z0-9-]+$/,
+      "租户代码只能包含字母、数字和连字符",
     );
 
-    // 租户特定的验证规则
+    if (/^[0-9]/.test(value)) {
+      throw new Error("租户代码不能以数字开头");
+    }
+
     if (value.startsWith("-") || value.endsWith("-")) {
       throw new Error("租户代码不能以连字符开头或结尾");
     }
 
-    if (value.includes("--")) {
-      throw new Error("租户代码不能包含连续的连字符");
-    }
-
-    // 保留词检查
     if (TenantCode.RESERVED_CODES.includes(value.toLowerCase())) {
       throw new Error(`租户代码不能使用系统保留词: ${value}`);
+    }
+
+    // 检查连续连字符
+    if (value.includes("--")) {
+      throw new Error("租户代码不能包含连续的连字符");
     }
   }
 
@@ -106,11 +97,50 @@ export class TenantCode extends BaseValueObject<string> {
   }
 
   /**
-   * 验证租户代码是否有效
+   * 生成建议的租户代码
    *
-   * @static
-   * @param code 租户代码
-   * @returns {boolean} 是否有效
+   * @description 基于组织名称生成建议的租户代码
+   * @param organizationName - 组织名称
+   * @returns 建议的租户代码
+   */
+  public static generateFromName(organizationName: string): string {
+    // 移除特殊字符，保留字母和数字
+    const cleaned = organizationName.replace(/[^a-zA-Z0-9\s]/g, "");
+    
+    // 转换为小写并用连字符连接
+    const words = cleaned.toLowerCase().split(/\s+/).filter(word => word.length > 0);
+    
+    if (words.length === 0) {
+      throw new Error("组织名称不能为空或只包含特殊字符");
+    }
+
+    // 取前3个单词，每个单词最多10个字符
+    const limitedWords = words.slice(0, 3).map(word => word.substring(0, 10));
+    let suggested = limitedWords.join("-");
+
+    // 确保长度在限制范围内
+    if (suggested.length > 20) {
+      suggested = suggested.substring(0, 20);
+      // 如果截断后以连字符结尾，移除最后的连字符
+      if (suggested.endsWith("-")) {
+        suggested = suggested.slice(0, -1);
+      }
+    }
+
+    // 确保不以数字开头
+    if (/^[0-9]/.test(suggested)) {
+      suggested = "tenant-" + suggested;
+    }
+
+    return suggested;
+  }
+
+  /**
+   * 验证租户代码是否可用
+   *
+   * @description 检查租户代码是否未被使用且符合规则
+   * @param code - 租户代码
+   * @returns 是否可用
    */
   public static isValid(code: string): boolean {
     try {

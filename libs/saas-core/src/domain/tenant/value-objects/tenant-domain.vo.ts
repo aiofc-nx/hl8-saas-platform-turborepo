@@ -5,94 +5,105 @@
  *
  * ## 业务规则
  *
- * ### 格式要求
- * - 符合域名规范
- * - 小写字母、数字、连字符、点
- * - 唯一性：全局唯一（由应用层验证）
- *
- * ### 验证规则
- * - 不能为空
- * - 必须符合域名格式
- * - 长度合理（3-253字符）
- *
- * ## 使用场景
- *
- * 租户域名用于：
- * - 租户的独立访问域名
- * - 租户的子域名标识
- * - 租户的品牌展示
+ * ### 域名规则
+ * - 必须符合域名格式规范
+ * - 支持子域名
+ * - 自动转换为小写
+ * - 全局唯一性
+ * - 不能使用系统保留域名
  *
  * @example
  * ```typescript
- * // 创建租户域名（使用继承的 create 方法）
- * const domain = TenantDomain.create('acme.example.com');
- *
- * // 获取原始值（使用继承的 value 属性）
- * console.log(domain.value); // 'acme.example.com'
- *
- * // 验证租户域名
- * if (TenantDomain.isValid('invalid domain')) {
- *   // 不会执行，因为包含空格
- * }
+ * const tenantDomain = TenantDomain.create('acme.example.com');
+ * console.log(tenantDomain.value); // 'acme.example.com'
  * ```
  *
  * @class TenantDomain
  * @since 1.0.0
- * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
 import { BaseValueObject } from "@hl8/hybrid-archi";
-import { TENANT_DOMAIN_VALIDATION } from "../../../constants/tenant.constants";
 
 export class TenantDomain extends BaseValueObject<string> {
   /**
-   * 验证租户域名
+   * 域名正则表达式
+   */
+  private static readonly DOMAIN_REGEX = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+  /**
+   * 系统保留域名
+   */
+  private static readonly RESERVED_DOMAINS = [
+    "localhost",
+    "example.com",
+    "test.com",
+    "demo.com",
+    "admin.com",
+    "api.com",
+    "app.com",
+    "www.com",
+    "mail.com",
+    "ftp.com",
+    "dev.com",
+    "staging.com",
+    "production.com",
+  ];
+
+  /**
+   * 验证域名格式
    *
    * @protected
    * @override
    */
-  protected override validate(value: string): void {
-    // 使用继承的验证辅助方法
+  protected validate(value: string): void {
     this.validateNotEmpty(value, "租户域名");
-    this.validateLength(
-      value,
-      TENANT_DOMAIN_VALIDATION.MIN_LENGTH,
-      TENANT_DOMAIN_VALIDATION.MAX_LENGTH,
-      "租户域名",
-    );
+    this.validateLength(value, 4, 253, "租户域名");
+
     this.validatePattern(
       value,
-      TENANT_DOMAIN_VALIDATION.PATTERN,
-      "租户域名格式不正确，只能包含小写字母、数字、连字符和点",
+      TenantDomain.DOMAIN_REGEX,
+      "域名格式不正确",
     );
 
-    // 租户特定的验证规则
+    // 检查是否以点开头或结尾
     if (value.startsWith(".") || value.endsWith(".")) {
-      throw new Error("租户域名不能以点开头或结尾");
+      throw new Error("域名不能以点开头或结尾");
     }
 
-    if (value.startsWith("-") || value.endsWith("-")) {
-      throw new Error("租户域名不能以连字符开头或结尾");
-    }
-
+    // 检查连续的点
     if (value.includes("..")) {
-      throw new Error("租户域名不能包含连续的点");
+      throw new Error("域名不能包含连续的点");
     }
 
-    // 验证每个标签（由点分隔的部分）
-    const labels = value.split(".");
-    for (const label of labels) {
-      if (label.length === 0) {
-        throw new Error("租户域名不能包含空标签");
+    // 检查是否为保留域名
+    if (TenantDomain.RESERVED_DOMAINS.includes(value.toLowerCase())) {
+      throw new Error(`域名不能使用系统保留域名: ${value}`);
+    }
+
+    // 检查顶级域名
+    const parts = value.split(".");
+    if (parts.length < 2) {
+      throw new Error("域名必须包含顶级域名");
+    }
+
+    const tld = parts[parts.length - 1];
+    if (tld.length < 2) {
+      throw new Error("顶级域名长度不能少于2个字符");
+    }
+
+    // 检查每个部分的长度
+    for (const part of parts) {
+      if (part.length > 63) {
+        throw new Error("域名各部分长度不能超过63个字符");
       }
-      if (label.length > 63) {
-        throw new Error("租户域名的每个标签长度不能超过63个字符");
+      if (part.length === 0) {
+        throw new Error("域名各部分不能为空");
       }
     }
   }
 
   /**
-   * 转换租户域名（标准化为小写）
+   * 转换域名（标准化为小写）
    *
    * @protected
    * @override
@@ -102,11 +113,77 @@ export class TenantDomain extends BaseValueObject<string> {
   }
 
   /**
-   * 验证租户域名是否有效
+   * 获取主域名（去掉子域名）
    *
-   * @static
-   * @param domain 租户域名
-   * @returns {boolean} 是否有效
+   * @returns 主域名
+   */
+  public getMainDomain(): string {
+    const parts = this.value.split(".");
+    if (parts.length >= 2) {
+      return parts.slice(-2).join(".");
+    }
+    return this.value;
+  }
+
+  /**
+   * 获取子域名部分
+   *
+   * @returns 子域名部分，如果没有则返回 null
+   */
+  public getSubdomain(): string | null {
+    const parts = this.value.split(".");
+    if (parts.length > 2) {
+      return parts.slice(0, -2).join(".");
+    }
+    return null;
+  }
+
+  /**
+   * 获取顶级域名
+   *
+   * @returns 顶级域名
+   */
+  public getTopLevelDomain(): string {
+    const parts = this.value.split(".");
+    return parts[parts.length - 1];
+  }
+
+  /**
+   * 检查是否为子域名
+   *
+   * @returns 是否为子域名
+   */
+  public isSubdomain(): boolean {
+    return this.value.split(".").length > 2;
+  }
+
+  /**
+   * 生成子域名
+   *
+   * @description 为指定域名生成子域名
+   * @param subdomain - 子域名前缀
+   * @returns 新的租户域名实例
+   */
+  public createSubdomain(subdomain: string): TenantDomain {
+    if (!subdomain || subdomain.trim().length === 0) {
+      throw new Error("子域名不能为空");
+    }
+
+    const cleanSubdomain = subdomain.toLowerCase().replace(/[^a-zA-Z0-9-]/g, "");
+    if (cleanSubdomain.length === 0) {
+      throw new Error("子域名格式不正确");
+    }
+
+    const fullDomain = `${cleanSubdomain}.${this.value}`;
+    return TenantDomain.create(fullDomain);
+  }
+
+  /**
+   * 验证域名是否可用
+   *
+   * @description 检查域名是否符合规范且未被保留
+   * @param domain - 域名
+   * @returns 是否可用
    */
   public static isValid(domain: string): boolean {
     try {
@@ -115,95 +192,5 @@ export class TenantDomain extends BaseValueObject<string> {
     } catch {
       return false;
     }
-  }
-
-  /**
-   * 获取顶级域名
-   *
-   * @returns {string} 顶级域名（TLD）
-   *
-   * @example
-   * ```typescript
-   * const domain = TenantDomain.create('app.example.com');
-   * console.log(domain.getTLD()); // 'com'
-   * ```
-   */
-  public getTLD(): string {
-    const parts = this._value.split(".");
-    return parts[parts.length - 1];
-  }
-
-  /**
-   * 获取二级域名
-   *
-   * @returns {string} 二级域名（SLD）
-   *
-   * @example
-   * ```typescript
-   * const domain = TenantDomain.create('app.example.com');
-   * console.log(domain.getSLD()); // 'example'
-   * ```
-   */
-  public getSLD(): string {
-    const parts = this._value.split(".");
-    if (parts.length < 2) {
-      throw new Error("无效的域名格式，无法获取二级域名");
-    }
-    return parts[parts.length - 2];
-  }
-
-  /**
-   * 获取子域名
-   *
-   * @returns {string | null} 子域名，如果没有则返回 null
-   *
-   * @example
-   * ```typescript
-   * const domain = TenantDomain.create('app.example.com');
-   * console.log(domain.getSubdomain()); // 'app'
-   * ```
-   */
-  public getSubdomain(): string | null {
-    const parts = this._value.split(".");
-    if (parts.length <= 2) {
-      return null;
-    }
-    return parts.slice(0, -2).join(".");
-  }
-
-  /**
-   * 检查是否为子域名
-   *
-   * @returns {boolean} 是否为子域名
-   *
-   * @example
-   * ```typescript
-   * const domain1 = TenantDomain.create('app.example.com');
-   * const domain2 = TenantDomain.create('example.com');
-   * console.log(domain1.isSubdomain()); // true
-   * console.log(domain2.isSubdomain()); // false
-   * ```
-   */
-  public isSubdomain(): boolean {
-    return this._value.split(".").length > 2;
-  }
-
-  /**
-   * 获取根域名（不包含子域名）
-   *
-   * @returns {string} 根域名
-   *
-   * @example
-   * ```typescript
-   * const domain = TenantDomain.create('app.tenant.example.com');
-   * console.log(domain.getRootDomain()); // 'example.com'
-   * ```
-   */
-  public getRootDomain(): string {
-    const parts = this._value.split(".");
-    if (parts.length <= 2) {
-      return this._value;
-    }
-    return parts.slice(-2).join(".");
   }
 }

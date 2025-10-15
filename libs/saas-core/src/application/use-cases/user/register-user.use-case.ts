@@ -9,10 +9,11 @@
 
 import { Injectable } from "@nestjs/common";
 import { EntityId, Username, Email, PhoneNumber } from "@hl8/hybrid-archi";
-import { ICommandUseCase } from "../base/use-case.interface";
-import { UserAggregate } from "../../../domain/user/aggregates/user.aggregate";
-import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface";
+import { ICommandUseCase } from "../base/use-case.interface.js";
+import { UserAggregate } from "../../../domain/user/aggregates/user.aggregate.js";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
+import { TenantId } from "@hl8/isolation-model";
 export interface IRegisterUserCommand {
   username: string;
   email: string;
@@ -45,7 +46,7 @@ export class RegisterUserUseCase
     const passwordHash = command.password; // 示例，实际使用 bcrypt
     const passwordSalt = "salt"; // 示例
 
-    const userId = EntityId.generate();
+    const userId = TenantId.generate();
     const aggregate = UserAggregate.create(
       userId,
       username,

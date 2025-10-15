@@ -1,5 +1,5 @@
 import { EventHandler, IEventHandler } from "@hl8/hybrid-archi";
-import { UserLoginEvent } from "../../../../domain/user/events/user-login.event";
+import { UserLoginEvent } from "../../../../domain/user/events/user-login.event.js";
 
 // @EventHandler('UserLogin') // TODO: 修复装饰器类型问题
 export class UserLoginHandler implements IEventHandler<UserLoginEvent> {

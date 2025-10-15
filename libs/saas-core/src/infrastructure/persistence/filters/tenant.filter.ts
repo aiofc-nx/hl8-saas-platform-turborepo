@@ -37,6 +37,7 @@
 import { Filter, FilterQuery } from "@hl8/database";
 import { TenantContextService } from "@hl8/nestjs-isolation";
 
+import { TenantId } from "@hl8/isolation-model";
 /**
  * 租户过滤器名称
  *

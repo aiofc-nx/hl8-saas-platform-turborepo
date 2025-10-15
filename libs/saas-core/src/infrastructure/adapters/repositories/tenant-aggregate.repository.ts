@@ -10,11 +10,11 @@
 import { Injectable } from "@nestjs/common";
 import { EntityManager } from "@hl8/database";
 import { EntityId } from "@hl8/hybrid-archi";
-import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface";
-import { TenantAggregate } from "../../../domain/tenant/aggregates/tenant.aggregate";
-import { TenantCode } from "../../../domain/tenant/value-objects/tenant-code.vo";
-import { TenantDomain } from "../../../domain/tenant/value-objects/tenant-domain.vo";
-import { TenantMapper } from "../../mappers/tenant.mapper";
+import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
+import { TenantAggregate } from "../../../domain/tenant/aggregates/tenant.aggregate.js";
+import { TenantCode } from "../../../domain/tenant/value-objects/tenant-code.vo.js";
+import { TenantDomain } from "../../../domain/tenant/value-objects/tenant-domain.vo.js";
+import { TenantMapper } from "../../mappers/tenant.mapper.js";
 import { TenantOrmEntity } from "../../persistence/entities/tenant.orm-entity.js";
 import { TenantConfigurationOrmEntity } from "../../persistence/entities/tenant-configuration.orm-entity.js";
 

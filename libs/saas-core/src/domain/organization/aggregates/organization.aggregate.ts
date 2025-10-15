@@ -12,6 +12,7 @@ import { Organization } from "../entities/organization.entity.js";
 import { OrganizationMember } from "../entities/organization-member.entity.js";
 import { OrganizationType } from "../value-objects/organization-type.vo.js";
 
+import { TenantId } from "@hl8/isolation-model";
 export class OrganizationAggregate extends TenantAwareAggregateRoot {
   private _members: OrganizationMember[] = [];
 
@@ -47,7 +48,7 @@ export class OrganizationAggregate extends TenantAwareAggregateRoot {
     this.ensureTenantContext();
 
     const member = OrganizationMember.create(
-      EntityId.generate(),
+      TenantId.generate(),
       this.id,
       userId,
       { createdBy: updatedBy },

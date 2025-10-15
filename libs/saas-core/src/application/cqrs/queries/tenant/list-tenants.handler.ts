@@ -6,9 +6,9 @@
  */
 
 import { QueryHandler, IQueryHandler } from "@hl8/hybrid-archi";
-import { ListTenantsQuery } from "./list-tenants.query";
-import { ITenantAggregateRepository } from "../../../../domain/tenant/repositories/tenant-aggregate.repository.interface";
-import { TenantAggregate } from "../../../../domain/tenant/aggregates/tenant.aggregate";
+import { ListTenantsQuery } from "./list-tenants.query.js";
+import { ITenantAggregateRepository } from "../../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
+import { TenantAggregate } from "../../../../domain/tenant/aggregates/tenant.aggregate.js";
 
 // @QueryHandler('ListTenantsQuery') // TODO: 修复装饰器类型问题
 export class ListTenantsHandler

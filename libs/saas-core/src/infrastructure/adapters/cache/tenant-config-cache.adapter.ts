@@ -15,7 +15,7 @@
 
 import { Injectable } from "@nestjs/common";
 import { CacheService, Cacheable, CacheEvict } from "@hl8/caching";
-import { TENANT_CACHE_CONFIG } from "../../../constants/tenant.constants";
+import { TENANT_CACHE_CONFIG } from "../../../constants/tenant.constants.js";
 
 export interface ITenantConfig {
   maxUsers: number;

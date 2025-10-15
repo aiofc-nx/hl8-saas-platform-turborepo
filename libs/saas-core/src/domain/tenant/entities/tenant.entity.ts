@@ -1,152 +1,117 @@
 /**
  * 租户实体
  *
- * @description 租户核心实体，包含租户的基本信息和业务逻辑
+ * @description 租户的核心业务实体
  *
  * ## 业务规则
  *
- * ### 租户标识
- * - 租户代码：全局唯一，3-20字符，小写字母+数字
- * - 租户域名：全局唯一，符合域名格式
- * - 租户ID：系统自动生成的唯一标识
+ * ### 租户状态管理
+ * - 支持 TRIAL, ACTIVE, SUSPENDED, DISABLED 等状态
+ * - 状态转换需要符合业务规则
+ * - 状态变更需要记录操作者和时间
  *
- * ### 租户类型
- * - FREE: 免费版（5用户/100MB/1组织）
- * - BASIC: 基础版（50用户/1GB/2组织）
- * - PROFESSIONAL: 专业版（500用户/10GB/10组织）
- * - ENTERPRISE: 企业版（5000用户/100GB/100组织）
- * - CUSTOM: 定制版（无限制）
- *
- * ### 租户状态
- * - TRIAL: 试用中
- * - ACTIVE: 活跃
- * - SUSPENDED: 暂停
- * - EXPIRED: 过期
- * - DELETED: 已删除
- *
- * ### 状态转换规则
- * - TRIAL → ACTIVE（激活）
- * - ACTIVE ⇄ SUSPENDED（暂停/恢复）
- * - ANY → EXPIRED（过期）
- * - ANY → DELETED（删除）
+ * ### 租户信息管理
+ * - 租户名称可以修改
+ * - 租户域名可以修改（需要验证唯一性）
+ * - 租户类型可以升级
  *
  * @example
  * ```typescript
  * const tenant = Tenant.create(
- *   EntityId.generate(),
- *   TenantCode.create('acme2024'),
+ *   tenantId,
+ *   code,
  *   'Acme Corporation',
- *   TenantDomain.create('acme.example.com'),
- *   TenantStatus.PENDING,
- *   { createdBy: 'system' }
+ *   TenantType.PROFESSIONAL,
+ *   'admin'
  * );
- *
- * // 更新租户名称
- * tenant.updateName('New Acme Corp', 'admin-123');
- *
- * // 激活租户
- * tenant.activate('admin-123');
  * ```
  *
  * @class Tenant
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { TenantStatus } from "../value-objects/tenant-status.vo.js";
-import { PinoLogger } from "@hl8/nestjs-fastify/logging";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { TenantId } from "@hl8/isolation-model";
+import type { IPureLogger } from "@hl8/pure-logger";
 import { TenantCode } from "../value-objects/tenant-code.vo.js";
 import { TenantDomain } from "../value-objects/tenant-domain.vo.js";
 import { TenantType } from "../value-objects/tenant-type.enum.js";
-import { TENANT_STATUS_TRANSITIONS } from "../../../constants/tenant.constants.js";
 
 /**
- * 租户实体
- *
- * @class Tenant
- * @extends {BaseEntity}
+ * 租户状态枚举
  */
+export enum TenantStatus {
+  /** 试用中 */
+  TRIAL = "TRIAL",
+  /** 活跃 */
+  ACTIVE = "ACTIVE", 
+  /** 暂停 */
+  SUSPENDED = "SUSPENDED",
+  /** 禁用 */
+  DISABLED = "DISABLED",
+  /** 已删除 */
+  DELETED = "DELETED",
+}
+
 export class Tenant extends BaseEntity {
-  /**
-   * 构造函数
-   *
-   * @param {EntityId} id - 租户ID
-   * @param {TenantCode} code - 租户代码
-   * @param {string} name - 租户名称
-   * @param {TenantDomain} domain - 租户域名
-   * @param {TenantType} type - 租户类型
-   * @param {TenantStatus} status - 租户状态
-   * @param {Date} [trialEndsAt] - 试用结束时间
-   * @param {Date} [activatedAt] - 激活时间
-   * @param {IPartialAuditInfo} auditInfo - 审计信息
-   * @param {PinoLogger} [logger] - 日志记录器
-   */
   constructor(
-    id: EntityId,
+    id: TenantId,
     private _code: TenantCode,
     private _name: string,
-    private _domain: TenantDomain,
     private _type: TenantType,
     private _status: TenantStatus,
-    private _trialEndsAt: Date | null = null,
-    private _activatedAt: Date | null = null,
+    private _domain: TenantDomain | null,
+    private _description: string | null,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
-    this.validate();
   }
 
   /**
    * 创建租户实体
    *
-   * @description 工厂方法，创建新的租户实体
-   *
-   * @static
-   * @param {EntityId} id - 租户ID
-   * @param {TenantCode} code - 租户代码
-   * @param {string} name - 租户名称
-   * @param {TenantDomain} domain - 租户域名
-   * @param {TenantType} type - 租户类型
-   * @param {IPartialAuditInfo} auditInfo - 审计信息
-   * @returns {Tenant} 租户实体
+   * @description 创建新的租户实体
+   * @param id - 租户ID
+   * @param code - 租户代码
+   * @param name - 租户名称
+   * @param type - 租户类型
+   * @param createdBy - 创建者
+   * @param domain - 租户域名（可选）
+   * @param description - 租户描述（可选）
+   * @param auditInfo - 审计信息
+   * @param logger - 日志器
+   * @returns 租户实体实例
    */
   public static create(
-    id: EntityId,
-    code: TenantCode,
+    id: TenantId,
+    code: string,
     name: string,
-    domain: TenantDomain,
     type: TenantType,
-    auditInfo: IPartialAuditInfo,
+    createdBy: string,
+    domain?: string,
+    description?: string,
+    auditInfo?: IPartialAuditInfo,
+    logger?: IPureLogger,
   ): Tenant {
-    // 新租户默认为试用状态
-    const status = TenantStatus.PENDING;
-
-    // 如果是试用状态，设置试用结束时间（30天后）
-    const trialEndsAt = new Date();
-    trialEndsAt.setDate(trialEndsAt.getDate() + 30);
+    const tenantCode = TenantCode.create(code);
+    const tenantDomain = domain ? TenantDomain.create(domain) : null;
 
     return new Tenant(
       id,
-      code,
+      tenantCode,
       name,
-      domain,
       type,
-      status,
-      trialEndsAt,
-      null,
-      auditInfo,
+      TenantStatus.TRIAL,
+      tenantDomain,
+      description || null,
+      auditInfo || { createdBy, createdAt: new Date() },
+      logger,
     );
   }
 
-  // ============================================================================
-  // Getters
-  // ============================================================================
-
   /**
    * 获取租户代码
-   *
-   * @returns {TenantCode}
    */
   public getCode(): TenantCode {
     return this._code;
@@ -154,26 +119,13 @@ export class Tenant extends BaseEntity {
 
   /**
    * 获取租户名称
-   *
-   * @returns {string}
    */
   public getName(): string {
     return this._name;
   }
 
   /**
-   * 获取租户域名
-   *
-   * @returns {TenantDomain}
-   */
-  public getDomain(): TenantDomain {
-    return this._domain;
-  }
-
-  /**
    * 获取租户类型
-   *
-   * @returns {TenantType}
    */
   public getType(): TenantType {
     return this._type;
@@ -181,281 +133,183 @@ export class Tenant extends BaseEntity {
 
   /**
    * 获取租户状态
-   *
-   * @returns {TenantStatus}
    */
   public getStatus(): TenantStatus {
     return this._status;
   }
 
   /**
-   * 获取试用结束时间
-   *
-   * @returns {Date | null}
+   * 获取租户域名
    */
-  public getTrialEndsAt(): Date | null {
-    return this._trialEndsAt;
+  public getDomain(): TenantDomain | null {
+    return this._domain;
   }
 
   /**
-   * 获取激活时间
-   *
-   * @returns {Date | null}
+   * 获取租户描述
    */
-  public getActivatedAt(): Date | null {
-    return this._activatedAt;
-  }
-
-  // ============================================================================
-  // 业务方法
-  // ============================================================================
-
-  /**
-   * 更新租户名称
-   *
-   * @description 修改租户的显示名称
-   *
-   * @param {string} name - 新名称
-   * @param {string} [updatedBy] - 更新人ID
-   * @throws {Error} 当名称无效时抛出错误
-   */
-  public updateName(name: string, updatedBy?: string): void {
-    this.validateName(name);
-    this._name = name;
-    this.updateTimestamp();
-  }
-
-  /**
-   * 更新租户类型
-   *
-   * @description 修改租户的订阅类型（通常通过升级/降级操作）
-   *
-   * @param {TenantType} type - 新类型
-   * @param {string} [updatedBy] - 更新人ID
-   */
-  public updateType(type: TenantType, updatedBy?: string): void {
-    this._type = type;
-    this.updateTimestamp();
+  public getDescription(): string | null {
+    return this._description;
   }
 
   /**
    * 激活租户
    *
-   * @description 将试用租户转为活跃状态
-   *
-   * ## 业务规则
-   * - 只有 TRIAL 或 EXPIRED 状态可以激活
-   * - 激活后设置激活时间
-   * - 清除试用结束时间
-   *
-   * @param {string} [updatedBy] - 更新人ID
-   * @throws {Error} 当状态转换不允许时抛出错误
+   * @description 将租户状态设置为活跃
+   * @param activatedBy - 激活操作者
    */
-  public activate(updatedBy?: string): void {
-    this.validateStatusTransition(TenantStatus.ACTIVE);
+  public activate(activatedBy: string): void {
+    if (this._status === TenantStatus.ACTIVE) {
+      throw new Error("租户已经是活跃状态");
+    }
+
+    if (this._status === TenantStatus.DELETED) {
+      throw new Error("已删除的租户无法激活");
+    }
+
     this._status = TenantStatus.ACTIVE;
-    this._activatedAt = new Date();
-    this._trialEndsAt = null;
     this.updateTimestamp();
+    
+    this.logger?.info(`租户已激活 - tenantId: ${this.id.toString()}, activatedBy: ${activatedBy}`);
   }
 
   /**
    * 暂停租户
    *
-   * @description 临时暂停租户的服务访问
-   *
-   * ## 业务规则
-   * - 只有 ACTIVE 状态可以暂停
-   * - 暂停期间租户无法访问服务
-   *
-   * @param {string} reason - 暂停原因
-   * @param {string} [updatedBy] - 更新人ID
-   * @throws {Error} 当状态转换不允许时抛出错误
+   * @description 暂停租户服务
+   * @param suspendedBy - 暂停操作者
+   * @param reason - 暂停原因
    */
-  public suspend(reason: string, updatedBy?: string): void {
-    this.validateStatusTransition(TenantStatus.SUSPENDED);
+  public suspend(suspendedBy: string, reason: string): void {
+    if (this._status !== TenantStatus.ACTIVE) {
+      throw new Error("只有活跃状态的租户可以被暂停");
+    }
+
     this._status = TenantStatus.SUSPENDED;
     this.updateTimestamp();
-
-    // 记录暂停原因到日志
-    this.logger.warn(
-      `租户已暂停 - tenantId: ${this.id.toString()}, reason: ${reason}, updatedBy: ${updatedBy}`,
-    );
+    
+    this.logger?.warn(`租户已暂停 - tenantId: ${this.id.toString()}, reason: ${reason}`);
   }
 
   /**
    * 恢复租户
    *
-   * @description 从暂停状态恢复为活跃状态
-   *
-   * @param {string} [updatedBy] - 更新人ID
-   * @throws {Error} 当当前状态不是 SUSPENDED 时抛出错误
+   * @description 从暂停状态恢复租户
+   * @param resumedBy - 恢复操作者
    */
-  public resume(updatedBy?: string): void {
+  public resume(resumedBy: string): void {
     if (this._status !== TenantStatus.SUSPENDED) {
-      throw new Error("只有暂停状态的租户可以恢复");
+      throw new Error("只有暂停状态的租户可以被恢复");
     }
+
     this._status = TenantStatus.ACTIVE;
     this.updateTimestamp();
+    
+    this.logger?.info(`租户已恢复 - tenantId: ${this.id.toString()}, resumedBy: ${resumedBy}`);
   }
 
   /**
-   * 标记租户过期
+   * 禁用租户
    *
-   * @description 将租户标记为过期状态
-   *
-   * @param {string} [updatedBy] - 更新人ID
+   * @description 禁用租户，停止所有服务
+   * @param disabledBy - 禁用操作者
+   * @param reason - 禁用原因
    */
-  public expire(updatedBy?: string): void {
-    this.validateStatusTransition(TenantStatus.DISABLED);
+  public disable(disabledBy: string, reason: string): void {
+    if (this._status === TenantStatus.DISABLED) {
+      throw new Error("租户已经是禁用状态");
+    }
+
+    if (this._status === TenantStatus.DELETED) {
+      throw new Error("已删除的租户无法禁用");
+    }
+
     this._status = TenantStatus.DISABLED;
     this.updateTimestamp();
-  }
-
-  // ============================================================================
-  // 验证方法
-  // ============================================================================
-
-  /**
-   * 验证租户数据
-   *
-   * @private
-   * @throws {Error} 当数据无效时抛出错误
-   */
-  protected override validate(): void {
-    this.validateName(this._name);
+    
+    this.logger?.warn(`租户已禁用 - tenantId: ${this.id.toString()}, reason: ${reason}`);
   }
 
   /**
-   * 验证租户名称
+   * 升级租户类型
    *
-   * @private
-   * @param {string} name - 租户名称
-   * @throws {Error} 当名称无效时抛出错误
+   * @description 升级租户到更高的类型
+   * @param newType - 新的租户类型
+   * @param upgradedBy - 升级操作者
+   * @param reason - 升级原因（可选）
    */
-  private validateName(name: string): void {
-    if (!name || name.trim().length === 0) {
+  public upgrade(newType: TenantType, upgradedBy: string, reason?: string): void {
+    if (this._status === TenantStatus.DELETED) {
+      throw new Error("已删除的租户无法升级");
+    }
+
+    this._type = newType;
+    this.updateTimestamp();
+    
+    this.logger?.info(`租户类型已升级 - tenantId: ${this.id.toString()}, newType: ${newType}, reason: ${reason || 'N/A'}`);
+  }
+
+  /**
+   * 更新租户名称
+   *
+   * @description 更新租户名称
+   * @param newName - 新的租户名称
+   * @param updatedBy - 更新操作者
+   */
+  public updateName(newName: string, updatedBy: string): void {
+    if (!newName || newName.trim().length === 0) {
       throw new Error("租户名称不能为空");
     }
-    if (name.length > 100) {
-      throw new Error("租户名称不能超过100字符");
-    }
+
+    this._name = newName.trim();
+    this.updateTimestamp();
+    
+    this.logger?.info(`租户名称已更新 - tenantId: ${this.id.toString()}, newName: ${newName}`);
   }
 
   /**
-   * 验证状态转换
+   * 更新租户域名
    *
-   * @private
-   * @param {TenantStatus} targetStatus - 目标状态
-   * @throws {Error} 当状态转换不允许时抛出错误
+   * @description 更新租户域名
+   * @param newDomain - 新的租户域名
+   * @param updatedBy - 更新操作者
    */
-  private validateStatusTransition(targetStatus: TenantStatus): void {
-    const allowedTransitions = TENANT_STATUS_TRANSITIONS[this._status];
-    if (!allowedTransitions || !allowedTransitions.includes(targetStatus)) {
-      throw new Error(
-        `不允许从 ${this._status} 状态转换到 ${targetStatus} 状态`,
-      );
-    }
+  public updateDomain(newDomain: TenantDomain, updatedBy: string): void {
+    this._domain = newDomain;
+    this.updateTimestamp();
+    
+    this.logger?.info(`租户域名已更新 - tenantId: ${this.id.toString()}, newDomain: ${newDomain.getValue()}`);
   }
 
-  // ============================================================================
-  // 查询方法
-  // ============================================================================
+  /**
+   * 更新租户描述
+   *
+   * @description 更新租户描述
+   * @param newDescription - 新的租户描述
+   * @param updatedBy - 更新操作者
+   */
+  public updateDescription(newDescription: string | null, updatedBy: string): void {
+    this._description = newDescription;
+    this.updateTimestamp();
+    
+    this.logger?.info(`租户描述已更新 - tenantId: ${this.id.toString()}`);
+  }
 
   /**
    * 检查租户是否活跃
    *
-   * @returns {boolean}
+   * @returns 是否活跃
    */
   public isActive(): boolean {
     return this._status === TenantStatus.ACTIVE;
   }
 
   /**
-   * 检查租户是否试用中
+   * 检查租户是否可用
    *
-   * @returns {boolean}
+   * @returns 是否可用（活跃或试用状态）
    */
-  public isTrial(): boolean {
-    return this._status === TenantStatus.PENDING;
-  }
-
-  /**
-   * 检查租户是否已暂停
-   *
-   * @returns {boolean}
-   */
-  public isSuspended(): boolean {
-    return this._status === TenantStatus.SUSPENDED;
-  }
-
-  /**
-   * 检查租户是否已过期
-   *
-   * @returns {boolean}
-   */
-  public isExpired(): boolean {
-    return this._status === TenantStatus.DISABLED;
-  }
-
-  /**
-   * 检查试用是否即将到期
-   *
-   * @description 检查试用期是否在7天内到期
-   *
-   * @returns {boolean}
-   */
-  public isTrialExpiringSoon(): boolean {
-    if (!this.isTrial() || !this._trialEndsAt) {
-      return false;
-    }
-
-    const now = new Date();
-    const daysRemaining = Math.ceil(
-      (this._trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
-    );
-
-    return daysRemaining <= 7 && daysRemaining > 0;
-  }
-
-  /**
-   * 获取试用剩余天数
-   *
-   * @returns {number | null} 剩余天数，如果不是试用状态则返回null
-   */
-  public getTrialDaysRemaining(): number | null {
-    if (!this.isTrial() || !this._trialEndsAt) {
-      return null;
-    }
-
-    const now = new Date();
-    const daysRemaining = Math.ceil(
-      (this._trialEndsAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
-    );
-
-    return Math.max(0, daysRemaining);
-  }
-
-  /**
-   * 转换为纯对象
-   *
-   * @returns {object} 租户数据对象
-   */
-  public toObject(): object {
-    return {
-      id: this.id.toString(),
-      code: this._code.value,
-      name: this._name,
-      domain: this._domain.value,
-      type: this._type,
-      status: this._status,
-      trialEndsAt: this._trialEndsAt?.toISOString(),
-      activatedAt: this._activatedAt?.toISOString(),
-      tenantId: this.tenantId.toString(),
-      createdAt: this.createdAt.toISOString(),
-      updatedAt: this.updatedAt.toISOString(),
-      deletedAt: this.deletedAt?.toISOString(),
-      version: this.version,
-    };
+  public isAvailable(): boolean {
+    return this._status === TenantStatus.ACTIVE || this._status === TenantStatus.TRIAL;
   }
 }

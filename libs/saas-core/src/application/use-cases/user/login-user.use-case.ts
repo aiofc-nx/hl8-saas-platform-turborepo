@@ -7,8 +7,8 @@
 
 import { Injectable } from "@nestjs/common";
 import { Email } from "@hl8/hybrid-archi";
-import { ICommandUseCase } from "../base/use-case.interface";
-import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface";
+import { ICommandUseCase } from "../base/use-case.interface.js";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 
 export interface ILoginUserCommand {
   email: string;

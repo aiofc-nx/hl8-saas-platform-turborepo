@@ -28,6 +28,7 @@ import { User } from "../entities/user.entity.js";
 import { UserProfile } from "../entities/user-profile.entity.js";
 import { UserCredentials } from "../entities/user-credentials.entity.js";
 
+import { TenantId } from "@hl8/isolation-model";
 export class UserAggregate extends TenantAwareAggregateRoot {
   constructor(
     id: EntityId,
@@ -50,9 +51,9 @@ export class UserAggregate extends TenantAwareAggregateRoot {
     auditInfo: IPartialAuditInfo,
   ): UserAggregate {
     const user = User.create(id, username, email, phoneNumber, auditInfo);
-    const profile = UserProfile.create(EntityId.generate(), id, auditInfo);
+    const profile = UserProfile.create(TenantId.generate(), id, auditInfo);
     const credentials = UserCredentials.create(
-      EntityId.generate(),
+      TenantId.generate(),
       id,
       passwordHash,
       passwordSalt,

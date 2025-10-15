@@ -14,7 +14,7 @@
  */
 
 import { EventHandler, IEventHandler } from "@hl8/hybrid-archi";
-import { TenantUpgradedEvent } from "../../../../domain/tenant/events/tenant-upgraded.event";
+import { TenantUpgradedEvent } from "../../../../domain/tenant/events/tenant-upgraded.event.js";
 
 // @EventHandler('TenantUpgraded') // TODO: 修复装饰器类型问题
 export class TenantUpgradedHandler

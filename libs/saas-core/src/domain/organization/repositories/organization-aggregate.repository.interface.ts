@@ -1,4 +1,4 @@
-import { OrganizationAggregate } from "../aggregates/organization.aggregate";
+import { OrganizationAggregate } from "../aggregates/organization.aggregate.js";
 import { EntityId } from "@hl8/hybrid-archi";
 
 export interface IOrganizationAggregateRepository {

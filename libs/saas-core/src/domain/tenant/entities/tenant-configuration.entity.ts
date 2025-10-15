@@ -1,319 +1,335 @@
 /**
  * 租户配置实体
  *
- * @description 租户的各项配置信息，包括资源配额、功能开关等
+ * @description 管理租户的配置信息，包括配额、设置等
  *
  * ## 业务规则
  *
  * ### 配额管理
- * - maxUsers: 最大用户数
- * - maxStorageMB: 最大存储空间（MB）
- * - maxOrganizations: 最大组织数
- * - maxDepartmentLevels: 最大部门层级
- * - maxApiCallsPerDay: 每日API调用限制
+ * - 根据租户类型设置不同的配额限制
+ * - 实时跟踪当前使用量
+ * - 支持配额检查和警告
  *
- * ### 功能开关
- * - enabledFeatures: 启用的功能列表
- * - 根据租户类型自动配置
- * - 支持自定义启用/禁用
- *
- * ### 自定义配置
- * - customSettings: 租户特定的配置项
- * - 支持任意键值对
+ * ### 配置管理
+ * - 支持租户级别的个性化配置
+ * - 配置变更需要审计记录
+ * - 支持配置继承和覆盖
  *
  * @example
  * ```typescript
  * const config = TenantConfiguration.create(
- *   EntityId.generate(),
  *   tenantId,
- *   TenantQuota.fromTenantType('FREE'),
- *   ['basic_features'],
- *   { createdBy: 'system' }
+ *   TenantType.PROFESSIONAL
  * );
- *
- * // 更新配额
- * config.updateQuota(TenantQuota.fromTenantType('BASIC'));
- *
- * // 启用功能
- * config.enableFeature('advanced_reporting');
  * ```
  *
  * @class TenantConfiguration
  * @since 1.0.0
  */
 
-import { BaseEntity, EntityId, IPartialAuditInfo } from "@hl8/hybrid-archi";
-import { PinoLogger } from "@hl8/nestjs-fastify/logging";
-import { TenantQuota } from "../value-objects/tenant-quota.vo.js";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { TenantId } from "@hl8/isolation-model";
+import type { IPureLogger } from "@hl8/pure-logger";
+import { TenantType, TenantTypeUtils } from "../value-objects/tenant-type.enum.js";
+
+/**
+ * 配额配置接口
+ */
+export interface QuotaConfig {
+  /** 用户数量限制 */
+  users: number;
+  /** 存储空间限制（MB） */
+  storage: number;
+  /** API调用限制（每月） */
+  apiCalls: number;
+  /** 数据库连接数限制 */
+  dbConnections: number;
+  /** 文件上传大小限制（MB） */
+  maxFileSize: number;
+  /** 并发请求限制 */
+  concurrentRequests: number;
+}
+
+/**
+ * 使用量统计接口
+ */
+export interface UsageStats {
+  /** 当前用户数量 */
+  users: number;
+  /** 当前存储使用量（MB） */
+  storage: number;
+  /** 本月API调用次数 */
+  apiCalls: number;
+  /** 当前数据库连接数 */
+  dbConnections: number;
+}
 
 /**
  * 租户配置实体
- *
- * @class TenantConfiguration
- * @extends {BaseEntity}
  */
 export class TenantConfiguration extends BaseEntity {
-  /**
-   * 构造函数
-   *
-   * @param {EntityId} id - 配置ID
-   * @param {EntityId} tenantId - 所属租户ID（关联字段）
-   * @param {TenantQuota} quota - 租户配额
-   * @param {string[]} enabledFeatures - 启用的功能列表
-   * @param {Record<string, any>} customSettings - 自定义配置
-   * @param {IPartialAuditInfo} auditInfo - 审计信息
-   * @param {PinoLogger} [logger] - 日志记录器
-   */
+  private _quota: QuotaConfig;
+  private _usage: UsageStats;
+  private _settings: Record<string, any>;
+
   constructor(
-    id: EntityId,
-    private _quota: TenantQuota,
-    private _enabledFeatures: string[],
-    private _customSettings: Record<string, any>,
+    id: TenantId,
+    private _tenantType: TenantType,
+    quota: QuotaConfig,
+    usage: UsageStats,
+    settings: Record<string, any>,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger,
+    logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
-    this.validate();
+    this._quota = quota;
+    this._usage = usage;
+    this._settings = settings;
   }
 
   /**
    * 创建租户配置实体
    *
-   * @description 工厂方法，创建新的租户配置
-   *
-   * @static
-   * @param {EntityId} id - 配置ID
-   * @param {TenantQuota} quota - 租户配额
-   * @param {string[]} enabledFeatures - 启用的功能列表
-   * @param {IPartialAuditInfo} auditInfo - 审计信息
-   * @returns {TenantConfiguration} 租户配置实体
+   * @description 根据租户类型创建默认配置
+   * @param id - 租户ID
+   * @param tenantType - 租户类型
+   * @param auditInfo - 审计信息
+   * @param logger - 日志器
+   * @returns 租户配置实体实例
    */
   public static create(
-    id: EntityId,
-    quota: TenantQuota,
-    enabledFeatures: string[] = [],
-    auditInfo: IPartialAuditInfo,
+    id: TenantId,
+    tenantType: TenantType,
+    auditInfo?: IPartialAuditInfo,
+    logger?: IPureLogger,
   ): TenantConfiguration {
-    return new TenantConfiguration(id, quota, enabledFeatures, {}, auditInfo);
-  }
+    const quota = TenantConfiguration.getDefaultQuota(tenantType);
+    const usage: UsageStats = {
+      users: 0,
+      storage: 0,
+      apiCalls: 0,
+      dbConnections: 0,
+    };
+    const settings = TenantConfiguration.getDefaultSettings(tenantType);
 
-  // ============================================================================
-  // Getters
-  // ============================================================================
-
-  /**
-   * 获取租户配额
-   *
-   * @returns {TenantQuota}
-   */
-  public getQuota(): TenantQuota {
-    return this._quota;
-  }
-
-  /**
-   * 获取启用的功能列表
-   *
-   * @returns {string[]}
-   */
-  public getEnabledFeatures(): string[] {
-    return [...this._enabledFeatures];
+    return new TenantConfiguration(
+      id,
+      tenantType,
+      quota,
+      usage,
+      settings,
+      auditInfo || { createdBy: "system", createdAt: new Date() },
+      logger,
+    );
   }
 
   /**
-   * 获取自定义配置
-   *
-   * @returns {Record<string, any>}
+   * 获取租户类型
    */
-  public getCustomSettings(): Record<string, any> {
-    return { ...this._customSettings };
+  public getTenantType(): TenantType {
+    return this._tenantType;
   }
 
   /**
-   * 获取最大用户数
-   *
-   * @returns {number}
+   * 获取配额配置
    */
-  public getMaxUsers(): number {
-    return this._quota.maxUsers;
+  public getQuota(): QuotaConfig {
+    return { ...this._quota };
   }
 
   /**
-   * 获取最大存储空间（MB）
-   *
-   * @returns {number}
+   * 获取使用量统计
    */
-  public getMaxStorageMB(): number {
-    return this._quota.maxStorageMB;
+  public getUsage(): UsageStats {
+    return { ...this._usage };
   }
 
   /**
-   * 获取最大组织数
-   *
-   * @returns {number}
+   * 获取配置设置
    */
-  public getMaxOrganizations(): number {
-    return this._quota.maxOrganizations;
+  public getSettings(): Record<string, any> {
+    return { ...this._settings };
   }
 
-  // ============================================================================
-  // 业务方法
-  // ============================================================================
+  /**
+   * 更新配额配置
+   *
+   * @description 根据租户类型更新配额
+   * @param tenantType - 新的租户类型
+   * @param updatedBy - 更新操作者
+   */
+  public updateQuota(tenantType: TenantType, updatedBy: string): void {
+    this._tenantType = tenantType;
+    this._quota = TenantConfiguration.getDefaultQuota(tenantType);
+    this.updateTimestamp();
+    
+    this.logger?.info(`租户配额已更新 - tenantId: ${this.id.toString()}, type: ${tenantType}`);
+  }
 
   /**
-   * 更新配额
+   * 更新使用量统计
    *
-   * @description 更新租户的资源配额（通常在升级/降级时调用）
-   *
-   * @param {TenantQuota} quota - 新的配额
-   * @param {string} [updatedBy] - 更新人ID
+   * @description 更新当前使用量
+   * @param usage - 新的使用量统计
    */
-  public updateQuota(quota: TenantQuota, updatedBy?: string): void {
-    this._quota = quota;
+  public updateUsage(usage: Partial<UsageStats>): void {
+    this._usage = { ...this._usage, ...usage };
     this.updateTimestamp();
   }
 
   /**
-   * 启用功能
+   * 更新配置设置
    *
-   * @description 为租户启用特定功能
-   *
-   * @param {string} feature - 功能标识
-   * @param {string} [updatedBy] - 更新人ID
+   * @description 更新租户配置设置
+   * @param key - 配置键
+   * @param value - 配置值
+   * @param updatedBy - 更新操作者
    */
-  public enableFeature(feature: string, updatedBy?: string): void {
-    if (!this._enabledFeatures.includes(feature)) {
-      this._enabledFeatures.push(feature);
-      this.updateTimestamp();
-    }
-  }
-
-  /**
-   * 禁用功能
-   *
-   * @description 为租户禁用特定功能
-   *
-   * @param {string} feature - 功能标识
-   * @param {string} [updatedBy] - 更新人ID
-   */
-  public disableFeature(feature: string, updatedBy?: string): void {
-    const index = this._enabledFeatures.indexOf(feature);
-    if (index > -1) {
-      this._enabledFeatures.splice(index, 1);
-      this.updateTimestamp();
-    }
-  }
-
-  /**
-   * 设置自定义配置
-   *
-   * @description 设置租户的自定义配置项
-   *
-   * @param {string} key - 配置键
-   * @param {any} value - 配置值
-   * @param {string} [updatedBy] - 更新人ID
-   */
-  public setCustomSetting(key: string, value: any, updatedBy?: string): void {
-    this._customSettings[key] = value;
+  public updateSetting(key: string, value: any, updatedBy: string): void {
+    this._settings[key] = value;
     this.updateTimestamp();
+    
+    this.logger?.info(`租户配置已更新 - tenantId: ${this.id.toString()}, key: ${key}`);
   }
 
   /**
-   * 获取自定义配置项
+   * 批量更新配置设置
    *
-   * @param {string} key - 配置键
-   * @returns {any} 配置值
+   * @description 批量更新多个配置设置
+   * @param settings - 配置设置对象
+   * @param updatedBy - 更新操作者
    */
-  public getCustomSetting(key: string): any {
-    return this._customSettings[key];
+  public updateSettings(settings: Record<string, any>, updatedBy: string): void {
+    this._settings = { ...this._settings, ...settings };
+    this.updateTimestamp();
+    
+    this.logger?.info(`租户配置已批量更新 - tenantId: ${this.id.toString()}, keys: ${Object.keys(settings).join(', ')}`);
   }
 
   /**
-   * 删除自定义配置项
+   * 检查是否超出配额
    *
-   * @param {string} key - 配置键
-   * @param {string} [updatedBy] - 更新人ID
+   * @description 检查当前使用量是否超出配额限制
+   * @returns 是否超出配额
    */
-  public removeCustomSetting(key: string, updatedBy?: string): void {
-    if (key in this._customSettings) {
-      delete this._customSettings[key];
-      this.updateTimestamp();
-    }
-  }
-
-  // ============================================================================
-  // 查询方法
-  // ============================================================================
-
-  /**
-   * 检查功能是否启用
-   *
-   * @param {string} feature - 功能标识
-   * @returns {boolean}
-   */
-  public isFeatureEnabled(feature: string): boolean {
-    return this._enabledFeatures.includes(feature);
+  public isQuotaExceeded(): boolean {
+    return (
+      this._usage.users >= this._quota.users ||
+      this._usage.storage >= this._quota.storage ||
+      this._usage.apiCalls >= this._quota.apiCalls ||
+      this._usage.dbConnections >= this._quota.dbConnections
+    );
   }
 
   /**
-   * 检查用户配额是否已达到
+   * 检查特定资源是否超出配额
    *
-   * @param {number} currentUserCount - 当前用户数
-   * @returns {boolean}
+   * @description 检查特定资源的使用量是否超出配额
+   * @param resource - 资源类型
+   * @param amount - 使用量
+   * @returns 是否超出配额
    */
-  public isUserQuotaReached(currentUserCount: number): boolean {
-    return this._quota.isUserQuotaReached(currentUserCount);
+  public isResourceQuotaExceeded(resource: keyof QuotaConfig, amount: number): boolean {
+    const currentUsage = this._usage[resource] || 0;
+    return (currentUsage + amount) > this._quota[resource];
   }
 
   /**
-   * 检查存储配额是否已达到
+   * 获取配额使用率
    *
-   * @param {number} currentStorageMB - 当前存储空间（MB）
-   * @returns {boolean}
+   * @description 获取各资源的配额使用率
+   * @returns 使用率对象
    */
-  public isStorageQuotaReached(currentStorageMB: number): boolean {
-    return this._quota.isStorageQuotaReached(currentStorageMB);
+  public getQuotaUsage(): Record<string, { used: number; limit: number; percentage: number }> {
+    const resources: (keyof QuotaConfig)[] = ['users', 'storage', 'apiCalls', 'dbConnections'];
+    const usage: Record<string, { used: number; limit: number; percentage: number }> = {};
+
+    resources.forEach(resource => {
+      const used = this._usage[resource] || 0;
+      const limit = this._quota[resource];
+      const percentage = limit > 0 ? Math.round((used / limit) * 100) : 0;
+      
+      usage[resource] = { used, limit, percentage };
+    });
+
+    return usage;
   }
 
   /**
-   * 检查组织配额是否已达到
+   * 获取统计信息
    *
-   * @param {number} currentOrganizationCount - 当前组织数
-   * @returns {boolean}
+   * @description 获取详细的统计信息
+   * @returns 统计信息
    */
-  public isOrganizationQuotaReached(currentOrganizationCount: number): boolean {
-    return this._quota.isOrganizationQuotaReached(currentOrganizationCount);
-  }
-
-  // ============================================================================
-  // 验证方法
-  // ============================================================================
-
-  /**
-   * 验证配置数据
-   *
-   * @private
-   */
-  protected override validate(): void {
-    // 配额由值对象保证有效性
-    // enabledFeatures 可以为空数组
-    // customSettings 可以为空对象
-  }
-
-  /**
-   * 转换为纯对象
-   *
-   * @returns {object} 配置数据对象
-   */
-  public toObject(): object {
+  public getStatistics(): {
+    users: { current: number; limit: number };
+    storage: { current: number; limit: number };
+    apiCalls: { current: number; limit: number };
+  } {
     return {
-      id: this.id.toString(),
-      quota: this._quota.toJSON(),
-      enabledFeatures: [...this._enabledFeatures],
-      customSettings: { ...this._customSettings },
-      tenantId: this.tenantId.toString(),
-      createdAt: this.createdAt.toISOString(),
-      updatedAt: this.updatedAt.toISOString(),
-      version: this.version,
+      users: { current: this._usage.users, limit: this._quota.users },
+      storage: { current: this._usage.storage, limit: this._quota.storage },
+      apiCalls: { current: this._usage.apiCalls, limit: this._quota.apiCalls },
+    };
+  }
+
+  /**
+   * 获取默认配额配置
+   *
+   * @description 根据租户类型获取默认配额
+   * @param tenantType - 租户类型
+   * @returns 配额配置
+   */
+  private static getDefaultQuota(tenantType: TenantType): QuotaConfig {
+    const baseQuota = TenantTypeUtils.getQuota(tenantType);
+    
+    return {
+      users: baseQuota.users,
+      storage: baseQuota.storage,
+      apiCalls: baseQuota.apiCalls,
+      dbConnections: tenantType === TenantType.ENTERPRISE ? 100 : tenantType === TenantType.PROFESSIONAL ? 20 : 5,
+      maxFileSize: tenantType === TenantType.ENTERPRISE ? 100 : tenantType === TenantType.PROFESSIONAL ? 50 : 10,
+      concurrentRequests: tenantType === TenantType.ENTERPRISE ? 1000 : tenantType === TenantType.PROFESSIONAL ? 100 : 10,
+    };
+  }
+
+  /**
+   * 获取默认配置设置
+   *
+   * @description 根据租户类型获取默认配置设置
+   * @param tenantType - 租户类型
+   * @returns 配置设置
+   */
+  private static getDefaultSettings(tenantType: TenantType): Record<string, any> {
+    return {
+      // 基础设置
+      timezone: "Asia/Shanghai",
+      language: "zh-CN",
+      dateFormat: "YYYY-MM-DD",
+      
+      // 安全设置
+      passwordPolicy: {
+        minLength: 8,
+        requireSpecialChars: true,
+        requireNumbers: true,
+        requireUppercase: true,
+      },
+      
+      // 功能开关
+      features: {
+        multiFactorAuth: tenantType !== TenantType.TRIAL,
+        sso: tenantType === TenantType.ENTERPRISE || tenantType === TenantType.PROFESSIONAL,
+        apiAccess: true,
+        customBranding: tenantType === TenantType.ENTERPRISE,
+        advancedAnalytics: tenantType === TenantType.ENTERPRISE || tenantType === TenantType.PROFESSIONAL,
+      },
+      
+      // 通知设置
+      notifications: {
+        email: true,
+        sms: tenantType !== TenantType.TRIAL,
+        push: true,
+      },
     };
   }
 }

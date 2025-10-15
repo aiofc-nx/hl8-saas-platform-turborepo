@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum";
-import { TenantStatus } from "../../../domain/tenant/value-objects/tenant-status.vo";
+import { TenantType } from "../../../domain/tenant/value-objects/tenant-type.enum.js";
+import { TenantStatus } from "../../../domain/tenant/value-objects/tenant-status.vo.js";
 
 export class TenantResponseDto {
   id!: string;

@@ -14,7 +14,7 @@
  */
 
 import { EventHandler, IEventHandler } from "@hl8/hybrid-archi";
-import { TenantCreatedEvent } from "../../../../domain/tenant/events/tenant-created.event";
+import { TenantCreatedEvent } from "../../../../domain/tenant/events/tenant-created.event.js";
 
 // @EventHandler('TenantCreated') // TODO: 修复装饰器类型问题
 export class TenantCreatedHandler implements IEventHandler<TenantCreatedEvent> {

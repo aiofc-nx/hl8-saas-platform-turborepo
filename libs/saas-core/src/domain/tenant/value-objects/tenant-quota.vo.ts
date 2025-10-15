@@ -53,8 +53,8 @@
  */
 
 import { BaseValueObject } from "@hl8/hybrid-archi";
-import { TENANT_TYPE_QUOTAS } from "../../../constants/tenant.constants";
-import { TenantType } from "./tenant-type.enum";
+import { TENANT_TYPE_QUOTAS } from "../../../constants/tenant.constants.js";
+import { TenantType } from "./tenant-type.enum.js";
 
 /**
  * 租户配额属性

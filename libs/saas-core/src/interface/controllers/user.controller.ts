@@ -15,12 +15,12 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 import { CommandBus, QueryBus, EntityId } from "@hl8/hybrid-archi";
-import { RegisterUserDto } from "../dtos/user/register-user.dto";
-import { LoginUserDto } from "../dtos/user/login-user.dto";
-import { UserResponseDto } from "../dtos/user/user-response.dto";
-import { RegisterUserCommand } from "../../application/cqrs/commands/user/register-user.command";
-import { LoginUserCommand } from "../../application/cqrs/commands/user/login-user.command";
-import { GetUserQuery } from "../../application/cqrs/queries/user/get-user.query";
+import { RegisterUserDto } from "../dtos/user/register-user.dto.js";
+import { LoginUserDto } from "../dtos/user/login-user.dto.js";
+import { UserResponseDto } from "../dtos/user/user-response.dto.js";
+import { RegisterUserCommand } from "../../application/cqrs/commands/user/register-user.command.js";
+import { LoginUserCommand } from "../../application/cqrs/commands/user/login-user.command.js";
+import { GetUserQuery } from "../../application/cqrs/queries/user/get-user.query.js";
 
 @Controller("api/users")
 export class UserController {

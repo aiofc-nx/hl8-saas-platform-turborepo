@@ -4,8 +4,8 @@
 
 import { Injectable } from "@nestjs/common";
 import { EntityManager } from "@hl8/database";
-import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface";
-import { UserMapper } from "../../mappers/user.mapper";
+import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
+import { UserMapper } from "../../mappers/user.mapper.js";
 
 @Injectable()
 export class UserAggregateRepository implements IUserAggregateRepository {

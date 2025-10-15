@@ -1,30 +1,29 @@
 /**
  * 租户创建事件
  *
- * @description 当新租户被创建时发布的领域事件
+ * @description 当新租户创建时发布的领域事件
  *
  * ## 业务规则
  *
  * ### 事件触发时机
- * - 租户聚合根创建成功后
- * - 租户配置和配额已设置
- * - 初始状态为 TRIAL
+ * - 租户聚合根创建完成后
+ * - 租户状态为 TRIAL 时
+ * - 试用期配置完成后
  *
- * ### 事件用途
- * - 通知其他子系统新租户创建
- * - 触发欢迎邮件发送
- * - 创建默认组织和根部门
- * - 记录审计日志
+ * ### 事件内容
+ * - 租户基本信息
+ * - 租户类型和配额
+ * - 创建者和创建时间
+ * - 试用期配置
  *
  * @example
  * ```typescript
  * const event = new TenantCreatedEvent(
- *   aggregateId,
- *   1,
  *   tenantId,
- *   tenantCode,
- *   tenantName,
- *   tenantType
+ *   'acme2024',
+ *   'Acme Corporation',
+ *   TenantType.PROFESSIONAL,
+ *   createdBy
  * );
  * ```
  *
@@ -32,52 +31,80 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
-import { TenantType } from "../value-objects/tenant-type.enum";
+import { DomainEvent } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/isolation-model";
+import { TenantType } from "../value-objects/tenant-type.enum.js";
 
-/**
- * 租户创建事件
- *
- * @class TenantCreatedEvent
- * @extends {BaseDomainEvent}
- */
-export class TenantCreatedEvent extends BaseDomainEvent {
-  /**
-   * 构造函数
-   *
-   * @param {EntityId} aggregateId - 聚合根ID（租户ID）
-   * @param {number} version - 聚合根版本号
-   * @param {EntityId} tenantId - 租户ID
-   * @param {string} code - 租户代码
-   * @param {string} name - 租户名称
-   * @param {TenantType} type - 租户类型
-   */
+export interface TenantCreatedEventData {
+  tenantId: string;
+  code: string;
+  name: string;
+  type: TenantType;
+  domain?: string;
+  createdBy: string;
+  trialDays: number;
+  quota: {
+    users: number;
+    storage: number; // MB
+    apiCalls: number;
+  };
+}
+
+export class TenantCreatedEvent extends DomainEvent<TenantCreatedEventData> {
   constructor(
-    aggregateId: EntityId,
-    version: number,
     tenantId: EntityId,
-    public readonly code: string,
-    public readonly name: string,
-    public readonly type: TenantType,
+    code: string,
+    name: string,
+    type: TenantType,
+    createdBy: string,
+    trialDays: number = 30,
+    domain?: string,
   ) {
-    super(aggregateId, version, tenantId);
+    super("TenantCreated", {
+      tenantId: tenantId.toString(),
+      code,
+      name,
+      type,
+      domain,
+      createdBy,
+      trialDays,
+      quota: {
+        users: type === TenantType.ENTERPRISE ? 1000 : type === TenantType.PROFESSIONAL ? 100 : 10,
+        storage: type === TenantType.ENTERPRISE ? 10000 : type === TenantType.PROFESSIONAL ? 1000 : 100,
+        apiCalls: type === TenantType.ENTERPRISE ? 100000 : type === TenantType.PROFESSIONAL ? 10000 : 1000,
+      },
+    });
   }
 
-  get eventType(): string {
-    return "TenantCreated";
+  getTenantId(): string {
+    return this.data.tenantId;
   }
 
-  /**
-   * 转换为 JSON
-   *
-   * @returns {object} 事件数据对象
-   */
-  public override toJSON(): Record<string, unknown> {
-    return {
-      ...super.toJSON(),
-      code: this.code,
-      name: this.name,
-      type: this.type,
-    };
+  getCode(): string {
+    return this.data.code;
+  }
+
+  getName(): string {
+    return this.data.name;
+  }
+
+  getType(): TenantType {
+    return this.data.type;
+  }
+
+  getDomain(): string | undefined {
+    return this.data.domain;
+  }
+
+  getCreatedBy(): string {
+    return this.data.createdBy;
+  }
+
+  getTrialDays(): number {
+    return this.data.trialDays;
+  }
+
+  getQuota() {
+    return this.data.quota;
   }
 }
