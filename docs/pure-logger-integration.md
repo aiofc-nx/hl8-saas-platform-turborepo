@@ -9,10 +9,12 @@
 ### 核心特性
 - ✅ **纯净无依赖**: 无任何外部框架依赖
 - ✅ **架构友好**: 专为领域层设计
-- ✅ **高性能**: 支持空操作日志器
-- ✅ **灵活配置**: 支持多种日志实现
-- ✅ **结构化**: 支持结构化日志记录
+- ✅ **高性能**: 支持空操作日志器和日志采样
+- ✅ **灵活配置**: 支持多种日志实现和适配器模式
+- ✅ **结构化**: 支持结构化日志记录和JSON输出
 - ✅ **环境适配**: 自动适配不同环境
+- ✅ **适配器模式**: 支持自定义日志适配器
+- ✅ **性能优化**: 支持字段截断和采样率控制
 
 ### 设计原则
 - 🏗️ **Clean Architecture**: 领域层保持纯净，不依赖任何框架
@@ -48,12 +50,19 @@ enum LogLevel {
 ### 3. 实现类
 - **`ConsoleLogger`**: 基于控制台的日志实现，适合开发环境
 - **`NoOpLogger`**: 空操作日志实现，适合生产环境
+- **`StructuredLogger`**: 结构化日志实现，支持JSON输出和性能优化
 
 ### 4. 工厂模式
 - **`LoggerFactory`**: 统一创建日志器实例
 - 支持根据环境自动选择合适的实现
 
-### 5. 便捷方法
+### 5. 适配器模式
+- **`ILoggerAdapter`**: 日志适配器接口
+- **`BaseLoggerAdapter`**: 适配器基类
+- **`LoggerAdapterManager`**: 适配器管理器
+- 支持运行时切换日志实现
+
+### 6. 便捷方法
 ```typescript
 // 创建默认日志器
 const logger = createLogger({ service: 'user-service' });
@@ -63,6 +72,13 @@ const domainLogger = createDomainLogger('tenant-domain', LogLevel.INFO);
 
 // 创建生产环境日志器
 const prodLogger = createProductionLogger({ env: 'production' });
+
+// 创建结构化日志器
+const structuredLogger = LoggerFactory.createStructuredLogger(
+  LogLevel.INFO,
+  { service: 'api' },
+  { json: true, sampling: 0.1 }
+);
 ```
 
 ## 🔧 集成状态

@@ -23,6 +23,7 @@ import type { IPureLogger, LogLevel } from '../interfaces/pure-logger.interface.
 import { LogLevel as LogLevelEnum } from '../interfaces/pure-logger.interface.js';
 import { ConsoleLogger } from '../implementations/console-logger.js';
 import { NoOpLogger } from '../implementations/noop-logger.js';
+import { StructuredLogger, type StructuredLoggerConfig } from '../implementations/structured-logger.js';
 
 /**
  * 日志类型枚举
@@ -32,6 +33,8 @@ export enum LoggerType {
   CONSOLE = 'console',
   /** 空操作日志 */
   NOOP = 'noop',
+  /** 结构化日志 */
+  STRUCTURED = 'structured',
 }
 
 /**
@@ -46,6 +49,8 @@ export interface LoggerConfig {
   defaultContext?: Record<string, unknown>;
   /** 是否启用时间戳 */
   enableTimestamp?: boolean;
+  /** 结构化日志配置 */
+  structuredConfig?: StructuredLoggerConfig;
 }
 
 /**
@@ -70,6 +75,8 @@ export class LoggerFactory {
         return new ConsoleLogger(level, defaultContext);
       case LoggerType.NOOP:
         return new NoOpLogger(level, defaultContext);
+      case LoggerType.STRUCTURED:
+        return new StructuredLogger(level, defaultContext, config.structuredConfig || {});
       default:
         throw new Error(`Unsupported logger type: ${type}`);
     }
@@ -95,6 +102,22 @@ export class LoggerFactory {
    */
   static createNoOpLogger(level: LogLevel = LogLevelEnum.ERROR, defaultContext: Record<string, unknown> = {}): IPureLogger {
     return new NoOpLogger(level, defaultContext);
+  }
+
+  /**
+   * 创建结构化日志器
+   *
+   * @param level - 日志级别，默认为 INFO
+   * @param defaultContext - 默认上下文
+   * @param config - 结构化日志配置
+   * @returns 结构化日志器实例
+   */
+  static createStructuredLogger(
+    level: LogLevel = LogLevelEnum.INFO,
+    defaultContext: Record<string, unknown> = {},
+    config: StructuredLoggerConfig = {}
+  ): IPureLogger {
+    return new StructuredLogger(level, defaultContext, config);
   }
 
   /**

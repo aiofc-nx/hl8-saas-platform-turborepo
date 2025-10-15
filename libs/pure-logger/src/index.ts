@@ -54,6 +54,14 @@ export {
   NoOpLogger,
 } from './implementations/noop-logger.js';
 
+export {
+  StructuredLogger,
+} from './implementations/structured-logger.js';
+
+export type {
+  StructuredLoggerConfig,
+} from './implementations/structured-logger.js';
+
 // 工厂类导出
 export {
   LoggerFactory,
@@ -63,6 +71,17 @@ export {
 export type {
   LoggerConfig,
 } from './factories/logger-factory.js';
+
+// 适配器导出
+export {
+  BaseLoggerAdapter,
+  LoggerAdapterManager,
+  loggerAdapterManager,
+} from './adapters/logger-adapter.js';
+
+export type {
+  ILoggerAdapter,
+} from './adapters/logger-adapter.js';
 
 // 便捷方法导出
 import { LoggerFactory, LoggerType } from './factories/logger-factory.js';
