@@ -70,6 +70,7 @@
  * @since 1.0.0
  */
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 排序方向枚举
@@ -210,7 +211,7 @@ export abstract class BaseQuery {
     queryVersion = 1,
     metadata: Record<string, unknown> = {},
   ) {
-    this._queryId = EntityId.generate();
+    this._queryId = TenantId.generate();
     this._tenantId = tenantId;
     this._userId = userId;
     this._createdAt = new Date();

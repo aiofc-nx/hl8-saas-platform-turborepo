@@ -57,10 +57,10 @@
  *
  * // 创建用户实体
  * const user = new User(
- *   EntityId.generate(),
+ *   TenantId.generate(),
  *   '张三',
  *   'zhangsan@example.com',
- *   { createdBy: 'system', tenantId: EntityId.fromString('tenant-123') }
+ *   { createdBy: 'system', tenantId: TenantId.create('tenant-123') }
  * );
  *
  * // 更新用户信息
@@ -70,20 +70,18 @@
  * @since 1.0.0
  */
 import { EntityId  } from '@hl8/isolation-model';
-import { IAuditInfo, IPartialAuditInfo } from './audit-info.js';
+import { IAuditInfo, IPartialAuditInfo } from './audit-info';
 import { IEntity } from './entity.interface';
-import { TenantContextService, ITenantContext } from '@hl8/nestjs-isolation';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import {
-  GeneralBadRequestException,
-  GeneralInternalServerException,
-} from '@hl8/isolation-model';
-import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from '../../../constants.js';
+import { any, any } from '@hl8/nestjs-isolation';
+import { Logger } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
+import { ENTITY_OPERATIONS, ENTITY_ERROR_CODES } from '../../../constants';
+import { TenantId } from '@hl8/isolation-model';
 
 export abstract class BaseEntity implements IEntity {
   private readonly _id: EntityId;
   private readonly _auditInfo: IAuditInfo;
-  protected readonly logger: PinoLogger;
+  protected readonly logger: Logger;
 
   /**
    * 构造函数
@@ -95,7 +93,7 @@ export abstract class BaseEntity implements IEntity {
   protected constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger
+    logger?: Logger
   ) {
     this._id = id;
     this._auditInfo = this.buildAuditInfo(auditInfo);
@@ -211,7 +209,7 @@ export abstract class BaseEntity implements IEntity {
    * @param deleteReason - 删除原因，可选
    * @param operationContext - 操作上下文，可选
    *
-   * @throws {GeneralBadRequestException} 当实体已被删除时
+   * @throws {BadRequestException} 当实体已被删除时
    *
    * @example
    * ```typescript
@@ -239,7 +237,7 @@ export abstract class BaseEntity implements IEntity {
     }
   ): void {
     if (this.isDeleted) {
-      throw new GeneralBadRequestException(
+      throw new BadRequestException(
         'Entity already deleted',
         'Cannot delete an entity that is already deleted',
         {
@@ -269,12 +267,7 @@ export abstract class BaseEntity implements IEntity {
       this._auditInfo.lastOperationSource = operationContext.source || null;
     }
 
-    this.logger.info(`Entity marked as deleted`, {
-      entityType: this.constructor.name,
-      entityId: this._id.toString(),
-      deletedBy: actualDeletedBy,
-      deleteReason,
-    });
+    this.logger.log(`Entity marked as deleted`);
   }
 
   /**
@@ -286,7 +279,7 @@ export abstract class BaseEntity implements IEntity {
    * @param restoredBy - 恢复者标识符，可选，默认使用当前用户
    * @param operationContext - 操作上下文，可选
    *
-   * @throws {GeneralBadRequestException} 当实体未被删除时
+   * @throws {BadRequestException} 当实体未被删除时
    *
    * @example
    * ```typescript
@@ -306,7 +299,7 @@ export abstract class BaseEntity implements IEntity {
     }
   ): void {
     if (!this.isDeleted) {
-      throw new GeneralBadRequestException(
+      throw new BadRequestException(
         'Entity not deleted',
         'Cannot restore an entity that is not deleted',
         {
@@ -336,11 +329,7 @@ export abstract class BaseEntity implements IEntity {
       this._auditInfo.lastOperationSource = operationContext.source || null;
     }
 
-    this.logger.info(`Entity restored`, {
-      entityType: this.constructor.name,
-      entityId: this._id.toString(),
-      restoredBy: actualRestoredBy,
-    });
+    this.logger.log(`Entity restored`);
   }
 
   /**
@@ -491,7 +480,7 @@ export abstract class BaseEntity implements IEntity {
       const tenantContext = this.getTenantContext();
       if (tenantContext) {
         // 从上下文获取tenantId（现在是EntityId类型）
-        tenantId = EntityId.fromString(tenantContext.tenantId.toString());
+        tenantId = TenantId.create(tenantContext.tenantId.toString());
         createdBy = tenantContext.userId || createdBy;
       }
     } catch (error) {
@@ -509,7 +498,7 @@ export abstract class BaseEntity implements IEntity {
       createdAt: now,
       updatedAt: now,
       deletedAt: null,
-      tenantId: tenantId !== undefined ? tenantId : EntityId.generate(),
+      tenantId: tenantId !== undefined ? tenantId : TenantId.generate(),
       version: partialAuditInfo.version || 1,
       lastOperation: partialAuditInfo.lastOperation || ENTITY_OPERATIONS.CREATE,
       lastOperationIp: partialAuditInfo.lastOperationIp || null,
@@ -525,9 +514,9 @@ export abstract class BaseEntity implements IEntity {
    * @returns 租户上下文信息，如果不存在则返回 null
    * @protected
    */
-  protected getTenantContext(): ITenantContext | null {
+  protected getTenantContext(): any | null {
     try {
-      // 这里需要注入 TenantContextService，但在实体中直接注入不太合适
+      // 这里需要注入 any，但在实体中直接注入不太合适
       // 建议通过构造函数传入或使用静态方法
       return null;
     } catch (error) {
@@ -568,12 +557,12 @@ export abstract class BaseEntity implements IEntity {
    *
    * 子类应该重写此方法以实现具体的验证逻辑。
    *
-   * @throws {GeneralBadRequestException} 当实体无效时
+   * @throws {BadRequestException} 当实体无效时
    * @protected
    */
   protected validate(): void {
     if (!this._id || this._id.isEmpty()) {
-      throw new GeneralBadRequestException(
+      throw new BadRequestException(
         'Entity validation failed',
         'Entity ID cannot be null or empty',
         {
@@ -585,7 +574,7 @@ export abstract class BaseEntity implements IEntity {
     }
 
     if (!this._auditInfo.tenantId || !this._auditInfo.tenantId.value || this._auditInfo.tenantId.value.trim() === '') {
-      throw new GeneralBadRequestException(
+      throw new BadRequestException(
         'Entity validation failed',
         'Tenant ID cannot be null or empty',
         {
@@ -604,8 +593,8 @@ export abstract class BaseEntity implements IEntity {
    * @returns 默认的日志记录器实例
    * @protected
    */
-  protected createDefaultLogger(): PinoLogger {
-    return new PinoLogger({
+  protected createDefaultLogger(): Logger {
+    return new Logger({
       level: 'info',
     });
   }
@@ -621,13 +610,7 @@ export abstract class BaseEntity implements IEntity {
     operation: string,
     details?: Record<string, unknown>
   ): void {
-    this.logger.info(`Entity ${operation}`, {
-      entityId: this._id.toString(),
-      entityType: this.constructor.name,
-      tenantId: this._auditInfo.tenantId.toString(),
-      operation,
-      details,
-    });
+    this.logger.log(`Entity ${operation}`);
   }
 
   /**
@@ -643,15 +626,7 @@ export abstract class BaseEntity implements IEntity {
     error: Error,
     details?: Record<string, unknown>
   ): void {
-    this.logger.error(`Entity ${operation} failed`, {
-      entityId: this._id.toString(),
-      entityType: this.constructor.name,
-      tenantId: this._auditInfo.tenantId.toString(),
-      operation,
-      error: error.message,
-      stack: error.stack,
-      details,
-    });
+    this.logger.error(`Entity ${operation} failed`);
   }
 
   /**
@@ -667,7 +642,7 @@ export abstract class BaseEntity implements IEntity {
     validationError: string,
     details?: Record<string, unknown>
   ): never {
-    throw new GeneralBadRequestException('Entity validation failed', message, {
+    throw new BadRequestException('Entity validation failed', message, {
       entityType: this.constructor.name,
       entityId: this._id.toString(),
       tenantId: this._auditInfo.tenantId.toString(),
@@ -689,7 +664,7 @@ export abstract class BaseEntity implements IEntity {
     message: string,
     details?: Record<string, unknown>
   ): never {
-    throw new GeneralInternalServerException(
+    throw new InternalServerErrorException(
       `Entity ${operation} failed`,
       message,
       {

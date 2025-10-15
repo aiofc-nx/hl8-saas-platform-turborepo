@@ -5,14 +5,13 @@
  * @since 1.1.0
  */
 
-import { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root.js';
+import { TenantAwareAggregateRoot } from './tenant-aware-aggregate-root';
 import { EntityId  } from '@hl8/isolation-model';
-import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
-import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import {
-  GeneralBadRequestException,
-} from '@hl8/isolation-model';
+import { IPartialAuditInfo } from '../../entities/base/audit-info';
+import { BaseDomainEvent } from '../../events/base/base-domain-event';
+import { Logger } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 测试用聚合根
@@ -21,7 +20,7 @@ class TestAggregate extends TenantAwareAggregateRoot {
   constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger
+    logger?: Logger
   ) {
     super(id, auditInfo, logger);
   }
@@ -75,7 +74,7 @@ class TestEvent extends BaseDomainEvent {
 }
 
 describe('TenantAwareAggregateRoot', () => {
-  let mockLogger: PinoLogger;
+  let mockLogger: Logger;
   let validTenantId: EntityId;
   let validAuditInfo: IPartialAuditInfo;
 
@@ -87,10 +86,10 @@ describe('TenantAwareAggregateRoot', () => {
       warn: jest.fn(),
       debug: jest.fn(),
       setContext: jest.fn(),
-    } as unknown as PinoLogger;
+    } as unknown as Logger;
 
     // 创建有效的租户ID
-    validTenantId = EntityId.fromString('550e8400-e29b-41d4-a716-446655440000');
+    validTenantId = TenantId.create('550e8400-e29b-41d4-a716-446655440000');
 
     // 创建有效的审计信息
     validAuditInfo = {
@@ -103,7 +102,7 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该成功创建租户感知聚合根', () => {
       // Arrange & Act
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
@@ -114,9 +113,9 @@ describe('TenantAwareAggregateRoot', () => {
     });
 
     it('应该在租户ID无效时抛出异常', () => {
-      // Act & Assert - 直接测试EntityId.fromString会抛出异常
+      // Act & Assert - 直接测试EntityId.create会抛出异常
       expect(() => {
-        EntityId.fromString(''); // 无效的租户ID
+        TenantId.create(''); // 无效的租户ID
       }).toThrow('Invalid EntityId');
     });
   });
@@ -125,7 +124,7 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该在租户ID有效时验证通过', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
@@ -137,9 +136,9 @@ describe('TenantAwareAggregateRoot', () => {
     });
 
     it('应该在租户ID无效时抛出异常', () => {
-      // Act & Assert - 直接测试EntityId.fromString会抛出异常
+      // Act & Assert - 直接测试EntityId.create会抛出异常
       expect(() => {
-        EntityId.fromString('invalid'); // 构造时会抛出异常
+        TenantId.create('invalid'); // 构造时会抛出异常
       }).toThrow('Invalid EntityId');
     });
   });
@@ -148,11 +147,11 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该在租户ID相同时验证通过', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
-      const sameTenantId = EntityId.fromString(
+      const sameTenantId = TenantId.create(
         '550e8400-e29b-41d4-a716-446655440000'
       );
 
@@ -165,36 +164,36 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该在租户ID不同时抛出异常', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
-      const differentTenantId = EntityId.fromString(
+      const differentTenantId = TenantId.create(
         '660e8400-e29b-41d4-a716-446655440001'
       );
 
       // Act & Assert
       expect(() => {
         aggregate.testEnsureSameTenant(differentTenantId, 'TestEntity');
-      }).toThrow(GeneralBadRequestException);
+      }).toThrow(BadRequestException);
     });
 
     it('应该在异常消息中包含实体类型', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
-      const differentTenantId = EntityId.generate();
+      const differentTenantId = TenantId.generate();
 
       // Act & Assert
       try {
         aggregate.testEnsureSameTenant(differentTenantId, 'Department');
         fail('应该抛出异常');
       } catch (error) {
-        expect(error).toBeInstanceOf(GeneralBadRequestException);
-        expect((error as GeneralBadRequestException).detail).toContain(
+        expect(error).toBeInstanceOf(BadRequestException);
+        expect((error as BadRequestException).detail).toContain(
           'Department'
         );
       }
@@ -205,7 +204,7 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该成功发布租户事件', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
@@ -228,7 +227,7 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该在事件中自动注入租户ID', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
@@ -251,7 +250,7 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该返回正确的租户ID', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
@@ -268,11 +267,11 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该在租户ID相同时返回true', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
-      const sameTenantId = EntityId.fromString(
+      const sameTenantId = TenantId.create(
         '550e8400-e29b-41d4-a716-446655440000'
       );
 
@@ -286,11 +285,11 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该在租户ID不同时返回false', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
-      const differentTenantId = EntityId.generate();
+      const differentTenantId = TenantId.generate();
 
       // Act
       const result = aggregate.belongsToTenant(differentTenantId);
@@ -304,7 +303,7 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该记录包含租户信息的日志', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );
@@ -330,7 +329,7 @@ describe('TenantAwareAggregateRoot', () => {
     it('应该序列化时包含租户信息', () => {
       // Arrange
       const aggregate = new TestAggregate(
-        EntityId.generate(),
+        TenantId.generate(),
         validAuditInfo,
         mockLogger
       );

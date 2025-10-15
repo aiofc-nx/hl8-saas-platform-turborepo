@@ -46,7 +46,7 @@
  *
  *   protected mapToDomain(dbEntity: UserDbEntity): UserAggregate {
  *     return UserAggregate.reconstitute(
- *       EntityId.fromString(dbEntity.id),
+ *       TenantId.create(dbEntity.id),
  *       dbEntity.name,
  *       dbEntity.email,
  *       dbEntity.version,
@@ -71,9 +71,10 @@
  * @since 1.0.0
  */
 
-import type { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
-import { BaseDomainMapper, MappingError } from './base-domain-mapper.js';
+import type { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { BaseDomainMapper, MappingError } from './base-domain-mapper';
 import type { IAggregateMapper } from './mapper.interface';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 聚合根映射结果接口

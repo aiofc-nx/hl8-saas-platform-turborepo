@@ -6,7 +6,7 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { LoggerModule } from '@hl8/nestjs-fastify';
 import { CacheModule } from '@hl8/caching';
 import { DatabaseModule } from '@hl8/database';
 import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
@@ -238,7 +238,7 @@ describe('Infrastructure Layer E2E', () => {
       };
 
       // 记录日志
-      loggerPort.info('Creating user', { userId, userData });
+      loggerPort.log('Creating user', { userId, userData });
 
       // 缓存用户数据
       await cacheAdapter.set(`user:${userId}`, userData, 300);
@@ -254,7 +254,7 @@ describe('Infrastructure Layer E2E', () => {
       // 这里需要mock数据库查询结果
       // const dbResult = await databaseAdapter.query(query, params);
 
-      loggerPort.info('User created successfully', { userId });
+      loggerPort.log('User created successfully', { userId });
     });
 
     it('应该能够处理服务依赖关系', async () => {

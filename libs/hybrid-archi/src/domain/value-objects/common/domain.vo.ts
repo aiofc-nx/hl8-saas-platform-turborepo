@@ -51,7 +51,7 @@
  * @since 1.1.0
  */
 
-import { BaseValueObject } from '../base-value-object.js';
+import { BaseValueObject } from '../base-value-object';
 
 export abstract class Domain extends BaseValueObject<string> {
   /**

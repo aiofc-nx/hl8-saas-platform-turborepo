@@ -4,7 +4,7 @@
  * @description 测试 BaseQueryResult 基础查询结果类的功能
  * @since 1.0.0
  */
-import { BaseQueryResult } from './base-query-result.js';
+import { BaseQueryResult } from './base-query-result';
 
 // 测试用的数据类型
 interface ITestData {

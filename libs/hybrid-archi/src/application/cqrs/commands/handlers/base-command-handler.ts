@@ -40,7 +40,7 @@
  *   protected async executeCommand(command: CreateUserCommand): Promise<CreateUserResult> {
  *     // 1. 创建聚合根
  *     const user = UserAggregate.create(
- *       EntityId.generate(),
+ *       TenantId.generate(),
  *       command.name,
  *       command.email
  *     );
@@ -63,10 +63,10 @@
  */
 
 import { ICommand } from '../base/command.interface';
-import {
-  ICommandHandler,
+import type { ICommandHandler,
   ICommandExecutionContext,
 } from './command-handler.interface';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 基础命令处理器抽象类

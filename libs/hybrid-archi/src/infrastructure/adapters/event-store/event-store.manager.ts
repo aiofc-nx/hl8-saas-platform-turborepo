@@ -11,7 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { EventStoreAdapter, IEventStoreConfig } from './event-store.adapter';
 import {
   EventStoreFactory,
@@ -53,7 +53,7 @@ export class EventStoreManager {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly storeFactory: EventStoreFactory,
     config: Partial<IEventStoreManagerConfig> = {}
   ) {
@@ -83,10 +83,7 @@ export class EventStoreManager {
     storeType: string,
     config: Partial<IEventStoreConfig> = {}
   ): EventStoreAdapter {
-    this.logger.debug(`创建事件存储: ${storeName}`, {
-      storeType,
-      config,
-    });
+    this.logger.debug(`创建事件存储: ${storeName}`);
 
     return this.storeFactory.createStore(storeName, storeType, config);
   }
@@ -156,7 +153,7 @@ export class EventStoreManager {
     storeName: string,
     config: Partial<IEventStoreConfig>
   ): void {
-    this.logger.debug(`更新事件存储配置: ${storeName}`, { config });
+    this.logger.debug(`更新事件存储配置: ${storeName}`);
     this.storeFactory.updateStoreConfiguration(storeName, config);
   }
 
@@ -220,9 +217,7 @@ export class EventStoreManager {
       }
     }
 
-    this.logger.debug(`清理过期事件完成: ${totalCleaned}`, {
-      storeCount: stores.length,
-    });
+    this.logger.debug(`清理过期事件完成: ${totalCleaned}`);
 
     return totalCleaned;
   }
@@ -253,7 +248,7 @@ export class EventStoreManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动事件存储管理器');
+    this.logger.log('启动事件存储管理器');
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -275,7 +270,7 @@ export class EventStoreManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止事件存储管理器');
+    this.logger.log('停止事件存储管理器');
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -300,7 +295,7 @@ export class EventStoreManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁事件存储管理器');
+    this.logger.log('销毁事件存储管理器');
 
     // 停止管理器
     this.stop();
@@ -318,9 +313,7 @@ export class EventStoreManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化事件存储管理器', {
-      config: this.config,
-    });
+    this.logger.debug('初始化事件存储管理器');
   }
 
   /**
@@ -351,9 +344,7 @@ export class EventStoreManager {
         );
 
         if (unhealthyStores.length > 0) {
-          this.logger.warn('发现不健康的事件存储', {
-            unhealthyStores: unhealthyStores.map(([name]) => name),
-          });
+          this.logger.warn('发现不健康的事件存储');
         }
       } catch (error) {
         this.logger.error('健康检查失败', error);

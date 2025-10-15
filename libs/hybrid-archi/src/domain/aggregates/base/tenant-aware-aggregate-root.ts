@@ -68,7 +68,7 @@
  *     id: EntityId,
  *     tenant: Tenant,
  *     auditInfo: IPartialAuditInfo,
- *     logger?: PinoLogger
+ *     logger?: Logger
  *   ) {
  *     super(id, auditInfo, logger);
  *     this._tenant = tenant;
@@ -119,13 +119,12 @@
  */
 
 import { EntityId  } from '@hl8/isolation-model';
-import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { BaseAggregateRoot } from './base-aggregate-root.js';
-import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
-import {
-  GeneralBadRequestException,
-} from '@hl8/isolation-model';
+import { IPartialAuditInfo } from '../../entities/base/audit-info';
+import { Logger } from '@nestjs/common';
+import { BaseAggregateRoot } from './base-aggregate-root';
+import { BaseDomainEvent } from '../../events/base/base-domain-event';
+import { BadRequestException } from '@nestjs/common';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 租户感知聚合根基类
@@ -183,13 +182,13 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
    * @param auditInfo - 审计信息（必须包含有效的tenantId）
    * @param logger - 日志记录器（可选）
    *
-   * @throws {GeneralBadRequestException} 当租户上下文无效时
+   * @throws {BadRequestException} 当租户上下文无效时
    *
    * @example
    * ```typescript
    * const aggregate = new TenantAggregate(
-   *   EntityId.generate(),
-   *   { tenantId: EntityId.fromString('tenant-123'), createdBy: 'user-456' },
+   *   TenantId.generate(),
+   *   { tenantId: TenantId.create('tenant-123'), createdBy: 'user-456' },
    *   logger
    * );
    * ```
@@ -197,7 +196,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
   protected constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger
+    logger?: Logger
   ) {
     super(id, auditInfo, logger);
 
@@ -226,12 +225,12 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
    * - 可以在业务方法开始时调用以确保安全
    *
    * ### 异常处理
-   * - 抛出 GeneralBadRequestException 异常
+   * - 抛出 BadRequestException 异常
    * - 异常消息清晰描述问题原因
    * - 异常详情包含聚合根类型和ID
    * - 便于调试和问题追踪
    *
-   * @throws {GeneralBadRequestException} 当租户ID无效时
+   * @throws {BadRequestException} 当租户ID无效时
    *
    * @protected
    *
@@ -254,7 +253,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
       !this.tenantId.value ||
       this.tenantId.value.trim() === ''
     ) {
-      throw new GeneralBadRequestException(
+      throw new BadRequestException(
         'Tenant context required',
         '租户上下文缺失，所有操作必须在租户上下文中执行',
         {
@@ -293,7 +292,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
    * - 任何可能涉及多个租户的操作
    *
    * ### 异常处理
-   * - 抛出 GeneralBadRequestException 异常
+   * - 抛出 BadRequestException 异常
    * - 异常消息描述跨租户操作被禁止
    * - 异常详情包含双方租户ID和实体类型
    * - 支持审计和安全监控
@@ -301,7 +300,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
    * @param entityTenantId - 要比较的租户ID
    * @param entityType - 实体类型（用于错误消息，可选，默认为'Entity'）
    *
-   * @throws {GeneralBadRequestException} 当不属于同一租户时
+   * @throws {BadRequestException} 当不属于同一租户时
    *
    * @protected
    *
@@ -331,7 +330,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
     entityType: string = 'Entity'
   ): void {
     if (!this.tenantId.equals(entityTenantId)) {
-      throw new GeneralBadRequestException(
+      throw new BadRequestException(
         'Cross-tenant operation not allowed',
         `无法操作其他租户的${entityType}，数据隔离策略禁止跨租户操作`,
         {
@@ -484,7 +483,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
    * @example
    * ```typescript
    * const aggregate = new TenantAggregate(...);
-   * const currentTenantId = EntityId.fromString('tenant-123');
+   * const currentTenantId = TenantId.create('tenant-123');
    *
    * if (aggregate.belongsToTenant(currentTenantId)) {
    *   console.log('聚合根属于当前租户');
@@ -555,13 +554,7 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
     message: string,
     data?: Record<string, unknown>
   ): void {
-    this.logger.info(message, {
-      aggregateType: this.constructor.name,
-      aggregateId: this.id.toString(),
-      tenantId: this.tenantId.toString(),
-      timestamp: new Date().toISOString(),
-      ...data,
-    });
+    this.logger.log(message);
   }
 
   /**

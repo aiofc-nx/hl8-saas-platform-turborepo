@@ -11,7 +11,7 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
 import { CacheModule } from '@hl8/caching';
-import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { LoggerModule } from '@hl8/nestjs-fastify';
 
 import { MessageQueueAdapter } from './message-queue.adapter';
 import { MessageQueueFactory } from './message-queue.factory';

@@ -460,6 +460,9 @@ importers:
       '@hl8/caching':
         specifier: workspace:*
         version: link:../caching
+      '@hl8/config':
+        specifier: workspace:*
+        version: link:../config
       '@hl8/database':
         specifier: workspace:*
         version: link:../database
@@ -733,6 +736,9 @@ importers:
       '@hl8/hybrid-archi':
         specifier: workspace:*
         version: link:../hybrid-archi
+      '@hl8/isolation-model':
+        specifier: workspace:*
+        version: link:../isolation-model
       '@hl8/nestjs-fastify':
         specifier: workspace:*
         version: link:../nestjs-fastify

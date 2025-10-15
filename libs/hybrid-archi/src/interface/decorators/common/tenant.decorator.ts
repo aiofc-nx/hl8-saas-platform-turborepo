@@ -6,7 +6,7 @@
  */
 
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { FastifyRequest } from '@hl8/nestjs-fastify';
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 
 /**
  * 当前租户装饰器
@@ -16,7 +16,7 @@ import { FastifyRequest } from '@hl8/nestjs-fastify';
  */
 export const CurrentTenant = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<FastifyRequest>();
+    const request = ctx.switchToHttp().getRequest<any>();
     return request['tenantId'];
   }
 );
@@ -29,7 +29,7 @@ export const CurrentTenant = createParamDecorator(
  */
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<FastifyRequest>();
+    const request = ctx.switchToHttp().getRequest<any>();
     return request['user'];
   }
 );
@@ -42,7 +42,7 @@ export const CurrentUser = createParamDecorator(
  */
 export const TenantContext = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest<FastifyRequest>();
+    const request = ctx.switchToHttp().getRequest<any>();
     return {
       tenantId: request['tenantId'],
       userId: request['user']?.id,

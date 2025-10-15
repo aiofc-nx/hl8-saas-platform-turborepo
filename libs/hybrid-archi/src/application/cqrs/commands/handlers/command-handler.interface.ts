@@ -41,7 +41,7 @@
  *
  *     // 2. 创建聚合根
  *     const user = UserAggregate.create(
- *       EntityId.generate(),
+ *       TenantId.generate(),
  *       command.name,
  *       command.email
  *     );
@@ -63,6 +63,7 @@
  */
 
 import { ICommand } from '../base/command.interface';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 命令处理器接口

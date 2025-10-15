@@ -19,14 +19,14 @@ export {
   BaseDomainMapper,
   MappingError,
   type IMappingValidationResult,
-} from './base-domain-mapper.js';
+} from './base-domain-mapper';
 
 export {
   BaseAggregateMapper,
   type IAggregateRootMappingResult,
   type IEventMappingResult,
-} from './base-aggregate-mapper.js';
+} from './base-aggregate-mapper';
 
-export { BaseValueObjectMapper } from './base-value-object-mapper.js';
+export { BaseValueObjectMapper } from './base-value-object-mapper';
 
-export { BaseDtoMapper, type IDtoMappingOptions } from './base-dto-mapper.js';
+export { BaseDtoMapper, type IDtoMappingOptions } from './base-dto-mapper';

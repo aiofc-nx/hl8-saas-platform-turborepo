@@ -50,7 +50,7 @@
  *       throw new Error('邮箱已存在');
  *     }
  *
- *     const user = User.create(EntityId.generate(), name, email);
+ *     const user = User.create(TenantId.generate(), name, email);
  *     await this.userRepository.save(user);
  *     return user;
  *   }
@@ -62,6 +62,7 @@
 
 import { EntityId  } from '@hl8/isolation-model';
 import { IEntity } from '../../entities/base/entity.interface';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 基础仓储接口
@@ -106,7 +107,7 @@ export interface IRepository<TEntity extends IEntity, TId = EntityId> {
    *
    * @example
    * ```typescript
-   * const user = User.create(EntityId.generate(), '张三', 'zhangsan@example.com');
+   * const user = User.create(TenantId.generate(), '张三', 'zhangsan@example.com');
    * await userRepository.save(user);
    * console.log('用户保存成功');
    * ```

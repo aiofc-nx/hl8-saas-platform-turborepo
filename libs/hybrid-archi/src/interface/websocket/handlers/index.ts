@@ -5,4 +5,4 @@
  * @since 1.0.0
  */
 
-export * from './message-handler.js';
+export * from './message-handler';

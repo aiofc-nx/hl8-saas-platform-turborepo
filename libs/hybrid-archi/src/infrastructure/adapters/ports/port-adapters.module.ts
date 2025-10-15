@@ -9,8 +9,8 @@
  */
 
 import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { LoggerModule } from '@hl8/nestjs-fastify/logging';
-import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+import { LoggerModule } from '@hl8/nestjs-fastify';
+// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
 import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
 
 import { LoggerPortAdapter } from './logger-port.adapter';

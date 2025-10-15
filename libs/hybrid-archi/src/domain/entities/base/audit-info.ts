@@ -41,7 +41,7 @@
  *   createdAt: new Date('2024-01-01T00:00:00Z'),
  *   updatedAt: new Date('2024-01-01T00:00:00Z'),
  *   deletedAt: null,
- *   tenantId: EntityId.fromString('tenant-456'),
+ *   tenantId: TenantId.create('tenant-456'),
  *   version: 1,
  *   lastOperation: 'CREATE',
  *   lastOperationIp: '192.168.1.1',
@@ -54,6 +54,7 @@
  * @since 1.0.0
  */
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 export interface IAuditInfo {
   /**
@@ -356,7 +357,7 @@ export class AuditInfoBuilder {
       tenantId:
         this.auditInfo.tenantId !== undefined
           ? this.auditInfo.tenantId
-          : EntityId.generate(),
+          : TenantId.generate(),
       version:
         this.auditInfo.version !== undefined ? this.auditInfo.version : 1,
       lastOperation: this.auditInfo.lastOperation || 'CREATE',

@@ -6,13 +6,13 @@
  */
 
 // 用例系统（Clean Architecture核心）
-export * from './use-cases.js';
+export * from './use-cases';
 
 // CQRS系统
-export * from './cqrs.js';
+export * from './cqrs';
 
 // 输出端口（Clean Architecture端口适配器模式）
-export * from './ports.js';
+export * from './ports';
 
 // 模块探索器
-export * from './explorers.js';
+export * from './explorers';

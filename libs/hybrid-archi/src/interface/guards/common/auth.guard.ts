@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { FastifyRequest } from '@hl8/nestjs-fastify';
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 
 /**
  * 认证守卫
@@ -50,7 +50,7 @@ export class AuthGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const request = context.switchToHttp().getRequest<FastifyRequest>();
+      const request = context.switchToHttp().getRequest<any>();
 
       // 检查是否为公开接口
       const isPublic = this.reflector.get<boolean>(
@@ -94,7 +94,7 @@ export class AuthGuard implements CanActivate {
    * @returns JWT令牌
    * @private
    */
-  private extractTokenFromHeader(request: FastifyRequest): string | undefined {
+  private extractTokenFromHeader(request: any): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
     return type === 'Bearer' ? token : undefined;
   }

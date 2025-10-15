@@ -46,7 +46,7 @@
  *
  *   protected mapToDomain(dbEntity: UserDbEntity): User {
  *     return User.reconstitute(
- *       EntityId.fromString(dbEntity.id),
+ *       TenantId.create(dbEntity.id),
  *       dbEntity.name,
  *       dbEntity.email,
  *       dbEntity.tenantId,
@@ -61,6 +61,7 @@
  */
 
 import { IDomainMapper } from './mapper.interface';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 映射错误类

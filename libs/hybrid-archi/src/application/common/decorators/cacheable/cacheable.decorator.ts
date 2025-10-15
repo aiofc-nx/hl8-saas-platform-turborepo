@@ -1,4 +1,4 @@
-import type { MethodDecoratorTarget } from '../types.js';
+import type { MethodDecoratorTarget } from '../types/index';
 
 /**
  * 缓存装饰器

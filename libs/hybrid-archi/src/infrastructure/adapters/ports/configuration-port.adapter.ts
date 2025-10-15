@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
 import { IConfigurationPort } from '../../../application/ports/shared/shared-ports.interface';
 
 /**

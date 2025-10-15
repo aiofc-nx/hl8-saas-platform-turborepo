@@ -10,7 +10,7 @@ import {
   NestMiddleware,
   BadRequestException,
 } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/nestjs-fastify';
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 
@@ -44,8 +44,8 @@ export class ValidationMiddleware implements NestMiddleware {
    * @param next - 下一个中间件
    */
   async use(
-    req: FastifyRequest,
-    res: FastifyReply,
+    req: any,
+    res: any,
     next: () => void
   ): Promise<void> {
     try {
@@ -80,7 +80,7 @@ export class ValidationMiddleware implements NestMiddleware {
    * @param req - Fastify请求
    * @private
    */
-  private async validateRequestBody(req: FastifyRequest): Promise<void> {
+  private async validateRequestBody(req: any): Promise<void> {
     // 这里可以根据具体的DTO类进行验证
     // 示例：验证JSON格式
     try {
@@ -97,7 +97,7 @@ export class ValidationMiddleware implements NestMiddleware {
    * @param req - Fastify请求
    * @private
    */
-  private async validateQueryParams(req: FastifyRequest): Promise<void> {
+  private async validateQueryParams(req: any): Promise<void> {
     // 验证查询参数的基本格式
     for (const [key, value] of Object.entries(req.query as Record<string, unknown>)) {
       if (typeof value === 'string' && value.length > 1000) {
@@ -113,7 +113,7 @@ export class ValidationMiddleware implements NestMiddleware {
    * @param req - Fastify请求
    * @private
    */
-  private async validatePathParams(req: FastifyRequest): Promise<void> {
+  private async validatePathParams(req: any): Promise<void> {
     // 验证路径参数的基本格式
     for (const [key, value] of Object.entries(req.params as Record<string, unknown>)) {
       if (typeof value === 'string' && value.length > 100) {

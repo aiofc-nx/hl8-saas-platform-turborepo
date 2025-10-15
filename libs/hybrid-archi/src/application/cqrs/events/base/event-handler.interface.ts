@@ -70,7 +70,7 @@
  *
  * @since 1.0.0
  */
-import { BaseDomainEvent } from '../../../../domain/events/base/base-domain-event.js';
+import { BaseDomainEvent } from '../../../../domain/events/base/base-domain-event';
 
 /**
  * 事件处理器接口

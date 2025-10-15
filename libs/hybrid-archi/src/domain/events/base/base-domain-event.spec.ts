@@ -4,8 +4,9 @@
  * @description 测试 BaseDomainEvent 基础领域事件类的功能
  * @since 1.0.0
  */
-import { BaseDomainEvent } from './base-domain-event.js';
+import { BaseDomainEvent } from './base-domain-event';
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 // 测试用的具体事件类
 class TestDomainEvent extends BaseDomainEvent {
@@ -34,8 +35,8 @@ describe('BaseDomainEvent', () => {
   let tenantId: EntityId;
 
   beforeEach(() => {
-    aggregateId = EntityId.generate();
-    tenantId = EntityId.generate();
+    aggregateId = TenantId.generate();
+    tenantId = TenantId.generate();
   });
 
   describe('事件创建', () => {
@@ -166,7 +167,7 @@ describe('BaseDomainEvent', () => {
   describe('聚合关联', () => {
     it('应该正确检查事件是否属于指定的聚合根', () => {
       const event = new TestDomainEvent(aggregateId, 1, tenantId, 'test-data');
-      const otherAggregateId = EntityId.generate();
+      const otherAggregateId = TenantId.generate();
 
       expect(event.belongsToAggregate(aggregateId)).toBe(true);
       expect(event.belongsToAggregate(otherAggregateId)).toBe(false);
@@ -174,7 +175,7 @@ describe('BaseDomainEvent', () => {
 
     it('应该正确检查事件是否属于指定的租户', () => {
       const event = new TestDomainEvent(aggregateId, 1, tenantId, 'test-data');
-      const otherTenantId = EntityId.generate();
+      const otherTenantId = TenantId.generate();
 
       expect(event.belongsToTenant(tenantId)).toBe(true);
       expect(event.belongsToTenant(otherTenantId)).toBe(false);

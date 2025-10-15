@@ -52,6 +52,7 @@
  */
 
 import { SetMetadata, applyDecorators } from '@nestjs/common';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 租户隔离元数据键

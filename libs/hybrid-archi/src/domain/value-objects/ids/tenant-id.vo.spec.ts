@@ -8,6 +8,7 @@
 
 import { TenantId, InvalidTenantIdException } from './tenant-id.vo';
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 describe('TenantId', () => {
   describe('构造函数', () => {

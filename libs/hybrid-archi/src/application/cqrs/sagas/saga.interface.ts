@@ -9,6 +9,7 @@
  */
 
 import { Observable } from 'rxjs';
+import { TenantId } from '@hl8/isolation-model';
 // 简化的上下文类型定义
 interface IAsyncContext {
   getTenantId?(): string;

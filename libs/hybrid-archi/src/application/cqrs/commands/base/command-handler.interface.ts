@@ -64,7 +64,7 @@
  *
  * @since 1.0.0
  */
-import { BaseCommand } from './base-command.js';
+import { BaseCommand } from './base-command';
 
 /**
  * 命令处理器接口

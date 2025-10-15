@@ -5,9 +5,9 @@
  * @since 1.0.0
  */
 
-export { MapperRegistry } from './mapper-registry.js';
+export { MapperRegistry } from './mapper-registry';
 
 export type {
   IMapperRegistration,
   IMapperLookupOptions,
-} from './mapper-registry.js';
+} from './mapper-registry';

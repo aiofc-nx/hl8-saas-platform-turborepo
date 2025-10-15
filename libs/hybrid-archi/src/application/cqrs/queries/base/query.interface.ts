@@ -1,3 +1,4 @@
+import { TenantId } from '@hl8/isolation-model';
 /**
  * 查询接口
  *
@@ -47,7 +48,7 @@
  *     userId?: string,
  *     tenantId?: string
  *   ) {
- *     this.queryId = EntityId.generate().value;
+ *     this.queryId = TenantId.generate().value;
  *     this.queryType = 'GetUser';
  *     this.timestamp = new Date();
  *     this.userId = userId;

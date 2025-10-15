@@ -5,16 +5,15 @@
  * @since 1.0.0
  */
 import 'reflect-metadata';
-import {
-  Saga,
+import type { Saga,
   ISagaHandler,
   isSaga,
   getSagaType,
   getSagaPriority,
   supportsSagaType,
   getSagaMetadata,
-} from './saga.decorator';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event.js';
+ } from './saga.decorator';
+import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
 import { EntityId  } from '@hl8/isolation-model';
 
 // 测试用的事件类

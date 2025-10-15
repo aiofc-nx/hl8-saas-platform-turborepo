@@ -63,10 +63,9 @@
  */
 
 import { IQuery } from '../base/query.interface';
-import {
-  IQueryHandler,
+import type { IQueryHandler,
   IQueryExecutionContext,
-} from './query-handler.interface';
+ } from './query-handler.interface';
 
 /**
  * 基础查询处理器抽象类

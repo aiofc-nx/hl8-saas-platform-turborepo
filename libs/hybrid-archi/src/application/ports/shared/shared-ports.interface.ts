@@ -35,7 +35,7 @@
  *     const requestId = this.idGenerator.generate();
  *     const startTime = this.timeProvider.now();
  *
- *     this.logger.info('开始处理请求', { requestId });
+ *     this.logger.log('开始处理请求');
  *
  *     const validationResult = await this.validator.validate(request);
  *     if (!validationResult.isValid) {

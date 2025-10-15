@@ -6,12 +6,12 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { LoggerPortAdapter } from './logger-port.adapter';
 
 describe('LoggerPortAdapter', () => {
   let adapter: LoggerPortAdapter;
-  let mockLogger: jest.Mocked<PinoLogger>;
+  let mockLogger: jest.Mocked<Logger>;
 
   beforeEach(async () => {
     const mockLoggerInstance = {
@@ -26,14 +26,14 @@ describe('LoggerPortAdapter', () => {
       providers: [
         LoggerPortAdapter,
         {
-          provide: PinoLogger,
+          provide: Logger,
           useValue: mockLoggerInstance,
         },
       ],
     }).compile();
 
     adapter = module.get<LoggerPortAdapter>(LoggerPortAdapter);
-    mockLogger = module.get<PinoLogger>(PinoLogger) as jest.Mocked<PinoLogger>;
+    mockLogger = module.get<Logger>(Logger) as jest.Mocked<Logger>;
   });
 
   describe('debug', () => {
@@ -60,7 +60,7 @@ describe('LoggerPortAdapter', () => {
       const message = 'Info message';
       const context = { userId: '123' };
 
-      adapter.info(message, context);
+      adapter.log(message, context);
 
       expect(mockLogger.info).toHaveBeenCalledWith(message, context);
     });
@@ -68,7 +68,7 @@ describe('LoggerPortAdapter', () => {
     it('应该在没有context时正常工作', () => {
       const message = 'Info message';
 
-      adapter.info(message);
+      adapter.log(message);
 
       expect(mockLogger.info).toHaveBeenCalledWith(message, undefined);
     });

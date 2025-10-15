@@ -7,13 +7,14 @@
  * @since 1.0.0
  */
 
-import { IAuditInfo, IPartialAuditInfo, AuditInfoBuilder } from './audit-info.js';
+import { IAuditInfo, IPartialAuditInfo, AuditInfoBuilder } from './audit-info';
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 describe('AuditInfo', () => {
   describe('IAuditInfo 接口', () => {
     it('应该正确定义审计信息结构', () => {
-      const tenantId = EntityId.generate();
+      const tenantId = TenantId.generate();
       const auditInfo: IAuditInfo = {
         createdBy: 'user-123',
         updatedBy: 'user-123',
@@ -61,7 +62,7 @@ describe('AuditInfo', () => {
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
-          tenantId: EntityId.generate(),
+          tenantId: TenantId.generate(),
           version: 1,
           lastOperation: operation,
           lastOperationIp: null,
@@ -91,7 +92,7 @@ describe('AuditInfo', () => {
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null,
-          tenantId: EntityId.generate(),
+          tenantId: TenantId.generate(),
           version: 1,
           lastOperation: 'CREATE',
           lastOperationIp: null,
@@ -107,7 +108,7 @@ describe('AuditInfo', () => {
 
   describe('IPartialAuditInfo 接口', () => {
     it('应该支持部分审计信息', () => {
-      const tenantId = EntityId.generate();
+      const tenantId = TenantId.generate();
       const partialAuditInfo: IPartialAuditInfo = {
         createdBy: 'user-123',
         tenantId: tenantId,
@@ -175,7 +176,7 @@ describe('AuditInfo', () => {
 
     describe('链式调用', () => {
       it('应该支持链式调用', () => {
-        const tenantId = EntityId.generate();
+        const tenantId = TenantId.generate();
         const auditInfo = builder
           .withCreatedBy('user-123')
           .withUpdatedBy('user-456')
@@ -190,7 +191,7 @@ describe('AuditInfo', () => {
       });
 
       it('应该返回构建器实例', () => {
-        const tenantId = EntityId.generate();
+        const tenantId = TenantId.generate();
         const result1 = builder.withCreatedBy('user');
         const result2 = builder.withTenantId(tenantId);
         const result3 = builder.withVersion(2);
@@ -238,7 +239,7 @@ describe('AuditInfo', () => {
 
     describe('withTenantId', () => {
       it('应该设置租户标识符', () => {
-        const tenantId = EntityId.generate();
+        const tenantId = TenantId.generate();
         const auditInfo = builder.withTenantId(tenantId).build();
         expect(auditInfo.tenantId?.equals(tenantId)).toBe(true);
       });
@@ -315,7 +316,7 @@ describe('AuditInfo', () => {
 
     describe('复杂场景', () => {
       it('应该构建完整的审计信息', () => {
-        const tenantId = EntityId.generate();
+        const tenantId = TenantId.generate();
         const auditInfo = builder
           .withCreatedBy('admin')
           .withUpdatedBy('user')
@@ -359,7 +360,7 @@ describe('AuditInfo', () => {
 
     describe('边界情况', () => {
       it('应该处理空字符串', () => {
-        const tenantId = EntityId.generate();
+        const tenantId = TenantId.generate();
         const auditInfo = builder.withCreatedBy('').withTenantId(tenantId).build();
 
         expect(auditInfo.createdBy).toBe(''); // 空字符串应该被保留
@@ -367,7 +368,7 @@ describe('AuditInfo', () => {
       });
 
       it('应该处理特殊字符', () => {
-        const tenantId = EntityId.generate();
+        const tenantId = TenantId.generate();
         const auditInfo = builder
           .withCreatedBy('user@domain.com')
           .withTenantId(tenantId)

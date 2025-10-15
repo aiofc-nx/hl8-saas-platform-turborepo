@@ -4,8 +4,9 @@
  * @description 测试 BaseCommand 基础命令类的功能
  * @since 1.0.0
  */
-import { BaseCommand } from './base-command.js';
+import { BaseCommand } from './base-command';
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 // 测试用的命令类
 class TestCommand extends BaseCommand {
@@ -184,7 +185,7 @@ describe('BaseCommand', () => {
 
   describe('命令相等性', () => {
     it('相同ID的命令应该相等', () => {
-      const sharedCommandId = EntityId.generate();
+      const sharedCommandId = TenantId.generate();
       const TestCommandClass = class extends BaseCommand {
         constructor(
           public readonly action: string,

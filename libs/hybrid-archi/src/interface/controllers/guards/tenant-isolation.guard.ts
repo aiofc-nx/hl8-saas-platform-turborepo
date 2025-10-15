@@ -13,7 +13,8 @@ import {
   ExecutionContext,
   ForbiddenException,
 } from '@nestjs/common';
-import { ILoggerService, IUserContext } from '../../shared/interfaces.js';
+import type { ILoggerService, IUserContext  } from '../../shared/interfaces';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 租户隔离守卫
@@ -73,20 +74,11 @@ export class TenantIsolationGuard implements CanActivate {
       // 4. 设置租户上下文管理器
       TenantContextManager.setCurrentTenant(tenantContext);
 
-      this.logger.debug('租户隔离检查通过', {
-        userId: user.userId,
-        userTenantId: user.tenantId,
-        requestTenantId: requestTenantId,
-        traceId: request.traceId,
-      });
+      this.logger.debug('租户隔离检查通过');
 
       return true;
     } catch (error) {
-      this.logger.error('租户隔离检查失败', {
-        userId: user.userId,
-        error: error instanceof Error ? error.message : String(error),
-        traceId: request.traceId,
-      });
+      this.logger.error('租户隔离检查失败');
 
       throw error;
     }

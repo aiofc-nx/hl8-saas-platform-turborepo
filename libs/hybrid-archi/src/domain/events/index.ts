@@ -14,7 +14,7 @@ export {
   IDomainEventStore,
   EventMetadata,
   DomainEvent,
-} from './base.js';
+} from './base';
 
 // 装饰器 - 明确导出以避免命名冲突
 export {
@@ -26,4 +26,4 @@ export {
   DomainEventRegistry,
   DOMAIN_EVENT_METADATA_KEY,
   DomainEventOptions,
-} from './decorators.js';
+} from './decorators';

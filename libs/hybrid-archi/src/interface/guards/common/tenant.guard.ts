@@ -11,7 +11,8 @@ import {
   ExecutionContext,
   BadRequestException,
 } from '@nestjs/common';
-import { FastifyRequest } from '@hl8/nestjs-fastify';
+import { TenantId } from '@hl8/isolation-model';
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 
 /**
  * 租户守卫
@@ -43,7 +44,7 @@ export class TenantGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const request = context.switchToHttp().getRequest<FastifyRequest>();
+      const request = context.switchToHttp().getRequest<any>();
       const user = request['user'];
 
       if (!user) {
@@ -92,7 +93,7 @@ export class TenantGuard implements CanActivate {
    * @returns 租户ID
    * @private
    */
-  private extractTenantId(request: FastifyRequest): string | null {
+  private extractTenantId(request: any): string | null {
     // 1. 从请求头获取
     const headerTenantId = request.headers['x-tenant-id'] as string;
     if (headerTenantId) {

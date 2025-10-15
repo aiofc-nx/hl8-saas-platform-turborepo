@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 import { Injectable } from '@nestjs/common';
-import type { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import type { Logger } from '@nestjs/common';
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -161,7 +161,7 @@ export interface IDependencyGraph {
  */
 @Injectable()
 export class ModuleScannerService {
-  constructor(private readonly logger: PinoLogger) {}
+  constructor(private readonly logger: Logger) {}
 
   private readonly defaultOptions: IScanOptions = {
     depth: 10,
@@ -182,7 +182,7 @@ export class ModuleScannerService {
     options: IScanOptions = {}
   ): Promise<IModuleInfo[]> {
     const mergedOptions = { ...this.defaultOptions, ...options };
-    this.logger.info('Scanning path: ' + scanPath, LogContext.SYSTEM, {
+    this.logger.log('Scanning path: ' + scanPath, LogContext.SYSTEM, {
       scanPath,
     });
 
@@ -194,7 +194,7 @@ export class ModuleScannerService {
         await this.analyzeModuleDependencies(modules);
       }
 
-      this.logger.info(
+      this.logger.log(
         'Found ' + modules.length + ' modules',
         LogContext.SYSTEM,
         { moduleCount: modules.length }
@@ -219,7 +219,7 @@ export class ModuleScannerService {
     options: IScanOptions = {}
   ): Promise<IModuleInfo[]> {
     const mergedOptions = { ...this.defaultOptions, ...options };
-    this.logger.info('Scanning pattern: ' + pattern, LogContext.SYSTEM, {
+    this.logger.log('Scanning pattern: ' + pattern, LogContext.SYSTEM, {
       pattern,
     });
 
@@ -234,7 +234,7 @@ export class ModuleScannerService {
         await this.analyzeModuleDependencies(modules);
       }
 
-      this.logger.info(
+      this.logger.log(
         'Found ' + modules.length + ' modules matching pattern',
         LogContext.SYSTEM,
         { moduleCount: modules.length, pattern }

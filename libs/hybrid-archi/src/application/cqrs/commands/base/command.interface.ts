@@ -1,3 +1,4 @@
+import { TenantId } from '@hl8/isolation-model';
 /**
  * 命令接口
  *
@@ -47,7 +48,7 @@
  *     userId?: string,
  *     tenantId?: string
  *   ) {
- *     this.commandId = EntityId.generate().value;
+ *     this.commandId = TenantId.generate().value;
  *     this.commandType = 'CreateUser';
  *     this.timestamp = new Date();
  *     this.userId = userId;

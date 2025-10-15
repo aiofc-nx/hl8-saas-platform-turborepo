@@ -44,11 +44,10 @@
  *
  * @since 1.0.0
  */
-import {
-  ILoggerService,
+import type { ILoggerService,
   IMetricsService,
   IGraphQLContext,
-} from '../../shared/interfaces.js';
+ } from '../../shared/interfaces';
 
 export abstract class BaseResolver {
   protected readonly requestId: string;
@@ -79,11 +78,7 @@ export abstract class BaseResolver {
   ): Promise<TResult> {
     this.getGraphQLContext();
 
-    this.logger.info(`开始处理GraphQL查询: ${operationName}`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-    });
+    this.logger.log(`开始处理GraphQL查询: ${operationName}`);
 
     try {
       // 执行查询
@@ -116,11 +111,7 @@ export abstract class BaseResolver {
   ): Promise<TResult> {
     this.getGraphQLContext();
 
-    this.logger.info(`开始处理GraphQL变更: ${operationName}`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-    });
+    this.logger.log(`开始处理GraphQL变更: ${operationName}`);
 
     try {
       // 执行变更
@@ -153,11 +144,7 @@ export abstract class BaseResolver {
   ): Promise<TResult> {
     this.getGraphQLContext();
 
-    this.logger.info(`开始处理GraphQL订阅: ${operationName}`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-    });
+    this.logger.log(`开始处理GraphQL订阅: ${operationName}`);
 
     try {
       // 执行订阅
@@ -205,13 +192,7 @@ export abstract class BaseResolver {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.info(`GraphQL ${operationName}操作成功`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      resultType: typeof result,
-    });
+    this.logger.log(`GraphQL ${operationName}操作成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(
@@ -234,14 +215,7 @@ export abstract class BaseResolver {
   protected logError(operationName: string, error: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.error(`GraphQL ${operationName}操作失败`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    this.logger.error(`GraphQL ${operationName}操作失败`);
 
     // 记录错误指标
     this.metricsService?.incrementCounter(

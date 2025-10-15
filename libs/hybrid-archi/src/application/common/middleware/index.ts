@@ -6,10 +6,10 @@
  */
 
 // 中间件接口
-export type { IMiddleware, IMiddlewareContext } from './application-middleware.js';
+export type { IMiddleware, IMiddlewareContext } from './application-middleware';
 
 // 中间件基类
-export { BaseMiddleware, MiddlewareChain } from './application-middleware.js';
+export { BaseMiddleware, MiddlewareChain } from './application-middleware';
 
 // 内置中间件
 export {
@@ -17,4 +17,4 @@ export {
   AuthorizationMiddleware,
   AuditLogMiddleware,
   PerformanceMonitorMiddleware,
-} from './application-middleware.js';
+} from './application-middleware';

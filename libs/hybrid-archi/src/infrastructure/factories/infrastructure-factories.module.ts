@@ -9,7 +9,7 @@
  */
 
 import { DynamicModule, Module, Provider } from '@nestjs/common';
-import { LoggerModule } from '@hl8/nestjs-fastify/logging';
+import { LoggerModule } from '@hl8/nestjs-fastify';
 import { CacheModule } from '@hl8/caching';
 import { DatabaseModule } from '@hl8/database';
 import { MessagingModule } from '@hl8/nestjs-fastify/messaging';

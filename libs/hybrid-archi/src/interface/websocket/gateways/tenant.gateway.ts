@@ -45,13 +45,12 @@
  * @since 1.0.0
  */
 
-import {
-  ILoggerService,
+import type { ILoggerService,
   IMetricsService,
   IWebSocketClient,
   IWebSocketContext,
-} from '../../shared/interfaces.js';
-import { BaseGateway } from './base-gateway.js';
+ } from '../../shared/interfaces';
+import { BaseGateway } from './base-gateway';
 import {
   SubscribeMessage,
   RequireRoles,
@@ -60,12 +59,12 @@ import {
   MonitorPerformance,
   MessageBody,
   WebSocketContext,
-} from '../decorators.js';
+} from '../decorators';
 import {
   IWebSocketMessage,
   IWebSocketResponse,
   WebSocketUtils,
-} from '../utils.js';
+} from '../utils';
 
 /**
  * 获取租户信息消息
@@ -205,11 +204,7 @@ export class TenantGateway extends BaseGateway {
         // 这里应该调用租户服务更新租户配置
         // 实际实现中会调用UpdateTenantConfigUseCase
         
-        this.logger.info('租户配置更新', {
-          tenantId: data.data.tenantId,
-          config: data.data.config,
-          updatedBy: context.userId,
-        });
+        this.logger.log('租户配置更新');
 
         return WebSocketUtils.createSuccessResponse(
           { success: true },
@@ -236,10 +231,7 @@ export class TenantGateway extends BaseGateway {
       return;
     }
 
-    this.logger.info('租户WebSocket连接建立', {
-      clientId: client.id,
-      tenantId: client.id, // 这里应该从认证信息中获取
-    });
+    this.logger.log('租户WebSocket连接建立');
   }
 
   /**
@@ -252,8 +244,6 @@ export class TenantGateway extends BaseGateway {
   override handleDisconnection(client: IWebSocketClient): void {
     this.handleDisconnection(client);
     
-    this.logger.info('租户WebSocket连接断开', {
-      clientId: client.id,
-    });
+    this.logger.log('租户WebSocket连接断开');
   }
 }

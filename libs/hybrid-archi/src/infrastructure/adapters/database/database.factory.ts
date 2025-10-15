@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import {
   DatabaseAdapter,
   IDatabaseConfig,
@@ -50,7 +50,7 @@ export class DatabaseFactory {
 
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly logger: PinoLogger
+    private readonly logger: Logger
   ) {}
 
   /**
@@ -107,10 +107,7 @@ export class DatabaseFactory {
 
     this.databases.set(databaseName, registration);
 
-    this.logger.debug(`创建数据库: ${databaseName}`, {
-      databaseType,
-      config: registration.config,
-    });
+    this.logger.debug(`创建数据库: ${databaseName}`);
 
     return database;
   }
@@ -215,9 +212,7 @@ export class DatabaseFactory {
 
     Object.assign(registration.config, config);
 
-    this.logger.debug(`更新数据库配置: ${databaseName}`, {
-      config: registration.config,
-    });
+    this.logger.debug(`更新数据库配置: ${databaseName}`);
   }
 
   /**
@@ -243,9 +238,7 @@ export class DatabaseFactory {
       await this.destroyDatabase(databaseName);
     }
 
-    this.logger.debug(`清理过期数据库: ${expiredDatabases.length}`, {
-      expiredDatabases,
-    });
+    this.logger.debug(`清理过期数据库: ${expiredDatabases.length}`);
 
     return expiredDatabases.length;
   }

@@ -7,7 +7,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import {
   CacheAdapter,
   ICacheConfig,
@@ -17,7 +17,7 @@ import {
 describe('CacheAdapter', () => {
   let adapter: CacheAdapter;
   let mockCacheService: any;
-  let mockLogger: jest.Mocked<PinoLogger>;
+  let mockLogger: jest.Mocked<Logger>;
 
   beforeEach(async () => {
     const mockCacheServiceInstance = {
@@ -39,7 +39,7 @@ describe('CacheAdapter', () => {
       providers: [
         {
           provide: CacheAdapter,
-          useFactory: (cacheService: CacheService, logger: PinoLogger) => {
+          useFactory: (cacheService: CacheService, logger: Logger) => {
             return new CacheAdapter(cacheService, logger, {
               enableMemoryCache: true,
               enableRedisCache: true,
@@ -53,14 +53,14 @@ describe('CacheAdapter', () => {
               enableWarmup: true,
             });
           },
-          inject: [CacheService, PinoLogger],
+          inject: [CacheService, Logger],
         },
         {
           provide: CacheService,
           useValue: mockCacheServiceInstance,
         },
         {
-          provide: PinoLogger,
+          provide: Logger,
           useValue: mockLoggerInstance,
         },
       ],
@@ -68,7 +68,7 @@ describe('CacheAdapter', () => {
 
     adapter = module.get<CacheAdapter>(CacheAdapter);
     mockCacheService = mockCacheServiceInstance;
-    mockLogger = module.get<PinoLogger>(PinoLogger) as jest.Mocked<PinoLogger>;
+    mockLogger = module.get<Logger>(Logger) as jest.Mocked<Logger>;
   });
 
   describe('get', () => {

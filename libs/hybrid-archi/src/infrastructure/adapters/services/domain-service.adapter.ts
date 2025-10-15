@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 import { IDomainService } from '../../../domain/services/base/domain-service.interface';
 
@@ -43,7 +43,7 @@ export class DomainServiceAdapter implements IDomainService {
   private readonly config: IDomainServiceConfig;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     private readonly serviceName: string,
     config: Partial<IDomainServiceConfig> = {}
@@ -84,10 +84,7 @@ export class DomainServiceAdapter implements IDomainService {
     try {
       // 记录操作开始
       if (this.config.enableLogging) {
-        this.logger.debug(`开始执行领域服务操作: ${this.serviceName}`, {
-          operation,
-          parameters,
-        });
+        this.logger.debug(`开始执行领域服务操作: ${this.serviceName}`);
       }
 
       // 检查缓存
@@ -95,10 +92,7 @@ export class DomainServiceAdapter implements IDomainService {
         const cacheKey = this.getCacheKey(operation, parameters);
         const cached = await this.cacheService.get<T>(cacheKey);
         if (cached) {
-          this.logger.debug(`从缓存获取领域服务结果: ${this.serviceName}`, {
-            operation,
-            cacheKey,
-          });
+          this.logger.debug(`从缓存获取领域服务结果: ${this.serviceName}`);
           return cached;
         }
       }
@@ -118,11 +112,7 @@ export class DomainServiceAdapter implements IDomainService {
           ? Date.now() - startTime
           : 0;
 
-        this.logger.debug(`领域服务操作完成: ${this.serviceName}`, {
-          operation,
-          duration,
-          success: true,
-        });
+        this.logger.debug(`领域服务操作完成: ${this.serviceName}`);
       }
 
       return result;
@@ -164,10 +154,7 @@ export class DomainServiceAdapter implements IDomainService {
     try {
       // 记录事务开始
       if (this.config.enableLogging) {
-        this.logger.debug(`开始执行领域服务事务: ${this.serviceName}`, {
-          operation,
-          parameters,
-        });
+        this.logger.debug(`开始执行领域服务事务: ${this.serviceName}`);
       }
 
       // 执行事务操作
@@ -182,11 +169,7 @@ export class DomainServiceAdapter implements IDomainService {
           ? Date.now() - startTime
           : 0;
 
-        this.logger.debug(`领域服务事务完成: ${this.serviceName}`, {
-          operation,
-          duration,
-          success: true,
-        });
+        this.logger.debug(`领域服务事务完成: ${this.serviceName}`);
       }
 
       return result;
@@ -229,13 +212,7 @@ export class DomainServiceAdapter implements IDomainService {
 
         if (attempt < this.config.maxRetries) {
           this.logger.warn(
-            `领域服务操作失败，重试中 (${attempt}/${this.config.maxRetries})`,
-            {
-              serviceName: this.serviceName,
-              operation,
-              error: lastError.message,
-            }
-          );
+            `领域服务操作失败，重试中 (${attempt}/${this.config.maxRetries})`);
           await this.delay(this.config.retryDelay * attempt);
         }
       }

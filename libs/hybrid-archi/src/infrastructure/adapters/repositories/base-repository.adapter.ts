@@ -11,18 +11,17 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { EntityId  } from '@hl8/isolation-model';
 import { IEntity } from '../../../domain/entities/base/entity.interface';
-import {
-  IRepository,
+import type { IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
   BaseRepositoryError,
   ConcurrencyError,
   EntityNotFoundError,
   ValidationError,
-} from '../../../domain/repositories/base/base-repository.interface';
+ } from '../../../domain/repositories/base/base-repository.interface';
 
 /**
  * 仓储配置接口
@@ -56,7 +55,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   constructor(
     protected readonly databaseService: DatabaseService,
     protected readonly cacheService: CacheService,
-    protected readonly logger: PinoLogger,
+    protected readonly logger: Logger,
     protected readonly entityName: string,
     config: Partial<IRepositoryConfig> = {}
   ) {
@@ -82,7 +81,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
       if (this.config.enableCache) {
         const cached = await this.getFromCache(id);
         if (cached) {
-          this.logger.debug(`从缓存获取实体: ${this.entityName}`, { id });
+          this.logger.debug(`从缓存获取实体: ${this.entityName}`);
           return cached;
         }
       }
@@ -98,7 +97,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         await this.setCache(id, entity);
       }
 
-      this.logger.debug(`从数据库获取实体: ${this.entityName}`, { id });
+      this.logger.debug(`从数据库获取实体: ${this.entityName}`);
       return entity;
     } catch (error) {
       this.logger.error(`查找实体失败: ${this.entityName}`, error, { id });
@@ -132,9 +131,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
           await this.setCache((entity as any).getId(), entity);
         }
 
-        this.logger.debug(`保存实体成功: ${this.entityName}`, {
-          id: (entity as any).getId(),
-        });
+        this.logger.debug(`保存实体成功: ${this.entityName}`);
       });
     } catch (error) {
       this.logger.error(`保存实体失败: ${this.entityName}`, error, {
@@ -171,7 +168,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
           await this.removeFromCache(id);
         }
 
-        this.logger.debug(`删除实体成功: ${this.entityName}`, { id });
+        this.logger.debug(`删除实体成功: ${this.entityName}`);
       });
     } catch (error) {
       this.logger.error(`删除实体失败: ${this.entityName}`, error, { id });
@@ -270,9 +267,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         }
       }
 
-      this.logger.debug(`批量保存实体成功: ${this.entityName}`, {
-        count: entities.length,
-      });
+      this.logger.debug(`批量保存实体成功: ${this.entityName}`);
     } catch (error) {
       this.logger.error(`批量保存实体失败: ${this.entityName}`, error);
       throw error;
@@ -314,9 +309,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         }
       }
 
-      this.logger.debug(`批量删除实体成功: ${this.entityName}`, {
-        count: ids.length,
-      });
+      this.logger.debug(`批量删除实体成功: ${this.entityName}`);
     } catch (error) {
       this.logger.error(`批量删除实体失败: ${this.entityName}`, error);
       throw error;
@@ -339,11 +332,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
 
         if (attempt < this.config.maxRetries) {
           this.logger.warn(
-            `操作失败，重试中 (${attempt}/${this.config.maxRetries})`,
-            {
-              error: lastError.message,
-            }
-          );
+            `操作失败，重试中 (${attempt}/${this.config.maxRetries})`);
           await this.delay(this.config.retryDelay * attempt);
         }
       }

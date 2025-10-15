@@ -56,13 +56,12 @@ import {
   getQueryHandlerMetadata,
   getEventHandlerMetadata,
   getSagaMetadata,
-} from '../../common/decorators.js';
-import {
-  ICommandHandlerMetadata,
+} from '../../common/decorators';
+import type { ICommandHandlerMetadata,
   IQueryHandlerMetadata,
   IEventHandlerMetadata,
   ISagaMetadata,
-} from '../../common/decorators/metadata.interfaces';
+ } from '../../common/decorators/metadata.interfaces';
 
 /**
  * 处理器信息接口

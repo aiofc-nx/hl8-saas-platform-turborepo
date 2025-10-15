@@ -63,13 +63,12 @@
  * @since 1.0.0
  */
 import 'reflect-metadata';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event.js';
+import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
 import {
   setSagaMetadata,
   getSagaMetadata as getMetadata,
 } from './metadata.utils';
-import {
-  ISagaMetadata,
+import type { ISagaMetadata,
   IRetryConfig,
   IValidationConfig,
   IAuthorizationConfig,
@@ -77,7 +76,7 @@ import {
   IMultiTenantConfig,
   IDataIsolationConfig,
   IPerformanceMonitorConfig,
-} from './metadata.interfaces';
+ } from './metadata.interfaces';
 
 /**
  * Saga 处理器接口

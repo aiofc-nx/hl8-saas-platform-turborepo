@@ -9,9 +9,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
-import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
 import { EventService } from '@hl8/nestjs-fastify/messaging';
 
 import { LoggerPortAdapter } from './logger-port.adapter';
@@ -61,7 +61,7 @@ export class PortAdaptersFactory {
   >();
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     private readonly configService: TypedConfigModule,
     private readonly eventService: EventService
@@ -118,9 +118,7 @@ export class PortAdaptersFactory {
 
     this.adapters.set(adapterType, registration);
 
-    this.logger.debug(`创建端口适配器: ${adapterType}`, {
-      adapterType,
-    });
+    this.logger.debug(`创建端口适配器: ${adapterType}`);
 
     return adapter;
   }
@@ -227,9 +225,7 @@ export class PortAdaptersFactory {
       await this.destroyAdapter(adapterType);
     }
 
-    this.logger.debug(`清理过期端口适配器: ${expiredAdapters.length}`, {
-      expiredAdapters,
-    });
+    this.logger.debug(`清理过期端口适配器: ${expiredAdapters.length}`);
 
     return expiredAdapters.length;
   }

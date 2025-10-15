@@ -15,26 +15,26 @@ export type {
 } from './use-case.interface';
 
 // 基础用例类
-export { BaseUseCase } from './base-use-case.js';
-export type { IUseCaseExecutionResult } from './base-use-case.js';
+export { BaseUseCase } from './base-use-case';
+export type { IUseCaseExecutionResult } from './base-use-case';
 export {
   BaseUseCaseError,
   UseCaseValidationError,
   UseCaseExecutionError,
   PermissionDeniedError,
-} from './base-use-case.js';
+} from './base-use-case';
 
 // 命令用例类
 export {
   BaseCommandUseCase,
   BusinessRuleViolationError,
-} from './base-command-use-case.js';
+} from './base-command-use-case';
 
 // 查询用例类
-export { BaseQueryUseCase } from './base-query-use-case.js';
-export type { QueryOptions, QueryResult } from './base-query-use-case.js';
+export { BaseQueryUseCase } from './base-query-use-case';
+export type { QueryOptions, QueryResult } from './base-query-use-case';
 export {
   QueryComplexityError,
   DataAccessDeniedError,
   EntityNotFoundError,
-} from './base-query-use-case.js';
+} from './base-query-use-case';

@@ -62,7 +62,7 @@
  */
 
 import { IQuery } from '../base/query.interface';
-import { IQueryResult } from '../base/base-query.js';
+import { IQueryResult } from '../base/base-query';
 
 /**
  * 查询处理器接口

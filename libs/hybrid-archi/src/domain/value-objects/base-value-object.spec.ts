@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-import { BaseValueObject } from './base-value-object.js';
+import { BaseValueObject } from './base-value-object';
 
 /**
  * 测试值对象类

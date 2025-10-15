@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import {
   InfrastructureFactory,
   IInfrastructureServiceConfig,
@@ -53,7 +53,7 @@ export class InfrastructureManager {
   private isInitialized = false;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly infrastructureFactory: InfrastructureFactory,
     config: Partial<IInfrastructureManagerConfig> = {}
   ) {
@@ -79,10 +79,7 @@ export class InfrastructureManager {
    * @returns 服务实例
    */
   createService(config: IInfrastructureServiceConfig): any {
-    this.logger.debug(`创建基础设施服务: ${config.serviceName}`, {
-      serviceType: config.serviceType,
-      config: config.options,
-    });
+    this.logger.debug(`创建基础设施服务: ${config.serviceName}`);
 
     return this.infrastructureFactory.createService(config);
   }
@@ -189,7 +186,7 @@ export class InfrastructureManager {
    * 启动所有服务
    */
   async startAllServices(): Promise<void> {
-    this.logger.info('启动所有基础设施服务');
+    this.logger.log('启动所有基础设施服务');
 
     const services = this.getAllServices();
     const sortedServices = this.sortServicesByPriority(services);
@@ -203,16 +200,14 @@ export class InfrastructureManager {
       }
     }
 
-    this.logger.info(`启动所有基础设施服务完成: ${services.length}`, {
-      serviceCount: services.length,
-    });
+    this.logger.log(`启动所有基础设施服务完成: ${services.length}`);
   }
 
   /**
    * 停止所有服务
    */
   async stopAllServices(): Promise<void> {
-    this.logger.info('停止所有基础设施服务');
+    this.logger.log('停止所有基础设施服务');
 
     const services = this.getAllServices();
     const sortedServices = this.sortServicesByPriority(services).reverse();
@@ -226,9 +221,7 @@ export class InfrastructureManager {
       }
     }
 
-    this.logger.info(`停止所有基础设施服务完成: ${services.length}`, {
-      serviceCount: services.length,
-    });
+    this.logger.log(`停止所有基础设施服务完成: ${services.length}`);
   }
 
   /**
@@ -252,12 +245,12 @@ export class InfrastructureManager {
    * 重启所有服务
    */
   async restartAllServices(): Promise<void> {
-    this.logger.info('重启所有基础设施服务');
+    this.logger.log('重启所有基础设施服务');
 
     await this.stopAllServices();
     await this.startAllServices();
 
-    this.logger.info('重启所有基础设施服务完成');
+    this.logger.log('重启所有基础设施服务完成');
   }
 
   /**
@@ -288,7 +281,7 @@ export class InfrastructureManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动基础设施管理器');
+    this.logger.log('启动基础设施管理器');
 
     // 启动健康检查
     if (this.config.enableHealthCheck) {
@@ -307,7 +300,7 @@ export class InfrastructureManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止基础设施管理器');
+    this.logger.log('停止基础设施管理器');
 
     // 停止健康检查
     if (this.healthCheckTimer) {
@@ -328,7 +321,7 @@ export class InfrastructureManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁基础设施管理器');
+    this.logger.log('销毁基础设施管理器');
 
     // 停止管理器
     this.stop();
@@ -349,9 +342,7 @@ export class InfrastructureManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化基础设施管理器', {
-      config: this.config,
-    });
+    this.logger.debug('初始化基础设施管理器');
   }
 
   /**
@@ -366,9 +357,7 @@ export class InfrastructureManager {
         );
 
         if (unhealthyServices.length > 0) {
-          this.logger.warn('发现不健康的基础设施服务', {
-            unhealthyServices: unhealthyServices.map(([name]) => name),
-          });
+          this.logger.warn('发现不健康的基础设施服务');
         }
       } catch (error) {
         this.logger.error('健康检查失败', error);
@@ -383,11 +372,7 @@ export class InfrastructureManager {
     this.statisticsTimer = setInterval(async () => {
       try {
         const statistics = this.getServiceStatistics();
-        this.logger.debug('基础设施服务统计信息收集完成', {
-          serviceCount: statistics.totalServices,
-          activeServices: statistics.activeServices,
-          statistics,
-        });
+        this.logger.debug('基础设施服务统计信息收集完成');
       } catch (error) {
         this.logger.error('统计收集失败', error);
       }

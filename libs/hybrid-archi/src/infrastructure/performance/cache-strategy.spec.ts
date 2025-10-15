@@ -8,14 +8,14 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CacheStrategy } from './cache-strategy.js';
-import { CacheStrategyConfig } from './cache-strategy.js';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { CacheStrategy } from './cache-strategy';
+import { CacheStrategyConfig } from './cache-strategy';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 
 describe('CacheStrategy', () => {
   let cacheStrategy: CacheStrategy;
-  let logger: PinoLogger;
+  let logger: Logger;
   let cacheService: CacheService;
   let config: CacheStrategyConfig;
 
@@ -33,7 +33,7 @@ describe('CacheStrategy', () => {
       providers: [
         CacheStrategy,
         {
-          provide: PinoLogger,
+          provide: Logger,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),
@@ -65,7 +65,7 @@ describe('CacheStrategy', () => {
     }).compile();
 
     cacheStrategy = module.get<CacheStrategy>(CacheStrategy);
-    logger = module.get<PinoLogger>(PinoLogger);
+    logger = module.get<Logger>(Logger);
     cacheService = module.get<CacheService>(CacheService);
     config = module.get<CacheStrategyConfig>('CacheStrategyConfig');
   });

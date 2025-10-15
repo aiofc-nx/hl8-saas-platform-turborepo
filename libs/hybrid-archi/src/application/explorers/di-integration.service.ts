@@ -42,7 +42,7 @@
  * @since 1.0.0
  */
 import { Injectable, DynamicModule } from '@nestjs/common';
-import type { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import type { Logger } from '@nestjs/common';
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -191,7 +191,7 @@ export class DIIntegrationService {
   };
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly _app: NestApplication,
     private readonly _moduleRef: ModuleRef,
     private readonly _explorerService: CoreExplorerService,
@@ -214,7 +214,7 @@ export class DIIntegrationService {
       includePatterns?: string[];
     } = {}
   ): Promise<IIntegrationStatus> {
-    this.logger.info(
+    this.logger.log(
       'Initializing DI integration service...',
       LogContext.SYSTEM
     );
@@ -237,7 +237,7 @@ export class DIIntegrationService {
       this.integrationStatus.initializedAt = new Date();
       this.integrationStatus.lastUpdatedAt = new Date();
 
-      this.logger.info(
+      this.logger.log(
         'DI integration service initialized successfully',
         LogContext.SYSTEM
       );
@@ -267,7 +267,7 @@ export class DIIntegrationService {
       // await this.app.register(coreModule);
 
       this.integrationStatus.registeredModules++;
-      this.logger.info(
+      this.logger.log(
         'Core module registered successfully',
         LogContext.SYSTEM
       );
@@ -319,7 +319,7 @@ export class DIIntegrationService {
       ];
       const includePatterns = config.includePatterns || ['**/*.module.ts'];
 
-      this.logger.info('Performing auto discovery...', LogContext.SYSTEM);
+      this.logger.log('Performing auto discovery...', LogContext.SYSTEM);
 
       // 扫描模块
       await this.scannerService.scanPath(scanPaths[0], {
@@ -332,7 +332,7 @@ export class DIIntegrationService {
 
       // this.integrationStatus.registeredHandlers = explorerResults.statistics.totalHandlers;
 
-      this.logger.info('Auto discovery completed', LogContext.SYSTEM);
+      this.logger.log('Auto discovery completed', LogContext.SYSTEM);
     } catch (error) {
       this.addError('handler', 'AutoDiscovery', (error as Error).message);
       throw error;
@@ -346,12 +346,12 @@ export class DIIntegrationService {
    */
   private async performAutoRegistration(): Promise<void> {
     try {
-      this.logger.info('Performing auto registration...', LogContext.SYSTEM);
+      this.logger.log('Performing auto registration...', LogContext.SYSTEM);
 
       // 这里需要获取之前发现的处理器结果
       // 由于这是一个简化的实现，我们暂时跳过具体的注册逻辑
 
-      this.logger.info('Auto registration completed', LogContext.SYSTEM);
+      this.logger.log('Auto registration completed', LogContext.SYSTEM);
     } catch (error) {
       this.addError('handler', 'AutoRegistration', (error as Error).message);
       throw error;
@@ -373,7 +373,7 @@ export class DIIntegrationService {
     } = {}
   ): Promise<void> {
     try {
-      this.logger.info(
+      this.logger.log(
         `Registering ${handlers.length} handlers...`,
         LogContext.SYSTEM,
         { handlerCount: handlers.length }
@@ -386,7 +386,7 @@ export class DIIntegrationService {
       this.integrationStatus.registeredHandlers += handlers.length;
       this.integrationStatus.lastUpdatedAt = new Date();
 
-      this.logger.info(
+      this.logger.log(
         `Successfully registered ${handlers.length} handlers`,
         LogContext.SYSTEM,
         { handlerCount: handlers.length }
@@ -467,7 +467,7 @@ export class DIIntegrationService {
     config: IModuleConfig
   ): Promise<void> {
     try {
-      this.logger.info(
+      this.logger.log(
         `Configuring module: ${config.name}`,
         LogContext.SYSTEM,
         { moduleName: config.name }
@@ -527,7 +527,7 @@ export class DIIntegrationService {
       errors: [],
       lastUpdatedAt: new Date(),
     };
-    this.logger.info('Integration status reset', LogContext.SYSTEM);
+    this.logger.log('Integration status reset', LogContext.SYSTEM);
   }
 
   /**

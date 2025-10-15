@@ -1,3 +1,4 @@
+import { TenantId } from '@hl8/isolation-model';
 /**
  * ID值对象导出
  *

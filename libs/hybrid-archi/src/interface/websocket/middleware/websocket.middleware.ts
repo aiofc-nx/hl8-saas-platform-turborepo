@@ -43,12 +43,12 @@
  * @since 1.0.0
  */
 
-import {
-  ILoggerService,
+import type { ILoggerService,
   IMetricsService,
   IWebSocketContext,
   IWebSocketClient,
-} from '../../shared/interfaces.js';
+} from '../../shared/interfaces';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * WebSocket中间件接口
@@ -114,12 +114,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
   ): Promise<void> {
     const startTime = Date.now();
 
-    this.logger.debug(`开始执行WebSocket中间件: ${this.middlewareName}`, {
-      requestId: context.requestId,
-      correlationId: context.correlationId,
-      middleware: this.middlewareName,
-      clientId: client.id,
-    });
+    this.logger.debug(`开始执行WebSocket中间件: ${this.middlewareName}`);
 
     try {
       // 执行中间件逻辑
@@ -178,13 +173,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
   ): void {
     const duration = Date.now() - startTime;
 
-    this.logger.debug(`WebSocket中间件执行成功: ${this.middlewareName}`, {
-      requestId: context.requestId,
-      correlationId: context.correlationId,
-      middleware: this.middlewareName,
-      clientId: client.id,
-      duration,
-    });
+    this.logger.debug(`WebSocket中间件执行成功: ${this.middlewareName}`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(
@@ -214,15 +203,7 @@ export abstract class BaseWebSocketMiddleware implements IWebSocketMiddleware {
   ): void {
     const duration = Date.now() - startTime;
 
-    this.logger.error(`WebSocket中间件执行失败: ${this.middlewareName}`, {
-      requestId: context.requestId,
-      correlationId: context.correlationId,
-      middleware: this.middlewareName,
-      clientId: client.id,
-      duration,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    this.logger.error(`WebSocket中间件执行失败: ${this.middlewareName}`);
 
     // 记录错误指标
     this.metricsService?.incrementCounter(
@@ -311,7 +292,7 @@ export class AuthMiddleware extends BaseWebSocketMiddleware {
   private async verifyToken(token: string): Promise<unknown> {
     // 这里应该实现JWT令牌验证
     // 实际实现中会调用JWT服务
-    this.logger.debug('验证JWT令牌', { tokenLength: token.length });
+    this.logger.debug('验证JWT令牌');
     return null; // 占位符实现
   }
 
@@ -326,7 +307,7 @@ export class AuthMiddleware extends BaseWebSocketMiddleware {
   private async validateUser(userId: string): Promise<{ getId(): { getValue(): string }; getTenantId(): string; isActive(): boolean } | null> {
     // 这里应该调用用户服务验证用户状态
     // 实际实现中会从数据库或缓存中获取用户信息
-    this.logger.debug('验证用户状态', { userId });
+    this.logger.debug('验证用户状态');
     return null; // 占位符实现
   }
 }
@@ -407,34 +388,14 @@ export class WebSocketLoggingMiddleware extends BaseWebSocketMiddleware {
     client: IWebSocketClient,
     next: () => Promise<void>
   ): Promise<void> {
-    this.logger.info('WebSocket连接处理开始', {
-      requestId: context.requestId,
-      correlationId: context.correlationId,
-      clientId: client.id,
-      userId: context.userId,
-      tenantId: context.tenantId,
-      timestamp: context.timestamp,
-    });
+    this.logger.log('WebSocket连接处理开始');
 
     try {
       await next();
       
-      this.logger.info('WebSocket连接处理成功', {
-        requestId: context.requestId,
-        correlationId: context.correlationId,
-        clientId: client.id,
-        userId: context.userId,
-        tenantId: context.tenantId,
-      });
+      this.logger.log('WebSocket连接处理成功');
     } catch (error) {
-      this.logger.error('WebSocket连接处理失败', {
-        requestId: context.requestId,
-        correlationId: context.correlationId,
-        clientId: client.id,
-        userId: context.userId,
-        tenantId: context.tenantId,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      this.logger.error('WebSocket连接处理失败');
       
       throw error;
     }

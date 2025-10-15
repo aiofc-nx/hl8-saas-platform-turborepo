@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 
 /**
  * 验证结果接口
@@ -90,7 +90,7 @@ export class BusinessValidator {
   private readonly rules = new Map<string, BusinessRule>();
   private readonly ruleGroups = new Map<string, string[]>();
 
-  constructor(private readonly logger: PinoLogger) {
+  constructor(private readonly logger: Logger) {
     this.initializeDefaultRules();
   }
 
@@ -118,7 +118,7 @@ export class BusinessValidator {
       for (const ruleName of rules) {
         const rule = this.rules.get(ruleName);
         if (!rule) {
-          this.logger.warn('未找到验证规则', { ruleName });
+          this.logger.warn('未找到验证规则');
           continue;
         }
 
@@ -178,13 +178,7 @@ export class BusinessValidator {
         },
       };
 
-      this.logger.debug('业务数据验证完成', {
-        isValid: result.isValid,
-        errorCount: errors.length,
-        warningCount: warnings.length,
-        duration,
-        rulesApplied: appliedRules,
-      });
+      this.logger.debug('业务数据验证完成');
 
       return result;
     } catch (error) {
@@ -237,7 +231,7 @@ export class BusinessValidator {
    */
   addRule(rule: BusinessRule): void {
     this.rules.set(rule.name, rule);
-    this.logger.info('业务规则已添加', { ruleName: rule.name });
+    this.logger.log('业务规则已添加');
   }
 
   /**
@@ -248,7 +242,7 @@ export class BusinessValidator {
    */
   removeRule(ruleName: string): void {
     this.rules.delete(ruleName);
-    this.logger.info('业务规则已移除', { ruleName });
+    this.logger.log('业务规则已移除');
   }
 
   /**
@@ -281,7 +275,7 @@ export class BusinessValidator {
    */
   addRuleGroup(groupName: string, rules: string[]): void {
     this.ruleGroups.set(groupName, rules);
-    this.logger.info('规则组已添加', { groupName, ruleCount: rules.length });
+    this.logger.log('规则组已添加');
   }
 
   // ==================== 私有方法 ====================

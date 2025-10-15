@@ -47,14 +47,14 @@
  *
  * @since 1.0.0
  */
-import {
-  ILoggerService,
+import type { ILoggerService,
   IMetricsService,
   IWebSocketContext,
   IUser,
   IWebSocketClient,
   IJwtPayload,
-} from '../../shared/interfaces.js';
+} from '../../shared/interfaces';
+import { TenantId } from '@hl8/isolation-model';
 
 export abstract class BaseGateway {
   protected readonly requestId: string;
@@ -86,11 +86,7 @@ export abstract class BaseGateway {
   ): Promise<TResult> {
     this.getWebSocketContext();
 
-    this.logger.info(`开始处理WebSocket消息: ${operationName}`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-    });
+    this.logger.log(`开始处理WebSocket消息: ${operationName}`);
 
     try {
       // 执行消息处理
@@ -147,18 +143,11 @@ export abstract class BaseGateway {
 
       this.connectedClients.set(client.id, connection);
 
-      this.logger.info('WebSocket连接认证成功', {
-        clientId: client.id,
-        userId: user.getId().getValue(),
-        tenantId: user.getTenantId(),
-      });
+      this.logger.log('WebSocket连接认证成功');
 
       return true;
     } catch (error) {
-      this.logger.error('WebSocket连接认证失败', {
-        clientId: client.id,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      this.logger.error('WebSocket连接认证失败');
 
       return false;
     }
@@ -177,11 +166,7 @@ export abstract class BaseGateway {
     if (connection) {
       this.connectedClients.delete(client.id);
 
-      this.logger.info('WebSocket连接断开', {
-        clientId: client.id,
-        userId: connection.userId,
-        duration: Date.now() - connection.connectedAt.getTime(),
-      });
+      this.logger.log('WebSocket连接断开');
     }
   }
 
@@ -232,7 +217,7 @@ export abstract class BaseGateway {
   private async verifyToken(token: string): Promise<IJwtPayload | null> {
     // 这里应该实现JWT令牌验证
     // 实际实现中会调用JWT服务
-    this.logger.debug('验证JWT令牌', { tokenLength: token.length });
+    this.logger.debug('验证JWT令牌');
     return null; // 占位符实现
   }
 
@@ -247,7 +232,7 @@ export abstract class BaseGateway {
   private async validateUser(userId: string): Promise<IUser | null> {
     // 这里应该调用用户服务验证用户状态
     // 实际实现中会从数据库或缓存中获取用户信息
-    this.logger.debug('验证用户状态', { userId });
+    this.logger.debug('验证用户状态');
     return null; // 占位符实现
   }
 
@@ -262,13 +247,7 @@ export abstract class BaseGateway {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.info(`WebSocket ${operationName}操作成功`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      resultType: typeof result,
-    });
+    this.logger.log(`WebSocket ${operationName}操作成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(
@@ -291,14 +270,7 @@ export abstract class BaseGateway {
   protected logError(operationName: string, error: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.error(`WebSocket ${operationName}操作失败`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    this.logger.error(`WebSocket ${operationName}操作失败`);
 
     // 记录错误指标
     this.metricsService?.incrementCounter(

@@ -55,7 +55,7 @@
  * const event = new UserCreatedEvent(
  *   userId,
  *   1,
- *   EntityId.fromString('tenant-123'),  // ✅ 使用EntityId
+ *   TenantId.create('tenant-123'),  // ✅ 使用EntityId
  *   userId,
  *   'user@example.com',
  *   '张三'
@@ -65,6 +65,7 @@
  * @since 1.0.0
  */
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 export abstract class BaseDomainEvent {
   private readonly _eventId: EntityId;
@@ -88,7 +89,7 @@ export abstract class BaseDomainEvent {
     tenantId: EntityId,
     eventVersion = 1
   ) {
-    this._eventId = EntityId.generate();
+    this._eventId = TenantId.generate();
     this._aggregateId = aggregateId;
     this._aggregateVersion = aggregateVersion;
     this._tenantId = tenantId;

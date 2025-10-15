@@ -64,19 +64,15 @@
  * @since 1.0.0
  */
 
-import { IUseCase, IUseCaseContext } from './use-case.interface';
-import { TenantContextService, ITenantContext } from '@hl8/nestjs-isolation';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import {
-  GeneralBadRequestException,
-  GeneralInternalServerException,
-  GeneralNotFoundException,
-} from '@hl8/isolation-model';
+import type { IUseCase, IUseCaseContext  } from './use-case.interface';
+// import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
+import { Logger } from '@nestjs/common';
+import { BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import {
   USE_CASE_ERROR_CODES,
   TENANT_ERROR_CODES,
   DEFAULT_ENVIRONMENT,
-} from '../../../constants.js';
+} from '../../../constants';
 
 /**
  * 用例执行结果
@@ -125,14 +121,14 @@ export abstract class BaseUseCase<TRequest, TResponse>
   protected readonly useCaseDescription: string;
   protected readonly useCaseVersion: string;
   protected readonly requiredPermissions: string[];
-  protected readonly logger: PinoLogger;
+  protected readonly logger: Logger;
 
   constructor(
     useCaseName: string,
     useCaseDescription: string,
     useCaseVersion = '1.0.0',
     requiredPermissions: string[] = [],
-    logger?: PinoLogger
+    logger?: Logger
   ) {
     this.useCaseName = useCaseName;
     this.useCaseDescription = useCaseDescription;
@@ -324,9 +320,9 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * @returns 租户上下文信息，如果不存在则返回 null
    * @protected
    */
-  protected getTenantContext(): ITenantContext | null {
+  protected getTenantContext(): any | null {
     try {
-      // 这里需要注入 TenantContextService，但在基类中直接注入不太合适
+      // 这里需要注入 any，但在基类中直接注入不太合适
       // 建议通过构造函数传入或使用静态方法
       return null;
     } catch (error) {
@@ -357,17 +353,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * 记录用例开始执行日志
    */
   private logUseCaseStart(request: TRequest, context: IUseCaseContext): void {
-    this.logger.info(`Use case started: ${this.useCaseName}`, {
-      useCaseName: this.useCaseName,
-      useCaseDescription: this.useCaseDescription,
-      useCaseVersion: this.useCaseVersion,
-      request,
-      context: {
-        requestId: context.request?.id,
-        userId: context.user?.id,
-        tenantId: context.tenant?.id,
-      },
-    });
+    this.logger.log(`Use case started: ${this.useCaseName}`);
   }
 
   /**
@@ -379,16 +365,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     context: IUseCaseContext,
     executionTime: number
   ): void {
-    this.logger.info(`Use case completed successfully: ${this.useCaseName}`, {
-      useCaseName: this.useCaseName,
-      executionTime: `${executionTime}ms`,
-      response,
-      context: {
-        requestId: context.request?.id,
-        userId: context.user?.id,
-        tenantId: context.tenant?.id,
-      },
-    });
+    this.logger.log(`Use case completed successfully: ${this.useCaseName}`);
   }
 
   /**
@@ -400,21 +377,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     context: IUseCaseContext,
     executionTime: number
   ): void {
-    this.logger.error(`Use case failed: ${this.useCaseName}`, {
-      useCaseName: this.useCaseName,
-      error: {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      },
-      executionTime: `${executionTime}ms`,
-      request,
-      context: {
-        requestId: context.request?.id,
-        userId: context.user?.id,
-        tenantId: context.tenant?.id,
-      },
-    });
+    this.logger.error(`Use case failed: ${this.useCaseName}`, error);
   }
 
   /**
@@ -423,10 +386,8 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * @returns 默认的日志记录器实例
    * @protected
    */
-  protected createDefaultLogger(): PinoLogger {
-    return new PinoLogger({
-      level: 'info',
-    });
+  protected createDefaultLogger(): Logger {
+    return new Logger('BaseUseCase');
   }
 
   /**
@@ -442,7 +403,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     validationErrors: string[],
     details?: Record<string, unknown>
   ): never {
-    throw new GeneralBadRequestException(
+    throw new BadRequestException(
       'Use case validation failed',
       message,
       {
@@ -470,7 +431,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     userPermissions: string[],
     details?: Record<string, unknown>
   ): never {
-    throw new GeneralBadRequestException(
+    throw new BadRequestException(
       'Use case permission denied',
       message,
       {
@@ -500,7 +461,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     businessRule: string,
     details?: Record<string, unknown>
   ): never {
-    throw new GeneralInternalServerException(
+    throw new InternalServerErrorException(
       'Use case business logic failed',
       message,
       {
@@ -526,7 +487,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     operation: string,
     details?: Record<string, unknown>
   ): never {
-    throw new GeneralInternalServerException(
+    throw new InternalServerErrorException(
       'Use case execution failed',
       message,
       {

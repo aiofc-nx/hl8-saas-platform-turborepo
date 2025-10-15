@@ -54,15 +54,14 @@
  * @since 1.0.0
  */
 import 'reflect-metadata';
-import { BaseQuery } from '../../application/cqrs/queries/base/base-query.js';
-import { IQueryHandler } from '../../application/cqrs/queries/base/query-handler.interface';
-import { IQueryResult } from '../../application/cqrs/queries/base/base-query.js';
+import { BaseQuery } from '../../application/cqrs/queries/base/base-query';
+import type { IQueryHandler  } from '../../application/cqrs/queries/base/query-handler.interface';
+import { IQueryResult } from '../../application/cqrs/queries/base/base-query';
 import {
   setQueryHandlerMetadata,
   getQueryHandlerMetadata as getMetadata,
 } from './metadata.utils';
-import {
-  IQueryHandlerMetadata,
+import type { IQueryHandlerMetadata,
   IRetryConfig,
   ICacheConfig,
   IValidationConfig,
@@ -70,7 +69,7 @@ import {
   IMultiTenantConfig,
   IDataIsolationConfig,
   IPerformanceMonitorConfig,
-} from './metadata.interfaces';
+ } from './metadata.interfaces';
 
 /**
  * 查询处理器装饰器选项

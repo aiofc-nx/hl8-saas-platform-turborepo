@@ -17,4 +17,4 @@ export {
   ResourceNotFoundException,
   ConcurrencyConflictException,
   ExternalServiceException,
-} from './application-exception.js';
+} from './application-exception';

@@ -1,4 +1,4 @@
-import type { MethodDecoratorTarget } from '../types.js';
+import type { MethodDecoratorTarget } from '../types';
 
 /**
  * 性能监控装饰器

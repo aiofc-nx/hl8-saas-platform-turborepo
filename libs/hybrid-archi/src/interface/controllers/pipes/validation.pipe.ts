@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { ILoggerService } from '../../shared/interfaces.js';
+import type { ILoggerService  } from '../../shared/interfaces';
 
 /**
  * 数据验证管道
@@ -65,21 +65,11 @@ export class ValidationPipe implements PipeTransform<unknown> {
       // 3. 安全清理
       const sanitizedValue = this.sanitizeValue(validationResult.value);
 
-      this.logger.debug('数据验证通过', {
-        type,
-        metatype: metatype.name,
-        field: data,
-      });
+      this.logger.debug('数据验证通过');
 
       return sanitizedValue;
     } catch (error) {
-      this.logger.error('数据验证失败', {
-        type,
-        metatype: metatype?.name,
-        field: data,
-        value: this.safeStringify(value),
-        error: error instanceof Error ? error.message : String(error),
-      });
+      this.logger.error('数据验证失败');
 
       if (error instanceof BadRequestException) {
         throw error;

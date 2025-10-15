@@ -15,7 +15,7 @@ import {
   SnapshotStoreStats,
   SnapshotStoreConfig,
 } from './common/snapshot-store.interface';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 
@@ -37,7 +37,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   };
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
     private readonly config: SnapshotStoreConfig
@@ -81,12 +81,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       // 6. 清理旧快照
       await this.cleanupOldSnapshots(aggregateId);
 
-      this.logger.info('快照保存成功', {
-        aggregateId,
-        version,
-        compressed: this.config.compression,
-        encrypted: this.config.encryption,
-      });
+      this.logger.log('快照保存成功');
     } catch (error) {
       this.logger.error('快照保存失败', error, {
         aggregateId,
@@ -196,7 +191,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       await this.deleteSnapshotFromDatabase(aggregateId, version);
       await this.invalidateCache(aggregateId, version);
 
-      this.logger.info('快照删除成功', { aggregateId, version });
+      this.logger.log('快照删除成功');
     } catch (error) {
       this.logger.error('删除快照失败', error, {
         aggregateId,
@@ -222,10 +217,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
         this.config.retentionPolicy?.maxSnapshotsPerAggregate || retainCount;
       await this.cleanupOldSnapshotsFromDatabase(aggregateId, maxSnapshots);
 
-      this.logger.info('旧快照清理成功', {
-        aggregateId,
-        retainCount: maxSnapshots,
-      });
+      this.logger.log('旧快照清理成功');
     } catch (error) {
       this.logger.error('清理旧快照失败', error, {
         aggregateId,

@@ -6,10 +6,10 @@
  */
 
 // 基础设施
-export * from './base.js';
+export * from './base';
 
 // 投射器（关键组件）
-export * from './projectors.js';
+export * from './projectors';
 
 // 装饰器
-export * from './decorators.js';
+export * from './decorators';

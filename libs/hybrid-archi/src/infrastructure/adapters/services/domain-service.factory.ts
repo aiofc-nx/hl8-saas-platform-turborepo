@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 import {
   DomainServiceAdapter,
@@ -46,7 +46,7 @@ export class DomainServiceFactory {
   private readonly services = new Map<string, IDomainServiceRegistration>();
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService
   ) {}
 
@@ -99,10 +99,7 @@ export class DomainServiceFactory {
 
     this.services.set(serviceName, registration);
 
-    this.logger.debug(`创建领域服务: ${serviceName}`, {
-      serviceType,
-      config: registration.config,
-    });
+    this.logger.debug(`创建领域服务: ${serviceName}`);
 
     return service;
   }
@@ -210,9 +207,7 @@ export class DomainServiceFactory {
     Object.assign(registration.config, config);
     registration.instance!.updateConfiguration(registration.config);
 
-    this.logger.debug(`更新领域服务配置: ${serviceName}`, {
-      config: registration.config,
-    });
+    this.logger.debug(`更新领域服务配置: ${serviceName}`);
   }
 
   /**
@@ -238,9 +233,7 @@ export class DomainServiceFactory {
       await this.destroyService(serviceName);
     }
 
-    this.logger.debug(`清理过期领域服务: ${expiredServices.length}`, {
-      expiredServices,
-    });
+    this.logger.debug(`清理过期领域服务: ${expiredServices.length}`);
 
     return expiredServices.length;
   }

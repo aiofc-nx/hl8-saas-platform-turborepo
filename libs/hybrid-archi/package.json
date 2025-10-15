@@ -31,6 +31,7 @@
   "dependencies": {
     "@hl8/database": "workspace:*",
     "@hl8/caching": "workspace:*",
+    "@hl8/config": "workspace:*",
     "@hl8/nestjs-fastify": "workspace:*",
     "@hl8/nestjs-isolation": "workspace:*",
     "@hl8/exceptions": "workspace:*",

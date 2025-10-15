@@ -10,7 +10,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 
 /**
@@ -81,7 +81,7 @@ export class EventMonitor {
   private readonly successCounts = new Map<string, number>();
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     @Inject('EventAlertConfig') private readonly alertConfig: EventAlertConfig
   ) {}
@@ -123,7 +123,7 @@ export class EventMonitor {
     try {
       const cached = this.cacheService.get(`event:processing:${processingId}`);
       if (!cached) {
-        this.logger.warn('未找到处理记录', { processingId });
+        this.logger.warn('未找到处理记录');
         return;
       }
 
@@ -143,12 +143,7 @@ export class EventMonitor {
       // 清理缓存
       this.cacheService.delete(`event:processing:${processingId}`);
 
-      this.logger.debug('事件处理完成', {
-        processingId,
-        eventType,
-        processingTime,
-        success,
-      });
+      this.logger.debug('事件处理完成');
     } catch (error) {
       this.logger.error('记录事件处理完成失败', error, { processingId });
     }
@@ -229,7 +224,7 @@ export class EventMonitor {
     this.errorCounts.clear();
     this.successCounts.clear();
 
-    this.logger.info('事件监控统计信息已重置');
+    this.logger.log('事件监控统计信息已重置');
   }
 
   /**
@@ -245,7 +240,7 @@ export class EventMonitor {
     this.alertConfig.eventsPerSecondThreshold = config.eventsPerSecondThreshold;
     this.alertConfig.alertChannels = config.alertChannels;
 
-    this.logger.info('事件监控告警配置已更新', { config });
+    this.logger.log('事件监控告警配置已更新');
   }
 
   // ==================== 私有方法 ====================
@@ -410,11 +405,7 @@ export class EventMonitor {
    * 触发告警
    */
   private triggerAlert(alertType: string, data: any): void {
-    this.logger.warn('事件监控告警', {
-      alertType,
-      data,
-      timestamp: new Date(),
-    });
+    this.logger.warn('事件监控告警');
 
     // 这里可以集成具体的告警系统
     // 例如：发送邮件、短信、Slack通知等

@@ -88,12 +88,12 @@
  *
  * @since 1.0.0
  */
-import { BaseEntity } from '../../entities/base/base-entity.js';
-import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
+import { BaseEntity } from '../../entities/base/base-entity';
+import { BaseDomainEvent } from '../../events/base/base-domain-event';
 import { EntityId  } from '@hl8/isolation-model';
-import { IPartialAuditInfo } from '../../entities/base/audit-info.js';
-import { ITenantContext } from '@hl8/nestjs-isolation';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { IPartialAuditInfo } from '../../entities/base/audit-info';
+// import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现
+import { Logger } from '@nestjs/common';
 import { IAggregateRoot } from './aggregate-root.interface';
 
 export abstract class BaseAggregateRoot extends BaseEntity implements IAggregateRoot {
@@ -110,7 +110,7 @@ export abstract class BaseAggregateRoot extends BaseEntity implements IAggregate
   protected constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
-    logger?: PinoLogger
+    logger?: Logger
   ) {
     super(id, auditInfo, logger);
   }

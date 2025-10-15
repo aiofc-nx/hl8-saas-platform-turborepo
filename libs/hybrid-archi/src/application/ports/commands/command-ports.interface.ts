@@ -52,7 +52,7 @@
 
 import { EntityId  } from '@hl8/isolation-model';
 import { IAggregateRoot } from '../../../domain/aggregates/base/aggregate-root.interface';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
 
 /**
  * 写仓储端口接口

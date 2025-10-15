@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import {
   DatabaseAdapter,
   IDatabaseConfig,
@@ -58,7 +58,7 @@ export class DatabaseManager {
 
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly databaseFactory: DatabaseFactory,
     config: Partial<IDatabaseManagerConfig> = {}
   ) {
@@ -91,10 +91,7 @@ export class DatabaseManager {
     databaseType: DatabaseType,
     config: Partial<IDatabaseConfig> = {}
   ): DatabaseAdapter {
-    this.logger.debug(`创建数据库: ${databaseName}`, {
-      databaseType,
-      config,
-    });
+    this.logger.debug(`创建数据库: ${databaseName}`);
 
     const database = this.databaseFactory.createDatabase(
       databaseName,
@@ -179,7 +176,7 @@ export class DatabaseManager {
     databaseName: string,
     config: Partial<IDatabaseConfig>
   ): void {
-    this.logger.debug(`更新数据库配置: ${databaseName}`, { config });
+    this.logger.debug(`更新数据库配置: ${databaseName}`);
     this.databaseFactory.updateDatabaseConfiguration(databaseName, config);
   }
 
@@ -267,9 +264,7 @@ export class DatabaseManager {
       }
     }
 
-    this.logger.debug(`重置所有数据库统计信息: ${databases.length}`, {
-      databaseCount: databases.length,
-    });
+    this.logger.debug(`重置所有数据库统计信息: ${databases.length}`);
   }
 
   /**
@@ -306,9 +301,7 @@ export class DatabaseManager {
       }
     }
 
-    this.logger.debug(`连接所有数据库完成: ${databases.length}`, {
-      databaseCount: databases.length,
-    });
+    this.logger.debug(`连接所有数据库完成: ${databases.length}`);
   }
 
   /**
@@ -328,9 +321,7 @@ export class DatabaseManager {
       }
     }
 
-    this.logger.debug(`断开所有数据库连接完成: ${databases.length}`, {
-      databaseCount: databases.length,
-    });
+    this.logger.debug(`断开所有数据库连接完成: ${databases.length}`);
   }
 
   /**
@@ -359,7 +350,7 @@ export class DatabaseManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动数据库管理器');
+    this.logger.log('启动数据库管理器');
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -381,7 +372,7 @@ export class DatabaseManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止数据库管理器');
+    this.logger.log('停止数据库管理器');
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -406,7 +397,7 @@ export class DatabaseManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁数据库管理器');
+    this.logger.log('销毁数据库管理器');
 
     // 停止管理器
     this.stop();
@@ -427,9 +418,7 @@ export class DatabaseManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化数据库管理器', {
-      config: this.config,
-    });
+    this.logger.debug('初始化数据库管理器');
   }
 
   /**
@@ -460,9 +449,7 @@ export class DatabaseManager {
         );
 
         if (unhealthyDatabases.length > 0) {
-          this.logger.warn('发现不健康的数据库', {
-            unhealthyDatabases: unhealthyDatabases.map(([name]) => name),
-          });
+          this.logger.warn('发现不健康的数据库');
         }
       } catch (error) {
         this.logger.error('健康检查失败', error);
@@ -477,10 +464,7 @@ export class DatabaseManager {
     this.statisticsTimer = setInterval(async () => {
       try {
         const allStats = await this.getAllDatabaseStatistics();
-        this.logger.debug('数据库统计信息收集完成', {
-          databaseCount: Object.keys(allStats).length,
-          statistics: allStats,
-        });
+        this.logger.debug('数据库统计信息收集完成');
       } catch (error) {
         this.logger.error('统计收集失败', error);
       }

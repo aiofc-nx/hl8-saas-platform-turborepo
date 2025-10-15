@@ -56,7 +56,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Observable, of, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import type { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import type { Logger } from '@nestjs/common';
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -77,15 +77,15 @@ interface IAsyncContext {
   getOrganizationId?(): string;
   getDepartmentId?(): string;
 }
-import {
-  ISaga,
+import type { ISaga,
   ISagaManager,
   ISagaExecutionContext,
   ISagaStatistics,
   ISagaEvent,
   ISagaEventHandler,
-  SagaStatus,
 } from './saga.interface';
+import { SagaStatus } from './saga.interface';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 核心 Saga 管理器
@@ -127,7 +127,7 @@ export class SagaManager implements ISagaManager {
   private _cleanupTimer?: ReturnType<typeof globalThis.setInterval>;
   private _monitoringTimer?: ReturnType<typeof globalThis.setInterval>;
 
-  constructor(@Inject('ILoggerService') private readonly logger: PinoLogger) {}
+  constructor(@Inject('ILoggerService') private readonly logger: Logger) {}
 
   /**
    * 启动 Saga
@@ -166,7 +166,7 @@ export class SagaManager implements ISagaManager {
     this.executionContexts.set(sagaId, executionContext);
     this.updateStatistics(executionContext, 'started');
 
-    this.logger.info(`Starting saga: ${sagaType}`, LogContext.SYSTEM, {
+    this.logger.log(`Starting saga: ${sagaType}`, LogContext.SYSTEM, {
       sagaId,
       sagaType,
       dataKeys: Object.keys(data),
@@ -206,7 +206,7 @@ export class SagaManager implements ISagaManager {
       this.updateStatistics(context, 'cancelled');
       this.emitSagaEvent('saga.cancelled', context);
 
-      this.logger.info(`Saga stopped: ${context.sagaType}`, LogContext.SYSTEM, {
+      this.logger.log(`Saga stopped: ${context.sagaType}`, LogContext.SYSTEM, {
         sagaId,
         sagaType: context.sagaType,
       });
@@ -236,7 +236,7 @@ export class SagaManager implements ISagaManager {
       return of(false);
     }
 
-    this.logger.info(
+    this.logger.log(
       `Compensating saga: ${context.sagaType}`,
       LogContext.SYSTEM,
       { sagaId, sagaType: context.sagaType }
@@ -288,7 +288,7 @@ export class SagaManager implements ISagaManager {
     }
 
     this.sagas.set(saga.sagaType, saga);
-    this.logger.info(`Registered saga: ${saga.sagaType}`, LogContext.SYSTEM, {
+    this.logger.log(`Registered saga: ${saga.sagaType}`, LogContext.SYSTEM, {
       sagaType: saga.sagaType,
       stepCount: saga.getSteps().length,
       enableCompensation: saga.enableCompensation,
@@ -302,7 +302,7 @@ export class SagaManager implements ISagaManager {
   public unregisterSaga(sagaType: string): boolean {
     const removed = this.sagas.delete(sagaType);
     if (removed) {
-      this.logger.info(`Unregistered saga: ${sagaType}`, LogContext.SYSTEM, {
+      this.logger.log(`Unregistered saga: ${sagaType}`, LogContext.SYSTEM, {
         sagaType,
       });
     }
@@ -340,7 +340,7 @@ export class SagaManager implements ISagaManager {
       return;
     }
 
-    this.logger.info('Starting saga manager...', LogContext.SYSTEM);
+    this.logger.log('Starting saga manager...', LogContext.SYSTEM);
 
     // 启动清理定时器
     this._cleanupTimer = globalThis.setInterval(() => {
@@ -353,7 +353,7 @@ export class SagaManager implements ISagaManager {
     }, 30000); // 每30秒更新一次统计
 
     this._isStarted = true;
-    this.logger.info('Saga manager started successfully', LogContext.SYSTEM);
+    this.logger.log('Saga manager started successfully', LogContext.SYSTEM);
   }
 
   /**
@@ -365,7 +365,7 @@ export class SagaManager implements ISagaManager {
       return;
     }
 
-    this.logger.info('Stopping saga manager...', LogContext.SYSTEM);
+    this.logger.log('Stopping saga manager...', LogContext.SYSTEM);
 
     // 停止定时器
     if (this._cleanupTimer) {
@@ -389,7 +389,7 @@ export class SagaManager implements ISagaManager {
     this.executionContexts.clear();
 
     this._isStarted = false;
-    this.logger.info('Saga manager stopped successfully', LogContext.SYSTEM);
+    this.logger.log('Saga manager stopped successfully', LogContext.SYSTEM);
   }
 
   /**

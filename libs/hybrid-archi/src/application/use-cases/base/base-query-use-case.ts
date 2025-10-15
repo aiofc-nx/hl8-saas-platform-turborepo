@@ -72,8 +72,9 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase, IUseCaseExecutionResult } from './base-use-case.js';
-import { IUseCaseContext } from './use-case.interface';
+import type { IUseCaseExecutionResult  } from './base-use-case';
+import { BaseUseCase } from './base-use-case';
+import type { IUseCaseContext  } from './use-case.interface';
 
 /**
  * 查询选项接口

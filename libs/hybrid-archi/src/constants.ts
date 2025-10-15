@@ -33,7 +33,7 @@
  *   ENTITY_OPERATIONS,
  *   ERROR_CODES,
  *   SAGA_STATUSES
- * } from './constants.js';
+ * } from './constants';
  *
  * // 使用实体操作常量
  * const operation = ENTITY_OPERATIONS.CREATE;

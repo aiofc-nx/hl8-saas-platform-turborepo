@@ -41,7 +41,7 @@
  * @since 1.0.0
  */
 
-import { IWebSocketClient } from '../../shared/interfaces.js';
+import { IWebSocketClient } from '../../shared/interfaces';
 
 /**
  * WebSocket消息类型

@@ -42,7 +42,7 @@
  * @since 1.0.0
  */
 
-import { BaseValueObject } from '../base-value-object.js';
+import { BaseValueObject } from '../base-value-object';
 
 /**
  * 密码策略属性接口

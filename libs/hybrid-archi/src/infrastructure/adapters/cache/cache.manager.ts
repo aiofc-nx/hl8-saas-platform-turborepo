@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheAdapter, ICacheConfig } from './cache.adapter';
 import { CacheFactory, ICacheRegistration } from './cache.factory';
 
@@ -48,7 +48,7 @@ export class CacheManager {
 
   constructor(
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheFactory: CacheFactory,
     config: Partial<ICacheManagerConfig> = {}
   ) {
@@ -78,10 +78,7 @@ export class CacheManager {
     cacheType: string,
     config: Partial<ICacheConfig> = {}
   ): CacheAdapter {
-    this.logger.debug(`创建缓存: ${cacheName}`, {
-      cacheType,
-      config,
-    });
+    this.logger.debug(`创建缓存: ${cacheName}`);
 
     return this.cacheFactory.createCache(cacheName, cacheType, config);
   }
@@ -151,7 +148,7 @@ export class CacheManager {
     cacheName: string,
     config: Partial<ICacheConfig>
   ): void {
-    this.logger.debug(`更新缓存配置: ${cacheName}`, { config });
+    this.logger.debug(`更新缓存配置: ${cacheName}`);
     this.cacheFactory.updateCacheConfiguration(cacheName, config);
   }
 
@@ -237,9 +234,7 @@ export class CacheManager {
       }
     }
 
-    this.logger.debug(`重置所有缓存统计信息: ${caches.length}`, {
-      cacheCount: caches.length,
-    });
+    this.logger.debug(`重置所有缓存统计信息: ${caches.length}`);
   }
 
   /**
@@ -264,9 +259,7 @@ export class CacheManager {
       }
     }
 
-    this.logger.debug(`预热所有缓存完成: ${caches.length}`, {
-      cacheCount: caches.length,
-    });
+    this.logger.debug(`预热所有缓存完成: ${caches.length}`);
   }
 
   /**
@@ -295,7 +288,7 @@ export class CacheManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动缓存管理器');
+    this.logger.log('启动缓存管理器');
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -317,7 +310,7 @@ export class CacheManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止缓存管理器');
+    this.logger.log('停止缓存管理器');
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -342,7 +335,7 @@ export class CacheManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁缓存管理器');
+    this.logger.log('销毁缓存管理器');
 
     // 停止管理器
     this.stop();
@@ -360,9 +353,7 @@ export class CacheManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化缓存管理器', {
-      config: this.config,
-    });
+    this.logger.debug('初始化缓存管理器');
   }
 
   /**
@@ -393,9 +384,7 @@ export class CacheManager {
         );
 
         if (unhealthyCaches.length > 0) {
-          this.logger.warn('发现不健康的缓存', {
-            unhealthyCaches: unhealthyCaches.map(([name]) => name),
-          });
+          this.logger.warn('发现不健康的缓存');
         }
       } catch (error) {
         this.logger.error('健康检查失败', error);
@@ -410,10 +399,7 @@ export class CacheManager {
     this.statisticsTimer = setInterval(async () => {
       try {
         const allStats = await this.getAllCacheStatistics();
-        this.logger.debug('缓存统计信息收集完成', {
-          cacheCount: Object.keys(allStats).length,
-          statistics: allStats,
-        });
+        this.logger.debug('缓存统计信息收集完成');
       } catch (error) {
         this.logger.error('统计收集失败', error);
       }

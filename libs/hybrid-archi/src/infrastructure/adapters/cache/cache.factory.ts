@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheAdapter, ICacheConfig } from './cache.adapter';
 
 /**
@@ -44,7 +44,7 @@ export class CacheFactory {
 
   constructor(
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger
+    private readonly logger: Logger
   ) {}
 
   /**
@@ -94,10 +94,7 @@ export class CacheFactory {
 
     this.caches.set(cacheName, registration);
 
-    this.logger.debug(`创建缓存: ${cacheName}`, {
-      cacheType,
-      config: registration.config,
-    });
+    this.logger.debug(`创建缓存: ${cacheName}`);
 
     return cache;
   }
@@ -202,9 +199,7 @@ export class CacheFactory {
 
     Object.assign(registration.config, config);
 
-    this.logger.debug(`更新缓存配置: ${cacheName}`, {
-      config: registration.config,
-    });
+    this.logger.debug(`更新缓存配置: ${cacheName}`);
   }
 
   /**
@@ -230,9 +225,7 @@ export class CacheFactory {
       await this.destroyCache(cacheName);
     }
 
-    this.logger.debug(`清理过期缓存: ${expiredCaches.length}`, {
-      expiredCaches,
-    });
+    this.logger.debug(`清理过期缓存: ${expiredCaches.length}`);
 
     return expiredCaches.length;
   }

@@ -6,13 +6,12 @@
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/nestjs-fastify';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { TenantContextService} from '@hl8/nestjs-isolation';
-import {
-  GeneralBadRequestException,
-} from '@hl8/isolation-model';
-import { EntityId } from '../../../domain/value-objects.js';
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
+import { Logger } from '@nestjs/common';
+// // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
+import { BadRequestException } from '@nestjs/common';
+import { EntityId } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 租户上下文中间件
@@ -45,7 +44,7 @@ import { EntityId } from '../../../domain/value-objects.js';
  * 1. **提取租户ID**：从请求头/查询参数/子域名/JWT中提取
  * 2. **验证租户ID**：验证格式和有效性
  * 3. **验证权限**：验证用户是否有权访问该租户（可选）
- * 4. **设置上下文**：调用 TenantContextService 设置上下文
+ * 4. **设置上下文**：调用 any 设置上下文
  * 5. **继续处理**：调用下一个中间件或路由处理器
  * 6. **自动清理**：请求结束时自动清理上下文
  *
@@ -64,7 +63,7 @@ import { EntityId } from '../../../domain/value-objects.js';
  * @Controller('users')
  * export class UserController {
  *   @Get()
- *   async getUsers(@TenantContext() context: ITenantContext) {
+ *   async getUsers(@TenantContext() context: any) {
  *     // 租户上下文已自动设置
  *     console.log('Current tenant:', context.tenantId);
  *   }
@@ -74,10 +73,10 @@ import { EntityId } from '../../../domain/value-objects.js';
 @Injectable()
 export class TenantContextMiddleware implements NestMiddleware {
   constructor(
-    private readonly tenantContextService: TenantContextService,
-    private readonly logger: PinoLogger
+    private readonly tenantContextService: any,
+    private readonly logger: Logger
   ) {
-    this.logger.setContext({ requestId: 'TenantContextMiddleware' });
+    this.logger.debug({ requestId: 'TenantContextMiddleware' });
   }
 
   /**
@@ -96,19 +95,19 @@ export class TenantContextMiddleware implements NestMiddleware {
    * ### 上下文设置
    * - 创建完整的租户上下文对象
    * - 包含租户ID、用户ID、请求ID、时间戳
-   * - 调用 TenantContextService 设置上下文
+   * - 调用 any 设置上下文
    *
    * ### 错误处理
-   * - 租户ID缺失：抛出 GeneralBadRequestException
-   * - 租户ID格式无效：抛出 GeneralBadRequestException
+   * - 租户ID缺失：抛出 BadRequestException
+   * - 租户ID格式无效：抛出 BadRequestException
    * - 用户无权访问租户：抛出 GeneralUnauthorizedException
-   * - 上下文设置失败：抛出 GeneralBadRequestException
+   * - 上下文设置失败：抛出 BadRequestException
    *
    * @param req - Fastify 请求对象
    * @param res - Fastify 响应对象
    * @param next - 下一个中间件函数
    *
-   * @throws {GeneralBadRequestException} 当租户ID缺失、无效或用户无权访问时
+   * @throws {BadRequestException} 当租户ID缺失、无效或用户无权访问时
    *
    * @example
    * ```typescript
@@ -120,8 +119,8 @@ export class TenantContextMiddleware implements NestMiddleware {
    * ```
    */
   async use(
-    req: FastifyRequest,
-    res: FastifyReply,
+    req: any,
+    res: any,
     next: () => void
   ): Promise<void> {
     try {
@@ -129,7 +128,7 @@ export class TenantContextMiddleware implements NestMiddleware {
       const tenantIdString = this.extractTenantId(req);
 
       if (!tenantIdString) {
-        throw new GeneralBadRequestException(
+        throw new BadRequestException(
           'Tenant ID required',
           '请求必须包含租户ID（通过请求头、查询参数或子域名）',
           {
@@ -144,7 +143,7 @@ export class TenantContextMiddleware implements NestMiddleware {
       this.validateTenantIdFormat(tenantIdString);
 
       // 3. 转换为 EntityId
-      const tenantId = EntityId.fromString(tenantIdString);
+      const tenantId = TenantId.create(tenantIdString);
 
       // 4. 提取用户信息（如果已认证）
       const user = req['user'];
@@ -159,7 +158,7 @@ export class TenantContextMiddleware implements NestMiddleware {
       const requestId = this.extractOrGenerateRequestId(req);
 
       // 7. 设置租户上下文
-      await this.tenantContextService.setContext({
+      await this.tenantContextService.debug({
         tenantId,
         userId,
         sessionId: req.headers['x-session-id'] as string,
@@ -181,21 +180,12 @@ export class TenantContextMiddleware implements NestMiddleware {
       };
 
       // 9. 记录日志
-      this.logger.debug('租户上下文已设置', {
-        tenantId: tenantIdString,
-        userId,
-        url: req.url,
-        method: req.method,
-      });
+      this.logger.debug('租户上下文已设置');
 
       // 10. 继续处理
       next();
     } catch (error) {
-      this.logger.error('设置租户上下文失败', {
-        error: (error as Error).message,
-        url: req.url,
-        method: req.method,
-      });
+      this.logger.error('设置租户上下文失败');
       throw error;
     }
   }
@@ -210,11 +200,11 @@ export class TenantContextMiddleware implements NestMiddleware {
    *
    * @private
    */
-  private extractTenantId(req: FastifyRequest): string | null {
+  private extractTenantId(req: any): string | null {
     // 1. 从请求头提取（优先级最高）
     const headerTenantId = req.headers['x-tenant-id'] as string;
     if (headerTenantId) {
-      this.logger.debug('从请求头提取租户ID', { tenantId: headerTenantId });
+      this.logger.debug('从请求头提取租户ID');
       return headerTenantId;
     }
 
@@ -222,7 +212,7 @@ export class TenantContextMiddleware implements NestMiddleware {
     const query = req.query as Record<string, unknown>;
     const queryTenantId = query['tenantId'] as string;
     if (queryTenantId) {
-      this.logger.debug('从查询参数提取租户ID', { tenantId: queryTenantId });
+      this.logger.debug('从查询参数提取租户ID');
       return queryTenantId;
     }
 
@@ -231,7 +221,7 @@ export class TenantContextMiddleware implements NestMiddleware {
     if (host) {
       const subdomain = this.extractSubdomain(host);
       if (subdomain && this.isValidTenantSubdomain(subdomain)) {
-        this.logger.debug('从子域名提取租户ID', { subdomain });
+        this.logger.debug('从子域名提取租户ID');
         return subdomain;
       }
     }
@@ -239,7 +229,7 @@ export class TenantContextMiddleware implements NestMiddleware {
     // 4. 从JWT Token提取
     const user = req['user'];
     if (user?.tenantId) {
-      this.logger.debug('从JWT提取租户ID', { tenantId: user.tenantId });
+      this.logger.debug('从JWT提取租户ID');
       return user.tenantId;
     }
 
@@ -309,7 +299,7 @@ export class TenantContextMiddleware implements NestMiddleware {
    *
    * @param tenantId - 租户ID字符串
    *
-   * @throws {GeneralBadRequestException} 当格式无效时
+   * @throws {BadRequestException} 当格式无效时
    *
    * @private
    */
@@ -318,7 +308,7 @@ export class TenantContextMiddleware implements NestMiddleware {
       /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
     if (!uuidV4Pattern.test(tenantId)) {
-      throw new GeneralBadRequestException(
+      throw new BadRequestException(
         'Invalid tenant ID format',
         '租户ID格式无效，必须是有效的UUID v4格式',
         {
@@ -338,7 +328,7 @@ export class TenantContextMiddleware implements NestMiddleware {
    * @param userTenantId - 用户所属的租户ID
    * @param requestTenantId - 请求的租户ID
    *
-   * @throws {GeneralBadRequestException} 当用户无权访问租户时
+   * @throws {BadRequestException} 当用户无权访问租户时
    *
    * @private
    */
@@ -348,13 +338,9 @@ export class TenantContextMiddleware implements NestMiddleware {
     requestTenantId: string
   ): void {
     if (userTenantId !== requestTenantId) {
-      this.logger.warn('用户尝试访问其他租户', {
-        userId,
-        userTenantId,
-        requestTenantId,
-      });
+      this.logger.warn('用户尝试访问其他租户');
 
-      throw new GeneralBadRequestException(
+      throw new BadRequestException(
         'Cross-tenant access denied',
         '无权访问其他租户的资源',
         {
@@ -377,7 +363,7 @@ export class TenantContextMiddleware implements NestMiddleware {
    *
    * @private
    */
-  private extractOrGenerateRequestId(req: FastifyRequest): string {
+  private extractOrGenerateRequestId(req: any): string {
     const headerRequestId = req.headers['x-request-id'] as string;
     if (headerRequestId) {
       return headerRequestId;
@@ -411,7 +397,7 @@ export class TenantContextMiddleware implements NestMiddleware {
    *
    * @private
    */
-  private getClientIp(req: FastifyRequest): string {
+  private getClientIp(req: any): string {
     // 1. X-Forwarded-For（代理）
     const forwardedFor = req.headers['x-forwarded-for'];
     if (forwardedFor) {
@@ -441,7 +427,7 @@ export class TenantContextMiddleware implements NestMiddleware {
    *
    * @private
    */
-  private getUserAgent(req: FastifyRequest): string {
+  private getUserAgent(req: any): string {
     const userAgent = req.headers['user-agent'];
     return Array.isArray(userAgent) ? userAgent[0] : userAgent || 'unknown';
   }

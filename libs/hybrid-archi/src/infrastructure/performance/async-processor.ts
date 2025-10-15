@@ -9,7 +9,7 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 
 /**
@@ -129,7 +129,7 @@ export class AsyncProcessor {
   private processorTimer: NodeJS.Timeout | null = null;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     @Inject('AsyncProcessorConfig') private readonly config: AsyncProcessorConfig
   ) {
@@ -180,12 +180,7 @@ export class AsyncProcessor {
       this.stats.lastActivity = new Date();
       this.updateStats();
 
-      this.logger.info('任务已提交', {
-        taskId,
-        name,
-        priority: task.priority,
-        queueSize: this.taskQueue.length,
-      });
+      this.logger.log('任务已提交');
 
       return taskId;
     } catch (error) {
@@ -216,13 +211,13 @@ export class AsyncProcessor {
     try {
       const task = this.tasks.get(taskId);
       if (!task) {
-        this.logger.warn('任务不存在', { taskId });
+        this.logger.warn('任务不存在');
         return false;
       }
 
       if (task.status === 'running') {
         // 正在运行的任务需要特殊处理
-        this.logger.warn('无法取消正在运行的任务', { taskId });
+        this.logger.warn('无法取消正在运行的任务');
         return false;
       }
 
@@ -238,7 +233,7 @@ export class AsyncProcessor {
       this.stats.cancelledTasks++;
       this.updateStats();
 
-      this.logger.info('任务已取消', { taskId });
+      this.logger.log('任务已取消');
       return true;
     } catch (error) {
       this.logger.error('取消任务失败', error, { taskId });
@@ -313,7 +308,7 @@ export class AsyncProcessor {
       this.processorTimer = null;
     }
 
-    this.logger.info('异步处理器已停止');
+    this.logger.log('异步处理器已停止');
   }
 
   /**
@@ -339,10 +334,7 @@ export class AsyncProcessor {
       cleanedCount++;
     }
 
-    this.logger.info('已完成任务清理完成', {
-      cleanedCount,
-      remainingTasks: this.tasks.size,
-    });
+    this.logger.log('已完成任务清理完成');
 
     return cleanedCount;
   }
@@ -365,10 +357,7 @@ export class AsyncProcessor {
       }
     }, 100); // 每100ms检查一次
 
-    this.logger.info('异步处理器已启动', {
-      maxConcurrency: this.config.maxConcurrency,
-      queueSize: this.config.queueSize,
-    });
+    this.logger.log('异步处理器已启动');
   }
 
   /**
@@ -437,11 +426,7 @@ export class AsyncProcessor {
       this.executionTimes.push(executionTime);
       this.updateStats();
 
-      this.logger.info('任务执行成功', {
-        taskId: task.id,
-        name: task.name,
-        executionTime,
-      });
+      this.logger.log('任务执行成功');
     } catch (error) {
       // 任务执行失败
       task.error = error instanceof Error ? error : new Error(String(error));
@@ -459,25 +444,14 @@ export class AsyncProcessor {
           this.stats.retryingTasks--;
         }, this.config.retryInterval);
 
-        this.logger.warn('任务执行失败，将重试', {
-          taskId: task.id,
-          name: task.name,
-          retryCount: task.retryCount,
-          maxRetries: task.maxRetries,
-          error: task.error.message,
-        });
+        this.logger.warn('任务执行失败，将重试');
       } else {
         // 任务最终失败
         task.status = 'failed';
         task.completedAt = new Date();
         this.stats.failedTasks++;
 
-        this.logger.error('任务执行最终失败', {
-          taskId: task.id,
-          name: task.name,
-          retryCount: task.retryCount,
-          error: task.error.message,
-        });
+        this.logger.error('任务执行最终失败');
       }
     } finally {
       this.runningTasks.delete(task.id);

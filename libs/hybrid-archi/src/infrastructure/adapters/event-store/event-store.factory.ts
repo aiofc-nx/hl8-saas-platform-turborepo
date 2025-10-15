@@ -11,7 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { EventStoreAdapter, IEventStoreConfig } from './event-store.adapter';
 
 /**
@@ -59,7 +59,7 @@ export class EventStoreFactory {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger
+    private readonly logger: Logger
   ) {}
 
   /**
@@ -115,10 +115,7 @@ export class EventStoreFactory {
 
     this.stores.set(storeName, registration);
 
-    this.logger.debug(`创建事件存储: ${storeName}`, {
-      storeType,
-      config: registration.config,
-    });
+    this.logger.debug(`创建事件存储: ${storeName}`);
 
     return store;
   }
@@ -224,9 +221,7 @@ export class EventStoreFactory {
 
     Object.assign(registration.config, config);
 
-    this.logger.debug(`更新事件存储配置: ${storeName}`, {
-      config: registration.config,
-    });
+    this.logger.debug(`更新事件存储配置: ${storeName}`);
   }
 
   /**
@@ -252,9 +247,7 @@ export class EventStoreFactory {
       await this.destroyStore(storeName);
     }
 
-    this.logger.debug(`清理过期事件存储: ${expiredStores.length}`, {
-      expiredStores,
-    });
+    this.logger.debug(`清理过期事件存储: ${expiredStores.length}`);
 
     return expiredStores.length;
   }

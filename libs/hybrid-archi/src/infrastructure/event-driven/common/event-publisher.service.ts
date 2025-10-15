@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { DomainEvent } from '../../../domain.js';
+import { DomainEvent } from '../../../domain';
 import { IEventBus } from './event-bus.interface';
 
 /**

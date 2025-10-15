@@ -9,7 +9,7 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 
 /**
@@ -112,7 +112,7 @@ export class CacheStrategy {
   private readonly partitions = new Map<number, Map<string, CacheEntry>>();
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     @Inject('CacheStrategyConfig') private readonly config: CacheStrategyConfig
   ) {
@@ -159,12 +159,7 @@ export class CacheStrategy {
       this.stats.lastAccessTime = new Date();
       this.updateStats();
 
-      this.logger.debug('缓存命中', {
-        key,
-        strategy,
-        accessTime: Date.now() - startTime,
-        hitRate: this.stats.hitRate,
-      });
+      this.logger.debug('缓存命中');
 
       return entry.value as T;
     } catch (error) {
@@ -225,13 +220,7 @@ export class CacheStrategy {
       this.stats.newestEntry = new Date();
       this.updateStats();
 
-      this.logger.debug('缓存设置成功', {
-        key,
-        strategy,
-        ttl: entryTtl,
-        size: entry.size,
-        duration: Date.now() - startTime,
-      });
+      this.logger.debug('缓存设置成功');
     } catch (error) {
       this.logger.error('设置缓存失败', error, { key, strategy });
       throw error;
@@ -266,7 +255,7 @@ export class CacheStrategy {
       this.stats.size--;
       this.updateStats();
 
-      this.logger.debug('缓存删除成功', { key });
+      this.logger.debug('缓存删除成功');
       return true;
     } catch (error) {
       this.logger.error('删除缓存失败', error, { key });
@@ -296,7 +285,7 @@ export class CacheStrategy {
       this.stats.misses = 0;
       this.updateStats();
 
-      this.logger.info('缓存已清空');
+      this.logger.log('缓存已清空');
     } catch (error) {
       this.logger.error('清空缓存失败', error);
       throw error;
@@ -326,7 +315,7 @@ export class CacheStrategy {
 
       await Promise.all(promises);
 
-      this.logger.info('缓存预热完成', { keyCount: keys.length });
+      this.logger.log('缓存预热完成');
     } catch (error) {
       this.logger.error('缓存预热失败', error);
       throw error;

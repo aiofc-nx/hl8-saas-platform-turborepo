@@ -11,7 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { MessagingService } from '@hl8/nestjs-fastify/messaging';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,
@@ -49,7 +49,7 @@ export class MessageQueueFactory {
   constructor(
     private readonly messagingService: MessagingService,
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger
+    private readonly logger: Logger
   ) {}
 
   /**
@@ -104,10 +104,7 @@ export class MessageQueueFactory {
 
     this.queues.set(queueName, registration);
 
-    this.logger.debug(`创建消息队列: ${queueName}`, {
-      queueType,
-      config: registration.config,
-    });
+    this.logger.debug(`创建消息队列: ${queueName}`);
 
     return queue;
   }
@@ -213,9 +210,7 @@ export class MessageQueueFactory {
 
     Object.assign(registration.config, config);
 
-    this.logger.debug(`更新消息队列配置: ${queueName}`, {
-      config: registration.config,
-    });
+    this.logger.debug(`更新消息队列配置: ${queueName}`);
   }
 
   /**
@@ -241,9 +236,7 @@ export class MessageQueueFactory {
       await this.destroyQueue(queueName);
     }
 
-    this.logger.debug(`清理过期消息队列: ${expiredQueues.length}`, {
-      expiredQueues,
-    });
+    this.logger.debug(`清理过期消息队列: ${expiredQueues.length}`);
 
     return expiredQueues.length;
   }

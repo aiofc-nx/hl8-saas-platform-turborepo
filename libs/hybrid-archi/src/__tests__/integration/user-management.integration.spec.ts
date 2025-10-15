@@ -9,21 +9,22 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
-import { TenantContextService } from '@hl8/nestjs-isolation';
+// // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
 // import { EventBus } from '@hl8/nestjs-fastify/messaging';
 
 // 导入混合架构组件
-import { BaseEntity, EntityId } from '../../domain.js';
-import { BaseUseCase } from '../../application.js';
-import { BaseController } from '../../interface.js';
-import { CacheStrategy } from '../../infrastructure/performance/cache-strategy.js';
-import { ConnectionPoolManager } from '../../infrastructure/performance/connection-pool.js';
-import { AsyncProcessor } from '../../infrastructure/performance/async-processor.js';
-import { EventMonitor } from '../../infrastructure/event-driven/event-monitor.js';
-import { DeadLetterQueueProcessor } from '../../infrastructure/event-driven/dead-letter-queue.js';
+import { BaseEntity, EntityId } from '../../domain';
+import { BaseUseCase } from '../../application';
+import { BaseController } from '../../interface';
+import { CacheStrategy } from '../../infrastructure/performance/cache-strategy';
+import { ConnectionPoolManager } from '../../infrastructure/performance/connection-pool';
+import { AsyncProcessor } from '../../infrastructure/performance/async-processor';
+import { EventMonitor } from '../../infrastructure/event-driven/event-monitor';
+import { DeadLetterQueueProcessor } from '../../infrastructure/event-driven/dead-letter-queue';
+import { TenantId } from '@hl8/isolation-model';
 
 describe('用户管理集成测试', () => {
   let app: INestApplication;
@@ -43,7 +44,7 @@ describe('用户管理集成测试', () => {
       private email: string,
       private status: UserStatus = UserStatus.ACTIVE
     ) {
-      super(id, { tenantId: EntityId.generate() });
+      super(id, { tenantId: TenantId.generate() });
     }
 
 
@@ -103,7 +104,7 @@ describe('用户管理集成测试', () => {
 
     async createUser(userData: CreateUserRequest): Promise<CreateUserResponse> {
       const user = new User(
-        EntityId.generate(),
+        TenantId.generate(),
         userData.name,
         userData.email,
         UserStatus.PENDING
@@ -275,7 +276,7 @@ describe('用户管理集成测试', () => {
         EventMonitor,
         DeadLetterQueueProcessor,
         {
-          provide: PinoLogger,
+          provide: Logger,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),
@@ -375,7 +376,7 @@ describe('用户管理集成测试', () => {
           },
         },
         {
-          provide: TenantContextService,
+          provide: any,
           useValue: {
             getCurrentTenantId: jest.fn().mockReturnValue('tenant-123'),
             getCurrentUserId: jest.fn().mockReturnValue('user-123'),

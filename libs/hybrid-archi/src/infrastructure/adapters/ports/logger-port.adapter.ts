@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { ILoggerPort } from '../../../application/ports/shared/shared-ports.interface';
 
 /**
@@ -19,7 +19,7 @@ import { ILoggerPort } from '../../../application/ports/shared/shared-ports.inte
  */
 @Injectable()
 export class LoggerPortAdapter implements ILoggerPort {
-  constructor(private readonly logger: PinoLogger) {}
+  constructor(private readonly logger: Logger) {}
 
   /**
    * 记录调试日志
@@ -38,7 +38,7 @@ export class LoggerPortAdapter implements ILoggerPort {
    * @param context - 上下文信息
    */
   info(message: string, context?: Record<string, unknown>): void {
-    this.logger.info(message, context);
+    this.logger.log(message, context);
   }
 
   /**

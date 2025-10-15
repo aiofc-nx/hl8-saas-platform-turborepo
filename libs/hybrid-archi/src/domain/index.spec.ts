@@ -4,7 +4,7 @@
  * @description 测试领域层模块的导出
  * @since 1.0.0
  */
-import * as DomainModule from './index.js';
+import * as DomainModule from './index';
 
 describe('领域层模块导出', () => {
   describe('模块导出验证', () => {

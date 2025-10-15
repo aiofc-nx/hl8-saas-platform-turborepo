@@ -13,12 +13,13 @@
  * @since 1.0.0
  */
 
-import { EntityId } from './entity-id.js';
+import { EntityId } from './entity-id';
+import { TenantId } from '@hl8/isolation-model';
 
 describe('EntityId', () => {
   describe('生成标识符', () => {
     it('应该生成有效的 UUID v4 标识符', () => {
-      const id = EntityId.generate();
+      const id = TenantId.generate();
 
       expect(id).toBeInstanceOf(EntityId);
       expect(EntityId.isValid(id.value)).toBe(true);
@@ -26,15 +27,15 @@ describe('EntityId', () => {
     });
 
     it('应该生成唯一的标识符', () => {
-      const id1 = EntityId.generate();
-      const id2 = EntityId.generate();
+      const id1 = TenantId.generate();
+      const id2 = TenantId.generate();
 
       expect(id1.equals(id2)).toBe(false);
       expect(id1.value).not.toBe(id2.value);
     });
 
     it('应该生成不同格式的标识符', () => {
-      const id = EntityId.generate();
+      const id = TenantId.generate();
 
       // UUID v4 格式：xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
       const uuidRegex =
@@ -46,7 +47,7 @@ describe('EntityId', () => {
   describe('从字符串创建', () => {
     it('应该从有效 UUID v4 字符串创建标识符', () => {
       const uuidString = '550e8400-e29b-41d4-a716-446655440000';
-      const id = EntityId.fromString(uuidString);
+      const id = TenantId.create(uuidString);
 
       expect(id).toBeInstanceOf(EntityId);
       expect(id.value).toBe(uuidString);
@@ -62,22 +63,22 @@ describe('EntityId', () => {
       ];
 
       invalidUuids.forEach((invalidUuid) => {
-        expect(() => EntityId.fromString(invalidUuid)).toThrow();
+        expect(() => TenantId.create(invalidUuid)).toThrow();
       });
     });
 
     it('应该拒绝非 UUID v4 格式', () => {
       // UUID v1 格式
       const uuidV1 = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
-      expect(() => EntityId.fromString(uuidV1)).toThrow();
+      expect(() => TenantId.create(uuidV1)).toThrow();
 
       // UUID v3 格式
       const uuidV3 = '6fa459ea-ee8a-3ca4-894e-db77e160355e';
-      expect(() => EntityId.fromString(uuidV3)).toThrow();
+      expect(() => TenantId.create(uuidV3)).toThrow();
 
       // UUID v5 格式
       const uuidV5 = '886313e1-3b8a-5372-9b90-0c9aee199e5d';
-      expect(() => EntityId.fromString(uuidV5)).toThrow();
+      expect(() => TenantId.create(uuidV5)).toThrow();
     });
   });
 
@@ -123,35 +124,35 @@ describe('EntityId', () => {
 
   describe('相等性比较', () => {
     it('应该正确比较相同的标识符', () => {
-      const id1 = EntityId.fromString('550e8400-e29b-41d4-a716-446655440000');
-      const id2 = EntityId.fromString('550e8400-e29b-41d4-a716-446655440000');
+      const id1 = TenantId.create('550e8400-e29b-41d4-a716-446655440000');
+      const id2 = TenantId.create('550e8400-e29b-41d4-a716-446655440000');
 
       expect(id1.equals(id2)).toBe(true);
       expect(id1.value).toBe(id2.value);
     });
 
     it('应该正确比较不同的标识符', () => {
-      const id1 = EntityId.fromString('550e8400-e29b-41d4-a716-446655440000');
-      const id2 = EntityId.fromString('550e8400-e29b-41d4-a716-446655440001');
+      const id1 = TenantId.create('550e8400-e29b-41d4-a716-446655440000');
+      const id2 = TenantId.create('550e8400-e29b-41d4-a716-446655440001');
 
       expect(id1.equals(id2)).toBe(false);
       expect(id1.value).not.toBe(id2.value);
     });
 
     it('应该正确处理 null 比较', () => {
-      const id = EntityId.generate();
+      const id = TenantId.generate();
 
       expect(id.equals(null)).toBe(false);
     });
 
     it('应该正确处理 undefined 比较', () => {
-      const id = EntityId.generate();
+      const id = TenantId.generate();
 
       expect(id.equals(undefined)).toBe(false);
     });
 
     it('应该正确处理非 EntityId 对象比较', () => {
-      const id = EntityId.generate();
+      const id = TenantId.generate();
 
       expect(id.equals('string' as any)).toBe(false);
       expect(id.equals(123 as any)).toBe(false);
@@ -162,14 +163,14 @@ describe('EntityId', () => {
   describe('字符串表示', () => {
     it('应该正确转换为字符串', () => {
       const uuidString = '550e8400-e29b-41d4-a716-446655440000';
-      const id = EntityId.fromString(uuidString);
+      const id = TenantId.create(uuidString);
 
       expect(id.toString()).toBe(uuidString);
     });
 
     it('应该正确转换为 JSON', () => {
       const uuidString = '550e8400-e29b-41d4-a716-446655440000';
-      const id = EntityId.fromString(uuidString);
+      const id = TenantId.create(uuidString);
 
       expect(id.toJSON()).toBe(uuidString);
     });
@@ -178,14 +179,14 @@ describe('EntityId', () => {
   describe('哈希码和比较', () => {
     it('应该正确返回哈希码', () => {
       const uuidString = '550e8400-e29b-41d4-a716-446655440000';
-      const id = EntityId.fromString(uuidString);
+      const id = TenantId.create(uuidString);
 
       expect(id.getHashCode()).toBe(uuidString);
     });
 
     it('应该正确比较标识符大小', () => {
-      const id1 = EntityId.fromString('550e8400-e29b-41d4-a716-446655440000');
-      const id2 = EntityId.fromString('550e8400-e29b-41d4-a716-446655440001');
+      const id1 = TenantId.create('550e8400-e29b-41d4-a716-446655440000');
+      const id2 = TenantId.create('550e8400-e29b-41d4-a716-446655440001');
 
       const result = id1.compareTo(id2);
       expect(typeof result).toBe('number');
@@ -194,8 +195,8 @@ describe('EntityId', () => {
     });
 
     it('应该正确处理相等标识符比较', () => {
-      const id1 = EntityId.fromString('550e8400-e29b-41d4-a716-446655440000');
-      const id2 = EntityId.fromString('550e8400-e29b-41d4-a716-446655440000');
+      const id1 = TenantId.create('550e8400-e29b-41d4-a716-446655440000');
+      const id2 = TenantId.create('550e8400-e29b-41d4-a716-446655440000');
 
       expect(id1.compareTo(id2)).toBe(0);
     });
@@ -203,13 +204,13 @@ describe('EntityId', () => {
 
   describe('版本检查', () => {
     it('应该正确返回 UUID 版本', () => {
-      const id = EntityId.generate();
+      const id = TenantId.generate();
 
       expect(id.getVersion()).toBe(4);
     });
 
     it('应该正确检查版本', () => {
-      const id = EntityId.fromString('550e8400-e29b-41d4-a716-446655440000');
+      const id = TenantId.create('550e8400-e29b-41d4-a716-446655440000');
 
       expect(id.getVersion()).toBe(4);
     });
@@ -217,7 +218,7 @@ describe('EntityId', () => {
 
   describe('空值检查', () => {
     it('应该正确检查非空标识符', () => {
-      const id = EntityId.generate();
+      const id = TenantId.generate();
 
       expect(id.isEmpty()).toBe(false);
     });
@@ -225,7 +226,7 @@ describe('EntityId', () => {
     it('应该正确处理空字符串标识符', () => {
       // 这种情况不应该发生，因为构造函数会验证格式
       // 但我们可以测试 isEmpty 方法
-      const id = EntityId.generate();
+      const id = TenantId.generate();
 
       expect(id.isEmpty()).toBe(false);
     });
@@ -233,7 +234,7 @@ describe('EntityId', () => {
 
   describe('克隆操作', () => {
     it('应该正确克隆标识符', () => {
-      const originalId = EntityId.generate();
+      const originalId = TenantId.generate();
       const clonedId = originalId.clone();
 
       expect(clonedId).toBeInstanceOf(EntityId);
@@ -243,7 +244,7 @@ describe('EntityId', () => {
     });
 
     it('应该创建独立的克隆', () => {
-      const originalId = EntityId.generate();
+      const originalId = TenantId.generate();
       const clonedId = originalId.clone();
 
       // 克隆应该与原始标识符相等但不相同
@@ -255,7 +256,7 @@ describe('EntityId', () => {
   describe('边界情况', () => {
     it('应该处理最小有效 UUID', () => {
       const minUuid = '00000000-0000-4000-8000-000000000000';
-      const id = EntityId.fromString(minUuid);
+      const id = TenantId.create(minUuid);
 
       expect(id.value).toBe(minUuid);
       expect(EntityId.isValid(id.value)).toBe(true);
@@ -263,7 +264,7 @@ describe('EntityId', () => {
 
     it('应该处理最大有效 UUID', () => {
       const maxUuid = 'ffffffff-ffff-4fff-bfff-ffffffffffff';
-      const id = EntityId.fromString(maxUuid);
+      const id = TenantId.create(maxUuid);
 
       expect(id.value).toBe(maxUuid);
       expect(EntityId.isValid(id.value)).toBe(true);
@@ -271,7 +272,7 @@ describe('EntityId', () => {
 
     it('应该处理特殊字符', () => {
       const specialUuid = '550e8400-e29b-41d4-a716-446655440000';
-      const id = EntityId.fromString(specialUuid);
+      const id = TenantId.create(specialUuid);
 
       expect(id.value).toBe(specialUuid);
       expect(EntityId.isValid(id.value)).toBe(true);
@@ -284,7 +285,7 @@ describe('EntityId', () => {
       const ids: EntityId[] = [];
 
       for (let i = 0; i < 1000; i++) {
-        ids.push(EntityId.generate());
+        ids.push(TenantId.generate());
       }
 
       const endTime = Date.now();
@@ -298,7 +299,7 @@ describe('EntityId', () => {
       const ids = new Set<string>();
 
       for (let i = 0; i < 10000; i++) {
-        const id = EntityId.generate();
+        const id = TenantId.generate();
         expect(ids.has(id.value)).toBe(false);
         ids.add(id.value);
       }

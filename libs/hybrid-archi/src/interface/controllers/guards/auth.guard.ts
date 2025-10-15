@@ -43,13 +43,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import {
-  ILoggerService,
+import type { ILoggerService,
   IUser,
   IUserContext,
   IRole,
   IPermission,
-} from '../../shared/interfaces.js';
+} from '../../shared/interfaces';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * JWT服务接口
@@ -106,19 +106,11 @@ export class JwtAuthGuard implements CanActivate {
       request.user = this.createUserContext(user);
       request.traceId = traceId;
 
-      this.logger.debug('JWT认证成功', {
-        userId: user.getId().getValue(),
-        traceId,
-      });
+      this.logger.debug('JWT认证成功');
 
       return true;
     } catch (error) {
-      this.logger.warn('JWT认证失败', {
-        traceId,
-        error: error instanceof Error ? error.message : String(error),
-        userAgent: request.headers['user-agent'],
-        ip: request.ip,
-      });
+      this.logger.warn('JWT认证失败');
 
       throw new UnauthorizedException('认证失败');
     }

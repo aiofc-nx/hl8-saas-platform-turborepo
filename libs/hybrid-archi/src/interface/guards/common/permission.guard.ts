@@ -12,7 +12,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { FastifyRequest } from '@hl8/nestjs-fastify';
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 
 /**
  * 权限装饰器元数据键
@@ -52,7 +52,7 @@ export class PermissionGuard implements CanActivate {
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const request = context.switchToHttp().getRequest<FastifyRequest>();
+      const request = context.switchToHttp().getRequest<any>();
       const user = request['user'];
 
       if (!user) {

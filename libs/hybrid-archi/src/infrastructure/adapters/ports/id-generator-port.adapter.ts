@@ -11,6 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { EntityId  } from '@hl8/isolation-model';
 import { IIdGeneratorPort } from '../../../application/ports/shared/shared-ports.interface';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * ID生成策略枚举
@@ -81,7 +82,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
    * @returns 实体ID实例
    */
   generateEntityId(): EntityId {
-    return EntityId.generate();
+    return TenantId.generate();
   }
 
   /**
@@ -193,7 +194,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
       }
     );
 
-    return EntityId.fromString(this.formatId(uuid));
+    return TenantId.create(this.formatId(uuid));
   }
 
   /**
@@ -206,7 +207,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
     const sequence = Math.floor(Math.random() * 4096);
 
     const snowflakeId = (timestamp << 22) | (machineId << 12) | sequence;
-    return EntityId.fromString(this.formatId(snowflakeId.toString()));
+    return TenantId.create(this.formatId(snowflakeId.toString()));
   }
 
   /**
@@ -215,7 +216,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
   private generateAutoIncrement(): EntityId {
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 10000);
-    return EntityId.fromString(this.formatId(`${timestamp}${random}`));
+    return TenantId.create(this.formatId(`${timestamp}${random}`));
   }
 
   /**
@@ -228,7 +229,7 @@ export class IdGeneratorPortAdapter implements IIdGeneratorPort {
     const suffix = (customConfig as { suffix?: string }).suffix || '';
     const baseId = this.generateUUID();
 
-    return EntityId.fromString(`${prefix}${baseId}${suffix}`);
+    return TenantId.create(`${prefix}${baseId}${suffix}`);
   }
 
   /**

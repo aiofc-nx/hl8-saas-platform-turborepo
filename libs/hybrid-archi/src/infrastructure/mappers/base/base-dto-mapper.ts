@@ -45,7 +45,7 @@
  *
  *   protected mapFromDto(dto: UserDto): User {
  *     return User.reconstitute(
- *       EntityId.fromString(dto.id),
+ *       TenantId.create(dto.id),
  *       dto.name,
  *       dto.email,
  *       new Date(dto.createdAt)
@@ -64,8 +64,9 @@
  * @since 1.0.0
  */
 
-import { BaseDomainMapper, MappingError } from './base-domain-mapper.js';
+import { BaseDomainMapper, MappingError } from './base-domain-mapper';
 import type { IDtoMapper } from './mapper.interface';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * DTO映射选项接口

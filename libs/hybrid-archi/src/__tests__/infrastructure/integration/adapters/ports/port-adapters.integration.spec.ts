@@ -6,8 +6,8 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerModule } from '@hl8/nestjs-fastify/logging';
-import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+import { LoggerModule } from '@hl8/nestjs-fastify';
+// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
 import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
 import { PortAdaptersModule } from '../../../../../infrastructure/adapters/ports/port-adapters.module';
 import { LoggerPortAdapter } from '../../../../../infrastructure/adapters/ports/logger-port.adapter';
@@ -65,7 +65,7 @@ describe('PortAdaptersModule Integration', () => {
 
       expect(() => {
         adapter.debug('Debug message', { context: 'test' });
-        adapter.info('Info message', { context: 'test' });
+        adapter.log('Info message', { context: 'test' });
         adapter.warn('Warning message', { context: 'test' });
         adapter.error('Error message', new Error('Test error'), {
           context: 'test',

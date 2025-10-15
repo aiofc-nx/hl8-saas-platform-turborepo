@@ -14,7 +14,7 @@ export type {
 } from './event-store.interface';
 
 // 异常类 - 通用异常定义
-export { ConcurrencyError as CoreConcurrencyError } from './concurrency-error.js';
+export { ConcurrencyError as CoreConcurrencyError } from './concurrency-error';
 
 // 具体实现由@aiofix/database模块提供：
 // import { MongoEventStore, PostgreSQLEventStore } from '@aiofix/database';

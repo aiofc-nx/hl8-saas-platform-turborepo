@@ -26,13 +26,12 @@
  */
 import 'reflect-metadata';
 import { METADATA_VERSION, DecoratorType } from './metadata.constants';
-import {
-  IMetadata,
+import type { IMetadata,
   ICommandHandlerMetadata,
   IQueryHandlerMetadata,
   IEventHandlerMetadata,
   ISagaMetadata,
-} from './metadata.interfaces';
+ } from './metadata.interfaces';
 
 /**
  * 设置元数据

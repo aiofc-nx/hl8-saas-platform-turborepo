@@ -11,8 +11,8 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
+import { Logger } from '@nestjs/common';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
 
 /**
  * 事件存储配置接口
@@ -132,7 +132,7 @@ export class EventStoreAdapter {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     config: Partial<IEventStoreConfig> = {}
   ) {
     this.config = {
@@ -202,11 +202,7 @@ export class EventStoreAdapter {
         await this.updateCache(aggregateId, records);
       }
 
-      this.logger.debug(`存储事件成功: ${aggregateType}`, {
-        aggregateId,
-        eventCount: events.length,
-        version: records[records.length - 1]?.version,
-      });
+      this.logger.debug(`存储事件成功: ${aggregateType}`);
     } catch (error) {
       this.logger.error(`存储事件失败: ${aggregateType}`, error, {
         aggregateId,
@@ -238,11 +234,7 @@ export class EventStoreAdapter {
           toVersion
         );
         if (cached) {
-          this.logger.debug(`从缓存获取事件: ${aggregateId}`, {
-            fromVersion,
-            toVersion,
-            eventCount: cached.length,
-          });
+          this.logger.debug(`从缓存获取事件: ${aggregateId}`);
           return cached;
         }
       }
@@ -260,11 +252,7 @@ export class EventStoreAdapter {
         await this.setCache(aggregateId, events, fromVersion, toVersion);
       }
 
-      this.logger.debug(`从数据库获取事件: ${aggregateId}`, {
-        fromVersion,
-        toVersion,
-        eventCount: events.length,
-      });
+      this.logger.debug(`从数据库获取事件: ${aggregateId}`);
 
       return events;
     } catch (error) {
@@ -342,10 +330,7 @@ export class EventStoreAdapter {
         await this.clearCache(aggregateId);
       }
 
-      this.logger.debug(`删除事件成功: ${aggregateId}`, {
-        fromVersion,
-        toVersion,
-      });
+      this.logger.debug(`删除事件成功: ${aggregateId}`);
     } catch (error) {
       this.logger.error(`删除事件失败: ${aggregateId}`, error, {
         fromVersion,
@@ -369,10 +354,7 @@ export class EventStoreAdapter {
         cutoffDate
       );
 
-      this.logger.debug(`清理过期事件完成: ${deletedCount}`, {
-        cutoffDate,
-        retentionDays: this.config.retentionDays,
-      });
+      this.logger.debug(`清理过期事件完成: ${deletedCount}`);
 
       return deletedCount;
     } catch (error) {

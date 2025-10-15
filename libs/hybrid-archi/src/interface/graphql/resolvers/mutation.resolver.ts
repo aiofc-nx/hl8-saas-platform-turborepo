@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { BaseResolver } from './base-resolver.js';
+import { BaseResolver } from './base-resolver';
 
 export class MutationResolver extends BaseResolver {
   // 占位符实现

@@ -9,7 +9,7 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 
 /**
@@ -113,7 +113,7 @@ export class ConnectionPoolManager {
   private validationTimer: NodeJS.Timeout | null = null;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly databaseService: DatabaseService,
     @Inject('ConnectionPoolConfig') private readonly config: ConnectionPoolConfig
   ) {
@@ -154,11 +154,7 @@ export class ConnectionPoolManager {
       this.responseTimes.push(responseTime);
       this.updateStats();
 
-      this.logger.debug('连接获取成功', {
-        connectionId: connection.id,
-        responseTime,
-        activeConnections: this.stats.activeConnections,
-      });
+      this.logger.debug('连接获取成功');
 
       return connection;
     } catch (error) {
@@ -180,7 +176,7 @@ export class ConnectionPoolManager {
     try {
       const connection = this.connections.get(connectionId);
       if (!connection) {
-        this.logger.warn('连接不存在', { connectionId });
+        this.logger.warn('连接不存在');
         return;
       }
 
@@ -194,10 +190,7 @@ export class ConnectionPoolManager {
       this.stats.successfulRequests++;
       this.updateStats();
 
-      this.logger.debug('连接释放成功', {
-        connectionId,
-        idleConnections: this.stats.idleConnections,
-      });
+      this.logger.debug('连接释放成功');
     } catch (error) {
       this.logger.error('释放连接失败', error, { connectionId });
       throw error;
@@ -214,7 +207,7 @@ export class ConnectionPoolManager {
     try {
       const connection = this.connections.get(connectionId);
       if (!connection) {
-        this.logger.warn('连接不存在', { connectionId });
+        this.logger.warn('连接不存在');
         return;
       }
 
@@ -231,7 +224,7 @@ export class ConnectionPoolManager {
       this.connections.delete(connectionId);
       this.updateStats();
 
-      this.logger.info('连接关闭成功', { connectionId });
+      this.logger.log('连接关闭成功');
     } catch (error) {
       this.logger.error('关闭连接失败', error, { connectionId });
       throw error;
@@ -251,9 +244,7 @@ export class ConnectionPoolManager {
         await this.closeConnection(connectionId);
       }
 
-      this.logger.info('所有连接已关闭', {
-        connectionCount: connectionIds.length,
-      });
+      this.logger.log('所有连接已关闭');
     } catch (error) {
       this.logger.error('关闭所有连接失败', error);
       throw error;
@@ -372,11 +363,7 @@ export class ConnectionPoolManager {
 
       const healthy = issues.length === 0;
 
-      this.logger.debug('连接池健康检查完成', {
-        healthy,
-        issueCount: issues.length,
-        recommendationCount: recommendations.length,
-      });
+      this.logger.debug('连接池健康检查完成');
 
       return { healthy, issues, recommendations };
     } catch (error) {
@@ -410,7 +397,7 @@ export class ConnectionPoolManager {
 
     this.responseTimes.length = 0;
 
-    this.logger.info('连接池统计信息已重置');
+    this.logger.log('连接池统计信息已重置');
   }
 
   // ==================== 私有方法 ====================
@@ -425,10 +412,7 @@ export class ConnectionPoolManager {
         await this.createConnection();
       }
 
-      this.logger.info('连接池初始化完成', {
-        minConnections: this.config.minConnections,
-        maxConnections: this.config.maxConnections,
-      });
+      this.logger.log('连接池初始化完成');
     } catch (error) {
       this.logger.error('连接池初始化失败', error);
       throw error;
@@ -464,7 +448,7 @@ export class ConnectionPoolManager {
       this.stats.idleConnections++;
       this.updateStats();
 
-      this.logger.debug('连接创建成功', { connectionId });
+      this.logger.debug('连接创建成功');
       return connection;
     } catch (error) {
       connection.status = 'error';
@@ -541,9 +525,7 @@ export class ConnectionPoolManager {
       }
     }, this.config.healthCheckInterval);
 
-    this.logger.info('连接池健康检查已启动', {
-      interval: this.config.healthCheckInterval,
-    });
+    this.logger.log('连接池健康检查已启动');
   }
 
   /**
@@ -558,9 +540,7 @@ export class ConnectionPoolManager {
       }
     }, this.config.validationInterval);
 
-    this.logger.info('连接池验证已启动', {
-      interval: this.config.validationInterval,
-    });
+    this.logger.log('连接池验证已启动');
   }
 
   /**
@@ -570,10 +550,7 @@ export class ConnectionPoolManager {
     const health = await this.checkHealth();
 
     if (!health.healthy) {
-      this.logger.warn('连接池健康检查发现问题', {
-        issues: health.issues,
-        recommendations: health.recommendations,
-      });
+      this.logger.warn('连接池健康检查发现问题');
     }
   }
 

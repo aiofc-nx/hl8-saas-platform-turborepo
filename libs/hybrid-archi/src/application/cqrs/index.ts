@@ -6,19 +6,19 @@
  */
 
 // 命令系统
-export * from './commands.js';
+export * from './commands';
 
 // 查询系统
-export * from './queries.js';
+export * from './queries';
 
 // 事件系统
-export * from './events.js';
+export * from './events';
 
 // Saga系统
-export * from './sagas.js';
+export * from './sagas';
 
 // 事件存储
-export * from './event-store.js';
+export * from './event-store';
 
 // CQRS总线
-export * from './bus.js';
+export * from './bus';

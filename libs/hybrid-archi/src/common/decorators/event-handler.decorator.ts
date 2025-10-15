@@ -48,18 +48,17 @@
  * @since 1.0.0
  */
 import 'reflect-metadata';
-import { BaseDomainEvent } from '../../domain/events/base/base-domain-event.js';
-import { IEventHandler } from '../../application/cqrs/events/base/event-handler.interface';
+import { BaseDomainEvent } from '../../domain/events/base/base-domain-event';
+import type { IEventHandler  } from '../../application/cqrs/events/base/event-handler.interface';
 import {
   setEventHandlerMetadata,
   getEventHandlerMetadata as getMetadata,
 } from './metadata.utils';
-import {
-  IEventHandlerMetadata,
+import type { IEventHandlerMetadata,
   IRetryConfig,
   IMultiTenantConfig,
   IPerformanceMonitorConfig,
-} from './metadata.interfaces';
+ } from './metadata.interfaces';
 
 /**
  * 事件处理器装饰器选项

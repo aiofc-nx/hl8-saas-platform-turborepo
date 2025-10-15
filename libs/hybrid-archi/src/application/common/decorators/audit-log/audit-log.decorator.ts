@@ -1,4 +1,4 @@
-import type { MethodDecoratorTarget } from '../types/index.js';
+import type { MethodDecoratorTarget } from '../types/index';
 
 /**
  * 审计日志装饰器

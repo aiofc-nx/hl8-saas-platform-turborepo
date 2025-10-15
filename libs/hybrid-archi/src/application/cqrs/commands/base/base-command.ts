@@ -63,6 +63,7 @@
  * @since 1.0.0
  */
 import { EntityId } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 export abstract class BaseCommand {
   private readonly _commandId: EntityId;
@@ -86,7 +87,7 @@ export abstract class BaseCommand {
     commandVersion = 1,
     metadata: Record<string, unknown> = {},
   ) {
-    this._commandId = EntityId.generate();
+    this._commandId = TenantId.generate();
     this._tenantId = tenantId;
     this._userId = userId;
     this._createdAt = new Date();

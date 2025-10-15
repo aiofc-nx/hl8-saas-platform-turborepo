@@ -21,7 +21,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from '../base-value-object.js';
+import { BaseValueObject } from '../base-value-object';
 
 export class Password extends BaseValueObject<string> {
   /**

@@ -1,3 +1,4 @@
+import { TenantId } from '@hl8/isolation-model';
 /**
  * 基础领域异常类
  *
@@ -47,7 +48,7 @@
  *       throw new UserEmailAlreadyExistsError(email, existingUser.id);
  *     }
  *
- *     return User.create(EntityId.generate(), name, email);
+ *     return User.create(TenantId.generate(), name, email);
  *   }
  * }
  * ```

@@ -10,8 +10,8 @@
 
 import { Module } from '@nestjs/common';
 import { CacheModule } from '@hl8/caching';
-import { LoggerModule } from '@hl8/nestjs-fastify/logging';
-import { TypedConfigModule } from '@hl8/nestjs-fastify/config';
+import { LoggerModule } from '@hl8/nestjs-fastify';
+// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
 import { MessagingModule } from '@hl8/nestjs-fastify/messaging';
 import { MultiTenancyModule } from '@hl8/nestjs-isolation';
 import { DatabaseModule } from '@hl8/database';

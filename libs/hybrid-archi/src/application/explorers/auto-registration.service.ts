@@ -44,7 +44,7 @@
  * @since 1.0.0
  */
 import { Injectable } from '@nestjs/common';
-import type { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import type { Logger } from '@nestjs/common';
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -58,7 +58,7 @@ enum LogContext {
   HTTP_REQUEST = 'HTTP_REQUEST',
 }
 import { ModuleRef } from '@nestjs/core';
-import type { ICommandBus, IQueryBus, IEventBus } from '../cqrs/bus.js';
+import type { ICommandBus, IQueryBus, IEventBus } from '../cqrs/bus';
 import { IExplorerResult, IHandlerInfo } from './core-explorer.service';
 
 /**
@@ -175,7 +175,7 @@ export class AutoRegistrationService {
 
   constructor(
     private readonly moduleRef: ModuleRef,
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly commandBus?: ICommandBus,
     private readonly queryBus?: IQueryBus,
     private readonly eventBus?: IEventBus
@@ -204,7 +204,7 @@ export class AutoRegistrationService {
       ...options,
     };
 
-    this.logger.info('Starting handler registration...', LogContext.SYSTEM);
+    this.logger.log('Starting handler registration...', LogContext.SYSTEM);
 
     // 初始化注册状态
     this.registrationStatus = {
@@ -284,12 +284,12 @@ export class AutoRegistrationService {
       this.registrationStatus!.completed = true;
       this.registrationStatus!.registrationTime = Date.now() - startTime;
 
-      this.logger.info(
+      this.logger.log(
         `Handler registration completed in ${this.registrationStatus.registrationTime}ms`,
         LogContext.SYSTEM,
         { registrationTime: this.registrationStatus.registrationTime }
       );
-      this.logger.info(
+      this.logger.log(
         `Registered: ${this.registrationStatus.registeredHandlers}, Failed: ${this.registrationStatus.failedHandlers}`,
         LogContext.SYSTEM,
         {
@@ -336,7 +336,7 @@ export class AutoRegistrationService {
       return;
     }
 
-    this.logger.info(
+    this.logger.log(
       `Registering ${handlers.length} command handlers...`,
       LogContext.SYSTEM,
       { handlerCount: handlers.length }
@@ -391,7 +391,7 @@ export class AutoRegistrationService {
       return;
     }
 
-    this.logger.info(
+    this.logger.log(
       `Registering ${handlers.length} query handlers...`,
       LogContext.SYSTEM,
       { handlerCount: handlers.length }
@@ -446,7 +446,7 @@ export class AutoRegistrationService {
       return;
     }
 
-    this.logger.info(
+    this.logger.log(
       `Registering ${handlers.length} event handlers...`,
       LogContext.SYSTEM,
       { handlerCount: handlers.length }
@@ -493,7 +493,7 @@ export class AutoRegistrationService {
     handlers: IHandlerInfo[],
     options: IRegistrationOptions
   ): Promise<void> {
-    this.logger.info(
+    this.logger.log(
       `Registering ${handlers.length} saga handlers...`,
       LogContext.SYSTEM,
       { handlerCount: handlers.length }

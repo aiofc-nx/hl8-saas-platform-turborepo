@@ -1,8 +1,7 @@
-import {
-  ILoggerService,
+import type { ILoggerService,
   IMetricsService,
   IRequestContext,
-} from '../shared/interfaces.js';
+ } from '../shared/interfaces';
 
 /**
  * 基础REST控制器
@@ -87,12 +86,7 @@ export abstract class BaseController {
   ): Promise<TOutput> {
     this.getRequestContext();
 
-    this.logger.info(`开始处理${operationName}请求`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      input: this.sanitizeInput(input),
-    });
+    this.logger.log(`开始处理${operationName}请求`);
 
     try {
       // 执行用例
@@ -141,13 +135,7 @@ export abstract class BaseController {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.info(`${operationName}操作成功`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      resultType: typeof result,
-    });
+    this.logger.log(`${operationName}操作成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(`${operationName}_success_total`);
@@ -168,14 +156,7 @@ export abstract class BaseController {
   protected logError(operationName: string, error: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.error(`${operationName}操作失败`, {
-      requestId: this.requestId,
-      correlationId: this.correlationId,
-      operation: operationName,
-      duration,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    this.logger.error(`${operationName}操作失败`);
 
     // 记录错误指标
     this.metricsService?.incrementCounter(`${operationName}_error_total`, {

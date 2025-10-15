@@ -6,4 +6,4 @@
  */
 
 // 用例注册表
-export { UseCaseRegistry } from './use-case-registry.js';
+export { UseCaseRegistry } from './use-case-registry';

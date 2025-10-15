@@ -33,8 +33,8 @@
  *   constructor(
  *     private readonly userRepository: IUserRepository,
  *     private readonly eventBus: IDomainEventBus,
- *     tenantContextService: TenantContextService,
- *     logger: PinoLogger
+ *     tenantContextService: any,
+ *     logger: Logger
  *   ) {
  *     super('CreateUser', '创建用户用例', '1.0.0', ['user:create'], tenantContextService, logger);
  *   }
@@ -54,15 +54,12 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase } from './base-use-case.js';
-import { IUseCaseContext } from './use-case.interface';
-import { TenantContextService, ITenantContext } from '@hl8/nestjs-isolation';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import {
-  GeneralBadRequestException,
-  GeneralInternalServerException,
-} from '@hl8/isolation-model';
-import { TENANT_ERROR_CODES } from '../../../constants.js';
+import { BaseUseCase } from './base-use-case';
+import type { IUseCaseContext  } from './use-case.interface';
+// import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
+import { Logger } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
+import { TENANT_ERROR_CODES } from '../../../constants';
 
 /**
  * 多租户感知的用例基类
@@ -74,15 +71,15 @@ export abstract class TenantAwareUseCase<
   TRequest,
   TResponse
 > extends BaseUseCase<TRequest, TResponse> {
-  protected readonly tenantContextService: TenantContextService;
+  protected readonly tenantContextService: any;
 
   constructor(
     useCaseName: string,
     useCaseDescription: string,
     useCaseVersion = '1.0.0',
     requiredPermissions: string[] = [],
-    tenantContextService: TenantContextService,
-    logger?: PinoLogger
+    tenantContextService: any,
+    logger?: Logger
   ) {
     super(
       useCaseName,
@@ -150,7 +147,7 @@ export abstract class TenantAwareUseCase<
       const tenantContext = await this.getTenantContextAsync();
 
       if (!tenantContext) {
-        throw new GeneralBadRequestException(
+        throw new BadRequestException(
           'Tenant context not found',
           `Tenant context does not exist for use case: ${this.useCaseName}`,
           {
@@ -163,7 +160,7 @@ export abstract class TenantAwareUseCase<
       }
 
       if (!tenantContext.tenantId) {
-        throw new GeneralBadRequestException(
+        throw new BadRequestException(
           'Tenant ID not found',
           `Tenant ID does not exist in context for use case: ${this.useCaseName}`,
           {
@@ -178,7 +175,7 @@ export abstract class TenantAwareUseCase<
 
       // 验证租户状态
       if (tenantContext.metadata?.['tenantStatus'] === 'inactive') {
-        throw new GeneralBadRequestException(
+        throw new BadRequestException(
           'Tenant is inactive',
           `Tenant status is inactive for use case: ${this.useCaseName}`,
           {
@@ -192,24 +189,11 @@ export abstract class TenantAwareUseCase<
         );
       }
 
-      this.logger.info(
-        `Tenant context validation passed: ${this.useCaseName}`,
-        {
-          useCaseName: this.useCaseName,
-          tenantId: tenantContext.tenantId,
-          userId: tenantContext.userId,
-          requestId: tenantContext.requestId,
-        }
-      );
+      this.logger.log(
+        `Tenant context validation passed: ${this.useCaseName}`);
     } catch (error) {
       this.logger.error(
-        `Tenant context validation failed: ${this.useCaseName}`,
-        {
-          useCaseName: this.useCaseName,
-          error: (error as Error).message,
-          stack: (error as Error).stack,
-        }
-      );
+        `Tenant context validation failed: ${this.useCaseName}`);
       throw error;
     }
   }
@@ -219,15 +203,12 @@ export abstract class TenantAwareUseCase<
    *
    * @returns 租户上下文信息
    */
-  protected getTenantContextAsync(): Promise<ITenantContext | null> {
+  protected getTenantContextAsync(): Promise<any | null> {
     try {
       const context = this.tenantContextService.getContext();
       return Promise.resolve(context);
     } catch (error) {
-      this.logger.warn(`Failed to get tenant context: ${this.useCaseName}`, {
-        useCaseName: this.useCaseName,
-        error: (error as Error).message,
-      });
+      this.logger.warn(`Failed to get tenant context: ${this.useCaseName}`);
       return Promise.resolve(null);
     }
   }
@@ -264,12 +245,7 @@ export abstract class TenantAwareUseCase<
     } catch (error) {
       // 如果获取租户上下文失败，记录警告但不影响用例执行
       this.logger.warn(
-        `Failed to get tenant context for use case: ${this.useCaseName}`,
-        {
-          useCaseName: this.useCaseName,
-          error: (error as Error).message,
-        }
-      );
+        `Failed to get tenant context for use case: ${this.useCaseName}`);
     }
 
     return baseContext;
@@ -282,7 +258,7 @@ export abstract class TenantAwareUseCase<
     request: TRequest,
     context: IUseCaseContext
   ): void {
-    this.logger.info(`Tenant-aware use case started: ${this.useCaseName}`, {
+    this.logger.log(`Tenant-aware use case started: ${this.useCaseName}`, {
       useCaseName: this.useCaseName,
       useCaseDescription: this.useCaseDescription,
       useCaseVersion: this.useCaseVersion,
@@ -304,7 +280,7 @@ export abstract class TenantAwareUseCase<
     context: IUseCaseContext,
     executionTime: number
   ): void {
-    this.logger.info(
+    this.logger.log(
       `Tenant-aware use case completed successfully: ${this.useCaseName}`,
       {
         useCaseName: this.useCaseName,

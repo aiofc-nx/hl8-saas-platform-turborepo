@@ -18,7 +18,7 @@ export type {
 export {
   BaseEventProjector,
   BaseReadModelProjector,
-} from './base-event-projector.js';
+} from './base-event-projector';
 
 // 投射器管理器
-export { ProjectorManager } from './projector-manager.js';
+export { ProjectorManager } from './projector-manager';

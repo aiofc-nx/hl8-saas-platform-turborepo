@@ -6,7 +6,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import {
+import type {
   ICacheService,
   CacheStats,
   CacheConfig,

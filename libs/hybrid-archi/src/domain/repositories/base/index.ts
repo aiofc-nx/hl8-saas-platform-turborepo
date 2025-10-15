@@ -25,6 +25,6 @@ export {
 } from './base-aggregate-repository.interface';
 
 // 重新导出常用类型
-export type { EntityId } from '../../value-objects/entity-id.js';
+export type { EntityId } from '../../value-objects/entity-id';
 export type { IAggregateRoot } from '../../aggregates/base/aggregate-root.interface';
-export type { BaseDomainEvent } from '../../events/base/base-domain-event.js';
+export type { BaseDomainEvent } from '../../events/base/base-domain-event';

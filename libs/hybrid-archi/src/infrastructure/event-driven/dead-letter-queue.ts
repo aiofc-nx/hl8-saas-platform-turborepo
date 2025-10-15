@@ -10,7 +10,7 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 
@@ -69,7 +69,7 @@ export class DeadLetterQueueProcessor {
   private processingTimer: NodeJS.Timeout | null = null;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
     @Inject('DeadLetterQueueConfig') private readonly config: DeadLetterQueueConfig
@@ -119,13 +119,7 @@ export class DeadLetterQueueProcessor {
       // 缓存条目
       await this.cacheEntry(entry);
 
-      this.logger.warn('事件添加到死信队列', {
-        entryId,
-        eventType: event.eventType,
-        eventId: event.eventId.toString(),
-        error: error.message,
-        retryStrategy: strategy,
-      });
+      this.logger.warn('事件添加到死信队列');
 
       return entryId;
     } catch (error) {
@@ -152,23 +146,17 @@ export class DeadLetterQueueProcessor {
     try {
       const entry = this.entries.get(entryId);
       if (!entry) {
-        this.logger.warn('死信队列条目不存在', { entryId });
+        this.logger.warn('死信队列条目不存在');
         return false;
       }
 
       if (entry.status !== 'pending' && entry.status !== 'retrying') {
-        this.logger.warn('死信队列条目状态不允许重试', {
-          entryId,
-          status: entry.status,
-        });
+        this.logger.warn('死信队列条目状态不允许重试');
         return false;
       }
 
       if (entry.retryCount >= entry.maxRetries) {
-        this.logger.warn('死信队列条目已达到最大重试次数', {
-          entryId,
-          retryCount: entry.retryCount,
-        });
+        this.logger.warn('死信队列条目已达到最大重试次数');
         await this.markEntryAsFailed(entryId);
         return false;
       }
@@ -181,11 +169,7 @@ export class DeadLetterQueueProcessor {
       // 更新数据库
       await this.updateEntryInDatabase(entry);
 
-      this.logger.info('开始重试死信队列条目', {
-        entryId,
-        retryCount: entry.retryCount,
-        maxRetries: entry.maxRetries,
-      });
+      this.logger.log('开始重试死信队列条目');
 
       try {
         // 重试事件处理
@@ -194,10 +178,7 @@ export class DeadLetterQueueProcessor {
         // 重试成功
         await this.markEntryAsRecovered(entryId);
 
-        this.logger.info('死信队列条目重试成功', {
-          entryId,
-          retryCount: entry.retryCount,
-        });
+        this.logger.log('死信队列条目重试成功');
 
         return true;
       } catch (error) {
@@ -212,11 +193,7 @@ export class DeadLetterQueueProcessor {
 
         await this.updateEntryInDatabase(entry);
 
-        this.logger.warn('死信队列条目重试失败', {
-          entryId,
-          retryCount: entry.retryCount,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        this.logger.warn('死信队列条目重试失败');
 
         return false;
       }
@@ -289,7 +266,7 @@ export class DeadLetterQueueProcessor {
       // 从缓存删除
       await this.cacheService.delete(`dlq:${entryId}`);
 
-      this.logger.info('死信队列条目已删除', { entryId });
+      this.logger.log('死信队列条目已删除');
       return true;
     } catch (error) {
       this.logger.error('删除死信队列条目失败', error, { entryId });
@@ -319,10 +296,7 @@ export class DeadLetterQueueProcessor {
         await this.deleteEntry(entryId);
       }
 
-      this.logger.info('清理过期死信队列条目', {
-        expiredCount: expiredEntries.length,
-        retentionPeriod: this.config.retentionPeriod,
-      });
+      this.logger.log('清理过期死信队列条目');
 
       return expiredEntries.length;
     } catch (error) {
@@ -389,7 +363,7 @@ export class DeadLetterQueueProcessor {
       clearInterval(this.processingTimer);
       this.processingTimer = null;
     }
-    this.logger.info('死信队列处理已停止');
+    this.logger.log('死信队列处理已停止');
   }
 
   // ==================== 私有方法 ====================
@@ -399,13 +373,7 @@ export class DeadLetterQueueProcessor {
    */
   private initializeRetryStrategies(): void {
     // 默认重试策略
-    this.retryStrategies.set('default', {
-      maxRetries: this.config.maxRetries,
-      initialDelay: this.config.retryDelay,
-      backoffMultiplier: this.config.backoffMultiplier,
-      maxDelay: this.config.maxRetryDelay,
-      jitter: true,
-    });
+    this.retryStrategies.set('default');
 
     // 快速重试策略（用于临时错误）
     this.retryStrategies.set('fast', {
@@ -484,9 +452,7 @@ export class DeadLetterQueueProcessor {
       await this.processPendingEntries();
     }, this.config.processingInterval);
 
-    this.logger.info('死信队列处理已启动', {
-      processingInterval: this.config.processingInterval,
-    });
+    this.logger.log('死信队列处理已启动');
   }
 
   /**
@@ -499,9 +465,7 @@ export class DeadLetterQueueProcessor {
         return;
       }
 
-      this.logger.debug('处理待重试的死信队列条目', {
-        count: pendingEntries.length,
-      });
+      this.logger.debug('处理待重试的死信队列条目');
 
       // 批量处理
       const batchSize = Math.min(this.config.batchSize, pendingEntries.length);

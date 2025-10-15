@@ -6,7 +6,7 @@
  */
 
 // 基础解析器
-export * from './base-resolver.js';
+export * from './base-resolver';
 
 // 查询解析器
 export * from './query.resolver';

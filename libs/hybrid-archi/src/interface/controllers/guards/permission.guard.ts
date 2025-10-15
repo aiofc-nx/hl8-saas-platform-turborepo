@@ -14,7 +14,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { ILoggerService, IUserContext } from '../../shared/interfaces.js';
+import type { ILoggerService, IUserContext  } from '../../shared/interfaces';
 
 /**
  * 权限控制守卫
@@ -65,30 +65,16 @@ export class PermissionGuard implements CanActivate {
       );
 
       if (!hasPermission) {
-        this.logger.warn('权限检查失败', {
-          userId: user.userId,
-          requiredPermissions,
-          userPermissions: user.permissions,
-          traceId: request.traceId,
-        });
+        this.logger.warn('权限检查失败');
 
         throw new ForbiddenException('权限不足');
       }
 
-      this.logger.debug('权限检查通过', {
-        userId: user.userId,
-        requiredPermissions,
-        traceId: request.traceId,
-      });
+      this.logger.debug('权限检查通过');
 
       return true;
     } catch (error) {
-      this.logger.error('权限检查异常', {
-        userId: user.userId,
-        requiredPermissions,
-        error: error instanceof Error ? error.message : String(error),
-        traceId: request.traceId,
-      });
+      this.logger.error('权限检查异常');
 
       throw error;
     }

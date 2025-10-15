@@ -1,3 +1,4 @@
+import { TenantId } from '@hl8/isolation-model';
 /**
  * 接口层共享接口定义
  *

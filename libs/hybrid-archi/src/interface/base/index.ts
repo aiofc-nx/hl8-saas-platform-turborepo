@@ -6,13 +6,13 @@
  */
 
 // REST控制器基类
-export * from './base-controller.js';
+export * from './base-controller';
 
 // GraphQL解析器基类
-export * from './base-resolver.js';
+export * from './base-resolver';
 
 // WebSocket网关基类
-export * from './base-gateway.js';
+export * from './base-gateway';
 
 // CLI命令基类
-export * from './base-cli-command.js';
+export * from './base-cli-command';

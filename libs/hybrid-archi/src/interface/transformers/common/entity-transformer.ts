@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 
 /**
  * 转换配置接口
@@ -100,7 +100,7 @@ export class EntityTransformer {
   private readonly configs = new Map<string, TransformConfig>();
   private readonly transformers = new Map<string, (value: any) => any>();
 
-  constructor(private readonly logger: PinoLogger) {
+  constructor(private readonly logger: Logger) {
     this.initializeDefaultTransformers();
   }
 
@@ -229,16 +229,7 @@ export class EntityTransformer {
         warnings,
       };
 
-      this.logger.debug('DTO到实体转换完成', {
-        sourceType: 'DTO',
-        targetType: entityClass.name,
-        fieldsTransformed,
-        fieldsExcluded,
-        fieldsMapped,
-        duration,
-        errorCount: errors.length,
-        warningCount: warnings.length,
-      });
+      this.logger.debug('DTO到实体转换完成');
 
       return result;
     } catch (error) {
@@ -373,16 +364,7 @@ export class EntityTransformer {
         warnings,
       };
 
-      this.logger.debug('实体到DTO转换完成', {
-        sourceType: entity.constructor.name,
-        targetType: dtoClass.name,
-        fieldsTransformed,
-        fieldsExcluded,
-        fieldsMapped,
-        duration,
-        errorCount: errors.length,
-        warningCount: warnings.length,
-      });
+      this.logger.debug('实体到DTO转换完成');
 
       return result;
     } catch (error) {
@@ -471,7 +453,7 @@ export class EntityTransformer {
     transformer: (...args: any[]) => any
   ): void {
     this.transformers.set(name, transformer);
-    this.logger.info('自定义转换器已添加', { name });
+    this.logger.log('自定义转换器已添加');
   }
 
   /**
@@ -482,7 +464,7 @@ export class EntityTransformer {
    */
   removeCustomTransformer(name: string): void {
     this.transformers.delete(name);
-    this.logger.info('自定义转换器已移除', { name });
+    this.logger.log('自定义转换器已移除');
   }
 
   // ==================== 私有方法 ====================

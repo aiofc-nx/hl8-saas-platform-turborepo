@@ -10,7 +10,7 @@
 
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { CacheModule, CacheService } from '@hl8/caching';
-import { LoggerModule, PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { LoggerModule, Logger } from '@hl8/nestjs-fastify';
 
 import { CacheAdapter } from './cache.adapter';
 import { CacheFactory } from './cache.factory';
@@ -69,7 +69,7 @@ export class CacheAdaptersModule {
           enableStatistics: options.enableStatistics,
         });
       },
-      inject: [CacheService, PinoLogger, CacheFactory],
+      inject: [CacheService, Logger, CacheFactory],
     });
 
     // 根据选项动态添加提供者
@@ -108,7 +108,7 @@ export class CacheAdaptersModule {
           enableStatistics: options.enableStatistics,
         });
       },
-      inject: [CacheService, PinoLogger, CacheFactory],
+      inject: [CacheService, Logger, CacheFactory],
     });
 
     // 根据选项动态添加提供者

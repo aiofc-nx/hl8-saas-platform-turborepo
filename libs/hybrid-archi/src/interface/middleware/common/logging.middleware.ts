@@ -6,7 +6,7 @@
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/nestjs-fastify';
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
 
 /**
  * 日志中间件
@@ -37,7 +37,7 @@ export class LoggingMiddleware implements NestMiddleware {
    * @param res - Fastify响应
    * @param next - 下一个中间件
    */
-  use(req: FastifyRequest, res: FastifyReply, next: () => void): void {
+  use(req: any, res: any, next: () => void): void {
     const startTime = Date.now();
     const { method, url, headers, body } = req;
     const userAgent = Array.isArray(headers['user-agent']) 
@@ -96,7 +96,7 @@ export class LoggingMiddleware implements NestMiddleware {
    * @returns 客户端IP地址
    * @private
    */
-  private getClientIp(req: FastifyRequest): string {
+  private getClientIp(req: any): string {
     const forwarded = req.headers['x-forwarded-for'];
     const realIp = req.headers['x-real-ip'];
     const remoteAddress = (req as { connection?: { remoteAddress?: string } }).connection?.remoteAddress;

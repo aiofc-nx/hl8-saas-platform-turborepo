@@ -5,17 +5,18 @@
  * @since 1.0.0
  */
 import { Test, TestingModule } from '@nestjs/testing';
-import { CQRSBus } from './cqrs-bus.js';
-import { CommandBus } from './command-bus.js';
-import { QueryBus } from './query-bus.js';
-import { EventBus } from './event-bus.js';
-import { BaseCommand } from '../commands/base/base-command.js';
-import { BaseQuery, IQueryResult } from '../queries/base/base-query.js';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
+import { CQRSBus } from './cqrs-bus';
+import { CommandBus } from './command-bus';
+import { QueryBus } from './query-bus';
+import { EventBus } from './event-bus';
+import { BaseCommand } from '../commands/base/base-command';
+import { BaseQuery, IQueryResult } from '../queries/base/base-query';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 // 测试用的有效UUID
-const TEST_TENANT_ID = EntityId.generate().toString();
+const TEST_TENANT_ID = TenantId.generate().toString();
 const TEST_USER_ID = 'test-user';
 
 /**
@@ -306,8 +307,8 @@ describe('CQRSBus', () => {
         },
       });
 
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(aggregateId, 1, TenantId.generate(), 'test-data');
       await cqrsBus.publishEvent(event);
 
       expect(handledEvents).toHaveLength(1);
@@ -348,11 +349,11 @@ describe('CQRSBus', () => {
         },
       });
 
-      const aggregateId = EntityId.generate();
+      const aggregateId = TenantId.generate();
       const events = [
-        new TestEvent(aggregateId, 1, EntityId.generate(), 'data1'),
-        new TestEvent(aggregateId, 2, EntityId.generate(), 'data2'),
-        new TestEvent(aggregateId, 3, EntityId.generate(), 'data3'),
+        new TestEvent(aggregateId, 1, TenantId.generate(), 'data1'),
+        new TestEvent(aggregateId, 2, TenantId.generate(), 'data2'),
+        new TestEvent(aggregateId, 3, TenantId.generate(), 'data3'),
       ];
 
       await cqrsBus.publishEvents(events);
@@ -362,8 +363,8 @@ describe('CQRSBus', () => {
     });
 
     it('应该在未初始化时拒绝发布事件', async () => {
-      const aggregateId = EntityId.generate();
-      const event = new TestEvent(aggregateId, 1, EntityId.generate(), 'test-data');
+      const aggregateId = TenantId.generate();
+      const event = new TestEvent(aggregateId, 1, TenantId.generate(), 'test-data');
 
       await expect(cqrsBus.publishEvent(event)).rejects.toThrow(
         'CQRS Bus is not initialized. Call initialize() first.'

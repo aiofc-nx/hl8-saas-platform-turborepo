@@ -5,4 +5,4 @@
  * @since 1.0.0
  */
 
-export { MappingUtils } from './mapping-utils.js';
+export { MappingUtils } from './mapping-utils';

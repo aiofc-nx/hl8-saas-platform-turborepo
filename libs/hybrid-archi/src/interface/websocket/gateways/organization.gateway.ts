@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { BaseGateway } from './base-gateway.js';
+import { BaseGateway } from './base-gateway';
 
 export class OrganizationGateway extends BaseGateway {
   // 占位符实现

@@ -74,7 +74,7 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, of, throwError } from 'rxjs';
 import { map, catchError, switchMap, tap } from 'rxjs/operators';
-import type { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import type { Logger } from '@nestjs/common';
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -87,12 +87,12 @@ enum LogContext {
   PERFORMANCE = 'PERFORMANCE',
   HTTP_REQUEST = 'HTTP_REQUEST',
 }
-import {
-  ISaga,
+import type { ISaga,
   ISagaStep,
   ISagaExecutionContext,
   ISagaConfiguration,
-  SagaStatus,
+} from './saga.interface';
+import { SagaStatus,
   SagaStepStatus,
 } from './saga.interface';
 
@@ -112,7 +112,7 @@ export abstract class BaseSaga implements ISaga {
     public readonly timeout?: number,
     public readonly maxRetries = 3,
     public readonly retryDelay = 1000,
-    protected readonly logger?: PinoLogger
+    protected readonly logger?: Logger
   ) {
     this.configuration = {
       enabled: true,
@@ -161,7 +161,7 @@ export abstract class BaseSaga implements ISaga {
       return throwError(() => new Error('Saga is disabled'));
     }
 
-    this.logger?.info(
+    this.logger?.log(
       `Starting saga execution: ${this.sagaType}`,
       LogContext.SYSTEM,
       {
@@ -173,7 +173,7 @@ export abstract class BaseSaga implements ISaga {
 
     return this.executeSteps(context).pipe(
       tap((updatedContext) => {
-        this.logger?.info(
+        this.logger?.log(
           `Saga execution completed: ${this.sagaType}`,
           LogContext.SYSTEM,
           {
@@ -211,7 +211,7 @@ export abstract class BaseSaga implements ISaga {
       return throwError(() => new Error('Compensation is disabled'));
     }
 
-    this.logger?.info(
+    this.logger?.log(
       `Starting saga compensation: ${this.sagaType}`,
       LogContext.SYSTEM,
       {
@@ -224,7 +224,7 @@ export abstract class BaseSaga implements ISaga {
 
     return this.executeCompensation(context).pipe(
       tap((updatedContext) => {
-        this.logger?.info(
+        this.logger?.log(
           `Saga compensation completed: ${this.sagaType}`,
           LogContext.SYSTEM,
           {

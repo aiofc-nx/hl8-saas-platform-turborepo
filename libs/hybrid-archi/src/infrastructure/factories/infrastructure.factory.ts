@@ -9,11 +9,11 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 import { EventService, MessagingService } from '@hl8/nestjs-fastify/messaging';
-import { TenantContextService } from '@hl8/nestjs-isolation';
+// // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
 
 // 导入所有适配器
 import { LoggerPortAdapter } from '../adapters/ports/logger-port.adapter';
@@ -113,12 +113,12 @@ export class InfrastructureFactory {
   >();
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
     private readonly eventService: EventService,
     private readonly messagingService: MessagingService,
-    private readonly tenantContextService: TenantContextService
+    private readonly tenantContextService: any
   ) {
     this.initializeServiceConstructors();
   }
@@ -162,10 +162,7 @@ export class InfrastructureFactory {
 
       this.services.set(config.serviceName, registration);
 
-      this.logger.debug(`创建基础设施服务: ${config.serviceName}`, {
-        serviceType: config.serviceType,
-        config: config.options,
-      });
+      this.logger.debug(`创建基础设施服务: ${config.serviceName}`);
 
       return instance;
     } catch (error) {

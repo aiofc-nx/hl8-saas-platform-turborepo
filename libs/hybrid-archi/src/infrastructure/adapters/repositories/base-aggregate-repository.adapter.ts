@@ -11,17 +11,16 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@hl8/database';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { EventService } from '@hl8/nestjs-fastify/messaging';
 import { EntityId  } from '@hl8/isolation-model';
-import { BaseAggregateRoot } from '../../../domain/aggregates/base/base-aggregate-root.js';
-import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
+import { BaseAggregateRoot } from '../../../domain/aggregates/base/base-aggregate-root';
+import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
 import { IEntity } from '../../../domain/entities/base/entity.interface';
-import {
-  IRepository,
+import type { IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
-} from '../../../domain/repositories/base/base-repository.interface';
+ } from '../../../domain/repositories/base/base-repository.interface';
 import { BaseRepositoryAdapter } from './base-repository.adapter';
 
 /**
@@ -58,7 +57,7 @@ export class BaseAggregateRepositoryAdapter<
   constructor(
     databaseService: DatabaseService,
     cacheService: CacheService,
-    logger: PinoLogger,
+    logger: Logger,
     private readonly eventService: EventService,
     entityName: string,
     aggregateConfig: Partial<IAggregateRepositoryConfig> = {}
@@ -113,11 +112,7 @@ export class BaseAggregateRepositoryAdapter<
           await this.setCache((aggregate as any).getId(), aggregate);
         }
 
-        this.logger.debug(`保存聚合根成功: ${this.entityName}`, {
-          id: (aggregate as any).getId(),
-          version: aggregate.getVersion(),
-          eventsCount: aggregate.uncommittedEvents.length,
-        });
+        this.logger.debug(`保存聚合根成功: ${this.entityName}`);
       });
     } catch (error) {
       this.logger.error(`保存聚合根失败: ${this.entityName}`, error, {
@@ -139,7 +134,7 @@ export class BaseAggregateRepositoryAdapter<
       if (this.config.enableCache) {
         const cached = await this.getFromCache(id);
         if (cached) {
-          this.logger.debug(`从缓存获取聚合根: ${this.entityName}`, { id });
+          this.logger.debug(`从缓存获取聚合根: ${this.entityName}`);
           return cached;
         }
       }
@@ -158,7 +153,7 @@ export class BaseAggregateRepositoryAdapter<
               await this.setCache(id, aggregate);
             }
 
-            this.logger.debug(`从快照恢复聚合根: ${this.entityName}`, { id });
+            this.logger.debug(`从快照恢复聚合根: ${this.entityName}`);
             return aggregate;
           }
         }
@@ -173,7 +168,7 @@ export class BaseAggregateRepositoryAdapter<
             await this.setCache(id, aggregate);
           }
 
-          this.logger.debug(`从事件重建聚合根: ${this.entityName}`, { id });
+          this.logger.debug(`从事件重建聚合根: ${this.entityName}`);
           return aggregate;
         }
       }
@@ -189,7 +184,7 @@ export class BaseAggregateRepositoryAdapter<
         await this.setCache(id, aggregate);
       }
 
-      this.logger.debug(`从数据库获取聚合根: ${this.entityName}`, { id });
+      this.logger.debug(`从数据库获取聚合根: ${this.entityName}`);
       return aggregate;
     } catch (error) {
       this.logger.error(`查找聚合根失败: ${this.entityName}`, error, { id });
@@ -302,9 +297,7 @@ export class BaseAggregateRepositoryAdapter<
         }
       }
 
-      this.logger.debug(`批量删除聚合根成功: ${this.entityName}`, {
-        count: ids.length,
-      });
+      this.logger.debug(`批量删除聚合根成功: ${this.entityName}`);
     } catch (error) {
       this.logger.error(`批量删除聚合根失败: ${this.entityName}`, error);
       throw error;

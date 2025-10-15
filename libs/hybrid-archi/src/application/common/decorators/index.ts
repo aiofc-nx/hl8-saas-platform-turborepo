@@ -6,16 +6,16 @@
  */
 
 // 装饰器类型
-export * from './types.js';
+export * from './types';
 
 // 缓存装饰器
-export * from './cacheable.js';
+export * from './cacheable';
 
 // 审计日志装饰器
-export * from './audit-log.js';
+export * from './audit-log';
 
 // 权限验证装饰器
-export * from './permissions.js';
+export * from './permissions';
 
 // 性能监控装饰器
-export * from './performance.js';
+export * from './performance';

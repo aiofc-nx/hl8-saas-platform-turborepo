@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 import {
   DomainServiceAdapter,
@@ -48,7 +48,7 @@ export class DomainServiceManager {
   private healthCheckTimer?: NodeJS.Timeout;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     private readonly serviceFactory: DomainServiceFactory,
     config: Partial<IDomainServiceManagerConfig> = {}
@@ -77,10 +77,7 @@ export class DomainServiceManager {
     serviceType: string,
     config: Partial<IDomainServiceConfig> = {}
   ): DomainServiceAdapter {
-    this.logger.debug(`创建领域服务: ${serviceName}`, {
-      serviceType,
-      config,
-    });
+    this.logger.debug(`创建领域服务: ${serviceName}`);
 
     return this.serviceFactory.createService(serviceName, serviceType, config);
   }
@@ -156,7 +153,7 @@ export class DomainServiceManager {
     serviceName: string,
     config: Partial<IDomainServiceConfig>
   ): void {
-    this.logger.debug(`更新领域服务配置: ${serviceName}`, { config });
+    this.logger.debug(`更新领域服务配置: ${serviceName}`);
     this.serviceFactory.updateServiceConfiguration(serviceName, config);
   }
 
@@ -224,7 +221,7 @@ export class DomainServiceManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动领域服务管理器');
+    this.logger.log('启动领域服务管理器');
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -241,7 +238,7 @@ export class DomainServiceManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止领域服务管理器');
+    this.logger.log('停止领域服务管理器');
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -260,7 +257,7 @@ export class DomainServiceManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁领域服务管理器');
+    this.logger.log('销毁领域服务管理器');
 
     // 停止管理器
     this.stop();
@@ -278,9 +275,7 @@ export class DomainServiceManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化领域服务管理器', {
-      config: this.config,
-    });
+    this.logger.debug('初始化领域服务管理器');
   }
 
   /**
@@ -311,9 +306,7 @@ export class DomainServiceManager {
         );
 
         if (unhealthyServices.length > 0) {
-          this.logger.warn('发现不健康的领域服务', {
-            unhealthyServices: unhealthyServices.map(([name]) => name),
-          });
+          this.logger.warn('发现不健康的领域服务');
         }
       } catch (error) {
         this.logger.error('健康检查失败', error);

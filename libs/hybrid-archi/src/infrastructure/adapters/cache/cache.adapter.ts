@@ -10,7 +10,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 
 /**
  * 缓存配置接口
@@ -94,7 +94,7 @@ export class CacheAdapter {
 
   constructor(
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     config: Partial<ICacheConfig> = {}
   ) {
     this.config = {
@@ -144,11 +144,7 @@ export class CacheAdapter {
       }
 
       if (value) {
-        this.logger.debug(`缓存命中: ${key}`, {
-          key,
-          level: level || 'auto',
-          responseTime: Date.now() - startTime,
-        });
+        this.logger.debug(`缓存命中: ${key}`);
       }
 
       return value;
@@ -196,12 +192,7 @@ export class CacheAdapter {
         await this.setToDistributedCache(fullKey, serializedValue, actualTtl);
       }
 
-      this.logger.debug(`设置缓存成功: ${key}`, {
-        key,
-        ttl: actualTtl,
-        level: level || 'auto',
-        responseTime: Date.now() - startTime,
-      });
+      this.logger.debug(`设置缓存成功: ${key}`);
     } catch (error) {
       this.logger.error(`设置缓存失败: ${key}`, error, {
         key,
@@ -235,10 +226,7 @@ export class CacheAdapter {
         await this.deleteFromDistributedCache(fullKey);
       }
 
-      this.logger.debug(`删除缓存成功: ${key}`, {
-        key,
-        level: level || 'auto',
-      });
+      this.logger.debug(`删除缓存成功: ${key}`);
     } catch (error) {
       this.logger.error(`删除缓存失败: ${key}`, error, {
         key,
@@ -324,11 +312,7 @@ export class CacheAdapter {
         this.updateStatistics(hitCount > 0, Date.now() - startTime);
       }
 
-      this.logger.debug(`批量获取缓存成功: ${keys.length}`, {
-        keyCount: keys.length,
-        hitCount: Object.values(result).filter((v) => v !== null).length,
-        responseTime: Date.now() - startTime,
-      });
+      this.logger.debug(`批量获取缓存成功: ${keys.length}`);
 
       return result;
     } catch (error) {
@@ -360,12 +344,7 @@ export class CacheAdapter {
         await this.set(key, value, actualTtl, level);
       }
 
-      this.logger.debug(`批量设置缓存成功: ${Object.keys(data).length}`, {
-        keyCount: Object.keys(data).length,
-        ttl: actualTtl,
-        level: level || 'auto',
-        responseTime: Date.now() - startTime,
-      });
+      this.logger.debug(`批量设置缓存成功: ${Object.keys(data).length}`);
     } catch (error) {
       this.logger.error(
         `批量设置缓存失败: ${Object.keys(data).length}`,
@@ -405,11 +384,7 @@ export class CacheAdapter {
         );
       }
 
-      this.logger.debug(`按模式删除缓存成功: ${pattern}`, {
-        pattern,
-        deletedCount,
-        level: level || 'auto',
-      });
+      this.logger.debug(`按模式删除缓存成功: ${pattern}`);
 
       return deletedCount;
     } catch (error) {
@@ -440,9 +415,7 @@ export class CacheAdapter {
         await this.clearDistributedCache();
       }
 
-      this.logger.debug(`清除缓存成功`, {
-        level: level || 'auto',
-      });
+      this.logger.debug(`清除缓存成功`);
     } catch (error) {
       this.logger.error('清除缓存失败', error, {
         level,
@@ -485,10 +458,7 @@ export class CacheAdapter {
     try {
       await this.mset(data, ttl);
 
-      this.logger.debug(`缓存预热成功: ${Object.keys(data).length}`, {
-        keyCount: Object.keys(data).length,
-        ttl: ttl || this.config.defaultTtl,
-      });
+      this.logger.debug(`缓存预热成功: ${Object.keys(data).length}`);
     } catch (error) {
       this.logger.error('缓存预热失败', error, {
         keyCount: Object.keys(data).length,
@@ -834,7 +804,7 @@ export class CacheAdapter {
       }
 
       // 如果没有deletePattern方法，返回0
-      this.logger.warn('CacheService不支持deletePattern方法', { pattern });
+      this.logger.warn('CacheService不支持deletePattern方法');
       return 0;
     } catch (error) {
       this.logger.error('Redis模式删除失败', error, { pattern });

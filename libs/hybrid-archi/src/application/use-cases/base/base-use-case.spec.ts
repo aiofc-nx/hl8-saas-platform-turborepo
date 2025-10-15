@@ -5,15 +5,15 @@
  * @since 1.0.0
  */
 
-import { BaseUseCase } from './base-use-case.js';
-import { IUseCaseContext } from './use-case.interface';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { BaseUseCase } from './base-use-case';
+import type { IUseCaseContext  } from './use-case.interface';
+import { Logger } from '@nestjs/common';
 
 // 创建具体的测试用例类
 class TestUseCase extends BaseUseCase<TestRequest, TestResponse> {
   constructor(
     permissions: string[] = [],
-    logger?: PinoLogger
+    logger?: Logger
   ) {
     super('TestUseCase', '测试用例', '1.0.0', permissions, logger);
   }
@@ -44,7 +44,7 @@ interface TestResponse {
 
 describe('BaseUseCase', () => {
   let useCase: TestUseCase;
-  let mockLogger: jest.Mocked<PinoLogger>;
+  let mockLogger: jest.Mocked<Logger>;
 
   beforeEach(() => {
     // 创建模拟logger

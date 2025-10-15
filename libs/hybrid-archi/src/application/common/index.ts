@@ -6,13 +6,13 @@
  */
 
 // 异常处理
-export * from './exceptions.js';
+export * from './exceptions';
 
 // 通用接口
-export * from './interfaces.js';
+export * from './interfaces';
 
 // 通用装饰器
-export * from './decorators.js';
+export * from './decorators';
 
 // 中间件系统
-export * from './middleware.js';
+export * from './middleware';

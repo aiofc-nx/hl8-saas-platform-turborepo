@@ -1,4 +1,4 @@
-import type { MethodDecoratorTarget } from '../types.js';
+import type { MethodDecoratorTarget } from '../types';
 
 /**
  * 权限验证装饰器

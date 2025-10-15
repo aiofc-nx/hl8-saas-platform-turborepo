@@ -44,14 +44,14 @@
  * @since 1.0.0
  */
 import { Injectable } from '@nestjs/common';
-import { BaseCommand } from '../commands/base/base-command.js';
-import { ICommandHandler } from '../commands/base/command-handler.interface';
+import { BaseCommand } from '../commands/base/base-command';
+import type { ICommandHandler  } from '../commands/base/command-handler.interface';
 import {
   ICommandBus,
   IMiddleware,
   IMessageContext,
 } from './cqrs-bus.interface';
-import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 命令总线实现
@@ -81,7 +81,7 @@ export class CommandBus implements ICommandBus {
     // 创建消息上下文
     const context: IMessageContext = {
       messageId: command.commandId.toString(),
-      tenantId: command.tenantId ? EntityId.fromString(command.tenantId) : EntityId.generate(),
+      tenantId: command.tenantId ? TenantId.create(command.tenantId) : TenantId.generate(),
       userId: command.userId || '',
       messageType: commandType,
       createdAt: command.createdAt,

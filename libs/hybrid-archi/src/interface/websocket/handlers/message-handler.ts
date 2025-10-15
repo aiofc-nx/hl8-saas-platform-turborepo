@@ -43,11 +43,10 @@
  * @since 1.0.0
  */
 
-import {
-  ILoggerService,
+import type { ILoggerService,
   IMetricsService,
   IWebSocketContext,
-} from '../../shared/interfaces.js';
+ } from '../../shared/interfaces';
 
 /**
  * 消息处理器接口
@@ -119,12 +118,7 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
    * @returns 处理结果
    */
   async handleMessage(message: TMessage, context: IWebSocketContext): Promise<TResponse> {
-    this.logger.info(`开始处理WebSocket消息: ${this.handlerName}`, {
-      requestId: context.requestId,
-      correlationId: context.correlationId,
-      handler: this.handlerName,
-      messageType: typeof message,
-    });
+    this.logger.log(`开始处理WebSocket消息: ${this.handlerName}`);
 
     try {
       // 1. 验证消息
@@ -160,10 +154,7 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
     }
 
     // 基础验证通过，子类可以添加更多验证逻辑
-    this.logger.debug('消息验证通过', {
-      handler: this.handlerName,
-      messageType: typeof message,
-    });
+    this.logger.debug('消息验证通过');
   }
 
   /**
@@ -199,11 +190,7 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
   protected logSuccess(result: TResponse): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.info(`WebSocket消息处理成功: ${this.handlerName}`, {
-      handler: this.handlerName,
-      duration,
-      resultType: typeof result,
-    });
+    this.logger.log(`WebSocket消息处理成功: ${this.handlerName}`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(
@@ -225,12 +212,7 @@ export abstract class BaseMessageHandler<TMessage, TResponse> implements IMessag
   protected logError(error: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.error(`WebSocket消息处理失败: ${this.handlerName}`, {
-      handler: this.handlerName,
-      duration,
-      error: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    });
+    this.logger.error(`WebSocket消息处理失败: ${this.handlerName}`);
 
     // 记录错误指标
     this.metricsService?.incrementCounter(

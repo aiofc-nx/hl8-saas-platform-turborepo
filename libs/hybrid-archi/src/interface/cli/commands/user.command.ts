@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { CliBaseCommand } from './base-command.js';
+import { CliBaseCommand } from './base-command';
 
 export class UserCommand extends CliBaseCommand {
   // 占位符实现

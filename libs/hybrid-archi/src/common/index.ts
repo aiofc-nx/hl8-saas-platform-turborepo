@@ -15,9 +15,9 @@
 
 // 错误处理机制 - 使用 @hl8/common/exceptions 模块
 export {
-  GeneralBadRequestException,
+  BadRequestException,
   GeneralNotFoundException,
-  GeneralInternalServerException,
+  InternalServerErrorException,
   AnyExceptionFilter,
   ExceptionModule,
 } from '@hl8/common';
@@ -25,23 +25,23 @@ export {
 // 错误处理机制 - 已删除，使用 @hl8/common 标准异常处理
 
 // 装饰器系统 - 已从shared层合并到此处
-export * from './decorators.js';
+export * from './decorators';
 
 // 测试工具 - 已删除，使用标准 Jest 和 NestJS 测试工具
 
 // 通用工具函数 - 已删除，使用标准工具库
 
 // 多租户技术基础设施 - 已迁移到 @hl8/multi-tenancy
-// export * from './multi-tenant.js';
+// export * from './multi-tenant';
 
 // 接口已迁移到相应的模块中
 // 性能监控已移动到infrastructure层
-// export * from './monitoring.js';
+// export * from './monitoring';
 // 测试工具已移动到shared层
-// export * from './testing.js';
+// export * from './testing';
 // 实体系统已移动到domain层
-// export * from './entities.js';
+// export * from './entities';
 // CQRS系统已移动到application层
-// export * from './cqrs.js';
+// export * from './cqrs';
 // 消息队列已移动到infrastructure层
-// export * from './message-queue.js';
+// export * from './message-queue';

@@ -38,10 +38,9 @@
  * @since 1.0.0
  */
 
-import {
-  IUseCase,
+import type { IUseCase,
   IUseCaseContext,
-} from '../../use-cases/base/use-case.interface';
+ } from '../../use-cases/base/use-case.interface';
 
 /**
  * 中间件执行上下文接口

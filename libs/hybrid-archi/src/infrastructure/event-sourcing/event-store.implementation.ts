@@ -15,8 +15,8 @@ import {
   EventStoreConfig,
 } from './common/event-store.interface';
 import { ISnapshotStore, Snapshot } from './common/snapshot-store.interface';
-// import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event.js';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+// import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
+import { Logger } from '@nestjs/common';
 import { CacheService } from '@hl8/caching';
 import { DatabaseService } from '@hl8/database';
 
@@ -38,7 +38,7 @@ export class EventStoreImplementation implements IEventStore {
   };
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly cacheService: CacheService,
     private readonly databaseService: DatabaseService,
     private readonly snapshotStore: ISnapshotStore,
@@ -74,11 +74,7 @@ export class EventStoreImplementation implements IEventStore {
       // 5. 清理缓存
       await this.invalidateCache(aggregateId);
 
-      this.logger.info('事件保存成功', {
-        aggregateId,
-        eventCount: events.length,
-        expectedVersion,
-      });
+      this.logger.log('事件保存成功');
     } catch (error) {
       this.logger.error('事件保存失败', error, {
         aggregateId,
@@ -248,7 +244,7 @@ export class EventStoreImplementation implements IEventStore {
       await this.deleteEventsFromDatabase(aggregateId);
       await this.invalidateCache(aggregateId);
 
-      this.logger.info('聚合事件删除成功', { aggregateId });
+      this.logger.log('聚合事件删除成功');
     } catch (error) {
       this.logger.error('删除聚合事件失败', error, { aggregateId });
       throw error;

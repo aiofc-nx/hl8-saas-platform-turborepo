@@ -7,7 +7,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from '@hl8/database';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import {
   DatabaseAdapter,
   IDatabaseConfig,
@@ -17,7 +17,7 @@ import {
 describe('DatabaseAdapter', () => {
   let adapter: DatabaseAdapter;
   let mockDatabaseService: any;
-  let mockLogger: jest.Mocked<PinoLogger>;
+  let mockLogger: jest.Mocked<Logger>;
 
   beforeEach(async () => {
     const mockDatabaseServiceInstance = {
@@ -44,18 +44,18 @@ describe('DatabaseAdapter', () => {
           provide: DatabaseAdapter,
           useFactory: (
             databaseService: DatabaseService,
-            logger: PinoLogger
+            logger: Logger
           ) => {
             return new DatabaseAdapter(databaseService, logger, {});
           },
-          inject: [DatabaseService, PinoLogger],
+          inject: [DatabaseService, Logger],
         },
         {
           provide: DatabaseService,
           useValue: mockDatabaseServiceInstance,
         },
         {
-          provide: PinoLogger,
+          provide: Logger,
           useValue: mockLoggerInstance,
         },
       ],
@@ -63,7 +63,7 @@ describe('DatabaseAdapter', () => {
 
     adapter = module.get<DatabaseAdapter>(DatabaseAdapter);
     mockDatabaseService = mockDatabaseServiceInstance;
-    mockLogger = module.get<PinoLogger>(PinoLogger) as jest.Mocked<PinoLogger>;
+    mockLogger = module.get<Logger>(Logger) as jest.Mocked<Logger>;
   });
 
   describe('query', () => {

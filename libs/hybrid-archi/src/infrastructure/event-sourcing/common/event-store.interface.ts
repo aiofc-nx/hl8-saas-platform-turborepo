@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { DomainEvent } from '../../../domain.js';
+import { DomainEvent } from '../../../domain';
 
 /**
  * 事件存储异常类

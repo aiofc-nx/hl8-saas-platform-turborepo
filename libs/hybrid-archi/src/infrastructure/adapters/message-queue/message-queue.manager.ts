@@ -11,7 +11,7 @@
 import { Injectable } from '@nestjs/common';
 import { MessagingService } from '@hl8/nestjs-fastify/messaging';
 import { CacheService } from '@hl8/caching';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { Logger } from '@nestjs/common';
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,
@@ -56,7 +56,7 @@ export class MessageQueueManager {
   constructor(
     private readonly messagingService: MessagingService,
     private readonly cacheService: CacheService,
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     private readonly queueFactory: MessageQueueFactory,
     config: Partial<IMessageQueueManagerConfig> = {}
   ) {
@@ -87,10 +87,7 @@ export class MessageQueueManager {
     queueType: string,
     config: Partial<IMessageQueueConfig> = {}
   ): MessageQueueAdapter {
-    this.logger.debug(`创建消息队列: ${queueName}`, {
-      queueType,
-      config,
-    });
+    this.logger.debug(`创建消息队列: ${queueName}`);
 
     return this.queueFactory.createQueue(queueName, queueType, config);
   }
@@ -160,7 +157,7 @@ export class MessageQueueManager {
     queueName: string,
     config: Partial<IMessageQueueConfig>
   ): void {
-    this.logger.debug(`更新消息队列配置: ${queueName}`, { config });
+    this.logger.debug(`更新消息队列配置: ${queueName}`);
     this.queueFactory.updateQueueConfiguration(queueName, config);
   }
 
@@ -224,9 +221,7 @@ export class MessageQueueManager {
       }
     }
 
-    this.logger.debug(`清理过期消息完成: ${totalCleaned}`, {
-      queueCount: queues.length,
-    });
+    this.logger.debug(`清理过期消息完成: ${totalCleaned}`);
 
     return totalCleaned;
   }
@@ -257,7 +252,7 @@ export class MessageQueueManager {
    * 启动管理器
    */
   start(): void {
-    this.logger.info('启动消息队列管理器');
+    this.logger.log('启动消息队列管理器');
 
     // 启动自动清理
     if (this.config.enableAutoCleanup) {
@@ -279,7 +274,7 @@ export class MessageQueueManager {
    * 停止管理器
    */
   stop(): void {
-    this.logger.info('停止消息队列管理器');
+    this.logger.log('停止消息队列管理器');
 
     // 停止自动清理
     if (this.cleanupTimer) {
@@ -304,7 +299,7 @@ export class MessageQueueManager {
    * 销毁管理器
    */
   async destroy(): Promise<void> {
-    this.logger.info('销毁消息队列管理器');
+    this.logger.log('销毁消息队列管理器');
 
     // 停止管理器
     this.stop();
@@ -322,9 +317,7 @@ export class MessageQueueManager {
    * 初始化管理器
    */
   private initialize(): void {
-    this.logger.debug('初始化消息队列管理器', {
-      config: this.config,
-    });
+    this.logger.debug('初始化消息队列管理器');
   }
 
   /**
@@ -355,9 +348,7 @@ export class MessageQueueManager {
         );
 
         if (unhealthyQueues.length > 0) {
-          this.logger.warn('发现不健康的消息队列', {
-            unhealthyQueues: unhealthyQueues.map(([name]) => name),
-          });
+          this.logger.warn('发现不健康的消息队列');
         }
       } catch (error) {
         this.logger.error('健康检查失败', error);

@@ -5,13 +5,12 @@
  * @since 1.0.0
  */
 
-import {
-  UseCase,
+import type { UseCase,
   UseCaseType,
   getUseCaseMetadata,
   isUseCase,
   IUseCaseOptions,
-} from './use-case.decorator';
+ } from './use-case.decorator';
 
 describe('UseCase装饰器', () => {
   describe('基本装饰功能', () => {

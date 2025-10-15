@@ -6,8 +6,8 @@
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { FastifyRequest, FastifyReply } from '@hl8/nestjs-fastify';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+// import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
+import { Logger } from '@nestjs/common';
 
 /**
  * 性能监控中间件配置
@@ -79,10 +79,10 @@ export class PerformanceMiddleware implements NestMiddleware {
   private readonly config: IPerformanceMiddlewareConfig;
 
   constructor(
-    private readonly logger: PinoLogger,
+    private readonly logger: Logger,
     config?: IPerformanceMiddlewareConfig
   ) {
-    this.logger.setContext({ requestId: 'PerformanceMiddleware' });
+    this.logger.debug({ requestId: 'PerformanceMiddleware' });
     this.config = {
       slowRequestThreshold: config?.slowRequestThreshold || 1000,
       enablePerformanceLog: config?.enablePerformanceLog ?? true,
@@ -100,7 +100,7 @@ export class PerformanceMiddleware implements NestMiddleware {
    * @param res - Fastify 响应对象
    * @param next - 下一个中间件函数
    */
-  use(req: FastifyRequest, res: FastifyReply, next: () => void): void {
+  use(req: any, res: any, next: () => void): void {
     const startTime = Date.now();
     const { method, url } = req;
 
@@ -138,7 +138,7 @@ export class PerformanceMiddleware implements NestMiddleware {
 
       // 记录性能日志
       if (this.config.enablePerformanceLog) {
-        this.logger.info('Request performance', performanceData);
+        this.logger.log('Request performance', performanceData);
       }
 
       // 慢请求告警

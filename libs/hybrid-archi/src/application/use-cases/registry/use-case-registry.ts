@@ -46,17 +46,15 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import {
-  IUseCase,
+import type { IUseCase,
   IUseCaseContext,
   IUseCaseRegistry,
   IUseCaseFactory,
-} from '../base/use-case.interface';
-import {
-  getUseCaseMetadata,
+ } from '../base/use-case.interface';
+import type { getUseCaseMetadata,
   IUseCaseOptions,
   // UseCaseType, // 暂时未使用
-} from '../decorators/use-case.decorator';
+ } from '../decorators/use-case.decorator';
 
 /**
  * 用例注册信息
@@ -169,7 +167,7 @@ export class UseCaseRegistry implements IUseCaseRegistry {
       averageExecutionTime: 0,
     });
 
-    console.info(`用例已注册: ${useCaseName}`);
+    console.log(`用例已注册: ${useCaseName}`);
   }
 
   /**

@@ -45,13 +45,12 @@
  * @since 1.0.0
  */
 
-import {
-  ILoggerService,
+import type { ILoggerService,
   IMetricsService,
   IWebSocketClient,
   IWebSocketContext,
-} from '../../shared/interfaces.js';
-import { BaseGateway } from './base-gateway.js';
+ } from '../../shared/interfaces';
+import { BaseGateway } from './base-gateway';
 import {
   SubscribeMessage,
   RequireRoles,
@@ -60,12 +59,12 @@ import {
   MonitorPerformance,
   MessageBody,
   WebSocketContext,
-} from '../decorators.js';
+} from '../decorators';
 import {
   IWebSocketMessage,
   IWebSocketResponse,
   WebSocketUtils,
-} from '../utils.js';
+} from '../utils';
 
 /**
  * 获取用户资料消息
@@ -181,11 +180,7 @@ export class UserGateway extends BaseGateway {
         // 这里应该调用用户服务更新用户状态
         // 实际实现中会调用UpdateUserStatusUseCase
         
-        this.logger.info('用户状态更新', {
-          userId: context.userId,
-          newStatus: data.data.status,
-          message: data.data.message,
-        });
+        this.logger.log('用户状态更新');
 
         return WebSocketUtils.createSuccessResponse(
           { success: true },
@@ -212,10 +207,7 @@ export class UserGateway extends BaseGateway {
       return;
     }
 
-    this.logger.info('用户WebSocket连接建立', {
-      clientId: client.id,
-      userId: client.id, // 这里应该从认证信息中获取
-    });
+    this.logger.log('用户WebSocket连接建立');
   }
 
   /**
@@ -228,8 +220,6 @@ export class UserGateway extends BaseGateway {
   override handleDisconnection(client: IWebSocketClient): void {
     this.handleDisconnection(client);
     
-    this.logger.info('用户WebSocket连接断开', {
-      clientId: client.id,
-    });
+    this.logger.log('用户WebSocket连接断开');
   }
 }

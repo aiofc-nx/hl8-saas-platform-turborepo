@@ -49,14 +49,13 @@
  * @since 1.0.0
  */
 import 'reflect-metadata';
-import { BaseCommand } from '../../application/cqrs/commands/base/base-command.js';
-import { ICommandHandler } from '../../application/cqrs/commands/base/command-handler.interface';
+import { BaseCommand } from '../../application/cqrs/commands/base/base-command';
+import type { ICommandHandler  } from '../../application/cqrs/commands/base/command-handler.interface';
 import {
   setCommandHandlerMetadata,
   getCommandHandlerMetadata as getMetadata,
 } from './metadata.utils';
-import {
-  ICommandHandlerMetadata,
+import type { ICommandHandlerMetadata,
   IRetryConfig,
   IValidationConfig,
   IAuthorizationConfig,
@@ -64,7 +63,7 @@ import {
   IMultiTenantConfig,
   IDataIsolationConfig,
   IPerformanceMonitorConfig,
-} from './metadata.interfaces';
+ } from './metadata.interfaces';
 
 /**
  * 命令处理器装饰器选项

@@ -13,17 +13,18 @@
  * @since 1.0.0
  */
 
-import { BaseEntity } from '../../../domain/entities/base/base-entity.js';
+import { BaseEntity } from '../../../domain/entities/base/base-entity';
 import { EntityId  } from '@hl8/isolation-model';
 import {
   IPartialAuditInfo,
-} from '../../../domain/entities/base/audit-info.js';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { GeneralBadRequestException } from '@hl8/isolation-model';
+} from '../../../domain/entities/base/audit-info';
+import { Logger } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
+import { TenantId } from '@hl8/isolation-model';
 
 // 测试用的具体实体类
 class TestEntity extends BaseEntity {
-  constructor(id: EntityId, auditInfo: IPartialAuditInfo, logger?: PinoLogger) {
+  constructor(id: EntityId, auditInfo: IPartialAuditInfo, logger?: Logger) {
     super(id, auditInfo, logger);
   }
 
@@ -41,16 +42,16 @@ class TestEntity extends BaseEntity {
 describe('BaseEntity', () => {
   let entityId: EntityId;
   let auditInfo: IPartialAuditInfo;
-  let logger: PinoLogger;
+  let logger: Logger;
 
   beforeEach(() => {
-    entityId = EntityId.generate();
+    entityId = TenantId.generate();
     auditInfo = {
       createdBy: 'test-user',
-      tenantId: EntityId.generate(),
+      tenantId: TenantId.generate(),
       version: 1,
     };
-    logger = new PinoLogger({ level: 'error' as const });
+    logger = new Logger({ level: 'error' as const });
   });
 
   describe('构造函数', () => {
@@ -167,7 +168,7 @@ describe('BaseEntity', () => {
 
     it('应该正确比较不同实体', () => {
       const entity1 = new TestEntity(entityId, auditInfo, logger);
-      const entity2 = new TestEntity(EntityId.generate(), auditInfo, logger);
+      const entity2 = new TestEntity(TenantId.generate(), auditInfo, logger);
 
       expect(entity1.equals(entity2)).toBe(false);
     });
@@ -207,7 +208,7 @@ describe('BaseEntity', () => {
 
     it('应该正确比较实体大小', () => {
       const entity1 = new TestEntity(entityId, auditInfo, logger);
-      const entity2 = new TestEntity(EntityId.generate(), auditInfo, logger);
+      const entity2 = new TestEntity(TenantId.generate(), auditInfo, logger);
 
       const result = entity1.compareTo(entity2);
       expect(typeof result).toBe('number');
@@ -262,7 +263,7 @@ describe('BaseEntity', () => {
 
     it('应该拒绝无效标识符', () => {
       // 使用有效的 UUID 但测试其他验证逻辑
-      const validId = EntityId.generate();
+      const validId = TenantId.generate();
       const entity = new TestEntity(validId, auditInfo, logger);
 
       // 这个测试应该通过，因为使用的是有效的 UUID
@@ -322,7 +323,7 @@ describe('BaseEntity', () => {
         entity['throwValidationError']('Test message', 'TEST_ERROR', {
           key: 'value',
         });
-      }).toThrow(GeneralBadRequestException);
+      }).toThrow(BadRequestException);
     });
 
     it('应该正确抛出操作异常', () => {
@@ -338,7 +339,7 @@ describe('BaseEntity', () => {
 
   describe('边界情况', () => {
     it('应该正确处理最小审计信息', () => {
-      const minTenantId = EntityId.generate();
+      const minTenantId = TenantId.generate();
       const minimalAuditInfo: IPartialAuditInfo = {
         tenantId: minTenantId,
       };
@@ -350,7 +351,7 @@ describe('BaseEntity', () => {
     });
 
     it('应该正确处理完整审计信息', () => {
-      const fullTenantId = EntityId.generate();
+      const fullTenantId = TenantId.generate();
       const fullAuditInfo: IPartialAuditInfo = {
         createdBy: 'creator',
         updatedBy: 'updater',

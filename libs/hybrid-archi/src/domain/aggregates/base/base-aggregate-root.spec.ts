@@ -8,16 +8,17 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { BaseAggregateRoot } from './base-aggregate-root.js';
+import { BaseAggregateRoot } from './base-aggregate-root';
 import { EntityId  } from '@hl8/isolation-model';
-import { BaseDomainEvent } from '../../events/base/base-domain-event.js';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
-import { TenantContextService } from '@hl8/nestjs-isolation';
+import { BaseDomainEvent } from '../../events/base/base-domain-event';
+import { Logger } from '@nestjs/common';
+import { TenantId } from '@hl8/isolation-model';
+// // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
 
 describe('BaseAggregateRoot', () => {
   let aggregate: TestAggregate;
-  let logger: PinoLogger;
-  let tenantContext: TenantContextService;
+  let logger: Logger;
+  let tenantContext: any;
 
   class TestEvent extends BaseDomainEvent {
     constructor(
@@ -77,7 +78,7 @@ describe('BaseAggregateRoot', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: PinoLogger,
+          provide: Logger,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),
@@ -86,7 +87,7 @@ describe('BaseAggregateRoot', () => {
           },
         },
         {
-          provide: TenantContextService,
+          provide: any,
           useValue: {
             getCurrentTenantId: jest.fn().mockReturnValue('tenant-123'),
             getCurrentUserId: jest.fn().mockReturnValue('user-123'),
@@ -95,12 +96,12 @@ describe('BaseAggregateRoot', () => {
       ],
     }).compile();
 
-    logger = module.get<PinoLogger>(PinoLogger);
-    tenantContext = module.get<TenantContextService>(TenantContextService);
+    logger = module.get<Logger>(Logger);
+    tenantContext = module.get<any>(any);
 
     aggregate = new TestAggregate(
-      EntityId.generate(),
-      EntityId.generate(),
+      TenantId.generate(),
+      TenantId.generate(),
       'Test User',
       'test@example.com'
     );

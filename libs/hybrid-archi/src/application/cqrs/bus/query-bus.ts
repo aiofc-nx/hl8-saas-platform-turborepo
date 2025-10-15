@@ -50,10 +50,11 @@
  * @since 1.0.0
  */
 import { Injectable } from '@nestjs/common';
-import { BaseQuery, IQueryResult } from '../queries/base/base-query.js';
-import { IQueryHandler } from '../queries/base/query-handler.interface';
+import { BaseQuery, IQueryResult } from '../queries/base/base-query';
+import type { IQueryHandler  } from '../queries/base/query-handler.interface';
 import { IQueryBus, IMiddleware, IMessageContext } from './cqrs-bus.interface';
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 /**
  * 查询总线实现
@@ -87,7 +88,7 @@ export class QueryBus implements IQueryBus {
     // 创建消息上下文
     const context: IMessageContext = {
       messageId: query.queryId.toString(),
-      tenantId: query.tenantId ? EntityId.fromString(query.tenantId) : EntityId.generate(),
+      tenantId: query.tenantId ? TenantId.create(query.tenantId) : TenantId.generate(),
       userId: query.userId || '',
       messageType: queryType,
       createdAt: query.createdAt,

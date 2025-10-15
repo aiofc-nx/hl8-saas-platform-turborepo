@@ -8,19 +8,20 @@
  */
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { CommandBus } from './command-bus.js';
-import { BaseCommand } from '../commands/base/base-command.js';
-import { ICommandHandler } from '../commands/base/command-handler.interface';
-import { PinoLogger } from '@hl8/nestjs-fastify/logging';
+import { CommandBus } from './command-bus';
+import { BaseCommand } from '../commands/base/base-command';
+import type { ICommandHandler  } from '../commands/base/command-handler.interface';
+import { Logger } from '@nestjs/common';
 import { EntityId  } from '@hl8/isolation-model';
+import { TenantId } from '@hl8/isolation-model';
 
 // 测试用的有效UUID
-const TEST_TENANT_ID = EntityId.generate().toString();
+const TEST_TENANT_ID = TenantId.generate().toString();
 const TEST_USER_ID = 'test-user';
 
 describe('CommandBus', () => {
   let commandBus: CommandBus;
-  let logger: PinoLogger;
+  let logger: Logger;
 
   class TestCommand extends BaseCommand {
     constructor(
@@ -114,7 +115,7 @@ describe('CommandBus', () => {
       providers: [
         CommandBus,
         {
-          provide: PinoLogger,
+          provide: Logger,
           useValue: {
             info: jest.fn(),
             warn: jest.fn(),
@@ -126,7 +127,7 @@ describe('CommandBus', () => {
     }).compile();
 
     commandBus = module.get<CommandBus>(CommandBus);
-    logger = module.get<PinoLogger>(PinoLogger);
+    logger = module.get<Logger>(Logger);
   });
 
   describe('构造函数', () => {

@@ -46,7 +46,7 @@
  * @since 1.0.0
  */
 
-import { IWebSocketContext } from '../../shared/interfaces.js';
+import type { IWebSocketContext  } from '../../shared/interfaces';
 
 /**
  * WebSocket消息订阅装饰器选项
