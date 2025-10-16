@@ -123,7 +123,10 @@ import { IPartialAuditInfo } from "../../entities/base/audit-info.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import { BaseAggregateRoot } from "./base-aggregate-root.js";
 import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
-import { BadRequestException } from "@nestjs/common";
+import {
+  BusinessRuleViolationException,
+  DomainPermissionException,
+} from "../../exceptions/base/base-domain-exception.js";
 
 /**
  * 租户感知聚合根基类
@@ -248,8 +251,9 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
    */
   protected ensureTenantContext(): void {
     if (!this.tenantId || this.tenantId.isEmpty()) {
-      throw new BadRequestException(
+      throw new BusinessRuleViolationException(
         "租户上下文缺失，所有操作必须在租户上下文中执行",
+        "MISSING_TENANT_CONTEXT",
       );
     }
   }
@@ -319,8 +323,15 @@ export abstract class TenantAwareAggregateRoot extends BaseAggregateRoot {
     entityType: string = "Entity",
   ): void {
     if (!this.tenantId.equals(entityTenantId)) {
-      throw new BadRequestException(
+      throw new DomainPermissionException(
         `无法操作其他租户的${entityType}，数据隔离策略禁止跨租户操作`,
+        "CROSS_TENANT_OPERATION_FORBIDDEN",
+        entityType,
+        {
+          currentTenantId: this.tenantId.toString(),
+          targetTenantId: entityTenantId.toString(),
+          entityType,
+        },
       );
     }
   }

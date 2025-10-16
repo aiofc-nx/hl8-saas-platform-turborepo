@@ -3,20 +3,25 @@ import {
   Post,
   Put,
   Get,
-  Delete,
   Body,
   Param,
   Query,
   HttpCode,
   HttpStatus,
-  UseGuards,
+  InternalServerErrorException,
 } from "@nestjs/common";
-import { EntityId } from "@hl8/isolation-model";
+import { TenantId } from "@hl8/isolation-model";
 import { CreateTenantUseCase } from "../../../application/use-cases/tenant/create-tenant.use-case.js";
 import { UpdateTenantUseCase } from "../../../application/use-cases/tenant/update-tenant.use-case.js";
 import { GetTenantsUseCase } from "../../../application/use-cases/tenant/get-tenants.use-case.js";
 import { TenantType } from "../../../domain/value-objects/types/tenant-type.vo.js";
-import type { IPureLogger } from "@hl8/pure-logger";
+import { ApplicationException } from "../../../common/exceptions/application.exception.js";
+import {
+  ResourceNotFoundException,
+  DomainExceptionConverter,
+} from "../../../common/exceptions/business.exceptions.js";
+import { BaseDomainException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 创建租户请求DTO
@@ -122,8 +127,33 @@ export class TenantController {
     private readonly createTenantUseCase: CreateTenantUseCase,
     private readonly updateTenantUseCase: UpdateTenantUseCase,
     private readonly getTenantsUseCase: GetTenantsUseCase,
-    private readonly logger: IPureLogger,
+    private readonly logger: FastifyLoggerService,
   ) {}
+
+  /**
+   * 异常处理方法
+   *
+   * @description 处理业务异常，利用自动转换机制
+   * @private
+   */
+  private handleException(error: any, operation: string): never {
+    this.logger.error(`${operation}失败`, error.message);
+
+    // 如果是领域异常，自动转换为应用异常（继承自AbstractHttpException）
+    if (error instanceof BaseDomainException) {
+      throw DomainExceptionConverter.toApplicationException(error);
+    }
+
+    // 如果已经是应用异常（继承自AbstractHttpException），直接抛出
+    if (error instanceof ApplicationException) {
+      throw error;
+    }
+
+    // 其他未预期的异常
+    throw new InternalServerErrorException(
+      `${operation}失败: ${error.message}`,
+    );
+  }
 
   /**
    * 创建租户
@@ -149,13 +179,13 @@ export class TenantController {
   async createTenant(
     @Body() createTenantDto: CreateTenantDto,
   ): Promise<TenantResponseDto> {
-    this.logger.info("创建租户请求", { dto: createTenantDto });
+    this.logger.debug("创建租户请求", { dto: createTenantDto });
 
     try {
       const result = await this.createTenantUseCase.execute({
         name: createTenantDto.name,
         type: TenantType.fromString(createTenantDto.type),
-        platformId: EntityId.create(createTenantDto.platformId),
+        platformId: TenantId.create(createTenantDto.platformId),
         createdBy: createTenantDto.createdBy,
       });
 
@@ -168,11 +198,10 @@ export class TenantController {
         updatedAt: result.createdAt.toISOString(),
       };
 
-      this.logger.info("租户创建成功", { tenantId: response.tenantId });
+      this.logger.debug("租户创建成功", { tenantId: response.tenantId });
       return response;
     } catch (error) {
-      this.logger.error("租户创建失败", { error: error.message });
-      throw error;
+      this.handleException(error, "租户创建");
     }
   }
 
@@ -200,14 +229,14 @@ export class TenantController {
     @Param("tenantId") tenantId: string,
     @Body() updateTenantDto: UpdateTenantDto,
   ): Promise<TenantResponseDto> {
-    this.logger.info("更新租户请求", {
+    this.logger.debug("更新租户请求", {
       tenantId,
       dto: updateTenantDto,
     });
 
     try {
       const result = await this.updateTenantUseCase.execute({
-        tenantId: EntityId.create(tenantId),
+        tenantId: TenantId.create(tenantId),
         name: updateTenantDto.name,
         type: updateTenantDto.type
           ? TenantType.fromString(updateTenantDto.type)
@@ -224,11 +253,10 @@ export class TenantController {
         updatedAt: result.updatedAt.toISOString(),
       };
 
-      this.logger.info("租户更新成功", { tenantId: response.tenantId });
+      this.logger.debug("租户更新成功", { tenantId: response.tenantId });
       return response;
     } catch (error) {
-      this.logger.error("租户更新失败", { tenantId, error: error.message });
-      throw error;
+      this.handleException(error, "租户更新");
     }
   }
 
@@ -249,12 +277,12 @@ export class TenantController {
   async getTenants(
     @Query() query: TenantQueryDto,
   ): Promise<TenantListResponseDto> {
-    this.logger.info("查询租户列表请求", { query });
+    this.logger.debug("查询租户列表请求", { query });
 
     try {
       const result = await this.getTenantsUseCase.execute({
         platformId: query.platformId
-          ? EntityId.create(query.platformId)
+          ? TenantId.create(query.platformId)
           : undefined,
         type: query.type ? TenantType.fromString(query.type) : undefined,
         name: query.name,
@@ -282,14 +310,13 @@ export class TenantController {
         hasPrev: result.hasPrev,
       };
 
-      this.logger.info("租户列表查询成功", {
+      this.logger.debug("租户列表查询成功", {
         total: result.total,
         page: result.page,
       });
       return response;
     } catch (error) {
-      this.logger.error("租户列表查询失败", { error: error.message });
-      throw error;
+      this.handleException(error, "租户列表查询");
     }
   }
 
@@ -307,8 +334,10 @@ export class TenantController {
    * ```
    */
   @Get(":tenantId")
-  async getTenant(@Param("tenantId") tenantId: string): Promise<TenantResponseDto> {
-    this.logger.info("获取租户详情请求", { tenantId });
+  async getTenant(
+    @Param("tenantId") tenantId: string,
+  ): Promise<TenantResponseDto> {
+    this.logger.debug("获取租户详情请求", { tenantId });
 
     try {
       // 使用查询用例获取单个租户
@@ -318,7 +347,7 @@ export class TenantController {
       });
 
       if (result.tenants.length === 0) {
-        throw new Error(`租户不存在: ${tenantId}`);
+        throw new ResourceNotFoundException("租户", tenantId);
       }
 
       const tenant = result.tenants[0];
@@ -332,11 +361,10 @@ export class TenantController {
         isDeleted: tenant.isDeleted,
       };
 
-      this.logger.info("租户详情获取成功", { tenantId });
+      this.logger.debug("租户详情获取成功", { tenantId });
       return response;
     } catch (error) {
-      this.logger.error("租户详情获取失败", { tenantId, error: error.message });
-      throw error;
+      this.handleException(error, "租户详情获取");
     }
   }
 }

@@ -15,8 +15,10 @@ import { ApplicationException } from "./application.exception.js";
 export class InfrastructureException extends ApplicationException {
   constructor(service: string, reason: string) {
     super(
-      `基础设施服务不可用: ${service} - ${reason}`,
       "INFRASTRUCTURE_UNAVAILABLE",
+      "基础设施服务不可用",
+      `基础设施服务不可用: ${service} - ${reason}`,
+      503,
       {
         service,
         reason,
@@ -32,10 +34,16 @@ export class InfrastructureException extends ApplicationException {
  */
 export class DatabaseException extends ApplicationException {
   constructor(operation: string, reason: string) {
-    super(`数据库操作失败: ${operation} - ${reason}`, "DATABASE_ERROR", {
-      operation,
-      reason,
-    });
+    super(
+      "DATABASE_ERROR",
+      "数据库操作失败",
+      `数据库操作失败: ${operation} - ${reason}`,
+      500,
+      {
+        operation,
+        reason,
+      },
+    );
   }
 }
 
@@ -46,10 +54,16 @@ export class DatabaseException extends ApplicationException {
  */
 export class CacheException extends ApplicationException {
   constructor(operation: string, reason: string) {
-    super(`缓存操作失败: ${operation} - ${reason}`, "CACHE_ERROR", {
-      operation,
-      reason,
-    });
+    super(
+      "CACHE_ERROR",
+      "缓存操作失败",
+      `缓存操作失败: ${operation} - ${reason}`,
+      500,
+      {
+        operation,
+        reason,
+      },
+    );
   }
 }
 
@@ -60,10 +74,16 @@ export class CacheException extends ApplicationException {
  */
 export class MessageQueueException extends ApplicationException {
   constructor(operation: string, reason: string) {
-    super(`消息队列操作失败: ${operation} - ${reason}`, "MESSAGE_QUEUE_ERROR", {
-      operation,
-      reason,
-    });
+    super(
+      "MESSAGE_QUEUE_ERROR",
+      "消息队列操作失败",
+      `消息队列操作失败: ${operation} - ${reason}`,
+      500,
+      {
+        operation,
+        reason,
+      },
+    );
   }
 }
 
@@ -75,8 +95,10 @@ export class MessageQueueException extends ApplicationException {
 export class ExternalServiceException extends ApplicationException {
   constructor(service: string, operation: string, reason: string) {
     super(
-      `外部服务调用失败: ${service}.${operation} - ${reason}`,
       "EXTERNAL_SERVICE_ERROR",
+      "外部服务调用失败",
+      `外部服务调用失败: ${service}.${operation} - ${reason}`,
+      502,
       {
         service,
         operation,

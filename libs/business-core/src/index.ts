@@ -90,7 +90,7 @@ export type { IQueryHandler } from "./application/cqrs/queries/handlers/index.js
 export type { IEventHandler } from "./application/cqrs/events/handlers/index.js";
 
 // 通用应用层组件导出
-export * from "./application/exceptions/common/index.js";
+// 异常类已迁移到 common 层
 export * from "./application/interfaces/common/index.js";
 export * from "./application/services/common/index.js";
 

@@ -18,11 +18,17 @@ export class ConcurrencyConflictException extends ApplicationException {
     expectedVersion: number,
     actualVersion: number,
   ) {
-    super(`聚合 ${aggregateId} 版本冲突`, "CONCURRENCY_CONFLICT", {
-      aggregateId,
-      expectedVersion,
-      actualVersion,
-    });
+    super(
+      "CONCURRENCY_CONFLICT",
+      "并发冲突",
+      `聚合 ${aggregateId} 版本冲突`,
+      409,
+      {
+        aggregateId,
+        expectedVersion,
+        actualVersion,
+      },
+    );
   }
 }
 
@@ -34,8 +40,10 @@ export class ConcurrencyConflictException extends ApplicationException {
 export class ValidationException extends ApplicationException {
   constructor(field: string, value: any, rule: string) {
     super(
-      `验证失败: ${field} = ${value} 违反规则 ${rule}`,
       "VALIDATION_FAILED",
+      "验证失败",
+      `验证失败: ${field} = ${value} 违反规则 ${rule}`,
+      400,
       {
         field,
         value,
@@ -52,10 +60,16 @@ export class ValidationException extends ApplicationException {
  */
 export class SerializationException extends ApplicationException {
   constructor(dataType: string, reason: string) {
-    super(`序列化失败: ${dataType} - ${reason}`, "SERIALIZATION_FAILED", {
-      dataType,
-      reason,
-    });
+    super(
+      "SERIALIZATION_FAILED",
+      "序列化失败",
+      `序列化失败: ${dataType} - ${reason}`,
+      500,
+      {
+        dataType,
+        reason,
+      },
+    );
   }
 }
 
@@ -66,10 +80,16 @@ export class SerializationException extends ApplicationException {
  */
 export class DeserializationException extends ApplicationException {
   constructor(dataType: string, reason: string) {
-    super(`反序列化失败: ${dataType} - ${reason}`, "DESERIALIZATION_FAILED", {
-      dataType,
-      reason,
-    });
+    super(
+      "DESERIALIZATION_FAILED",
+      "反序列化失败",
+      `反序列化失败: ${dataType} - ${reason}`,
+      500,
+      {
+        dataType,
+        reason,
+      },
+    );
   }
 }
 
@@ -80,9 +100,15 @@ export class DeserializationException extends ApplicationException {
  */
 export class TimeoutException extends ApplicationException {
   constructor(operation: string, timeoutMs: number) {
-    super(`操作超时: ${operation} (${timeoutMs}ms)`, "OPERATION_TIMEOUT", {
-      operation,
-      timeoutMs,
-    });
+    super(
+      "OPERATION_TIMEOUT",
+      "操作超时",
+      `操作超时: ${operation} (${timeoutMs}ms)`,
+      408,
+      {
+        operation,
+        timeoutMs,
+      },
+    );
   }
 }

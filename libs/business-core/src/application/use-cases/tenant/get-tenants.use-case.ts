@@ -4,8 +4,8 @@ import type { ITenantRepository } from "../../../domain/repositories/tenant.repo
 import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import { UseCase } from "../decorators/use-case.decorator.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
-import { BusinessRuleViolationError } from "../base/base-command-use-case.js";
-import type { IPureLogger } from "@hl8/pure-logger";
+import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 租户查询选项
@@ -108,7 +108,7 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
 > {
   constructor(
     private readonly tenantRepository: ITenantRepository,
-    private readonly _logger: IPureLogger,
+    private readonly _logger: FastifyLoggerService,
   ) {
     super("GetTenants", "获取租户列表用例", "1.0.0", ["tenant:read"]);
   }
@@ -162,30 +162,39 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
    * @description 验证租户查询选项的有效性
    *
    * @param options - 查询选项
-   * @throws {BusinessRuleViolationError} 当选项无效时
+   * @throws {BusinessRuleViolationException} 当选项无效时
    * @private
    */
   private validateQueryOptions(options: TenantQueryOptions): void {
     if (options.page !== undefined && options.page < 1) {
-      throw new BusinessRuleViolationError("页码必须大于0");
+      throw new BusinessRuleViolationException("页码必须大于0", "INVALID_PAGE");
     }
 
     if (
       options.limit !== undefined &&
       (options.limit < 1 || options.limit > 100)
     ) {
-      throw new BusinessRuleViolationError("每页记录数必须在1-100之间");
+      throw new BusinessRuleViolationException(
+        "每页记录数必须在1-100之间",
+        "INVALID_LIMIT",
+      );
     }
 
     if (
       options.sortBy &&
       !["name", "type", "createdAt", "updatedAt"].includes(options.sortBy)
     ) {
-      throw new BusinessRuleViolationError("无效的排序字段");
+      throw new BusinessRuleViolationException(
+        "无效的排序字段",
+        "INVALID_SORT_BY",
+      );
     }
 
     if (options.sortOrder && !["asc", "desc"].includes(options.sortOrder)) {
-      throw new BusinessRuleViolationError("无效的排序顺序");
+      throw new BusinessRuleViolationException(
+        "无效的排序顺序",
+        "INVALID_SORT_ORDER",
+      );
     }
   }
 

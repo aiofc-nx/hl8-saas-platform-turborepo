@@ -73,9 +73,9 @@ import { EntityId } from "@hl8/isolation-model";
 import { IAuditInfo, IPartialAuditInfo } from "./audit-info.js";
 import { IEntity } from "./entity.interface.js";
 import {
-  BadRequestException,
-  InternalServerErrorException,
-} from "@nestjs/common";
+  BusinessRuleViolationException,
+  DomainStateException,
+} from "../../../domain/exceptions/base/base-domain-exception.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import { ENTITY_OPERATIONS } from "../../../constants.js";
 import { TenantId } from "@hl8/isolation-model";
@@ -239,8 +239,11 @@ export abstract class BaseEntity implements IEntity {
     },
   ): void {
     if (this.isDeleted) {
-      throw new BadRequestException(
+      throw new DomainStateException(
         "Cannot delete an entity that is already deleted",
+        "DELETED",
+        "DELETE",
+        { entityId: this.id.toString() },
       );
     }
 
@@ -296,8 +299,11 @@ export abstract class BaseEntity implements IEntity {
     },
   ): void {
     if (!this.isDeleted) {
-      throw new BadRequestException(
+      throw new DomainStateException(
         "Cannot restore an entity that is not deleted",
+        "ACTIVE",
+        "RESTORE",
+        { entityId: this.id.toString() },
       );
     }
 
@@ -554,11 +560,17 @@ export abstract class BaseEntity implements IEntity {
    */
   protected validate(): void {
     if (!this._id || this._id.isEmpty()) {
-      throw new BadRequestException("Entity ID cannot be null or empty");
+      throw new BusinessRuleViolationException(
+        "Entity ID cannot be null or empty",
+        "INVALID_ENTITY_ID",
+      );
     }
 
     if (!this._auditInfo.tenantId || this._auditInfo.tenantId.isEmpty()) {
-      throw new BadRequestException("Tenant ID cannot be null or empty");
+      throw new BusinessRuleViolationException(
+        "Tenant ID cannot be null or empty",
+        "INVALID_TENANT_ID",
+      );
     }
   }
 
@@ -628,7 +640,7 @@ export abstract class BaseEntity implements IEntity {
     _validationError: string,
     _details?: Record<string, unknown>,
   ): never {
-    throw new BadRequestException(message);
+    throw new BusinessRuleViolationException(message, "VALIDATION_FAILED");
   }
 
   /**
@@ -644,6 +656,8 @@ export abstract class BaseEntity implements IEntity {
     message: string,
     _details?: Record<string, unknown>,
   ): never {
-    throw new InternalServerErrorException(message);
+    throw new DomainStateException(message, "UNKNOWN", "OPERATION", {
+      operation,
+    });
   }
 }

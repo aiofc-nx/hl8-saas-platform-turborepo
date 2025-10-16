@@ -5,8 +5,9 @@ import type { ITenantRepository } from "../../../domain/repositories/tenant.repo
 import { BaseCommandUseCase } from "../base/base-command-use-case.js";
 import { UseCase } from "../decorators/use-case.decorator.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
-import { BusinessRuleViolationError } from "../base/base-command-use-case.js";
-import type { IPureLogger } from "@hl8/pure-logger";
+import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import { DomainExceptionConverter } from "../../../common/exceptions/business.exceptions.js";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 创建租户请求
@@ -91,7 +92,7 @@ export class CreateTenantUseCase extends BaseCommandUseCase<
 > {
   constructor(
     private readonly tenantRepository: ITenantRepository,
-    private readonly _logger: IPureLogger,
+    private readonly _logger: FastifyLoggerService,
   ) {
     super("CreateTenant", "创建租户用例", "1.0.0", ["tenant:create"]);
   }
@@ -143,28 +144,43 @@ export class CreateTenantUseCase extends BaseCommandUseCase<
    * @description 验证创建租户请求的所有必需参数
    *
    * @param request - 创建租户请求
-   * @throws {BusinessRuleViolationError} 当参数无效时
+   * @throws {BusinessRuleViolationException} 当参数无效时
    * @private
    */
   protected validateRequest(request: CreateTenantRequest): void {
     if (!request.name || request.name.trim().length === 0) {
-      throw new BusinessRuleViolationError("租户名称不能为空");
+      throw new BusinessRuleViolationException(
+        "租户名称不能为空",
+        "TENANT_NAME_REQUIRED",
+      );
     }
 
     if (request.name.trim().length > 100) {
-      throw new BusinessRuleViolationError("租户名称长度不能超过100个字符");
+      throw new BusinessRuleViolationException(
+        "租户名称长度不能超过100个字符",
+        "TENANT_NAME_TOO_LONG",
+      );
     }
 
     if (!request.type) {
-      throw new BusinessRuleViolationError("租户类型不能为空");
+      throw new BusinessRuleViolationException(
+        "租户类型不能为空",
+        "TENANT_TYPE_REQUIRED",
+      );
     }
 
     if (!request.platformId || request.platformId.isEmpty()) {
-      throw new BusinessRuleViolationError("平台ID不能为空");
+      throw new BusinessRuleViolationException(
+        "平台ID不能为空",
+        "PLATFORM_ID_REQUIRED",
+      );
     }
 
     if (!request.createdBy || request.createdBy.trim().length === 0) {
-      throw new BusinessRuleViolationError("创建者标识符不能为空");
+      throw new BusinessRuleViolationException(
+        "创建者标识符不能为空",
+        "CREATED_BY_REQUIRED",
+      );
     }
   }
 
@@ -175,7 +191,7 @@ export class CreateTenantUseCase extends BaseCommandUseCase<
    *
    * @param platformId - 平台ID
    * @param name - 租户名称
-   * @throws {BusinessRuleViolationError} 当租户名称已存在时
+   * @throws {BusinessRuleViolationException} 当租户名称已存在时
    * @private
    */
   private async validateTenantNameUniqueness(
@@ -189,8 +205,10 @@ export class CreateTenantUseCase extends BaseCommandUseCase<
     );
 
     if (existingTenant) {
-      throw new BusinessRuleViolationError(
+      throw new BusinessRuleViolationException(
         `租户名称 "${name}" 在同一平台下已存在`,
+        "TENANT_NAME_DUPLICATE",
+        { name, platformId: platformId.toString() },
       );
     }
   }
@@ -219,7 +237,7 @@ export class CreateTenantUseCase extends BaseCommandUseCase<
         platformId: request.platformId,
       },
       auditInfo,
-      this._logger,
+      null,
     );
   }
 }

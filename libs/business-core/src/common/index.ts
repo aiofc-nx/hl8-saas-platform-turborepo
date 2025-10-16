@@ -28,6 +28,9 @@ export {
 // 装饰器系统 - 已从shared层合并到此处
 export * from "./decorators/index.js";
 
+// 通用异常类 - 跨层使用的业务异常
+export * from "./exceptions/index.js";
+
 // 测试工具 - 已删除，使用标准 Jest 和 NestJS 测试工具
 
 // 通用工具函数 - 已删除，使用标准工具库
