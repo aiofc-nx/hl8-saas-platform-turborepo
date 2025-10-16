@@ -1,4 +1,4 @@
-import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
+import { BaseDomainEvent, EntityId } from "@hl8/business-core";
 
 export class DepartmentCreatedEvent extends BaseDomainEvent {
   constructor(

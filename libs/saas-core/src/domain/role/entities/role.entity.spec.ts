@@ -1,4 +1,4 @@
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { Role } from "./role.entity";
 import { RoleName } from "../value-objects/role-name.vo";
 import { RoleLevel } from "../value-objects/role-level.vo";

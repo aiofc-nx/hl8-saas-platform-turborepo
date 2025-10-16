@@ -33,7 +33,7 @@ import {
   HttpCode,
   HttpStatus,
 } from "@nestjs/common";
-import { CommandBus, QueryBus, EntityId } from "@hl8/hybrid-archi";
+import { CommandBus, QueryBus, EntityId } from "@hl8/business-core";
 import { TenantAggregate } from "../../domain/tenant/aggregates/tenant.aggregate.js";
 import { CreateTenantDto } from "../dtos/tenant/create-tenant.dto.js";
 import { UpdateTenantDto } from "../dtos/tenant/update-tenant.dto.js";

@@ -25,8 +25,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityManager } from "@hl8/hybrid-archi";
-import { BaseDomainEvent } from "@hl8/hybrid-archi";
+import { EntityManager } from "@hl8/business-core";
+import { BaseDomainEvent } from "@hl8/business-core";
 
 /**
  * 事件存储记录接口

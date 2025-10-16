@@ -13,7 +13,7 @@
  * @since 1.0.0
  */
 
-import { EventHandler, IEventHandler } from "@hl8/hybrid-archi";
+import { EventHandler, IEventHandler } from "@hl8/business-core";
 import { TenantUpgradedEvent } from "../../../../domain/tenant/events/tenant-upgraded.event.js";
 
 // @EventHandler('TenantUpgraded') // TODO: 修复装饰器类型问题

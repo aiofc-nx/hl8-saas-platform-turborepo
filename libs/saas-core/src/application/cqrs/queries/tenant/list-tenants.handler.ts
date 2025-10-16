@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { QueryHandler, IQueryHandler } from "@hl8/hybrid-archi";
+import { QueryHandler, IQueryHandler } from "@hl8/business-core";
 import { ListTenantsQuery } from "./list-tenants.query.js";
 import { ITenantAggregateRepository } from "../../../../domain/tenant/repositories/tenant-aggregate.repository.interface.js";
 import { TenantAggregate } from "../../../../domain/tenant/aggregates/tenant.aggregate.js";

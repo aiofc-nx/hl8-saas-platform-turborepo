@@ -10,14 +10,17 @@ const config: Config = {
       "ts-jest",
       {
         useESM: true,
+        tsconfig: "<rootDir>/tsconfig.test.json",
       },
     ],
   },
-  setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup/jest-setup.ts"],
+  // setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup/jest-setup.ts"],
   transformIgnorePatterns: ["node_modules/(?!(.*\\.mjs$))"],
   moduleNameMapper: {
     "^@hl8/pure-logger$": "<rootDir>/src/index.ts",
+    "^(\\.{1,2}/.*)\\.js$": "$1",
   },
+  testEnvironment: "node",
 };
 
 export default config;

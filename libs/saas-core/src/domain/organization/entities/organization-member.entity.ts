@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/business-core/index.js";
 import { EntityId } from "@hl8/isolation-model/index.js";
 // import type { IPureLogger } from "@hl8/pure-logger/index.js";
 

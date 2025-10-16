@@ -1,5 +1,5 @@
 import { DepartmentAggregate } from "../aggregates/department.aggregate.js";
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 
 export interface IDepartmentAggregateRepository {
   save(aggregate: DepartmentAggregate): Promise<void>;

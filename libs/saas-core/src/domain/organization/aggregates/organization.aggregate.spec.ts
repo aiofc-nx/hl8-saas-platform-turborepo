@@ -1,4 +1,4 @@
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { OrganizationAggregate } from "./organization.aggregate";
 import { OrganizationType } from "../value-objects/organization-type.vo";
 

@@ -34,7 +34,7 @@
  * @since 1.0.0
  */
 
-import { Filter, FilterQuery, TenantContextService } from "@hl8/hybrid-archi";
+import { Filter, FilterQuery, TenantContextService } from "@hl8/business-core";
 
 import { TenantId } from "@hl8/isolation-model/index.js";
 /**

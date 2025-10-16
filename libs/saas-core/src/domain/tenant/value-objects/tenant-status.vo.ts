@@ -31,7 +31,7 @@
  *
  * @class TenantStatus
  * @since 1.0.0
- * @moved 从 @hl8/hybrid-archi 迁移而来 (OPT-004)
+ * @moved 从 @hl8/business-core 迁移而来 (OPT-004)
  */
 export enum TenantStatus {
   /**

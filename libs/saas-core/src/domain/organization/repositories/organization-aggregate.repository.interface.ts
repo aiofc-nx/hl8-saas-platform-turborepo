@@ -1,5 +1,5 @@
 import { OrganizationAggregate } from "../aggregates/organization.aggregate.js";
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 
 export interface IOrganizationAggregateRepository {
   save(aggregate: OrganizationAggregate): Promise<void>;

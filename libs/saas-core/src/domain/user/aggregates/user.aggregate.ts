@@ -23,7 +23,7 @@
 import {
   TenantAwareAggregateRoot,
   IPartialAuditInfo,
-} from "@hl8/hybrid-archi/index.js";
+} from "@hl8/business-core/index.js";
 import { EntityId } from "@hl8/isolation-model/index.js";
 import { Username, Email, PhoneNumber } from "../value-objects/index.js";
 // import type { IPureLogger } from "@hl8/pure-logger/index.js";

@@ -25,7 +25,7 @@
  */
 
 import { EntityManager } from "@mikro-orm/core";
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { TestDatabaseHelper } from "../setup/test-database.helper";
 import { TenantAggregate } from "../../src/domain/tenant/aggregates/tenant.aggregate";
 import { TenantAggregateRepository } from "../../src/infrastructure/adapters/repositories/tenant-aggregate.repository";
@@ -33,7 +33,7 @@ import { TenantMapper } from "../../src/infrastructure/mappers/tenant.mapper";
 import { TenantCode } from "../../src/domain/tenant/value-objects/tenant-code.vo";
 import { TenantDomain } from "../../src/domain/tenant/value-objects/tenant-domain.vo";
 import { TenantType } from "../../src/domain/tenant/value-objects/tenant-type.enum";
-import { TenantStatus } from "@hl8/hybrid-archi";
+import { TenantStatus } from "@hl8/business-core";
 import { TenantOrmEntity } from "../../src/infrastructure/persistence/entities/tenant.orm-entity";
 
 describe("租户仓储真实数据库集成测试", () => {

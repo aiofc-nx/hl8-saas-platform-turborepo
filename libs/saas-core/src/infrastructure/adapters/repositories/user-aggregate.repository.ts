@@ -3,7 +3,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityManager } from "@hl8/hybrid-archi";
+import { EntityManager } from "@hl8/business-core";
 import { IUserAggregateRepository } from "../../../domain/user/repositories/user-aggregate.repository.interface.js";
 import { UserMapper } from "../../mappers/user.mapper.js";
 

@@ -4,7 +4,7 @@
  * @description 测试租户聚合根的业务逻辑和一致性管理
  */
 
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { TenantStatus } from "../value-objects/tenant-status.vo";
 import { TenantAggregate } from "./tenant.aggregate";
 import { TenantCode } from "../value-objects/tenant-code.vo";

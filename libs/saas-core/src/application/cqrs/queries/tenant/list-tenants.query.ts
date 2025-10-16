@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-import { IQuery } from "@hl8/hybrid-archi";
+import { IQuery } from "@hl8/business-core";
 import { TenantType } from "../../../../domain/tenant/value-objects/tenant-type.enum.js";
 
 export interface ListTenantsQueryParams {

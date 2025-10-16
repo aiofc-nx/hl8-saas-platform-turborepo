@@ -31,7 +31,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
+import { BaseValueObject } from "@hl8/business-core/index.js";
 import { ORGANIZATION_TYPE_CONFIG } from "../../../constants/organization.constants.js";
 
 /**

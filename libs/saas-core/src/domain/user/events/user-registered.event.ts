@@ -30,7 +30,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent } from "@hl8/hybrid-archi";
+import { BaseDomainEvent } from "@hl8/business-core";
 import { EntityId } from "@hl8/isolation-model/index.js";
 
 export interface UserRegisteredEventData {

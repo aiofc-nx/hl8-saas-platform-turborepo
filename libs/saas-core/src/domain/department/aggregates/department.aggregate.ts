@@ -5,7 +5,7 @@
 import {
   TenantAwareAggregateRoot,
   IPartialAuditInfo,
-} from "@hl8/hybrid-archi/index.js";
+} from "@hl8/business-core/index.js";
 import { EntityId } from "@hl8/isolation-model/index.js";
 import { Department } from "../entities/department.entity.js";
 import { DepartmentClosure } from "../entities/department-closure.entity.js";

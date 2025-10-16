@@ -19,7 +19,7 @@ import {
   Unique,
   Index,
   OneToOne,
-} from "@hl8/hybrid-archi";
+} from "@hl8/business-core";
 
 @Entity({ tableName: "tenants" })
 export class TenantOrmEntity {

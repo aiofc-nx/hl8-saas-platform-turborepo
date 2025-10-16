@@ -1,4 +1,4 @@
-import { QueryHandler, IQueryHandler } from "@hl8/hybrid-archi";
+import { QueryHandler, IQueryHandler } from "@hl8/business-core";
 import { GetUserQuery } from "./get-user.query.js";
 import { IUserAggregateRepository } from "../../../../domain/user/repositories/user-aggregate.repository.interface.js";
 import { UserAggregate } from "../../../../domain/user/aggregates/user.aggregate.js";

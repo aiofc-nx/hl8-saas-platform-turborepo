@@ -36,7 +36,7 @@
  * @since 1.0.0
  */
 
-import { IRepository } from "@hl8/hybrid-archi";
+import { IRepository } from "@hl8/business-core";
 import { EntityId } from "@hl8/isolation-model/index.js";
 import { UserAggregate } from "../aggregates/user.aggregate.js";
 import { Username } from "../value-objects/username.vo.js";

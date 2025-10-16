@@ -1,4 +1,4 @@
-import { BaseCommand } from "@hl8/hybrid-archi";
+import { BaseCommand } from "@hl8/business-core";
 
 export class LoginUserCommand extends BaseCommand {
   constructor(

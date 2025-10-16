@@ -1,4 +1,4 @@
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { Permission } from "./permission.entity";
 import { PermissionAction } from "../value-objects/permission-action.vo";
 

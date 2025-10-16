@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from "@hl8/hybrid-archi";
+import { CommandHandler, ICommandHandler } from "@hl8/business-core";
 import { LoginUserCommand } from "./login-user.command.js";
 import { LoginUserUseCase } from "../../../use-cases/user/login-user.use-case.js";
 

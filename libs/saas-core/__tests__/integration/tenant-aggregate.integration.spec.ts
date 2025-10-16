@@ -6,12 +6,12 @@
  * @since 1.0.0
  */
 
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { TenantAggregate } from "../../src/domain/tenant/aggregates/tenant.aggregate";
 import { TenantType } from "../../src/domain/tenant/value-objects/tenant-type.enum";
 import { TenantCode } from "../../src/domain/tenant/value-objects/tenant-code.vo";
 import { TenantDomain } from "../../src/domain/tenant/value-objects/tenant-domain.vo";
-import { TenantStatus } from "@hl8/hybrid-archi";
+import { TenantStatus } from "@hl8/business-core";
 
 describe("租户聚合根集成测试", () => {
   describe("租户创建", () => {

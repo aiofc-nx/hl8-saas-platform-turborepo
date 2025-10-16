@@ -14,7 +14,7 @@
  * - 权限管理（Permission Management）
  *
  * ### 依赖模块
- * - @hl8/hybrid-archi: 架构基础
+ * - @hl8/business-core: 架构基础
  * - @hl8/multi-tenancy: 多租户支持
  * - @hl8/database: 统一数据库管理（基于 MikroORM）
  * - @hl8/common: 通用工具
@@ -47,8 +47,8 @@ import {
   CacheModule,
   TypedConfigModule,
   dotenvLoader,
-} from "@hl8/hybrid-archi";
-import { CommandBus, QueryBus, EventBus } from "@hl8/hybrid-archi";
+} from "@hl8/business-core";
+import { CommandBus, QueryBus, EventBus } from "@hl8/business-core";
 import { SaasCoreConfig } from "./config/saas-core.config.js";
 import { EventStoreAdapter } from "./infrastructure/event-sourcing/event-store.adapter.js";
 import { SnapshotStoreAdapter } from "./infrastructure/event-sourcing/snapshot-store.adapter.js";

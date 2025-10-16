@@ -1,10 +1,10 @@
 /**
- * @hl8/hybrid-archi
+ * @hl8/business-core
  *
  * 企业级 NestJS Redis 缓存模块
  * 支持多层级数据隔离（平台、租户、组织、部门、用户）
  *
- * @module @hl8/hybrid-archi
+ * @module @hl8/business-core
  * @since 1.0.0
  */
 

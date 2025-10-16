@@ -20,7 +20,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi/index.js";
+import { BaseDomainEvent, EntityId } from "@hl8/business-core/index.js";
 import { TenantStatus } from "../value-objects/tenant-status.vo.js";
 
 /**

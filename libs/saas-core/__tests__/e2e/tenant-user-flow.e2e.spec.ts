@@ -18,7 +18,7 @@
  */
 
 import { EntityManager } from "@mikro-orm/core";
-import { EntityId, TenantStatus } from "@hl8/hybrid-archi";
+import { EntityId, TenantStatus } from "@hl8/business-core";
 import { TestDatabaseHelper } from "../setup/test-database.helper";
 import { TenantAggregate } from "../../src/domain/tenant/aggregates/tenant.aggregate";
 import { UserAggregate } from "../../src/domain/user/aggregates/user.aggregate";
@@ -27,9 +27,9 @@ import { TenantMapper } from "../../src/infrastructure/mappers/tenant.mapper";
 import { TenantCode } from "../../src/domain/tenant/value-objects/tenant-code.vo";
 import { TenantDomain } from "../../src/domain/tenant/value-objects/tenant-domain.vo";
 import { TenantType } from "../../src/domain/tenant/value-objects/tenant-type.enum";
-import { Username } from "@hl8/hybrid-archi";
-import { Email } from "@hl8/hybrid-archi";
-import { PhoneNumber } from "@hl8/hybrid-archi";
+import { Username } from "@hl8/business-core";
+import { Email } from "@hl8/business-core";
+import { PhoneNumber } from "@hl8/business-core";
 
 describe("租户和用户完整业务流程 E2E 测试", () => {
   let em: EntityManager;

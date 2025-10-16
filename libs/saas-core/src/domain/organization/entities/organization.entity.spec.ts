@@ -1,4 +1,4 @@
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { OrganizationStatus } from "../value-objects/organization-status.vo";
 import { Organization } from "./organization.entity";
 import { OrganizationType } from "../value-objects/organization-type.vo";

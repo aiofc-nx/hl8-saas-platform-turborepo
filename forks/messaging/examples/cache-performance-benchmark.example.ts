@@ -25,7 +25,7 @@ import { AdvancedMonitoringCacheService } from "../src/lib/services/advanced-mon
 import { TenantContextService } from "@hl8/multi-tenancy";
 import { MessagingConfig } from "../src/lib/config/messaging.config";
 import { PinoLogger } from "@hl8/logger";
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 
 /**
  * 缓存性能基准测试类

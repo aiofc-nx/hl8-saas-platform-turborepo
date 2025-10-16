@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { EntityId, Username, Email, PhoneNumber } from "@hl8/hybrid-archi";
+import { EntityId, Username, Email, PhoneNumber } from "@hl8/business-core";
 import {
   RegisterUserUseCase,
   IRegisterUserCommand,

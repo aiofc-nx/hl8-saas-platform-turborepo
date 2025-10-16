@@ -164,7 +164,12 @@ export class StructuredLogger implements IPureLogger {
     const logEntry = this.createLogEntry(level, message, context);
 
     if (this.config.json) {
-      console.log(JSON.stringify(logEntry));
+      try {
+        console.log(JSON.stringify(logEntry));
+      } catch (error) {
+        // 如果 JSON 序列化失败，回退到格式化输出
+        this.logFormatted(logEntry);
+      }
     } else {
       this.logFormatted(logEntry);
     }
@@ -182,7 +187,12 @@ export class StructuredLogger implements IPureLogger {
     };
 
     if (this.config.json) {
-      console.error(JSON.stringify(logEntry));
+      try {
+        console.error(JSON.stringify(logEntry));
+      } catch (error) {
+        // 如果 JSON 序列化失败，回退到格式化输出
+        this.logFormatted(logEntry);
+      }
     } else {
       this.logFormatted(logEntry);
     }

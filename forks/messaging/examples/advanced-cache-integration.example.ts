@@ -39,7 +39,7 @@ import { AdvancedMonitoringCacheService } from "../src/lib/services/advanced-mon
 import { TenantContextService } from "@hl8/multi-tenancy";
 import type { TenantMessagingConfig } from "../src/lib/services/tenant-config-cache.service";
 import { PinoLogger } from "@hl8/logger";
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 
 /**
  * 高级缓存集成示例服务

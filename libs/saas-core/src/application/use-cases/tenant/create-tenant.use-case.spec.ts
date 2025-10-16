@@ -2,7 +2,7 @@
  * 创建租户用例单元测试
  */
 
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { CreateTenantUseCase } from "./create-tenant.use-case.js";
 import { ITenantAggregateRepository } from "../../../domain/tenant/repositories/tenant-aggregate.repository.interface";
 import { TenantCode } from "../../../domain/tenant/value-objects/tenant-code.vo";

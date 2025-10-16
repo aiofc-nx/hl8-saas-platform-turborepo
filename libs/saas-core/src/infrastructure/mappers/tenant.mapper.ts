@@ -13,7 +13,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { TenantStatus } from "../../domain/tenant/value-objects/tenant-status.vo.js";
 import { TenantAggregate } from "../../domain/tenant/aggregates/tenant.aggregate.js";
 import { Tenant } from "../../domain/tenant/entities/tenant.entity.js";

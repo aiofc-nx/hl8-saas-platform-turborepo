@@ -7,7 +7,7 @@
  * @since 1.0.0
  */
 
-import { CommandHandler, ICommandHandler } from "@hl8/hybrid-archi";
+import { CommandHandler, ICommandHandler } from "@hl8/business-core";
 import { CreateTenantCommand } from "./create-tenant.command.js";
 import { CreateTenantUseCase } from "../../../use-cases/tenant/create-tenant.use-case.js";
 import { TenantId } from "@hl8/isolation-model/index.js";

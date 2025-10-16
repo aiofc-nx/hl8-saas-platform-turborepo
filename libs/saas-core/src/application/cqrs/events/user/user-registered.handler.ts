@@ -1,4 +1,4 @@
-import { EventHandler, IEventHandler } from "@hl8/hybrid-archi";
+import { EventHandler, IEventHandler } from "@hl8/business-core";
 import { UserRegisteredEvent } from "../../../../domain/user/events/user-registered.event.js";
 
 // @EventHandler('UserRegistered') // TODO: 修复装饰器类型问题

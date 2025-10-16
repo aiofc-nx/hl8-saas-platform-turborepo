@@ -2,7 +2,7 @@
  * 部门闭包表实体
  */
 
-import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/business-core";
 import { EntityId } from "@hl8/isolation-model/index.js";
 
 import { TenantId } from "@hl8/isolation-model/index.js";

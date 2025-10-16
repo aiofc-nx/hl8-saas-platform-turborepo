@@ -13,7 +13,7 @@ import {
   Property,
   Index,
   OneToOne,
-} from "@hl8/hybrid-archi";
+} from "@hl8/business-core";
 import { TenantOrmEntity } from "./tenant.orm-entity.js";
 
 @Entity({ tableName: "tenant_configurations" })

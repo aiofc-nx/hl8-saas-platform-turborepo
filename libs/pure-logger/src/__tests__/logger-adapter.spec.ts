@@ -2,12 +2,27 @@
  * 日志适配器测试
  */
 
+// 设置测试环境
+beforeAll(() => {
+  process.env.NODE_ENV = "test";
+});
+
+// 全局测试工具
+global.console = {
+  ...console,
+  log: jest.fn(),
+  debug: jest.fn(),
+  info: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+};
+
 import {
   LoggerAdapterManager,
   BaseLoggerAdapter,
   loggerAdapterManager,
   LogLevel,
-} from "../index.js";
+} from "../index";
 import { ConsoleLogger } from "../implementations/console-logger.js";
 import { NoOpLogger } from "../implementations/noop-logger.js";
 

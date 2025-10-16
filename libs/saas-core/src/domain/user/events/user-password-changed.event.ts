@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
+import { BaseDomainEvent, EntityId } from "@hl8/business-core";
 
 export class UserPasswordChangedEvent extends BaseDomainEvent {
   constructor(aggregateId: EntityId, version: number, tenantId: EntityId) {

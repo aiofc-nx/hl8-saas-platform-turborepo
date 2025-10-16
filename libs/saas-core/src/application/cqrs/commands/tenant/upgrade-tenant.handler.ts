@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { CommandHandler, ICommandHandler } from "@hl8/hybrid-archi";
+import { CommandHandler, ICommandHandler } from "@hl8/business-core";
 import { UpgradeTenantCommand } from "./upgrade-tenant.command.js";
 import { UpgradeTenantUseCase } from "../../../use-cases/tenant/upgrade-tenant.use-case.js";
 

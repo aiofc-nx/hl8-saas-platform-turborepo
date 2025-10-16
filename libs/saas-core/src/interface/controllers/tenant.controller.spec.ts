@@ -3,7 +3,7 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { CommandBus, QueryBus } from "@hl8/hybrid-archi";
+import { CommandBus, QueryBus } from "@hl8/business-core";
 import { TenantController } from "./tenant.controller";
 
 describe("TenantController", () => {

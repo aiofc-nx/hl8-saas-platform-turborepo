@@ -16,7 +16,7 @@
     "@hl8/caching": "workspace:*",
     "@hl8/database": "workspace:*",
     "@hl8/exceptions": "workspace:*",
-    "@hl8/hybrid-archi": "workspace:*",
+    "@hl8/business-core": "workspace:*",
     "@hl8/isolation-model": "workspace:*",
     "@hl8/nestjs-fastify": "workspace:*",
     "@hl8/nestjs-isolation": "workspace:*",

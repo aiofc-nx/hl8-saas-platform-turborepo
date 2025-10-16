@@ -25,7 +25,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EntityManager } from "@hl8/hybrid-archi";
+import { EntityManager } from "@hl8/business-core";
 
 /**
  * 快照记录接口

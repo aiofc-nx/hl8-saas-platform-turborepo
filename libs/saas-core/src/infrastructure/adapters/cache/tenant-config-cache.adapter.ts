@@ -14,7 +14,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { CacheService, Cacheable, CacheEvict } from "@hl8/hybrid-archi";
+import { CacheService, Cacheable, CacheEvict } from "@hl8/business-core";
 import { TENANT_CACHE_CONFIG } from "../../../constants/tenant.constants.js";
 
 export interface ITenantConfig {

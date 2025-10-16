@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { BaseDomainEvent, EntityId } from "@hl8/hybrid-archi";
+import { BaseDomainEvent, EntityId } from "@hl8/business-core";
 
 export class UserDisabledEvent extends BaseDomainEvent {
   constructor(

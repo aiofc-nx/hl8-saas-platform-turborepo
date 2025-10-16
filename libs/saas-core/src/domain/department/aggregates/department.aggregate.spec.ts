@@ -1,4 +1,4 @@
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { DepartmentAggregate } from "./department.aggregate";
 
 describe("DepartmentAggregate", () => {

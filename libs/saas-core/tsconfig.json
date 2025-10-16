@@ -9,7 +9,7 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "paths": {
-      "@hl8/hybrid-archi": ["node_modules/@hl8/hybrid-archi"],
+      "@hl8/business-core": ["node_modules/@hl8/business-core"],
       "@hl8/database": ["node_modules/@hl8/database"],
       "@hl8/caching": ["node_modules/@hl8/caching"],
       "@hl8/nestjs-fastify/index.js": ["node_modules/@hl8/nestjs-fastify"],

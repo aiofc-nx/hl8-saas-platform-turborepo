@@ -35,7 +35,7 @@
  * @since 1.0.0
  */
 
-import { IRepository } from "@hl8/hybrid-archi";
+import { IRepository } from "@hl8/business-core";
 import { EntityId } from "@hl8/isolation-model/index.js";
 import { TenantAggregate } from "../aggregates/tenant.aggregate.js";
 import { TenantCode } from "../value-objects/tenant-code.vo.js";

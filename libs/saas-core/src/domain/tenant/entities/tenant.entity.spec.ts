@@ -4,7 +4,7 @@
  * @description 测试租户实体的业务逻辑和状态管理
  */
 
-import { EntityId } from "@hl8/hybrid-archi";
+import { EntityId } from "@hl8/business-core";
 import { TenantStatus } from "../value-objects/tenant-status.vo";
 import { Tenant } from "./tenant.entity";
 import { TenantCode } from "../value-objects/tenant-code.vo";

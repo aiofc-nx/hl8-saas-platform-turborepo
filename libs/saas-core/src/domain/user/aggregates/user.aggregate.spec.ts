@@ -2,7 +2,7 @@
  * 用户聚合根单元测试
  */
 
-import { EntityId, Username, Email } from "@hl8/hybrid-archi";
+import { EntityId, Username, Email } from "@hl8/business-core";
 import { UserAggregate } from "./user.aggregate";
 
 describe("UserAggregate", () => {

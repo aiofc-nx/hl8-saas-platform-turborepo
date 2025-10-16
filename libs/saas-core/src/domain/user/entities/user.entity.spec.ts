@@ -2,7 +2,7 @@
  * 用户实体单元测试
  */
 
-import { EntityId, Username, Email, UserStatus } from "@hl8/hybrid-archi";
+import { EntityId, Username, Email, UserStatus } from "@hl8/business-core";
 import { User } from "./user.entity";
 
 describe("User Entity", () => {

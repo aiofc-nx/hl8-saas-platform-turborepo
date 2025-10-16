@@ -38,7 +38,7 @@
 import {
   TenantAwareAggregateRoot,
   IPartialAuditInfo,
-} from "@hl8/hybrid-archi/index.js";
+} from "@hl8/business-core/index.js";
 import { TenantId } from "@hl8/isolation-model/index.js";
 // import type { IPureLogger } from "@hl8/pure-logger/index.js";
 import { Tenant } from "../entities/tenant.entity.js";

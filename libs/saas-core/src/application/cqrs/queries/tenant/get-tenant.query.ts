@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { BaseQuery } from "@hl8/hybrid-archi";
+import { BaseQuery } from "@hl8/business-core";
 
 export class GetTenantQuery extends BaseQuery {
   constructor(

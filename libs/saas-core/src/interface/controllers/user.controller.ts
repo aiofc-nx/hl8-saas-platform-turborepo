@@ -14,7 +14,7 @@ import {
   HttpCode,
   HttpStatus,
 } from "@nestjs/common";
-import { CommandBus, QueryBus, EntityId } from "@hl8/hybrid-archi";
+import { CommandBus, QueryBus, EntityId } from "@hl8/business-core";
 import { RegisterUserDto } from "../dtos/user/register-user.dto.js";
 import { LoginUserDto } from "../dtos/user/login-user.dto.js";
 import { UserResponseDto } from "../dtos/user/user-response.dto.js";

@@ -1,4 +1,4 @@
-import { EventHandler, IEventHandler } from "@hl8/hybrid-archi";
+import { EventHandler, IEventHandler } from "@hl8/business-core";
 import { UserLoginEvent } from "../../../../domain/user/events/user-login.event.js";
 
 // @EventHandler('UserLogin') // TODO: 修复装饰器类型问题

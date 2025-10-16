@@ -2,7 +2,7 @@
  * 角色实体（简化版本）
  */
 
-import { BaseEntity, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import { BaseEntity, IPartialAuditInfo } from "@hl8/business-core/index.js";
 import { EntityId } from "@hl8/isolation-model/index.js";
 import { RoleLevel } from "../value-objects/role-level.vo.js";
 import { RoleName } from "../value-objects/role-name.vo.js";

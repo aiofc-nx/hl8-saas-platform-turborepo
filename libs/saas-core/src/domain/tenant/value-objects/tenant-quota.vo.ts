@@ -52,7 +52,7 @@
  * @updated 1.1.0 - 使用新的 BaseValueObject 泛型 API
  */
 
-import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
+import { BaseValueObject } from "@hl8/business-core/index.js";
 import { TENANT_TYPE_QUOTAS } from "../../../constants/tenant.constants.js";
 import { TenantType } from "./tenant-type.enum.js";
 

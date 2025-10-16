@@ -23,7 +23,7 @@
  * @since 1.0.0
  */
 
-import { BaseValueObject } from "@hl8/hybrid-archi/index.js";
+import { BaseValueObject } from "@hl8/business-core/index.js";
 
 export class TenantCode extends BaseValueObject<string> {
   /**
