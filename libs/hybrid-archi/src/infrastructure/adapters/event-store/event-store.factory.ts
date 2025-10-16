@@ -9,9 +9,9 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+// import { DatabaseService } from '@hl8/database'; // 暂时注释，等待模块就绪
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { EventStoreAdapter, IEventStoreConfig } from "./event-store.adapter.js";
 
 /**
@@ -57,7 +57,7 @@ export class EventStoreFactory {
   private readonly stores = new Map<string, IEventStoreRegistration>();
 
   constructor(
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: any, // DatabaseService 暂时使用 any
     private readonly cacheService: CacheService,
     private readonly logger: FastifyLoggerService,
   ) {}
@@ -180,7 +180,10 @@ export class EventStoreFactory {
 
       this.logger.debug(`销毁事件存储: ${storeName}`);
     } catch (error) {
-      this.logger.error(`销毁事件存储失败: ${storeName}`, error);
+      this.logger.error(`销毁事件存储失败: ${storeName}`, undefined, {
+        storeName,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }

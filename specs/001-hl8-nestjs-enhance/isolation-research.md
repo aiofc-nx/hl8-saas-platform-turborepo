@@ -680,7 +680,10 @@ export class LoggerService {
 
 ```typescript
 // libs/nestjs-database/src/repository.base.ts
-import { IsolationContext, IsolationLevel } from "@hl8/isolation-model/index.js";
+import {
+  IsolationContext,
+  IsolationLevel,
+} from "@hl8/isolation-model/index.js";
 
 export abstract class BaseRepository<T> {
   protected buildWhereClause(context: IsolationContext): any {

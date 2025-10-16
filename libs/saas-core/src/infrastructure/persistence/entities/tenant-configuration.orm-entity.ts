@@ -7,7 +7,13 @@
  * @since 1.0.0
  */
 
-import { Entity, PrimaryKey, Property, Index, OneToOne } from "@hl8/hybrid-archi";
+import {
+  Entity,
+  PrimaryKey,
+  Property,
+  Index,
+  OneToOne,
+} from "@hl8/hybrid-archi";
 import { TenantOrmEntity } from "./tenant.orm-entity.js";
 
 @Entity({ tableName: "tenant_configurations" })

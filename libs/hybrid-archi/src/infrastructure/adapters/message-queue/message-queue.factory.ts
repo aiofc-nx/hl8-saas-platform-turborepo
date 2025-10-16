@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { MessagingService } from "@hl8/hybrid-archi";
+// import { MessagingService } from '@hl8/messaging'; // 暂时注释，等待模块就绪
 import { CacheService } from "@hl8/hybrid-archi";
 import { FastifyLoggerService } from "@hl8/hybrid-archi";
 import {

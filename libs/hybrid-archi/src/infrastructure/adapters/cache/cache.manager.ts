@@ -10,7 +10,7 @@
 
 import { Injectable } from "@nestjs/common";
 import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { CacheAdapter, ICacheConfig } from "./cache.adapter.js";
 import { CacheFactory, ICacheRegistration } from "./cache.factory.js";
 
@@ -254,7 +254,10 @@ export class CacheManager {
         try {
           await cache.instance.warmup(warmupData[cache.cacheName], ttl);
         } catch (error) {
-          this.logger.error(`预热缓存失败: ${cache.cacheName}`, error);
+          this.logger.error(`预热缓存失败: ${cache.cacheName}`, undefined, {
+            cacheName: cache.cacheName,
+            error: (error as Error).message,
+          });
         }
       }
     }
@@ -367,7 +370,9 @@ export class CacheManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个缓存`);
         }
       } catch (error) {
-        this.logger.error("自动清理失败", error);
+        this.logger.error("自动清理失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.cleanupInterval);
   }
@@ -387,7 +392,9 @@ export class CacheManager {
           this.logger.warn("发现不健康的缓存");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error);
+        this.logger.error("健康检查失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.healthCheckInterval);
   }
@@ -401,7 +408,9 @@ export class CacheManager {
         const allStats = await this.getAllCacheStatistics();
         this.logger.debug("缓存统计信息收集完成");
       } catch (error) {
-        this.logger.error("统计收集失败", error);
+        this.logger.error("统计收集失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.statisticsInterval);
   }

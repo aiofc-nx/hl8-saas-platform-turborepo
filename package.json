@@ -47,7 +47,7 @@
     "@repo/eslint-config": "workspace:*",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.16.0",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.34.0",
@@ -61,7 +61,7 @@
     "prettier-plugin-tailwindcss": "^0.6.9",
     "ts-jest": "^29.4.5",
     "turbo": "^2.5.8",
-    "typescript": "5.9.2"
+    "typescript": "^5.9.3"
   },
   "packageManager": "pnpm@10.11.0",
   "engines": {

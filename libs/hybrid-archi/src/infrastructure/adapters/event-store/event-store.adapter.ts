@@ -9,9 +9,9 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+// import { DatabaseService } from '@hl8/database'; // 暂时注释，等待模块就绪
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
 
 /**
@@ -130,7 +130,7 @@ export class EventStoreAdapter {
   private readonly config: IEventStoreConfig;
 
   constructor(
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: any, // DatabaseService 暂时使用 any
     private readonly cacheService: CacheService,
     private readonly logger: FastifyLoggerService,
     config: Partial<IEventStoreConfig> = {},
@@ -204,7 +204,8 @@ export class EventStoreAdapter {
 
       this.logger.debug(`存储事件成功: ${aggregateType}`);
     } catch (error) {
-      this.logger.error(`存储事件失败: ${aggregateType}`, error, {
+      this.logger.error(`存储事件失败: ${aggregateType}`, undefined, {
+        error: (error as Error).message,
         aggregateId,
         eventCount: events.length,
       });
@@ -256,7 +257,8 @@ export class EventStoreAdapter {
 
       return events;
     } catch (error) {
-      this.logger.error(`获取事件失败: ${aggregateId}`, error, {
+      this.logger.error(`获取事件失败: ${aggregateId}`, undefined, {
+        error: (error as Error).message,
         fromVersion,
         toVersion,
       });
@@ -274,7 +276,10 @@ export class EventStoreAdapter {
     try {
       return await this.queryEventsFromDatabase(options);
     } catch (error) {
-      this.logger.error("查询事件失败", error, { options });
+      this.logger.error("查询事件失败", undefined, {
+        options,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -305,7 +310,10 @@ export class EventStoreAdapter {
 
       return version;
     } catch (error) {
-      this.logger.error(`获取当前版本失败: ${aggregateId}`, error);
+      this.logger.error(`获取当前版本失败: ${aggregateId}`, undefined, {
+        aggregateId,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -332,7 +340,8 @@ export class EventStoreAdapter {
 
       this.logger.debug(`删除事件成功: ${aggregateId}`);
     } catch (error) {
-      this.logger.error(`删除事件失败: ${aggregateId}`, error, {
+      this.logger.error(`删除事件失败: ${aggregateId}`, undefined, {
+        error: (error as Error).message,
         fromVersion,
         toVersion,
       });
@@ -357,7 +366,9 @@ export class EventStoreAdapter {
 
       return deletedCount;
     } catch (error) {
-      this.logger.error("清理过期事件失败", error);
+      this.logger.error("清理过期事件失败", undefined, {
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -377,7 +388,9 @@ export class EventStoreAdapter {
     try {
       return await this.getStatisticsFromDatabase();
     } catch (error) {
-      this.logger.error("获取事件统计信息失败", error);
+      this.logger.error("获取事件统计信息失败", undefined, {
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -557,7 +570,7 @@ export class EventStoreAdapter {
     toVersion?: number,
   ): Promise<BaseDomainEvent[] | null> {
     const cacheKey = this.getEventCacheKey(aggregateId, fromVersion, toVersion);
-    return await this.cacheService.get<BaseDomainEvent[]>(cacheKey);
+    return await this.cacheService.get(cacheKey, null);
   }
 
   /**
@@ -570,7 +583,11 @@ export class EventStoreAdapter {
     toVersion?: number,
   ): Promise<void> {
     const cacheKey = this.getEventCacheKey(aggregateId, fromVersion, toVersion);
-    await this.cacheService.set(cacheKey, events, this.config.cacheTtl);
+    await this.cacheService.set(
+      cacheKey,
+      JSON.stringify(events),
+      this.config.cacheTtl,
+    );
   }
 
   /**
@@ -580,7 +597,7 @@ export class EventStoreAdapter {
     aggregateId: string,
   ): Promise<number | null> {
     const cacheKey = this.getVersionCacheKey(aggregateId);
-    return await this.cacheService.get<number>(cacheKey);
+    return await this.cacheService.get(cacheKey, null);
   }
 
   /**
@@ -591,7 +608,11 @@ export class EventStoreAdapter {
     version: number,
   ): Promise<void> {
     const cacheKey = this.getVersionCacheKey(aggregateId);
-    await this.cacheService.set(cacheKey, version, this.config.cacheTtl);
+    await this.cacheService.set(
+      cacheKey,
+      version.toString(),
+      this.config.cacheTtl,
+    );
   }
 
   /**

@@ -10,7 +10,7 @@
 
 import { Injectable } from "@nestjs/common";
 // import { DatabaseService } from '@hl8/database'; // 暂时注释，等待模块就绪
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 数据库配置接口
@@ -104,8 +104,8 @@ export class DatabaseAdapter {
   };
 
   constructor(
-    private readonly databaseService: DatabaseService,
-    private readonly logger: PinoLogger,
+    private readonly databaseService: any, // DatabaseService 暂时使用 any
+    private readonly logger: FastifyLoggerService,
     config: Partial<IDatabaseConfig> = {},
   ) {
     this.config = {
@@ -219,10 +219,11 @@ export class DatabaseAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`查询失败: ${queryId}`, error, {
+      this.logger.error(`查询失败: ${queryId}`, undefined, {
         queryId,
         query: query.substring(0, 100),
         params,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -266,7 +267,10 @@ export class DatabaseAdapter {
           result = await callback({} as unknown);
         }
       } catch (error) {
-        this.logger.error("事务执行失败", error, { transactionId });
+        this.logger.error("事务执行失败", undefined, {
+          transactionId,
+          error: (error as Error).message,
+        });
         throw error;
       }
 
@@ -276,7 +280,8 @@ export class DatabaseAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`事务回滚: ${transactionId}`, error, {
+      this.logger.error(`事务回滚: ${transactionId}`, undefined, {
+        error: (error as Error).message,
         transactionId,
       });
       throw error;
@@ -335,7 +340,8 @@ export class DatabaseAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`插入失败: ${operationId}`, error, {
+      this.logger.error(`插入失败: ${operationId}`, undefined, {
+        error: (error as Error).message,
         operationId,
         table,
       });
@@ -397,7 +403,8 @@ export class DatabaseAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`更新失败: ${operationId}`, error, {
+      this.logger.error(`更新失败: ${operationId}`, undefined, {
+        error: (error as Error).message,
         operationId,
         table,
       });
@@ -457,7 +464,8 @@ export class DatabaseAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`删除失败: ${operationId}`, error, {
+      this.logger.error(`删除失败: ${operationId}`, undefined, {
+        error: (error as Error).message,
         operationId,
         table,
       });
@@ -517,7 +525,8 @@ export class DatabaseAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`查找失败: ${operationId}`, error, {
+      this.logger.error(`查找失败: ${operationId}`, undefined, {
+        error: (error as Error).message,
         operationId,
         table,
       });
@@ -577,7 +586,8 @@ export class DatabaseAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`查找失败: ${operationId}`, error, {
+      this.logger.error(`查找失败: ${operationId}`, undefined, {
+        error: (error as Error).message,
         operationId,
         table,
       });
@@ -637,7 +647,8 @@ export class DatabaseAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`计数失败: ${operationId}`, error, {
+      this.logger.error(`计数失败: ${operationId}`, undefined, {
+        error: (error as Error).message,
         operationId,
         table,
       });

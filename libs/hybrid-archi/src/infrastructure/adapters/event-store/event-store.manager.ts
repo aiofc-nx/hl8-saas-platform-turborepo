@@ -9,9 +9,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { EventStoreAdapter, IEventStoreConfig } from "./event-store.adapter.js";
 import {
   EventStoreFactory,
@@ -51,7 +50,7 @@ export class EventStoreManager {
   private eventCleanupTimer?: NodeJS.Timeout;
 
   constructor(
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: any, // DatabaseService 暂时使用 any
     private readonly cacheService: CacheService,
     private readonly logger: FastifyLoggerService,
     private readonly storeFactory: EventStoreFactory,
@@ -212,7 +211,14 @@ export class EventStoreManager {
           const cleaned = await store.instance.cleanupExpiredEvents();
           totalCleaned += cleaned;
         } catch (error) {
-          this.logger.error(`清理存储过期事件失败: ${store.storeName}`, error);
+          this.logger.error(
+            `清理存储过期事件失败: ${store.storeName}`,
+            undefined,
+            {
+              storeName: store.storeName,
+              error: (error as Error).message,
+            },
+          );
         }
       }
     }
@@ -327,7 +333,9 @@ export class EventStoreManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个存储`);
         }
       } catch (error) {
-        this.logger.error("自动清理失败", error);
+        this.logger.error("自动清理失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.cleanupInterval);
   }
@@ -347,7 +355,9 @@ export class EventStoreManager {
           this.logger.warn("发现不健康的事件存储");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error);
+        this.logger.error("健康检查失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.healthCheckInterval);
   }
@@ -363,7 +373,9 @@ export class EventStoreManager {
           this.logger.debug(`事件清理完成: ${cleanedCount} 个事件`);
         }
       } catch (error) {
-        this.logger.error("事件清理失败", error);
+        this.logger.error("事件清理失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.eventCleanupInterval);
   }

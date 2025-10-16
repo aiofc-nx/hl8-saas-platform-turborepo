@@ -17,10 +17,7 @@ export {
   TaskService,
   MessagingModule,
 } from "@hl8/messaging";
-export {
-  TenantIsolationService,
-  MultiTenancyModule,
-} from "@hl8/multi-tenancy";
+export { TenantIsolationService, MultiTenancyModule } from "@hl8/multi-tenancy";
 export {
   DatabaseService,
   TenantDatabaseService,
@@ -29,34 +26,34 @@ export {
 export { FastifyProModule } from "@hl8/fastify-pro";
 
 // 通用基础设施功能组件
-export * from "./common.js";
+export * from "./common/index.js";
 
 // 基础设施层常量
 export * from "./constants.js";
 
 // 端口适配器（应用层端口适配器）
-export * from "./adapters/ports.js";
+export * from "./adapters/ports/index.js";
 
 // 仓储适配器（领域层仓储适配器）
-export * from "./adapters/repositories.js";
+export * from "./adapters/repositories/index.js";
 
 // 领域服务适配器（领域层服务适配器）
-export * from "./adapters/services.js";
+export * from "./adapters/services/index.js";
 
 // 事件存储适配器（事件溯源适配器）
-export * from "./adapters/event-store.js";
+export * from "./adapters/event-store/index.js";
 
 // 消息队列适配器（消息发布订阅适配器）
-export * from "./adapters/message-queue.js";
+export * from "./adapters/message-queue/index.js";
 
 // 缓存适配器（多级缓存适配器）
-export * from "./adapters/cache.js";
+export * from "./adapters/cache/index.js";
 
 // 数据库适配器（多数据库适配器）
-export * from "./adapters/database.js";
+export * from "./adapters/database/index.js";
 
 // 基础设施工厂（基础设施服务管理）
-export * from "./factories.js";
+export * from "./factories/index.js";
 
 // 映射器基础设施（通用功能组件）
-export * from "./mappers.js";
+export * from "./mappers/index.js";

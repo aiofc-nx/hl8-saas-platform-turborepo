@@ -8,9 +8,8 @@
  * @since 1.0.0
  */
 
-import { DynamicModule, Module, Provider } from "@nestjs/common";
+import { DynamicModule, Module, Provider, Logger } from "@nestjs/common";
 import { CachingModule, CacheService } from "@hl8/caching";
-import { LoggerModule, Logger } from "@hl8/nestjs-fastify";
 
 import { CacheAdapter } from "./cache.adapter.js";
 import { CacheFactory } from "./cache.factory.js";
@@ -79,10 +78,7 @@ export class CacheAdaptersModule {
 
     return {
       module: CacheAdaptersModule,
-      imports: [
-        CacheModule.forRoot({ redis: {} as any }),
-        LoggerModule.forRoot({}),
-      ],
+      imports: [CachingModule.forRoot({ redis: {} as any })],
       providers,
       exports: providers,
     };
@@ -118,10 +114,7 @@ export class CacheAdaptersModule {
 
     return {
       module: CacheAdaptersModule,
-      imports: [
-        CacheModule.forRoot({ redis: {} as any }),
-        LoggerModule.forRoot({}),
-      ],
+      imports: [CachingModule.forRoot({ redis: {} as any })],
       providers,
       exports: providers,
     };

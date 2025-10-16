@@ -375,6 +375,7 @@ export * from "./services/database.service.js";
 **解决方案**:
 
 1. **使用 TypeScript 编译器而不是 SWC**:
+
    ```json
    // nest-cli.json
    {
@@ -385,6 +386,7 @@ export * from "./services/database.service.js";
    ```
 
 2. **配置正确的模块解析策略**:
+
    ```json
    // tsconfig.build.json
    {

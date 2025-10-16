@@ -10,7 +10,7 @@
 
 import { Injectable } from "@nestjs/common";
 import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { CacheAdapter, ICacheConfig } from "./cache.adapter.js";
 
 /**
@@ -68,7 +68,11 @@ export class CacheFactory {
     }
 
     // 创建缓存实例
-    const cache = new CacheAdapter(this.cacheService, this.logger, config);
+    const cache = new CacheAdapter(
+      this.cacheService as any,
+      this.logger,
+      config,
+    );
 
     // 注册缓存
     const registration: ICacheRegistration = {
@@ -158,7 +162,10 @@ export class CacheFactory {
 
       this.logger.debug(`销毁缓存: ${cacheName}`);
     } catch (error) {
-      this.logger.error(`销毁缓存失败: ${cacheName}`, error);
+      this.logger.error(`销毁缓存失败: ${cacheName}`, undefined, {
+        cacheName,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }

@@ -9,8 +9,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 缓存配置接口
@@ -149,9 +149,10 @@ export class CacheAdapter {
 
       return value;
     } catch (error) {
-      this.logger.error(`获取缓存失败: ${key}`, error, {
+      this.logger.error(`获取缓存失败: ${key}`, undefined, {
         key,
         level,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -194,10 +195,11 @@ export class CacheAdapter {
 
       this.logger.debug(`设置缓存成功: ${key}`);
     } catch (error) {
-      this.logger.error(`设置缓存失败: ${key}`, error, {
+      this.logger.error(`设置缓存失败: ${key}`, undefined, {
         key,
         ttl: actualTtl,
         level,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -228,9 +230,10 @@ export class CacheAdapter {
 
       this.logger.debug(`删除缓存成功: ${key}`);
     } catch (error) {
-      this.logger.error(`删除缓存失败: ${key}`, error, {
+      this.logger.error(`删除缓存失败: ${key}`, undefined, {
         key,
         level,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -261,9 +264,10 @@ export class CacheAdapter {
 
       return false;
     } catch (error) {
-      this.logger.error(`检查缓存存在性失败: ${key}`, error, {
+      this.logger.error(`检查缓存存在性失败: ${key}`, undefined, {
         key,
         level,
+        error: (error as Error).message,
       });
       return false;
     }
@@ -316,9 +320,10 @@ export class CacheAdapter {
 
       return result;
     } catch (error) {
-      this.logger.error(`批量获取缓存失败: ${keys.length}`, error, {
+      this.logger.error(`批量获取缓存失败: ${keys.length}`, undefined, {
         keyCount: keys.length,
         level,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -348,9 +353,10 @@ export class CacheAdapter {
     } catch (error) {
       this.logger.error(
         `批量设置缓存失败: ${Object.keys(data).length}`,
-        error,
+        undefined,
         {
           keyCount: Object.keys(data).length,
+          error: (error as Error).message,
           ttl: actualTtl,
           level,
         },
@@ -387,9 +393,10 @@ export class CacheAdapter {
 
       return deletedCount;
     } catch (error) {
-      this.logger.error(`按模式删除缓存失败: ${pattern}`, error, {
+      this.logger.error(`按模式删除缓存失败: ${pattern}`, undefined, {
         pattern,
         level,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -416,8 +423,9 @@ export class CacheAdapter {
 
       this.logger.debug(`清除缓存成功`);
     } catch (error) {
-      this.logger.error("清除缓存失败", error, {
+      this.logger.error("清除缓存失败", undefined, {
         level,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -459,8 +467,9 @@ export class CacheAdapter {
 
       this.logger.debug(`缓存预热成功: ${Object.keys(data).length}`);
     } catch (error) {
-      this.logger.error("缓存预热失败", error, {
+      this.logger.error("缓存预热失败", undefined, {
         keyCount: Object.keys(data).length,
+        error: (error as Error).message,
       });
       throw error;
     }
@@ -623,7 +632,7 @@ export class CacheAdapter {
       return null;
     }
 
-    const value = await this.cacheService.get<T>(key);
+    const value = await this.cacheService.get(key, null);
     return value ? this.deserializeValue<T>(value) : null;
   }
 
@@ -650,7 +659,7 @@ export class CacheAdapter {
       return;
     }
 
-    await this.cacheService.delete(key);
+    await this.cacheService.del(key, null);
   }
 
   /**
@@ -661,7 +670,12 @@ export class CacheAdapter {
       return false;
     }
 
-    return await this.cacheService.exists(key);
+    try {
+      const value = await this.cacheService.get(key, null);
+      return value !== null && value !== undefined;
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -806,7 +820,10 @@ export class CacheAdapter {
       this.logger.warn("CacheService不支持deletePattern方法");
       return 0;
     } catch (error) {
-      this.logger.error("Redis模式删除失败", error, { pattern });
+      this.logger.error("Redis模式删除失败", undefined, {
+        pattern,
+        error: (error as Error).message,
+      });
       return 0;
     }
   }

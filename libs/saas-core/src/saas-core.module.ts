@@ -42,11 +42,11 @@
  */
 
 import { Module, DynamicModule, Global } from "@nestjs/common";
-import { 
-  DatabaseModule, 
-  CacheModule, 
-  TypedConfigModule, 
-  dotenvLoader 
+import {
+  DatabaseModule,
+  CacheModule,
+  TypedConfigModule,
+  dotenvLoader,
 } from "@hl8/hybrid-archi";
 import { CommandBus, QueryBus, EventBus } from "@hl8/hybrid-archi";
 import { SaasCoreConfig } from "./config/saas-core.config.js";

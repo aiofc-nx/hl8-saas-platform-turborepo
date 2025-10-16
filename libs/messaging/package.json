@@ -1,0 +1,70 @@
+{
+  "name": "@hl8/messaging",
+  "version": "0.1.0",
+  "description": "企业级消息队列和事件总线模块 - 支持 Kafka、RabbitMQ、Redis 等多种消息中间件",
+  "keywords": [
+    "nestjs",
+    "messaging",
+    "event-bus",
+    "kafka",
+    "rabbitmq",
+    "redis",
+    "enterprise",
+    "infrastructure",
+    "multi-tenancy"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./index.js": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "lint": "eslint .",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:cov": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hl8/caching": "workspace:*",
+    "@hl8/config": "workspace:*",
+    "@hl8/exceptions": "workspace:*",
+    "@hl8/isolation-model": "workspace:*",
+    "@hl8/nestjs-fastify": "workspace:*",
+    "@hl8/nestjs-isolation": "workspace:*",
+    "@nestjs/common": "^11.1.6",
+    "amqplib": "^0.10.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "ioredis": "^5.4.2",
+    "kafkajs": "^2.2.4",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^11.1.6",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/amqplib": "^0.10.5",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.16.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -579,7 +579,10 @@ class Logger {
 ### 场景4：访问控制
 
 ```typescript
-import { IsolationContext, IsolationLevel } from "@hl8/isolation-model/index.js";
+import {
+  IsolationContext,
+  IsolationLevel,
+} from "@hl8/isolation-model/index.js";
 
 class AccessControl {
   canAccessResource(

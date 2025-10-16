@@ -9,7 +9,7 @@ import { TenantId } from "@hl8/isolation-model";
  */
 
 // 通用功能层 (包含所有横切关注点)
-export * from "./common.js";
+export * from "./common/index.js";
 
 // 基础设施层 - 只导出基础设施特有的接口
 export {
@@ -28,12 +28,12 @@ export {
   InfrastructureManager,
   // 基础设施常量
   INFRASTRUCTURE_CONSTANTS,
-} from "./infrastructure.js";
+} from "./infrastructure/index.js";
 
 // 通用基础设施组件导出
-export * from "./infrastructure/adapters/common.js";
-export * from "./infrastructure/event-sourcing/common.js";
-export * from "./infrastructure/event-driven/common.js";
+export * from "./infrastructure/adapters/common/index.js";
+export * from "./infrastructure/event-sourcing/common/index.js";
+export * from "./infrastructure/event-driven/common/index.js";
 
 // 应用层 - 只导出应用层特有的接口
 export {
@@ -42,34 +42,37 @@ export {
   QueryBus,
   EventBus,
   CQRSBus,
-} from "./application.js";
+} from "./application/index.js";
 export type {
   // 用例接口
   IUseCase,
-} from "./application.js";
-export type { ICommand, IQuery } from "./application.js";
+} from "./application/index.js";
+export type { ICommand, IQuery } from "./application/index.js";
 
 // CQRS 基类
-export { BaseCommand } from "./application/cqrs/commands/base.js";
-export { BaseQuery } from "./application/cqrs/queries/base.js";
+export { BaseCommand } from "./application/cqrs/commands/base/index.js";
+export { BaseQuery } from "./application/cqrs/queries/base/index.js";
 
 // CQRS 装饰器
 export {
   CommandHandler,
   Command,
-} from "./application/cqrs/commands/decorators.js";
-export { QueryHandler, Query } from "./application/cqrs/queries/decorators.js";
+} from "./application/cqrs/commands/decorators/index.js";
+export {
+  QueryHandler,
+  Query,
+} from "./application/cqrs/queries/decorators/index.js";
 // export { EventHandler, Event } from './application/cqrs/events/decorators'; // 暂时注释，等待实现
 
 // CQRS 接口
-export type { ICommandHandler } from "./application/cqrs/commands/handlers.js";
-export type { IQueryHandler } from "./application/cqrs/queries/handlers.js";
+export type { ICommandHandler } from "./application/cqrs/commands/handlers/index.js";
+export type { IQueryHandler } from "./application/cqrs/queries/handlers/index.js";
 // export type { IEventHandler } from './application/cqrs/events/handlers'; // 暂时注释，等待实现
 
 // 通用应用层组件导出
-export * from "./application/exceptions/common.js";
-export * from "./application/interfaces/common.js";
-export * from "./application/services/common.js";
+export * from "./application/exceptions/common/index.js";
+export * from "./application/interfaces/common/index.js";
+export * from "./application/services/common/index.js";
 
 // 领域层 - 只导出领域层特有的接口
 export {
@@ -81,8 +84,8 @@ export {
   // 领域事件
   BaseDomainEvent,
   // 领域服务
-} from "./domain.js";
-export type { DomainEvent, IDomainService } from "./domain.js";
+} from "./domain/index.js";
+export type { DomainEvent, IDomainService } from "./domain/index.js";
 
 // 审计信息类型
 export type {
@@ -102,23 +105,23 @@ export type {
   IAggregateSnapshot,
   IEventStoreRepository,
   IReadModelRepository,
-} from "./domain/repositories.js";
+} from "./domain/repositories/index.js";
 export {
   BaseRepositoryError,
   ConcurrencyError,
   EntityNotFoundError,
   ValidationError,
-} from "./domain/repositories.js";
+} from "./domain/repositories/index.js";
 
 // 通用值对象导出（EntityId已在domain中导出）
-export * from "./domain/value-objects/common.js"; // 通用值对象库
-export * from "./domain/value-objects/identities.js";
-export * from "./domain/value-objects/ids.js";
-export * from "./domain/value-objects/statuses.js";
-export * from "./domain/value-objects/types.js";
+export * from "./domain/value-objects/common/index.js"; // 通用值对象库
+export * from "./domain/value-objects/identities/index.js";
+export * from "./domain/value-objects/ids/index.js";
+export * from "./domain/value-objects/statuses/index.js";
+export * from "./domain/value-objects/types/index.js";
 
 // 通用验证器导出
-export * from "./domain/validators/common.js";
+export * from "./domain/validators/common/index.js";
 
 // 接口层 - 只导出接口层特有的接口
 export {
@@ -147,27 +150,27 @@ export {
   DataValidator,
   // 转换器
   DataTransformer,
-} from "./interface.js";
+} from "./interface/index.js";
 
 // 通用接口层组件导出
-export * from "./interface/guards/common.js";
-export * from "./interface/decorators/common.js";
-export * from "./interface/middleware/common.js";
+export * from "./interface/guards/common/index.js";
+export * from "./interface/decorators/common/index.js";
+export * from "./interface/middleware/common/index.js";
 
 // 通用枚举导出 - 使用明确重新导出避免冲突
 export {
   UserStatus as CommonUserStatus,
   UserStatusUtils as CommonUserStatusUtils,
-} from "./domain/enums/common.js";
+} from "./domain/enums/common/index.js";
 
 // 通用类型导出
-export * from "./domain/types/common.js";
+export * from "./domain/types/common/index.js";
 
 // 通用接口层基类导出
-export * from "./interface/base.js";
+export * from "./interface/base/index.js";
 
 // 对外类型导出（为其他模块提供统一的类型接口）
-export * from "./types.js";
+export * from "./types/index.js";
 
 // 从isolation-model重新导出ID值对象
 export { EntityId, TenantId, UserId } from "@hl8/isolation-model";
