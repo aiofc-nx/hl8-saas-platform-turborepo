@@ -6,9 +6,10 @@
  * @since 1.0.0
  */
 
-// 业务特定类型已移除：
-// - TenantType → 已迁移到 @hl8/saas-core
+// 业务特定类型归口管理：
+// - TenantType：SAAS平台租户类型
 // - UserRole → 已迁移到 @hl8/saas-core
 // - PermissionDefinitions → 已迁移到 @hl8/saas-core
 
-// 通用类型值对象保留在此处
+// 通用与业务类型值对象导出
+export * from "./tenant-type.vo.js";

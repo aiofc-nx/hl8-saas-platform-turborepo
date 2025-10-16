@@ -75,7 +75,7 @@ import {
   USE_CASE_ERROR_CODES,
   DEFAULT_ENVIRONMENT,
 } from "../../../constants.js";
-import { TenantContext } from "../../../shared/types/tenant.types.js";
+import type { IsolationContext } from "@hl8/isolation-model";
 
 /**
  * 用例执行结果
@@ -295,25 +295,26 @@ export abstract class BaseUseCase<TRequest, TResponse>
 
     // 尝试获取多租户上下文信息
     try {
-      const tenantContext = this.getTenantContext();
-      if (tenantContext) {
-        baseContext.tenant = {
-          id: tenantContext.tenantId.toString(),
-          name: (tenantContext.metadata?.["tenantName"] as string) || "Unknown",
-        };
+      const isolationContext = this.getTenantContext();
+      if (isolationContext) {
+        if (isolationContext.tenantId) {
+          baseContext.tenant = {
+            id: isolationContext.tenantId.toString(),
+            name: "Unknown", // 需要从其他地方获取租户名称
+          };
+        }
 
-        if (tenantContext.userId) {
+        if (isolationContext.userId) {
           baseContext.user = {
-            id: tenantContext.userId,
-            name: (tenantContext.metadata?.["userName"] as string) || "Unknown",
-            permissions:
-              (tenantContext.metadata?.["permissions"] as string[]) || [],
+            id: isolationContext.userId.toString(),
+            name: "Unknown", // 需要从其他地方获取用户名称
+            permissions: [], // 需要从其他地方获取权限
           };
         }
       }
     } catch (_error) {
       // 如果获取租户上下文失败，记录警告但不影响用例执行
-      console.warn("Failed to get tenant context for use case:", _error);
+      console.warn("Failed to get isolation context for use case:", _error);
     }
 
     return baseContext;
@@ -325,7 +326,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * @returns 租户上下文信息，如果不存在则返回 null
    * @protected
    */
-  protected getTenantContext(): TenantContext | null {
+  protected getTenantContext(): IsolationContext | null {
     try {
       // 这里需要注入租户上下文提供者，但在基类中直接注入不太合适
       // 建议通过构造函数传入或使用静态方法

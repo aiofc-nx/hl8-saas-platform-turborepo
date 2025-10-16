@@ -72,7 +72,6 @@
 import { EntityId } from "@hl8/isolation-model";
 import { IAuditInfo, IPartialAuditInfo } from "./audit-info.js";
 import { IEntity } from "./entity.interface.js";
-// import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
 import {
   BadRequestException,
   InternalServerErrorException,
@@ -80,7 +79,6 @@ import {
 import type { IPureLogger } from "@hl8/pure-logger";
 import { ENTITY_OPERATIONS } from "../../../constants.js";
 import { TenantId } from "@hl8/isolation-model";
-import { TenantContext } from "../../../shared/types/tenant.types.js";
 
 export abstract class BaseEntity implements IEntity {
   private readonly _id: EntityId;
@@ -508,7 +506,7 @@ export abstract class BaseEntity implements IEntity {
    * @returns 租户上下文信息，如果不存在则返回 null
    * @protected
    */
-  protected getTenantContext(): TenantContext | null {
+  protected getTenantContext(): any | null {
     try {
       // 这里需要注入租户上下文提供者，但在实体中直接注入不太合适
       // 建议通过构造函数传入或使用静态方法
