@@ -5,11 +5,14 @@
  * @since 1.0.0
  */
 
-import type {
+import {
   UseCase,
-  UseCaseType,
   getUseCaseMetadata,
   isUseCase,
+  USE_CASE_METADATA_KEY,
+} from "./use-case.decorator.js";
+import type {
+  UseCaseType,
   IUseCaseOptions,
 } from "./use-case.decorator.js";
 

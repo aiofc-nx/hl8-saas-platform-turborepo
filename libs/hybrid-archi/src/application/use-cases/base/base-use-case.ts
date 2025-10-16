@@ -66,7 +66,7 @@
 
 import type { IUseCase, IUseCaseContext } from "./use-case.interface.js";
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   BadRequestException,
   InternalServerErrorException,
@@ -356,7 +356,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * 记录用例开始执行日志
    */
   private logUseCaseStart(request: TRequest, context: IUseCaseContext): void {
-    this.logger.log(`Use case started: ${this.useCaseName}`);
+    this.logger.info(`Use case started: ${this.useCaseName}`);
   }
 
   /**
@@ -368,7 +368,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     context: IUseCaseContext,
     executionTime: number,
   ): void {
-    this.logger.log(`Use case completed successfully: ${this.useCaseName}`);
+    this.logger.info(`Use case completed successfully: ${this.useCaseName}`);
   }
 
   /**

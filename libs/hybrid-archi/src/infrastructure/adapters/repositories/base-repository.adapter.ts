@@ -9,15 +9,17 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { ConnectionManager } from "@hl8/database";
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { EntityId } from "@hl8/isolation-model";
 import { IEntity } from "../../../domain/entities/base/entity.interface.js";
 import type {
   IRepository,
   IRepositoryQueryOptions,
   IPaginatedResult,
+} from "../../../domain/repositories/base/base-repository.interface.js";
+import {
   BaseRepositoryError,
   ConcurrencyError,
   EntityNotFoundError,
@@ -54,7 +56,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   protected readonly config: IRepositoryConfig;
 
   constructor(
-    protected readonly databaseService: DatabaseService,
+    protected readonly databaseService: ConnectionManager,
     protected readonly cacheService: CacheService,
     protected readonly logger: FastifyLoggerService,
     protected readonly entityName: string,
@@ -101,7 +103,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
       this.logger.debug(`从数据库获取实体: ${this.entityName}`);
       return entity;
     } catch (error) {
-      this.logger.error(`查找实体失败: ${this.entityName}`, error, { id });
+      this.logger.error(`查找实体失败: ${this.entityName}`, error instanceof Error ? error instanceof Error ? error.stack : undefined : undefined, { id });
       throw new EntityNotFoundError(
         `实体不存在: ${this.entityName}`,
         this.entityName,
@@ -135,7 +137,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         this.logger.debug(`保存实体成功: ${this.entityName}`);
       });
     } catch (error) {
-      this.logger.error(`保存实体失败: ${this.entityName}`, error, {
+      this.logger.error(`保存实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
         id: (entity as any).getId(),
       });
       throw error;
@@ -172,7 +174,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         this.logger.debug(`删除实体成功: ${this.entityName}`);
       });
     } catch (error) {
-      this.logger.error(`删除实体失败: ${this.entityName}`, error, { id });
+      this.logger.error(`删除实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, { id });
       throw error;
     }
   }
@@ -197,7 +199,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
       const exists = await this.existsInDatabase(id);
       return exists;
     } catch (error) {
-      this.logger.error(`检查实体存在性失败: ${this.entityName}`, error, {
+      this.logger.error(`检查实体存在性失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
         id,
       });
       return false;
@@ -213,7 +215,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
     try {
       return await this.countInDatabase();
     } catch (error) {
-      this.logger.error(`获取实体总数失败: ${this.entityName}`, error);
+      this.logger.error(`获取实体总数失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -228,7 +230,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
     try {
       return await this.findAllFromDatabase(options);
     } catch (error) {
-      this.logger.error(`查找所有实体失败: ${this.entityName}`, error);
+      this.logger.error(`查找所有实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -270,7 +272,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
 
       this.logger.debug(`批量保存实体成功: ${this.entityName}`);
     } catch (error) {
-      this.logger.error(`批量保存实体失败: ${this.entityName}`, error);
+      this.logger.error(`批量保存实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -312,7 +314,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
 
       this.logger.debug(`批量删除实体成功: ${this.entityName}`);
     } catch (error) {
-      this.logger.error(`批量删除实体失败: ${this.entityName}`, error);
+      this.logger.error(`批量删除实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -363,7 +365,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   protected async getFromCache(id: TId): Promise<TEntity | null> {
     const cacheKey = this.getCacheKey(id);
-    return await this.cacheService.get<TEntity>(cacheKey);
+    return await this.cacheService.get<TEntity>(this.entityName, cacheKey);
   }
 
   /**
@@ -371,7 +373,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   protected async setCache(id: TId, entity: TEntity): Promise<void> {
     const cacheKey = this.getCacheKey(id);
-    await this.cacheService.set(cacheKey, entity, this.config.cacheTtl);
+    await this.cacheService.set(this.entityName, cacheKey, entity, this.config.cacheTtl);
   }
 
   /**
@@ -379,7 +381,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   protected async removeFromCache(id: TId): Promise<void> {
     const cacheKey = this.getCacheKey(id);
-    await this.cacheService.delete(cacheKey);
+    await this.cacheService.del(this.entityName, cacheKey);
   }
 
   /**

@@ -9,9 +9,9 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { MessagingModule } from "@hl8/hybrid-archi";
-import { CacheModule } from "@hl8/hybrid-archi";
-import { LoggerModule } from "@hl8/hybrid-archi";
+// import { MessagingModule } from '@hl8/messaging'; // 暂时注释，等待模块实现
+import { CachingModule } from '@hl8/caching';
+import { Logger } from "@nestjs/common";
 
 import { MessageQueueAdapter } from "./message-queue.adapter.js";
 import { MessageQueueFactory } from "./message-queue.factory.js";
@@ -64,11 +64,11 @@ export class MessageQueueAdaptersModule {
 
     // 添加基础模块
     imports.push(
-      MessagingModule.forRoot({ adapter: "memory" as any }),
-      CacheModule.forRoot({
+      // MessagingModule.forRoot({ adapter: "memory" as any }), // 暂时注释，等待模块实现
+      CachingModule.forRoot({
         redis: {} as any,
       }),
-      LoggerModule.forRoot({}),
+      // LoggerModule 已移除，使用 FastifyLoggerService
     );
 
     // 添加管理组件
@@ -105,11 +105,11 @@ export class MessageQueueAdaptersModule {
 
     // 添加基础模块
     imports.push(
-      MessagingModule.forRoot({ adapter: "memory" as any }),
-      CacheModule.forRoot({
+      // MessagingModule.forRoot({ adapter: "memory" as any }), // 暂时注释，等待模块实现
+      CachingModule.forRoot({
         redis: {} as any,
       }),
-      LoggerModule.forRoot({}),
+      // LoggerModule 已移除，使用 FastifyLoggerService
     );
 
     // 添加管理组件

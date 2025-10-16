@@ -87,7 +87,7 @@ export abstract class BaseGateway {
   ): Promise<TResult> {
     this.getWebSocketContext();
 
-    this.logger.log(`开始处理WebSocket消息: ${operationName}`);
+    this.logger.info(`开始处理WebSocket消息: ${operationName}`);
 
     try {
       // 执行消息处理
@@ -146,7 +146,7 @@ export abstract class BaseGateway {
 
       this.connectedClients.set(client.id, connection);
 
-      this.logger.log("WebSocket连接认证成功");
+      this.logger.info("WebSocket连接认证成功");
 
       return true;
     } catch (error) {
@@ -169,7 +169,7 @@ export abstract class BaseGateway {
     if (connection) {
       this.connectedClients.delete(client.id);
 
-      this.logger.log("WebSocket连接断开");
+      this.logger.info("WebSocket连接断开");
     }
   }
 
@@ -250,7 +250,7 @@ export abstract class BaseGateway {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.log(`WebSocket ${operationName}操作成功`);
+    this.logger.info(`WebSocket ${operationName}操作成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(

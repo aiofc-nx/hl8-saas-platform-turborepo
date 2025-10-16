@@ -87,7 +87,7 @@ export abstract class BaseController {
   ): Promise<TOutput> {
     this.getRequestContext();
 
-    this.logger.log(`开始处理${operationName}请求`);
+    this.logger.info(`开始处理${operationName}请求`);
 
     try {
       // 执行用例
@@ -136,7 +136,7 @@ export abstract class BaseController {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.log(`${operationName}操作成功`);
+    this.logger.info(`${operationName}操作成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(`${operationName}_success_total`);

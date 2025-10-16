@@ -6,10 +6,10 @@
  */
 
 // 命令侧专用端口
-export * from "./commands.js";
+export * from "./commands/index.js";
 
 // 查询侧专用端口
-export * from "./queries.js";
+export * from "./queries/index.js";
 
 // 共享端口
-export * from "./shared.js";
+export * from "./shared/index.js";

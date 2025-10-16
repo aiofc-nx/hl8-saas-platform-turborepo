@@ -9,10 +9,9 @@
  */
 
 import { Module } from "@nestjs/common";
-import { DatabaseModule } from "@hl8/hybrid-archi";
-import { CacheModule } from "@hl8/hybrid-archi";
-import { LoggerModule } from "@hl8/hybrid-archi";
-import { MessagingModule } from "@hl8/hybrid-archi";
+import { DatabaseModule } from "@hl8/database";
+import { CachingModule } from "@hl8/caching";
+// import { MessagingModule } from "@hl8/messaging"; // 暂时注释，等待模块实现
 
 import { BaseRepositoryAdapter } from "./base-repository.adapter.js";
 import { BaseAggregateRepositoryAdapter } from "./base-aggregate-repository.adapter.js";
@@ -24,7 +23,7 @@ import { BaseAggregateRepositoryAdapter } from "./base-aggregate-repository.adap
  * 提供领域层仓储适配器的统一管理
  */
 @Module({
-  imports: [DatabaseModule, CacheModule, LoggerModule, MessagingModule],
+  imports: [DatabaseModule, CachingModule], // MessagingModule 暂时注释，等待模块实现
   providers: [
     // 仓储适配器
     BaseRepositoryAdapter,

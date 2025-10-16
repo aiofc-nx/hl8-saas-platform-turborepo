@@ -9,8 +9,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+// import { DatabaseService } from '@hl8/database'; // 暂时注释，等待模块就绪
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   DatabaseAdapter,
   IDatabaseConfig,
@@ -49,7 +49,7 @@ export class DatabaseFactory {
   private readonly databases = new Map<string, IDatabaseRegistration>();
 
   constructor(
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: any, // DatabaseService 暂时使用 any
     private readonly logger: FastifyLoggerService,
   ) {}
 
@@ -171,7 +171,10 @@ export class DatabaseFactory {
 
       this.logger.debug(`销毁数据库: ${databaseName}`);
     } catch (error) {
-      this.logger.error(`销毁数据库失败: ${databaseName}`, error);
+      this.logger.error(`销毁数据库失败: ${databaseName}`, undefined, {
+        databaseName,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -360,7 +363,10 @@ export class DatabaseFactory {
 
       this.logger.debug(`数据库连接成功: ${databaseName}`);
     } catch (error) {
-      this.logger.error(`数据库连接失败: ${databaseName}`, error);
+      this.logger.error(`数据库连接失败: ${databaseName}`, undefined, {
+        databaseName,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -383,7 +389,10 @@ export class DatabaseFactory {
 
       this.logger.debug(`数据库断开连接: ${databaseName}`);
     } catch (error) {
-      this.logger.error(`数据库断开连接失败: ${databaseName}`, error);
+      this.logger.error(`数据库断开连接失败: ${databaseName}`, undefined, {
+        databaseName,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }

@@ -6,10 +6,13 @@
  */
 
 // 基础设施
-export * from "./base.js";
+export * from "./base/index.js";
+
+// 事件处理器
+export * from "./handlers/index.js";
 
 // 投射器（关键组件）
-export * from "./projectors.js";
+export * from "./projectors/index.js";
 
 // 装饰器
-export * from "./decorators.js";
+export * from "./decorators/index.js";

@@ -9,8 +9,8 @@
  */
 
 import { Injectable, Inject } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { DatabaseService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+// import { DatabaseService } from "@hl8/database";
 
 /**
  * 连接池配置
@@ -114,7 +114,7 @@ export class ConnectionPoolManager {
 
   constructor(
     private readonly logger: FastifyLoggerService,
-    private readonly databaseService: DatabaseService,
+    // private readonly databaseService: DatabaseService,
     @Inject("ConnectionPoolConfig")
     private readonly config: ConnectionPoolConfig,
   ) {
@@ -162,7 +162,7 @@ export class ConnectionPoolManager {
       this.stats.failedRequests++;
       this.updateStats();
 
-      this.logger.error("获取连接失败", error);
+      this.logger.error("获取连接失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -193,7 +193,7 @@ export class ConnectionPoolManager {
 
       this.logger.debug("连接释放成功");
     } catch (error) {
-      this.logger.error("释放连接失败", error, { connectionId });
+      this.logger.error("释放连接失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), connectionId });
       throw error;
     }
   }
@@ -227,7 +227,7 @@ export class ConnectionPoolManager {
 
       this.logger.log("连接关闭成功");
     } catch (error) {
-      this.logger.error("关闭连接失败", error, { connectionId });
+      this.logger.error("关闭连接失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), connectionId });
       throw error;
     }
   }
@@ -247,7 +247,7 @@ export class ConnectionPoolManager {
 
       this.logger.log("所有连接已关闭");
     } catch (error) {
-      this.logger.error("关闭所有连接失败", error);
+      this.logger.error("关闭所有连接失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -368,7 +368,7 @@ export class ConnectionPoolManager {
 
       return { healthy, issues, recommendations };
     } catch (error) {
-      this.logger.error("连接池健康检查失败", error);
+      this.logger.error("连接池健康检查失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       return {
         healthy: false,
         issues: ["健康检查失败"],
@@ -415,7 +415,7 @@ export class ConnectionPoolManager {
 
       this.logger.log("连接池初始化完成");
     } catch (error) {
-      this.logger.error("连接池初始化失败", error);
+      this.logger.error("连接池初始化失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -460,7 +460,7 @@ export class ConnectionPoolManager {
       this.stats.errorConnections++;
       this.updateStats();
 
-      this.logger.error("连接创建失败", error, { connectionId });
+      this.logger.error("连接创建失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), connectionId });
       throw error;
     }
   }
@@ -522,7 +522,7 @@ export class ConnectionPoolManager {
       try {
         await this.performHealthCheck();
       } catch (error) {
-        this.logger.error("健康检查失败", error);
+        this.logger.error("健康检查失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       }
     }, this.config.healthCheckInterval);
 
@@ -537,7 +537,7 @@ export class ConnectionPoolManager {
       try {
         await this.validateConnections();
       } catch (error) {
-        this.logger.error("连接验证失败", error);
+        this.logger.error("连接验证失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       }
     }, this.config.validationInterval);
 
@@ -569,7 +569,8 @@ export class ConnectionPoolManager {
           await this.closeConnection(connection.id);
         }
       } catch (error) {
-        this.logger.warn("连接验证失败", error, {
+        this.logger.warn("连接验证失败", {
+          error: error instanceof Error ? error.message : String(error),
           connectionId: connection.id,
         });
       }

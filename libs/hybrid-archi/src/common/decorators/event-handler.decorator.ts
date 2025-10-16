@@ -49,7 +49,7 @@
  */
 import "reflect-metadata";
 import { BaseDomainEvent } from "../../domain/events/base/base-domain-event.js";
-import type { IEventHandler } from "../../application/cqrs/events/base/event-handler.interface.js";
+import type { IEventHandler } from "../../application/cqrs/events/handlers/event-handler.interface.js";
 import {
   setEventHandlerMetadata,
   getEventHandlerMetadata as getMetadata,

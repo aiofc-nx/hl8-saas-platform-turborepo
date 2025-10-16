@@ -57,9 +57,8 @@
 import { BaseUseCase } from "./base-use-case.js";
 import type { IUseCaseContext } from "./use-case.interface.js";
 // import { any, any } from '@hl8/nestjs-isolation'; // 错误的导入，已注释
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { BadRequestException } from "@nestjs/common";
-import { TENANT_ERROR_CODES } from "../../../constants.js";
 
 /**
  * 多租户感知的用例基类

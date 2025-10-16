@@ -9,8 +9,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+// import { DatabaseService } from '@hl8/database'; // 暂时注释，等待模块就绪
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   DatabaseAdapter,
   IDatabaseConfig,
@@ -57,7 +57,7 @@ export class DatabaseManager {
   private statisticsTimer?: NodeJS.Timeout;
 
   constructor(
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: any, // DatabaseService 暂时使用 any
     private readonly logger: FastifyLoggerService,
     private readonly databaseFactory: DatabaseFactory,
     config: Partial<IDatabaseManagerConfig> = {},
@@ -297,7 +297,14 @@ export class DatabaseManager {
       try {
         await this.connectDatabase(database.databaseName);
       } catch (error) {
-        this.logger.error(`连接数据库失败: ${database.databaseName}`, error);
+        this.logger.error(
+          `连接数据库失败: ${database.databaseName}`,
+          undefined,
+          {
+            databaseName: database.databaseName,
+            error: (error as Error).message,
+          },
+        );
       }
     }
 
@@ -316,7 +323,11 @@ export class DatabaseManager {
       } catch (error) {
         this.logger.error(
           `断开数据库连接失败: ${database.databaseName}`,
-          error,
+          undefined,
+          {
+            databaseName: database.databaseName,
+            error: (error as Error).message,
+          },
         );
       }
     }
@@ -432,7 +443,9 @@ export class DatabaseManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个数据库`);
         }
       } catch (error) {
-        this.logger.error("自动清理失败", error);
+        this.logger.error("自动清理失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.cleanupInterval);
   }
@@ -452,7 +465,9 @@ export class DatabaseManager {
           this.logger.warn("发现不健康的数据库");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error);
+        this.logger.error("健康检查失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.healthCheckInterval);
   }
@@ -466,7 +481,9 @@ export class DatabaseManager {
         const allStats = await this.getAllDatabaseStatistics();
         this.logger.debug("数据库统计信息收集完成");
       } catch (error) {
-        this.logger.error("统计收集失败", error);
+        this.logger.error("统计收集失败", undefined, {
+          error: (error as Error).message,
+        });
       }
     }, this.config.statisticsInterval);
   }
@@ -486,7 +503,12 @@ export class DatabaseManager {
         retryCount++;
         this.logger.warn(
           `数据库连接失败，重试 ${retryCount}/${this.config.connectionRetryCount}: ${databaseName}`,
-          error,
+          {
+            databaseName,
+            retryCount,
+            maxRetries: this.config.connectionRetryCount,
+            error: (error as Error).message,
+          },
         );
 
         if (retryCount < this.config.connectionRetryCount) {

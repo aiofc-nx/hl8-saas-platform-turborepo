@@ -9,9 +9,9 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { MessagingService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+// import { MessagingService } from "@hl8/messaging"; // 暂时注释，等待模块实现
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,
@@ -54,7 +54,7 @@ export class MessageQueueManager {
   private messageCleanupTimer?: NodeJS.Timeout;
 
   constructor(
-    private readonly messagingService: MessagingService,
+    // private readonly messagingService: MessagingService, // 暂时注释，等待模块实现
     private readonly cacheService: CacheService,
     private readonly logger: FastifyLoggerService,
     private readonly queueFactory: MessageQueueFactory,
@@ -216,7 +216,7 @@ export class MessageQueueManager {
           const cleaned = await queue.instance.cleanupExpiredMessages();
           totalCleaned += cleaned;
         } catch (error) {
-          this.logger.error(`清理队列过期消息失败: ${queue.queueName}`, error);
+          this.logger.error(`清理队列过期消息失败: ${queue.queueName}`, error instanceof Error ? error.stack : undefined);
         }
       }
     }
@@ -331,7 +331,7 @@ export class MessageQueueManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个队列`);
         }
       } catch (error) {
-        this.logger.error("自动清理失败", error);
+        this.logger.error("自动清理失败", error instanceof Error ? error.stack : undefined);
       }
     }, this.config.cleanupInterval);
   }
@@ -351,7 +351,7 @@ export class MessageQueueManager {
           this.logger.warn("发现不健康的消息队列");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error);
+        this.logger.error("健康检查失败", error instanceof Error ? error.stack : undefined);
       }
     }, this.config.healthCheckInterval);
   }
@@ -367,7 +367,7 @@ export class MessageQueueManager {
           this.logger.debug(`消息清理完成: ${cleanedCount} 个消息`);
         }
       } catch (error) {
-        this.logger.error("消息清理失败", error);
+        this.logger.error("消息清理失败", error instanceof Error ? error.stack : undefined);
       }
     }, this.config.messageCleanupInterval);
   }

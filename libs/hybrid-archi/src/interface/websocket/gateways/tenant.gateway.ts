@@ -60,12 +60,12 @@ import {
   MonitorPerformance,
   MessageBody,
   WebSocketContext,
-} from "../decorators.js";
+} from "../decorators/index.js";
 import {
   IWebSocketMessage,
   IWebSocketResponse,
   WebSocketUtils,
-} from "../utils.js";
+} from "../utils/index.js";
 
 /**
  * 获取租户信息消息
@@ -206,7 +206,7 @@ export class TenantGateway extends BaseGateway {
       // 这里应该调用租户服务更新租户配置
       // 实际实现中会调用UpdateTenantConfigUseCase
 
-      this.logger.log("租户配置更新");
+      this.logger.info("租户配置更新");
 
       return WebSocketUtils.createSuccessResponse(
         { success: true },
@@ -231,7 +231,7 @@ export class TenantGateway extends BaseGateway {
       return;
     }
 
-    this.logger.log("租户WebSocket连接建立");
+    this.logger.info("租户WebSocket连接建立");
   }
 
   /**
@@ -244,6 +244,6 @@ export class TenantGateway extends BaseGateway {
   override handleDisconnection(client: IWebSocketClient): void {
     this.handleDisconnection(client);
 
-    this.logger.log("租户WebSocket连接断开");
+    this.logger.info("租户WebSocket连接断开");
   }
 }

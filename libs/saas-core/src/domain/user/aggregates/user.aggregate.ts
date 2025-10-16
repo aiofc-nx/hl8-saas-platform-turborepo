@@ -20,7 +20,10 @@
  * @since 1.0.0
  */
 
-import { TenantAwareAggregateRoot, IPartialAuditInfo } from "@hl8/hybrid-archi/index.js";
+import {
+  TenantAwareAggregateRoot,
+  IPartialAuditInfo,
+} from "@hl8/hybrid-archi/index.js";
 import { EntityId } from "@hl8/isolation-model/index.js";
 import { Username, Email, PhoneNumber } from "../value-objects/index.js";
 // import type { IPureLogger } from "@hl8/pure-logger/index.js";

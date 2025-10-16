@@ -9,8 +9,8 @@
  */
 
 import { Injectable, Inject } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
 
 /**
  * 异步处理器配置
@@ -185,7 +185,7 @@ export class AsyncProcessor {
 
       return taskId;
     } catch (error) {
-      this.logger.error("提交任务失败", error, { taskId, name });
+      this.logger.error("提交任务失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), taskId, name });
       throw error;
     }
   }
@@ -237,7 +237,7 @@ export class AsyncProcessor {
       this.logger.log("任务已取消");
       return true;
     } catch (error) {
-      this.logger.error("取消任务失败", error, { taskId });
+      this.logger.error("取消任务失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), taskId });
       return false;
     }
   }
@@ -354,7 +354,7 @@ export class AsyncProcessor {
       try {
         await this.processTasks();
       } catch (error) {
-        this.logger.error("处理任务失败", error);
+        this.logger.error("处理任务失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       }
     }, 100); // 每100ms检查一次
 

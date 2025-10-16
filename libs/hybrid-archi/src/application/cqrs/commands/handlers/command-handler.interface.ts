@@ -63,7 +63,6 @@
  */
 
 import { ICommand } from "../base/command.interface.js";
-import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 命令处理器接口

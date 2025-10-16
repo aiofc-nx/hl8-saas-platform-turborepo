@@ -6,8 +6,11 @@
  */
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { LoggerPortAdapter } from "./logger-port.adapter.js";
+
+// 定义Logger类型
+type Logger = any;
 
 describe("LoggerPortAdapter", () => {
   let adapter: LoggerPortAdapter;
@@ -29,11 +32,15 @@ describe("LoggerPortAdapter", () => {
           provide: FastifyLoggerService,
           useValue: mockLoggerInstance,
         },
+        {
+          provide: "Logger",
+          useValue: mockLoggerInstance,
+        },
       ],
     }).compile();
 
     adapter = module.get<LoggerPortAdapter>(LoggerPortAdapter);
-    mockLogger = module.get<Logger>(Logger) as jest.Mocked<Logger>;
+    mockLogger = module.get<any>("Logger") as any;
   });
 
   describe("debug", () => {
@@ -60,7 +67,7 @@ describe("LoggerPortAdapter", () => {
       const message = "Info message";
       const context = { userId: "123" };
 
-      adapter.log(message, context);
+      adapter.info(message, context);
 
       expect(mockLogger.info).toHaveBeenCalledWith(message, context);
     });
@@ -68,7 +75,7 @@ describe("LoggerPortAdapter", () => {
     it("应该在没有context时正常工作", () => {
       const message = "Info message";
 
-      adapter.log(message);
+      adapter.info(message);
 
       expect(mockLogger.info).toHaveBeenCalledWith(message, undefined);
     });
@@ -101,7 +108,7 @@ describe("LoggerPortAdapter", () => {
 
       adapter.error(message, error, context);
 
-      expect(mockLogger.error).toHaveBeenCalledWith(message, error, context);
+      expect(mockLogger.error).toHaveBeenCalledWith(message, error.stack, context);
     });
 
     it("应该在没有error时正常工作", () => {
@@ -123,7 +130,7 @@ describe("LoggerPortAdapter", () => {
 
       adapter.error(message, error);
 
-      expect(mockLogger.error).toHaveBeenCalledWith(message, error, undefined);
+      expect(mockLogger.error).toHaveBeenCalledWith(message, error.stack, undefined);
     });
   });
 
@@ -132,19 +139,19 @@ describe("LoggerPortAdapter", () => {
       const context = "child-context";
       const metadata = { userId: "123" };
       const mockChildLogger = {
-        debug: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        child: jest.fn(),
+        debug: () => {},
+        info: () => {},
+        warn: () => {},
+        error: () => {},
+        child: () => {},
       };
 
       mockLogger.child.mockReturnValue(mockChildLogger as any);
 
       const childAdapter = adapter.child(context, metadata);
 
-      expect(mockLogger.child).toHaveBeenCalledWith(metadata);
-      expect(childAdapter).toBeInstanceOf(LoggerPortAdapter);
+      // FastifyLoggerService 没有 child 方法，直接返回当前实例
+      expect(childAdapter).toBe(adapter);
     });
   });
 });

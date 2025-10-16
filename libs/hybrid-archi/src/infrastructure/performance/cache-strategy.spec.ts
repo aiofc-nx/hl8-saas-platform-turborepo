@@ -10,8 +10,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CacheStrategy } from "./cache-strategy.js";
 import { CacheStrategyConfig } from "./cache-strategy.js";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
 
 describe("CacheStrategy", () => {
   let cacheStrategy: CacheStrategy;
@@ -24,6 +24,7 @@ describe("CacheStrategy", () => {
       get: jest.fn(),
       set: jest.fn(),
       delete: jest.fn(),
+      del: jest.fn(),
       flush: jest.fn(),
       clear: jest.fn(),
       deletePattern: jest.fn(),
@@ -35,10 +36,11 @@ describe("CacheStrategy", () => {
         {
           provide: FastifyLoggerService,
           useValue: {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn(),
-            debug: jest.fn(),
+            info: () => {},
+            warn: () => {},
+            error: () => {},
+            debug: () => {},
+            log: () => {},
           },
         },
         {
@@ -65,7 +67,7 @@ describe("CacheStrategy", () => {
     }).compile();
 
     cacheStrategy = module.get<CacheStrategy>(CacheStrategy);
-    logger = module.get<Logger>(Logger);
+    logger = module.get<FastifyLoggerService>(FastifyLoggerService);
     cacheService = module.get<CacheService>(CacheService);
     config = module.get<CacheStrategyConfig>("CacheStrategyConfig");
   });
@@ -86,6 +88,7 @@ describe("CacheStrategy", () => {
       await cacheStrategy.set(key, value, ttl, "write-through");
 
       expect(cacheService.set).toHaveBeenCalledWith(
+        "cache-strategy",
         key,
         JSON.stringify(value),
         ttl,
@@ -102,6 +105,7 @@ describe("CacheStrategy", () => {
       await cacheStrategy.set(key, value, undefined, "write-through");
 
       expect(cacheService.set).toHaveBeenCalledWith(
+        "cache-strategy",
         key,
         JSON.stringify(value),
         config.defaultTtl,
@@ -184,7 +188,7 @@ describe("CacheStrategy", () => {
       (cacheService.delete as jest.Mock).mockResolvedValue(true);
       await cacheStrategy.delete(key);
 
-      expect(cacheService.delete).toHaveBeenCalledWith(key);
+      expect(cacheService.del).toHaveBeenCalledWith("cache-strategy", key);
     });
 
     it("应该返回false当缓存不存在", async () => {
@@ -202,7 +206,7 @@ describe("CacheStrategy", () => {
 
       await cacheStrategy.clear();
 
-      expect(cacheService.flush).toHaveBeenCalled();
+      expect(cacheService.clear).toHaveBeenCalled();
     });
   });
 
@@ -339,7 +343,7 @@ describe("CacheStrategy", () => {
       await cacheStrategy.set(key, value);
 
       // 模拟删除错误
-      (cacheService.delete as jest.Mock).mockRejectedValue(
+      (cacheService.del as jest.Mock).mockRejectedValue(
         new Error("删除缓存错误"),
       );
 

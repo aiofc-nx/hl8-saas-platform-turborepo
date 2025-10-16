@@ -354,7 +354,33 @@ export abstract class BaseValueObject<T> {
       return false;
     }
 
-    return JSON.stringify(this._value) === JSON.stringify(other._value);
+    // 首先比较基础值
+    if (JSON.stringify(this._value) !== JSON.stringify(other._value)) {
+      return false;
+    }
+
+    // 然后比较子类的属性
+    return this.arePropertiesEqual(other as any);
+  }
+
+  /**
+   * 克隆值对象
+   *
+   * @description 由于值对象是不可变的，克隆应该返回自身
+   * @returns 自身实例
+   */
+  public clone(): this {
+    return this;
+  }
+
+  /**
+   * 获取类型名称
+   *
+   * @description 返回值对象的类型名称
+   * @returns 类型名称
+   */
+  public getTypeName(): string {
+    return this.constructor.name;
   }
 
   /**
@@ -382,6 +408,19 @@ export abstract class BaseValueObject<T> {
       return 1;
     }
     return 0;
+  }
+
+  /**
+   * 比较子类的属性是否相等
+   *
+   * @protected
+   * @param other 要比较的另一个值对象
+   * @returns {boolean} 属性是否相等
+   */
+  protected arePropertiesEqual(other: BaseValueObject<T>): boolean {
+    // 默认实现：只比较基础值
+    // 子类可以重写此方法来比较额外的属性
+    return true;
   }
 
   // ============================================================================

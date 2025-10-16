@@ -194,7 +194,10 @@ requestIdOptions: {
 ### 手动生成请求 ID
 
 ```typescript
-import { RequestIdGenerator, RequestIdStrategy } from "@hl8/nestjs-fastify/index.js";
+import {
+  RequestIdGenerator,
+  RequestIdStrategy,
+} from "@hl8/nestjs-fastify/index.js";
 
 // 快速生成（使用默认配置）
 const requestId = RequestIdGenerator.quick();

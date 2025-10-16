@@ -12,24 +12,24 @@
     }
   },
   "dependencies": {
-    "@hl8/hybrid-archi": "workspace:*",
-    "@hl8/database": "workspace:*",
+    "@casl/ability": "^6.0.0",
     "@hl8/caching": "workspace:*",
+    "@hl8/database": "workspace:*",
+    "@hl8/exceptions": "workspace:*",
+    "@hl8/hybrid-archi": "workspace:*",
+    "@hl8/isolation-model": "workspace:*",
     "@hl8/nestjs-fastify": "workspace:*",
     "@hl8/nestjs-isolation": "workspace:*",
-    "@hl8/exceptions": "workspace:*",
-    "@hl8/isolation-model": "workspace:*",
     "@hl8/pure-logger": "workspace:*",
-    "@nestjs/common": "^11.0.0",
-    "@nestjs/core": "^11.0.0",
-    "@nestjs/platform-fastify": "^11.0.0",
+    "@nestjs/common": "^11.1.6",
+    "@nestjs/core": "^11.1.6",
+    "@nestjs/platform-fastify": "^11.1.6",
     "@nestjs/terminus": "^10.0.0",
-    "fastify": "^5.6.1",
-    "uuid": "^9.0.0",
-    "class-validator": "^0.14.0",
     "class-transformer": "^0.5.1",
-    "@casl/ability": "^6.0.0",
-    "tslib": "^2.3.0"
+    "class-validator": "^0.14.2",
+    "fastify": "^5.6.1",
+    "tslib": "^2.3.0",
+    "uuid": "^11.0.3"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -47,11 +47,11 @@
     "@repo/typescript-config": "workspace:*",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.16.0",
-    "@types/uuid": "^9.0.0",
     "@types/pg": "^8.10.0",
+    "@types/uuid": "^11.0.0",
     "jest": "^30.2.0",
-    "ts-jest": "^29.2.5",
-    "typescript": "^5.7.3"
+    "ts-jest": "^29.4.5",
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=20"

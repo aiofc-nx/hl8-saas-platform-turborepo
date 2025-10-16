@@ -9,9 +9,8 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { DatabaseModule } from "@hl8/hybrid-archi";
-import { CacheModule } from "@hl8/hybrid-archi";
-import { LoggerModule } from "@hl8/hybrid-archi";
+// import { DatabaseModule } from '@hl8/database'; // 暂时注释，等待模块就绪
+// import { CacheModule } from '@hl8/caching'; // 暂时注释，等待模块就绪
 
 import { EventStoreAdapter } from "./event-store.adapter.js";
 import { EventStoreFactory } from "./event-store.factory.js";
@@ -57,15 +56,15 @@ export class EventStoreAdaptersModule {
     const imports: DynamicModule[] = [];
 
     // 添加基础模块
-    imports.push(
-      DatabaseModule.forRoot({
-        mikroORM: {} as any,
-      }),
-      CacheModule.forRoot({
-        redis: {} as any,
-      }),
-      LoggerModule.forRoot({}),
-    );
+    // imports.push(
+    //   DatabaseModule.forRoot({
+    //     mikroORM: {} as any,
+    //   }),
+    //   CacheModule.forRoot({
+    //     redis: {} as any,
+    //   }),
+    //   LoggerModule.forRoot({}),
+    // );
 
     // 添加管理组件
     providers.push(EventStoreFactory);
@@ -97,15 +96,15 @@ export class EventStoreAdaptersModule {
     const imports: DynamicModule[] = [];
 
     // 添加基础模块
-    imports.push(
-      DatabaseModule.forRoot({
-        mikroORM: {} as any,
-      }),
-      CacheModule.forRoot({
-        redis: {} as any,
-      }),
-      LoggerModule.forRoot({}),
-    );
+    // imports.push(
+    //   DatabaseModule.forRoot({
+    //     mikroORM: {} as any,
+    //   }),
+    //   CacheModule.forRoot({
+    //     redis: {} as any,
+    //   }),
+    //   LoggerModule.forRoot({}),
+    // );
 
     // 添加管理组件
     providers.push(EventStoreFactory);

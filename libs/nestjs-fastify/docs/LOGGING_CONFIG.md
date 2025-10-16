@@ -233,7 +233,10 @@ Configuration validation failed:
 
 ```typescript
 import { TypedConfigModule, fileLoader } from "@hl8/config";
-import { FastifyLoggingModule, LoggingConfig } from "@hl8/nestjs-fastify/index.js";
+import {
+  FastifyLoggingModule,
+  LoggingConfig,
+} from "@hl8/nestjs-fastify/index.js";
 import { Type } from "class-transformer";
 import { ValidateNested } from "class-validator";
 

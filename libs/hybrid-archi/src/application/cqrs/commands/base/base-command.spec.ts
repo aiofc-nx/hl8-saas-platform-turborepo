@@ -61,11 +61,15 @@ class TestCommand extends BaseCommand {
     };
   }
 
-  override validate(): void {
+  override validate(): { isValid: boolean; errors: Array<{ field: string; message: string }> } {
     // 只在特定测试中验证，构造函数调用时不抛出错误
     if (this.action === "INVALID_ACTION") {
-      throw new Error("Action is invalid");
+      return {
+        isValid: false,
+        errors: [{ field: "action", message: "Action is invalid" }]
+      };
     }
+    return { isValid: true, errors: [] };
   }
 }
 
@@ -101,16 +105,23 @@ class ComplexCommand extends BaseCommand {
     };
   }
 
-  override validate(): void {
+  override validate(): { isValid: boolean; errors: Array<{ field: string; message: string }> } {
+    const errors: Array<{ field: string; message: string }> = [];
+    
     if (this.operation && !this.operation.type) {
-      throw new Error("Operation type is required");
+      errors.push({ field: "operation.type", message: "Operation type is required" });
     }
     if (this.operation && !this.operation.target) {
-      throw new Error("Operation target is required");
+      errors.push({ field: "operation.target", message: "Operation target is required" });
     }
     if (this.options && this.options.timeout && this.options.timeout < 0) {
-      throw new Error("Timeout must be non-negative");
+      errors.push({ field: "options.timeout", message: "Timeout must be non-negative" });
     }
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
   }
 }
 
@@ -145,7 +156,7 @@ describe("BaseCommand", () => {
       const command1 = TestCommand.create("action1");
       const command2 = TestCommand.create("action2");
 
-      expect(command1.commandId.equals(command2.commandId)).toBe(false);
+      expect(command1.commandId).not.toBe(command2.commandId);
     });
 
     it("应该正确设置命令创建时间", () => {
@@ -173,7 +184,9 @@ describe("BaseCommand", () => {
       expect(() => validCommand.validate()).not.toThrow();
 
       const invalidCommand = TestCommand.create("INVALID_ACTION");
-      expect(() => invalidCommand.validate()).toThrow("Action is invalid");
+      const result = invalidCommand.validate();
+      expect(result.isValid).toBe(false);
+      expect(result.errors.some(e => e.message.includes("Action is invalid"))).toBe(true);
     });
 
     it("应该正确检查命令类型", () => {
@@ -358,9 +371,9 @@ describe("BaseCommand", () => {
           payload: {},
         },
       );
-      expect(() => invalidTypeCommand.validate()).toThrow(
-        "Operation type is required",
-      );
+      const result = invalidTypeCommand.validate();
+      expect(result.isValid).toBe(false);
+      expect(result.errors.some(e => e.message.includes("Operation type is required"))).toBe(true);
 
       // 缺少操作目标
       const invalidTargetCommand = new ComplexCommand(
@@ -374,9 +387,9 @@ describe("BaseCommand", () => {
           payload: {},
         },
       );
-      expect(() => invalidTargetCommand.validate()).toThrow(
-        "Operation target is required",
-      );
+      const targetResult = invalidTargetCommand.validate();
+      expect(targetResult.isValid).toBe(false);
+      expect(targetResult.errors.some(e => e.message.includes("Operation target is required"))).toBe(true);
 
       // 无效的超时时间
       const invalidTimeoutCommand = new ComplexCommand(
@@ -391,9 +404,9 @@ describe("BaseCommand", () => {
         },
         { timeout: -1 },
       );
-      expect(() => invalidTimeoutCommand.validate()).toThrow(
-        "Timeout must be non-negative",
-      );
+      const timeoutResult = invalidTimeoutCommand.validate();
+      expect(timeoutResult.isValid).toBe(false);
+      expect(timeoutResult.errors.some(e => e.message.includes("Timeout must be non-negative"))).toBe(true);
     });
   });
 

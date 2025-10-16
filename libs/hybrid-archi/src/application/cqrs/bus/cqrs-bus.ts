@@ -58,7 +58,7 @@
  */
 import { Injectable } from "@nestjs/common";
 // import type { CoreTypedTypedConfigModule } from '../../../infrastructure/config/core-config.service';
-import type { TypedConfigModule } from "@hl8/hybrid-archi";
+import type { TypedConfigModule } from "@hl8/config";
 import type { BaseCommand } from "../commands/base/base-command.js";
 import type { BaseQuery, IQueryResult } from "../queries/base/base-query.js";
 import type { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";

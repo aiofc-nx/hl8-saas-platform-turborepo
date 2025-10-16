@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { DomainEvent } from "../../../domain.js";
-import type { IEventHandler } from "../../../application/interfaces/common.js";
+import { DomainEvent } from "../../../domain/index.js";
+import type { IEventHandler } from "../../../application/interfaces/common/index.js";
 
 /**
  * 事件订阅选项接口

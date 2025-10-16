@@ -42,7 +42,7 @@
  * @since 1.0.0
  */
 import { Injectable, DynamicModule } from "@nestjs/common";
-import type { FastifyLoggerService } from "@hl8/hybrid-archi";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -243,9 +243,11 @@ export class DIIntegrationService {
     } catch (error) {
       this.logger.error(
         "Failed to initialize DI integration service",
-        { context: "SYSTEM" },
-        {},
-        error as Error,
+        undefined,
+        {
+          context: "SYSTEM",
+          error: (error as Error).message,
+        },
       );
       throw error;
     }
@@ -387,12 +389,10 @@ export class DIIntegrationService {
         context: "SYSTEM",
       });
     } catch (error) {
-      this.logger.error(
-        "Failed to register handlers",
-        { context: "SYSTEM" },
-        {},
-        error as Error,
-      );
+      this.logger.error("Failed to register handlers", undefined, {
+        context: "SYSTEM",
+        error: (error as Error).message,
+      });
       throw error;
     }
   }

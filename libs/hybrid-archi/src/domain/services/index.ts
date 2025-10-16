@@ -6,4 +6,4 @@
  */
 
 // 基础设施
-export * from "./base.js";
+export * from "./base/index.js";

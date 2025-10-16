@@ -22,6 +22,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
+import { InvalidPasswordException, WeakPasswordException } from "../exceptions/value-object.exceptions.js";
 
 export class Password extends BaseValueObject<string> {
   /**
@@ -41,31 +42,38 @@ export class Password extends BaseValueObject<string> {
    * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, "密码");
-    this.validateLength(value, 8, 128, "密码");
+    try {
+      this.validateNotEmpty(value, "密码");
+      this.validateLength(value, 8, 128, "密码");
 
-    // 强度验证
-    const hasUpper = /[A-Z]/.test(value);
-    const hasLower = /[a-z]/.test(value);
-    const hasNumber = /[0-9]/.test(value);
-    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
+      // 强度验证
+      const hasUpper = /[A-Z]/.test(value);
+      const hasLower = /[a-z]/.test(value);
+      const hasNumber = /[0-9]/.test(value);
+      const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
 
-    if (!hasUpper) {
-      throw new Error("密码必须包含大写字母");
-    }
-    if (!hasLower) {
-      throw new Error("密码必须包含小写字母");
-    }
-    if (!hasNumber) {
-      throw new Error("密码必须包含数字");
-    }
-    if (!hasSpecial) {
-      throw new Error("密码必须包含特殊字符");
-    }
+      if (!hasUpper) {
+        throw new WeakPasswordException("密码必须包含大写字母", value);
+      }
+      if (!hasLower) {
+        throw new WeakPasswordException("密码必须包含小写字母", value);
+      }
+      if (!hasNumber) {
+        throw new WeakPasswordException("密码必须包含数字", value);
+      }
+      if (!hasSpecial) {
+        throw new WeakPasswordException("密码必须包含特殊字符", value);
+      }
 
-    // 弱密码检查
-    if (Password.WEAK_PASSWORDS.includes(value.toLowerCase())) {
-      throw new Error("不能使用常见弱密码");
+      // 弱密码检查
+      if (Password.WEAK_PASSWORDS.includes(value.toLowerCase())) {
+        throw new WeakPasswordException("不能使用常见弱密码", value);
+      }
+    } catch (error) {
+      if (error instanceof InvalidPasswordException || error instanceof WeakPasswordException) {
+        throw error;
+      }
+      throw new InvalidPasswordException(error.message, value);
     }
   }
 
@@ -84,3 +92,6 @@ export class Password extends BaseValueObject<string> {
     }
   }
 }
+
+// 导出异常类
+export { InvalidPasswordException, WeakPasswordException };

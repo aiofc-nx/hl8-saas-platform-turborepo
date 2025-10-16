@@ -17,4 +17,7 @@ export {
 } from "./base-domain-exception.js";
 
 // 事件相关异常类
-export { EventBusException, EventHandlingException } from "./event-exceptions.js";
+export {
+  EventBusException,
+  EventHandlingException,
+} from "./event-exceptions.js";

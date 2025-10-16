@@ -9,8 +9,6 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { DatabaseModule } from "@hl8/hybrid-archi";
-import { LoggerModule } from "@hl8/hybrid-archi";
 
 import { DatabaseAdapter } from "./database.adapter.js";
 import { DatabaseFactory } from "./database.factory.js";
@@ -64,10 +62,10 @@ export class DatabaseAdaptersModule {
     const imports: DynamicModule[] = [];
 
     // 添加基础模块
-    imports.push(
-      DatabaseModule.forRoot({ mikroORM: {} as any }),
-      LoggerModule.forRoot({}),
-    );
+    // imports.push(
+    //   DatabaseModule.forRoot({ mikroORM: {} as any }),
+    //   LoggerModule.forRoot({}),
+    // );
 
     // 添加管理组件
     providers.push(DatabaseFactory);
@@ -99,10 +97,10 @@ export class DatabaseAdaptersModule {
     const imports: DynamicModule[] = [];
 
     // 添加基础模块
-    imports.push(
-      DatabaseModule.forRoot({ mikroORM: {} as any }),
-      LoggerModule.forRoot({}),
-    );
+    // imports.push(
+    //   DatabaseModule.forRoot({ mikroORM: {} as any }),
+    //   LoggerModule.forRoot({}),
+    // );
 
     // 添加管理组件
     providers.push(DatabaseFactory);

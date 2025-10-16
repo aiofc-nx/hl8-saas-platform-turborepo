@@ -9,10 +9,10 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
-import { EventService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
+// import { EventService } from "@hl8/messaging"; // 暂时注释，等待模块实现 // 暂时注释，等待模块实现
+import { TypedConfigModule } from "@hl8/config";
 
 import { LoggerPortAdapter } from "./logger-port.adapter.js";
 import { IdGeneratorPortAdapter } from "./id-generator-port.adapter.js";
@@ -64,7 +64,7 @@ export class PortAdaptersFactory {
     private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly configService: TypedConfigModule,
-    private readonly eventService: EventService,
+    // private readonly eventService: EventService, // 暂时注释，等待模块实现
   ) {}
 
   /**
@@ -101,7 +101,7 @@ export class PortAdaptersFactory {
         adapter = new ConfigurationPortAdapter(this.configService);
         break;
       case "eventBus":
-        adapter = new EventBusPortAdapter(this.eventService);
+        adapter = new EventBusPortAdapter(); // EventService 暂时不可用
         break;
       default:
         throw new Error(`未知的端口适配器类型: ${adapterType}`);
@@ -176,7 +176,7 @@ export class PortAdaptersFactory {
 
       this.logger.debug(`销毁端口适配器: ${adapterType}`);
     } catch (error) {
-      this.logger.error(`销毁端口适配器失败: ${adapterType}`, error);
+      this.logger.error(`销毁端口适配器失败: ${adapterType}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }

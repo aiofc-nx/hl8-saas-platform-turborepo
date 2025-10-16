@@ -7,7 +7,7 @@
 
 import { Test, TestingModule } from "@nestjs/testing";
 import { DatabaseService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   DatabaseAdapter,
   IDatabaseConfig,
@@ -17,7 +17,7 @@ import {
 describe("DatabaseAdapter", () => {
   let adapter: DatabaseAdapter;
   let mockDatabaseService: any;
-  let mockLogger: jest.Mocked<Logger>;
+  let mockLogger: jest.Mocked<FastifyLoggerService>;
 
   beforeEach(async () => {
     const mockDatabaseServiceInstance = {
@@ -48,7 +48,7 @@ describe("DatabaseAdapter", () => {
           ) => {
             return new DatabaseAdapter(databaseService, logger, {});
           },
-          inject: [DatabaseService, Logger],
+          inject: [DatabaseService, FastifyLoggerService],
         },
         {
           provide: DatabaseService,
@@ -63,7 +63,7 @@ describe("DatabaseAdapter", () => {
 
     adapter = module.get<DatabaseAdapter>(DatabaseAdapter);
     mockDatabaseService = mockDatabaseServiceInstance;
-    mockLogger = module.get<Logger>(Logger) as jest.Mocked<Logger>;
+    mockLogger = module.get<FastifyLoggerService>(FastifyLoggerService) as jest.Mocked<FastifyLoggerService>;
   });
 
   describe("query", () => {

@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 验证结果接口
@@ -149,7 +149,7 @@ export class BusinessValidator {
             }
           }
         } catch (error) {
-          this.logger.error("验证规则执行失败", error, { ruleName });
+          this.logger.error("验证规则执行失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), ruleName });
           errors.push({
             field: ruleName,
             code: "VALIDATION_ERROR",
@@ -182,7 +182,7 @@ export class BusinessValidator {
 
       return result;
     } catch (error) {
-      this.logger.error("业务数据验证失败", error);
+      this.logger.error("业务数据验证失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }

@@ -10,8 +10,8 @@
 
 import { Injectable, Inject } from "@nestjs/common";
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
 
 /**
  * 事件监控统计信息
@@ -121,7 +121,7 @@ export class EventMonitor {
     error?: Error,
   ): void {
     try {
-      const cached = this.cacheService.get(`event:processing:${processingId}`);
+      const cached = this.cacheService.get(`event:processing:${processingId}`, "event-monitor");
       if (!cached) {
         this.logger.warn("未找到处理记录");
         return;
@@ -141,11 +141,11 @@ export class EventMonitor {
       this.checkAlerts(eventType, processingTime, success, error);
 
       // 清理缓存
-      this.cacheService.delete(`event:processing:${processingId}`);
+      this.cacheService.del(`event:processing:${processingId}`, "event-monitor");
 
       this.logger.debug("事件处理完成");
     } catch (error) {
-      this.logger.error("记录事件处理完成失败", error, { processingId });
+      this.logger.error("记录事件处理完成失败", error instanceof Error ? error.stack : undefined, { processingId });
     }
   }
 
@@ -161,7 +161,7 @@ export class EventMonitor {
     const errorCount = this.errorCounts.get(eventType) || 0;
     this.errorCounts.set(eventType, errorCount + 1);
 
-    this.logger.error("事件处理错误", error, {
+    this.logger.error("事件处理错误", error instanceof Error ? error.stack : undefined, {
       eventType,
       eventId: event.eventId.toString(),
       aggregateId: event.aggregateId.toString(),

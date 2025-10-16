@@ -9,8 +9,7 @@
  */
 
 import { Module } from "@nestjs/common";
-import { CacheModule } from "@hl8/hybrid-archi";
-import { LoggerModule } from "@hl8/hybrid-archi";
+import { CachingModule } from "@hl8/caching";
 
 import { DomainServiceAdapter } from "./domain-service.adapter.js";
 import { DomainServiceFactory } from "./domain-service.factory.js";
@@ -22,7 +21,7 @@ import { DomainServiceManager } from "./domain-service.manager.js";
  * 提供领域服务适配器的统一管理
  */
 @Module({
-  imports: [CacheModule, LoggerModule],
+  imports: [CachingModule],
   providers: [
     // 领域服务适配器
     DomainServiceAdapter,

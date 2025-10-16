@@ -8,7 +8,7 @@
  * @since 1.0.0
  */
 import { Injectable } from "@nestjs/common";
-import type { FastifyLoggerService } from "@hl8/hybrid-archi";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 // 定义 LogContext 枚举
 enum LogContext {
@@ -203,12 +203,11 @@ export class ModuleScannerService {
       });
       return modules;
     } catch (error) {
-      this.logger.error(
-        "Failed to scan path " + scanPath,
-        { context: "SYSTEM" },
-        { scanPath },
-        error as Error,
-      );
+      this.logger.error("Failed to scan path " + scanPath, undefined, {
+        context: "SYSTEM",
+        scanPath,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }
@@ -245,12 +244,11 @@ export class ModuleScannerService {
       });
       return modules;
     } catch (error) {
-      this.logger.error(
-        "Failed to scan pattern " + pattern,
-        { context: "SYSTEM" },
-        { pattern },
-        error as Error,
-      );
+      this.logger.error("Failed to scan pattern " + pattern, undefined, {
+        context: "SYSTEM",
+        pattern,
+        error: (error as Error).message,
+      });
       throw error;
     }
   }

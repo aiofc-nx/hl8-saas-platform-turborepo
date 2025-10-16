@@ -392,12 +392,12 @@ export class WebSocketLoggingMiddleware extends BaseWebSocketMiddleware {
     client: IWebSocketClient,
     next: () => Promise<void>,
   ): Promise<void> {
-    this.logger.log("WebSocket连接处理开始");
+    this.logger.info("WebSocket连接处理开始");
 
     try {
       await next();
 
-      this.logger.log("WebSocket连接处理成功");
+      this.logger.info("WebSocket连接处理成功");
     } catch (error) {
       this.logger.error("WebSocket连接处理失败");
 

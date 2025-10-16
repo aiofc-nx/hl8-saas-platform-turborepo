@@ -9,15 +9,15 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import {
+import type {
   ISnapshotStore,
   Snapshot,
   SnapshotStoreStats,
   SnapshotStoreConfig,
 } from "./common/snapshot-store.interface.js";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { DatabaseService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
+import { ConnectionManager } from "@hl8/database";
 
 /**
  * 快照存储实现
@@ -39,7 +39,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   constructor(
     private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: ConnectionManager,
     private readonly config: SnapshotStoreConfig,
   ) {}
 
@@ -83,7 +83,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       this.logger.log("快照保存成功");
     } catch (error) {
-      this.logger.error("快照保存失败", error, {
+      this.logger.error("快照保存失败", error instanceof Error ? error.stack : undefined, {
         aggregateId,
         version,
       });
@@ -130,7 +130,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       return decompressedSnapshot;
     } catch (error) {
-      this.logger.error("获取快照失败", error, {
+      this.logger.error("获取快照失败", error instanceof Error ? error.stack : undefined, {
         aggregateId,
         version,
       });
@@ -171,7 +171,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       return processedSnapshot;
     } catch (error) {
-      this.logger.error("获取最新快照失败", error, {
+      this.logger.error("获取最新快照失败", error instanceof Error ? error.stack : undefined, {
         aggregateId,
       });
       throw error;
@@ -192,7 +192,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       this.logger.log("快照删除成功");
     } catch (error) {
-      this.logger.error("删除快照失败", error, {
+      this.logger.error("删除快照失败", error instanceof Error ? error.stack : undefined, {
         aggregateId,
         version,
       });
@@ -218,7 +218,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       this.logger.log("旧快照清理成功");
     } catch (error) {
-      this.logger.error("清理旧快照失败", error, {
+      this.logger.error("清理旧快照失败", error instanceof Error ? error.stack : undefined, {
         aggregateId,
         retainCount,
       });
@@ -239,7 +239,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       const exists = await this.checkSnapshotExists(aggregateId, version);
       return exists;
     } catch (error) {
-      this.logger.error("检查快照存在性失败", error, {
+      this.logger.error("检查快照存在性失败", error instanceof Error ? error.stack : undefined, {
         aggregateId,
         version,
       });
@@ -258,7 +258,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       const stats = await this.calculateStats();
       return stats;
     } catch (error) {
-      this.logger.error("获取快照统计信息失败", error);
+      this.logger.error("获取快照统计信息失败", error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -293,7 +293,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       });
       return snapshot;
     } catch (error) {
-      this.logger.warn("快照压缩失败", error);
+      this.logger.warn("快照压缩失败");
       return snapshot;
     }
   }
@@ -311,7 +311,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       console.log("解压缩快照数据");
       return snapshot;
     } catch (error) {
-      this.logger.warn("快照解压缩失败", error);
+      this.logger.warn("快照解压缩失败");
       return snapshot;
     }
   }
@@ -326,7 +326,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       console.log("加密快照数据");
       return snapshot;
     } catch (error) {
-      this.logger.warn("快照加密失败", error);
+      this.logger.warn("快照加密失败");
       return snapshot;
     }
   }
@@ -340,7 +340,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       console.log("解密快照数据");
       return snapshot;
     } catch (error) {
-      this.logger.warn("快照解密失败", error);
+      this.logger.warn("快照解密失败");
       return snapshot;
     }
   }
@@ -446,10 +446,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   ): Promise<Snapshot | null> {
     try {
       const cacheKey = `snapshot:${aggregateId}:${version}`;
-      const cached = await this.cacheService.get(cacheKey);
+      const cached = await this.cacheService.get(cacheKey, "snapshot-store");
       return cached ? JSON.parse(cached as string) : null;
     } catch (error) {
-      this.logger.warn("获取缓存快照失败", error);
+      this.logger.warn("获取缓存快照失败");
       return null;
     }
   }
@@ -462,10 +462,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
   ): Promise<Snapshot | null> {
     try {
       const cacheKey = `snapshot:${aggregateId}:latest`;
-      const cached = await this.cacheService.get(cacheKey);
+      const cached = await this.cacheService.get(cacheKey, "snapshot-store");
       return cached ? JSON.parse(cached as string) : null;
     } catch (error) {
-      this.logger.warn("获取缓存最新快照失败", error);
+      this.logger.warn("获取缓存最新快照失败");
       return null;
     }
   }
@@ -490,7 +490,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
         ttl,
       );
     } catch (error) {
-      this.logger.warn("缓存快照失败", error);
+      this.logger.warn("缓存快照失败");
     }
   }
 
@@ -504,7 +504,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
     try {
       if (version) {
         const cacheKey = `snapshot:${aggregateId}:${version}`;
-        await this.cacheService.delete(cacheKey);
+        await this.cacheService.del(cacheKey, "snapshot-store");
       } else {
         // 删除所有相关缓存
         const pattern = `snapshot:${aggregateId}:*`;
@@ -512,7 +512,7 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
         // await this.cacheService.deletePattern(pattern);
       }
     } catch (error) {
-      this.logger.warn("使快照缓存失效失败", error);
+      this.logger.warn("使快照缓存失效失败");
     }
   }
 

@@ -9,9 +9,9 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { MessagingService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+// import { MessagingService } from '@hl8/messaging'; // 暂时注释，等待模块实现
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import {
   MessageQueueAdapter,
   IMessageQueueConfig,
@@ -47,7 +47,7 @@ export class MessageQueueFactory {
   private readonly queues = new Map<string, IMessageQueueRegistration>();
 
   constructor(
-    private readonly messagingService: MessagingService,
+    // private readonly messagingService: MessagingService, // 暂时注释，等待模块实现
     private readonly cacheService: CacheService,
     private readonly logger: FastifyLoggerService,
   ) {}
@@ -74,7 +74,6 @@ export class MessageQueueFactory {
 
     // 创建队列实例
     const queue = new MessageQueueAdapter(
-      this.messagingService,
       this.cacheService,
       this.logger,
       config,
@@ -169,7 +168,7 @@ export class MessageQueueFactory {
 
       this.logger.debug(`销毁消息队列: ${queueName}`);
     } catch (error) {
-      this.logger.error(`销毁消息队列失败: ${queueName}`, error);
+      this.logger.error(`销毁消息队列失败: ${queueName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }

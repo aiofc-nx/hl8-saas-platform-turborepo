@@ -1,0 +1,21 @@
+{
+  "extends": "@repo/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "incremental": false,
+    "baseUrl": ".",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "paths": {
+      "@hl8/caching": ["node_modules/@hl8/caching"],
+      "@hl8/exceptions": ["node_modules/@hl8/exceptions"],
+      "@hl8/config": ["node_modules/@hl8/config"],
+      "@hl8/nestjs-fastify": ["node_modules/@hl8/nestjs-fastify"],
+      "@hl8/nestjs-isolation": ["node_modules/@hl8/nestjs-isolation"],
+      "@hl8/isolation-model": ["node_modules/@hl8/isolation-model"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}

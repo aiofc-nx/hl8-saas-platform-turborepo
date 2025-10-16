@@ -9,8 +9,8 @@
  */
 
 import { Injectable, Inject } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
 
 /**
  * 缓存策略配置
@@ -163,7 +163,7 @@ export class CacheStrategy {
 
       return entry.value as T;
     } catch (error) {
-      this.logger.error("获取缓存失败", error, { key, strategy });
+      this.logger.error("获取缓存失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), key, strategy });
       return null;
     }
   }
@@ -222,7 +222,7 @@ export class CacheStrategy {
 
       this.logger.debug("缓存设置成功");
     } catch (error) {
-      this.logger.error("设置缓存失败", error, { key, strategy });
+      this.logger.error("设置缓存失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), key, strategy });
       throw error;
     }
   }
@@ -250,7 +250,7 @@ export class CacheStrategy {
       }
 
       // 从外部缓存删除
-      await this.cacheService.delete(key);
+      await this.cacheService.del("cache-strategy", key);
 
       this.stats.size--;
       this.updateStats();
@@ -258,7 +258,7 @@ export class CacheStrategy {
       this.logger.debug("缓存删除成功");
       return true;
     } catch (error) {
-      this.logger.error("删除缓存失败", error, { key });
+      this.logger.error("删除缓存失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), key });
       return false;
     }
   }
@@ -277,7 +277,7 @@ export class CacheStrategy {
 
       // 清空外部缓存
       // 清空所有缓存 - 使用flush方法清空Redis缓存
-      await this.cacheService.flush();
+      await this.cacheService.clear();
 
       // 重置统计信息
       this.stats.size = 0;
@@ -287,7 +287,7 @@ export class CacheStrategy {
 
       this.logger.log("缓存已清空");
     } catch (error) {
-      this.logger.error("清空缓存失败", error);
+      this.logger.error("清空缓存失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -309,7 +309,7 @@ export class CacheStrategy {
           const value = await loader(key);
           await this.set(key, value);
         } catch (error) {
-          this.logger.warn("缓存预热失败", error, { key });
+          this.logger.warn("缓存预热失败", { error: error instanceof Error ? error.message : String(error), key });
         }
       });
 
@@ -317,7 +317,7 @@ export class CacheStrategy {
 
       this.logger.log("缓存预热完成");
     } catch (error) {
-      this.logger.error("缓存预热失败", error);
+      this.logger.error("缓存预热失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -471,7 +471,7 @@ export class CacheStrategy {
   private async writeThrough(key: string, entry: CacheEntry): Promise<void> {
     // 同时写入缓存和外部存储
     this.entries.set(key, entry);
-    await this.cacheService.set(key, JSON.stringify(entry.value), entry.ttl);
+    await this.cacheService.set("cache-strategy", key, JSON.stringify(entry.value), entry.ttl);
   }
 
   /**
@@ -488,7 +488,7 @@ export class CacheStrategy {
           entry.ttl,
         );
       } catch (error) {
-        this.logger.warn("异步写入外部存储失败", error, { key });
+        this.logger.warn("异步写入外部存储失败", { error: error instanceof Error ? error.message : String(error), key });
       }
     });
   }
@@ -498,7 +498,7 @@ export class CacheStrategy {
    */
   private async writeAround(key: string, entry: CacheEntry): Promise<void> {
     // 直接写入外部存储，不写入缓存
-    await this.cacheService.set(key, JSON.stringify(entry.value), entry.ttl);
+    await this.cacheService.set("cache-strategy", key, JSON.stringify(entry.value), entry.ttl);
   }
 
   /**

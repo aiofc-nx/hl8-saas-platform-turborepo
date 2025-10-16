@@ -131,25 +131,25 @@ describe("CQRSBus", () => {
 
   beforeEach(async () => {
     const mockUseCaseRegistry = {
-      register: jest.fn(),
-      get: jest.fn(),
-      has: jest.fn(),
-      getRegisteredUseCases: jest.fn().mockReturnValue([]),
-      getByType: jest.fn().mockReturnValue(new Map()),
+      register: () => {},
+      get: () => {},
+      has: () => {},
+      getRegisteredUseCases: () => [],
+      getByType: () => new Map(),
     };
     const mockProjectorManager = {
-      register: jest.fn(),
-      projectEvent: jest.fn().mockResolvedValue(undefined),
-      projectEvents: jest.fn().mockResolvedValue(undefined),
-      rebuildAllReadModels: jest.fn().mockResolvedValue(undefined),
-      getProjectors: jest.fn().mockReturnValue([]),
-      getAllProjectors: jest.fn().mockReturnValue([]),
-      hasProjector: jest.fn().mockReturnValue(false),
-      removeProjector: jest.fn(),
-      clear: jest.fn(),
-      getProjectorStats: jest.fn().mockReturnValue({}),
-      setProjectorEnabled: jest.fn(),
-      executeProjector: jest.fn().mockResolvedValue(undefined),
+      register: () => {},
+      projectEvent: () => Promise.resolve(undefined),
+      projectEvents: () => Promise.resolve(undefined),
+      rebuildAllReadModels: () => Promise.resolve(undefined),
+      getProjectors: () => [],
+      getAllProjectors: () => [],
+      hasProjector: () => false,
+      removeProjector: () => {},
+      clear: () => {},
+      getProjectorStats: () => ({}),
+      setProjectorEnabled: () => {},
+      executeProjector: () => Promise.resolve(undefined),
     } as any;
 
     const module: TestingModule = await Test.createTestingModule({

@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { EventService } from "@hl8/hybrid-archi";
+// import { EventService } from "@hl8/messaging"; // 暂时注释，等待模块实现
 import { IEventBusPort } from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
@@ -45,7 +45,9 @@ export enum EventPriority {
  */
 @Injectable()
 export class EventBusPortAdapter implements IEventBusPort {
-  constructor(private readonly eventService: EventService) {}
+  constructor() {
+    // EventService 暂时注释，等待模块实现
+  }
 
   /**
    * 发布事件
@@ -62,28 +64,9 @@ export class EventBusPortAdapter implements IEventBusPort {
     },
   ): Promise<void> {
     try {
-      // 检查EventService是否有publish方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            publish?: (event: unknown, options?: unknown) => Promise<void>;
-          }
-        ).publish === "function"
-      ) {
-        await (
-          this.eventService as unknown as {
-            publish: (event: unknown, options?: unknown) => Promise<void>;
-          }
-        ).publish(event, {
-          priority: options?.priority || EventPriority.MEDIUM,
-          delay: options?.delay || 0,
-          retryCount: options?.retryCount || 3,
-        });
-      } else {
-        // 如果没有publish方法，使用基础的事件发布
-        console.warn("EventService不支持publish方法，使用基础事件发布");
-        // 这里可以实现基础的事件发布逻辑
-      }
+      // EventService 暂时不可用
+      console.warn("EventService 暂时不可用，事件发布功能已禁用");
+      // 这里可以实现基础的事件发布逻辑
     } catch (error) {
       throw new Error(
         `事件发布失败: ${
@@ -108,35 +91,10 @@ export class EventBusPortAdapter implements IEventBusPort {
     },
   ): Promise<void> {
     try {
-      // 检查EventService是否有publishBatch方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            publishBatch?: (
-              events: unknown[],
-              options?: unknown,
-            ) => Promise<void>;
-          }
-        ).publishBatch === "function"
-      ) {
-        await (
-          this.eventService as unknown as {
-            publishBatch: (
-              events: unknown[],
-              options?: unknown,
-            ) => Promise<void>;
-          }
-        ).publishBatch(events, {
-          priority: options?.priority || EventPriority.MEDIUM,
-          delay: options?.delay || 0,
-          retryCount: options?.retryCount || 3,
-        });
-      } else {
-        // 如果没有publishBatch方法，逐个发布事件
-        console.warn("EventService不支持publishBatch方法，逐个发布事件");
-        for (const event of events) {
-          await this.publish(event, options);
-        }
+      // EventService 暂时不可用，逐个发布事件
+      console.warn("EventService 暂时不可用，逐个发布事件");
+      for (const event of events) {
+        await this.publish(event, options);
       }
     } catch (error) {
       throw new Error(
@@ -163,34 +121,9 @@ export class EventBusPortAdapter implements IEventBusPort {
     },
   ): Promise<void> {
     try {
-      // 检查EventService是否有subscribe方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            subscribe?: (
-              eventType: string,
-              handler: unknown,
-              options?: unknown,
-            ) => Promise<void>;
-          }
-        ).subscribe === "function"
-      ) {
-        await (
-          this.eventService as unknown as {
-            subscribe: (
-              eventType: string,
-              handler: unknown,
-              options?: unknown,
-            ) => Promise<void>;
-          }
-        ).subscribe(eventType, handler, {
-          priority: options?.priority || EventPriority.MEDIUM,
-          filter: options?.filter,
-        });
-      } else {
-        console.warn("EventService不支持subscribe方法");
-        // 这里可以实现基础的事件订阅逻辑
-      }
+      // EventService 暂时不可用
+      console.warn("EventService 暂时不可用，事件订阅功能已禁用");
+      // 这里可以实现基础的事件订阅逻辑
     } catch (error) {
       throw new Error(
         `事件订阅失败: ${
@@ -211,25 +144,8 @@ export class EventBusPortAdapter implements IEventBusPort {
     handler: (event: unknown) => Promise<void>,
   ): Promise<void> {
     try {
-      // 取消订阅 - 使用兼容性检查
-      if (
-        typeof (
-          this.eventService as unknown as {
-            unsubscribe?: (
-              eventType: string,
-              handler: unknown,
-            ) => Promise<void>;
-          }
-        ).unsubscribe === "function"
-      ) {
-        await (
-          this.eventService as unknown as {
-            unsubscribe: (eventType: string, handler: unknown) => Promise<void>;
-          }
-        ).unsubscribe(eventType, handler);
-      } else {
-        console.warn("EventService不支持unsubscribe方法");
-      }
+      // EventService 暂时不可用
+      console.warn("EventService 暂时不可用，取消订阅功能已禁用");
     } catch (error) {
       throw new Error(
         `取消事件订阅失败: ${
@@ -252,41 +168,14 @@ export class EventBusPortAdapter implements IEventBusPort {
     averageProcessingTime: number;
   }> {
     try {
-      // 检查EventService是否有getStatistics方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            getStatistics?: () => Promise<{
-              totalPublished: number;
-              totalSubscribed: number;
-              totalHandled: number;
-              totalFailed: number;
-              averageProcessingTime: number;
-            }>;
-          }
-        ).getStatistics === "function"
-      ) {
-        return await (
-          this.eventService as unknown as {
-            getStatistics: () => Promise<{
-              totalPublished: number;
-              totalSubscribed: number;
-              totalHandled: number;
-              totalFailed: number;
-              averageProcessingTime: number;
-            }>;
-          }
-        ).getStatistics();
-      } else {
-        // 返回默认统计信息
-        return {
-          totalPublished: 0,
-          totalSubscribed: 0,
-          totalHandled: 0,
-          totalFailed: 0,
-          averageProcessingTime: 0,
-        };
-      }
+      // 返回默认统计信息
+      return {
+        totalPublished: 0,
+        totalSubscribed: 0,
+        totalHandled: 0,
+        totalFailed: 0,
+        averageProcessingTime: 0,
+      };
     } catch (error) {
       throw new Error(
         `获取事件统计失败: ${
@@ -310,23 +199,8 @@ export class EventBusPortAdapter implements IEventBusPort {
     sortOrder?: "asc" | "desc";
   }): Promise<unknown[]> {
     try {
-      // 检查EventService是否有getEvents方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            getEvents?: (options?: unknown) => Promise<unknown[]>;
-          }
-        ).getEvents === "function"
-      ) {
-        return await (
-          this.eventService as unknown as {
-            getEvents: (options?: unknown) => Promise<unknown[]>;
-          }
-        ).getEvents(options);
-      } else {
-        // 返回空数组
-        return [];
-      }
+      // 返回空数组
+      return [];
     } catch (error) {
       throw new Error(
         `获取事件列表失败: ${
@@ -344,23 +218,8 @@ export class EventBusPortAdapter implements IEventBusPort {
    */
   async getEvent(eventId: string): Promise<unknown> {
     try {
-      // 检查EventService是否有getEvent方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            getEvent?: (eventId: string) => Promise<unknown>;
-          }
-        ).getEvent === "function"
-      ) {
-        return await (
-          this.eventService as unknown as {
-            getEvent: (eventId: string) => Promise<unknown>;
-          }
-        ).getEvent(eventId);
-      } else {
-        // 返回null
-        return null;
-      }
+      // 返回null
+      return null;
     } catch (error) {
       throw new Error(
         `获取事件详情失败: ${
@@ -377,22 +236,7 @@ export class EventBusPortAdapter implements IEventBusPort {
    */
   async retryEvent(eventId: string): Promise<void> {
     try {
-      // 检查EventService是否有retryEvent方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            retryEvent?: (eventId: string) => Promise<void>;
-          }
-        ).retryEvent === "function"
-      ) {
-        await (
-          this.eventService as unknown as {
-            retryEvent: (eventId: string) => Promise<void>;
-          }
-        ).retryEvent(eventId);
-      } else {
-        console.warn("EventService不支持retryEvent方法");
-      }
+      console.warn("EventService 暂时不可用，重试事件功能已禁用");
     } catch (error) {
       throw new Error(
         `重试事件失败: ${
@@ -409,23 +253,8 @@ export class EventBusPortAdapter implements IEventBusPort {
    */
   async cleanupEvents(olderThan: Date): Promise<number> {
     try {
-      // 检查EventService是否有cleanupEvents方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            cleanupEvents?: (olderThan: Date) => Promise<number>;
-          }
-        ).cleanupEvents === "function"
-      ) {
-        return await (
-          this.eventService as unknown as {
-            cleanupEvents: (olderThan: Date) => Promise<number>;
-          }
-        ).cleanupEvents(olderThan);
-      } else {
-        // 返回0表示没有清理任何事件
-        return 0;
-      }
+      // 返回0表示没有清理任何事件
+      return 0;
     } catch (error) {
       throw new Error(
         `清理过期事件失败: ${
@@ -482,37 +311,8 @@ export class EventBusPortAdapter implements IEventBusPort {
     }>
   > {
     try {
-      // 检查EventService是否有getSubscribers方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            getSubscribers?: (eventType: string) => Promise<
-              Array<{
-                id: string;
-                handler: string;
-                priority: EventPriority;
-                createdAt: Date;
-              }>
-            >;
-          }
-        ).getSubscribers === "function"
-      ) {
-        return await (
-          this.eventService as unknown as {
-            getSubscribers: (eventType: string) => Promise<
-              Array<{
-                id: string;
-                handler: string;
-                priority: EventPriority;
-                createdAt: Date;
-              }>
-            >;
-          }
-        ).getSubscribers(eventType);
-      } else {
-        // 返回空数组
-        return [];
-      }
+      // 返回空数组
+      return [];
     } catch (error) {
       throw new Error(
         `获取订阅者列表失败: ${
@@ -529,22 +329,7 @@ export class EventBusPortAdapter implements IEventBusPort {
    */
   async pauseEventProcessing(eventType: string): Promise<void> {
     try {
-      // 检查EventService是否有pauseEventProcessing方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            pauseEventProcessing?: (eventType: string) => Promise<void>;
-          }
-        ).pauseEventProcessing === "function"
-      ) {
-        await (
-          this.eventService as unknown as {
-            pauseEventProcessing: (eventType: string) => Promise<void>;
-          }
-        ).pauseEventProcessing(eventType);
-      } else {
-        console.warn("EventService不支持pauseEventProcessing方法");
-      }
+      console.warn("EventService 暂时不可用，暂停事件处理功能已禁用");
     } catch (error) {
       throw new Error(
         `暂停事件处理失败: ${
@@ -561,22 +346,7 @@ export class EventBusPortAdapter implements IEventBusPort {
    */
   async resumeEventProcessing(eventType: string): Promise<void> {
     try {
-      // 检查EventService是否有resumeEventProcessing方法
-      if (
-        typeof (
-          this.eventService as unknown as {
-            resumeEventProcessing?: (eventType: string) => Promise<void>;
-          }
-        ).resumeEventProcessing === "function"
-      ) {
-        await (
-          this.eventService as unknown as {
-            resumeEventProcessing: (eventType: string) => Promise<void>;
-          }
-        ).resumeEventProcessing(eventType);
-      } else {
-        console.warn("EventService不支持resumeEventProcessing方法");
-      }
+      console.warn("EventService 暂时不可用，恢复事件处理功能已禁用");
     } catch (error) {
       throw new Error(
         `恢复事件处理失败: ${

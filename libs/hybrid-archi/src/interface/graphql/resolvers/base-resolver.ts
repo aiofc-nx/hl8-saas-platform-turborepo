@@ -79,7 +79,7 @@ export abstract class BaseResolver {
   ): Promise<TResult> {
     this.getGraphQLContext();
 
-    this.logger.log(`开始处理GraphQL查询: ${operationName}`);
+    this.logger.info(`开始处理GraphQL查询: ${operationName}`);
 
     try {
       // 执行查询
@@ -112,7 +112,7 @@ export abstract class BaseResolver {
   ): Promise<TResult> {
     this.getGraphQLContext();
 
-    this.logger.log(`开始处理GraphQL变更: ${operationName}`);
+    this.logger.info(`开始处理GraphQL变更: ${operationName}`);
 
     try {
       // 执行变更
@@ -145,7 +145,7 @@ export abstract class BaseResolver {
   ): Promise<TResult> {
     this.getGraphQLContext();
 
-    this.logger.log(`开始处理GraphQL订阅: ${operationName}`);
+    this.logger.info(`开始处理GraphQL订阅: ${operationName}`);
 
     try {
       // 执行订阅
@@ -193,7 +193,7 @@ export abstract class BaseResolver {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.log(`GraphQL ${operationName}操作成功`);
+    this.logger.info(`GraphQL ${operationName}操作成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(

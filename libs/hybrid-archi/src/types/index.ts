@@ -30,8 +30,8 @@ export { CQRSBus } from "../application/cqrs/bus/cqrs-bus.js";
 // ==================== 实体和值对象类型 ====================
 
 // 基础实体
-export { BaseEntity } from "../domain/entities/base.js";
-export { BaseAggregateRoot } from "../domain/aggregates/base.js";
+export { BaseEntity } from "../domain/entities/base/index.js";
+export { BaseAggregateRoot } from "../domain/aggregates/base/index.js";
 
 // 实体ID
 export { EntityId } from "@hl8/isolation-model";

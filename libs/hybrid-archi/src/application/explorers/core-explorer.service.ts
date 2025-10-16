@@ -56,7 +56,7 @@ import {
   getQueryHandlerMetadata,
   getEventHandlerMetadata,
   getSagaMetadata,
-} from "../../common/decorators.js";
+} from "../../common/decorators/index.js";
 import type {
   ICommandHandlerMetadata,
   IQueryHandlerMetadata,

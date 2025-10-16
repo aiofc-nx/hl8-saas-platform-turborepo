@@ -62,7 +62,6 @@
 
 import { EntityId } from "@hl8/isolation-model";
 import { IEntity } from "../../entities/base/entity.interface.js";
-import { TenantId } from "@hl8/isolation-model";
 
 /**
  * 基础仓储接口

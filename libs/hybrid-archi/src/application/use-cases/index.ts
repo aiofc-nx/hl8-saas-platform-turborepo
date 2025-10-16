@@ -6,16 +6,16 @@
  */
 
 // 基础设施
-export * from "./base.js";
+export * from "./base/index.js";
 
 // 多租户感知用例
 export * from "./base/tenant-aware-use-case.js";
 
 // 装饰器
-export * from "./decorators.js";
+export * from "./decorators/index.js";
 
 // 注册表
-export * from "./registry.js";
+export * from "./registry/index.js";
 
 // 示例（可选导出，用于学习参考）
 // export * from './examples';
