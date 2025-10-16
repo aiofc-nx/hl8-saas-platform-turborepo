@@ -168,7 +168,10 @@ export class MessageQueueFactory {
 
       this.logger.debug(`销毁消息队列: ${queueName}`);
     } catch (error) {
-      this.logger.error(`销毁消息队列失败: ${queueName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `销毁消息队列失败: ${queueName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }

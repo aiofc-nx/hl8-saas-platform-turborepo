@@ -163,7 +163,10 @@ export class DomainServiceFactory {
 
       this.logger.debug(`销毁领域服务: ${serviceName}`);
     } catch (error) {
-      this.logger.error(`销毁领域服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `销毁领域服务失败: ${serviceName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }

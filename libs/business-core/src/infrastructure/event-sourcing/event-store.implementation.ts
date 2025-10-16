@@ -14,7 +14,10 @@ import type {
   EventStoreStats,
   EventStoreConfig,
 } from "./common/event-store.interface.js";
-import type { ISnapshotStore, Snapshot } from "./common/snapshot-store.interface.js";
+import type {
+  ISnapshotStore,
+  Snapshot,
+} from "./common/snapshot-store.interface.js";
 // import { BaseDomainEvent } from '../../../domain/events/base/base-domain-event';
 import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { CacheService } from "@hl8/caching";
@@ -76,11 +79,15 @@ export class EventStoreImplementation implements IEventStore {
 
       this.logger.log("事件保存成功");
     } catch (error) {
-      this.logger.error("事件保存失败", error instanceof Error ? error.stack : undefined, {
-        aggregateId,
-        eventCount: events.length,
-        expectedVersion,
-      });
+      this.logger.error(
+        "事件保存失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          aggregateId,
+          eventCount: events.length,
+          expectedVersion,
+        },
+      );
       throw error;
     }
   }
@@ -108,7 +115,11 @@ export class EventStoreImplementation implements IEventStore {
 
       return events;
     } catch (error) {
-      this.logger.error("获取事件失败", error instanceof Error ? error.stack : undefined, { aggregateId });
+      this.logger.error(
+        "获取事件失败",
+        error instanceof Error ? error.stack : undefined,
+        { aggregateId },
+      );
       throw error;
     }
   }
@@ -129,10 +140,14 @@ export class EventStoreImplementation implements IEventStore {
       const events = await this.getEventsFromDatabase(aggregateId, fromVersion);
       return events;
     } catch (error) {
-      this.logger.error("从版本获取事件失败", error instanceof Error ? error.stack : undefined, {
-        aggregateId,
-        fromVersion,
-      });
+      this.logger.error(
+        "从版本获取事件失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          aggregateId,
+          fromVersion,
+        },
+      );
       throw error;
     }
   }
@@ -159,11 +174,15 @@ export class EventStoreImplementation implements IEventStore {
       );
       return events;
     } catch (error) {
-      this.logger.error("按类型获取事件失败", error instanceof Error ? error.stack : undefined, {
-        eventType,
-        fromDate,
-        toDate,
-      });
+      this.logger.error(
+        "按类型获取事件失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          eventType,
+          fromDate,
+          toDate,
+        },
+      );
       throw error;
     }
   }
@@ -190,11 +209,15 @@ export class EventStoreImplementation implements IEventStore {
       );
       return events;
     } catch (error) {
-      this.logger.error("按租户获取事件失败", error instanceof Error ? error.stack : undefined, {
-        tenantId,
-        fromDate,
-        toDate,
-      });
+      this.logger.error(
+        "按租户获取事件失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          tenantId,
+          fromDate,
+          toDate,
+        },
+      );
       throw error;
     }
   }
@@ -211,7 +234,11 @@ export class EventStoreImplementation implements IEventStore {
       const version = await this.getAggregateVersionFromDatabase(aggregateId);
       return version;
     } catch (error) {
-      this.logger.error("获取聚合版本失败", error instanceof Error ? error.stack : undefined, { aggregateId });
+      this.logger.error(
+        "获取聚合版本失败",
+        error instanceof Error ? error.stack : undefined,
+        { aggregateId },
+      );
       throw error;
     }
   }
@@ -228,7 +255,11 @@ export class EventStoreImplementation implements IEventStore {
       const exists = await this.checkAggregateExists(aggregateId);
       return exists;
     } catch (error) {
-      this.logger.error("检查聚合存在性失败", error instanceof Error ? error.stack : undefined, { aggregateId });
+      this.logger.error(
+        "检查聚合存在性失败",
+        error instanceof Error ? error.stack : undefined,
+        { aggregateId },
+      );
       throw error;
     }
   }
@@ -246,7 +277,11 @@ export class EventStoreImplementation implements IEventStore {
 
       this.logger.log("聚合事件删除成功");
     } catch (error) {
-      this.logger.error("删除聚合事件失败", error instanceof Error ? error.stack : undefined, { aggregateId });
+      this.logger.error(
+        "删除聚合事件失败",
+        error instanceof Error ? error.stack : undefined,
+        { aggregateId },
+      );
       throw error;
     }
   }
@@ -262,7 +297,10 @@ export class EventStoreImplementation implements IEventStore {
       const stats = await this.calculateStats();
       return stats;
     } catch (error) {
-      this.logger.error("获取统计信息失败", error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        "获取统计信息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }

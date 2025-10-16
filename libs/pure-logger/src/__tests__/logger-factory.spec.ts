@@ -173,16 +173,24 @@ describe("LoggerFactory", () => {
 
     it("应该使用指定的默认上下文", () => {
       const defaultContext = { module: "test", version: "1.0.0" };
-      const logger = LoggerFactory.createConsoleLogger(LogLevel.INFO, defaultContext);
+      const logger = LoggerFactory.createConsoleLogger(
+        LogLevel.INFO,
+        defaultContext,
+      );
 
       expect(logger).toBeInstanceOf(ConsoleLogger);
       expect(logger.getLevel()).toBe(LogLevel.INFO);
     });
 
     it("应该支持所有日志级别", () => {
-      const levels = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR];
+      const levels = [
+        LogLevel.DEBUG,
+        LogLevel.INFO,
+        LogLevel.WARN,
+        LogLevel.ERROR,
+      ];
 
-      levels.forEach(level => {
+      levels.forEach((level) => {
         const logger = LoggerFactory.createConsoleLogger(level);
         expect(logger.getLevel()).toBe(level);
       });
@@ -206,16 +214,24 @@ describe("LoggerFactory", () => {
 
     it("应该使用指定的默认上下文", () => {
       const defaultContext = { module: "test", version: "1.0.0" };
-      const logger = LoggerFactory.createNoOpLogger(LogLevel.INFO, defaultContext);
+      const logger = LoggerFactory.createNoOpLogger(
+        LogLevel.INFO,
+        defaultContext,
+      );
 
       expect(logger).toBeInstanceOf(NoOpLogger);
       expect(logger.getLevel()).toBe(LogLevel.INFO);
     });
 
     it("应该支持所有日志级别", () => {
-      const levels = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR];
+      const levels = [
+        LogLevel.DEBUG,
+        LogLevel.INFO,
+        LogLevel.WARN,
+        LogLevel.ERROR,
+      ];
 
-      levels.forEach(level => {
+      levels.forEach((level) => {
         const logger = LoggerFactory.createNoOpLogger(level);
         expect(logger.getLevel()).toBe(level);
       });
@@ -239,7 +255,10 @@ describe("LoggerFactory", () => {
 
     it("应该使用指定的默认上下文", () => {
       const defaultContext = { module: "test", version: "1.0.0" };
-      const logger = LoggerFactory.createStructuredLogger(LogLevel.INFO, defaultContext);
+      const logger = LoggerFactory.createStructuredLogger(
+        LogLevel.INFO,
+        defaultContext,
+      );
 
       expect(logger).toBeInstanceOf(StructuredLogger);
       expect(logger.getLevel()).toBe(LogLevel.INFO);
@@ -253,7 +272,11 @@ describe("LoggerFactory", () => {
         maxFieldLength: 200,
       };
 
-      const logger = LoggerFactory.createStructuredLogger(LogLevel.INFO, {}, config);
+      const logger = LoggerFactory.createStructuredLogger(
+        LogLevel.INFO,
+        {},
+        config,
+      );
 
       expect(logger).toBeInstanceOf(StructuredLogger);
       expect(logger.getLevel()).toBe(LogLevel.INFO);
@@ -267,9 +290,14 @@ describe("LoggerFactory", () => {
     });
 
     it("应该支持所有日志级别", () => {
-      const levels = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR];
+      const levels = [
+        LogLevel.DEBUG,
+        LogLevel.INFO,
+        LogLevel.WARN,
+        LogLevel.ERROR,
+      ];
 
-      levels.forEach(level => {
+      levels.forEach((level) => {
         const logger = LoggerFactory.createStructuredLogger(level);
         expect(logger.getLevel()).toBe(level);
       });
@@ -307,7 +335,7 @@ describe("LoggerFactory", () => {
         { json: false, colors: false, sampling: 1.0, maxFieldLength: 1000 },
       ];
 
-      testCases.forEach(config => {
+      testCases.forEach((config) => {
         const logger = LoggerFactory.create({
           type: LoggerType.STRUCTURED,
           structuredConfig: config,

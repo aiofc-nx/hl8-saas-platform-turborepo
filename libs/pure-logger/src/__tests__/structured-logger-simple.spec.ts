@@ -66,7 +66,11 @@ describe("StructuredLogger 简化测试", () => {
 
   describe("配置选项", () => {
     it("应该支持非 JSON 格式输出", () => {
-      const nonJsonLogger = new StructuredLogger(LogLevel.INFO, {}, { json: false });
+      const nonJsonLogger = new StructuredLogger(
+        LogLevel.INFO,
+        {},
+        { json: false },
+      );
       const infoSpy = jest.spyOn(console, "info").mockImplementation();
 
       nonJsonLogger.info("test message");
@@ -80,7 +84,11 @@ describe("StructuredLogger 简化测试", () => {
     });
 
     it("应该支持字段截断", () => {
-      const loggerWithTruncation = new StructuredLogger(LogLevel.INFO, {}, { maxFieldLength: 10 });
+      const loggerWithTruncation = new StructuredLogger(
+        LogLevel.INFO,
+        {},
+        { maxFieldLength: 10 },
+      );
       const longString = "a".repeat(20);
 
       loggerWithTruncation.info("test", { longField: longString });

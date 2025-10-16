@@ -116,9 +116,14 @@ describe("Index 导出测试", () => {
     });
 
     it("应该支持所有日志级别", () => {
-      const levels = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR];
+      const levels = [
+        LogLevel.DEBUG,
+        LogLevel.INFO,
+        LogLevel.WARN,
+        LogLevel.ERROR,
+      ];
 
-      levels.forEach(level => {
+      levels.forEach((level) => {
         const logger = createDomainLogger("test-domain", level);
         expect(logger.getLevel()).toBe(level);
       });
@@ -247,7 +252,7 @@ describe("Index 导出测试", () => {
         "DomainWithCamelCase",
       ];
 
-      specialNames.forEach(name => {
+      specialNames.forEach((name) => {
         const logger = createDomainLogger(name);
         expect(logger).toBeInstanceOf(ConsoleLogger);
       });
@@ -283,7 +288,9 @@ describe("Index 导出测试", () => {
       for (let i = 0; i < 1000; i++) {
         const logger = createLogger({ index: i });
         const domainLogger = createDomainLogger(`domain-${i}`);
-        const productionLogger = createProductionLogger({ service: `service-${i}` });
+        const productionLogger = createProductionLogger({
+          service: `service-${i}`,
+        });
 
         expect(logger).toBeInstanceOf(ConsoleLogger);
         expect(domainLogger).toBeInstanceOf(ConsoleLogger);

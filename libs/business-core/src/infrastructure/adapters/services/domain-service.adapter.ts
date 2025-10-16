@@ -90,7 +90,10 @@ export class DomainServiceAdapter implements IDomainService {
       // 检查缓存
       if (this.config.enableCache) {
         const cacheKey = this.getCacheKey(operation, parameters);
-        const cached = await this.cacheService.get<T>(cacheKey, this.serviceName);
+        const cached = await this.cacheService.get<T>(
+          cacheKey,
+          this.serviceName,
+        );
         if (cached) {
           this.logger.debug(`从缓存获取领域服务结果: ${this.serviceName}`);
           return cached;
@@ -103,7 +106,11 @@ export class DomainServiceAdapter implements IDomainService {
       // 缓存结果
       if (this.config.enableCache && result) {
         const cacheKey = this.getCacheKey(operation, parameters);
-        await this.cacheService.set(cacheKey, JSON.stringify(result), this.config.cacheTtl);
+        await this.cacheService.set(
+          cacheKey,
+          JSON.stringify(result),
+          this.config.cacheTtl,
+        );
       }
 
       // 记录操作完成
@@ -123,11 +130,15 @@ export class DomainServiceAdapter implements IDomainService {
           ? Date.now() - startTime
           : 0;
 
-        this.logger.error(`领域服务操作失败: ${this.serviceName}`, error instanceof Error ? error.stack : undefined, {
-          operation,
-          duration,
-          success: false,
-        });
+        this.logger.error(
+          `领域服务操作失败: ${this.serviceName}`,
+          error instanceof Error ? error.stack : undefined,
+          {
+            operation,
+            duration,
+            success: false,
+          },
+        );
       }
 
       throw error;
@@ -180,11 +191,15 @@ export class DomainServiceAdapter implements IDomainService {
           ? Date.now() - startTime
           : 0;
 
-        this.logger.error(`领域服务事务失败: ${this.serviceName}`, error instanceof Error ? error.stack : undefined, {
-          operation,
-          duration,
-          success: false,
-        });
+        this.logger.error(
+          `领域服务事务失败: ${this.serviceName}`,
+          error instanceof Error ? error.stack : undefined,
+          {
+            operation,
+            duration,
+            success: false,
+          },
+        );
       }
 
       throw error;
@@ -309,7 +324,10 @@ export class DomainServiceAdapter implements IDomainService {
         return 0;
       }
     } catch (error) {
-      this.logger.error(`清理领域服务缓存失败: ${this.serviceName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `清理领域服务缓存失败: ${this.serviceName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }

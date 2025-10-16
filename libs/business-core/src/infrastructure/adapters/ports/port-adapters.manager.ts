@@ -260,7 +260,10 @@ export class PortAdaptersManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个适配器`);
         }
       } catch (error) {
-        this.logger.error("自动清理失败", error instanceof Error ? error.stack : undefined);
+        this.logger.error(
+          "自动清理失败",
+          error instanceof Error ? error.stack : undefined,
+        );
       }
     }, this.config.cleanupInterval);
   }
@@ -280,7 +283,10 @@ export class PortAdaptersManager {
           this.logger.warn("发现不健康的端口适配器");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error instanceof Error ? error.stack : undefined);
+        this.logger.error(
+          "健康检查失败",
+          error instanceof Error ? error.stack : undefined,
+        );
       }
     }, this.config.healthCheckInterval);
   }

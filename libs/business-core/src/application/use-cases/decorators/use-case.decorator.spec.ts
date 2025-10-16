@@ -11,10 +11,7 @@ import {
   isUseCase,
   USE_CASE_METADATA_KEY,
 } from "./use-case.decorator.js";
-import type {
-  UseCaseType,
-  IUseCaseOptions,
-} from "./use-case.decorator.js";
+import type { UseCaseType, IUseCaseOptions } from "./use-case.decorator.js";
 
 describe("UseCase装饰器", () => {
   describe("基本装饰功能", () => {

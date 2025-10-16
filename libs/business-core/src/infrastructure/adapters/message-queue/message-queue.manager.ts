@@ -216,7 +216,10 @@ export class MessageQueueManager {
           const cleaned = await queue.instance.cleanupExpiredMessages();
           totalCleaned += cleaned;
         } catch (error) {
-          this.logger.error(`清理队列过期消息失败: ${queue.queueName}`, error instanceof Error ? error.stack : undefined);
+          this.logger.error(
+            `清理队列过期消息失败: ${queue.queueName}`,
+            error instanceof Error ? error.stack : undefined,
+          );
         }
       }
     }
@@ -331,7 +334,10 @@ export class MessageQueueManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个队列`);
         }
       } catch (error) {
-        this.logger.error("自动清理失败", error instanceof Error ? error.stack : undefined);
+        this.logger.error(
+          "自动清理失败",
+          error instanceof Error ? error.stack : undefined,
+        );
       }
     }, this.config.cleanupInterval);
   }
@@ -351,7 +357,10 @@ export class MessageQueueManager {
           this.logger.warn("发现不健康的消息队列");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error instanceof Error ? error.stack : undefined);
+        this.logger.error(
+          "健康检查失败",
+          error instanceof Error ? error.stack : undefined,
+        );
       }
     }, this.config.healthCheckInterval);
   }
@@ -367,7 +376,10 @@ export class MessageQueueManager {
           this.logger.debug(`消息清理完成: ${cleanedCount} 个消息`);
         }
       } catch (error) {
-        this.logger.error("消息清理失败", error instanceof Error ? error.stack : undefined);
+        this.logger.error(
+          "消息清理失败",
+          error instanceof Error ? error.stack : undefined,
+        );
       }
     }, this.config.messageCleanupInterval);
   }

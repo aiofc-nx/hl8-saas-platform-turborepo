@@ -71,7 +71,7 @@ describe("集成测试", () => {
   });
 
   afterEach(() => {
-    Object.values(consoleSpy).forEach(spy => spy.mockRestore());
+    Object.values(consoleSpy).forEach((spy) => spy.mockRestore());
   });
 
   describe("LoggerFactory 与各种实现集成", () => {
@@ -251,9 +251,13 @@ describe("集成测试", () => {
     });
 
     it("应该支持不同实现类型的子日志器", () => {
-      const consoleParent = new ConsoleLogger(LogLevel.DEBUG, { type: "console" });
+      const consoleParent = new ConsoleLogger(LogLevel.DEBUG, {
+        type: "console",
+      });
       const noopParent = new NoOpLogger(LogLevel.INFO, { type: "noop" });
-      const structuredParent = new StructuredLogger(LogLevel.INFO, { type: "structured" });
+      const structuredParent = new StructuredLogger(LogLevel.INFO, {
+        type: "structured",
+      });
 
       const consoleChild = consoleParent.child({ child: "console" });
       const noopChild = noopParent.child({ child: "noop" });
@@ -285,7 +289,7 @@ describe("集成测试", () => {
       const noopLogger = new NoOpLogger(LogLevel.WARN);
       const structuredLogger = new StructuredLogger(LogLevel.WARN);
 
-      [consoleLogger, noopLogger, structuredLogger].forEach(logger => {
+      [consoleLogger, noopLogger, structuredLogger].forEach((logger) => {
         logger.debug("debug message");
         logger.info("info message");
         logger.warn("warn message");
@@ -411,7 +415,7 @@ describe("集成测试", () => {
 
       const infos = loggerAdapterManager.getAdapterInfos();
       expect(infos).toHaveLength(2);
-      expect(infos.every(info => info.available)).toBe(true);
+      expect(infos.every((info) => info.available)).toBe(true);
     });
   });
 
@@ -428,8 +432,14 @@ describe("集成测试", () => {
 
       // 4. 记录各种级别的日志
       childLogger.debug("debug message"); // 应该被过滤
-      childLogger.info("user created", { userId: "123", email: "user@example.com" });
-      childLogger.warn("validation warning", { field: "email", issue: "format" });
+      childLogger.info("user created", {
+        userId: "123",
+        email: "user@example.com",
+      });
+      childLogger.warn("validation warning", {
+        field: "email",
+        issue: "format",
+      });
 
       // 5. 记录错误
       const error = new Error("database connection failed");
@@ -473,7 +483,10 @@ describe("集成测试", () => {
 
     it("应该支持生产环境工作流", () => {
       // 1. 创建生产环境日志器
-      const logger = createProductionLogger({ service: "api", environment: "production" });
+      const logger = createProductionLogger({
+        service: "api",
+        environment: "production",
+      });
 
       // 2. 尝试记录各种级别的日志
       logger.debug("debug message");
@@ -561,7 +574,9 @@ describe("集成测试", () => {
 
       expect(duration).toBeLessThan(500); // 应该在500ms内完成
       expect(childLoggers).toHaveLength(1000);
-      expect(childLoggers.every(logger => logger instanceof ConsoleLogger)).toBe(true);
+      expect(
+        childLoggers.every((logger) => logger instanceof ConsoleLogger),
+      ).toBe(true);
     });
   });
 });

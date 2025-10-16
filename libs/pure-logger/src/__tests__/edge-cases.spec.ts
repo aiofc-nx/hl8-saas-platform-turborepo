@@ -52,7 +52,7 @@ describe("边界情况和异常情况测试", () => {
     });
 
     afterEach(() => {
-      Object.values(consoleSpy).forEach(spy => spy.mockRestore());
+      Object.values(consoleSpy).forEach((spy) => spy.mockRestore());
     });
 
     it("应该处理 null 和 undefined 消息", () => {
@@ -93,7 +93,7 @@ describe("边界情况和异常情况测试", () => {
 
     it("应该处理对象消息", () => {
       const obj = { message: "test", value: 123 };
-      
+
       expect(() => {
         logger.debug(obj as any);
         logger.info(obj as any);
@@ -104,7 +104,7 @@ describe("边界情况和异常情况测试", () => {
 
     it("应该处理函数消息", () => {
       const func = () => "test";
-      
+
       expect(() => {
         logger.debug(func as any);
         logger.info(func as any);
@@ -115,7 +115,7 @@ describe("边界情况和异常情况测试", () => {
 
     it("应该处理 Symbol 消息", () => {
       const sym = Symbol("test");
-      
+
       expect(() => {
         logger.debug(sym as any);
         logger.info(sym as any);
@@ -147,7 +147,7 @@ describe("边界情况和异常情况测试", () => {
     it("应该处理嵌套很深的上下文对象", () => {
       let deepContext: any = {};
       let current = deepContext;
-      
+
       for (let i = 0; i < 100; i++) {
         current[`level${i}`] = {};
         current = current[`level${i}`];
@@ -189,7 +189,11 @@ describe("边界情况和异常情况测试", () => {
       const consoleSpy = jest.spyOn(console, "log").mockImplementation();
 
       // 测试边界值
-      structuredLogger.info("test", { short: "123", exact: "1234567890", long: "123456789012345" });
+      structuredLogger.info("test", {
+        short: "123",
+        exact: "1234567890",
+        long: "123456789012345",
+      });
 
       const logCall = consoleSpy.mock.calls[0][0];
       const logData = JSON.parse(logCall);
@@ -248,13 +252,19 @@ describe("边界情况和异常情况测试", () => {
     });
 
     it("应该处理非 JSON 格式输出", () => {
-      const nonJsonLogger = new StructuredLogger(LogLevel.DEBUG, {}, { json: false });
+      const nonJsonLogger = new StructuredLogger(
+        LogLevel.DEBUG,
+        {},
+        { json: false },
+      );
       const consoleSpy = jest.spyOn(console, "info").mockImplementation();
 
       nonJsonLogger.info("test message", { key: "value" });
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringMatching(/\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\] INFO: test message/)
+        expect.stringMatching(
+          /\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\] INFO: test message/,
+        ),
       );
 
       consoleSpy.mockRestore();
@@ -290,10 +300,15 @@ describe("边界情况和异常情况测试", () => {
 
     it("应该处理特殊环境变量值", () => {
       const originalEnv = process.env.NODE_ENV;
-      
-      const specialValues = ["staging", "preview", "development-test", "production-staging"];
-      
-      specialValues.forEach(env => {
+
+      const specialValues = [
+        "staging",
+        "preview",
+        "development-test",
+        "production-staging",
+      ];
+
+      specialValues.forEach((env) => {
         process.env.NODE_ENV = env;
         const logger = LoggerFactory.create();
         expect(logger).toBeInstanceOf(ConsoleLogger);
@@ -320,7 +335,7 @@ describe("边界情况和异常情况测试", () => {
         "domain_with_special@chars",
       ];
 
-      specialNames.forEach(name => {
+      specialNames.forEach((name) => {
         const logger = createDomainLogger(name);
         expect(logger).toBeInstanceOf(ConsoleLogger);
       });
@@ -376,7 +391,7 @@ describe("边界情况和异常情况测试", () => {
       }
 
       expect(childLoggers).toHaveLength(1000);
-      
+
       // 验证所有子日志器都是有效的
       childLoggers.forEach((childLogger, index) => {
         expect(childLogger).toBeInstanceOf(ConsoleLogger);
@@ -389,8 +404,8 @@ describe("边界情况和异常情况测试", () => {
       const consoleSpy = jest.spyOn(console, "info").mockImplementation();
 
       // 并发执行日志调用
-      const promises = Array.from({ length: 100 }, (_, i) => 
-        Promise.resolve(logger.info(`concurrent message ${i}`, { index: i }))
+      const promises = Array.from({ length: 100 }, (_, i) =>
+        Promise.resolve(logger.info(`concurrent message ${i}`, { index: i })),
       );
 
       await Promise.all(promises);
@@ -413,7 +428,7 @@ describe("边界情况和异常情况测试", () => {
         Object.assign(new Error("custom"), { customProp: "value" }),
       ];
 
-      errorCases.forEach(error => {
+      errorCases.forEach((error) => {
         expect(() => {
           logger.error(error);
         }).not.toThrow();
@@ -424,7 +439,10 @@ describe("边界情况和异常情况测试", () => {
 
     it("应该处理自定义错误类型", () => {
       class CustomError extends Error {
-        constructor(message: string, public code: string) {
+        constructor(
+          message: string,
+          public code: string,
+        ) {
           super(message);
           this.name = "CustomError";
         }
@@ -434,7 +452,7 @@ describe("边界情况和异常情况测试", () => {
       const consoleSpy = jest.spyOn(console, "error").mockImplementation();
 
       const customError = new CustomError("custom error", "CUSTOM_001");
-      
+
       expect(() => {
         logger.error(customError);
       }).not.toThrow();
@@ -446,7 +464,7 @@ describe("边界情况和异常情况测试", () => {
   describe("类型边界情况", () => {
     it("应该处理类型强制转换", () => {
       const logger = new ConsoleLogger();
-      
+
       // 这些调用不应该在运行时抛出异常
       expect(() => {
         logger.debug("test" as any);
@@ -467,7 +485,7 @@ describe("边界情况和异常情况测试", () => {
         createProductionLogger(),
       ];
 
-      loggers.forEach(logger => {
+      loggers.forEach((logger) => {
         expect(typeof logger.debug).toBe("function");
         expect(typeof logger.info).toBe("function");
         expect(typeof logger.warn).toBe("function");

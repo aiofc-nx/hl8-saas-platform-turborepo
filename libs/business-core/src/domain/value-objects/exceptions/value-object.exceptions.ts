@@ -14,12 +14,7 @@ import { DomainValidationException } from "../../exceptions/base/base-domain-exc
  */
 export class InvalidEmailException extends DomainValidationException {
   constructor(message: string, email?: string) {
-    super(
-      message,
-      "email",
-      email,
-      { email }
-    );
+    super(message, "email", email, { email });
   }
 }
 
@@ -30,12 +25,7 @@ export class InvalidEmailException extends DomainValidationException {
  */
 export class InvalidPasswordException extends DomainValidationException {
   constructor(message: string, password?: string) {
-    super(
-      message,
-      "password", 
-      password,
-      { password }
-    );
+    super(message, "password", password, { password });
   }
 }
 
@@ -57,12 +47,7 @@ export class WeakPasswordException extends InvalidPasswordException {
  */
 export class InvalidUsernameException extends DomainValidationException {
   constructor(message: string, username?: string) {
-    super(
-      message,
-      "username",
-      username,
-      { username }
-    );
+    super(message, "username", username, { username });
   }
 }
 
@@ -73,11 +58,6 @@ export class InvalidUsernameException extends DomainValidationException {
  */
 export class InvalidPhoneNumberException extends DomainValidationException {
   constructor(message: string, phoneNumber?: string) {
-    super(
-      message,
-      "phoneNumber",
-      phoneNumber,
-      { phoneNumber }
-    );
+    super(message, "phoneNumber", phoneNumber, { phoneNumber });
   }
 }

@@ -233,7 +233,11 @@ export class EntityTransformer {
 
       return result;
     } catch (error) {
-      this.logger.error("DTO到实体转换失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "DTO到实体转换失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }
@@ -368,7 +372,11 @@ export class EntityTransformer {
 
       return result;
     } catch (error) {
-      this.logger.error("实体到DTO转换失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "实体到DTO转换失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }

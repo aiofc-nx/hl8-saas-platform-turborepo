@@ -66,7 +66,7 @@ describe("NoOpLogger", () => {
 
     it("应该正确获取当前日志级别", () => {
       expect(logger.getLevel()).toBe(LogLevel.ERROR);
-      
+
       logger.setLevel(LogLevel.DEBUG);
       expect(logger.getLevel()).toBe(LogLevel.DEBUG);
     });
@@ -92,12 +92,12 @@ describe("NoOpLogger", () => {
     });
 
     afterEach(() => {
-      Object.values(consoleSpy).forEach(spy => spy.mockRestore());
+      Object.values(consoleSpy).forEach((spy) => spy.mockRestore());
     });
 
     it("debug 方法应该是空操作", () => {
       logger.debug("debug message", { key: "value" });
-      
+
       expect(consoleSpy.debug).not.toHaveBeenCalled();
       expect(consoleSpy.info).not.toHaveBeenCalled();
       expect(consoleSpy.warn).not.toHaveBeenCalled();
@@ -107,7 +107,7 @@ describe("NoOpLogger", () => {
 
     it("info 方法应该是空操作", () => {
       logger.info("info message", { key: "value" });
-      
+
       expect(consoleSpy.debug).not.toHaveBeenCalled();
       expect(consoleSpy.info).not.toHaveBeenCalled();
       expect(consoleSpy.warn).not.toHaveBeenCalled();
@@ -117,7 +117,7 @@ describe("NoOpLogger", () => {
 
     it("warn 方法应该是空操作", () => {
       logger.warn("warn message", { key: "value" });
-      
+
       expect(consoleSpy.debug).not.toHaveBeenCalled();
       expect(consoleSpy.info).not.toHaveBeenCalled();
       expect(consoleSpy.warn).not.toHaveBeenCalled();
@@ -127,7 +127,7 @@ describe("NoOpLogger", () => {
 
     it("error 方法（字符串）应该是空操作", () => {
       logger.error("error message", { key: "value" });
-      
+
       expect(consoleSpy.debug).not.toHaveBeenCalled();
       expect(consoleSpy.info).not.toHaveBeenCalled();
       expect(consoleSpy.warn).not.toHaveBeenCalled();
@@ -138,7 +138,7 @@ describe("NoOpLogger", () => {
     it("error 方法（Error 对象）应该是空操作", () => {
       const error = new Error("test error");
       logger.error(error, { key: "value" });
-      
+
       expect(consoleSpy.debug).not.toHaveBeenCalled();
       expect(consoleSpy.info).not.toHaveBeenCalled();
       expect(consoleSpy.warn).not.toHaveBeenCalled();
@@ -186,9 +186,9 @@ describe("NoOpLogger", () => {
 
     it("子日志器应该独立设置日志级别", () => {
       const childLogger = logger.child({ test: "value" });
-      
+
       childLogger.setLevel(LogLevel.INFO);
-      
+
       expect(childLogger.getLevel()).toBe(LogLevel.INFO);
       expect(logger.getLevel()).toBe(LogLevel.ERROR); // 父日志器不受影响
     });
@@ -210,7 +210,7 @@ describe("NoOpLogger", () => {
   describe("性能测试", () => {
     it("应该具有高性能（大量调用不应有明显延迟）", () => {
       const startTime = Date.now();
-      
+
       // 执行大量日志调用
       for (let i = 0; i < 10000; i++) {
         logger.debug(`debug message ${i}`, { index: i });
@@ -218,10 +218,10 @@ describe("NoOpLogger", () => {
         logger.warn(`warn message ${i}`, { index: i });
         logger.error(`error message ${i}`, { index: i });
       }
-      
+
       const endTime = Date.now();
       const duration = endTime - startTime;
-      
+
       // 应该在合理时间内完成（这里设置为 100ms）
       expect(duration).toBeLessThan(100);
     });
@@ -288,16 +288,16 @@ describe("NoOpLogger", () => {
       // 这些调用应该在 TypeScript 编译时通过类型检查
       logger.debug("string message");
       logger.debug("string message", { context: "value" });
-      
+
       logger.info("string message");
       logger.info("string message", { context: "value" });
-      
+
       logger.warn("string message");
       logger.warn("string message", { context: "value" });
-      
+
       logger.error("string message");
       logger.error("string message", { context: "value" });
-      
+
       const error = new Error("test error");
       logger.error(error);
       logger.error(error, { context: "value" });

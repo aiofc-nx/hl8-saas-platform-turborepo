@@ -83,10 +83,14 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       this.logger.log("快照保存成功");
     } catch (error) {
-      this.logger.error("快照保存失败", error instanceof Error ? error.stack : undefined, {
-        aggregateId,
-        version,
-      });
+      this.logger.error(
+        "快照保存失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          aggregateId,
+          version,
+        },
+      );
       throw error;
     }
   }
@@ -130,10 +134,14 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       return decompressedSnapshot;
     } catch (error) {
-      this.logger.error("获取快照失败", error instanceof Error ? error.stack : undefined, {
-        aggregateId,
-        version,
-      });
+      this.logger.error(
+        "获取快照失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          aggregateId,
+          version,
+        },
+      );
       throw error;
     }
   }
@@ -171,9 +179,13 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       return processedSnapshot;
     } catch (error) {
-      this.logger.error("获取最新快照失败", error instanceof Error ? error.stack : undefined, {
-        aggregateId,
-      });
+      this.logger.error(
+        "获取最新快照失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          aggregateId,
+        },
+      );
       throw error;
     }
   }
@@ -192,10 +204,14 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       this.logger.log("快照删除成功");
     } catch (error) {
-      this.logger.error("删除快照失败", error instanceof Error ? error.stack : undefined, {
-        aggregateId,
-        version,
-      });
+      this.logger.error(
+        "删除快照失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          aggregateId,
+          version,
+        },
+      );
       throw error;
     }
   }
@@ -218,10 +234,14 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
 
       this.logger.log("旧快照清理成功");
     } catch (error) {
-      this.logger.error("清理旧快照失败", error instanceof Error ? error.stack : undefined, {
-        aggregateId,
-        retainCount,
-      });
+      this.logger.error(
+        "清理旧快照失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          aggregateId,
+          retainCount,
+        },
+      );
       throw error;
     }
   }
@@ -239,10 +259,14 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       const exists = await this.checkSnapshotExists(aggregateId, version);
       return exists;
     } catch (error) {
-      this.logger.error("检查快照存在性失败", error instanceof Error ? error.stack : undefined, {
-        aggregateId,
-        version,
-      });
+      this.logger.error(
+        "检查快照存在性失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          aggregateId,
+          version,
+        },
+      );
       throw error;
     }
   }
@@ -258,7 +282,10 @@ export class SnapshotStoreImplementation implements ISnapshotStore {
       const stats = await this.calculateStats();
       return stats;
     } catch (error) {
-      this.logger.error("获取快照统计信息失败", error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        "获取快照统计信息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }

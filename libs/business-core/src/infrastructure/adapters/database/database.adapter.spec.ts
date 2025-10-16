@@ -63,7 +63,9 @@ describe("DatabaseAdapter", () => {
 
     adapter = module.get<DatabaseAdapter>(DatabaseAdapter);
     mockDatabaseService = mockDatabaseServiceInstance;
-    mockLogger = module.get<FastifyLoggerService>(FastifyLoggerService) as jest.Mocked<FastifyLoggerService>;
+    mockLogger = module.get<FastifyLoggerService>(
+      FastifyLoggerService,
+    ) as jest.Mocked<FastifyLoggerService>;
   });
 
   describe("query", () => {

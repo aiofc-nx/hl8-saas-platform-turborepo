@@ -1,0 +1,740 @@
+openapi: 3.0.3
+info:
+  title: SAAS平台核心业务模块API
+  description: 基于Clean Architecture + DDD + CQRS + ES + EDA混合架构的SAAS平台核心业务模块API
+  version: 1.0.0
+  contact:
+    name: HL8 SAAS Platform Team
+    email: team@hl8.com
+
+servers:
+  - url: https://api.hl8.com/v1
+    description: 生产环境
+  - url: https://staging-api.hl8.com/v1
+    description: 测试环境
+  - url: http://localhost:3000/v1
+    description: 开发环境
+
+security:
+  - BearerAuth: []
+  - ApiKeyAuth: []
+
+paths:
+  # 平台管理API
+  /platforms:
+    get:
+      summary: 获取平台列表
+      description: 获取所有平台信息，支持分页和过滤
+      tags:
+        - 平台管理
+      parameters:
+        - name: page
+          in: query
+          description: 页码
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: 每页数量
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: status
+          in: query
+          description: 平台状态过滤
+          required: false
+          schema:
+            type: string
+            enum: [active, maintenance, disabled]
+      responses:
+        '200':
+          description: 成功获取平台列表
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: 创建平台
+      description: 创建新的平台实例
+      tags:
+        - 平台管理
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePlatformRequest'
+      responses:
+        '201':
+          description: 成功创建平台
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /platforms/{platformId}:
+    get:
+      summary: 获取平台详情
+      description: 根据平台ID获取平台详细信息
+      tags:
+        - 平台管理
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          description: 平台ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 成功获取平台详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: 更新平台
+      description: 更新平台信息
+      tags:
+        - 平台管理
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          description: 平台ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePlatformRequest'
+      responses:
+        '200':
+          description: 成功更新平台
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlatformResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: 删除平台
+      description: 删除平台实例
+      tags:
+        - 平台管理
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          description: 平台ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: 成功删除平台
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # 租户管理API
+  /platforms/{platformId}/tenants:
+    get:
+      summary: 获取租户列表
+      description: 获取指定平台下的所有租户信息
+      tags:
+        - 租户管理
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          description: 平台ID
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          description: 页码
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: 每页数量
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: type
+          in: query
+          description: 租户类型过滤
+          required: false
+          schema:
+            type: string
+            enum: [enterprise, community, team, personal]
+        - name: status
+          in: query
+          description: 租户状态过滤
+          required: false
+          schema:
+            type: string
+            enum: [active, suspended, disabled]
+      responses:
+        '200':
+          description: 成功获取租户列表
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: 创建租户
+      description: 在指定平台下创建新的租户实例
+      tags:
+        - 租户管理
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          description: 平台ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTenantRequest'
+      responses:
+        '201':
+          description: 成功创建租户
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /platforms/{platformId}/tenants/{tenantId}:
+    get:
+      summary: 获取租户详情
+      description: 根据租户ID获取租户详细信息
+      tags:
+        - 租户管理
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          description: 平台ID
+          schema:
+            type: string
+            format: uuid
+        - name: tenantId
+          in: path
+          required: true
+          description: 租户ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 成功获取租户详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: 更新租户
+      description: 更新租户信息
+      tags:
+        - 租户管理
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          description: 平台ID
+          schema:
+            type: string
+            format: uuid
+        - name: tenantId
+          in: path
+          required: true
+          description: 租户ID
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTenantRequest'
+      responses:
+        '200':
+          description: 成功更新租户
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: 删除租户
+      description: 删除租户实例
+      tags:
+        - 租户管理
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          description: 平台ID
+          schema:
+            type: string
+            format: uuid
+        - name: tenantId
+          in: path
+          required: true
+          description: 租户ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: 成功删除租户
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    # 平台相关Schema
+    Platform:
+      type: object
+      required:
+        - id
+        - name
+        - domain
+        - status
+        - auditInfo
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 平台唯一标识符
+        name:
+          type: string
+          description: 平台名称
+        description:
+          type: string
+          description: 平台描述
+        domain:
+          type: string
+          format: uri
+          description: 平台域名
+        status:
+          type: string
+          enum: [active, maintenance, disabled]
+          description: 平台状态
+        settings:
+          $ref: '#/components/schemas/PlatformSettings'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+
+    PlatformSettings:
+      type: object
+      properties:
+        maxTenants:
+          type: integer
+          description: 最大租户数量
+        maxUsers:
+          type: integer
+          description: 最大用户数量
+        features:
+          type: array
+          items:
+            type: string
+          description: 功能特性列表
+
+    CreatePlatformRequest:
+      type: object
+      required:
+        - name
+        - domain
+      properties:
+        name:
+          type: string
+          description: 平台名称
+        description:
+          type: string
+          description: 平台描述
+        domain:
+          type: string
+          format: uri
+          description: 平台域名
+        settings:
+          $ref: '#/components/schemas/PlatformSettings'
+
+    UpdatePlatformRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 平台名称
+        description:
+          type: string
+          description: 平台描述
+        domain:
+          type: string
+          format: uri
+          description: 平台域名
+        status:
+          type: string
+          enum: [active, maintenance, disabled]
+          description: 平台状态
+        settings:
+          $ref: '#/components/schemas/PlatformSettings'
+
+    PlatformResponse:
+      allOf:
+        - $ref: '#/components/schemas/Platform'
+        - type: object
+          properties:
+            createdAt:
+              type: string
+              format: date-time
+              description: 创建时间
+            updatedAt:
+              type: string
+              format: date-time
+              description: 更新时间
+
+    PlatformListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PlatformResponse'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    # 租户相关Schema
+    Tenant:
+      type: object
+      required:
+        - id
+        - platformId
+        - name
+        - type
+        - status
+        - auditInfo
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 租户唯一标识符
+        platformId:
+          type: string
+          format: uuid
+          description: 所属平台标识符
+        name:
+          type: string
+          description: 租户名称
+        type:
+          type: string
+          enum: [enterprise, community, team, personal]
+          description: 租户类型
+        status:
+          type: string
+          enum: [active, suspended, disabled]
+          description: 租户状态
+        settings:
+          $ref: '#/components/schemas/TenantSettings'
+        auditInfo:
+          $ref: '#/components/schemas/AuditInfo'
+
+    TenantSettings:
+      type: object
+      properties:
+        maxUsers:
+          type: integer
+          description: 最大用户数量
+        maxOrganizations:
+          type: integer
+          description: 最大组织数量
+        maxDepartments:
+          type: integer
+          description: 最大部门数量
+        features:
+          type: array
+          items:
+            type: string
+          description: 功能特性列表
+
+    CreateTenantRequest:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          description: 租户名称
+        type:
+          type: string
+          enum: [enterprise, community, team, personal]
+          description: 租户类型
+        settings:
+          $ref: '#/components/schemas/TenantSettings'
+
+    UpdateTenantRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 租户名称
+        status:
+          type: string
+          enum: [active, suspended, disabled]
+          description: 租户状态
+        settings:
+          $ref: '#/components/schemas/TenantSettings'
+
+    TenantResponse:
+      allOf:
+        - $ref: '#/components/schemas/Tenant'
+        - type: object
+          properties:
+            createdAt:
+              type: string
+              format: date-time
+              description: 创建时间
+            updatedAt:
+              type: string
+              format: date-time
+              description: 更新时间
+
+    TenantListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TenantResponse'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    # 通用Schema
+    AuditInfo:
+      type: object
+      required:
+        - createdAt
+        - updatedAt
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: 创建时间
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新时间
+        createdBy:
+          type: string
+          format: uuid
+          description: 创建者ID
+        updatedBy:
+          type: string
+          format: uuid
+          description: 更新者ID
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 当前页码
+        limit:
+          type: integer
+          description: 每页数量
+        total:
+          type: integer
+          description: 总数量
+        totalPages:
+          type: integer
+          description: 总页数
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: 错误代码
+        message:
+          type: string
+          description: 错误消息
+        details:
+          type: object
+          description: 错误详情
+
+  responses:
+    BadRequest:
+      description: 请求参数错误
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Unauthorized:
+      description: 未授权访问
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Forbidden:
+      description: 禁止访问
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: 资源不存在
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Conflict:
+      description: 资源冲突
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    InternalServerError:
+      description: 服务器内部错误
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+tags:
+  - name: 平台管理
+    description: 平台相关的API操作
+  - name: 租户管理
+    description: 租户相关的API操作
+  - name: 组织管理
+    description: 组织相关的API操作
+  - name: 部门管理
+    description: 部门相关的API操作
+  - name: 用户管理
+    description: 用户相关的API操作

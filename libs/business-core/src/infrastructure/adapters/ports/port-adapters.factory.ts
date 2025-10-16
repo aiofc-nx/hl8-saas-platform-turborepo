@@ -176,7 +176,10 @@ export class PortAdaptersFactory {
 
       this.logger.debug(`销毁端口适配器: ${adapterType}`);
     } catch (error) {
-      this.logger.error(`销毁端口适配器失败: ${adapterType}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `销毁端口适配器失败: ${adapterType}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }

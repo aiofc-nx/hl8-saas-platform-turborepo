@@ -10,7 +10,7 @@
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
 // import { MessagingModule } from '@hl8/messaging'; // 暂时注释，等待模块实现
-import { CachingModule } from '@hl8/caching';
+import { CachingModule } from "@hl8/caching";
 import { Logger } from "@nestjs/common";
 
 import { MessageQueueAdapter } from "./message-queue.adapter.js";

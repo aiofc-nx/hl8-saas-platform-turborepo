@@ -17,14 +17,9 @@ import { IEntity } from "../../../domain/entities/base/entity.interface.js";
 import type {
   IRepository,
   IRepositoryQueryOptions,
-  IPaginatedResult,
 } from "../../../domain/repositories/base/base-repository.interface.js";
-import {
-  BaseRepositoryError,
-  ConcurrencyError,
-  EntityNotFoundError,
-  ValidationError,
-} from "../../../domain/repositories/base/base-repository.interface.js";
+import { EntityNotFoundError } from "../../../domain/repositories/base/base-repository.interface.js";
+import { DatabaseTransaction } from "../../../shared/types/database.types.js";
 
 /**
  * 仓储配置接口
@@ -100,10 +95,22 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         await this.setCache(id, entity);
       }
 
-      this.logger.debug(`从数据库获取实体: ${this.entityName}`);
+      this.logger.debug(`从数据库获取实体: ${this.entityName}`, {
+        entityName: this.entityName,
+        id: id.toString(),
+        source: "database",
+      });
       return entity;
     } catch (error) {
-      this.logger.error(`查找实体失败: ${this.entityName}`, error instanceof Error ? error instanceof Error ? error.stack : undefined : undefined, { id });
+      this.logger.error(
+        `查找实体失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          entityName: this.entityName,
+          id: id.toString(),
+          operation: "findById",
+        },
+      );
       throw new EntityNotFoundError(
         `实体不存在: ${this.entityName}`,
         this.entityName,
@@ -137,9 +144,13 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         this.logger.debug(`保存实体成功: ${this.entityName}`);
       });
     } catch (error) {
-      this.logger.error(`保存实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
-        id: (entity as any).getId(),
-      });
+      this.logger.error(
+        `保存实体失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          id: (entity as any).getId(),
+        },
+      );
       throw error;
     }
   }
@@ -174,7 +185,11 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         this.logger.debug(`删除实体成功: ${this.entityName}`);
       });
     } catch (error) {
-      this.logger.error(`删除实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, { id });
+      this.logger.error(
+        `删除实体失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        { id },
+      );
       throw error;
     }
   }
@@ -199,9 +214,13 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
       const exists = await this.existsInDatabase(id);
       return exists;
     } catch (error) {
-      this.logger.error(`检查实体存在性失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
-        id,
-      });
+      this.logger.error(
+        `检查实体存在性失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          id,
+        },
+      );
       return false;
     }
   }
@@ -215,7 +234,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
     try {
       return await this.countInDatabase();
     } catch (error) {
-      this.logger.error(`获取实体总数失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `获取实体总数失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -230,7 +252,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
     try {
       return await this.findAllFromDatabase(options);
     } catch (error) {
-      this.logger.error(`查找所有实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `查找所有实体失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -246,7 +271,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         // 使用兼容性检查调用 transaction 方法
         if (typeof (this.databaseService as any).transaction === "function") {
           await (this.databaseService as any).transaction(
-            async (transaction: any) => {
+            async (transaction: DatabaseTransaction) => {
               for (const entity of entities) {
                 await this.saveToDatabase(entity, transaction);
               }
@@ -272,7 +297,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
 
       this.logger.debug(`批量保存实体成功: ${this.entityName}`);
     } catch (error) {
-      this.logger.error(`批量保存实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `批量保存实体失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -288,7 +316,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         // 使用兼容性检查调用 transaction 方法
         if (typeof (this.databaseService as any).transaction === "function") {
           await (this.databaseService as any).transaction(
-            async (transaction: any) => {
+            async (transaction: DatabaseTransaction) => {
               for (const id of ids) {
                 await this.deleteFromDatabase(id, transaction);
               }
@@ -314,7 +342,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
 
       this.logger.debug(`批量删除实体成功: ${this.entityName}`);
     } catch (error) {
-      this.logger.error(`批量删除实体失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `批量删除实体失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -355,7 +386,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   /**
    * 检查并发冲突
    */
-  protected async checkConcurrency(entity: TEntity): Promise<void> {
+  protected async checkConcurrency(_entity: TEntity): Promise<void> {
     // 实现乐观锁检查逻辑
     // 这里需要根据具体的实体类型和版本字段来实现
   }
@@ -373,7 +404,12 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   protected async setCache(id: TId, entity: TEntity): Promise<void> {
     const cacheKey = this.getCacheKey(id);
-    await this.cacheService.set(this.entityName, cacheKey, entity, this.config.cacheTtl);
+    await this.cacheService.set(
+      this.entityName,
+      cacheKey,
+      entity,
+      this.config.cacheTtl,
+    );
   }
 
   /**
@@ -394,7 +430,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   /**
    * 从数据库获取实体
    */
-  protected async getFromDatabase(id: TId): Promise<TEntity | null> {
+  protected async getFromDatabase(_id: TId): Promise<TEntity | null> {
     // 实现具体的数据库查询逻辑
     // 这里需要根据具体的数据库服务来实现
     throw new Error("需要实现具体的数据库查询逻辑");
@@ -404,8 +440,8 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    * 保存到数据库
    */
   private async saveToDatabase(
-    entity: TEntity,
-    transaction?: any,
+    _entity: TEntity,
+    _transaction?: DatabaseTransaction,
   ): Promise<void> {
     // 实现具体的数据库保存逻辑
     // 这里需要根据具体的数据库服务来实现
@@ -416,8 +452,8 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    * 从数据库删除
    */
   protected async deleteFromDatabase(
-    id: TId,
-    transaction?: any,
+    _id: TId,
+    _transaction?: DatabaseTransaction,
   ): Promise<void> {
     // 实现具体的数据库删除逻辑
     // 这里需要根据具体的数据库服务来实现
@@ -427,7 +463,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   /**
    * 检查实体在数据库中是否存在
    */
-  private async existsInDatabase(id: TId): Promise<boolean> {
+  private async existsInDatabase(_id: TId): Promise<boolean> {
     // 实现具体的数据库存在性检查逻辑
     // 这里需要根据具体的数据库服务来实现
     throw new Error("需要实现具体的数据库存在性检查逻辑");
@@ -446,7 +482,7 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    * 从数据库查找所有实体
    */
   private async findAllFromDatabase(
-    options?: IRepositoryQueryOptions,
+    _options?: IRepositoryQueryOptions,
   ): Promise<TEntity[]> {
     // 实现具体的数据库查询逻辑
     // 这里需要根据具体的数据库服务来实现

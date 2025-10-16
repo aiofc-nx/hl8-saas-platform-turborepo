@@ -76,7 +76,9 @@ export class TenantContextMiddleware implements NestMiddleware {
     private readonly tenantContextService: any,
     private readonly logger: FastifyLoggerService,
   ) {
-    this.logger.debug("TenantContextMiddleware初始化", { requestId: "TenantContextMiddleware" });
+    this.logger.debug("TenantContextMiddleware初始化", {
+      requestId: "TenantContextMiddleware",
+    });
   }
 
   /**

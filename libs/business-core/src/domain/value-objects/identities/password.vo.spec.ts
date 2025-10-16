@@ -55,7 +55,9 @@ describe("Password值对象", () => {
       expect(() => Password.create(whitespacePassword)).toThrow(
         InvalidPasswordException,
       );
-      expect(() => Password.create(whitespacePassword)).toThrow("密码长度必须在8-128个字符之间，当前长度：3");
+      expect(() => Password.create(whitespacePassword)).toThrow(
+        "密码长度必须在8-128个字符之间，当前长度：3",
+      );
     });
 
     it("应该在密码少于8个字符时抛出异常", () => {
@@ -143,7 +145,6 @@ describe("Password值对象", () => {
       expect(password).toBeDefined();
     });
   });
-
 
   describe("equals", () => {
     it("应该能够比较两个相同的密码", () => {

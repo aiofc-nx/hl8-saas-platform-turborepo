@@ -163,7 +163,15 @@ export class CacheStrategy {
 
       return entry.value as T;
     } catch (error) {
-      this.logger.error("获取缓存失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), key, strategy });
+      this.logger.error(
+        "获取缓存失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          error: error instanceof Error ? error.message : String(error),
+          key,
+          strategy,
+        },
+      );
       return null;
     }
   }
@@ -222,7 +230,15 @@ export class CacheStrategy {
 
       this.logger.debug("缓存设置成功");
     } catch (error) {
-      this.logger.error("设置缓存失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), key, strategy });
+      this.logger.error(
+        "设置缓存失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          error: error instanceof Error ? error.message : String(error),
+          key,
+          strategy,
+        },
+      );
       throw error;
     }
   }
@@ -258,7 +274,11 @@ export class CacheStrategy {
       this.logger.debug("缓存删除成功");
       return true;
     } catch (error) {
-      this.logger.error("删除缓存失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), key });
+      this.logger.error(
+        "删除缓存失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error), key },
+      );
       return false;
     }
   }
@@ -287,7 +307,11 @@ export class CacheStrategy {
 
       this.logger.log("缓存已清空");
     } catch (error) {
-      this.logger.error("清空缓存失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "清空缓存失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }
@@ -309,7 +333,10 @@ export class CacheStrategy {
           const value = await loader(key);
           await this.set(key, value);
         } catch (error) {
-          this.logger.warn("缓存预热失败", { error: error instanceof Error ? error.message : String(error), key });
+          this.logger.warn("缓存预热失败", {
+            error: error instanceof Error ? error.message : String(error),
+            key,
+          });
         }
       });
 
@@ -317,7 +344,11 @@ export class CacheStrategy {
 
       this.logger.log("缓存预热完成");
     } catch (error) {
-      this.logger.error("缓存预热失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "缓存预热失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }
@@ -471,7 +502,12 @@ export class CacheStrategy {
   private async writeThrough(key: string, entry: CacheEntry): Promise<void> {
     // 同时写入缓存和外部存储
     this.entries.set(key, entry);
-    await this.cacheService.set("cache-strategy", key, JSON.stringify(entry.value), entry.ttl);
+    await this.cacheService.set(
+      "cache-strategy",
+      key,
+      JSON.stringify(entry.value),
+      entry.ttl,
+    );
   }
 
   /**
@@ -488,7 +524,10 @@ export class CacheStrategy {
           entry.ttl,
         );
       } catch (error) {
-        this.logger.warn("异步写入外部存储失败", { error: error instanceof Error ? error.message : String(error), key });
+        this.logger.warn("异步写入外部存储失败", {
+          error: error instanceof Error ? error.message : String(error),
+          key,
+        });
       }
     });
   }
@@ -498,7 +537,12 @@ export class CacheStrategy {
    */
   private async writeAround(key: string, entry: CacheEntry): Promise<void> {
     // 直接写入外部存储，不写入缓存
-    await this.cacheService.set("cache-strategy", key, JSON.stringify(entry.value), entry.ttl);
+    await this.cacheService.set(
+      "cache-strategy",
+      key,
+      JSON.stringify(entry.value),
+      entry.ttl,
+    );
   }
 
   /**

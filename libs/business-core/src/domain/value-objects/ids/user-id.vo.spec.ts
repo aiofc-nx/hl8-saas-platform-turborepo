@@ -119,7 +119,6 @@ describe("UserId", () => {
     });
   });
 
-
   describe("valid UUID v4 examples", () => {
     const validUuids = [
       "123e4567-e89b-4d3a-a456-426614174000",

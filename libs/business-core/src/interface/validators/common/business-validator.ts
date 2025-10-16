@@ -149,7 +149,14 @@ export class BusinessValidator {
             }
           }
         } catch (error) {
-          this.logger.error("验证规则执行失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), ruleName });
+          this.logger.error(
+            "验证规则执行失败",
+            error instanceof Error ? error.stack : undefined,
+            {
+              error: error instanceof Error ? error.message : String(error),
+              ruleName,
+            },
+          );
           errors.push({
             field: ruleName,
             code: "VALIDATION_ERROR",
@@ -182,7 +189,11 @@ export class BusinessValidator {
 
       return result;
     } catch (error) {
-      this.logger.error("业务数据验证失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "业务数据验证失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }

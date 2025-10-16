@@ -169,10 +169,14 @@ export class InfrastructureFactory {
 
       return instance;
     } catch (error) {
-      this.logger.error(`创建基础设施服务失败: ${config.serviceName}`, error instanceof Error ? error.stack : undefined, {
-        serviceType: config.serviceType,
-        config: config.options,
-      });
+      this.logger.error(
+        `创建基础设施服务失败: ${config.serviceName}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          serviceType: config.serviceType,
+          config: config.options,
+        },
+      );
       throw error;
     }
   }
@@ -246,7 +250,10 @@ export class InfrastructureFactory {
       registration.error =
         error instanceof Error ? error.message : String(error);
 
-      this.logger.error(`初始化基础设施服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `初始化基础设施服务失败: ${serviceName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -280,7 +287,10 @@ export class InfrastructureFactory {
       registration.error =
         error instanceof Error ? error.message : String(error);
 
-      this.logger.error(`启动基础设施服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `启动基础设施服务失败: ${serviceName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -314,7 +324,10 @@ export class InfrastructureFactory {
       registration.error =
         error instanceof Error ? error.message : String(error);
 
-      this.logger.error(`停止基础设施服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `停止基础设施服务失败: ${serviceName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -347,7 +360,10 @@ export class InfrastructureFactory {
 
       this.logger.debug(`销毁基础设施服务成功: ${serviceName}`);
     } catch (error) {
-      this.logger.error(`销毁基础设施服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `销毁基础设施服务失败: ${serviceName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -659,11 +675,7 @@ export class InfrastructureFactory {
    * 创建消息队列适配器
    */
   private createMessageQueueAdapter(serviceName: string, options: any): any {
-    return new MessageQueueAdapter(
-      this.cacheService,
-      this.logger,
-      options,
-    );
+    return new MessageQueueAdapter(this.cacheService, this.logger, options);
   }
 
   /**

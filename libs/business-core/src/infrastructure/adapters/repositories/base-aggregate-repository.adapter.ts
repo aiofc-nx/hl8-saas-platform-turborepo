@@ -116,9 +116,13 @@ export class BaseAggregateRepositoryAdapter<
         this.logger.debug(`保存聚合根成功: ${this.entityName}`);
       });
     } catch (error) {
-      this.logger.error(`保存聚合根失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
-        id: (aggregate as any).getId(),
-      });
+      this.logger.error(
+        `保存聚合根失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          id: (aggregate as any).getId(),
+        },
+      );
       throw error;
     }
   }
@@ -188,7 +192,11 @@ export class BaseAggregateRepositoryAdapter<
       this.logger.debug(`从数据库获取聚合根: ${this.entityName}`);
       return aggregate;
     } catch (error) {
-      this.logger.error(`查找聚合根失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, { id });
+      this.logger.error(
+        `查找聚合根失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        { id },
+      );
       throw error;
     }
   }
@@ -208,9 +216,13 @@ export class BaseAggregateRepositoryAdapter<
         return aggregate?.getVersion() || 0;
       }
     } catch (error) {
-      this.logger.error(`获取聚合根版本失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
-        id,
-      });
+      this.logger.error(
+        `获取聚合根版本失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          id,
+        },
+      );
       throw error;
     }
   }
@@ -235,9 +247,13 @@ export class BaseAggregateRepositoryAdapter<
         return [];
       }
     } catch (error) {
-      this.logger.error(`获取聚合根事件失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
-        id,
-      });
+      this.logger.error(
+        `获取聚合根事件失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          id,
+        },
+      );
       throw error;
     }
   }
@@ -256,9 +272,13 @@ export class BaseAggregateRepositoryAdapter<
         return null;
       }
     } catch (error) {
-      this.logger.error(`获取聚合根快照失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
-        id,
-      });
+      this.logger.error(
+        `获取聚合根快照失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          id,
+        },
+      );
       throw error;
     }
   }
@@ -300,7 +320,10 @@ export class BaseAggregateRepositoryAdapter<
 
       this.logger.debug(`批量删除聚合根成功: ${this.entityName}`);
     } catch (error) {
-      this.logger.error(`批量删除聚合根失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `批量删除聚合根失败: ${this.entityName}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }

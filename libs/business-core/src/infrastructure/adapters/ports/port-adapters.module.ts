@@ -62,9 +62,10 @@ export class PortAdaptersModule {
     providers.push(PortAdaptersManager);
 
     if (options.enableLogger !== false) {
-      imports.push(
+      imports
+        .push
         // LoggerModule 已移除，直接提供 LoggerPortAdapter
-      );
+        ();
       providers.push({ provide: "ILoggerPort", useClass: LoggerPortAdapter });
     }
 
@@ -111,12 +112,13 @@ export class PortAdaptersModule {
     }
 
     if (options.enableEventBus !== false) {
-      imports.push(
+      imports
+        .push
         // MessagingModule 暂时注释，等待模块实现
         // MessagingModule.forRoot({
         //   adapter: "memory" as any,
         // }),
-      );
+        ();
       providers.push({
         provide: "IEventBusPort",
         useClass: EventBusPortAdapter,
@@ -147,9 +149,10 @@ export class PortAdaptersModule {
     providers.push(PortAdaptersManager);
 
     if (options.enableLogger !== false) {
-      imports.push(
+      imports
+        .push
         // LoggerModule 已移除，直接提供 LoggerPortAdapter
-      );
+        ();
       providers.push({ provide: "ILoggerPort", useClass: LoggerPortAdapter });
     }
 
@@ -196,12 +199,13 @@ export class PortAdaptersModule {
     }
 
     if (options.enableEventBus !== false) {
-      imports.push(
+      imports
+        .push
         // MessagingModule 暂时注释，等待模块实现
         // MessagingModule.forRoot({
         //   adapter: "memory" as any,
         // }),
-      );
+        ();
       providers.push({
         provide: "IEventBusPort",
         useClass: EventBusPortAdapter,

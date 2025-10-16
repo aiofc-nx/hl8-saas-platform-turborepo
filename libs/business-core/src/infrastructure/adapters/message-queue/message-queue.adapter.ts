@@ -176,10 +176,14 @@ export class MessageQueueAdapter {
 
       this.logger.debug(`发布消息成功: ${topic}`);
     } catch (error) {
-        this.logger.error(`发布消息失败: ${topic}`, error instanceof Error ? error.stack : undefined, {
-        messageType: options.messageType,
-        topic,
-      });
+      this.logger.error(
+        `发布消息失败: ${topic}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          messageType: options.messageType,
+          topic,
+        },
+      );
       throw error;
     }
   }
@@ -245,10 +249,14 @@ export class MessageQueueAdapter {
 
       this.logger.debug(`批量发布消息成功: ${topic}`);
     } catch (error) {
-        this.logger.error(`批量发布消息失败: ${topic}`, error instanceof Error ? error.stack : undefined, {
-        messageCount: messages.length,
-        topic,
-      });
+      this.logger.error(
+        `批量发布消息失败: ${topic}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          messageCount: messages.length,
+          topic,
+        },
+      );
       throw error;
     }
   }
@@ -326,10 +334,14 @@ export class MessageQueueAdapter {
 
       this.logger.debug(`订阅消息成功: ${topic}`);
     } catch (error) {
-      this.logger.error(`订阅消息失败: ${topic}`, error instanceof Error ? error.stack : undefined, {
-        topic,
-        handlerName: handler.handlerName,
-      });
+      this.logger.error(
+        `订阅消息失败: ${topic}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          topic,
+          handlerName: handler.handlerName,
+        },
+      );
       throw error;
     }
   }
@@ -351,10 +363,14 @@ export class MessageQueueAdapter {
 
       this.logger.debug(`取消订阅成功: ${topic}`);
     } catch (error) {
-      this.logger.error(`取消订阅失败: ${topic}`, error instanceof Error ? error.stack : undefined, {
-        topic,
-        handlerName,
-      });
+      this.logger.error(
+        `取消订阅失败: ${topic}`,
+        error instanceof Error ? error.stack : undefined,
+        {
+          topic,
+          handlerName,
+        },
+      );
       throw error;
     }
   }
@@ -381,7 +397,10 @@ export class MessageQueueAdapter {
 
       this.logger.debug(`确认消息成功: ${messageId}`);
     } catch (error) {
-      this.logger.error(`确认消息失败: ${messageId}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `确认消息失败: ${messageId}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -404,7 +423,10 @@ export class MessageQueueAdapter {
 
       this.logger.debug(`拒绝消息成功: ${messageId}`);
     } catch (error) {
-      this.logger.error(`拒绝消息失败: ${messageId}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `拒绝消息失败: ${messageId}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -445,7 +467,10 @@ export class MessageQueueAdapter {
         errorCount: 0,
       };
     } catch (error) {
-      this.logger.error(`获取队列统计信息失败: ${topic}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `获取队列统计信息失败: ${topic}`,
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -461,7 +486,10 @@ export class MessageQueueAdapter {
       // 实际实现中需要调用消息队列服务的清理方法
       return 0;
     } catch (error) {
-      this.logger.error("清理过期消息失败", error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        "清理过期消息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
       throw error;
     }
   }
@@ -608,7 +636,12 @@ export class MessageQueueAdapter {
     message: IMessage,
   ): Promise<void> {
     const cacheKey = this.getMessageCacheKey(messageId);
-    await this.cacheService.set("message-queue", cacheKey, message, this.config.cacheTtl);
+    await this.cacheService.set(
+      "message-queue",
+      cacheKey,
+      message,
+      this.config.cacheTtl,
+    );
   }
 
   /**

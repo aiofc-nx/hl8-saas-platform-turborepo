@@ -42,13 +42,19 @@ export class Email extends BaseValueObject<string> {
 
       const [localPart] = value.split("@");
       if (localPart.length > 64) {
-        throw new InvalidEmailException("邮箱本地部分长度不能超过64个字符", value);
+        throw new InvalidEmailException(
+          "邮箱本地部分长度不能超过64个字符",
+          value,
+        );
       }
     } catch (error) {
       if (error instanceof InvalidEmailException) {
         throw error;
       }
-      throw new InvalidEmailException(error.message, value);
+      throw new InvalidEmailException(
+        error instanceof Error ? error.message : String(error),
+        value,
+      );
     }
   }
 

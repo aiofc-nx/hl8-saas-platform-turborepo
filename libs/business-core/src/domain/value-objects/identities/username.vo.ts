@@ -61,13 +61,19 @@ export class Username extends BaseValueObject<string> {
       }
 
       if (Username.RESERVED_NAMES.includes(value.toLowerCase())) {
-        throw new InvalidUsernameException(`用户名不能使用系统保留词: ${value}`, value);
+        throw new InvalidUsernameException(
+          `用户名不能使用系统保留词: ${value}`,
+          value,
+        );
       }
     } catch (error) {
       if (error instanceof InvalidUsernameException) {
         throw error;
       }
-      throw new InvalidUsernameException(error.message, value);
+      throw new InvalidUsernameException(
+        error instanceof Error ? error.message : String(error),
+        value,
+      );
     }
   }
 

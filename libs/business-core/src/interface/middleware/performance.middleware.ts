@@ -82,7 +82,9 @@ export class PerformanceMiddleware implements NestMiddleware {
     private readonly logger: FastifyLoggerService,
     config?: IPerformanceMiddlewareConfig,
   ) {
-    this.logger.debug("PerformanceMiddleware初始化", { requestId: "PerformanceMiddleware" });
+    this.logger.debug("PerformanceMiddleware初始化", {
+      requestId: "PerformanceMiddleware",
+    });
     this.config = {
       slowRequestThreshold: config?.slowRequestThreshold || 1000,
       enablePerformanceLog: config?.enablePerformanceLog ?? true,

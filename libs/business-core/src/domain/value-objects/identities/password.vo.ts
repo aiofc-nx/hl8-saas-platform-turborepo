@@ -22,7 +22,10 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
-import { InvalidPasswordException, WeakPasswordException } from "../exceptions/value-object.exceptions.js";
+import {
+  InvalidPasswordException,
+  WeakPasswordException,
+} from "../exceptions/value-object.exceptions.js";
 
 export class Password extends BaseValueObject<string> {
   /**
@@ -70,10 +73,16 @@ export class Password extends BaseValueObject<string> {
         throw new WeakPasswordException("不能使用常见弱密码", value);
       }
     } catch (error) {
-      if (error instanceof InvalidPasswordException || error instanceof WeakPasswordException) {
+      if (
+        error instanceof InvalidPasswordException ||
+        error instanceof WeakPasswordException
+      ) {
         throw error;
       }
-      throw new InvalidPasswordException(error.message, value);
+      throw new InvalidPasswordException(
+        error instanceof Error ? error.message : String(error),
+        value,
+      );
     }
   }
 

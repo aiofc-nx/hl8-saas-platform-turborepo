@@ -80,6 +80,7 @@ import {
 import type { IPureLogger } from "@hl8/pure-logger";
 import { ENTITY_OPERATIONS } from "../../../constants.js";
 import { TenantId } from "@hl8/isolation-model";
+import { TenantContext } from "../../../shared/types/tenant.types.js";
 
 export abstract class BaseEntity implements IEntity {
   private readonly _id: EntityId;
@@ -476,11 +477,11 @@ export abstract class BaseEntity implements IEntity {
         tenantId = TenantId.create(tenantContext.tenantId.toString());
         createdBy = tenantContext.userId || createdBy;
       }
-    } catch (error) {
+    } catch (_error) {
       // 如果获取上下文失败，使用默认值
       console.warn(
         "Failed to get tenant context, using default values:",
-        error,
+        _error,
       );
     }
 
@@ -507,12 +508,12 @@ export abstract class BaseEntity implements IEntity {
    * @returns 租户上下文信息，如果不存在则返回 null
    * @protected
    */
-  protected getTenantContext(): any | null {
+  protected getTenantContext(): TenantContext | null {
     try {
-      // 这里需要注入 any，但在实体中直接注入不太合适
+      // 这里需要注入租户上下文提供者，但在实体中直接注入不太合适
       // 建议通过构造函数传入或使用静态方法
       return null;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -527,7 +528,7 @@ export abstract class BaseEntity implements IEntity {
     try {
       const tenantContext = this.getTenantContext();
       return tenantContext?.userId || "system";
-    } catch (error) {
+    } catch (_error) {
       return "system";
     }
   }
@@ -584,7 +585,13 @@ export abstract class BaseEntity implements IEntity {
     operation: string,
     details?: Record<string, unknown>,
   ): void {
-    this.logger.info(`Entity ${operation}`);
+    this.logger.debug(`Entity ${operation}`, {
+      entityId: this._id.toString(),
+      tenantId: this._auditInfo.tenantId.toString(),
+      operation,
+      version: this._auditInfo.version,
+      metadata: details,
+    });
   }
 
   /**
@@ -600,7 +607,14 @@ export abstract class BaseEntity implements IEntity {
     error: Error,
     details?: Record<string, unknown>,
   ): void {
-    this.logger.error(`Entity ${operation} failed`);
+    this.logger.error(`Entity ${operation} failed: ${error.message}`, {
+      entityId: this._id.toString(),
+      tenantId: this._auditInfo.tenantId.toString(),
+      operation,
+      version: this._auditInfo.version,
+      error: error.stack,
+      metadata: details,
+    });
   }
 
   /**
@@ -613,8 +627,8 @@ export abstract class BaseEntity implements IEntity {
    */
   protected throwValidationError(
     message: string,
-    validationError: string,
-    details?: Record<string, unknown>,
+    _validationError: string,
+    _details?: Record<string, unknown>,
   ): never {
     throw new BadRequestException(message);
   }
@@ -630,7 +644,7 @@ export abstract class BaseEntity implements IEntity {
   protected throwOperationError(
     operation: string,
     message: string,
-    details?: Record<string, unknown>,
+    _details?: Record<string, unknown>,
   ): never {
     throw new InternalServerErrorException(message);
   }

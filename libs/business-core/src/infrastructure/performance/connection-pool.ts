@@ -162,7 +162,11 @@ export class ConnectionPoolManager {
       this.stats.failedRequests++;
       this.updateStats();
 
-      this.logger.error("获取连接失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "获取连接失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }
@@ -193,7 +197,14 @@ export class ConnectionPoolManager {
 
       this.logger.debug("连接释放成功");
     } catch (error) {
-      this.logger.error("释放连接失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), connectionId });
+      this.logger.error(
+        "释放连接失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          error: error instanceof Error ? error.message : String(error),
+          connectionId,
+        },
+      );
       throw error;
     }
   }
@@ -227,7 +238,14 @@ export class ConnectionPoolManager {
 
       this.logger.log("连接关闭成功");
     } catch (error) {
-      this.logger.error("关闭连接失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), connectionId });
+      this.logger.error(
+        "关闭连接失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          error: error instanceof Error ? error.message : String(error),
+          connectionId,
+        },
+      );
       throw error;
     }
   }
@@ -247,7 +265,11 @@ export class ConnectionPoolManager {
 
       this.logger.log("所有连接已关闭");
     } catch (error) {
-      this.logger.error("关闭所有连接失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "关闭所有连接失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }
@@ -368,7 +390,11 @@ export class ConnectionPoolManager {
 
       return { healthy, issues, recommendations };
     } catch (error) {
-      this.logger.error("连接池健康检查失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "连接池健康检查失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       return {
         healthy: false,
         issues: ["健康检查失败"],
@@ -415,7 +441,11 @@ export class ConnectionPoolManager {
 
       this.logger.log("连接池初始化完成");
     } catch (error) {
-      this.logger.error("连接池初始化失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        "连接池初始化失败",
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }
@@ -460,7 +490,14 @@ export class ConnectionPoolManager {
       this.stats.errorConnections++;
       this.updateStats();
 
-      this.logger.error("连接创建失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error), connectionId });
+      this.logger.error(
+        "连接创建失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          error: error instanceof Error ? error.message : String(error),
+          connectionId,
+        },
+      );
       throw error;
     }
   }
@@ -522,7 +559,11 @@ export class ConnectionPoolManager {
       try {
         await this.performHealthCheck();
       } catch (error) {
-        this.logger.error("健康检查失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+        this.logger.error(
+          "健康检查失败",
+          error instanceof Error ? error.stack : undefined,
+          { error: error instanceof Error ? error.message : String(error) },
+        );
       }
     }, this.config.healthCheckInterval);
 
@@ -537,7 +578,11 @@ export class ConnectionPoolManager {
       try {
         await this.validateConnections();
       } catch (error) {
-        this.logger.error("连接验证失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+        this.logger.error(
+          "连接验证失败",
+          error instanceof Error ? error.stack : undefined,
+          { error: error instanceof Error ? error.message : String(error) },
+        );
       }
     }, this.config.validationInterval);
 

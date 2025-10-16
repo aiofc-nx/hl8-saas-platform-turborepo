@@ -29,7 +29,16 @@ afterAll(() => {
 });
 
 // 在ESM环境中，需要显式导入Jest函数以确保全局可用
-import { jest, expect, describe, it, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+import {
+  jest,
+  expect,
+  describe,
+  it,
+  beforeEach,
+  afterEach,
+  beforeAll,
+  afterAll,
+} from "@jest/globals";
 
 // 将Jest函数挂载到全局对象上
 (global as any).jest = jest;

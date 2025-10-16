@@ -289,7 +289,10 @@ export class DomainServiceManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个服务`);
         }
       } catch (error) {
-        this.logger.error("自动清理失败", error instanceof Error ? error.stack : undefined);
+        this.logger.error(
+          "自动清理失败",
+          error instanceof Error ? error.stack : undefined,
+        );
       }
     }, this.config.cleanupInterval);
   }
@@ -309,7 +312,10 @@ export class DomainServiceManager {
           this.logger.warn("发现不健康的领域服务");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error instanceof Error ? error.stack : undefined);
+        this.logger.error(
+          "健康检查失败",
+          error instanceof Error ? error.stack : undefined,
+        );
       }
     }, this.config.healthCheckInterval);
   }

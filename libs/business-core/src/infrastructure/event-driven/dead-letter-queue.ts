@@ -124,10 +124,14 @@ export class DeadLetterQueueProcessor {
 
       return entryId;
     } catch (error) {
-      this.logger.error("添加事件到死信队列失败", error instanceof Error ? error.stack : undefined, {
-        eventType: event.eventType,
-        eventId: event.eventId.toString(),
-      });
+      this.logger.error(
+        "添加事件到死信队列失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          eventType: event.eventType,
+          eventId: event.eventId.toString(),
+        },
+      );
       throw error;
     }
   }
@@ -199,7 +203,11 @@ export class DeadLetterQueueProcessor {
         return false;
       }
     } catch (error) {
-      this.logger.error("重试死信队列条目失败", error instanceof Error ? error.stack : undefined, { entryId });
+      this.logger.error(
+        "重试死信队列条目失败",
+        error instanceof Error ? error.stack : undefined,
+        { entryId },
+      );
       return false;
     }
   }
@@ -270,7 +278,11 @@ export class DeadLetterQueueProcessor {
       this.logger.log("死信队列条目已删除");
       return true;
     } catch (error) {
-      this.logger.error("删除死信队列条目失败", error instanceof Error ? error.stack : undefined, { entryId });
+      this.logger.error(
+        "删除死信队列条目失败",
+        error instanceof Error ? error.stack : undefined,
+        { entryId },
+      );
       return false;
     }
   }
@@ -301,7 +313,10 @@ export class DeadLetterQueueProcessor {
 
       return expiredEntries.length;
     } catch (error) {
-      this.logger.error("清理过期死信队列条目失败", error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        "清理过期死信队列条目失败",
+        error instanceof Error ? error.stack : undefined,
+      );
       return 0;
     }
   }
@@ -484,7 +499,10 @@ export class DeadLetterQueueProcessor {
         console.log(`处理死信队列条目: ${entry.id}`);
       }
     } catch (error) {
-      this.logger.error("处理待重试条目失败", error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        "处理待重试条目失败",
+        error instanceof Error ? error.stack : undefined,
+      );
     }
   }
 

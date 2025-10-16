@@ -204,7 +204,6 @@ describe("EntityId", () => {
     });
   });
 
-
   describe("空值检查", () => {
     it("应该正确检查非空标识符", () => {
       const id = TenantId.generate();
@@ -220,7 +219,6 @@ describe("EntityId", () => {
       expect(id.isEmpty()).toBe(false);
     });
   });
-
 
   describe("边界情况", () => {
     it("应该处理最小有效 UUID", () => {

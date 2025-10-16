@@ -195,7 +195,10 @@ export class InfrastructureManager {
       try {
         await this.startServiceWithTimeout(service.serviceName);
       } catch (error) {
-        this.logger.error(`启动服务失败: ${service.serviceName}`, error instanceof Error ? error.stack : undefined);
+        this.logger.error(
+          `启动服务失败: ${service.serviceName}`,
+          error instanceof Error ? error.stack : undefined,
+        );
         // 继续启动其他服务
       }
     }
@@ -216,7 +219,11 @@ export class InfrastructureManager {
       try {
         await this.stopServiceWithTimeout(service.serviceName);
       } catch (error) {
-        this.logger.error(`停止服务失败: ${service.serviceName}`, error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+        this.logger.error(
+          `停止服务失败: ${service.serviceName}`,
+          error instanceof Error ? error.stack : undefined,
+          { error: error instanceof Error ? error.message : String(error) },
+        );
         // 继续停止其他服务
       }
     }
@@ -236,7 +243,11 @@ export class InfrastructureManager {
       await this.stopService(serviceName);
       await this.startService(serviceName);
     } catch (error) {
-      this.logger.error(`重启服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+      this.logger.error(
+        `重启服务失败: ${serviceName}`,
+        error instanceof Error ? error.stack : undefined,
+        { error: error instanceof Error ? error.message : String(error) },
+      );
       throw error;
     }
   }
@@ -360,7 +371,11 @@ export class InfrastructureManager {
           this.logger.warn("发现不健康的基础设施服务");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+        this.logger.error(
+          "健康检查失败",
+          error instanceof Error ? error.stack : undefined,
+          { error: error instanceof Error ? error.message : String(error) },
+        );
       }
     }, this.config.healthCheckInterval);
   }
@@ -374,7 +389,11 @@ export class InfrastructureManager {
         const statistics = this.getServiceStatistics();
         this.logger.debug("基础设施服务统计信息收集完成");
       } catch (error) {
-        this.logger.error("统计收集失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
+        this.logger.error(
+          "统计收集失败",
+          error instanceof Error ? error.stack : undefined,
+          { error: error instanceof Error ? error.message : String(error) },
+        );
       }
     }, this.config.statisticsInterval);
   }

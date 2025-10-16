@@ -101,7 +101,9 @@ describe("Username值对象", () => {
       expect(() => Username.create(shortUsername)).toThrow(
         InvalidUsernameException,
       );
-      expect(() => Username.create(shortUsername)).toThrow("用户名长度必须在3-20个字符之间，当前长度：2");
+      expect(() => Username.create(shortUsername)).toThrow(
+        "用户名长度必须在3-20个字符之间，当前长度：2",
+      );
     });
 
     it("应该在用户名超过20个字符时抛出异常", () => {
@@ -112,7 +114,9 @@ describe("Username值对象", () => {
       expect(() => Username.create(longUsername)).toThrow(
         InvalidUsernameException,
       );
-      expect(() => Username.create(longUsername)).toThrow("用户名长度必须在3-20个字符之间，当前长度：21");
+      expect(() => Username.create(longUsername)).toThrow(
+        "用户名长度必须在3-20个字符之间，当前长度：21",
+      );
     });
 
     it("应该在用户名包含非法字符时抛出异常 - 空格", () => {
@@ -180,7 +184,9 @@ describe("Username值对象", () => {
       expect(() => Username.create(reservedUsername)).toThrow(
         InvalidUsernameException,
       );
-      expect(() => Username.create(reservedUsername)).toThrow("用户名不能使用系统保留词: admin");
+      expect(() => Username.create(reservedUsername)).toThrow(
+        "用户名不能使用系统保留词: admin",
+      );
     });
 
     it("应该在用户名为保留字时抛出异常 - root", () => {
@@ -191,7 +197,9 @@ describe("Username值对象", () => {
       expect(() => Username.create(reservedUsername)).toThrow(
         InvalidUsernameException,
       );
-      expect(() => Username.create(reservedUsername)).toThrow("用户名不能使用系统保留词: root");
+      expect(() => Username.create(reservedUsername)).toThrow(
+        "用户名不能使用系统保留词: root",
+      );
     });
 
     it("应该在用户名为保留字时抛出异常 - 不区分大小写", () => {
@@ -202,7 +210,9 @@ describe("Username值对象", () => {
       expect(() => Username.create(reservedUsername)).toThrow(
         InvalidUsernameException,
       );
-      expect(() => Username.create(reservedUsername)).toThrow("用户名不能使用系统保留词: ADMIN");
+      expect(() => Username.create(reservedUsername)).toThrow(
+        "用户名不能使用系统保留词: ADMIN",
+      );
     });
   });
 

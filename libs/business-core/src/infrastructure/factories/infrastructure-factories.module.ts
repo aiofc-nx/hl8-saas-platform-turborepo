@@ -62,9 +62,9 @@ export class InfrastructureFactoriesModule {
       CachingModule.forRoot({
         redis: {} as any,
       }),
-      DatabaseModule.forRoot({ 
+      DatabaseModule.forRoot({
         connection: {} as any,
-        entities: []
+        entities: [],
       }),
       // MessagingModule 暂时注释，等待模块实现
       // MultiTenancyModule 已移除，使用 @hl8/nestjs-isolation
@@ -105,9 +105,9 @@ export class InfrastructureFactoriesModule {
       CachingModule.forRoot({
         redis: {} as any,
       }),
-      DatabaseModule.forRoot({ 
+      DatabaseModule.forRoot({
         connection: {} as any,
-        entities: []
+        entities: [],
       }),
       // MessagingModule 暂时注释，等待模块实现
       // MultiTenancyModule 已移除，使用 @hl8/nestjs-isolation

@@ -93,8 +93,7 @@ describe("TenantId", () => {
       const invalidId = "invalid@tenant";
 
       // Act & Assert
-      expect(() => TenantId.create(invalidId)).toThrow(
-      );
+      expect(() => TenantId.create(invalidId)).toThrow();
     });
   });
 
@@ -127,7 +126,6 @@ describe("TenantId", () => {
       expect(tenantId.toString()).toBe("123e4567-e89b-4d3a-a456-426614174000");
     });
   });
-
 
   describe("valid UUID v4 examples", () => {
     const validUuids = [

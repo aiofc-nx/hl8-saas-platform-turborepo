@@ -121,7 +121,10 @@ export class EventMonitor {
     error?: Error,
   ): void {
     try {
-      const cached = this.cacheService.get(`event:processing:${processingId}`, "event-monitor");
+      const cached = this.cacheService.get(
+        `event:processing:${processingId}`,
+        "event-monitor",
+      );
       if (!cached) {
         this.logger.warn("未找到处理记录");
         return;
@@ -141,11 +144,18 @@ export class EventMonitor {
       this.checkAlerts(eventType, processingTime, success, error);
 
       // 清理缓存
-      this.cacheService.del(`event:processing:${processingId}`, "event-monitor");
+      this.cacheService.del(
+        `event:processing:${processingId}`,
+        "event-monitor",
+      );
 
       this.logger.debug("事件处理完成");
     } catch (error) {
-      this.logger.error("记录事件处理完成失败", error instanceof Error ? error.stack : undefined, { processingId });
+      this.logger.error(
+        "记录事件处理完成失败",
+        error instanceof Error ? error.stack : undefined,
+        { processingId },
+      );
     }
   }
 
@@ -161,12 +171,16 @@ export class EventMonitor {
     const errorCount = this.errorCounts.get(eventType) || 0;
     this.errorCounts.set(eventType, errorCount + 1);
 
-    this.logger.error("事件处理错误", error instanceof Error ? error.stack : undefined, {
-      eventType,
-      eventId: event.eventId.toString(),
-      aggregateId: event.aggregateId.toString(),
-      tenantId: event.tenantId,
-    });
+    this.logger.error(
+      "事件处理错误",
+      error instanceof Error ? error.stack : undefined,
+      {
+        eventType,
+        eventId: event.eventId.toString(),
+        aggregateId: event.aggregateId.toString(),
+        tenantId: event.tenantId,
+      },
+    );
 
     // 检查错误率告警
     this.checkErrorRateAlert(eventType);

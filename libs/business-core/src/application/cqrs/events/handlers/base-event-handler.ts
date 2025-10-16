@@ -44,7 +44,7 @@ export abstract class BaseEventHandler<TEvent = any>
     // 验证事件类型
     if (!this.canHandle(event.constructor.name)) {
       throw new Error(
-        `事件处理器不支持处理事件类型: ${event.constructor.name}`
+        `事件处理器不支持处理事件类型: ${event.constructor.name}`,
       );
     }
 

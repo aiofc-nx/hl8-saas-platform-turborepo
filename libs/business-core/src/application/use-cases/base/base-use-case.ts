@@ -73,9 +73,9 @@ import {
 } from "@nestjs/common";
 import {
   USE_CASE_ERROR_CODES,
-  TENANT_ERROR_CODES,
   DEFAULT_ENVIRONMENT,
 } from "../../../constants.js";
+import { TenantContext } from "../../../shared/types/tenant.types.js";
 
 /**
  * 用例执行结果
@@ -97,7 +97,7 @@ export interface IUseCaseExecutionResult<TResponse> {
   error?: {
     code: string;
     message: string;
-    details?: any;
+    details?: Record<string, unknown>;
   };
 
   /**
@@ -170,7 +170,9 @@ export abstract class BaseUseCase<TRequest, TResponse>
     } catch (error) {
       // 6. 记录执行失败日志
       const executionTime = Date.now() - startTime;
-      this.logUseCaseError(request, error, context, executionTime);
+      const errorObj =
+        error instanceof Error ? error : new Error(String(error));
+      this.logUseCaseError(request, errorObj, context, executionTime);
       throw error;
     }
   }
@@ -309,9 +311,9 @@ export abstract class BaseUseCase<TRequest, TResponse>
           };
         }
       }
-    } catch (error) {
+    } catch (_error) {
       // 如果获取租户上下文失败，记录警告但不影响用例执行
-      console.warn("Failed to get tenant context for use case:", error);
+      console.warn("Failed to get tenant context for use case:", _error);
     }
 
     return baseContext;
@@ -323,12 +325,12 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * @returns 租户上下文信息，如果不存在则返回 null
    * @protected
    */
-  protected getTenantContext(): any | null {
+  protected getTenantContext(): TenantContext | null {
     try {
-      // 这里需要注入 any，但在基类中直接注入不太合适
+      // 这里需要注入租户上下文提供者，但在基类中直接注入不太合适
       // 建议通过构造函数传入或使用静态方法
       return null;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   }
@@ -338,7 +340,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
    *
    * @param request - 请求对象
    */
-  private performBasicValidation(request: TRequest): void {
+  private performBasicValidation(_request: TRequest): void {
     // 可以在这里添加通用的验证逻辑
     // 例如：检查必填字段、数据类型等
   }
@@ -356,7 +358,13 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * 记录用例开始执行日志
    */
   private logUseCaseStart(request: TRequest, context: IUseCaseContext): void {
-    this.logger.info(`Use case started: ${this.useCaseName}`);
+    this.logger.debug(`Use case started: ${this.useCaseName}`, {
+      useCaseName: this.useCaseName,
+      useCaseVersion: this.useCaseVersion,
+      tenantId: context.tenant?.id,
+      userId: context.user?.id,
+      requestId: context.request.id,
+    });
   }
 
   /**
@@ -368,7 +376,14 @@ export abstract class BaseUseCase<TRequest, TResponse>
     context: IUseCaseContext,
     executionTime: number,
   ): void {
-    this.logger.info(`Use case completed successfully: ${this.useCaseName}`);
+    this.logger.debug(`Use case completed successfully: ${this.useCaseName}`, {
+      useCaseName: this.useCaseName,
+      useCaseVersion: this.useCaseVersion,
+      tenantId: context.tenant?.id,
+      userId: context.user?.id,
+      requestId: context.request.id,
+      executionTime,
+    });
   }
 
   /**
@@ -376,11 +391,18 @@ export abstract class BaseUseCase<TRequest, TResponse>
    */
   private logUseCaseError(
     request: TRequest,
-    error: any,
+    error: Error,
     context: IUseCaseContext,
     executionTime: number,
   ): void {
-    this.logger.error(`Use case failed: ${this.useCaseName}`, error);
+    this.logger.error(error, {
+      useCaseName: this.useCaseName,
+      useCaseVersion: this.useCaseVersion,
+      tenantId: context.tenant?.id,
+      userId: context.user?.id,
+      requestId: context.request.id,
+      executionTime,
+    });
   }
 
   /**
@@ -405,8 +427,8 @@ export abstract class BaseUseCase<TRequest, TResponse>
    */
   protected throwValidationError(
     message: string,
-    validationErrors: string[],
-    details?: Record<string, unknown>,
+    _validationErrors: string[],
+    _details?: Record<string, unknown>,
   ): never {
     throw new BadRequestException(message);
   }
@@ -422,9 +444,9 @@ export abstract class BaseUseCase<TRequest, TResponse>
    */
   protected throwPermissionError(
     message: string,
-    requiredPermissions: string[],
-    userPermissions: string[],
-    details?: Record<string, unknown>,
+    _requiredPermissions: string[],
+    _userPermissions: string[],
+    _details?: Record<string, unknown>,
   ): never {
     throw new BadRequestException(message);
   }
@@ -439,8 +461,8 @@ export abstract class BaseUseCase<TRequest, TResponse>
    */
   protected throwBusinessError(
     message: string,
-    businessRule: string,
-    details?: Record<string, unknown>,
+    _businessRule: string,
+    _details?: Record<string, unknown>,
   ): never {
     throw new InternalServerErrorException(message);
   }
@@ -455,8 +477,8 @@ export abstract class BaseUseCase<TRequest, TResponse>
    */
   protected throwExecutionError(
     message: string,
-    operation: string,
-    details?: Record<string, unknown>,
+    _operation: string,
+    _details?: Record<string, unknown>,
   ): never {
     throw new InternalServerErrorException(message);
   }

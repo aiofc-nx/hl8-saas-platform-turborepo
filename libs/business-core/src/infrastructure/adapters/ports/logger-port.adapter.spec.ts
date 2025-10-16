@@ -108,7 +108,11 @@ describe("LoggerPortAdapter", () => {
 
       adapter.error(message, error, context);
 
-      expect(mockLogger.error).toHaveBeenCalledWith(message, error.stack, context);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        message,
+        error.stack,
+        context,
+      );
     });
 
     it("应该在没有error时正常工作", () => {
@@ -130,7 +134,11 @@ describe("LoggerPortAdapter", () => {
 
       adapter.error(message, error);
 
-      expect(mockLogger.error).toHaveBeenCalledWith(message, error.stack, undefined);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        message,
+        error.stack,
+        undefined,
+      );
     });
   });
 
