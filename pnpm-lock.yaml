@@ -436,6 +436,9 @@ importers:
       '@hl8/isolation-model':
         specifier: workspace:*
         version: link:../isolation-model
+      '@hl8/messaging':
+        specifier: workspace:*
+        version: link:../messaging
       '@hl8/nestjs-fastify':
         specifier: workspace:*
         version: link:../nestjs-fastify

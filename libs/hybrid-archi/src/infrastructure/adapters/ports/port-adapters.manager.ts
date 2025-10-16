@@ -9,10 +9,10 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
-import { EventService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
+// import { EventService } from "@hl8/messaging"; // 暂时注释，等待模块实现 // 暂时注释，等待模块实现
+import { TypedConfigModule } from "@hl8/config";
 import {
   PortAdaptersFactory,
   PortAdapterType,
@@ -50,7 +50,7 @@ export class PortAdaptersManager {
     private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
     private readonly configService: TypedConfigModule,
-    private readonly eventService: EventService,
+    // private readonly eventService: EventService, // 暂时注释，等待模块实现
     private readonly adaptersFactory: PortAdaptersFactory,
     config: Partial<IPortAdaptersManagerConfig> = {},
   ) {
@@ -260,7 +260,7 @@ export class PortAdaptersManager {
           this.logger.debug(`自动清理完成: ${cleanedCount} 个适配器`);
         }
       } catch (error) {
-        this.logger.error("自动清理失败", error);
+        this.logger.error("自动清理失败", error instanceof Error ? error.stack : undefined);
       }
     }, this.config.cleanupInterval);
   }
@@ -280,7 +280,7 @@ export class PortAdaptersManager {
           this.logger.warn("发现不健康的端口适配器");
         }
       } catch (error) {
-        this.logger.error("健康检查失败", error);
+        this.logger.error("健康检查失败", error instanceof Error ? error.stack : undefined);
       }
     }, this.config.healthCheckInterval);
   }

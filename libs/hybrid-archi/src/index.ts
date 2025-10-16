@@ -17,11 +17,27 @@ export {
   CacheAdapter,
   CacheManager,
   CacheFactory,
+  CacheService,
+  CachingModule,
   // 数据库相关
   DatabaseAdapter,
   DatabaseFactory,
+  DatabaseModule,
   // 消息队列相关
   MessageQueueAdapter,
+  // 暂时注释，等待 messaging 模块实现
+  // MessagingService,
+  // EventService,
+  // TaskService,
+  // MessagingModule,
+  // 日志相关
+  FastifyLoggerService,
+  // 多租户相关
+  IsolationContextService,
+  MultiLevelIsolationService,
+  IsolationModule,
+  // 配置相关
+  TypedConfigModule,
   // 端口适配器
   PortAdaptersFactory,
   // 基础设施管理器

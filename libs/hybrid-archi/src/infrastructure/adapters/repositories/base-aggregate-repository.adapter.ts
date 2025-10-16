@@ -9,10 +9,10 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DatabaseService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { EventService } from "@hl8/hybrid-archi";
+import { ConnectionManager } from "@hl8/database";
+import { CacheService } from "@hl8/caching";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+// import { EventService } from "@hl8/messaging"; // 暂时注释，等待模块实现
 import { EntityId } from "@hl8/isolation-model";
 import { BaseAggregateRoot } from "../../../domain/aggregates/base/base-aggregate-root.js";
 import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
@@ -56,10 +56,10 @@ export class BaseAggregateRepositoryAdapter<
   private readonly aggregateConfig: IAggregateRepositoryConfig;
 
   constructor(
-    databaseService: DatabaseService,
+    databaseService: ConnectionManager,
     cacheService: CacheService,
     logger: FastifyLoggerService,
-    private readonly eventService: EventService,
+    // private readonly eventService: EventService, // 暂时注释，等待模块实现
     entityName: string,
     aggregateConfig: Partial<IAggregateRepositoryConfig> = {},
   ) {
@@ -116,7 +116,7 @@ export class BaseAggregateRepositoryAdapter<
         this.logger.debug(`保存聚合根成功: ${this.entityName}`);
       });
     } catch (error) {
-      this.logger.error(`保存聚合根失败: ${this.entityName}`, error, {
+      this.logger.error(`保存聚合根失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
         id: (aggregate as any).getId(),
       });
       throw error;
@@ -188,7 +188,7 @@ export class BaseAggregateRepositoryAdapter<
       this.logger.debug(`从数据库获取聚合根: ${this.entityName}`);
       return aggregate;
     } catch (error) {
-      this.logger.error(`查找聚合根失败: ${this.entityName}`, error, { id });
+      this.logger.error(`查找聚合根失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, { id });
       throw error;
     }
   }
@@ -208,7 +208,7 @@ export class BaseAggregateRepositoryAdapter<
         return aggregate?.getVersion() || 0;
       }
     } catch (error) {
-      this.logger.error(`获取聚合根版本失败: ${this.entityName}`, error, {
+      this.logger.error(`获取聚合根版本失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
         id,
       });
       throw error;
@@ -235,7 +235,7 @@ export class BaseAggregateRepositoryAdapter<
         return [];
       }
     } catch (error) {
-      this.logger.error(`获取聚合根事件失败: ${this.entityName}`, error, {
+      this.logger.error(`获取聚合根事件失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
         id,
       });
       throw error;
@@ -256,7 +256,7 @@ export class BaseAggregateRepositoryAdapter<
         return null;
       }
     } catch (error) {
-      this.logger.error(`获取聚合根快照失败: ${this.entityName}`, error, {
+      this.logger.error(`获取聚合根快照失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined, {
         id,
       });
       throw error;
@@ -300,7 +300,7 @@ export class BaseAggregateRepositoryAdapter<
 
       this.logger.debug(`批量删除聚合根成功: ${this.entityName}`);
     } catch (error) {
-      this.logger.error(`批量删除聚合根失败: ${this.entityName}`, error);
+      this.logger.error(`批量删除聚合根失败: ${this.entityName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -343,12 +343,9 @@ export class BaseAggregateRepositoryAdapter<
     }
 
     for (const event of events) {
-      // 使用兼容性检查调用 publish 方法
-      if (typeof (this.eventService as any).publish === "function") {
-        await (this.eventService as any).publish(event);
-      } else {
-        console.warn("EventService不支持publish方法");
-      }
+      // EventService 暂时不可用
+      console.warn("EventService 暂时不可用，领域事件发布功能已禁用");
+      // 这里可以实现基础的事件发布逻辑
     }
   }
 

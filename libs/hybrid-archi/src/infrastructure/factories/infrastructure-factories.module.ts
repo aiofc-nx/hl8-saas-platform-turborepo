@@ -9,11 +9,10 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { LoggerModule } from "@hl8/hybrid-archi";
-import { CacheModule } from "@hl8/hybrid-archi";
-import { DatabaseModule } from "@hl8/hybrid-archi";
-import { MessagingModule } from "@hl8/hybrid-archi";
-import { MultiTenancyModule } from "@hl8/hybrid-archi";
+import { CachingModule } from "@hl8/caching";
+import { DatabaseModule } from "@hl8/database";
+// import { MessagingModule } from "@hl8/messaging"; // 暂时注释，等待模块实现
+import { IsolationModule } from "@hl8/nestjs-isolation";
 
 import { InfrastructureFactory } from "./infrastructure.factory.js";
 import { InfrastructureManager } from "./infrastructure.manager.js";
@@ -59,18 +58,16 @@ export class InfrastructureFactoriesModule {
 
     // 添加基础模块
     imports.push(
-      LoggerModule.forRoot({}),
-      CacheModule.forRoot({
+      // LoggerModule 已移除，使用 FastifyLoggerService
+      CachingModule.forRoot({
         redis: {} as any,
       }),
-      DatabaseModule.forRoot({ mikroORM: {} as any }),
-      MessagingModule.forRoot({ adapter: "memory" as any }),
-      MultiTenancyModule.forRoot({
-        context: {} as any,
-        isolation: {} as any,
-        middleware: {} as any,
-        security: {} as any,
+      DatabaseModule.forRoot({ 
+        connection: {} as any,
+        entities: []
       }),
+      // MessagingModule 暂时注释，等待模块实现
+      // MultiTenancyModule 已移除，使用 @hl8/nestjs-isolation
     );
 
     // 添加管理组件
@@ -104,18 +101,16 @@ export class InfrastructureFactoriesModule {
 
     // 添加基础模块
     imports.push(
-      LoggerModule.forRoot({}),
-      CacheModule.forRoot({
+      // LoggerModule 已移除，使用 FastifyLoggerService
+      CachingModule.forRoot({
         redis: {} as any,
       }),
-      DatabaseModule.forRoot({ mikroORM: {} as any }),
-      MessagingModule.forRoot({ adapter: "memory" as any }),
-      MultiTenancyModule.forRoot({
-        context: {} as any,
-        isolation: {} as any,
-        middleware: {} as any,
-        security: {} as any,
+      DatabaseModule.forRoot({ 
+        connection: {} as any,
+        entities: []
       }),
+      // MessagingModule 暂时注释，等待模块实现
+      // MultiTenancyModule 已移除，使用 @hl8/nestjs-isolation
     );
 
     // 添加管理组件

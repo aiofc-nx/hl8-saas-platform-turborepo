@@ -7,7 +7,7 @@
 
 import { Injectable, NestMiddleware } from "@nestjs/common";
 // import { $1 } from 'fastify'; // TODO: 需要安装 fastify 依赖
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 性能监控中间件配置
@@ -82,7 +82,7 @@ export class PerformanceMiddleware implements NestMiddleware {
     private readonly logger: FastifyLoggerService,
     config?: IPerformanceMiddlewareConfig,
   ) {
-    this.logger.debug({ requestId: "PerformanceMiddleware" });
+    this.logger.debug("PerformanceMiddleware初始化", { requestId: "PerformanceMiddleware" });
     this.config = {
       slowRequestThreshold: config?.slowRequestThreshold || 1000,
       enablePerformanceLog: config?.enablePerformanceLog ?? true,

@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 转换配置接口
@@ -233,7 +233,7 @@ export class EntityTransformer {
 
       return result;
     } catch (error) {
-      this.logger.error("DTO到实体转换失败", error);
+      this.logger.error("DTO到实体转换失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }
@@ -368,7 +368,7 @@ export class EntityTransformer {
 
       return result;
     } catch (error) {
-      this.logger.error("实体到DTO转换失败", error);
+      this.logger.error("实体到DTO转换失败", error instanceof Error ? error.stack : undefined, { error: error instanceof Error ? error.message : String(error) });
       throw error;
     }
   }

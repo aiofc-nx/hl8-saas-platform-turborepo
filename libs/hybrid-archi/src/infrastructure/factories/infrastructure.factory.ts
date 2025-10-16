@@ -9,10 +9,10 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { DatabaseService } from "@hl8/hybrid-archi";
-import { EventService, MessagingService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
+import { ConnectionManager } from "@hl8/database";
+// import { EventService, MessagingService } from "@hl8/messaging"; // 暂时注释，等待模块实现
 // // import { any } from '@hl8/nestjs-isolation'; // TODO: 需要实现 // TODO: 需要实现
 
 // 导入所有适配器
@@ -115,9 +115,9 @@ export class InfrastructureFactory {
   constructor(
     private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
-    private readonly databaseService: DatabaseService,
-    private readonly eventService: EventService,
-    private readonly messagingService: MessagingService,
+    private readonly databaseService: ConnectionManager,
+    // private readonly eventService: EventService, // 暂时注释，等待模块实现
+    // private readonly messagingService: MessagingService, // 暂时注释，等待模块实现
     private readonly tenantContextService: any,
   ) {
     this.initializeServiceConstructors();
@@ -169,7 +169,7 @@ export class InfrastructureFactory {
 
       return instance;
     } catch (error) {
-      this.logger.error(`创建基础设施服务失败: ${config.serviceName}`, error, {
+      this.logger.error(`创建基础设施服务失败: ${config.serviceName}`, error instanceof Error ? error.stack : undefined, {
         serviceType: config.serviceType,
         config: config.options,
       });
@@ -246,7 +246,7 @@ export class InfrastructureFactory {
       registration.error =
         error instanceof Error ? error.message : String(error);
 
-      this.logger.error(`初始化基础设施服务失败: ${serviceName}`, error);
+      this.logger.error(`初始化基础设施服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -280,7 +280,7 @@ export class InfrastructureFactory {
       registration.error =
         error instanceof Error ? error.message : String(error);
 
-      this.logger.error(`启动基础设施服务失败: ${serviceName}`, error);
+      this.logger.error(`启动基础设施服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -314,7 +314,7 @@ export class InfrastructureFactory {
       registration.error =
         error instanceof Error ? error.message : String(error);
 
-      this.logger.error(`停止基础设施服务失败: ${serviceName}`, error);
+      this.logger.error(`停止基础设施服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -347,7 +347,7 @@ export class InfrastructureFactory {
 
       this.logger.debug(`销毁基础设施服务成功: ${serviceName}`);
     } catch (error) {
-      this.logger.error(`销毁基础设施服务失败: ${serviceName}`, error);
+      this.logger.error(`销毁基础设施服务失败: ${serviceName}`, error instanceof Error ? error.stack : undefined);
       throw error;
     }
   }
@@ -590,7 +590,7 @@ export class InfrastructureFactory {
       case "configuration":
         return new ConfigurationPortAdapter(options["configService"] as any);
       case "eventBus":
-        return new EventBusPortAdapter(this.eventService);
+        return new EventBusPortAdapter(); // EventService 暂时不可用
       default:
         throw new Error(`不支持的端口适配器类型: ${adapterType}`);
     }
@@ -619,7 +619,7 @@ export class InfrastructureFactory {
           this.databaseService,
           this.cacheService,
           this.logger,
-          this.eventService,
+          // this.eventService, // 暂时注释，等待模块实现
           (options["entityName"] as string) || "Aggregate",
           options,
         );
@@ -660,7 +660,6 @@ export class InfrastructureFactory {
    */
   private createMessageQueueAdapter(serviceName: string, options: any): any {
     return new MessageQueueAdapter(
-      this.messagingService,
       this.cacheService,
       this.logger,
       options,

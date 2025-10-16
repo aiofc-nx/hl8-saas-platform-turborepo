@@ -38,7 +38,7 @@ export abstract class CliBaseCommand {
     commandExecutor: () => Promise<TResult>,
     operationName = "unknown",
   ): Promise<TResult> {
-    this.logger.log(`开始执行CLI命令: ${operationName}`);
+    this.logger.info(`开始执行CLI命令: ${operationName}`);
 
     try {
       // 执行命令
@@ -67,7 +67,7 @@ export abstract class CliBaseCommand {
   protected logSuccess(operationName: string, result: unknown): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.log(`CLI ${operationName}命令执行成功`);
+    this.logger.info(`CLI ${operationName}命令执行成功`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(`cli_${operationName}_success_total`);

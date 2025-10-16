@@ -60,12 +60,12 @@ import {
   MonitorPerformance,
   MessageBody,
   WebSocketContext,
-} from "../decorators.js";
+} from "../decorators/index.js";
 import {
   IWebSocketMessage,
   IWebSocketResponse,
   WebSocketUtils,
-} from "../utils.js";
+} from "../utils/index.js";
 
 /**
  * 获取用户资料消息
@@ -182,7 +182,7 @@ export class UserGateway extends BaseGateway {
       // 这里应该调用用户服务更新用户状态
       // 实际实现中会调用UpdateUserStatusUseCase
 
-      this.logger.log("用户状态更新");
+      this.logger.info("用户状态更新");
 
       return WebSocketUtils.createSuccessResponse(
         { success: true },
@@ -207,7 +207,7 @@ export class UserGateway extends BaseGateway {
       return;
     }
 
-    this.logger.log("用户WebSocket连接建立");
+    this.logger.info("用户WebSocket连接建立");
   }
 
   /**
@@ -220,6 +220,6 @@ export class UserGateway extends BaseGateway {
   override handleDisconnection(client: IWebSocketClient): void {
     this.handleDisconnection(client);
 
-    this.logger.log("用户WebSocket连接断开");
+    this.logger.info("用户WebSocket连接断开");
   }
 }

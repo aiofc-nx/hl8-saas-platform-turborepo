@@ -9,7 +9,7 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { ILoggerPort } from "../../../application/ports/shared/shared-ports.interface.js";
 
 /**
@@ -63,7 +63,7 @@ export class LoggerPortAdapter implements ILoggerPort {
     error?: Error,
     context?: Record<string, unknown>,
   ): void {
-    this.logger.error(message, error, context);
+    this.logger.error(message, error?.stack, context);
   }
 
   /**
@@ -73,8 +73,8 @@ export class LoggerPortAdapter implements ILoggerPort {
    * @returns 子日志器实例
    */
   child(name: string, metadata?: Record<string, unknown>): ILoggerPort {
-    const childLogger = this.logger.child(metadata || {});
-    return new LoggerPortAdapter(childLogger);
+    // FastifyLoggerService 没有 child 方法，直接返回当前实例
+    return this;
   }
 
   /**

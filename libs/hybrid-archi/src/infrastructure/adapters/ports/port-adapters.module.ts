@@ -9,9 +9,8 @@
  */
 
 import { DynamicModule, Module, Provider } from "@nestjs/common";
-import { LoggerModule } from "@hl8/hybrid-archi";
-// import { $1 } from '@hl8/nestjs-fastify'; // TODO: 需要实现
-import { MessagingModule } from "@hl8/hybrid-archi";
+// import { MessagingModule } from "@hl8/messaging"; // 暂时注释，等待模块实现
+import { TypedConfigModule } from "@hl8/config";
 
 import { LoggerPortAdapter } from "./logger-port.adapter.js";
 import { IdGeneratorPortAdapter } from "./id-generator-port.adapter.js";
@@ -64,10 +63,7 @@ export class PortAdaptersModule {
 
     if (options.enableLogger !== false) {
       imports.push(
-        LoggerModule.forRootAsync({
-          useFactory: () => ({}),
-          inject: [],
-        }),
+        // LoggerModule 已移除，直接提供 LoggerPortAdapter
       );
       providers.push({ provide: "ILoggerPort", useClass: LoggerPortAdapter });
     }
@@ -116,9 +112,10 @@ export class PortAdaptersModule {
 
     if (options.enableEventBus !== false) {
       imports.push(
-        MessagingModule.forRoot({
-          adapter: "memory" as any,
-        }),
+        // MessagingModule 暂时注释，等待模块实现
+        // MessagingModule.forRoot({
+        //   adapter: "memory" as any,
+        // }),
       );
       providers.push({
         provide: "IEventBusPort",
@@ -151,10 +148,7 @@ export class PortAdaptersModule {
 
     if (options.enableLogger !== false) {
       imports.push(
-        LoggerModule.forRootAsync({
-          useFactory: () => ({}),
-          inject: [],
-        }),
+        // LoggerModule 已移除，直接提供 LoggerPortAdapter
       );
       providers.push({ provide: "ILoggerPort", useClass: LoggerPortAdapter });
     }
@@ -203,9 +197,10 @@ export class PortAdaptersModule {
 
     if (options.enableEventBus !== false) {
       imports.push(
-        MessagingModule.forRoot({
-          adapter: "memory" as any,
-        }),
+        // MessagingModule 暂时注释，等待模块实现
+        // MessagingModule.forRoot({
+        //   adapter: "memory" as any,
+        // }),
       );
       providers.push({
         provide: "IEventBusPort",

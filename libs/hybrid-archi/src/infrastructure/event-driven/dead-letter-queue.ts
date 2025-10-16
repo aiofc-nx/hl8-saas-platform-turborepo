@@ -10,9 +10,9 @@
 
 import { Injectable, Inject } from "@nestjs/common";
 // import { BaseDomainEvent } from '@hl8/hybrid-archi/domain/events/base/base-domain-event';
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { CacheService } from "@hl8/hybrid-archi";
-import { DatabaseService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { CacheService } from "@hl8/caching";
+import { ConnectionManager } from "@hl8/database";
 
 /**
  * 死信队列配置
@@ -71,7 +71,7 @@ export class DeadLetterQueueProcessor {
   constructor(
     private readonly logger: FastifyLoggerService,
     private readonly cacheService: CacheService,
-    private readonly databaseService: DatabaseService,
+    private readonly databaseService: ConnectionManager,
     @Inject("DeadLetterQueueConfig")
     private readonly config: DeadLetterQueueConfig,
   ) {
@@ -124,7 +124,7 @@ export class DeadLetterQueueProcessor {
 
       return entryId;
     } catch (error) {
-      this.logger.error("添加事件到死信队列失败", error, {
+      this.logger.error("添加事件到死信队列失败", error instanceof Error ? error.stack : undefined, {
         eventType: event.eventType,
         eventId: event.eventId.toString(),
       });
@@ -199,7 +199,7 @@ export class DeadLetterQueueProcessor {
         return false;
       }
     } catch (error) {
-      this.logger.error("重试死信队列条目失败", error, { entryId });
+      this.logger.error("重试死信队列条目失败", error instanceof Error ? error.stack : undefined, { entryId });
       return false;
     }
   }
@@ -265,12 +265,12 @@ export class DeadLetterQueueProcessor {
       await this.deleteEntryFromDatabase(entryId);
 
       // 从缓存删除
-      await this.cacheService.delete(`dlq:${entryId}`);
+      await this.cacheService.del(`dlq:${entryId}`, "dead-letter-queue");
 
       this.logger.log("死信队列条目已删除");
       return true;
     } catch (error) {
-      this.logger.error("删除死信队列条目失败", error, { entryId });
+      this.logger.error("删除死信队列条目失败", error instanceof Error ? error.stack : undefined, { entryId });
       return false;
     }
   }
@@ -301,7 +301,7 @@ export class DeadLetterQueueProcessor {
 
       return expiredEntries.length;
     } catch (error) {
-      this.logger.error("清理过期死信队列条目失败", error);
+      this.logger.error("清理过期死信队列条目失败", error instanceof Error ? error.stack : undefined);
       return 0;
     }
   }
@@ -374,13 +374,31 @@ export class DeadLetterQueueProcessor {
    */
   private initializeRetryStrategies(): void {
     // 默认重试策略
-    this.retryStrategies.set("default");
+    this.retryStrategies.set("default", {
+      maxRetries: 3,
+      initialDelay: 1000,
+      backoffMultiplier: 2,
+      maxDelay: 30000,
+      jitter: true,
+    });
 
     // 快速重试策略（用于临时错误）
-    this.retryStrategies.set("fast");
+    this.retryStrategies.set("fast", {
+      maxRetries: 5,
+      initialDelay: 500,
+      backoffMultiplier: 1.5,
+      maxDelay: 5000,
+      jitter: false,
+    });
 
     // 慢速重试策略（用于系统错误）
-    this.retryStrategies.set("slow");
+    this.retryStrategies.set("slow", {
+      maxRetries: 2,
+      initialDelay: 5000,
+      backoffMultiplier: 3,
+      maxDelay: 60000,
+      jitter: true,
+    });
   }
 
   /**
@@ -466,7 +484,7 @@ export class DeadLetterQueueProcessor {
         console.log(`处理死信队列条目: ${entry.id}`);
       }
     } catch (error) {
-      this.logger.error("处理待重试条目失败", error);
+      this.logger.error("处理待重试条目失败", error instanceof Error ? error.stack : undefined);
     }
   }
 
@@ -517,7 +535,7 @@ export class DeadLetterQueueProcessor {
    */
   private async deleteEntryFromDatabase(entryId: string): Promise<void> {
     // 这里应该实现具体的数据库删除逻辑
-    console.log("从数据库删除死信队列条目", { entryId });
+    console.log("从数据库删除死信队列条目", entryId);
   }
 
   /**
@@ -529,7 +547,7 @@ export class DeadLetterQueueProcessor {
       const ttl = this.config.retentionPeriod * 60 * 60; // 转换为秒
       await this.cacheService.set(cacheKey, JSON.stringify(entry), ttl);
     } catch (error) {
-      this.logger.warn("缓存死信队列条目失败", error);
+      this.logger.warn("缓存死信队列条目失败");
     }
   }
 }

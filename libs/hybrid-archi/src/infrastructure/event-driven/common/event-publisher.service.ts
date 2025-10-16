@@ -6,8 +6,8 @@
  */
 
 import { Injectable } from "@nestjs/common";
-import { DomainEvent } from "../../../domain.js";
-import { IEventBus } from "./event-bus.interface.js";
+import { DomainEvent } from "../../../domain/index.js";
+import type { IEventBus } from "./event-bus.interface.js";
 
 /**
  * 事件发布服务

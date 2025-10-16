@@ -127,7 +127,7 @@ export abstract class BaseMessageHandler<TMessage, TResponse>
     message: TMessage,
     context: IWebSocketContext,
   ): Promise<TResponse> {
-    this.logger.log(`开始处理WebSocket消息: ${this.handlerName}`);
+    this.logger.info(`开始处理WebSocket消息: ${this.handlerName}`);
 
     try {
       // 1. 验证消息
@@ -202,7 +202,7 @@ export abstract class BaseMessageHandler<TMessage, TResponse>
   protected logSuccess(result: TResponse): void {
     const duration = Date.now() - this.startTime;
 
-    this.logger.log(`WebSocket消息处理成功: ${this.handlerName}`);
+    this.logger.info(`WebSocket消息处理成功: ${this.handlerName}`);
 
     // 记录性能指标
     this.metricsService?.incrementCounter(

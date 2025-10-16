@@ -1,25 +1,49 @@
-export default {
-  displayName: "hybrid-archi",
-  preset: "../../jest.preset.js",
+import type { Config } from "jest";
+
+const config: Config = {
+  displayName: "@hl8/hybrid-archi",
+  preset: "ts-jest/presets/default-esm",
   testEnvironment: "node",
   extensionsToTreatAsEsm: [".ts"],
-  globals: {
-    "ts-jest": {
-      useESM: true,
-    },
-  },
-  transform: {
-    "^.+\\.[tj]s$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.spec.json" }],
-  },
-  moduleFileExtensions: ["ts", "js", "html"],
-  coverageDirectory: "../../coverage/libs/hybrid-archi",
-  transformIgnorePatterns: [
-    "node_modules/(?!(chalk|ansi-styles|strip-ansi|has-flag|supports-color|color-convert|color-name|@hl8)/)",
-  ],
   moduleNameMapper: {
+    "^(\\.{1,2}/.*)\\.js$": "$1",
+    "^@/(.*)$": "<rootDir>/src/$1",
     "^chalk$":
       "<rootDir>/../../node_modules/.pnpm/chalk@4.1.2/node_modules/chalk",
   },
+  transform: {
+    "^.+\\.ts$": [
+      "ts-jest",
+      {
+        useESM: true,
+        tsconfig: {
+          module: "NodeNext",
+          moduleResolution: "NodeNext",
+        },
+      },
+    ],
+  },
+  roots: ["<rootDir>/src"],
+  testMatch: ["<rootDir>/src/**/*.spec.ts"],
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/**/*.spec.ts",
+    "!src/**/*.d.ts",
+    "!src/index.ts",
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 38,
+      functions: 40,
+      lines: 46,
+      statements: 46,
+    },
+  },
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "html"],
+  transformIgnorePatterns: [
+    "node_modules/(?!(chalk|ansi-styles|strip-ansi|has-flag|supports-color|color-convert|color-name|@hl8)/)",
+  ],
 
   /**
    * 测试环境设置文件
@@ -33,7 +57,13 @@ export default {
   testTimeout: 30000, // 30秒
 
   /**
-   * 测试匹配模式
+   * 全局设置
    */
-  testMatch: ["**/__tests__/**/*.spec.ts", "**/?(*.)+(spec|test).ts"],
+  globals: {
+    "ts-jest": {
+      useESM: true,
+    },
+  },
 };
+
+export default config;
