@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  fastify: 5.4.0
+  fastify: 5.6.1
   minimatch: 10.0.3
 
 importers:
@@ -134,8 +134,8 @@ importers:
         specifier: ^0.14.2
         version: 0.14.2
       fastify:
-        specifier: 5.4.0
-        version: 5.4.0
+        specifier: 5.6.1
+        version: 5.6.1
       ms:
         specifier: ^2.1.3
         version: 2.1.3
@@ -223,7 +223,7 @@ importers:
         version: 5.0.0(graphql@16.11.0)
       '@as-integrations/fastify':
         specifier: ^3.0.0
-        version: 3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.4.0)
+        version: 3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.6.1)
       '@fastify/compress':
         specifier: ^8.1.0
         version: 8.1.0
@@ -232,7 +232,7 @@ importers:
         version: 13.0.2
       '@nestjs/apollo':
         specifier: ^13.2.1
-        version: 13.2.1(@apollo/server@5.0.0(graphql@16.11.0))(@as-integrations/fastify@3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.4.0))(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.2.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.2)(graphql@16.11.0)(reflect-metadata@0.2.2))(graphql@16.11.0)
+        version: 13.2.1(@apollo/server@5.0.0(graphql@16.11.0))(@as-integrations/fastify@3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.6.1))(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.2.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.2)(graphql@16.11.0)(reflect-metadata@0.2.2))(graphql@16.11.0)
       '@nestjs/common':
         specifier: ^11.1.6
         version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -403,8 +403,8 @@ importers:
         specifier: ^0.14.2
         version: 0.14.2
       fastify:
-        specifier: 5.4.0
-        version: 5.4.0
+        specifier: 5.6.1
+        version: 5.6.1
       ms:
         specifier: ^2.1.3
         version: 2.1.3
@@ -549,8 +549,8 @@ importers:
         specifier: ^0.14.2
         version: 0.14.2
       fastify:
-        specifier: 5.4.0
-        version: 5.4.0
+        specifier: 5.6.1
+        version: 5.6.1
       pino:
         specifier: ^10.0.0
         version: 10.0.0
@@ -643,8 +643,8 @@ importers:
         specifier: ^0.14.2
         version: 0.14.2
       fastify:
-        specifier: 5.4.0
-        version: 5.4.0
+        specifier: 5.6.1
+        version: 5.6.1
       graphql-parse-resolve-info:
         specifier: ^4.14.1
         version: 4.14.1(graphql@16.11.0)
@@ -738,8 +738,8 @@ importers:
         specifier: ^0.14.2
         version: 0.14.2
       fastify:
-        specifier: 5.4.0
-        version: 5.4.0
+        specifier: 5.6.1
+        version: 5.6.1
       hyperid:
         specifier: ^3.3.0
         version: 3.3.0
@@ -827,7 +827,7 @@ importers:
     dependencies:
       react:
         specifier: ^19.1.0
-        version: 19.2.0
+        version: 19.1.0
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -998,7 +998,7 @@ packages:
     engines: {node: '>=20'}
     peerDependencies:
       '@apollo/server': ^4.0.0 || ^5.0.0
-      fastify: 5.4.0
+      fastify: 5.6.1
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -4945,8 +4945,8 @@ packages:
   fastify-plugin@5.1.0:
     resolution: {integrity: sha512-FAIDA8eovSt5qcDgcBvDuX/v0Cjz0ohGhENZ/wpc3y+oZCY2afZ9Baqql3g/lC+OHRnciQol4ww7tuthOb9idw==}
 
-  fastify@5.4.0:
-    resolution: {integrity: sha512-I4dVlUe+WNQAhKSyv15w+dwUh2EPiEl4X2lGYMmNSgF83WzTMAPKGdWEv5tPsCQOb+SOZwz8Vlta2vF+OeDgRw==}
+  fastify@5.6.1:
+    resolution: {integrity: sha512-WjjlOciBF0K8pDUPZoGPhqhKrQJ02I8DKaDIfO51EL0kbSMwQFl85cRwhOvmSDWoukNOdTo27gLN549pLCcH7Q==}
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -7134,10 +7134,6 @@ packages:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
     engines: {node: '>=0.10.0'}
 
-  react@19.2.0:
-    resolution: {integrity: sha512-tmbWg6W31tQLeB5cdIBOicJDJRR2KzXsV7uSK9iNfLWQ5bIZfxuPEHp7M8wiHyHnn0DD1i7w3Zmin0FtkrwoCQ==}
-    engines: {node: '>=0.10.0'}
-
   read-pkg-up@7.0.1:
     resolution: {integrity: sha512-zK0TB7Xd6JpCLmlLmufqykGE+/TlOePD6qKClNW7hHDKFh/J7/7gCWGR7joEQEW1bKq3a3yUZSObOoWLFQ4ohg==}
     engines: {node: '>=8'}
@@ -8712,10 +8708,10 @@ snapshots:
     dependencies:
       xss: 1.0.15
 
-  '@as-integrations/fastify@3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.4.0)':
+  '@as-integrations/fastify@3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.6.1)':
     dependencies:
       '@apollo/server': 5.0.0(graphql@16.11.0)
-      fastify: 5.4.0
+      fastify: 5.6.1
       fastify-plugin: 5.1.0
 
   '@babel/code-frame@7.27.1':
@@ -9872,7 +9868,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@nestjs/apollo@13.2.1(@apollo/server@5.0.0(graphql@16.11.0))(@as-integrations/fastify@3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.4.0))(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.2.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.2)(graphql@16.11.0)(reflect-metadata@0.2.2))(graphql@16.11.0)':
+  '@nestjs/apollo@13.2.1(@apollo/server@5.0.0(graphql@16.11.0))(@as-integrations/fastify@3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.6.1))(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/graphql@13.2.0(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.2)(graphql@16.11.0)(reflect-metadata@0.2.2))(graphql@16.11.0)':
     dependencies:
       '@apollo/server': 5.0.0(graphql@16.11.0)
       '@apollo/server-plugin-landing-page-graphql-playground': 4.0.1(@apollo/server@5.0.0(graphql@16.11.0))
@@ -9884,7 +9880,7 @@ snapshots:
       lodash.omit: 4.5.0
       tslib: 2.8.1
     optionalDependencies:
-      '@as-integrations/fastify': 3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.4.0)
+      '@as-integrations/fastify': 3.1.0(@apollo/server@5.0.0(graphql@16.11.0))(fastify@5.6.1)
 
   '@nestjs/cli@11.0.10(@swc/cli@0.7.8(@swc/core@1.13.5(@swc/helpers@0.5.17))(chokidar@4.0.3))(@swc/core@1.13.5(@swc/helpers@0.5.17))(@types/node@24.7.2)':
     dependencies:
@@ -10002,7 +9998,7 @@ snapshots:
       '@nestjs/common': 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)
       fast-querystring: 1.1.2
-      fastify: 5.4.0
+      fastify: 5.6.1
       light-my-request: 6.6.0
       path-to-regexp: 8.2.0
       tslib: 2.8.1
@@ -13229,7 +13225,7 @@ snapshots:
 
   fastify-plugin@5.1.0: {}
 
-  fastify@5.4.0:
+  fastify@5.6.1:
     dependencies:
       '@fastify/ajv-compiler': 4.0.2
       '@fastify/error': 4.2.0
@@ -16144,8 +16140,6 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
 
   react@19.1.0: {}
-
-  react@19.2.0: {}
 
   read-pkg-up@7.0.1:
     dependencies:
