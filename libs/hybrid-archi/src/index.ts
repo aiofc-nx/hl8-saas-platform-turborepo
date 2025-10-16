@@ -19,19 +19,23 @@ export {
   CacheFactory,
   CacheService,
   CachingModule,
+  CacheModule,
   // 数据库相关
   DatabaseAdapter,
   DatabaseFactory,
   DatabaseModule,
+  ConnectionManager,
+  TransactionService,
+  DatabaseIsolationService,
+  // 为测试兼容性提供别名
+  ConnectionManager as DatabaseService,
   // 消息队列相关
   MessageQueueAdapter,
-  // 暂时注释，等待 messaging 模块实现
-  // MessagingService,
-  // EventService,
-  // TaskService,
-  // MessagingModule,
+  // 消息队列相关
+  MessagingModule,
   // 日志相关
   FastifyLoggerService,
+  LoggerModule,
   // 多租户相关
   IsolationContextService,
   MultiLevelIsolationService,
@@ -83,7 +87,7 @@ export {
 // CQRS 接口
 export type { ICommandHandler } from "./application/cqrs/commands/handlers/index.js";
 export type { IQueryHandler } from "./application/cqrs/queries/handlers/index.js";
-// export type { IEventHandler } from './application/cqrs/events/handlers'; // 暂时注释，等待实现
+export type { IEventHandler } from "./application/cqrs/events/handlers/index.js";
 
 // 通用应用层组件导出
 export * from "./application/exceptions/common/index.js";

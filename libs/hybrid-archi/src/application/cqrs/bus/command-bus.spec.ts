@@ -11,8 +11,11 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { CommandBus } from "./command-bus.js";
 import { BaseCommand } from "../commands/base/base-command.js";
 import type { ICommandHandler } from "../commands/base/command-handler.interface.js";
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { EntityId } from "@hl8/isolation-model";
+
+// 定义Logger类型
+type Logger = any;
 import { TenantId } from "@hl8/isolation-model";
 
 // 测试用的有效UUID
@@ -117,17 +120,26 @@ describe("CommandBus", () => {
         {
           provide: FastifyLoggerService,
           useValue: {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn(),
-            debug: jest.fn(),
+            info: () => {},
+            warn: () => {},
+            error: () => {},
+            debug: () => {},
+          },
+        },
+        {
+          provide: "Logger",
+          useValue: {
+            info: () => {},
+            warn: () => {},
+            error: () => {},
+            debug: () => {},
           },
         },
       ],
     }).compile();
 
     commandBus = module.get<CommandBus>(CommandBus);
-    logger = module.get<Logger>(Logger);
+    logger = module.get<any>("Logger");
   });
 
   describe("构造函数", () => {
@@ -203,7 +215,7 @@ describe("CommandBus", () => {
       middleware1 = {
         name: "middleware1",
         priority: 1,
-        execute: jest.fn().mockImplementation((context, next) => {
+        execute: jest.fn((context: any, next: any) => {
           console.log("中间件1: 执行前");
           return next();
         }),
@@ -212,7 +224,7 @@ describe("CommandBus", () => {
       middleware2 = {
         name: "middleware2",
         priority: 2,
-        execute: jest.fn().mockImplementation((context, next) => {
+        execute: jest.fn((context: any, next: any) => {
           console.log("中间件2: 执行前");
           return next();
         }),
@@ -249,9 +261,9 @@ describe("CommandBus", () => {
       const errorMiddleware = {
         name: "errorMiddleware",
         priority: 1,
-        execute: jest.fn().mockImplementation(() => {
+        execute: () => {
           throw new Error("中间件错误");
-        }),
+        },
       };
 
       commandBus.addMiddleware(errorMiddleware);
@@ -269,14 +281,14 @@ describe("CommandBus", () => {
 
     it("应该处理命令执行错误", async () => {
       const errorHandler: ICommandHandler<TestCommand> = {
-        execute: jest.fn().mockImplementation(() => {
+        execute: () => {
           throw new Error("命令执行错误");
-        }),
+        },
         getSupportedCommandType: () => "TestCommand",
         supports: (commandType: string) => commandType === "TestCommand",
-        validateCommand: jest.fn(),
+        validateCommand: () => {},
         getPriority: () => 0,
-        canHandle: jest.fn().mockResolvedValue(true),
+        canHandle: () => Promise.resolve(true),
       };
 
       commandBus.registerHandler("TestCommand", errorHandler);
@@ -287,14 +299,14 @@ describe("CommandBus", () => {
 
     it("应该记录错误日志", async () => {
       const errorHandler: ICommandHandler<TestCommand> = {
-        execute: jest.fn().mockImplementation(() => {
+        execute: jest.fn(() => {
           throw new Error("测试错误");
         }),
         getSupportedCommandType: () => "TestCommand",
         supports: (commandType: string) => commandType === "TestCommand",
-        validateCommand: jest.fn(),
+        validateCommand: () => {},
         getPriority: () => 0,
-        canHandle: jest.fn().mockResolvedValue(true),
+        canHandle: () => Promise.resolve(true),
       };
 
       commandBus.registerHandler("TestCommand", errorHandler);
@@ -327,12 +339,12 @@ describe("CommandBus", () => {
       const middleware1 = {
         name: "middleware1",
         priority: 1,
-        execute: jest.fn(),
+        execute: () => {},
       };
       const middleware2 = {
         name: "middleware2",
         priority: 2,
-        execute: jest.fn(),
+        execute: () => {},
       };
 
       commandBus.addMiddleware(middleware1);
@@ -360,7 +372,7 @@ describe("CommandBus", () => {
       const middleware = {
         name: "test-middleware",
         priority: 1,
-        execute: jest.fn(),
+        execute: () => {},
       };
       commandBus.addMiddleware(middleware);
       expect(commandBus.getMiddlewareCount()).toBe(1);
@@ -381,12 +393,12 @@ describe("CommandBus", () => {
       const middleware1 = {
         name: "middleware1",
         priority: 1,
-        execute: jest.fn(),
+        execute: () => {},
       };
       const middleware2 = {
         name: "middleware2",
         priority: 2,
-        execute: jest.fn(),
+        execute: () => {},
       };
 
       commandBus.addMiddleware(middleware1);

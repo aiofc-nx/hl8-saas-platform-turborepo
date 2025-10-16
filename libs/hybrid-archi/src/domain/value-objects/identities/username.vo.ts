@@ -22,6 +22,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
+import { InvalidUsernameException } from "../exceptions/value-object.exceptions.js";
 
 export class Username extends BaseValueObject<string> {
   /**
@@ -45,21 +46,28 @@ export class Username extends BaseValueObject<string> {
    * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, "用户名");
-    this.validateLength(value, 3, 20, "用户名");
+    try {
+      this.validateNotEmpty(value, "用户名");
+      this.validateLength(value, 3, 20, "用户名");
 
-    this.validatePattern(
-      value,
-      /^[a-zA-Z0-9_-]+$/,
-      "用户名只能包含字母、数字、下划线和连字符",
-    );
+      this.validatePattern(
+        value,
+        /^[a-zA-Z0-9_-]+$/,
+        "用户名只能包含字母、数字、下划线和连字符",
+      );
 
-    if (/^[0-9]/.test(value)) {
-      throw new Error("用户名不能以数字开头");
-    }
+      if (/^[0-9]/.test(value)) {
+        throw new InvalidUsernameException("用户名不能以数字开头", value);
+      }
 
-    if (Username.RESERVED_NAMES.includes(value.toLowerCase())) {
-      throw new Error(`用户名不能使用系统保留词: ${value}`);
+      if (Username.RESERVED_NAMES.includes(value.toLowerCase())) {
+        throw new InvalidUsernameException(`用户名不能使用系统保留词: ${value}`, value);
+      }
+    } catch (error) {
+      if (error instanceof InvalidUsernameException) {
+        throw error;
+      }
+      throw new InvalidUsernameException(error.message, value);
     }
   }
 
@@ -73,3 +81,6 @@ export class Username extends BaseValueObject<string> {
     return value.toLowerCase().trim();
   }
 }
+
+// 导出异常类
+export { InvalidUsernameException };

@@ -55,7 +55,7 @@
  */
 import { Injectable } from "@nestjs/common";
 import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
-import type { IEventHandler } from "../events/base/event-handler.interface.js";
+import type { IEventHandler } from "../events/handlers/event-handler.interface.js";
 import {
   IEventBus,
   IMiddleware,
@@ -159,7 +159,7 @@ export class EventBus implements IEventBus {
             eventHandler.validateEvent(event);
 
             // 检查是否可以处理
-            const canHandle = await eventHandler.canHandle(event);
+            const canHandle = eventHandler.supports(event.constructor.name);
             if (!canHandle) {
               return;
             }

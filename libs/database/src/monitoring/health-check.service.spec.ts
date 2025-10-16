@@ -4,7 +4,7 @@
  * @description 测试 HealthCheckService 的健康检查功能
  */
 
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConnectionManager } from "../connection/connection.manager.js";
 import { HealthCheckService } from "./health-check.service.js";

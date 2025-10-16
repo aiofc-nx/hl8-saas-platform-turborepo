@@ -42,10 +42,10 @@ describe("BaseAggregateRoot", () => {
       private email: string,
     ) {
       super(id, { tenantId: tenantId, createdBy: "test-user" }, {
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
+        info: () => {},
+        warn: () => {},
+        error: () => {},
+        debug: () => {},
       } as any);
     }
 
@@ -87,26 +87,26 @@ describe("BaseAggregateRoot", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: IPureLogger,
+          provide: "IPureLogger",
           useValue: {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn(),
-            debug: jest.fn(),
+            info: () => {},
+            warn: () => {},
+            error: () => {},
+            debug: () => {},
           },
         },
         {
-          provide: any,
+          provide: "any",
           useValue: {
-            getCurrentTenantId: jest.fn().mockReturnValue("tenant-123"),
-            getCurrentUserId: jest.fn().mockReturnValue("user-123"),
+            getCurrentTenantId: () => "tenant-123",
+            getCurrentUserId: () => "user-123",
           },
         },
       ],
     }).compile();
 
-    logger = module.get<Logger>(Logger);
-    tenantContext = module.get<any>(any);
+    logger = module.get<IPureLogger>("IPureLogger");
+    tenantContext = module.get<any>("any");
 
     aggregate = new TestAggregate(
       TenantId.generate(),

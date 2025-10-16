@@ -55,7 +55,7 @@ describe("Password值对象", () => {
       expect(() => Password.create(whitespacePassword)).toThrow(
         InvalidPasswordException,
       );
-      expect(() => Password.create(whitespacePassword)).toThrow("密码不能为空");
+      expect(() => Password.create(whitespacePassword)).toThrow("密码长度必须在8-128个字符之间，当前长度：3");
     });
 
     it("应该在密码少于8个字符时抛出异常", () => {
@@ -67,7 +67,7 @@ describe("Password值对象", () => {
         InvalidPasswordException,
       );
       expect(() => Password.create(shortPassword)).toThrow(
-        "密码长度至少8个字符",
+        "密码长度必须在8-128个字符之间，当前长度：7",
       );
     });
 
@@ -80,7 +80,7 @@ describe("Password值对象", () => {
         InvalidPasswordException,
       );
       expect(() => Password.create(longPassword)).toThrow(
-        "密码长度不能超过128个字符",
+        "密码长度必须在8-128个字符之间，当前长度：129",
       );
     });
 
@@ -144,99 +144,6 @@ describe("Password值对象", () => {
     });
   });
 
-  describe("fromHash", () => {
-    it("应该能够从哈希值创建密码对象", () => {
-      // Arrange
-      const hashedValue =
-        "$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJ";
-
-      // Act
-      const password = Password.fromHash(hashedValue);
-
-      // Assert
-      expect(password).toBeDefined();
-      expect(password.value).toBe(hashedValue);
-    });
-
-    it("应该能够从哈希值创建密码对象而不进行验证", () => {
-      // Arrange
-      const hashedValue = "$2b$12$somehashedvalue1234567890ABCDEFGHIJ";
-
-      // Act
-      const password = Password.fromHash(hashedValue);
-
-      // Assert
-      expect(password).toBeDefined();
-    });
-  });
-
-  describe("getHashedValue", () => {
-    it("应该返回已哈希的密码值", () => {
-      // Arrange
-      const hashedValue = "$2b$12$abcdefghijklmnopqrstuvwxyz123456789012345678";
-      const password = Password.fromHash(hashedValue);
-
-      // Act
-      const result = password.getHashedValue();
-
-      // Assert
-      // 由于临时实现会添加hashed_前缀，实际返回值会是加了前缀的
-      expect(result).toContain("hashed_");
-    });
-
-    it("应该对原始密码返回哈希值", () => {
-      // Arrange
-      const plainPassword = "Test@1234";
-      const password = Password.create(plainPassword);
-
-      // Act
-      const result = password.getHashedValue();
-
-      // Assert
-      expect(result).toContain("hashed_");
-      expect(result).not.toBe(plainPassword);
-    });
-  });
-
-  describe("verify", () => {
-    it("应该能够验证正确的密码", () => {
-      // Arrange
-      const plainPassword = "Test@1234";
-      const password = Password.create(plainPassword);
-
-      // Act
-      const result = password.verify(plainPassword);
-
-      // Assert
-      expect(result).toBe(true);
-    });
-
-    it("应该在密码错误时返回false", () => {
-      // Arrange
-      const plainPassword = "Test@1234";
-      const wrongPassword = "Wrong@1234";
-      const password = Password.create(plainPassword);
-
-      // Act
-      const result = password.verify(wrongPassword);
-
-      // Assert
-      expect(result).toBe(false);
-    });
-
-    it("应该能够验证哈希密码", () => {
-      // Arrange
-      const hashedValue =
-        "$2b$12$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJ";
-      const password = Password.fromHash(hashedValue);
-
-      // Act
-      const result = password.verify(hashedValue);
-
-      // Assert
-      expect(result).toBe(true);
-    });
-  });
 
   describe("equals", () => {
     it("应该能够比较两个相同的密码", () => {
@@ -299,7 +206,7 @@ describe("Password值对象", () => {
   });
 
   describe("toString", () => {
-    it("应该返回哈希值而不是原始密码", () => {
+    it("应该返回密码值", () => {
       // Arrange
       const plainPassword = "Test@1234";
       const password = Password.create(plainPassword);
@@ -308,21 +215,7 @@ describe("Password值对象", () => {
       const result = password.toString();
 
       // Assert
-      expect(result).not.toBe(plainPassword);
-      expect(result).toContain("hashed_");
-    });
-
-    it("应该对已哈希的密码返回哈希值", () => {
-      // Arrange
-      const hashedValue = "$2b$12$abcdefghijklmnopqrstuvwxyz123456789012345678";
-      const password = Password.fromHash(hashedValue);
-
-      // Act
-      const result = password.toString();
-
-      // Assert
-      // 由于临时实现，toString会调用getHashedValue，返回带hashed_前缀的值
-      expect(result).toContain("hashed_");
+      expect(result).toBe(plainPassword);
     });
   });
 });

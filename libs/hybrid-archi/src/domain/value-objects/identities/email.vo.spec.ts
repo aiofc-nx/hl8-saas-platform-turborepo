@@ -74,7 +74,7 @@ describe("Email值对象", () => {
       expect(() => Email.create(whitespaceEmail)).toThrow(
         InvalidEmailException,
       );
-      expect(() => Email.create(whitespaceEmail)).toThrow("邮箱不能为空");
+      expect(() => Email.create(whitespaceEmail)).toThrow("邮箱格式无效:    ");
     });
 
     it("应该在邮箱超过254个字符时抛出异常", () => {
@@ -84,7 +84,7 @@ describe("Email值对象", () => {
       // Act & Assert
       expect(() => Email.create(longEmail)).toThrow(InvalidEmailException);
       expect(() => Email.create(longEmail)).toThrow(
-        "邮箱长度不能超过254个字符",
+        "邮箱长度必须在1-254个字符之间，当前长度：257",
       );
     });
 
@@ -260,7 +260,7 @@ describe("Email值对象", () => {
       expect(result).toBe(emailStr);
     });
 
-    it("应该保持原始大小写", () => {
+    it("应该转换为小写", () => {
       // Arrange
       const emailStr = "Test@Example.com";
       const email = Email.create(emailStr);
@@ -269,7 +269,7 @@ describe("Email值对象", () => {
       const result = email.toString();
 
       // Assert
-      expect(result).toBe(emailStr);
+      expect(result).toBe("test@example.com");
     });
   });
 });

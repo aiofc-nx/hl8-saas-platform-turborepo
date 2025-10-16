@@ -7,7 +7,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { EventBus } from "./event-bus.js";
 import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
-import type { IEventHandler } from "../events/base/event-handler.interface.js";
+import type { IEventHandler } from "../events/handlers/event-handler.interface.js";
 import { IMiddleware, IMessageContext } from "./cqrs-bus.interface.js";
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
@@ -54,6 +54,10 @@ class TestEventHandler implements IEventHandler<TestEvent> {
     return eventType === "TestEvent";
   }
 
+  async canHandleEvent(event: TestEvent): Promise<boolean> {
+    return this.supports(event.constructor.name);
+  }
+
   validateEvent(event: TestEvent): void {
     if (!event.data) {
       throw new Error("Event data is required");
@@ -64,8 +68,8 @@ class TestEventHandler implements IEventHandler<TestEvent> {
     return 0;
   }
 
-  async canHandle(_event: TestEvent): Promise<boolean> {
-    return true;
+  canHandle(eventType: string): boolean {
+    return eventType === "TestEvent";
   }
 
   getMaxRetries(_event: TestEvent): number {
@@ -193,7 +197,8 @@ describe("EventBus", () => {
           // 测试用的空验证函数
         },
         getPriority: () => 0,
-        canHandle: async () => false,
+        canHandle: (eventType: string) => eventType === "TestEvent",
+        canHandleEvent: async () => false,
         getMaxRetries: () => 3,
         getRetryDelay: () => 1000,
         async shouldIgnore() {
@@ -242,9 +247,8 @@ describe("EventBus", () => {
         },
         getMaxRetries: () => 3,
         getRetryDelay: () => 1000,
-        async canHandle() {
-          return true;
-        },
+        canHandle: (eventType: string) => eventType === "TestEvent",
+        canHandleEvent: async () => true,
         async shouldIgnore() {
           return false;
         },
@@ -522,9 +526,8 @@ describe("EventBus", () => {
         },
         getMaxRetries: () => 3,
         getRetryDelay: () => 10, // 快速重试
-        async canHandle() {
-          return true;
-        },
+        canHandle: (eventType: string) => eventType === "TestEvent",
+        canHandleEvent: async () => true,
         async shouldIgnore() {
           return false;
         },
@@ -569,9 +572,8 @@ describe("EventBus", () => {
         },
         getMaxRetries: () => 2,
         getRetryDelay: () => 10,
-        async canHandle() {
-          return true;
-        },
+        canHandle: (eventType: string) => eventType === "TestEvent",
+        canHandleEvent: async () => true,
         async shouldIgnore() {
           return false;
         },
@@ -614,9 +616,8 @@ describe("EventBus", () => {
         getPriority: () => 0,
         getMaxRetries: () => 3,
         getRetryDelay: () => 1000,
-        async canHandle() {
-          return true;
-        },
+        canHandle: (eventType: string) => eventType === "TestEvent",
+        canHandleEvent: async () => true,
         async handle(event: TestEvent) {
           testHandler.handledEvents.push(event);
         },
@@ -676,9 +677,8 @@ describe("EventBus", () => {
         getPriority: () => 0,
         getMaxRetries: () => 3,
         getRetryDelay: () => 1000,
-        async canHandle() {
-          return true;
-        },
+        canHandle: (eventType: string) => eventType === "Event1",
+        canHandleEvent: async () => true,
         async shouldIgnore() {
           return false;
         },
@@ -705,9 +705,8 @@ describe("EventBus", () => {
         getPriority: () => 0,
         getMaxRetries: () => 3,
         getRetryDelay: () => 1000,
-        async canHandle() {
-          return true;
-        },
+        canHandle: (eventType: string) => eventType === "Event2",
+        canHandleEvent: async () => true,
         async shouldIgnore() {
           return false;
         },

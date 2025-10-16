@@ -22,6 +22,8 @@ export * from "./exceptions/index.js";
 
 // 连接管理导出
 export * from "./connection/index.js";
+// 为测试兼容性提供别名
+export { ConnectionManager as DatabaseService } from "./connection/index.js";
 
 // 事务管理导出
 export * from "./transaction/index.js";

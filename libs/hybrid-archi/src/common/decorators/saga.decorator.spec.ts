@@ -5,14 +5,16 @@
  * @since 1.0.0
  */
 import "reflect-metadata";
-import type {
+import {
   Saga,
-  ISagaHandler,
   isSaga,
   getSagaType,
   getSagaPriority,
   supportsSagaType,
   getSagaMetadata,
+} from "./saga.decorator.js";
+import type {
+  ISagaHandler,
 } from "./saga.decorator.js";
 import { BaseDomainEvent } from "../../domain/events/base/base-domain-event.js";
 import { EntityId } from "@hl8/isolation-model";

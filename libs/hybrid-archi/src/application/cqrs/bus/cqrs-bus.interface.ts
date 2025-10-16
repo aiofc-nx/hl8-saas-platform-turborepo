@@ -39,7 +39,7 @@ import { BaseQuery, IQueryResult } from "../queries/base/base-query.js";
 import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
 import type { ICommandHandler } from "../commands/base/command-handler.interface.js";
 import type { IQueryHandler } from "../queries/base/query-handler.interface.js";
-import type { IEventHandler } from "../events/base/event-handler.interface.js";
+import type { IEventHandler } from "../events/handlers/event-handler.interface.js";
 import { EntityId } from "@hl8/isolation-model";
 
 /**

@@ -356,7 +356,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * 记录用例开始执行日志
    */
   private logUseCaseStart(request: TRequest, context: IUseCaseContext): void {
-    this.logger.log(`Use case started: ${this.useCaseName}`);
+    this.logger.info(`Use case started: ${this.useCaseName}`);
   }
 
   /**
@@ -368,7 +368,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     context: IUseCaseContext,
     executionTime: number,
   ): void {
-    this.logger.log(`Use case completed successfully: ${this.useCaseName}`);
+    this.logger.info(`Use case completed successfully: ${this.useCaseName}`);
   }
 
   /**

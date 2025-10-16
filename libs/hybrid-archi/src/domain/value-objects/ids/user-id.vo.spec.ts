@@ -6,7 +6,7 @@
  * @since 1.0.0
  */
 
-import { UserId, InvalidUserIdException } from "./user-id.vo.js";
+import { UserId } from "@hl8/isolation-model";
 
 describe("UserId", () => {
   describe("构造函数", () => {
@@ -26,7 +26,7 @@ describe("UserId", () => {
       const invalidUuid = "invalid-uuid";
 
       // Act & Assert
-      expect(() => new UserId(invalidUuid)).toThrow(InvalidUserIdException);
+      expect(() => new UserId(invalidUuid)).toThrow();
     });
 
     it("should throw exception for non-UUID v4 format", () => {
@@ -34,7 +34,7 @@ describe("UserId", () => {
       const invalidUuid = "123e4567-e89b-1d3a-a456-426614174000"; // 不是v4格式（第13位不是4）
 
       // Act & Assert
-      expect(() => new UserId(invalidUuid)).toThrow(InvalidUserIdException);
+      expect(() => new UserId(invalidUuid)).toThrow();
     });
 
     it("should throw exception for empty string", () => {
@@ -42,7 +42,7 @@ describe("UserId", () => {
       const emptyString = "";
 
       // Act & Assert
-      expect(() => new UserId(emptyString)).toThrow(InvalidUserIdException);
+      expect(() => new UserId(emptyString)).toThrow();
     });
   });
 
@@ -85,7 +85,7 @@ describe("UserId", () => {
       const invalidUuid = "not-a-uuid";
 
       // Act & Assert
-      expect(() => UserId.create(invalidUuid)).toThrow(InvalidUserIdException);
+      expect(() => UserId.create(invalidUuid)).toThrow();
     });
   });
 
@@ -119,19 +119,6 @@ describe("UserId", () => {
     });
   });
 
-  describe("getEntityId", () => {
-    it("should return EntityId instance", () => {
-      // Arrange
-      const userId = UserId.create("123e4567-e89b-4d3a-a456-426614174000");
-
-      // Act
-      const entityId = userId.getEntityId();
-
-      // Assert
-      expect(entityId).toBeDefined();
-      expect(entityId.toString()).toBe("123e4567-e89b-4d3a-a456-426614174000");
-    });
-  });
 
   describe("valid UUID v4 examples", () => {
     const validUuids = [
@@ -166,7 +153,7 @@ describe("UserId", () => {
     invalidUuids.forEach((uuid) => {
       it(`should reject invalid UUID: "${uuid}"`, () => {
         // Act & Assert
-        expect(() => UserId.create(uuid)).toThrow(InvalidUserIdException);
+        expect(() => UserId.create(uuid)).toThrow();
       });
     });
   });

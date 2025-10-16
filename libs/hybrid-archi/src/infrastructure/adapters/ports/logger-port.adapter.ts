@@ -38,7 +38,7 @@ export class LoggerPortAdapter implements ILoggerPort {
    * @param context - 上下文信息
    */
   info(message: string, context?: Record<string, unknown>): void {
-    this.logger.log(message, context);
+    this.logger.info(message, context);
   }
 
   /**

@@ -4,7 +4,7 @@
  * @description 测试 TransactionService 的事务管理功能
  */
 
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { EntityManager, MikroORM } from "@mikro-orm/core";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ClsService } from "nestjs-cls";

@@ -28,15 +28,15 @@ afterAll(() => {
   global.console = originalConsole;
 });
 
-// 确保Jest全局对象可用
-declare global {
-  const jest: typeof import('jest');
-  const describe: typeof import('jest').describe;
-  const it: typeof import('jest').it;
-  const test: typeof import('jest').test;
-  const expect: typeof import('jest').expect;
-  const beforeEach: typeof import('jest').beforeEach;
-  const afterEach: typeof import('jest').afterEach;
-  const beforeAll: typeof import('jest').beforeAll;
-  const afterAll: typeof import('jest').afterAll;
-}
+// 在ESM环境中，需要显式导入Jest函数以确保全局可用
+import { jest, expect, describe, it, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';
+
+// 将Jest函数挂载到全局对象上
+(global as any).jest = jest;
+(global as any).expect = expect;
+(global as any).describe = describe;
+(global as any).it = it;
+(global as any).beforeEach = beforeEach;
+(global as any).afterEach = afterEach;
+(global as any).beforeAll = beforeAll;
+(global as any).afterAll = afterAll;

@@ -4,8 +4,8 @@
  * @description 测试 DatabaseIsolationService 的隔离功能
  */
 
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
-import { IsolationContextService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { IsolationContextService } from "@hl8/nestjs-isolation";
 import { Test, TestingModule } from "@nestjs/testing";
 import { IsolationContextMissingException } from "../exceptions/isolation-context-missing.exception.js";
 import {

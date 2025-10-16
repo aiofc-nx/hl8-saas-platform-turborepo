@@ -8,6 +8,7 @@ const config: Config = {
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1",
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^@hl8/hybrid-archi$": "<rootDir>/src/index.ts",
     "^chalk$":
       "<rootDir>/../../node_modules/.pnpm/chalk@4.1.2/node_modules/chalk",
   },
@@ -56,14 +57,7 @@ const config: Config = {
    */
   testTimeout: 30000, // 30秒
 
-  /**
-   * 全局设置
-   */
-  globals: {
-    "ts-jest": {
-      useESM: true,
-    },
-  },
+  // 移除已弃用的globals配置，使用transform中的配置
 };
 
 export default config;

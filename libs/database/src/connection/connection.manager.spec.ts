@@ -4,7 +4,7 @@
  * @description 测试 ConnectionManager 的核心功能
  */
 
-import { FastifyLoggerService } from "@hl8/hybrid-archi";
+import { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { MikroORM } from "@mikro-orm/core";
 import { Test, TestingModule } from "@nestjs/testing";
 import { DatabaseConnectionException } from "../exceptions/database-connection.exception.js";

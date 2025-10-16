@@ -8,6 +8,9 @@
 // 基础设施
 export * from "./base/index.js";
 
+// 事件处理器
+export * from "./handlers/index.js";
+
 // 投射器（关键组件）
 export * from "./projectors/index.js";
 

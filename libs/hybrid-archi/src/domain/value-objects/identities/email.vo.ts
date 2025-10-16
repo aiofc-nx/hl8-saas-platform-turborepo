@@ -23,6 +23,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
+import { InvalidEmailException } from "../exceptions/value-object.exceptions.js";
 
 export class Email extends BaseValueObject<string> {
   /**
@@ -32,15 +33,22 @@ export class Email extends BaseValueObject<string> {
    * @override
    */
   protected validate(value: string): void {
-    this.validateNotEmpty(value, "邮箱");
-    this.validateLength(value, 1, 254, "邮箱");
+    try {
+      this.validateNotEmpty(value, "邮箱");
+      this.validateLength(value, 1, 254, "邮箱");
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    this.validatePattern(value, emailRegex, `邮箱格式无效: ${value}`);
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      this.validatePattern(value, emailRegex, `邮箱格式无效: ${value}`);
 
-    const [localPart] = value.split("@");
-    if (localPart.length > 64) {
-      throw new Error("邮箱本地部分长度不能超过64个字符");
+      const [localPart] = value.split("@");
+      if (localPart.length > 64) {
+        throw new InvalidEmailException("邮箱本地部分长度不能超过64个字符", value);
+      }
+    } catch (error) {
+      if (error instanceof InvalidEmailException) {
+        throw error;
+      }
+      throw new InvalidEmailException(error.message, value);
     }
   }
 
@@ -72,3 +80,6 @@ export class Email extends BaseValueObject<string> {
     return this.value.split("@")[0];
   }
 }
+
+// 导出异常类
+export { InvalidEmailException };
