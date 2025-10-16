@@ -135,8 +135,8 @@ importers:
         specifier: ^7.8.2
         version: 7.8.2
       uuid:
-        specifier: ^11.0.3
-        version: 11.1.0
+        specifier: ^13.0.0
+        version: 13.0.0
     devDependencies:
       '@nestjs/cli':
         specifier: ^11.0.0
@@ -192,6 +192,88 @@ importers:
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
+
+  libs/business-core:
+    dependencies:
+      '@hl8/caching':
+        specifier: workspace:*
+        version: link:../caching
+      '@hl8/config':
+        specifier: workspace:*
+        version: link:../config
+      '@hl8/database':
+        specifier: workspace:*
+        version: link:../database
+      '@hl8/exceptions':
+        specifier: workspace:*
+        version: link:../exceptions
+      '@hl8/isolation-model':
+        specifier: workspace:*
+        version: link:../isolation-model
+      '@hl8/messaging':
+        specifier: workspace:*
+        version: link:../messaging
+      '@hl8/nestjs-fastify':
+        specifier: workspace:*
+        version: link:../nestjs-fastify
+      '@hl8/nestjs-isolation':
+        specifier: workspace:*
+        version: link:../nestjs-isolation
+      '@hl8/pure-logger':
+        specifier: workspace:*
+        version: link:../pure-logger
+      '@nestjs/common':
+        specifier: ^11.1.6
+        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: ^11.1.6
+        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/jwt':
+        specifier: ^11.0.0
+        version: 11.0.1(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
+      class-validator:
+        specifier: ^0.14.2
+        version: 0.14.2
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+      uuid:
+        specifier: ^13.0.0
+        version: 13.0.0
+    devDependencies:
+      '@nestjs/testing':
+        specifier: ^11.1.6
+        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(@nestjs/platform-express@11.1.6)
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/node':
+        specifier: ^22.16.0
+        version: 22.18.10
+      jest:
+        specifier: ^30.2.0
+        version: 30.2.0(@types/node@22.18.10)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@22.18.10)(typescript@5.8.3))
+      ts-jest:
+        specifier: ^29.4.5
+        version: 29.4.5(@babel/core@7.28.4)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.28.4))(jest-util@30.2.0)(jest@30.2.0(@types/node@22.18.10))(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   libs/caching:
     dependencies:
@@ -351,8 +433,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       uuid:
-        specifier: ^11.0.3
-        version: 11.1.0
+        specifier: ^13.0.0
+        version: 13.0.0
     devDependencies:
       '@nestjs/testing':
         specifier: ^11.1.6
@@ -393,88 +475,6 @@ importers:
       rxjs:
         specifier: ^7.8.2
         version: 7.8.2
-    devDependencies:
-      '@nestjs/testing':
-        specifier: ^11.1.6
-        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(@nestjs/platform-express@11.1.6)
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
-      '@types/jest':
-        specifier: ^30.0.0
-        version: 30.0.0
-      '@types/node':
-        specifier: ^22.16.0
-        version: 22.18.10
-      jest:
-        specifier: ^30.2.0
-        version: 30.2.0(@types/node@22.18.10)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@22.18.10)(typescript@5.8.3))
-      ts-jest:
-        specifier: ^29.4.5
-        version: 29.4.5(@babel/core@7.28.4)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.28.4))(jest-util@30.2.0)(jest@30.2.0(@types/node@22.18.10))(typescript@5.9.3)
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
-  libs/hybrid-archi:
-    dependencies:
-      '@hl8/caching':
-        specifier: workspace:*
-        version: link:../caching
-      '@hl8/config':
-        specifier: workspace:*
-        version: link:../config
-      '@hl8/database':
-        specifier: workspace:*
-        version: link:../database
-      '@hl8/exceptions':
-        specifier: workspace:*
-        version: link:../exceptions
-      '@hl8/isolation-model':
-        specifier: workspace:*
-        version: link:../isolation-model
-      '@hl8/messaging':
-        specifier: workspace:*
-        version: link:../messaging
-      '@hl8/nestjs-fastify':
-        specifier: workspace:*
-        version: link:../nestjs-fastify
-      '@hl8/nestjs-isolation':
-        specifier: workspace:*
-        version: link:../nestjs-isolation
-      '@hl8/pure-logger':
-        specifier: workspace:*
-        version: link:../pure-logger
-      '@nestjs/common':
-        specifier: ^11.1.6
-        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: ^11.1.6
-        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/jwt':
-        specifier: ^11.0.0
-        version: 11.0.1(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))
-      class-transformer:
-        specifier: ^0.5.1
-        version: 0.5.1
-      class-validator:
-        specifier: ^0.14.2
-        version: 0.14.2
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-      rxjs:
-        specifier: ^7.8.2
-        version: 7.8.2
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-      uuid:
-        specifier: ^11.0.3
-        version: 11.1.0
     devDependencies:
       '@nestjs/testing':
         specifier: ^11.1.6
@@ -761,6 +761,9 @@ importers:
       '@casl/ability':
         specifier: ^6.0.0
         version: 6.7.3
+      '@hl8/business-core':
+        specifier: workspace:*
+        version: link:../business-core
       '@hl8/caching':
         specifier: workspace:*
         version: link:../caching
@@ -770,9 +773,6 @@ importers:
       '@hl8/exceptions':
         specifier: workspace:*
         version: link:../exceptions
-      '@hl8/hybrid-archi':
-        specifier: workspace:*
-        version: link:../hybrid-archi
       '@hl8/isolation-model':
         specifier: workspace:*
         version: link:../isolation-model
@@ -810,8 +810,8 @@ importers:
         specifier: ^2.3.0
         version: 2.8.1
       uuid:
-        specifier: ^11.0.3
-        version: 11.1.0
+        specifier: ^13.0.0
+        version: 13.0.0
     devDependencies:
       '@nestjs/testing':
         specifier: ^11.1.6
@@ -7035,8 +7035,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@11.1.0:
-    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+  uuid@13.0.0:
+    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -9154,7 +9154,7 @@ snapshots:
 
   '@types/uuid@11.0.0':
     dependencies:
-      uuid: 11.1.0
+      uuid: 13.0.0
 
   '@types/validator@13.15.3': {}
 
@@ -14399,7 +14399,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@11.1.0: {}
+  uuid@13.0.0: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
