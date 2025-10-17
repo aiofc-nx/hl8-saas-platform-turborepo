@@ -1,86 +1,180 @@
 /**
- * 通用主题类型枚举
- *
- * @description 定义系统支持的主题类型
- * @since 1.0.0
- */
-
-/**
  * 主题类型枚举
  *
- * @description 系统主题类型定义
+ * @description 定义系统中所有主题类型的枚举值
+ *
+ * ## 业务规则
+ *
+ * ### 主题类型规则
+ * - 浅色主题：默认浅色主题
+ * - 深色主题：深色主题
+ * - 自动主题：根据系统设置自动切换
+ * - 高对比度主题：高对比度主题，适合视觉障碍用户
+ * - 自定义主题：用户自定义主题
+ *
+ * ### 主题切换规则
+ * - 用户可以选择任意主题
+ * - 自动主题会根据系统设置自动切换
+ * - 高对比度主题优先考虑可访问性
+ * - 自定义主题需要用户配置
+ *
+ * @example
+ * ```typescript
+ * import { ThemeType } from './theme-type.enum.js';
+ *
+ * // 检查主题类型
+ * console.log(ThemeType.LIGHT); // "LIGHT"
+ * console.log(ThemeTypeUtils.isLight(ThemeType.LIGHT)); // true
+ * ```
+ *
+ * @since 1.0.0
  */
 export enum ThemeType {
-  /**
-   * 浅色主题
-   *
-   * @description 浅色背景，深色文字
-   */
-  Light = "light",
-
-  /**
-   * 深色主题
-   *
-   * @description 深色背景，浅色文字
-   */
-  Dark = "dark",
-
-  /**
-   * 自动主题
-   *
-   * @description 根据系统设置自动切换
-   */
-  Auto = "auto",
+  /** 浅色主题 */
+  LIGHT = "LIGHT",
+  /** 深色主题 */
+  DARK = "DARK",
+  /** 自动主题 */
+  AUTO = "AUTO",
+  /** 高对比度主题 */
+  HIGH_CONTRAST = "HIGH_CONTRAST",
+  /** 自定义主题 */
+  CUSTOM = "CUSTOM",
 }
 
 /**
- * 主题工具类
+ * 主题类型工具类
  *
- * @description 提供主题相关的工具方法
+ * @description 提供主题类型相关的工具方法
  */
-export class ThemeUtils {
+export class ThemeTypeUtils {
   /**
-   * 检查主题类型是否有效
-   *
-   * @description 检查主题类型是否为有效值
-   * @param theme - 主题类型
-   * @returns 是否有效
+   * 主题类型描述映射
    */
-  public static isValid(theme: string): boolean {
-    return Object.values(ThemeType).includes(theme as ThemeType);
+  private static readonly TYPE_DESCRIPTIONS: Record<ThemeType, string> = {
+    [ThemeType.LIGHT]: "浅色主题",
+    [ThemeType.DARK]: "深色主题",
+    [ThemeType.AUTO]: "自动主题",
+    [ThemeType.HIGH_CONTRAST]: "高对比度主题",
+    [ThemeType.CUSTOM]: "自定义主题",
+  };
+
+  /**
+   * 检查是否为浅色主题
+   *
+   * @param type - 主题类型
+   * @returns 是否为浅色主题
+   * @example
+   * ```typescript
+   * const isLight = ThemeTypeUtils.isLight(ThemeType.LIGHT);
+   * console.log(isLight); // true
+   * ```
+   */
+  static isLight(type: ThemeType): boolean {
+    return type === ThemeType.LIGHT;
   }
 
   /**
-   * 获取主题显示名称
+   * 检查是否为深色主题
    *
-   * @description 获取主题类型的中文显示名称
-   * @param theme - 主题类型
-   * @returns 显示名称
+   * @param type - 主题类型
+   * @returns 是否为深色主题
    */
-  public static getDisplayName(theme: ThemeType): string {
-    const displayNames: Record<ThemeType, string> = {
-      [ThemeType.Light]: "浅色主题",
-      [ThemeType.Dark]: "深色主题",
-      [ThemeType.Auto]: "自动主题",
-    };
-
-    return displayNames[theme] || "未知主题";
+  static isDark(type: ThemeType): boolean {
+    return type === ThemeType.DARK;
   }
 
   /**
-   * 获取主题描述
+   * 检查是否为自动主题
    *
-   * @description 获取主题类型的详细描述
-   * @param theme - 主题类型
-   * @returns 主题描述
+   * @param type - 主题类型
+   * @returns 是否为自动主题
    */
-  public static getDescription(theme: ThemeType): string {
-    const descriptions: Record<ThemeType, string> = {
-      [ThemeType.Light]: "浅色背景，深色文字，适合白天使用",
-      [ThemeType.Dark]: "深色背景，浅色文字，适合夜间使用",
-      [ThemeType.Auto]: "根据系统设置自动切换主题",
-    };
+  static isAuto(type: ThemeType): boolean {
+    return type === ThemeType.AUTO;
+  }
 
-    return descriptions[theme] || "未知主题";
+  /**
+   * 检查是否为高对比度主题
+   *
+   * @param type - 主题类型
+   * @returns 是否为高对比度主题
+   */
+  static isHighContrast(type: ThemeType): boolean {
+    return type === ThemeType.HIGH_CONTRAST;
+  }
+
+  /**
+   * 检查是否为自定义主题
+   *
+   * @param type - 主题类型
+   * @returns 是否为自定义主题
+   */
+  static isCustom(type: ThemeType): boolean {
+    return type === ThemeType.CUSTOM;
+  }
+
+  /**
+   * 检查是否为系统主题（浅色、深色、自动）
+   *
+   * @param type - 主题类型
+   * @returns 是否为系统主题
+   */
+  static isSystemTheme(type: ThemeType): boolean {
+    return [ThemeType.LIGHT, ThemeType.DARK, ThemeType.AUTO].includes(type);
+  }
+
+  /**
+   * 检查是否为特殊主题（高对比度、自定义）
+   *
+   * @param type - 主题类型
+   * @returns 是否为特殊主题
+   */
+  static isSpecialTheme(type: ThemeType): boolean {
+    return [ThemeType.HIGH_CONTRAST, ThemeType.CUSTOM].includes(type);
+  }
+
+  /**
+   * 获取主题类型描述
+   *
+   * @param type - 主题类型
+   * @returns 主题类型描述
+   */
+  static getDescription(type: ThemeType): string {
+    return this.TYPE_DESCRIPTIONS[type] || "未知主题类型";
+  }
+
+  /**
+   * 获取所有主题类型
+   *
+   * @returns 所有主题类型数组
+   */
+  static getAllTypes(): ThemeType[] {
+    return Object.values(ThemeType);
+  }
+
+  /**
+   * 获取系统主题类型（浅色、深色、自动）
+   *
+   * @returns 系统主题类型数组
+   */
+  static getSystemTypes(): ThemeType[] {
+    return [
+      ThemeType.LIGHT,
+      ThemeType.DARK,
+      ThemeType.AUTO,
+    ];
+  }
+
+  /**
+   * 获取特殊主题类型（高对比度、自定义）
+   *
+   * @returns 特殊主题类型数组
+   */
+  static getSpecialTypes(): ThemeType[] {
+    return [
+      ThemeType.HIGH_CONTRAST,
+      ThemeType.CUSTOM,
+    ];
   }
 }

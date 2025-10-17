@@ -8,6 +8,7 @@
 
 import { BaseValueObject } from "../base-value-object.js";
 import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
+import { ErrorCodes } from "../../constants/index.js";
 
 /**
  * 用户状态枚举
@@ -99,7 +100,7 @@ export class UserStatus extends BaseValueObject<UserStatusValue> {
     if (!validStatuses.includes(value)) {
       throw new BusinessRuleViolationException(
         `无效的用户状态: ${value}`,
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
   }

@@ -8,6 +8,7 @@
 
 import { BaseValueObject } from "../base-value-object.js";
 import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
+import { ErrorCodes } from "../../constants/index.js";
 
 /**
  * 用户角色枚举
@@ -128,7 +129,7 @@ export class UserRole extends BaseValueObject<UserRoleValue> {
     if (!validRoles.includes(value)) {
       throw new BusinessRuleViolationException(
         `无效的用户角色: ${value}`,
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
   }

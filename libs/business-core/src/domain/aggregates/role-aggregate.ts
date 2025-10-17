@@ -17,6 +17,7 @@ import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 import { ExceptionFactory } from "../exceptions/exception-factory.js";
 import { BusinessRuleViolationException } from "../exceptions/base/base-domain-exception.js";
+import { ErrorCodes } from "../constants/index.js";
 /**
  * 角色聚合根
  *
@@ -427,7 +428,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
     if (!newType) {
       throw new BusinessRuleViolationException(
         "角色类型不能为空",
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
     if (

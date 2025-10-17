@@ -5,8 +5,5 @@
  * @since 1.0.0
  */
 
-// 用户状态枚举
-export * from "./user-status.enum.js";
-
 // 主题类型枚举
 export * from "./theme-type.enum.js";

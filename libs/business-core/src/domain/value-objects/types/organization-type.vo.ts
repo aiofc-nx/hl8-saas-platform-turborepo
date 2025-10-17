@@ -1,5 +1,10 @@
 import { BaseValueObject } from "../base-value-object.js";
 import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
+import { ErrorCodes } from "../../constants/index.js";
+import {
+  OrganizationType as OrganizationTypeEnum,
+  OrganizationTypeUtils,
+} from "../../enums/index.js";
 
 /**
  * 组织类型值对象
@@ -46,16 +51,16 @@ import { BusinessRuleViolationException } from "../../exceptions/base/base-domai
  */
 export class OrganizationType extends BaseValueObject<string> {
   /** 委员会 - 决策型组织 */
-  static readonly COMMITTEE = "COMMITTEE";
+  static readonly COMMITTEE = OrganizationTypeEnum.COMMITTEE;
 
   /** 项目组 - 执行型组织 */
-  static readonly PROJECT_TEAM = "PROJECT_TEAM";
+  static readonly PROJECT_TEAM = OrganizationTypeEnum.PROJECT_TEAM;
 
   /** 质量组 - 质量型组织 */
-  static readonly QUALITY_GROUP = "QUALITY_GROUP";
+  static readonly QUALITY_GROUP = OrganizationTypeEnum.QUALITY_GROUP;
 
   /** 绩效组 - 绩效型组织 */
-  static readonly PERFORMANCE_GROUP = "PERFORMANCE_GROUP";
+  static readonly PERFORMANCE_GROUP = OrganizationTypeEnum.PERFORMANCE_GROUP;
 
   /**
    * 验证组织类型
@@ -65,16 +70,11 @@ export class OrganizationType extends BaseValueObject<string> {
    */
   protected override validate(value: string): void {
     this.validateNotEmpty(value, "组织类型");
-    const validTypes = [
-      OrganizationType.COMMITTEE,
-      OrganizationType.PROJECT_TEAM,
-      OrganizationType.QUALITY_GROUP,
-      OrganizationType.PERFORMANCE_GROUP,
-    ];
-    if (!validTypes.includes(value)) {
+    const validTypes = OrganizationTypeUtils.getAllTypes();
+    if (!validTypes.includes(value as OrganizationTypeEnum)) {
       throw new BusinessRuleViolationException(
         `无效的组织类型: ${value}`,
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
   }
@@ -239,7 +239,7 @@ export class OrganizationType extends BaseValueObject<string> {
       OrganizationType.QUALITY_GROUP,
       OrganizationType.PERFORMANCE_GROUP,
     ];
-    return validTypes.includes(type);
+    return validTypes.includes(type as any);
   }
 
   /**
@@ -256,12 +256,7 @@ export class OrganizationType extends BaseValueObject<string> {
    * ```
    */
   static getAllTypes(): string[] {
-    return [
-      OrganizationType.COMMITTEE,
-      OrganizationType.PROJECT_TEAM,
-      OrganizationType.QUALITY_GROUP,
-      OrganizationType.PERFORMANCE_GROUP,
-    ];
+    return OrganizationTypeUtils.getAllTypes();
   }
 
   /**

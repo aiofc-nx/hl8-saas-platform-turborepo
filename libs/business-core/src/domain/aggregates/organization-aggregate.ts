@@ -2,7 +2,6 @@ import { EntityId, TenantId } from "@hl8/isolation-model";
 import { IsolationAwareAggregateRoot } from "./base/isolation-aware-aggregate-root.js";
 import { Organization } from "../entities/organization/organization.entity.js";
 import { Department } from "../entities/department/department.entity.js";
-import { OrganizationType } from "../value-objects/types/organization-type.vo.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 import { ExceptionFactory } from "../exceptions/exception-factory.js";

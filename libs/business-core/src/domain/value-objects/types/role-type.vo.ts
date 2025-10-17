@@ -8,6 +8,7 @@
 
 import { BaseValueObject } from "../base-value-object.js";
 import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
+import { ErrorCodes } from "../../constants/index.js";
 
 /**
  * 角色类型枚举
@@ -110,7 +111,7 @@ export class RoleType extends BaseValueObject<RoleTypeValue> {
     if (!validTypes.includes(value)) {
       throw new BusinessRuleViolationException(
         `无效的角色类型: ${value}`,
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
   }

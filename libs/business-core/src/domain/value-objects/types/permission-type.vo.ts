@@ -7,8 +7,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { InvalidPermissionTypeException } from "../../exceptions/validation-exceptions.js";
+import { DomainValidationException } from "../../exceptions/base/base-domain-exception.js";
 
 /**
  * 权限类型枚举
@@ -59,11 +58,11 @@ export enum PermissionTypeValue {
  * ```typescript
  * // 创建权限类型
  * const permissionType = PermissionType.create('TENANT');
- * 
+ *
  * // 检查权限类型
  * console.log(permissionType.isSystemPermission()); // false
  * console.log(permissionType.isTenantPermission()); // true
- * 
+ *
  * // 权限类型比较
  * const systemPermission = PermissionType.SYSTEM;
  * console.log(permissionType.hasHigherScopeThan(systemPermission)); // false
@@ -72,7 +71,6 @@ export enum PermissionTypeValue {
  * @since 1.0.0
  */
 export class PermissionType extends BaseValueObject<PermissionTypeValue> {
-  private _exceptionFactory: ExceptionFactory;
   /**
    * 系统权限类型
    */
@@ -132,10 +130,11 @@ export class PermissionType extends BaseValueObject<PermissionTypeValue> {
     this.validateNotEmpty(value, "权限类型");
     const validTypes = Object.values(PermissionTypeValue);
     if (!validTypes.includes(value)) {
-      if (!this._exceptionFactory) {
-        this._exceptionFactory = ExceptionFactory.getInstance();
-      }
-      throw this._exceptionFactory.createInvalidPermissionType(value.toString());
+      throw new DomainValidationException(
+        `无效的权限类型: ${value}`,
+        "permissionType",
+        value,
+      );
     }
   }
 

@@ -42,27 +42,32 @@
  */
 import { BaseValueObject } from "../base-value-object.js";
 import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
+import { ErrorCodes } from "../../constants/index.js";
+import {
+  TenantType as TenantTypeEnum,
+  TenantTypeUtils,
+} from "../../enums/index.js";
 
 export class TenantType extends BaseValueObject<string> {
   /**
    * 企业租户
    */
-  public static readonly ENTERPRISE = new TenantType("ENTERPRISE");
+  public static readonly ENTERPRISE = new TenantType(TenantTypeEnum.ENTERPRISE);
 
   /**
    * 社群租户
    */
-  public static readonly COMMUNITY = new TenantType("COMMUNITY");
+  public static readonly COMMUNITY = new TenantType(TenantTypeEnum.COMMUNITY);
 
   /**
    * 团队租户
    */
-  public static readonly TEAM = new TenantType("TEAM");
+  public static readonly TEAM = new TenantType(TenantTypeEnum.TEAM);
 
   /**
    * 个人租户
    */
-  public static readonly PERSONAL = new TenantType("PERSONAL");
+  public static readonly PERSONAL = new TenantType(TenantTypeEnum.PERSONAL);
 
   /**
    * 所有租户类型
@@ -93,11 +98,13 @@ export class TenantType extends BaseValueObject<string> {
   protected validate(value: string): void {
     this.validateNotEmpty(value, "租户类型");
 
-    const validTypes = ["ENTERPRISE", "COMMUNITY", "TEAM", "PERSONAL"];
+    const validTypes = TenantTypeUtils.getAllTypes().map((type) =>
+      type.toString(),
+    );
     if (!validTypes.includes(value.toUpperCase())) {
       throw new BusinessRuleViolationException(
         `无效的租户类型: ${value}。有效类型: ${validTypes.join(", ")}`,
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
   }
@@ -124,18 +131,18 @@ export class TenantType extends BaseValueObject<string> {
     const normalizedValue = value.toUpperCase();
 
     switch (normalizedValue) {
-      case "ENTERPRISE":
+      case TenantTypeEnum.ENTERPRISE:
         return TenantType.ENTERPRISE;
-      case "COMMUNITY":
+      case TenantTypeEnum.COMMUNITY:
         return TenantType.COMMUNITY;
-      case "TEAM":
+      case TenantTypeEnum.TEAM:
         return TenantType.TEAM;
-      case "PERSONAL":
+      case TenantTypeEnum.PERSONAL:
         return TenantType.PERSONAL;
       default:
         throw new BusinessRuleViolationException(
           `无效的租户类型: ${value}`,
-          "VALIDATION_FAILED",
+          ErrorCodes.VALIDATION_FAILED,
         );
     }
   }
@@ -146,7 +153,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否为企业租户
    */
   isEnterprise(): boolean {
-    return this.value === "ENTERPRISE";
+    return this.value === TenantTypeEnum.ENTERPRISE;
   }
 
   /**
@@ -155,7 +162,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否为社群租户
    */
   isCommunity(): boolean {
-    return this.value === "COMMUNITY";
+    return this.value === TenantTypeEnum.COMMUNITY;
   }
 
   /**
@@ -164,7 +171,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否为团队租户
    */
   isTeam(): boolean {
-    return this.value === "TEAM";
+    return this.value === TenantTypeEnum.TEAM;
   }
 
   /**
@@ -173,7 +180,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否为个人租户
    */
   isPersonal(): boolean {
-    return this.value === "PERSONAL";
+    return this.value === TenantTypeEnum.PERSONAL;
   }
 
   /**
@@ -182,18 +189,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 显示名称
    */
   getDisplayName(): string {
-    switch (this.value) {
-      case "ENTERPRISE":
-        return "企业租户";
-      case "COMMUNITY":
-        return "社群租户";
-      case "TEAM":
-        return "团队租户";
-      case "PERSONAL":
-        return "个人租户";
-      default:
-        return "未知类型";
-    }
+    return TenantTypeUtils.getDisplayName(this.value as TenantTypeEnum);
   }
 
   /**
@@ -202,18 +198,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 类型描述
    */
   getDescription(): string {
-    switch (this.value) {
-      case "ENTERPRISE":
-        return "大型企业客户，拥有完整功能权限和最大资源配额";
-      case "COMMUNITY":
-        return "社群组织，支持多用户协作和分享功能";
-      case "TEAM":
-        return "小型团队，提供基础协作功能";
-      case "PERSONAL":
-        return "个人用户，提供基础功能权限";
-      default:
-        return "未知类型";
-    }
+    return TenantTypeUtils.getDescription(this.value as TenantTypeEnum);
   }
 
   /**
@@ -222,18 +207,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 权限级别（数字越大权限越高）
    */
   getPermissionLevel(): number {
-    switch (this.value) {
-      case "ENTERPRISE":
-        return 4;
-      case "COMMUNITY":
-        return 3;
-      case "TEAM":
-        return 2;
-      case "PERSONAL":
-        return 1;
-      default:
-        return 0;
-    }
+    return TenantTypeUtils.getPermissionLevel(this.value as TenantTypeEnum);
   }
 
   /**
@@ -247,43 +221,7 @@ export class TenantType extends BaseValueObject<string> {
     maxProjects: number;
     maxOrganizations: number;
   } {
-    switch (this.value) {
-      case "ENTERPRISE":
-        return {
-          maxUsers: 10000,
-          maxStorage: 1000,
-          maxProjects: 1000,
-          maxOrganizations: 100,
-        };
-      case "COMMUNITY":
-        return {
-          maxUsers: 1000,
-          maxStorage: 100,
-          maxProjects: 100,
-          maxOrganizations: 10,
-        };
-      case "TEAM":
-        return {
-          maxUsers: 50,
-          maxStorage: 10,
-          maxProjects: 20,
-          maxOrganizations: 5,
-        };
-      case "PERSONAL":
-        return {
-          maxUsers: 1,
-          maxStorage: 1,
-          maxProjects: 5,
-          maxOrganizations: 1,
-        };
-      default:
-        return {
-          maxUsers: 0,
-          maxStorage: 0,
-          maxProjects: 0,
-          maxOrganizations: 0,
-        };
-    }
+    return TenantTypeUtils.getQuota(this.value as TenantTypeEnum);
   }
 
   /**
@@ -292,7 +230,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否支持多用户
    */
   supportsMultiUser(): boolean {
-    return this.value !== "PERSONAL";
+    return TenantTypeUtils.supportsMultiUser(this.value as TenantTypeEnum);
   }
 
   /**
@@ -301,7 +239,9 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否支持组织管理
    */
   supportsOrganizationManagement(): boolean {
-    return this.value === "ENTERPRISE" || this.value === "COMMUNITY";
+    return TenantTypeUtils.supportsOrganizationManagement(
+      this.value as TenantTypeEnum,
+    );
   }
 
   /**
@@ -310,7 +250,9 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否支持高级功能
    */
   supportsAdvancedFeatures(): boolean {
-    return this.value === "ENTERPRISE";
+    return TenantTypeUtils.supportsAdvancedFeatures(
+      this.value as TenantTypeEnum,
+    );
   }
 
   /**

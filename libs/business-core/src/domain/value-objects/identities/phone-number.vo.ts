@@ -23,6 +23,7 @@
 
 import { BaseValueObject } from "../base-value-object.js";
 import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
+import { ErrorCodes } from "../../constants/index.js";
 
 export class PhoneNumber extends BaseValueObject<string> {
   /**
@@ -39,7 +40,7 @@ export class PhoneNumber extends BaseValueObject<string> {
     if (cleanValue.length < 8 || cleanValue.length > 16) {
       throw new BusinessRuleViolationException(
         "电话号码长度必须在8-16个字符之间",
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
 
@@ -48,7 +49,7 @@ export class PhoneNumber extends BaseValueObject<string> {
     if (!phoneRegex.test(cleanValue)) {
       throw new BusinessRuleViolationException(
         `电话号码格式无效: ${value}`,
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
   }

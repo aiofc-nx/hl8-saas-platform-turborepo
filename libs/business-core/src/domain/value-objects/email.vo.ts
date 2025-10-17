@@ -7,6 +7,7 @@
 
 import { BaseValueObject } from "./base-value-object.js";
 import { BusinessRuleViolationException } from "../exceptions/base/base-domain-exception.js";
+import { ErrorCodes } from "../constants/index.js";
 
 /**
  * 邮箱值对象
@@ -39,7 +40,7 @@ export class Email extends BaseValueObject<string> {
     if (localPart.length > 64) {
       throw new BusinessRuleViolationException(
         "邮箱本地部分长度不能超过64个字符",
-        "VALIDATION_FAILED",
+        ErrorCodes.VALIDATION_FAILED,
       );
     }
   }
