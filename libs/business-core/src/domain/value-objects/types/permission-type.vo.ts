@@ -7,6 +7,8 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { InvalidPermissionTypeException } from "../../exceptions/validation-exceptions.js";
 
 /**
  * 权限类型枚举
@@ -70,6 +72,7 @@ export enum PermissionTypeValue {
  * @since 1.0.0
  */
 export class PermissionType extends BaseValueObject<PermissionTypeValue> {
+  private _exceptionFactory: ExceptionFactory;
   /**
    * 系统权限类型
    */
@@ -129,7 +132,10 @@ export class PermissionType extends BaseValueObject<PermissionTypeValue> {
     this.validateNotEmpty(value, "权限类型");
     const validTypes = Object.values(PermissionTypeValue);
     if (!validTypes.includes(value)) {
-      throw new Error(`无效的权限类型: ${value}`);
+      if (!this._exceptionFactory) {
+        this._exceptionFactory = ExceptionFactory.getInstance();
+      }
+      throw this._exceptionFactory.createInvalidPermissionType(value.toString());
     }
   }
 

@@ -1,5 +1,7 @@
 import { EntityId } from "@hl8/isolation-model";
 import type { IPureLogger } from "@hl8/pure-logger";
+import { ExceptionFactory } from "../exceptions/exception-factory.js";
+import { DomainValidationException } from "../exceptions/validation-exceptions.js";
 
 /**
  * 路径计算服务
@@ -42,6 +44,7 @@ import type { IPureLogger } from "@hl8/pure-logger";
  */
 export class PathCalculationService {
   private readonly logger: IPureLogger;
+  private readonly _exceptionFactory: ExceptionFactory;
 
   /**
    * 构造函数
@@ -50,6 +53,7 @@ export class PathCalculationService {
    */
   constructor(logger: IPureLogger) {
     this.logger = logger;
+    this._exceptionFactory = ExceptionFactory.getInstance();
   }
 
   /**
@@ -112,7 +116,7 @@ export class PathCalculationService {
       return childPath;
     } catch (error) {
       this.logger.error("计算部门路径失败", error);
-      throw new Error(`计算部门路径失败: ${error.message}`);
+      throw this._exceptionFactory.createDomainValidation(`计算部门路径失败: ${error.message}`, "departmentPath", departmentId);
     }
   }
 
@@ -176,7 +180,7 @@ export class PathCalculationService {
       return childPath;
     } catch (error) {
       this.logger.error("计算组织路径失败", error);
-      throw new Error(`计算组织路径失败: ${error.message}`);
+      throw this._exceptionFactory.createDomainValidation(`计算组织路径失败: ${error.message}`, "organizationPath", organizationId);
     }
   }
 
@@ -235,7 +239,7 @@ export class PathCalculationService {
       return updatedPaths;
     } catch (error) {
       this.logger.error("更新子节点路径失败", error);
-      throw new Error(`更新子节点路径失败: ${error.message}`);
+      throw this._exceptionFactory.createDomainValidation(`更新子节点路径失败: ${error.message}`, "childPath", parentId);
     }
   }
 
@@ -359,7 +363,7 @@ export class PathCalculationService {
    */
   private validateDepartmentId(departmentId: EntityId): void {
     if (!departmentId) {
-      throw new Error("部门ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("部门ID不能为空", "departmentId", departmentId);
     }
   }
 
@@ -370,7 +374,7 @@ export class PathCalculationService {
    */
   private validateOrganizationId(organizationId: EntityId): void {
     if (!organizationId) {
-      throw new Error("组织ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("组织ID不能为空", "organizationId", organizationId);
     }
   }
 
@@ -381,11 +385,11 @@ export class PathCalculationService {
    */
   private validateParentPath(parentPath: string): void {
     if (!parentPath || typeof parentPath !== "string") {
-      throw new Error("父路径不能为空");
+      throw this._exceptionFactory.createDomainValidation("父路径不能为空", "parentPath", parentPath);
     }
 
     if (!this.validatePath(parentPath)) {
-      throw new Error("父路径格式无效");
+      throw this._exceptionFactory.createDomainValidation("父路径格式无效", "parentPath", parentPath);
     }
   }
 
@@ -401,13 +405,13 @@ export class PathCalculationService {
     // 检查当前ID是否在路径中出现多次
     const occurrences = pathSegments.filter(segment => segment === currentIdString);
     if (occurrences.length > 1) {
-      throw new Error("路径包含循环引用");
+      throw this._exceptionFactory.createDomainValidation("路径包含循环引用", "path", path);
     }
 
     // 检查路径中是否有重复的ID
     const uniqueSegments = new Set(pathSegments);
     if (pathSegments.length !== uniqueSegments.size) {
-      throw new Error("路径包含重复的ID");
+      throw this._exceptionFactory.createDomainValidation("路径包含重复的ID", "path", path);
     }
   }
 }

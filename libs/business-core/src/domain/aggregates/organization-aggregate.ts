@@ -5,6 +5,8 @@ import { Department } from "../entities/department/department.entity.js";
 import { OrganizationType } from "../value-objects/types/organization-type.vo.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
+import { ExceptionFactory } from "../exceptions/exception-factory.js";
+import { InvalidOrganizationNameException, OrganizationStateException } from "../exceptions/business-exceptions.js";
 
 /**
  * 组织聚合根
@@ -17,6 +19,7 @@ import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 export class OrganizationAggregate extends IsolationAwareAggregateRoot {
   private organization: Organization;
   private departments: Department[] = [];
+  private _exceptionFactory: ExceptionFactory;
 
   /**
    * 构造函数
@@ -34,6 +37,7 @@ export class OrganizationAggregate extends IsolationAwareAggregateRoot {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this.organization = organization;
     this.validate();
   }
@@ -113,7 +117,7 @@ export class OrganizationAggregate extends IsolationAwareAggregateRoot {
   removeDepartment(departmentId: EntityId): void {
     const index = this.departments.findIndex((d) => d.id.equals(departmentId));
     if (index === -1) {
-      throw new Error("部门不存在");
+      throw this._exceptionFactory.createDomainState("部门不存在", "active", "removeDepartment", { departmentId: departmentId.value });
     }
 
     const department = this.departments[index];
@@ -179,10 +183,10 @@ export class OrganizationAggregate extends IsolationAwareAggregateRoot {
    */
   private validateOrganization(): void {
     if (!this.organization) {
-      throw new Error("组织实体不能为空");
+      throw this._exceptionFactory.createDomainValidation("组织实体不能为空", "organization", this.organization);
     }
     if (!this.organization.id) {
-      throw new Error("组织ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("组织ID不能为空", "organizationId", this.organization.id);
     }
   }
 
@@ -204,10 +208,10 @@ export class OrganizationAggregate extends IsolationAwareAggregateRoot {
    */
   private validateDepartment(department: Department): void {
     if (!department) {
-      throw new Error("部门不能为空");
+      throw this._exceptionFactory.createDomainValidation("部门不能为空", "departments", departments);
     }
     if (!department.id) {
-      throw new Error("部门ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("部门ID不能为空", "departmentId", department.id);
     }
   }
 
@@ -218,10 +222,10 @@ export class OrganizationAggregate extends IsolationAwareAggregateRoot {
    */
   private validateOrganizationName(name: string): void {
     if (!name || !name.trim()) {
-      throw new Error("组织名称不能为空");
+      throw this._exceptionFactory.createInvalidOrganizationName(name, "组织名称不能为空");
     }
     if (name.trim().length > 100) {
-      throw new Error("组织名称长度不能超过100个字符");
+      throw this._exceptionFactory.createInvalidOrganizationName(name, "组织名称长度不能超过100个字符");
     }
   }
 
@@ -237,11 +241,11 @@ export class OrganizationAggregate extends IsolationAwareAggregateRoot {
       (d) => d.name === department.name,
     );
     if (existingDepartment) {
-      throw new Error("部门名称在同一组织内必须唯一");
+      throw this._exceptionFactory.createDomainValidation("部门名称在同一组织内必须唯一", "departmentName", department.name);
     }
 
     if (department.level.value > 8) {
-      throw new Error("部门层级不能超过8层");
+      throw this._exceptionFactory.createDomainValidation("部门层级不能超过8层", "departmentLevel", department.level.value);
     }
   }
 }

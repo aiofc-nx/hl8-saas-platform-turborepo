@@ -66,6 +66,8 @@
  */
 import { EntityId } from "@hl8/isolation-model";
 import { TenantId } from "@hl8/isolation-model";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { DomainValidationException } from "../../exceptions/validation-exceptions.js";
 
 export abstract class BaseDomainEvent {
   private readonly _eventId: EntityId;
@@ -74,6 +76,7 @@ export abstract class BaseDomainEvent {
   private readonly _tenantId: EntityId;
   private readonly _occurredAt: Date;
   private readonly _eventVersion: number;
+  private readonly _exceptionFactory: ExceptionFactory;
 
   /**
    * 构造函数
@@ -89,6 +92,7 @@ export abstract class BaseDomainEvent {
     tenantId: EntityId,
     eventVersion = 1,
   ) {
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this._eventId = TenantId.generate();
     this._aggregateId = aggregateId;
     this._aggregateVersion = aggregateVersion;
@@ -326,23 +330,23 @@ export abstract class BaseDomainEvent {
    */
   protected validate(): void {
     if (!this._eventId || this._eventId.isEmpty()) {
-      throw new Error("Event ID cannot be null or empty");
+      throw this._exceptionFactory.createDomainValidation("Event ID cannot be null or empty", "eventId", eventId);
     }
 
     if (!this._aggregateId || this._aggregateId.isEmpty()) {
-      throw new Error("Aggregate ID cannot be null or empty");
+      throw this._exceptionFactory.createDomainValidation("Aggregate ID cannot be null or empty", "aggregateId", this._aggregateId);
     }
 
     if (!this._tenantId) {
-      throw new Error("Tenant ID cannot be null or empty");
+      throw this._exceptionFactory.createDomainValidation("Tenant ID cannot be null or empty", "tenantId", this._tenantId);
     }
 
     if (this._aggregateVersion < 1) {
-      throw new Error("Aggregate version must be greater than 0");
+      throw this._exceptionFactory.createDomainValidation("Aggregate version must be greater than 0", "aggregateVersion", this._aggregateVersion);
     }
 
     if (this._eventVersion < 1) {
-      throw new Error("Event version must be greater than 0");
+      throw this._exceptionFactory.createDomainValidation("Event version must be greater than 0", "eventVersion", this._eventVersion);
     }
   }
 }

@@ -7,6 +7,8 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { InvalidPermissionActionException } from "../../exceptions/validation-exceptions.js";
 
 /**
  * 权限动作枚举
@@ -76,6 +78,7 @@ export enum PermissionActionValue {
  * @since 1.0.0
  */
 export class PermissionAction extends BaseValueObject<PermissionActionValue> {
+  private _exceptionFactory: ExceptionFactory;
   /**
    * 创建动作
    */
@@ -156,7 +159,10 @@ export class PermissionAction extends BaseValueObject<PermissionActionValue> {
     this.validateNotEmpty(value, "权限动作");
     const validActions = Object.values(PermissionActionValue);
     if (!validActions.includes(value)) {
-      throw new Error(`无效的权限动作: ${value}`);
+      if (!this._exceptionFactory) {
+        this._exceptionFactory = ExceptionFactory.getInstance();
+      }
+      throw this._exceptionFactory.createInvalidPermissionAction(value.toString());
     }
   }
 
