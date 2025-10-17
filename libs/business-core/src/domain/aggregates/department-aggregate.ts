@@ -1,12 +1,9 @@
 import { EntityId, TenantId } from "@hl8/isolation-model";
 import { IsolationAwareAggregateRoot } from "./base/isolation-aware-aggregate-root.js";
 import { Department } from "../entities/department/department.entity.js";
-import { DepartmentLevel } from "../value-objects/types/department-level.vo.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 import { ExceptionFactory } from "../exceptions/exception-factory.js";
-import { InvalidDepartmentNameException, InvalidDepartmentLevelException, DepartmentStateException } from "../exceptions/business-exceptions.js";
-
 /**
  * 部门聚合根
  *
@@ -118,7 +115,12 @@ export class DepartmentAggregate extends IsolationAwareAggregateRoot {
       d.id.equals(subDepartmentId),
     );
     if (index === -1) {
-      throw this._exceptionFactory.createDomainState("子部门不存在", "active", "removeSubDepartment", { subDepartmentId: subDepartmentId.value });
+      throw this._exceptionFactory.createDomainState(
+        "子部门不存在",
+        "active",
+        "removeSubDepartment",
+        { subDepartmentId: subDepartmentId.toString() },
+      );
     }
 
     const subDepartment = this.subDepartments[index];
@@ -196,10 +198,18 @@ export class DepartmentAggregate extends IsolationAwareAggregateRoot {
    */
   private validateDepartment(): void {
     if (!this.department) {
-      throw this._exceptionFactory.createDomainValidation("部门实体不能为空", "department", department);
+      throw this._exceptionFactory.createDomainValidation(
+        "部门实体不能为空",
+        "department",
+        this.department,
+      );
     }
     if (!this.department.id) {
-      throw this._exceptionFactory.createDomainValidation("部门ID不能为空", "departmentId", this.department.id);
+      throw this._exceptionFactory.createDomainValidation(
+        "部门ID不能为空",
+        "departmentId",
+        this.department.id,
+      );
     }
   }
 
@@ -221,10 +231,18 @@ export class DepartmentAggregate extends IsolationAwareAggregateRoot {
    */
   private validateSubDepartment(subDepartment: Department): void {
     if (!subDepartment) {
-      throw this._exceptionFactory.createDomainValidation("子部门不能为空", "subDepartments", subDepartments);
+      throw this._exceptionFactory.createDomainValidation(
+        "子部门不能为空",
+        "subDepartments",
+        this.subDepartments,
+      );
     }
     if (!subDepartment.id) {
-      throw this._exceptionFactory.createDomainValidation("子部门ID不能为空", "subDepartmentId", subDepartment.id);
+      throw this._exceptionFactory.createDomainValidation(
+        "子部门ID不能为空",
+        "subDepartmentId",
+        subDepartment.id,
+      );
     }
     this.validateSubDepartmentHierarchy(subDepartment, this.department);
   }
@@ -239,11 +257,22 @@ export class DepartmentAggregate extends IsolationAwareAggregateRoot {
     parentDepartment: Department,
   ): void {
     if (subDepartment.id.equals(parentDepartment.id)) {
-      throw this._exceptionFactory.createDomainState("子部门不能设置自己为父部门", "active", "addSubDepartment", { subDepartmentId: subDepartment.id.value, parentDepartmentId: parentDepartment.id.value });
+      throw this._exceptionFactory.createDomainState(
+        "子部门不能设置自己为父部门",
+        "active",
+        "addSubDepartment",
+        {
+          subDepartmentId: subDepartment.id.toString(),
+          parentDepartmentId: parentDepartment.id.toString(),
+        },
+      );
     }
 
     if (subDepartment.level.value <= parentDepartment.level.value) {
-      throw this._exceptionFactory.createInvalidDepartmentLevel(subDepartment.level.value, parentDepartment.level.value);
+      throw this._exceptionFactory.createInvalidDepartmentLevel(
+        subDepartment.level.value,
+        parentDepartment.level.value,
+      );
     }
   }
 
@@ -254,10 +283,16 @@ export class DepartmentAggregate extends IsolationAwareAggregateRoot {
    */
   private validateDepartmentName(name: string): void {
     if (!name || !name.trim()) {
-      throw this._exceptionFactory.createInvalidDepartmentName(name, "部门名称不能为空");
+      throw this._exceptionFactory.createInvalidDepartmentName(
+        name,
+        "部门名称不能为空",
+      );
     }
     if (name.trim().length > 100) {
-      throw this._exceptionFactory.createInvalidDepartmentName(name, "部门名称长度不能超过100个字符");
+      throw this._exceptionFactory.createInvalidDepartmentName(
+        name,
+        "部门名称长度不能超过100个字符",
+      );
     }
   }
 
@@ -271,11 +306,17 @@ export class DepartmentAggregate extends IsolationAwareAggregateRoot {
 
     const maxLevel = this.getMaxSubDepartmentLevel();
     if (subDepartment.level.value > maxLevel + 1) {
-      throw this._exceptionFactory.createInvalidDepartmentLevel(subDepartment.level.value, parentDepartment.level.value + 1);
+      throw this._exceptionFactory.createInvalidDepartmentLevel(
+        subDepartment.level.value,
+        this.department.level.value + 1,
+      );
     }
 
     if (subDepartment.level.value > 8) {
-      throw this._exceptionFactory.createInvalidDepartmentLevel(subDepartment.level.value, 8);
+      throw this._exceptionFactory.createInvalidDepartmentLevel(
+        subDepartment.level.value,
+        8,
+      );
     }
   }
 }
