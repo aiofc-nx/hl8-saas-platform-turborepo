@@ -14,7 +14,7 @@ import { PermissionAction } from "../value-objects/types/permission-action.vo.js
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 import { ExceptionFactory } from "../exceptions/exception-factory.js";
-import { PermissionStateException, InvalidPermissionTypeException, InvalidPermissionActionException } from "../exceptions/business-exceptions.js";
+import { BusinessRuleViolationException } from "../exceptions/base/base-domain-exception.js";
 
 /**
  * 权限聚合根
@@ -50,10 +50,10 @@ import { PermissionStateException, InvalidPermissionTypeException, InvalidPermis
  *   permission,
  *   { createdBy: "system" }
  * );
- * 
+ *
  * // 添加条件
  * permissionAggregate.addCondition("department", "IT");
- * 
+ *
  * // 创建子权限
  * permissionAggregate.createChildPermission(childPermission);
  * ```
@@ -106,11 +106,18 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
     if (description !== undefined) {
       this.permission.updateDescription(description);
     }
-    this.publishIsolationEvent("PermissionInfoUpdated", {
-      permissionId: this.permission.id.toString(),
-      name: this.permission.name,
-      description: this.permission.description,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionInfoUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          name: this.permission.name,
+          description: this.permission.description,
+        }) as any,
+    );
   }
 
   /**
@@ -121,10 +128,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
   updatePermissionType(type: PermissionType): void {
     this.validatePermissionTypeChange(this.permission.type, type);
     this.permission.updateType(type);
-    this.publishIsolationEvent("PermissionTypeUpdated", {
-      permissionId: this.permission.id.toString(),
-      type: type.value,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionTypeUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          permissionType: type.value,
+        }) as any,
+    );
   }
 
   /**
@@ -135,10 +149,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
   updatePermissionAction(action: PermissionAction): void {
     this.validatePermissionActionChange(this.permission.action, action);
     this.permission.updateAction(action);
-    this.publishIsolationEvent("PermissionActionUpdated", {
-      permissionId: this.permission.id.toString(),
-      action: action.value,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionActionUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          action: action.value,
+        }) as any,
+    );
   }
 
   /**
@@ -148,10 +169,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   updateResource(resource: string): void {
     this.permission.updateResource(resource);
-    this.publishIsolationEvent("PermissionResourceUpdated", {
-      permissionId: this.permission.id.toString(),
-      resource,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionResourceUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          resource,
+        }) as any,
+    );
   }
 
   /**
@@ -161,10 +189,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   setResourceId(resourceId: EntityId): void {
     this.permission.setResourceId(resourceId);
-    this.publishIsolationEvent("PermissionResourceIdSet", {
-      permissionId: this.permission.id.toString(),
-      resourceId: resourceId.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionResourceIdSet",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          resourceId: resourceId.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -172,9 +207,16 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   removeResourceId(): void {
     this.permission.removeResourceId();
-    this.publishIsolationEvent("PermissionResourceIdRemoved", {
-      permissionId: this.permission.id.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionResourceIdRemoved",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -182,10 +224,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   activatePermission(): void {
     this.permission.activate();
-    this.publishIsolationEvent("PermissionActivated", {
-      permissionId: this.permission.id.toString(),
-      permissionName: this.permission.name,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionActivated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          permissionName: this.permission.name,
+        }) as any,
+    );
   }
 
   /**
@@ -194,10 +243,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
   deactivatePermission(): void {
     this.validatePermissionDeactivation();
     this.permission.deactivate();
-    this.publishIsolationEvent("PermissionDeactivated", {
-      permissionId: this.permission.id.toString(),
-      permissionName: this.permission.name,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionDeactivated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          permissionName: this.permission.name,
+        }) as any,
+    );
   }
 
   /**
@@ -207,10 +263,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   updatePermissionPriority(priority: number): void {
     this.permission.updatePriority(priority);
-    this.publishIsolationEvent("PermissionPriorityUpdated", {
-      permissionId: this.permission.id.toString(),
-      priority,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionPriorityUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          priority,
+        }) as any,
+    );
   }
 
   /**
@@ -221,10 +284,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
   setParentPermission(parentPermissionId: EntityId): void {
     this.validateParentPermission(parentPermissionId);
     this.permission.setParentPermission(parentPermissionId);
-    this.publishIsolationEvent("ParentPermissionSet", {
-      permissionId: this.permission.id.toString(),
-      parentPermissionId: parentPermissionId.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "ParentPermissionSet",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          parentPermissionId: parentPermissionId.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -232,9 +302,16 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   removeParentPermission(): void {
     this.permission.removeParentPermission();
-    this.publishIsolationEvent("ParentPermissionRemoved", {
-      permissionId: this.permission.id.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "ParentPermissionRemoved",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -245,11 +322,18 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   addCondition(key: string, value: any): void {
     this.permission.addCondition(key, value);
-    this.publishIsolationEvent("PermissionConditionAdded", {
-      permissionId: this.permission.id.toString(),
-      key,
-      value,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionConditionAdded",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          key,
+          value,
+        }) as any,
+    );
   }
 
   /**
@@ -259,10 +343,17 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   removeCondition(key: string): void {
     this.permission.removeCondition(key);
-    this.publishIsolationEvent("PermissionConditionRemoved", {
-      permissionId: this.permission.id.toString(),
-      key,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionConditionRemoved",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          key,
+        }) as any,
+    );
   }
 
   /**
@@ -273,11 +364,18 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
   createChildPermission(childPermission: Permission): void {
     this.validateChildPermissionCreation(childPermission);
     this.childPermissions.push(childPermission);
-    this.publishIsolationEvent("ChildPermissionCreated", {
-      permissionId: this.permission.id.toString(),
-      childPermissionId: childPermission.id.toString(),
-      childPermissionName: childPermission.name,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "ChildPermissionCreated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          permissionId: this.permission.id.toString(),
+          childPermissionId: childPermission.id.toString(),
+          childPermissionName: childPermission.name,
+        }) as any,
+    );
   }
 
   /**
@@ -287,15 +385,24 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   removeChildPermission(childPermissionId: EntityId): void {
     this.validateChildPermissionRemoval(childPermissionId);
-    const index = this.childPermissions.findIndex(p => p.id.equals(childPermissionId));
+    const index = this.childPermissions.findIndex((p) =>
+      p.id.equals(childPermissionId),
+    );
     if (index !== -1) {
       const childPermission = this.childPermissions[index];
       this.childPermissions.splice(index, 1);
-      this.publishIsolationEvent("ChildPermissionRemoved", {
-        permissionId: this.permission.id.toString(),
-        childPermissionId: childPermissionId.toString(),
-        childPermissionName: childPermission.name,
-      });
+      this.publishIsolationEvent(
+        (id, version, context) =>
+          ({
+            type: "ChildPermissionRemoved",
+            aggregateId: id.toString(),
+            version,
+            isolationContext: context,
+            permissionId: this.permission.id.toString(),
+            childPermissionId: childPermissionId.toString(),
+            childPermissionName: childPermission.name,
+          }) as any,
+      );
     }
   }
 
@@ -364,7 +471,15 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionUpdate(): void {
     if (!this.permission.isEditable) {
-      throw this._exceptionFactory.createDomainState("权限不可编辑", "system", "updatePermission", { permissionId: this.permission.id.value, isEditable: this.permission.isEditable });
+      throw this._exceptionFactory.createDomainState(
+        "权限不可编辑",
+        "system",
+        "updatePermission",
+        {
+          permissionId: this.permission.id.toString(),
+          isEditable: this.permission.isEditable,
+        },
+      );
     }
   }
 
@@ -375,12 +490,31 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    * @param newType - 新权限类型
    * @private
    */
-  private validatePermissionTypeChange(oldType: PermissionType, newType: PermissionType): void {
+  private validatePermissionTypeChange(
+    oldType: PermissionType,
+    newType: PermissionType,
+  ): void {
     if (!newType) {
-      throw this._exceptionFactory.createInvalidPermissionType(type.toString(), "权限类型不能为空");
+      throw new BusinessRuleViolationException(
+        "权限类型不能为空",
+        "VALIDATION_FAILED",
+      );
     }
-    if (this.permission.isSystemPermission && oldType.isSystemPermission() && !newType.isSystemPermission()) {
-      throw this._exceptionFactory.createDomainState("系统权限不能变更为非系统权限", "system", "changePermissionType", { permissionId: this.permission.id.value, oldType: oldType.value, newType: newType.value });
+    if (
+      this.permission.isSystemPermission &&
+      oldType.isSystemPermission() &&
+      !newType.isSystemPermission()
+    ) {
+      throw this._exceptionFactory.createDomainState(
+        "系统权限不能变更为非系统权限",
+        "system",
+        "changePermissionType",
+        {
+          permissionId: this.permission.id.toString(),
+          oldType: oldType.value,
+          newType: newType.value,
+        },
+      );
     }
   }
 
@@ -391,9 +525,15 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    * @param newAction - 新权限动作
    * @private
    */
-  private validatePermissionActionChange(oldAction: PermissionAction, newAction: PermissionAction): void {
+  private validatePermissionActionChange(
+    oldAction: PermissionAction,
+    newAction: PermissionAction,
+  ): void {
     if (!newAction) {
-      throw this._exceptionFactory.createInvalidPermissionAction(action.toString(), "权限动作不能为空");
+      throw new BusinessRuleViolationException(
+        "权限动作不能为空",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -404,10 +544,26 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionDeactivation(): void {
     if (this.permission.isSystemPermission) {
-      throw this._exceptionFactory.createDomainState("系统权限不能停用", "system", "deactivate", { permissionId: this.permission.id.value, isSystemPermission: this.permission.isSystemPermission });
+      throw this._exceptionFactory.createDomainState(
+        "系统权限不能停用",
+        "system",
+        "deactivate",
+        {
+          permissionId: this.permission.id.toString(),
+          isSystemPermission: this.permission.isSystemPermission,
+        },
+      );
     }
     if (this.childPermissions.length > 0) {
-      throw this._exceptionFactory.createDomainState("有子权限的权限不能停用", "active", "deactivate", { permissionId: this.permission.id.value, childPermissionsCount: this.childPermissions.length });
+      throw this._exceptionFactory.createDomainState(
+        "有子权限的权限不能停用",
+        "active",
+        "deactivate",
+        {
+          permissionId: this.permission.id.toString(),
+          childPermissionsCount: this.childPermissions.length,
+        },
+      );
     }
   }
 
@@ -419,10 +575,22 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validateParentPermission(parentPermissionId: EntityId): void {
     if (!parentPermissionId) {
-      throw this._exceptionFactory.createDomainValidation("父权限ID不能为空", "parentPermissionId", parentPermissionId);
+      throw this._exceptionFactory.createDomainValidation(
+        "父权限ID不能为空",
+        "parentPermissionId",
+        parentPermissionId,
+      );
     }
     if (parentPermissionId.equals(this.permission.id)) {
-      throw this._exceptionFactory.createDomainState("权限不能设置自己为父权限", "active", "setParent", { permissionId: this.permission.id.value, parentPermissionId: parentPermissionId.value });
+      throw this._exceptionFactory.createDomainState(
+        "权限不能设置自己为父权限",
+        "active",
+        "setParent",
+        {
+          permissionId: this.permission.id.toString(),
+          parentPermissionId: parentPermissionId.toString(),
+        },
+      );
     }
   }
 
@@ -434,13 +602,33 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validateChildPermissionCreation(childPermission: Permission): void {
     if (!childPermission) {
-      throw this._exceptionFactory.createDomainValidation("子权限不能为空", "childPermission", childPermission);
+      throw this._exceptionFactory.createDomainValidation(
+        "子权限不能为空",
+        "childPermission",
+        childPermission,
+      );
     }
     if (childPermission.id.equals(this.permission.id)) {
-      throw this._exceptionFactory.createDomainState("权限不能设置自己为子权限", "active", "createChildPermission", { permissionId: this.permission.id.value, childPermissionId: childPermission.id.value });
+      throw this._exceptionFactory.createDomainState(
+        "权限不能设置自己为子权限",
+        "active",
+        "createChildPermission",
+        {
+          permissionId: this.permission.id.toString(),
+          childPermissionId: childPermission.id.toString(),
+        },
+      );
     }
-    if (this.childPermissions.some(p => p.id.equals(childPermission.id))) {
-      throw this._exceptionFactory.createDomainState("子权限已存在", "active", "createChildPermission", { permissionId: this.permission.id.value, childPermissionId: childPermission.id.value });
+    if (this.childPermissions.some((p) => p.id.equals(childPermission.id))) {
+      throw this._exceptionFactory.createDomainState(
+        "子权限已存在",
+        "active",
+        "createChildPermission",
+        {
+          permissionId: this.permission.id.toString(),
+          childPermissionId: childPermission.id.toString(),
+        },
+      );
     }
   }
 
@@ -452,7 +640,11 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validateChildPermissionRemoval(childPermissionId: EntityId): void {
     if (!childPermissionId) {
-      throw this._exceptionFactory.createDomainValidation("子权限ID不能为空", "childPermissionId", childPermissionId);
+      throw this._exceptionFactory.createDomainValidation(
+        "子权限ID不能为空",
+        "childPermissionId",
+        childPermissionId,
+      );
     }
   }
 }

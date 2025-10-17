@@ -6,15 +6,17 @@
  * @since 1.0.0
  */
 
-import { EntityId, TenantId, OrganizationId, DepartmentId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model";
 import { BaseEntity } from "../base/base-entity.js";
 import { RoleType } from "../../value-objects/types/role-type.vo.js";
 import { PermissionType } from "../../value-objects/types/permission-type.vo.js";
 import { PermissionAction } from "../../value-objects/types/permission-action.vo.js";
+import {
+  BusinessRuleViolationException,
+  DomainStateException,
+} from "../../../domain/exceptions/base/base-domain-exception.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { RoleStateException, InvalidRoleNameException } from "../../exceptions/business-exceptions.js";
 
 /**
  * 角色实体属性接口
@@ -24,37 +26,37 @@ import { RoleStateException, InvalidRoleNameException } from "../../exceptions/b
 export interface RoleProps {
   /** 角色名称 */
   name: string;
-  
+
   /** 角色描述 */
   description?: string;
-  
+
   /** 角色类型 */
   type: RoleType;
-  
+
   /** 权限类型 */
   permissionType: PermissionType;
-  
+
   /** 权限动作列表 */
   actions: PermissionAction[];
-  
+
   /** 是否启用 */
   isActive: boolean;
-  
+
   /** 是否系统角色 */
   isSystemRole: boolean;
-  
+
   /** 是否可编辑 */
   isEditable: boolean;
-  
+
   /** 角色优先级 */
   priority: number;
-  
+
   /** 父角色ID */
   parentRoleId?: EntityId;
-  
+
   /** 角色标签 */
   tags?: string[];
-  
+
   /** 角色配置 */
   config?: Record<string, any>;
 }
@@ -103,11 +105,11 @@ export interface RoleProps {
  *   },
  *   { createdBy: "system" }
  * );
- * 
+ *
  * // 检查权限
  * console.log(role.hasPermission(PermissionAction.CREATE)); // true
  * console.log(role.canManageUsers()); // true
- * 
+ *
  * // 添加权限
  * role.addPermission(PermissionAction.EXPORT);
  * ```
@@ -127,8 +129,6 @@ export class Role extends BaseEntity {
   private _parentRoleId?: EntityId;
   private _tags?: string[];
   private _config?: Record<string, any>;
-  private _exceptionFactory: ExceptionFactory;
-
   constructor(
     id: EntityId,
     props: RoleProps,
@@ -136,7 +136,6 @@ export class Role extends BaseEntity {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
-    this._exceptionFactory = ExceptionFactory.getInstance();
     this._name = props.name;
     this._description = props.description;
     this._type = props.type;
@@ -305,7 +304,9 @@ export class Role extends BaseEntity {
     this.validatePermissionTypeChange(this._permissionType, permissionType);
     this._permissionType = permissionType;
     this.updateTimestamp();
-    this.logOperation("updatePermissionType", { permissionType: permissionType.value });
+    this.logOperation("updatePermissionType", {
+      permissionType: permissionType.value,
+    });
   }
 
   /**
@@ -315,7 +316,7 @@ export class Role extends BaseEntity {
    */
   addPermission(action: PermissionAction): void {
     this.validateActionAddition(action);
-    if (!this._actions.some(a => a.value === action.value)) {
+    if (!this._actions.some((a) => a.value === action.value)) {
       this._actions.push(action);
       this.updateTimestamp();
       this.logOperation("addPermission", { action: action.value });
@@ -329,7 +330,7 @@ export class Role extends BaseEntity {
    */
   removePermission(action: PermissionAction): void {
     this.validateActionRemoval(action);
-    this._actions = this._actions.filter(a => a.value !== action.value);
+    this._actions = this._actions.filter((a) => a.value !== action.value);
     this.updateTimestamp();
     this.logOperation("removePermission", { action: action.value });
   }
@@ -343,7 +344,9 @@ export class Role extends BaseEntity {
     this.validateActions(actions);
     this._actions = [...actions];
     this.updateTimestamp();
-    this.logOperation("setPermissions", { actions: actions.map(a => a.value) });
+    this.logOperation("setPermissions", {
+      actions: actions.map((a) => a.value),
+    });
   }
 
   /**
@@ -351,7 +354,10 @@ export class Role extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw this._exceptionFactory.createEntityAlreadyActive("角色", this.id);
+      throw new DomainStateException("角色已激活", "active", "activate", {
+        roleId: this.id.toString(),
+        isActive: this._isActive,
+      });
     }
     this._isActive = true;
     this.updateTimestamp();
@@ -363,10 +369,21 @@ export class Role extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw this._exceptionFactory.createEntityNotActive("角色", this.id);
+      throw new DomainStateException("角色已停用", "inactive", "deactivate", {
+        roleId: this.id.toString(),
+        isActive: this._isActive,
+      });
     }
     if (this._isSystemRole) {
-      throw this._exceptionFactory.createDomainState("系统角色不能停用", "system", "deactivate", { roleId: this.id.value, isSystemRole: this._isSystemRole });
+      throw new DomainStateException(
+        "系统角色不能停用",
+        "system",
+        "deactivate",
+        {
+          roleId: this.id.toString(),
+          isSystemRole: this._isSystemRole,
+        },
+      );
     }
     this._isActive = false;
     this.updateTimestamp();
@@ -394,7 +411,9 @@ export class Role extends BaseEntity {
     this.validateParentRole(parentRoleId);
     this._parentRoleId = parentRoleId;
     this.updateTimestamp();
-    this.logOperation("setParentRole", { parentRoleId: parentRoleId.toString() });
+    this.logOperation("setParentRole", {
+      parentRoleId: parentRoleId.toString(),
+    });
   }
 
   /**
@@ -430,7 +449,7 @@ export class Role extends BaseEntity {
    */
   removeTag(tag: string): void {
     if (this._tags) {
-      this._tags = this._tags.filter(t => t !== tag);
+      this._tags = this._tags.filter((t) => t !== tag);
       this.updateTimestamp();
       this.logOperation("removeTag", { tag });
     }
@@ -454,7 +473,7 @@ export class Role extends BaseEntity {
    * @returns 是否有权限
    */
   hasPermission(action: PermissionAction): boolean {
-    return this._actions.some(a => a.value === action.value);
+    return this._actions.some((a) => a.value === action.value);
   }
 
   /**
@@ -463,8 +482,10 @@ export class Role extends BaseEntity {
    * @returns 是否可以管理用户
    */
   canManageUsers(): boolean {
-    return this.hasPermission(PermissionAction.MANAGE) || 
-           this.hasPermission(PermissionAction.ASSIGN);
+    return (
+      this.hasPermission(PermissionAction.MANAGE) ||
+      this.hasPermission(PermissionAction.ASSIGN)
+    );
   }
 
   /**
@@ -473,7 +494,9 @@ export class Role extends BaseEntity {
    * @returns 是否可以管理系统
    */
   canManageSystem(): boolean {
-    return this._type.isSystemRole() && this.hasPermission(PermissionAction.MANAGE);
+    return (
+      this._type.isSystemRole() && this.hasPermission(PermissionAction.MANAGE)
+    );
   }
 
   /**
@@ -482,7 +505,9 @@ export class Role extends BaseEntity {
    * @returns 是否可以管理租户
    */
   canManageTenant(): boolean {
-    return this._type.isTenantRole() && this.hasPermission(PermissionAction.MANAGE);
+    return (
+      this._type.isTenantRole() && this.hasPermission(PermissionAction.MANAGE)
+    );
   }
 
   /**
@@ -491,7 +516,10 @@ export class Role extends BaseEntity {
    * @returns 是否可以管理组织
    */
   canManageOrganization(): boolean {
-    return this._type.isOrganizationRole() && this.hasPermission(PermissionAction.MANAGE);
+    return (
+      this._type.isOrganizationRole() &&
+      this.hasPermission(PermissionAction.MANAGE)
+    );
   }
 
   /**
@@ -500,7 +528,10 @@ export class Role extends BaseEntity {
    * @returns 是否可以管理部门
    */
   canManageDepartment(): boolean {
-    return this._type.isDepartmentRole() && this.hasPermission(PermissionAction.MANAGE);
+    return (
+      this._type.isDepartmentRole() &&
+      this.hasPermission(PermissionAction.MANAGE)
+    );
   }
 
   /**
@@ -519,7 +550,7 @@ export class Role extends BaseEntity {
    * @returns 权限动作描述列表
    */
   getPermissionDescriptions(): string[] {
-    return this._actions.map(action => action.getDescription());
+    return this._actions.map((action) => action.getDescription());
   }
 
   /**
@@ -543,10 +574,16 @@ export class Role extends BaseEntity {
    */
   private validateName(name: string): void {
     if (!name || !name.trim()) {
-      throw this._exceptionFactory.createInvalidRoleName(name, "角色名称不能为空");
+      throw new BusinessRuleViolationException(
+        "角色名称不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (name.trim().length > 100) {
-      throw this._exceptionFactory.createInvalidRoleName(name, "角色名称长度不能超过100字符");
+      throw new BusinessRuleViolationException(
+        "角色名称长度不能超过100字符",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -558,7 +595,10 @@ export class Role extends BaseEntity {
    */
   private validateDescription(description?: string): void {
     if (description && description.trim().length > 500) {
-      throw this._exceptionFactory.createDomainValidation("角色描述长度不能超过500字符", "description", description);
+      throw new BusinessRuleViolationException(
+        "角色描述长度不能超过500字符",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -570,12 +610,18 @@ export class Role extends BaseEntity {
    */
   private validateActions(actions: PermissionAction[]): void {
     if (!actions || actions.length === 0) {
-      throw this._exceptionFactory.createDomainValidation("角色必须至少有一个权限动作", "actions", actions);
+      throw new BusinessRuleViolationException(
+        "角色必须至少有一个权限动作",
+        "VALIDATION_FAILED",
+      );
     }
-    const actionValues = actions.map(a => a.value);
+    const actionValues = actions.map((a) => a.value);
     const uniqueValues = [...new Set(actionValues)];
     if (actionValues.length !== uniqueValues.length) {
-      throw this._exceptionFactory.createDomainValidation("权限动作不能重复", "actions", actions);
+      throw new BusinessRuleViolationException(
+        "权限动作不能重复",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -587,7 +633,10 @@ export class Role extends BaseEntity {
    */
   private validateActionAddition(action: PermissionAction): void {
     if (!action) {
-      throw this._exceptionFactory.createInvalidPermissionAction(action.toString(), "权限动作不能为空");
+      throw new BusinessRuleViolationException(
+        "权限动作不能为空",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -599,10 +648,16 @@ export class Role extends BaseEntity {
    */
   private validateActionRemoval(action: PermissionAction): void {
     if (!action) {
-      throw this._exceptionFactory.createInvalidPermissionAction(action.toString(), "权限动作不能为空");
+      throw new BusinessRuleViolationException(
+        "权限动作不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (this._actions.length === 1) {
-      throw this._exceptionFactory.createDomainValidation("角色必须至少有一个权限动作", "actions", actions);
+      throw new BusinessRuleViolationException(
+        "角色必须至少有一个权限动作",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -615,10 +670,22 @@ export class Role extends BaseEntity {
    */
   private validateTypeChange(oldType: RoleType, newType: RoleType): void {
     if (!newType) {
-      throw this._exceptionFactory.createInvalidRoleType(type.toString(), "角色类型不能为空");
+      throw new BusinessRuleViolationException(
+        "角色类型不能为空",
+        "VALIDATION_FAILED",
+      );
     }
-    if (this._isSystemRole && oldType.isSystemRole() && !newType.isSystemRole()) {
-      throw this._exceptionFactory.createDomainState("系统角色不能变更为非系统角色", "system", "changeType", { oldType: oldType.value, newType: newType.value });
+    if (
+      this._isSystemRole &&
+      oldType.isSystemRole() &&
+      !newType.isSystemRole()
+    ) {
+      throw new DomainStateException(
+        "系统角色不能变更为非系统角色",
+        "system",
+        "changeType",
+        { oldType: oldType.value, newType: newType.value },
+      );
     }
   }
 
@@ -629,9 +696,15 @@ export class Role extends BaseEntity {
    * @param newType - 新权限类型
    * @private
    */
-  private validatePermissionTypeChange(oldType: PermissionType, newType: PermissionType): void {
+  private validatePermissionTypeChange(
+    oldType: PermissionType,
+    newType: PermissionType,
+  ): void {
     if (!newType) {
-      throw this._exceptionFactory.createDomainValidation("权限类型不能为空", "newType", newType);
+      throw new BusinessRuleViolationException(
+        "权限类型不能为空",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -643,7 +716,10 @@ export class Role extends BaseEntity {
    */
   private validatePriority(priority: number): void {
     if (typeof priority !== "number" || priority < 0) {
-      throw this._exceptionFactory.createDomainValidation("角色优先级必须是非负数", "priority", priority);
+      throw new BusinessRuleViolationException(
+        "角色优先级必须是非负数",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -655,10 +731,18 @@ export class Role extends BaseEntity {
    */
   private validateParentRole(parentRoleId: EntityId): void {
     if (!parentRoleId) {
-      throw this._exceptionFactory.createDomainValidation("父角色ID不能为空", "parentRoleId", parentRoleId);
+      throw new BusinessRuleViolationException(
+        "父角色ID不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (parentRoleId.equals(this.id)) {
-      throw this._exceptionFactory.createDomainState("角色不能设置自己为父角色", "active", "setParentRole", { roleId: this.id.value, parentRoleId: parentRoleId.value });
+      throw new DomainStateException(
+        "角色不能设置自己为父角色",
+        "active",
+        "setParentRole",
+        { roleId: this.id.toString(), parentRoleId: parentRoleId.toString() },
+      );
     }
   }
 
@@ -670,10 +754,16 @@ export class Role extends BaseEntity {
    */
   private validateTag(tag: string): void {
     if (!tag || !tag.trim()) {
-      throw this._exceptionFactory.createDomainValidation("标签不能为空", "tag", tag);
+      throw new BusinessRuleViolationException(
+        "标签不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (tag.trim().length > 50) {
-      throw this._exceptionFactory.createDomainValidation("标签长度不能超过50字符", "tag", tag);
+      throw new BusinessRuleViolationException(
+        "标签长度不能超过50字符",
+        "VALIDATION_FAILED",
+      );
     }
   }
 }

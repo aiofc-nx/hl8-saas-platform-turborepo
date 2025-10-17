@@ -6,10 +6,11 @@
  * @since 1.0.0
  */
 
-import { EntityId, TenantId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model";
 import { BaseEntity } from "../base/base-entity.js";
 import { UserStatus } from "../../value-objects/types/user-status.vo.js";
 import { UserRole } from "../../value-objects/types/user-role.vo.js";
+import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
 
@@ -21,43 +22,43 @@ import type { IPartialAuditInfo } from "../base/audit-info.js";
 export interface UserProps {
   /** 用户名 */
   username: string;
-  
+
   /** 邮箱地址 */
   email: string;
-  
+
   /** 手机号码 */
   phone?: string;
-  
+
   /** 用户状态 */
   status: UserStatus;
-  
+
   /** 用户角色 */
   role: UserRole;
-  
+
   /** 用户姓名 */
   displayName: string;
-  
+
   /** 头像URL */
   avatarUrl?: string;
-  
+
   /** 用户描述 */
   description?: string;
-  
+
   /** 是否启用 */
   isActive: boolean;
-  
+
   /** 最后登录时间 */
   lastLoginAt?: Date;
-  
+
   /** 最后登录IP */
   lastLoginIp?: string;
-  
+
   /** 登录失败次数 */
   failedLoginAttempts: number;
-  
+
   /** 账户锁定时间 */
   lockedAt?: Date;
-  
+
   /** 账户锁定原因 */
   lockReason?: string;
 }
@@ -299,7 +300,7 @@ export class User extends BaseEntity {
    * @param username - 新用户名
    * @param updatedBy - 更新者
    */
-  updateUsername(username: string, updatedBy: string): void {
+  updateUsername(username: string, _updatedBy: string): void {
     this.validateUsername(username);
     this._username = username.trim();
     this.updateTimestamp();
@@ -312,7 +313,7 @@ export class User extends BaseEntity {
    * @param email - 新邮箱地址
    * @param updatedBy - 更新者
    */
-  updateEmail(email: string, updatedBy: string): void {
+  updateEmail(email: string, _updatedBy: string): void {
     this.validateEmail(email);
     this._email = email.trim().toLowerCase();
     this.updateTimestamp();
@@ -325,7 +326,7 @@ export class User extends BaseEntity {
    * @param phone - 新手机号码
    * @param updatedBy - 更新者
    */
-  updatePhone(phone: string, updatedBy: string): void {
+  updatePhone(phone: string, _updatedBy: string): void {
     this.validatePhone(phone);
     this._phone = phone.trim();
     this.updateTimestamp();
@@ -338,7 +339,7 @@ export class User extends BaseEntity {
    * @param displayName - 新用户姓名
    * @param updatedBy - 更新者
    */
-  updateDisplayName(displayName: string, updatedBy: string): void {
+  updateDisplayName(displayName: string, _updatedBy: string): void {
     this.validateDisplayName(displayName);
     this._displayName = displayName.trim();
     this.updateTimestamp();
@@ -351,7 +352,7 @@ export class User extends BaseEntity {
    * @param role - 新用户角色
    * @param updatedBy - 更新者
    */
-  updateRole(role: UserRole, updatedBy: string): void {
+  updateRole(role: UserRole, _updatedBy: string): void {
     this.validateRole(role);
     this._role = role;
     this.updateTimestamp();
@@ -364,7 +365,7 @@ export class User extends BaseEntity {
    * @param status - 新用户状态
    * @param updatedBy - 更新者
    */
-  updateStatus(status: UserStatus, updatedBy: string): void {
+  updateStatus(status: UserStatus, _updatedBy: string): void {
     this.validateStatus(status);
     this._status = status;
     this.updateTimestamp();
@@ -445,9 +446,9 @@ export class User extends BaseEntity {
   recordLoginFailure(ip: string): void {
     this._failedLoginAttempts++;
     this.updateTimestamp();
-    this.logOperation("recordLoginFailure", { 
-      ip, 
-      failedAttempts: this._failedLoginAttempts 
+    this.logOperation("recordLoginFailure", {
+      ip,
+      failedAttempts: this._failedLoginAttempts,
     });
 
     // 如果失败次数超过5次，锁定账户
@@ -462,9 +463,9 @@ export class User extends BaseEntity {
    * @returns 是否可以登录
    */
   canLogin(): boolean {
-    return this._isActive && 
-           this._status === UserStatus.ACTIVE && 
-           !this._lockedAt;
+    return (
+      this._isActive && this._status === UserStatus.ACTIVE && !this._lockedAt
+    );
   }
 
   /**
@@ -481,7 +482,7 @@ export class User extends BaseEntity {
    *
    * @returns 是否激活
    */
-  isActive(): boolean {
+  isUserActive(): boolean {
     return this._isActive && this._status === UserStatus.ACTIVE;
   }
 
@@ -507,13 +508,22 @@ export class User extends BaseEntity {
    */
   private validateUsername(username: string): void {
     if (!username || !username.trim()) {
-      throw this._exceptionFactory.createDomainValidation("用户名不能为空", "username", username);
+      throw new BusinessRuleViolationException(
+        "用户名不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (username.trim().length > 50) {
-      throw this._exceptionFactory.createDomainValidation("用户名长度不能超过50字符", "username", username);
+      throw new BusinessRuleViolationException(
+        "用户名长度不能超过50字符",
+        "VALIDATION_FAILED",
+      );
     }
     if (!/^[a-zA-Z0-9_]+$/.test(username.trim())) {
-      throw this._exceptionFactory.createDomainValidation("用户名只能包含字母、数字和下划线", "username", username);
+      throw new BusinessRuleViolationException(
+        "用户名只能包含字母、数字和下划线",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -525,11 +535,17 @@ export class User extends BaseEntity {
    */
   private validateEmail(email: string): void {
     if (!email || !email.trim()) {
-      throw this._exceptionFactory.createDomainValidation("邮箱地址不能为空", "email", email);
+      throw new BusinessRuleViolationException(
+        "邮箱地址不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
-      throw this._exceptionFactory.createDomainValidation("邮箱地址格式不正确", "email", email);
+      throw new BusinessRuleViolationException(
+        "邮箱地址格式不正确",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -543,7 +559,10 @@ export class User extends BaseEntity {
     if (phone && phone.trim()) {
       const phoneRegex = /^1[3-9]\d{9}$/;
       if (!phoneRegex.test(phone.trim())) {
-        throw this._exceptionFactory.createDomainValidation("手机号码格式不正确", "phone", phone);
+        throw new BusinessRuleViolationException(
+          "手机号码格式不正确",
+          "VALIDATION_FAILED",
+        );
       }
     }
   }
@@ -556,10 +575,16 @@ export class User extends BaseEntity {
    */
   private validateDisplayName(displayName: string): void {
     if (!displayName || !displayName.trim()) {
-      throw this._exceptionFactory.createDomainValidation("用户姓名不能为空", "displayName", displayName);
+      throw new BusinessRuleViolationException(
+        "用户姓名不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (displayName.trim().length > 100) {
-      throw this._exceptionFactory.createDomainValidation("用户姓名长度不能超过100字符", "displayName", displayName);
+      throw new BusinessRuleViolationException(
+        "用户姓名长度不能超过100字符",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -571,7 +596,10 @@ export class User extends BaseEntity {
    */
   private validateStatus(status: UserStatus): void {
     if (!status) {
-      throw this._exceptionFactory.createDomainValidation("用户状态不能为空", "status", status);
+      throw new BusinessRuleViolationException(
+        "用户状态不能为空",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -583,7 +611,10 @@ export class User extends BaseEntity {
    */
   private validateRole(role: UserRole): void {
     if (!role) {
-      throw this._exceptionFactory.createDomainValidation("用户角色不能为空", "role", role);
+      throw new BusinessRuleViolationException(
+        "用户角色不能为空",
+        "VALIDATION_FAILED",
+      );
     }
   }
 }

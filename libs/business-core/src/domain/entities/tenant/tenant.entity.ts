@@ -1,17 +1,18 @@
-import { BaseEntity } from '../base/base-entity.js';
-import { EntityId, TenantId } from '@hl8/isolation-model';
-import type { IPureLogger } from '@hl8/pure-logger';
-import { TenantType } from '../../value-objects/types/tenant-type.vo.js';
-import type { IPartialAuditInfo } from '../base/audit-info.js';
-import { BusinessRuleFactory } from '../../rules/business-rule-factory.js';
-import { BusinessRuleManager } from '../../rules/business-rule-manager.js';
-import { UsernameValidator } from '../../validators/common/username.validator.js';
-import { ValidationService } from '../../validators/validation-service.js';
-import { SpecificationFactory } from '../../specifications/specification-factory.js';
-import { TenantActiveSpecification, TenantTypeSpecification, TenantNameSpecification } from '../../specifications/tenant-specifications.js';
-import { ExceptionFactory } from '../../exceptions/exception-factory.js';
-import { InvalidTenantTypeException, InvalidTenantNameException } from '../../exceptions/business-exceptions.js';
-
+import { BaseEntity } from "../base/base-entity.js";
+import { EntityId, TenantId } from "@hl8/isolation-model";
+import type { IPureLogger } from "@hl8/pure-logger";
+import { TenantType } from "../../value-objects/types/tenant-type.vo.js";
+import type { IPartialAuditInfo } from "../base/audit-info.js";
+import { BusinessRuleFactory } from "../../rules/business-rule-factory.js";
+import { BusinessRuleManager } from "../../rules/business-rule-manager.js";
+import { ValidationService } from "../../validators/validation-service.js";
+import { SpecificationFactory } from "../../specifications/specification-factory.js";
+import {
+  TenantActiveSpecification,
+  TenantTypeSpecification,
+  TenantNameSpecification,
+} from "../../specifications/tenant-specifications.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
 /**
  * 租户实体（Tenant）
  *
@@ -59,23 +60,23 @@ export class Tenant extends BaseEntity {
     this.validateNameWithRules(newName);
     this._name = newName.trim();
     this.updateTimestamp();
-    this.logOperation('rename', { name: this._name });
+    this.logOperation("rename", { name: this._name });
   }
 
   changeType(newType: TenantType): void {
     if (!newType) {
-      throw this._exceptionFactory.createInvalidTenantType('租户类型不能为空');
+      throw this._exceptionFactory.createInvalidTenantType("租户类型不能为空");
     }
     this._type = newType;
     this.updateTimestamp();
-    this.logOperation('changeType', { type: newType.value });
+    this.logOperation("changeType", { type: newType.value });
   }
 
   protected override validate(): void {
     super.validate();
     this.validateNameWithRules(this._name);
     if (!(this.type instanceof TenantType)) {
-      throw this._exceptionFactory.createInvalidTenantType('租户类型无效');
+      throw this._exceptionFactory.createInvalidTenantType("租户类型无效");
     }
   }
 
@@ -88,17 +89,23 @@ export class Tenant extends BaseEntity {
   private validateNameWithRules(name: string): void {
     // 使用验证服务进行统一验证
     const validationResult = this._validationService.validateTenantName(name);
-    
+
     if (!validationResult.isValid) {
-      throw this._exceptionFactory.createInvalidTenantName(name, validationResult.errors.join(', '));
+      throw this._exceptionFactory.createInvalidTenantName(
+        name,
+        validationResult.errors.join(", "),
+      );
     }
-    
+
     // 使用规范模式进行业务逻辑验证
     const nameSpec = new TenantNameSpecification(3, 100);
     const nameResult = nameSpec.check(this);
-    
+
     if (!nameResult.isSatisfied) {
-      throw this._exceptionFactory.createInvalidTenantName(name, nameResult.errorMessage || '租户名称规范不满足');
+      throw this._exceptionFactory.createInvalidTenantName(
+        name,
+        nameResult.errorMessage || "租户名称规范不满足",
+      );
     }
   }
 
@@ -170,38 +177,44 @@ export class Tenant extends BaseEntity {
    *
    * @returns 规范检查结果
    */
-  getSpecificationResults(): Array<{ name: string; satisfied: boolean; errorMessage?: string }> {
-    const results: Array<{ name: string; satisfied: boolean; errorMessage?: string }> = [];
-    
+  getSpecificationResults(): Array<{
+    name: string;
+    satisfied: boolean;
+    errorMessage?: string;
+  }> {
+    const results: Array<{
+      name: string;
+      satisfied: boolean;
+      errorMessage?: string;
+    }> = [];
+
     // 检查激活规范
     const activeSpec = new TenantActiveSpecification();
     const activeResult = activeSpec.check(this);
     results.push({
-      name: '激活规范',
+      name: "激活规范",
       satisfied: activeResult.isSatisfied,
       errorMessage: activeResult.errorMessage,
     });
-    
+
     // 检查类型规范
     const typeSpec = new TenantTypeSpecification(this._type);
     const typeResult = typeSpec.check(this);
     results.push({
-      name: '类型规范',
+      name: "类型规范",
       satisfied: typeResult.isSatisfied,
       errorMessage: typeResult.errorMessage,
     });
-    
+
     // 检查名称规范
     const nameSpec = new TenantNameSpecification();
     const nameResult = nameSpec.check(this);
     results.push({
-      name: '名称规范',
+      name: "名称规范",
       satisfied: nameResult.isSatisfied,
       errorMessage: nameResult.errorMessage,
     });
-    
+
     return results;
   }
 }
-
-

@@ -7,8 +7,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { InvalidRoleTypeException } from "../../exceptions/validation-exceptions.js";
+import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
 
 /**
  * 角色类型枚举
@@ -50,12 +49,12 @@ export enum RoleTypeValue {
  * @example
  * ```typescript
  * // 创建角色类型
- * const roleType = RoleType.create('TENANT');
- * 
+ * const roleType = new RoleType(RoleTypeValue.TENANT);
+ *
  * // 检查角色类型
  * console.log(roleType.isSystemRole()); // false
  * console.log(roleType.isTenantRole()); // true
- * 
+ *
  * // 角色类型比较
  * const systemRole = RoleType.SYSTEM;
  * console.log(roleType.hasHigherScopeThan(systemRole)); // false
@@ -64,7 +63,6 @@ export enum RoleTypeValue {
  * @since 1.0.0
  */
 export class RoleType extends BaseValueObject<RoleTypeValue> {
-  private _exceptionFactory: ExceptionFactory;
   /**
    * 系统角色类型
    */
@@ -110,10 +108,10 @@ export class RoleType extends BaseValueObject<RoleTypeValue> {
     this.validateNotEmpty(value, "角色类型");
     const validTypes = Object.values(RoleTypeValue);
     if (!validTypes.includes(value)) {
-      if (!this._exceptionFactory) {
-        this._exceptionFactory = ExceptionFactory.getInstance();
-      }
-      throw this._exceptionFactory.createInvalidRoleType(value.toString());
+      throw new BusinessRuleViolationException(
+        `无效的角色类型: ${value}`,
+        "VALIDATION_FAILED",
+      );
     }
   }
 

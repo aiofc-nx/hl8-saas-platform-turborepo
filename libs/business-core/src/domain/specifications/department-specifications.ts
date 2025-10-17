@@ -5,10 +5,10 @@
  * @since 1.0.0
  */
 
-import { BaseSpecification } from './base/base-specification.js';
-import { Department } from '../entities/department/department.entity.js';
-import { DepartmentLevel } from '../value-objects/types/department-level.vo.js';
-import { EntityId } from '@hl8/isolation-model';
+import { BaseSpecification } from "./base/base-specification.js";
+import { Department } from "../entities/department/department.entity.js";
+import { DepartmentLevel } from "../value-objects/types/department-level.vo.js";
+import { EntityId } from "@hl8/isolation-model";
 
 /**
  * 部门激活规范
@@ -18,15 +18,15 @@ import { EntityId } from '@hl8/isolation-model';
 export class DepartmentActiveSpecification extends BaseSpecification<Department> {
   constructor() {
     super({
-      name: 'DepartmentActiveSpecification',
-      description: '部门必须处于激活状态',
-      category: 'department',
-      tags: ['department', 'status', 'active'],
+      name: "DepartmentActiveSpecification",
+      description: "部门必须处于激活状态",
+      category: "department",
+      tags: ["department", "status", "active"],
       priority: 1,
     });
   }
 
-  isSatisfiedBy(department: Department): boolean {
+  isSatisfiedBy(_department: Department): boolean {
     // 这里需要根据实际的Department实体实现来判断激活状态
     // 假设Department实体有一个status属性
     return true; // 临时实现，需要根据实际实体调整
@@ -48,17 +48,19 @@ export class DepartmentLevelSpecification extends BaseSpecification<Department> 
     private maxLevel: DepartmentLevel,
   ) {
     super({
-      name: 'DepartmentLevelSpecification',
+      name: "DepartmentLevelSpecification",
       description: `部门层级必须在 ${minLevel.value} 到 ${maxLevel.value} 之间`,
-      category: 'department',
-      tags: ['department', 'level'],
+      category: "department",
+      tags: ["department", "level"],
       priority: 1,
     });
   }
 
   isSatisfiedBy(department: Department): boolean {
     const level = department.level;
-    return level.value >= this.minLevel.value && level.value <= this.maxLevel.value;
+    return (
+      level.value >= this.minLevel.value && level.value <= this.maxLevel.value
+    );
   }
 
   protected getErrorMessage(department: Department): string {
@@ -77,23 +79,25 @@ export class DepartmentNameSpecification extends BaseSpecification<Department> {
     private maxLength: number = 100,
   ) {
     super({
-      name: 'DepartmentNameSpecification',
+      name: "DepartmentNameSpecification",
       description: `部门名称长度必须在 ${minLength} 到 ${maxLength} 之间`,
-      category: 'department',
-      tags: ['department', 'name', 'validation'],
+      category: "department",
+      tags: ["department", "name", "validation"],
       priority: 1,
     });
   }
 
   isSatisfiedBy(department: Department): boolean {
     const name = department.name;
-    return name && name.length >= this.minLength && name.length <= this.maxLength;
+    return (
+      name && name.length >= this.minLength && name.length <= this.maxLength
+    );
   }
 
   protected getErrorMessage(department: Department): string {
     const name = department.name;
     if (!name) {
-      return '部门名称不能为空';
+      return "部门名称不能为空";
     }
     if (name.length < this.minLength) {
       return `部门名称长度不能少于 ${this.minLength} 个字符`;
@@ -101,7 +105,7 @@ export class DepartmentNameSpecification extends BaseSpecification<Department> {
     if (name.length > this.maxLength) {
       return `部门名称长度不能超过 ${this.maxLength} 个字符`;
     }
-    return '部门名称不符合规范';
+    return "部门名称不符合规范";
   }
 }
 
@@ -113,10 +117,10 @@ export class DepartmentNameSpecification extends BaseSpecification<Department> {
 export class DepartmentIdSpecification extends BaseSpecification<Department> {
   constructor(private requiredId: EntityId) {
     super({
-      name: 'DepartmentIdSpecification',
-      description: `部门ID必须为 ${requiredId.value}`,
-      category: 'department',
-      tags: ['department', 'id'],
+      name: "DepartmentIdSpecification",
+      description: `部门ID必须为 ${requiredId.toString()}`,
+      category: "department",
+      tags: ["department", "id"],
       priority: 1,
     });
   }
@@ -126,7 +130,7 @@ export class DepartmentIdSpecification extends BaseSpecification<Department> {
   }
 
   protected getErrorMessage(department: Department): string {
-    return `部门ID必须为 ${this.requiredId.value}，实际为 ${department.id.value}`;
+    return `部门ID必须为 ${this.requiredId.toString()}，实际为 ${department.id.toString()}`;
   }
 }
 
@@ -138,10 +142,10 @@ export class DepartmentIdSpecification extends BaseSpecification<Department> {
 export class DepartmentHasParentSpecification extends BaseSpecification<Department> {
   constructor() {
     super({
-      name: 'DepartmentHasParentSpecification',
-      description: '部门必须有父级',
-      category: 'department',
-      tags: ['department', 'parent'],
+      name: "DepartmentHasParentSpecification",
+      description: "部门必须有父级",
+      category: "department",
+      tags: ["department", "parent"],
       priority: 1,
     });
   }
@@ -163,10 +167,10 @@ export class DepartmentHasParentSpecification extends BaseSpecification<Departme
 export class DepartmentNoParentSpecification extends BaseSpecification<Department> {
   constructor() {
     super({
-      name: 'DepartmentNoParentSpecification',
-      description: '部门不能有父级（根部门）',
-      category: 'department',
-      tags: ['department', 'root', 'no-parent'],
+      name: "DepartmentNoParentSpecification",
+      description: "部门不能有父级（根部门）",
+      category: "department",
+      tags: ["department", "root", "no-parent"],
       priority: 1,
     });
   }
@@ -188,20 +192,22 @@ export class DepartmentNoParentSpecification extends BaseSpecification<Departmen
 export class DepartmentParentIdSpecification extends BaseSpecification<Department> {
   constructor(private requiredParentId: EntityId) {
     super({
-      name: 'DepartmentParentIdSpecification',
-      description: `部门父级ID必须为 ${requiredParentId.value}`,
-      category: 'department',
-      tags: ['department', 'parent', 'id'],
+      name: "DepartmentParentIdSpecification",
+      description: `部门父级ID必须为 ${requiredParentId.toString()}`,
+      category: "department",
+      tags: ["department", "parent", "id"],
       priority: 1,
     });
   }
 
   isSatisfiedBy(department: Department): boolean {
-    return department.parentId && department.parentId.equals(this.requiredParentId);
+    return (
+      department.parentId && department.parentId.equals(this.requiredParentId)
+    );
   }
 
   protected getErrorMessage(department: Department): string {
-    return `部门父级ID必须为 ${this.requiredParentId.value}，实际为 ${department.parentId?.value || 'null'}`;
+    return `部门父级ID必须为 ${this.requiredParentId.toString()}，实际为 ${department.parentId?.toString() || "null"}`;
   }
 }
 
@@ -213,21 +219,21 @@ export class DepartmentParentIdSpecification extends BaseSpecification<Departmen
 export class DepartmentLevelDepthSpecification extends BaseSpecification<Department> {
   constructor(private maxDepth: number) {
     super({
-      name: 'DepartmentLevelDepthSpecification',
+      name: "DepartmentLevelDepthSpecification",
       description: `部门层级深度不能超过 ${maxDepth}`,
-      category: 'department',
-      tags: ['department', 'level', 'depth'],
+      category: "department",
+      tags: ["department", "level", "depth"],
       priority: 1,
     });
   }
 
-  isSatisfiedBy(department: Department): boolean {
+  isSatisfiedBy(_department: Department): boolean {
     // 这里需要根据实际的Department实体实现来计算层级深度
     // 假设Department实体有一个levelDepth属性
     return true; // 临时实现，需要根据实际实体调整
   }
 
-  protected getErrorMessage(department: Department): string {
+  protected getErrorMessage(_department: Department): string {
     return `部门层级深度不能超过 ${this.maxDepth}`;
   }
 }

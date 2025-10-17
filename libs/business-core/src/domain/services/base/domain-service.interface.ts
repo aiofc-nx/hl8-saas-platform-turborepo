@@ -1,4 +1,4 @@
-import { ExceptionFactory } from '../../exceptions/exception-factory.js';
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
 
 /**
  * 领域服务接口
@@ -303,7 +303,11 @@ export abstract class BaseDomainService implements IDomainService {
    */
   protected validatePrecondition(condition: boolean, message: string): void {
     if (!condition) {
-      throw this._exceptionFactory.createDomainValidation(`[${this.serviceName}] 前置条件验证失败: ${message}`, "precondition", condition);
+      throw this._exceptionFactory.createDomainValidation(
+        `[${this.serviceName}] 前置条件验证失败: ${message}`,
+        "precondition",
+        condition,
+      );
     }
   }
 
@@ -316,7 +320,11 @@ export abstract class BaseDomainService implements IDomainService {
    */
   protected validatePostcondition(condition: boolean, message: string): void {
     if (!condition) {
-      throw this._exceptionFactory.createDomainValidation(`[${this.serviceName}] 后置条件验证失败: ${message}`, "postcondition", condition);
+      throw this._exceptionFactory.createDomainValidation(
+        `[${this.serviceName}] 后置条件验证失败: ${message}`,
+        "postcondition",
+        condition,
+      );
     }
   }
 

@@ -16,8 +16,7 @@ import { PermissionAction } from "../value-objects/types/permission-action.vo.js
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 import { ExceptionFactory } from "../exceptions/exception-factory.js";
-import { RoleStateException, InvalidRoleNameException } from "../exceptions/business-exceptions.js";
-
+import { BusinessRuleViolationException } from "../exceptions/base/base-domain-exception.js";
 /**
  * 角色聚合根
  *
@@ -52,10 +51,10 @@ import { RoleStateException, InvalidRoleNameException } from "../exceptions/busi
  *   role,
  *   { createdBy: "system" }
  * );
- * 
+ *
  * // 分配权限
  * roleAggregate.assignPermission(permission);
- * 
+ *
  * // 创建子角色
  * roleAggregate.createChildRole(childRole);
  * ```
@@ -118,11 +117,18 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
     if (description !== undefined) {
       this.role.updateDescription(description);
     }
-    this.publishIsolationEvent("RoleInfoUpdated", {
-      roleId: this.role.id.toString(),
-      name: this.role.name,
-      description: this.role.description,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "RoleInfoUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          roleId: this.role.id.toString(),
+          name: this.role.name,
+          description: this.role.description,
+        }) as any,
+    );
   }
 
   /**
@@ -133,10 +139,17 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
   updateRoleType(type: RoleType): void {
     this.validateRoleTypeChange(this.role.type, type);
     this.role.updateType(type);
-    this.publishIsolationEvent("RoleTypeUpdated", {
-      roleId: this.role.id.toString(),
-      type: type.value,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "RoleTypeUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          roleId: this.role.id.toString(),
+          roleType: type.value,
+        }) as any,
+    );
   }
 
   /**
@@ -146,13 +159,20 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   assignPermission(permission: Permission): void {
     this.validatePermissionAssignment(permission);
-    if (!this.permissions.some(p => p.id.equals(permission.id))) {
+    if (!this.permissions.some((p) => p.id.equals(permission.id))) {
       this.permissions.push(permission);
-      this.publishIsolationEvent("PermissionAssigned", {
-        roleId: this.role.id.toString(),
-        permissionId: permission.id.toString(),
-        permissionName: permission.name,
-      });
+      this.publishIsolationEvent(
+        (id, version, context) =>
+          ({
+            type: "PermissionAssigned",
+            aggregateId: id.toString(),
+            version,
+            isolationContext: context,
+            roleId: this.role.id.toString(),
+            permissionId: permission.id.toString(),
+            permissionName: permission.name,
+          }) as any,
+      );
     }
   }
 
@@ -163,15 +183,22 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   removePermission(permissionId: EntityId): void {
     this.validatePermissionRemoval(permissionId);
-    const index = this.permissions.findIndex(p => p.id.equals(permissionId));
+    const index = this.permissions.findIndex((p) => p.id.equals(permissionId));
     if (index !== -1) {
       const permission = this.permissions[index];
       this.permissions.splice(index, 1);
-      this.publishIsolationEvent("PermissionRemoved", {
-        roleId: this.role.id.toString(),
-        permissionId: permissionId.toString(),
-        permissionName: permission.name,
-      });
+      this.publishIsolationEvent(
+        (id, version, context) =>
+          ({
+            type: "PermissionRemoved",
+            aggregateId: id.toString(),
+            version,
+            isolationContext: context,
+            roleId: this.role.id.toString(),
+            permissionId: permissionId.toString(),
+            permissionName: permission.name,
+          }) as any,
+      );
     }
   }
 
@@ -183,14 +210,21 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
   assignPermissions(permissions: Permission[]): void {
     this.validatePermissionsAssignment(permissions);
     for (const permission of permissions) {
-      if (!this.permissions.some(p => p.id.equals(permission.id))) {
+      if (!this.permissions.some((p) => p.id.equals(permission.id))) {
         this.permissions.push(permission);
       }
     }
-    this.publishIsolationEvent("PermissionsAssigned", {
-      roleId: this.role.id.toString(),
-      permissionIds: permissions.map(p => p.id.toString()),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionsAssigned",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          roleId: this.role.id.toString(),
+          permissionIds: permissions.map((p) => p.id.toString()),
+        }) as any,
+    );
   }
 
   /**
@@ -199,9 +233,16 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
   clearPermissions(): void {
     this.validatePermissionsClear();
     this.permissions = [];
-    this.publishIsolationEvent("PermissionsCleared", {
-      roleId: this.role.id.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "PermissionsCleared",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          roleId: this.role.id.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -212,11 +253,18 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
   createChildRole(childRole: Role): void {
     this.validateChildRoleCreation(childRole);
     this.childRoles.push(childRole);
-    this.publishIsolationEvent("ChildRoleCreated", {
-      roleId: this.role.id.toString(),
-      childRoleId: childRole.id.toString(),
-      childRoleName: childRole.name,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "ChildRoleCreated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          roleId: this.role.id.toString(),
+          childRoleId: childRole.id.toString(),
+          childRoleName: childRole.name,
+        }) as any,
+    );
   }
 
   /**
@@ -226,15 +274,22 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   removeChildRole(childRoleId: EntityId): void {
     this.validateChildRoleRemoval(childRoleId);
-    const index = this.childRoles.findIndex(r => r.id.equals(childRoleId));
+    const index = this.childRoles.findIndex((r) => r.id.equals(childRoleId));
     if (index !== -1) {
       const childRole = this.childRoles[index];
       this.childRoles.splice(index, 1);
-      this.publishIsolationEvent("ChildRoleRemoved", {
-        roleId: this.role.id.toString(),
-        childRoleId: childRoleId.toString(),
-        childRoleName: childRole.name,
-      });
+      this.publishIsolationEvent(
+        (id, version, context) =>
+          ({
+            type: "ChildRoleRemoved",
+            aggregateId: id.toString(),
+            version,
+            isolationContext: context,
+            roleId: this.role.id.toString(),
+            childRoleId: childRoleId.toString(),
+            childRoleName: childRole.name,
+          }) as any,
+      );
     }
   }
 
@@ -243,10 +298,17 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   activateRole(): void {
     this.role.activate();
-    this.publishIsolationEvent("RoleActivated", {
-      roleId: this.role.id.toString(),
-      roleName: this.role.name,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "RoleActivated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          roleId: this.role.id.toString(),
+          roleName: this.role.name,
+        }) as any,
+    );
   }
 
   /**
@@ -255,10 +317,17 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
   deactivateRole(): void {
     this.validateRoleDeactivation();
     this.role.deactivate();
-    this.publishIsolationEvent("RoleDeactivated", {
-      roleId: this.role.id.toString(),
-      roleName: this.role.name,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "RoleDeactivated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          roleId: this.role.id.toString(),
+          roleName: this.role.name,
+        }) as any,
+    );
   }
 
   /**
@@ -268,10 +337,17 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   updateRolePriority(priority: number): void {
     this.role.updatePriority(priority);
-    this.publishIsolationEvent("RolePriorityUpdated", {
-      roleId: this.role.id.toString(),
-      priority,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "RolePriorityUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          roleId: this.role.id.toString(),
+          priority,
+        }) as any,
+    );
   }
 
   /**
@@ -281,7 +357,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 是否有权限
    */
   hasPermission(permissionId: EntityId): boolean {
-    return this.permissions.some(p => p.id.equals(permissionId));
+    return this.permissions.some((p) => p.id.equals(permissionId));
   }
 
   /**
@@ -292,8 +368,8 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 是否可以执行
    */
   canExecute(action: PermissionAction, resource: string): boolean {
-    return this.permissions.some(p => 
-      p.canExecute(action) && p.canAccess(resource)
+    return this.permissions.some(
+      (p) => p.canExecute(action) && p.canAccess(resource),
     );
   }
 
@@ -303,7 +379,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 是否可以管理
    */
   canManage(): boolean {
-    return this.permissions.some(p => p.canManage());
+    return this.permissions.some((p) => p.canManage());
   }
 
   /**
@@ -312,7 +388,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 权限描述列表
    */
   getPermissionDescriptions(): string[] {
-    return this.permissions.map(p => p.getPermissionDescription());
+    return this.permissions.map((p) => p.getPermissionDescription());
   }
 
   /**
@@ -331,7 +407,12 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleUpdate(): void {
     if (!this.role.isEditable) {
-      throw this._exceptionFactory.createDomainState("角色不可编辑", "system", "updateRole", { roleId: this.role.id.value, isEditable: this.role.isEditable });
+      throw this._exceptionFactory.createDomainState(
+        "角色不可编辑",
+        "system",
+        "updateRole",
+        { roleId: this.role.id.toString(), isEditable: this.role.isEditable },
+      );
     }
   }
 
@@ -344,10 +425,26 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleTypeChange(oldType: RoleType, newType: RoleType): void {
     if (!newType) {
-      throw this._exceptionFactory.createInvalidRoleType(type.toString(), "角色类型不能为空");
+      throw new BusinessRuleViolationException(
+        "角色类型不能为空",
+        "VALIDATION_FAILED",
+      );
     }
-    if (this.role.isSystemRole && oldType.isSystemRole() && !newType.isSystemRole()) {
-      throw this._exceptionFactory.createDomainState("系统角色不能变更为非系统角色", "system", "changeRoleType", { roleId: this.role.id.value, oldType: oldType.value, newType: newType.value });
+    if (
+      this.role.isSystemRole &&
+      oldType.isSystemRole() &&
+      !newType.isSystemRole()
+    ) {
+      throw this._exceptionFactory.createDomainState(
+        "系统角色不能变更为非系统角色",
+        "system",
+        "changeRoleType",
+        {
+          roleId: this.role.id.toString(),
+          oldType: oldType.value,
+          newType: newType.value,
+        },
+      );
     }
   }
 
@@ -359,10 +456,22 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionAssignment(permission: Permission): void {
     if (!permission) {
-      throw this._exceptionFactory.createDomainValidation("权限不能为空", "permission", permission);
+      throw this._exceptionFactory.createDomainValidation(
+        "权限不能为空",
+        "permission",
+        permission,
+      );
     }
     if (!permission.isActive) {
-      throw this._exceptionFactory.createDomainState("权限未激活，无法分配", "inactive", "assignPermission", { permissionId: permission.id.value, isActive: permission.isActive });
+      throw this._exceptionFactory.createDomainState(
+        "权限未激活，无法分配",
+        "inactive",
+        "assignPermission",
+        {
+          permissionId: permission.id.toString(),
+          isActive: permission.isActive,
+        },
+      );
     }
   }
 
@@ -374,7 +483,11 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionRemoval(permissionId: EntityId): void {
     if (!permissionId) {
-      throw this._exceptionFactory.createDomainValidation("权限ID不能为空", "permissionId", permissionId);
+      throw this._exceptionFactory.createDomainValidation(
+        "权限ID不能为空",
+        "permissionId",
+        permissionId,
+      );
     }
   }
 
@@ -386,7 +499,11 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionsAssignment(permissions: Permission[]): void {
     if (!permissions || permissions.length === 0) {
-      throw this._exceptionFactory.createDomainValidation("权限列表不能为空", "permissions", permissions);
+      throw this._exceptionFactory.createDomainValidation(
+        "权限列表不能为空",
+        "permissions",
+        permissions,
+      );
     }
     for (const permission of permissions) {
       this.validatePermissionAssignment(permission);
@@ -400,7 +517,15 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionsClear(): void {
     if (this.role.isSystemRole) {
-      throw this._exceptionFactory.createDomainState("系统角色不能清空权限", "system", "clearPermissions", { roleId: this.role.id.value, isSystemRole: this.role.isSystemRole });
+      throw this._exceptionFactory.createDomainState(
+        "系统角色不能清空权限",
+        "system",
+        "clearPermissions",
+        {
+          roleId: this.role.id.toString(),
+          isSystemRole: this.role.isSystemRole,
+        },
+      );
     }
   }
 
@@ -412,13 +537,33 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateChildRoleCreation(childRole: Role): void {
     if (!childRole) {
-      throw this._exceptionFactory.createDomainValidation("子角色不能为空", "childRole", childRole);
+      throw this._exceptionFactory.createDomainValidation(
+        "子角色不能为空",
+        "childRole",
+        childRole,
+      );
     }
     if (childRole.id.equals(this.role.id)) {
-      throw this._exceptionFactory.createDomainState("角色不能设置自己为子角色", "active", "createChildRole", { roleId: this.role.id.value, childRoleId: childRole.id.value });
+      throw this._exceptionFactory.createDomainState(
+        "角色不能设置自己为子角色",
+        "active",
+        "createChildRole",
+        {
+          roleId: this.role.id.toString(),
+          childRoleId: childRole.id.toString(),
+        },
+      );
     }
-    if (this.childRoles.some(r => r.id.equals(childRole.id))) {
-      throw this._exceptionFactory.createDomainState("子角色已存在", "active", "createChildRole", { roleId: this.role.id.value, childRoleId: childRole.id.value });
+    if (this.childRoles.some((r) => r.id.equals(childRole.id))) {
+      throw this._exceptionFactory.createDomainState(
+        "子角色已存在",
+        "active",
+        "createChildRole",
+        {
+          roleId: this.role.id.toString(),
+          childRoleId: childRole.id.toString(),
+        },
+      );
     }
   }
 
@@ -430,7 +575,11 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateChildRoleRemoval(childRoleId: EntityId): void {
     if (!childRoleId) {
-      throw this._exceptionFactory.createDomainValidation("子角色ID不能为空", "childRoleId", childRoleId);
+      throw this._exceptionFactory.createDomainValidation(
+        "子角色ID不能为空",
+        "childRoleId",
+        childRoleId,
+      );
     }
   }
 
@@ -441,10 +590,26 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleDeactivation(): void {
     if (this.role.isSystemRole) {
-      throw this._exceptionFactory.createDomainState("系统角色不能停用", "system", "deactivate", { roleId: this.role.id.value, isSystemRole: this.role.isSystemRole });
+      throw this._exceptionFactory.createDomainState(
+        "系统角色不能停用",
+        "system",
+        "deactivate",
+        {
+          roleId: this.role.id.toString(),
+          isSystemRole: this.role.isSystemRole,
+        },
+      );
     }
     if (this.childRoles.length > 0) {
-      throw this._exceptionFactory.createDomainState("有子角色的角色不能停用", "active", "deactivate", { roleId: this.role.id.value, childRolesCount: this.childRoles.length });
+      throw this._exceptionFactory.createDomainState(
+        "有子角色的角色不能停用",
+        "active",
+        "deactivate",
+        {
+          roleId: this.role.id.toString(),
+          childRolesCount: this.childRoles.length,
+        },
+      );
     }
   }
 }

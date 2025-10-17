@@ -41,11 +41,9 @@
  * @since 1.0.0
  */
 import { BaseValueObject } from "../base-value-object.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { InvalidTenantTypeException } from "../../exceptions/validation-exceptions.js";
+import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
 
 export class TenantType extends BaseValueObject<string> {
-  private _exceptionFactory: ExceptionFactory;
   /**
    * 企业租户
    */
@@ -93,15 +91,14 @@ export class TenantType extends BaseValueObject<string> {
    * @protected
    */
   protected validate(value: string): void {
-    if (!this._exceptionFactory) {
-      this._exceptionFactory = ExceptionFactory.getInstance();
-    }
-    
     this.validateNotEmpty(value, "租户类型");
 
     const validTypes = ["ENTERPRISE", "COMMUNITY", "TEAM", "PERSONAL"];
     if (!validTypes.includes(value.toUpperCase())) {
-      throw this._exceptionFactory.createInvalidTenantType(value, `无效的租户类型: ${value}。有效类型: ${validTypes.join(", ")}`);
+      throw new BusinessRuleViolationException(
+        `无效的租户类型: ${value}。有效类型: ${validTypes.join(", ")}`,
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -136,7 +133,10 @@ export class TenantType extends BaseValueObject<string> {
       case "PERSONAL":
         return TenantType.PERSONAL;
       default:
-        throw this._exceptionFactory.createInvalidTenantType(value, `无效的租户类型: ${value}`);
+        throw new BusinessRuleViolationException(
+          `无效的租户类型: ${value}`,
+          "VALIDATION_FAILED",
+        );
     }
   }
 
@@ -146,7 +146,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否为企业租户
    */
   isEnterprise(): boolean {
-    return this._value === "ENTERPRISE";
+    return this.value === "ENTERPRISE";
   }
 
   /**
@@ -155,7 +155,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否为社群租户
    */
   isCommunity(): boolean {
-    return this._value === "COMMUNITY";
+    return this.value === "COMMUNITY";
   }
 
   /**
@@ -164,7 +164,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否为团队租户
    */
   isTeam(): boolean {
-    return this._value === "TEAM";
+    return this.value === "TEAM";
   }
 
   /**
@@ -173,7 +173,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否为个人租户
    */
   isPersonal(): boolean {
-    return this._value === "PERSONAL";
+    return this.value === "PERSONAL";
   }
 
   /**
@@ -182,7 +182,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 显示名称
    */
   getDisplayName(): string {
-    switch (this._value) {
+    switch (this.value) {
       case "ENTERPRISE":
         return "企业租户";
       case "COMMUNITY":
@@ -202,7 +202,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 类型描述
    */
   getDescription(): string {
-    switch (this._value) {
+    switch (this.value) {
       case "ENTERPRISE":
         return "大型企业客户，拥有完整功能权限和最大资源配额";
       case "COMMUNITY":
@@ -222,7 +222,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 权限级别（数字越大权限越高）
    */
   getPermissionLevel(): number {
-    switch (this._value) {
+    switch (this.value) {
       case "ENTERPRISE":
         return 4;
       case "COMMUNITY":
@@ -247,7 +247,7 @@ export class TenantType extends BaseValueObject<string> {
     maxProjects: number;
     maxOrganizations: number;
   } {
-    switch (this._value) {
+    switch (this.value) {
       case "ENTERPRISE":
         return {
           maxUsers: 10000,
@@ -292,7 +292,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否支持多用户
    */
   supportsMultiUser(): boolean {
-    return this._value !== "PERSONAL";
+    return this.value !== "PERSONAL";
   }
 
   /**
@@ -301,7 +301,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否支持组织管理
    */
   supportsOrganizationManagement(): boolean {
-    return this._value === "ENTERPRISE" || this._value === "COMMUNITY";
+    return this.value === "ENTERPRISE" || this.value === "COMMUNITY";
   }
 
   /**
@@ -310,7 +310,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 是否支持高级功能
    */
   supportsAdvancedFeatures(): boolean {
-    return this._value === "ENTERPRISE";
+    return this.value === "ENTERPRISE";
   }
 
   /**
@@ -321,7 +321,7 @@ export class TenantType extends BaseValueObject<string> {
    */
   equals(other: TenantType | null | undefined): boolean {
     if (!other) return false;
-    return this._value === other._value;
+    return this.value === other.value;
   }
 
   /**
@@ -330,7 +330,7 @@ export class TenantType extends BaseValueObject<string> {
    * @returns 租户类型字符串
    */
   toString(): string {
-    return this._value;
+    return this.value;
   }
 
   /**
@@ -340,7 +340,7 @@ export class TenantType extends BaseValueObject<string> {
    */
   toJSON(): Record<string, any> {
     return {
-      value: this._value,
+      value: this.value,
       displayName: this.getDisplayName(),
       description: this.getDescription(),
       permissionLevel: this.getPermissionLevel(),

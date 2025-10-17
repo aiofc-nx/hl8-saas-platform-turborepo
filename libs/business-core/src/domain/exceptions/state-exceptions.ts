@@ -5,7 +5,11 @@
  * @since 1.0.0
  */
 
-import { BaseDomainException, DomainExceptionType, DomainExceptionSeverity } from './base/base-domain-exception.js';
+import {
+  BaseDomainException,
+  DomainExceptionType,
+  DomainExceptionSeverity,
+} from "./base/base-domain-exception.js";
 
 /**
  * 租户状态异常
@@ -19,7 +23,7 @@ export class TenantStateException extends BaseDomainException {
   ) {
     super(
       message,
-      'TENANT_STATE_INVALID',
+      "TENANT_STATE_INVALID",
       DomainExceptionType.STATE,
       { currentState, requestedOperation, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -36,12 +40,7 @@ export class TenantStateException extends BaseDomainException {
  */
 export class TenantAlreadyActiveException extends TenantStateException {
   constructor(tenantId: string) {
-    super(
-      '租户已经激活',
-      'active',
-      'activate',
-      { tenantId },
-    );
+    super("租户已经激活", "active", "activate", { tenantId });
   }
 }
 
@@ -50,12 +49,7 @@ export class TenantAlreadyActiveException extends TenantStateException {
  */
 export class TenantNotActiveException extends TenantStateException {
   constructor(tenantId: string) {
-    super(
-      '租户未激活',
-      'inactive',
-      'deactivate',
-      { tenantId },
-    );
+    super("租户未激活", "inactive", "deactivate", { tenantId });
   }
 }
 
@@ -64,12 +58,7 @@ export class TenantNotActiveException extends TenantStateException {
  */
 export class TenantAlreadyDeletedException extends TenantStateException {
   constructor(tenantId: string) {
-    super(
-      '租户已被删除',
-      'deleted',
-      'delete',
-      { tenantId },
-    );
+    super("租户已被删除", "deleted", "delete", { tenantId });
   }
 }
 
@@ -78,12 +67,7 @@ export class TenantAlreadyDeletedException extends TenantStateException {
  */
 export class TenantNotDeletedException extends TenantStateException {
   constructor(tenantId: string) {
-    super(
-      '租户未被删除',
-      'active',
-      'restore',
-      { tenantId },
-    );
+    super("租户未被删除", "active", "restore", { tenantId });
   }
 }
 
@@ -99,7 +83,7 @@ export class OrganizationStateException extends BaseDomainException {
   ) {
     super(
       message,
-      'ORGANIZATION_STATE_INVALID',
+      "ORGANIZATION_STATE_INVALID",
       DomainExceptionType.STATE,
       { currentState, requestedOperation, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -116,12 +100,7 @@ export class OrganizationStateException extends BaseDomainException {
  */
 export class OrganizationAlreadyActiveException extends OrganizationStateException {
   constructor(organizationId: string) {
-    super(
-      '组织已经激活',
-      'active',
-      'activate',
-      { organizationId },
-    );
+    super("组织已经激活", "active", "activate", { organizationId });
   }
 }
 
@@ -130,12 +109,7 @@ export class OrganizationAlreadyActiveException extends OrganizationStateExcepti
  */
 export class OrganizationNotActiveException extends OrganizationStateException {
   constructor(organizationId: string) {
-    super(
-      '组织未激活',
-      'inactive',
-      'deactivate',
-      { organizationId },
-    );
+    super("组织未激活", "inactive", "deactivate", { organizationId });
   }
 }
 
@@ -151,7 +125,7 @@ export class DepartmentStateException extends BaseDomainException {
   ) {
     super(
       message,
-      'DEPARTMENT_STATE_INVALID',
+      "DEPARTMENT_STATE_INVALID",
       DomainExceptionType.STATE,
       { currentState, requestedOperation, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -168,12 +142,7 @@ export class DepartmentStateException extends BaseDomainException {
  */
 export class DepartmentAlreadyActiveException extends DepartmentStateException {
   constructor(departmentId: string) {
-    super(
-      '部门已经激活',
-      'active',
-      'activate',
-      { departmentId },
-    );
+    super("部门已经激活", "active", "activate", { departmentId });
   }
 }
 
@@ -182,12 +151,7 @@ export class DepartmentAlreadyActiveException extends DepartmentStateException {
  */
 export class DepartmentNotActiveException extends DepartmentStateException {
   constructor(departmentId: string) {
-    super(
-      '部门未激活',
-      'inactive',
-      'deactivate',
-      { departmentId },
-    );
+    super("部门未激活", "inactive", "deactivate", { departmentId });
   }
 }
 
@@ -203,7 +167,7 @@ export class UserStateException extends BaseDomainException {
   ) {
     super(
       message,
-      'USER_STATE_INVALID',
+      "USER_STATE_INVALID",
       DomainExceptionType.STATE,
       { currentState, requestedOperation, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -220,12 +184,7 @@ export class UserStateException extends BaseDomainException {
  */
 export class UserAlreadyActiveException extends UserStateException {
   constructor(userId: string) {
-    super(
-      '用户已经激活',
-      'active',
-      'activate',
-      { userId },
-    );
+    super("用户已经激活", "active", "activate", { userId });
   }
 }
 
@@ -234,12 +193,7 @@ export class UserAlreadyActiveException extends UserStateException {
  */
 export class UserNotActiveException extends UserStateException {
   constructor(userId: string) {
-    super(
-      '用户未激活',
-      'inactive',
-      'deactivate',
-      { userId },
-    );
+    super("用户未激活", "inactive", "deactivate", { userId });
   }
 }
 
@@ -248,12 +202,7 @@ export class UserNotActiveException extends UserStateException {
  */
 export class UserAlreadyLockedException extends UserStateException {
   constructor(userId: string) {
-    super(
-      '用户已被锁定',
-      'locked',
-      'lock',
-      { userId },
-    );
+    super("用户已被锁定", "locked", "lock", { userId });
   }
 }
 
@@ -262,12 +211,7 @@ export class UserAlreadyLockedException extends UserStateException {
  */
 export class UserNotLockedException extends UserStateException {
   constructor(userId: string) {
-    super(
-      '用户未被锁定',
-      'active',
-      'unlock',
-      { userId },
-    );
+    super("用户未被锁定", "active", "unlock", { userId });
   }
 }
 
@@ -283,7 +227,7 @@ export class RoleStateException extends BaseDomainException {
   ) {
     super(
       message,
-      'ROLE_STATE_INVALID',
+      "ROLE_STATE_INVALID",
       DomainExceptionType.STATE,
       { currentState, requestedOperation, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -300,12 +244,7 @@ export class RoleStateException extends BaseDomainException {
  */
 export class RoleAlreadyActiveException extends RoleStateException {
   constructor(roleId: string) {
-    super(
-      '角色已经激活',
-      'active',
-      'activate',
-      { roleId },
-    );
+    super("角色已经激活", "active", "activate", { roleId });
   }
 }
 
@@ -314,11 +253,6 @@ export class RoleAlreadyActiveException extends RoleStateException {
  */
 export class RoleNotActiveException extends RoleStateException {
   constructor(roleId: string) {
-    super(
-      '角色未激活',
-      'inactive',
-      'deactivate',
-      { roleId },
-    );
+    super("角色未激活", "inactive", "deactivate", { roleId });
   }
 }

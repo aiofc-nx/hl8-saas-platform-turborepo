@@ -7,8 +7,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { InvalidUserRoleException } from "../../exceptions/validation-exceptions.js";
+import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
 
 /**
  * 用户角色枚举
@@ -54,12 +53,12 @@ export enum UserRoleValue {
  * @example
  * ```typescript
  * // 创建用户角色
- * const role = UserRole.create('TENANT_ADMIN');
- * 
+ * const role = new UserRole(UserRoleValue.TENANT_ADMIN);
+ *
  * // 检查角色
  * console.log(role.isAdmin()); // true
  * console.log(role.canManageUsers()); // true
- * 
+ *
  * // 角色比较
  * const userRole = UserRole.USER;
  * console.log(role.hasHigherRoleThan(userRole)); // true
@@ -68,17 +67,6 @@ export enum UserRoleValue {
  * @since 1.0.0
  */
 export class UserRole extends BaseValueObject<UserRoleValue> {
-  private _exceptionFactory: ExceptionFactory;
-  /**
-   * 创建用户角色
-   *
-   * @param value - 角色值
-   * @returns 用户角色实例
-   */
-  static create(value: string): UserRole {
-    return new UserRole(value as UserRoleValue);
-  }
-
   /**
    * 超级管理员角色
    */
@@ -135,14 +123,13 @@ export class UserRole extends BaseValueObject<UserRoleValue> {
    * @protected
    */
   protected validate(value: UserRoleValue): void {
-    if (!this._exceptionFactory) {
-      this._exceptionFactory = ExceptionFactory.getInstance();
-    }
-    
     this.validateNotEmpty(value, "用户角色");
     const validRoles = Object.values(UserRoleValue);
     if (!validRoles.includes(value)) {
-      throw this._exceptionFactory.createInvalidUserRole(value, `无效的用户角色: ${value}`);
+      throw new BusinessRuleViolationException(
+        `无效的用户角色: ${value}`,
+        "VALIDATION_FAILED",
+      );
     }
   }
 

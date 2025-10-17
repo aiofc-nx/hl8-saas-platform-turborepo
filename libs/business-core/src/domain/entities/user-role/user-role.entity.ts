@@ -6,13 +6,14 @@
  * @since 1.0.0
  */
 
-import { EntityId, TenantId, UserId } from "@hl8/isolation-model";
+import { EntityId, UserId } from "@hl8/isolation-model";
 import { BaseEntity } from "../base/base-entity.js";
-import { Role } from "../role/role.entity.js";
+import {
+  BusinessRuleViolationException,
+  DomainStateException,
+} from "../../../domain/exceptions/base/base-domain-exception.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { UserRoleStateException } from "../../exceptions/state-exceptions.js";
 
 /**
  * 用户角色关联实体属性接口
@@ -22,25 +23,25 @@ import { UserRoleStateException } from "../../exceptions/state-exceptions.js";
 export interface UserRoleProps {
   /** 用户ID */
   userId: UserId;
-  
+
   /** 角色ID */
   roleId: EntityId;
-  
+
   /** 是否启用 */
   isActive: boolean;
-  
+
   /** 分配原因 */
   reason?: string;
-  
+
   /** 分配者ID */
   assignedBy?: UserId;
-  
+
   /** 分配时间 */
   assignedAt?: Date;
-  
+
   /** 过期时间 */
   expiresAt?: Date;
-  
+
   /** 关联配置 */
   config?: Record<string, any>;
 }
@@ -85,11 +86,11 @@ export interface UserRoleProps {
  *   },
  *   { createdBy: "system" }
  * );
- * 
+ *
  * // 检查关联状态
  * console.log(userRole.isActive); // true
  * console.log(userRole.isExpired()); // false
- * 
+ *
  * // 停用关联
  * userRole.deactivate();
  * ```
@@ -105,8 +106,6 @@ export class UserRole extends BaseEntity {
   private _assignedAt?: Date;
   private _expiresAt?: Date;
   private _config?: Record<string, any>;
-  private _exceptionFactory: ExceptionFactory;
-
   constructor(
     id: EntityId,
     props: UserRoleProps,
@@ -114,7 +113,6 @@ export class UserRole extends BaseEntity {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
-    this._exceptionFactory = ExceptionFactory.getInstance();
     this._userId = props.userId;
     this._roleId = props.roleId;
     this._isActive = props.isActive;
@@ -203,7 +201,15 @@ export class UserRole extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw this._exceptionFactory.createEntityAlreadyActive("用户角色关联", this.id);
+      throw new DomainStateException(
+        "用户角色关联已激活",
+        "active",
+        "activate",
+        {
+          userRoleId: this.id.toString(),
+          isActive: this._isActive,
+        },
+      );
     }
     this._isActive = true;
     this.updateTimestamp();
@@ -215,7 +221,15 @@ export class UserRole extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw this._exceptionFactory.createEntityNotActive("用户角色关联", this.id);
+      throw new DomainStateException(
+        "用户角色关联已停用",
+        "inactive",
+        "deactivate",
+        {
+          userRoleId: this.id.toString(),
+          isActive: this._isActive,
+        },
+      );
     }
     this._isActive = false;
     this.updateTimestamp();
@@ -309,7 +323,9 @@ export class UserRole extends BaseEntity {
    */
   getAssociationDescription(): string {
     const status = this.isValid() ? "有效" : "无效";
-    const expiration = this._expiresAt ? `，过期时间：${this._expiresAt.toISOString()}` : "";
+    const expiration = this._expiresAt
+      ? `，过期时间：${this._expiresAt.toISOString()}`
+      : "";
     return `用户角色关联（${status}${expiration}）`;
   }
 
@@ -334,7 +350,10 @@ export class UserRole extends BaseEntity {
    */
   private validateUserId(userId: UserId): void {
     if (!userId) {
-      throw this._exceptionFactory.createDomainValidation("用户ID不能为空", "userId", userId);
+      throw new BusinessRuleViolationException(
+        "用户ID不能为空",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -346,7 +365,10 @@ export class UserRole extends BaseEntity {
    */
   private validateRoleId(roleId: EntityId): void {
     if (!roleId) {
-      throw this._exceptionFactory.createDomainValidation("角色ID不能为空", "roleId", roleId);
+      throw new BusinessRuleViolationException(
+        "角色ID不能为空",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -358,7 +380,10 @@ export class UserRole extends BaseEntity {
    */
   private validateReason(reason?: string): void {
     if (reason && reason.trim().length > 500) {
-      throw this._exceptionFactory.createDomainValidation("分配原因长度不能超过500字符", "reason", reason);
+      throw new BusinessRuleViolationException(
+        "分配原因长度不能超过500字符",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -370,7 +395,10 @@ export class UserRole extends BaseEntity {
    */
   private validateExpiration(expiresAt?: Date): void {
     if (expiresAt && expiresAt <= new Date()) {
-      throw this._exceptionFactory.createDomainValidation("过期时间必须是未来时间", "expiresAt", expiresAt);
+      throw new BusinessRuleViolationException(
+        "过期时间必须是未来时间",
+        "VALIDATION_FAILED",
+      );
     }
   }
 }

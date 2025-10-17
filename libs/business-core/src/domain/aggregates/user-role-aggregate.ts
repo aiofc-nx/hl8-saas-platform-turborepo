@@ -14,7 +14,7 @@ import { Permission } from "../entities/permission/permission.entity.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 import { ExceptionFactory } from "../exceptions/exception-factory.js";
-import { UserRoleStateException } from "../exceptions/business-exceptions.js";
+import { BusinessRuleViolationException } from "../exceptions/base/base-domain-exception.js";
 
 /**
  * 用户角色关联聚合根
@@ -50,10 +50,10 @@ import { UserRoleStateException } from "../exceptions/business-exceptions.js";
  *   userRole,
  *   { createdBy: "system" }
  * );
- * 
+ *
  * // 分配角色
  * userRoleAggregate.assignRole(role);
- * 
+ *
  * // 检查权限
  * console.log(userRoleAggregate.hasPermission(permission)); // true
  * ```
@@ -119,17 +119,24 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
     expiresAt?: Date,
   ): void {
     this.validateRoleAssignment(role);
-    if (!this.roles.some(r => r.id.equals(role.id))) {
+    if (!this.roles.some((r) => r.id.equals(role.id))) {
       this.roles.push(role);
       this.updateUserRoleInfo(reason, assignedBy, expiresAt);
-      this.publishIsolationEvent("RoleAssigned", {
-        userId: this.userRole.userId.toString(),
-        roleId: role.id.toString(),
-        roleName: role.name,
-        reason,
-        assignedBy: assignedBy?.toString(),
-        expiresAt: expiresAt?.toISOString(),
-      });
+      this.publishIsolationEvent(
+        (id, version, context) =>
+          ({
+            type: "RoleAssigned",
+            aggregateId: id.toString(),
+            version,
+            isolationContext: context,
+            userId: this.userRole.userId.toString(),
+            roleId: role.id.toString(),
+            roleName: role.name,
+            reason,
+            assignedBy: assignedBy?.toString(),
+            expiresAt: expiresAt?.toISOString(),
+          }) as any,
+      );
     }
   }
 
@@ -140,15 +147,22 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   removeRole(roleId: EntityId): void {
     this.validateRoleRemoval(roleId);
-    const index = this.roles.findIndex(r => r.id.equals(roleId));
+    const index = this.roles.findIndex((r) => r.id.equals(roleId));
     if (index !== -1) {
       const role = this.roles[index];
       this.roles.splice(index, 1);
-      this.publishIsolationEvent("RoleRemoved", {
-        userId: this.userRole.userId.toString(),
-        roleId: roleId.toString(),
-        roleName: role.name,
-      });
+      this.publishIsolationEvent(
+        (id, version, context) =>
+          ({
+            type: "RoleRemoved",
+            aggregateId: id.toString(),
+            version,
+            isolationContext: context,
+            userId: this.userRole.userId.toString(),
+            roleId: roleId.toString(),
+            roleName: role.name,
+          }) as any,
+      );
     }
   }
 
@@ -159,25 +173,28 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    * @param reason - 分配原因
    * @param assignedBy - 分配者
    */
-  assignRoles(
-    roles: Role[],
-    reason?: string,
-    assignedBy?: UserId,
-  ): void {
+  assignRoles(roles: Role[], reason?: string, assignedBy?: UserId): void {
     this.validateRolesAssignment(roles);
     for (const role of roles) {
-      if (!this.roles.some(r => r.id.equals(role.id))) {
+      if (!this.roles.some((r) => r.id.equals(role.id))) {
         this.roles.push(role);
       }
     }
     this.updateUserRoleInfo(reason, assignedBy);
-    this.publishIsolationEvent("RolesAssigned", {
-      userId: this.userRole.userId.toString(),
-      roleIds: roles.map(r => r.id.toString()),
-      roleNames: roles.map(r => r.name),
-      reason,
-      assignedBy: assignedBy?.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "RolesAssigned",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          userId: this.userRole.userId.toString(),
+          roleIds: roles.map((r) => r.id.toString()),
+          roleNames: roles.map((r) => r.name),
+          reason,
+          assignedBy: assignedBy?.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -186,9 +203,16 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
   clearRoles(): void {
     this.validateRolesClear();
     this.roles = [];
-    this.publishIsolationEvent("RolesCleared", {
-      userId: this.userRole.userId.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "RolesCleared",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          userId: this.userRole.userId.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -196,10 +220,17 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   activateAssociation(): void {
     this.userRole.activate();
-    this.publishIsolationEvent("AssociationActivated", {
-      userId: this.userRole.userId.toString(),
-      roleId: this.userRole.roleId.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "AssociationActivated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          userId: this.userRole.userId.toString(),
+          roleId: this.userRole.roleId.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -207,10 +238,17 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   deactivateAssociation(): void {
     this.userRole.deactivate();
-    this.publishIsolationEvent("AssociationDeactivated", {
-      userId: this.userRole.userId.toString(),
-      roleId: this.userRole.roleId.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "AssociationDeactivated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          userId: this.userRole.userId.toString(),
+          roleId: this.userRole.roleId.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -220,11 +258,18 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   updateReason(reason: string): void {
     this.userRole.updateReason(reason);
-    this.publishIsolationEvent("AssociationReasonUpdated", {
-      userId: this.userRole.userId.toString(),
-      roleId: this.userRole.roleId.toString(),
-      reason,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "AssociationReasonUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          userId: this.userRole.userId.toString(),
+          roleId: this.userRole.roleId.toString(),
+          reason,
+        }) as any,
+    );
   }
 
   /**
@@ -234,11 +279,18 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   setExpiration(expiresAt: Date): void {
     this.userRole.setExpiration(expiresAt);
-    this.publishIsolationEvent("AssociationExpirationSet", {
-      userId: this.userRole.userId.toString(),
-      roleId: this.userRole.roleId.toString(),
-      expiresAt: expiresAt.toISOString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "AssociationExpirationSet",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          userId: this.userRole.userId.toString(),
+          roleId: this.userRole.roleId.toString(),
+          expiresAt: expiresAt.toISOString(),
+        }) as any,
+    );
   }
 
   /**
@@ -246,10 +298,17 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   removeExpiration(): void {
     this.userRole.removeExpiration();
-    this.publishIsolationEvent("AssociationExpirationRemoved", {
-      userId: this.userRole.userId.toString(),
-      roleId: this.userRole.roleId.toString(),
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "AssociationExpirationRemoved",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          userId: this.userRole.userId.toString(),
+          roleId: this.userRole.roleId.toString(),
+        }) as any,
+    );
   }
 
   /**
@@ -259,11 +318,18 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   updateConfig(config: Record<string, any>): void {
     this.userRole.updateConfig(config);
-    this.publishIsolationEvent("AssociationConfigUpdated", {
-      userId: this.userRole.userId.toString(),
-      roleId: this.userRole.roleId.toString(),
-      config,
-    });
+    this.publishIsolationEvent(
+      (id, version, context) =>
+        ({
+          type: "AssociationConfigUpdated",
+          aggregateId: id.toString(),
+          version,
+          isolationContext: context,
+          userId: this.userRole.userId.toString(),
+          roleId: this.userRole.roleId.toString(),
+          config,
+        }) as any,
+    );
   }
 
   /**
@@ -273,7 +339,7 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 是否有角色
    */
   hasRole(roleId: EntityId): boolean {
-    return this.roles.some(r => r.id.equals(roleId));
+    return this.roles.some((r) => r.id.equals(roleId));
   }
 
   /**
@@ -283,7 +349,7 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 是否有权限
    */
   hasPermission(permissionId: EntityId): boolean {
-    return this.permissions.some(p => p.id.equals(permissionId));
+    return this.permissions.some((p) => p.id.equals(permissionId));
   }
 
   /**
@@ -294,8 +360,8 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 是否可以执行
    */
   canExecute(action: string, resource: string): boolean {
-    return this.permissions.some(p => 
-      p.canExecute({ value: action } as any) && p.canAccess(resource)
+    return this.permissions.some(
+      (p) => p.canExecute({ value: action } as any) && p.canAccess(resource),
     );
   }
 
@@ -305,7 +371,7 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 是否可以管理
    */
   canManage(): boolean {
-    return this.permissions.some(p => p.canManage());
+    return this.permissions.some((p) => p.canManage());
   }
 
   /**
@@ -332,7 +398,7 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    * @returns 权限描述列表
    */
   getPermissionDescriptions(): string[] {
-    return this.permissions.map(p => p.getPermissionDescription());
+    return this.permissions.map((p) => p.getPermissionDescription());
   }
 
   /**
@@ -377,10 +443,19 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleAssignment(role: Role): void {
     if (!role) {
-      throw this._exceptionFactory.createDomainValidation("角色不能为空", "role", role);
+      throw this._exceptionFactory.createDomainValidation(
+        "角色不能为空",
+        "role",
+        role,
+      );
     }
     if (!role.isActive) {
-      throw this._exceptionFactory.createDomainState("角色未激活，无法分配", "inactive", "assignRole", { roleId: role.id.value, isActive: role.isActive });
+      throw this._exceptionFactory.createDomainState(
+        "角色未激活，无法分配",
+        "inactive",
+        "assignRole",
+        { roleId: role.id.toString(), isActive: role.isActive },
+      );
     }
   }
 
@@ -392,7 +467,11 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleRemoval(roleId: EntityId): void {
     if (!roleId) {
-      throw this._exceptionFactory.createDomainValidation("角色ID不能为空", "roleId", roleId);
+      throw this._exceptionFactory.createDomainValidation(
+        "角色ID不能为空",
+        "roleId",
+        roleId,
+      );
     }
   }
 
@@ -404,7 +483,11 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRolesAssignment(roles: Role[]): void {
     if (!roles || roles.length === 0) {
-      throw this._exceptionFactory.createDomainValidation("角色列表不能为空", "roles", roles);
+      throw this._exceptionFactory.createDomainValidation(
+        "角色列表不能为空",
+        "roles",
+        roles,
+      );
     }
     for (const role of roles) {
       this.validateRoleAssignment(role);

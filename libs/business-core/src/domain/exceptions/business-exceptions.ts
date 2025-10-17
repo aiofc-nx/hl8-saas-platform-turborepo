@@ -5,7 +5,11 @@
  * @since 1.0.0
  */
 
-import { BaseDomainException, DomainExceptionType, DomainExceptionSeverity } from './base/base-domain-exception.js';
+import {
+  BaseDomainException,
+  DomainExceptionType,
+  DomainExceptionSeverity,
+} from "./base/base-domain-exception.js";
 
 /**
  * 租户相关异常
@@ -35,11 +39,10 @@ export class TenantException extends BaseDomainException {
  */
 export class TenantNameAlreadyExistsException extends TenantException {
   constructor(tenantName: string, existingTenantId: string) {
-    super(
-      `租户名称 "${tenantName}" 已存在`,
-      'NAME_ALREADY_EXISTS',
-      { tenantName, existingTenantId },
-    );
+    super(`租户名称 "${tenantName}" 已存在`, "NAME_ALREADY_EXISTS", {
+      tenantName,
+      existingTenantId,
+    });
   }
 }
 
@@ -48,11 +51,7 @@ export class TenantNameAlreadyExistsException extends TenantException {
  */
 export class InvalidTenantTypeException extends TenantException {
   constructor(tenantType: string) {
-    super(
-      `无效的租户类型：${tenantType}`,
-      'INVALID_TYPE',
-      { tenantType },
-    );
+    super(`无效的租户类型：${tenantType}`, "INVALID_TYPE", { tenantType });
   }
 }
 
@@ -65,11 +64,7 @@ export class TenantStateException extends TenantException {
     currentState: string,
     requestedOperation: string,
   ) {
-    super(
-      message,
-      'INVALID_STATE',
-      { currentState, requestedOperation },
-    );
+    super(message, "INVALID_STATE", { currentState, requestedOperation });
   }
 }
 
@@ -101,11 +96,10 @@ export class OrganizationException extends BaseDomainException {
  */
 export class OrganizationNameAlreadyExistsException extends OrganizationException {
   constructor(organizationName: string, existingOrganizationId: string) {
-    super(
-      `组织名称 "${organizationName}" 已存在`,
-      'NAME_ALREADY_EXISTS',
-      { organizationName, existingOrganizationId },
-    );
+    super(`组织名称 "${organizationName}" 已存在`, "NAME_ALREADY_EXISTS", {
+      organizationName,
+      existingOrganizationId,
+    });
   }
 }
 
@@ -114,11 +108,9 @@ export class OrganizationNameAlreadyExistsException extends OrganizationExceptio
  */
 export class InvalidOrganizationTypeException extends OrganizationException {
   constructor(organizationType: string) {
-    super(
-      `无效的组织类型：${organizationType}`,
-      'INVALID_TYPE',
-      { organizationType },
-    );
+    super(`无效的组织类型：${organizationType}`, "INVALID_TYPE", {
+      organizationType,
+    });
   }
 }
 
@@ -150,11 +142,10 @@ export class DepartmentException extends BaseDomainException {
  */
 export class DepartmentNameAlreadyExistsException extends DepartmentException {
   constructor(departmentName: string, existingDepartmentId: string) {
-    super(
-      `部门名称 "${departmentName}" 已存在`,
-      'NAME_ALREADY_EXISTS',
-      { departmentName, existingDepartmentId },
-    );
+    super(`部门名称 "${departmentName}" 已存在`, "NAME_ALREADY_EXISTS", {
+      departmentName,
+      existingDepartmentId,
+    });
   }
 }
 
@@ -163,11 +154,10 @@ export class DepartmentNameAlreadyExistsException extends DepartmentException {
  */
 export class InvalidDepartmentLevelException extends DepartmentException {
   constructor(level: number, maxLevel: number) {
-    super(
-      `部门层级 ${level} 超过最大层级 ${maxLevel}`,
-      'INVALID_LEVEL',
-      { level, maxLevel },
-    );
+    super(`部门层级 ${level} 超过最大层级 ${maxLevel}`, "INVALID_LEVEL", {
+      level,
+      maxLevel,
+    });
   }
 }
 
@@ -199,11 +189,10 @@ export class UserException extends BaseDomainException {
  */
 export class UserEmailAlreadyExistsException extends UserException {
   constructor(email: string, existingUserId: string) {
-    super(
-      `邮箱 "${email}" 已被其他用户使用`,
-      'EMAIL_ALREADY_EXISTS',
-      { email, existingUserId },
-    );
+    super(`邮箱 "${email}" 已被其他用户使用`, "EMAIL_ALREADY_EXISTS", {
+      email,
+      existingUserId,
+    });
   }
 }
 
@@ -212,11 +201,10 @@ export class UserEmailAlreadyExistsException extends UserException {
  */
 export class UserUsernameAlreadyExistsException extends UserException {
   constructor(username: string, existingUserId: string) {
-    super(
-      `用户名 "${username}" 已被其他用户使用`,
-      'USERNAME_ALREADY_EXISTS',
-      { username, existingUserId },
-    );
+    super(`用户名 "${username}" 已被其他用户使用`, "USERNAME_ALREADY_EXISTS", {
+      username,
+      existingUserId,
+    });
   }
 }
 
@@ -248,11 +236,10 @@ export class RoleException extends BaseDomainException {
  */
 export class RoleNameAlreadyExistsException extends RoleException {
   constructor(roleName: string, existingRoleId: string) {
-    super(
-      `角色名称 "${roleName}" 已存在`,
-      'NAME_ALREADY_EXISTS',
-      { roleName, existingRoleId },
-    );
+    super(`角色名称 "${roleName}" 已存在`, "NAME_ALREADY_EXISTS", {
+      roleName,
+      existingRoleId,
+    });
   }
 }
 
@@ -284,10 +271,9 @@ export class PermissionException extends BaseDomainException {
  */
 export class PermissionNameAlreadyExistsException extends PermissionException {
   constructor(permissionName: string, existingPermissionId: string) {
-    super(
-      `权限名称 "${permissionName}" 已存在`,
-      'NAME_ALREADY_EXISTS',
-      { permissionName, existingPermissionId },
-    );
+    super(`权限名称 "${permissionName}" 已存在`, "NAME_ALREADY_EXISTS", {
+      permissionName,
+      existingPermissionId,
+    });
   }
 }

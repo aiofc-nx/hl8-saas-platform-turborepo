@@ -5,7 +5,11 @@
  * @since 1.0.0
  */
 
-import { BaseDomainException, DomainExceptionType, DomainExceptionSeverity } from './base/base-domain-exception.js';
+import {
+  BaseDomainException,
+  DomainExceptionType,
+  DomainExceptionSeverity,
+} from "./base/base-domain-exception.js";
 
 /**
  * 邮箱验证异常
@@ -18,7 +22,7 @@ export class EmailValidationException extends BaseDomainException {
   ) {
     super(
       message,
-      'EMAIL_VALIDATION_FAILED',
+      "EMAIL_VALIDATION_FAILED",
       DomainExceptionType.VALIDATION,
       { email, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -35,10 +39,7 @@ export class EmailValidationException extends BaseDomainException {
  */
 export class InvalidEmailException extends EmailValidationException {
   constructor(email: string) {
-    super(
-      `邮箱格式无效：${email}`,
-      email,
-    );
+    super(`邮箱格式无效：${email}`, email);
   }
 }
 
@@ -47,11 +48,7 @@ export class InvalidEmailException extends EmailValidationException {
  */
 export class EmailAlreadyExistsException extends EmailValidationException {
   constructor(email: string, existingUserId: string) {
-    super(
-      `邮箱已被使用：${email}`,
-      email,
-      { existingUserId },
-    );
+    super(`邮箱已被使用：${email}`, email, { existingUserId });
   }
 }
 
@@ -59,13 +56,10 @@ export class EmailAlreadyExistsException extends EmailValidationException {
  * 密码验证异常
  */
 export class PasswordValidationException extends BaseDomainException {
-  constructor(
-    message: string,
-    context: Record<string, unknown> = {},
-  ) {
+  constructor(message: string, context: Record<string, unknown> = {}) {
     super(
       message,
-      'PASSWORD_VALIDATION_FAILED',
+      "PASSWORD_VALIDATION_FAILED",
       DomainExceptionType.VALIDATION,
       context,
       DomainExceptionSeverity.MEDIUM,
@@ -82,10 +76,7 @@ export class PasswordValidationException extends BaseDomainException {
  */
 export class InvalidPasswordException extends PasswordValidationException {
   constructor(reason: string) {
-    super(
-      `密码不符合要求：${reason}`,
-      { reason },
-    );
+    super(`密码不符合要求：${reason}`, { reason });
   }
 }
 
@@ -94,7 +85,7 @@ export class InvalidPasswordException extends PasswordValidationException {
  */
 export class WeakPasswordException extends InvalidPasswordException {
   constructor() {
-    super('密码强度不足，请使用更复杂的密码');
+    super("密码强度不足，请使用更复杂的密码");
   }
 }
 
@@ -109,7 +100,7 @@ export class UsernameValidationException extends BaseDomainException {
   ) {
     super(
       message,
-      'USERNAME_VALIDATION_FAILED',
+      "USERNAME_VALIDATION_FAILED",
       DomainExceptionType.VALIDATION,
       { username, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -126,11 +117,7 @@ export class UsernameValidationException extends BaseDomainException {
  */
 export class InvalidUsernameException extends UsernameValidationException {
   constructor(username: string, reason: string) {
-    super(
-      `用户名格式无效：${reason}`,
-      username,
-      { reason },
-    );
+    super(`用户名格式无效：${reason}`, username, { reason });
   }
 }
 
@@ -139,11 +126,7 @@ export class InvalidUsernameException extends UsernameValidationException {
  */
 export class UsernameAlreadyExistsException extends UsernameValidationException {
   constructor(username: string, existingUserId: string) {
-    super(
-      `用户名已被使用：${username}`,
-      username,
-      { existingUserId },
-    );
+    super(`用户名已被使用：${username}`, username, { existingUserId });
   }
 }
 
@@ -158,7 +141,7 @@ export class PhoneNumberValidationException extends BaseDomainException {
   ) {
     super(
       message,
-      'PHONE_NUMBER_VALIDATION_FAILED',
+      "PHONE_NUMBER_VALIDATION_FAILED",
       DomainExceptionType.VALIDATION,
       { phoneNumber, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -175,11 +158,7 @@ export class PhoneNumberValidationException extends BaseDomainException {
  */
 export class InvalidPhoneNumberException extends PhoneNumberValidationException {
   constructor(phoneNumber: string, reason: string) {
-    super(
-      `电话号码格式无效：${reason}`,
-      phoneNumber,
-      { reason },
-    );
+    super(`电话号码格式无效：${reason}`, phoneNumber, { reason });
   }
 }
 
@@ -194,7 +173,7 @@ export class TenantNameValidationException extends BaseDomainException {
   ) {
     super(
       message,
-      'TENANT_NAME_VALIDATION_FAILED',
+      "TENANT_NAME_VALIDATION_FAILED",
       DomainExceptionType.VALIDATION,
       { tenantName, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -211,11 +190,7 @@ export class TenantNameValidationException extends BaseDomainException {
  */
 export class InvalidTenantNameException extends TenantNameValidationException {
   constructor(tenantName: string, reason: string) {
-    super(
-      `租户名称格式无效：${reason}`,
-      tenantName,
-      { reason },
-    );
+    super(`租户名称格式无效：${reason}`, tenantName, { reason });
   }
 }
 
@@ -230,7 +205,7 @@ export class OrganizationNameValidationException extends BaseDomainException {
   ) {
     super(
       message,
-      'ORGANIZATION_NAME_VALIDATION_FAILED',
+      "ORGANIZATION_NAME_VALIDATION_FAILED",
       DomainExceptionType.VALIDATION,
       { organizationName, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -247,11 +222,7 @@ export class OrganizationNameValidationException extends BaseDomainException {
  */
 export class InvalidOrganizationNameException extends OrganizationNameValidationException {
   constructor(organizationName: string, reason: string) {
-    super(
-      `组织名称格式无效：${reason}`,
-      organizationName,
-      { reason },
-    );
+    super(`组织名称格式无效：${reason}`, organizationName, { reason });
   }
 }
 
@@ -266,7 +237,7 @@ export class DepartmentNameValidationException extends BaseDomainException {
   ) {
     super(
       message,
-      'DEPARTMENT_NAME_VALIDATION_FAILED',
+      "DEPARTMENT_NAME_VALIDATION_FAILED",
       DomainExceptionType.VALIDATION,
       { departmentName, ...context },
       DomainExceptionSeverity.MEDIUM,
@@ -283,10 +254,6 @@ export class DepartmentNameValidationException extends BaseDomainException {
  */
 export class InvalidDepartmentNameException extends DepartmentNameValidationException {
   constructor(departmentName: string, reason: string) {
-    super(
-      `部门名称格式无效：${reason}`,
-      departmentName,
-      { reason },
-    );
+    super(`部门名称格式无效：${reason}`, departmentName, { reason });
   }
 }

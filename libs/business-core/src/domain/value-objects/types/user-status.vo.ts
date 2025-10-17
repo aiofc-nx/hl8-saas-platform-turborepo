@@ -7,8 +7,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { InvalidUserStatusException } from "../../exceptions/validation-exceptions.js";
+import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
 
 /**
  * 用户状态枚举
@@ -46,12 +45,12 @@ export enum UserStatusValue {
  * @example
  * ```typescript
  * // 创建用户状态
- * const status = UserStatus.create('ACTIVE');
- * 
+ * const status = new UserStatus(UserStatusValue.ACTIVE);
+ *
  * // 检查状态
  * console.log(status.isActive()); // true
  * console.log(status.canLogin()); // true
- * 
+ *
  * // 状态转换
  * const lockedStatus = status.lock();
  * console.log(lockedStatus.isLocked()); // true
@@ -60,17 +59,6 @@ export enum UserStatusValue {
  * @since 1.0.0
  */
 export class UserStatus extends BaseValueObject<UserStatusValue> {
-  private _exceptionFactory: ExceptionFactory;
-  /**
-   * 创建用户状态
-   *
-   * @param value - 状态值
-   * @returns 用户状态实例
-   */
-  static create(value: string): UserStatus {
-    return new UserStatus(value as UserStatusValue);
-  }
-
   /**
    * 激活状态
    */
@@ -106,14 +94,13 @@ export class UserStatus extends BaseValueObject<UserStatusValue> {
    * @protected
    */
   protected validate(value: UserStatusValue): void {
-    if (!this._exceptionFactory) {
-      this._exceptionFactory = ExceptionFactory.getInstance();
-    }
-    
     this.validateNotEmpty(value, "用户状态");
     const validStatuses = Object.values(UserStatusValue);
     if (!validStatuses.includes(value)) {
-      throw this._exceptionFactory.createInvalidUserStatus(value, `无效的用户状态: ${value}`);
+      throw new BusinessRuleViolationException(
+        `无效的用户状态: ${value}`,
+        "VALIDATION_FAILED",
+      );
     }
   }
 

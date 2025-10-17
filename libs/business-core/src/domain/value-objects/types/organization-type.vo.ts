@@ -1,6 +1,5 @@
 import { BaseValueObject } from "../base-value-object.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { InvalidOrganizationTypeException } from "../../exceptions/validation-exceptions.js";
+import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
 
 /**
  * 组织类型值对象
@@ -46,7 +45,6 @@ import { InvalidOrganizationTypeException } from "../../exceptions/validation-ex
  * @since 1.0.0
  */
 export class OrganizationType extends BaseValueObject<string> {
-  private _exceptionFactory: ExceptionFactory;
   /** 委员会 - 决策型组织 */
   static readonly COMMITTEE = "COMMITTEE";
 
@@ -66,10 +64,6 @@ export class OrganizationType extends BaseValueObject<string> {
    * @override
    */
   protected override validate(value: string): void {
-    if (!this._exceptionFactory) {
-      this._exceptionFactory = ExceptionFactory.getInstance();
-    }
-    
     this.validateNotEmpty(value, "组织类型");
     const validTypes = [
       OrganizationType.COMMITTEE,
@@ -78,7 +72,10 @@ export class OrganizationType extends BaseValueObject<string> {
       OrganizationType.PERFORMANCE_GROUP,
     ];
     if (!validTypes.includes(value)) {
-      throw this._exceptionFactory.createInvalidOrganizationType(value, `无效的组织类型: ${value}`);
+      throw new BusinessRuleViolationException(
+        `无效的组织类型: ${value}`,
+        "VALIDATION_FAILED",
+      );
     }
   }
 

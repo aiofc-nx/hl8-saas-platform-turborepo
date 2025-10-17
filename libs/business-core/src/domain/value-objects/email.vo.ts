@@ -6,11 +6,7 @@
  */
 
 import { BaseValueObject } from "./base-value-object.js";
-import { BusinessRuleManager } from "../rules/business-rule-manager.js";
-import { BusinessRuleFactory } from "../rules/business-rule-factory.js";
-import { EmailValidator } from "../validators/common/email.validator.js";
-import { ExceptionFactory } from "../exceptions/exception-factory.js";
-import { InvalidEmailException } from "../exceptions/validation-exceptions.js";
+import { BusinessRuleViolationException } from "../exceptions/base/base-domain-exception.js";
 
 /**
  * 邮箱值对象
@@ -18,9 +14,6 @@ import { InvalidEmailException } from "../exceptions/validation-exceptions.js";
  * @description 封装邮箱地址，提供格式验证和业务规则检查
  */
 export class Email extends BaseValueObject<string> {
-  private _ruleManager: BusinessRuleManager;
-  private _exceptionFactory: ExceptionFactory;
-
   /**
    * 构造函数
    *
@@ -28,9 +21,6 @@ export class Email extends BaseValueObject<string> {
    */
   constructor(value: string) {
     super(value);
-    this._ruleManager = BusinessRuleFactory.createEmailManager();
-    this._exceptionFactory = ExceptionFactory.getInstance();
-    this.validate();
   }
 
   /**
@@ -39,16 +29,18 @@ export class Email extends BaseValueObject<string> {
    * @param value - 邮箱地址
    */
   protected validate(value: string): void {
-    // 使用验证器进行格式验证
-    const validatorResult = EmailValidator.validateFormat(value);
-    if (!validatorResult.isValid) {
-      throw this._exceptionFactory.createInvalidEmail(value);
-    }
-    
-    // 使用业务规则进行业务逻辑验证
-    const ruleResult = this._ruleManager.validateRule('EMAIL_FORMAT_RULE', value);
-    if (!ruleResult.isValid) {
-      throw this._exceptionFactory.createInvalidEmail(value);
+    this.validateNotEmpty(value, "邮箱");
+    this.validateLength(value, 1, 254, "邮箱");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    this.validatePattern(value, emailRegex, `邮箱格式无效: ${value}`);
+
+    const [localPart] = value.split("@");
+    if (localPart.length > 64) {
+      throw new BusinessRuleViolationException(
+        "邮箱本地部分长度不能超过64个字符",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -63,37 +55,24 @@ export class Email extends BaseValueObject<string> {
   }
 
   /**
-   * 获取业务规则管理器
-   *
-   * @returns 业务规则管理器
-   */
-  getRuleManager(): BusinessRuleManager {
-    return this._ruleManager;
-  }
-
-  /**
    * 验证邮箱格式（静态方法）
    *
    * @param email - 邮箱地址
    * @returns 验证结果
    */
-  static validateFormat(email: string): { isValid: boolean; errorMessage?: string } {
-    const ruleManager = BusinessRuleFactory.createEmailManager();
-    const result = ruleManager.validateRule('EMAIL_FORMAT_RULE', email);
-    return {
-      isValid: result.isValid,
-      errorMessage: result.errorMessage,
-    };
-  }
-
-  /**
-   * 创建邮箱值对象
-   *
-   * @param value - 邮箱地址
-   * @returns 邮箱值对象
-   */
-  static create(value: string): Email {
-    return new Email(value);
+  static validateFormat(email: string): {
+    isValid: boolean;
+    errorMessage?: string;
+  } {
+    try {
+      new Email(email);
+      return { isValid: true };
+    } catch (error) {
+      return {
+        isValid: false,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      };
+    }
   }
 
   /**
@@ -102,8 +81,8 @@ export class Email extends BaseValueObject<string> {
    * @returns 域名
    */
   getDomain(): string {
-    const parts = this._value.split('@');
-    return parts.length > 1 ? parts[1] : '';
+    const parts = this.value.split("@");
+    return parts.length > 1 ? parts[1] : "";
   }
 
   /**
@@ -112,8 +91,8 @@ export class Email extends BaseValueObject<string> {
    * @returns 用户名
    */
   getUsername(): string {
-    const parts = this._value.split('@');
-    return parts.length > 0 ? parts[0] : '';
+    const parts = this.value.split("@");
+    return parts.length > 0 ? parts[0] : "";
   }
 
   /**
@@ -132,6 +111,6 @@ export class Email extends BaseValueObject<string> {
    * @returns 邮箱地址字符串
    */
   toString(): string {
-    return this._value;
+    return this.value;
   }
 }

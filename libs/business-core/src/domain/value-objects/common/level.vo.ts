@@ -49,12 +49,8 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { InvalidLevelException } from "../../exceptions/validation-exceptions.js";
 
 export abstract class Level extends BaseValueObject<number> {
-  private _exceptionFactory: ExceptionFactory;
-  
   /**
    * 最小级别（子类可覆盖）
    */
@@ -110,12 +106,8 @@ export abstract class Level extends BaseValueObject<number> {
    * @throws {Error} 如果已经是最大级别
    */
   public nextLevel(): number {
-    if (!this._exceptionFactory) {
-      this._exceptionFactory = ExceptionFactory.getInstance();
-    }
-    
     if (this.isMaxLevel()) {
-      throw this._exceptionFactory.createInvalidLevel(this._value, `已达到最大级别 ${this.maxLevel}`);
+      throw new Error(`已达到最大级别 ${this.maxLevel}`);
     }
     return this._value + 1;
   }
@@ -126,12 +118,8 @@ export abstract class Level extends BaseValueObject<number> {
    * @throws {Error} 如果已经是最小级别
    */
   public previousLevel(): number {
-    if (!this._exceptionFactory) {
-      this._exceptionFactory = ExceptionFactory.getInstance();
-    }
-    
     if (this.isMinLevel()) {
-      throw this._exceptionFactory.createInvalidLevel(this._value, `已是最小级别 ${this.minLevel}`);
+      throw new Error(`已是最小级别 ${this.minLevel}`);
     }
     return this._value - 1;
   }

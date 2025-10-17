@@ -50,7 +50,7 @@
  */
 
 import "reflect-metadata";
-import { ExceptionFactory } from '../../exceptions/exception-factory.js';
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
 
 /**
  * 聚合根配置选项
@@ -261,11 +261,19 @@ function validateAggregateOptions(options: AggregateOptions): void {
     typeof options.name !== "string" ||
     options.name.trim().length === 0
   ) {
-    throw exceptionFactory.createDomainValidation("聚合根名称不能为空", "name", options.name);
+    throw exceptionFactory.createDomainValidation(
+      "聚合根名称不能为空",
+      "name",
+      options.name,
+    );
   }
 
   if (options.version && typeof options.version !== "string") {
-    throw exceptionFactory.createDomainValidation("聚合根版本必须是字符串", "version", options.version);
+    throw exceptionFactory.createDomainValidation(
+      "聚合根版本必须是字符串",
+      "version",
+      options.version,
+    );
   }
 
   if (
@@ -273,26 +281,46 @@ function validateAggregateOptions(options: AggregateOptions): void {
     (typeof options.snapshotFrequency !== "number" ||
       options.snapshotFrequency < 0)
   ) {
-    throw exceptionFactory.createDomainValidation("快照频率必须是非负整数", "snapshotFrequency", options.snapshotFrequency);
+    throw exceptionFactory.createDomainValidation(
+      "快照频率必须是非负整数",
+      "snapshotFrequency",
+      options.snapshotFrequency,
+    );
   }
 
   if (options.description && typeof options.description !== "string") {
-    throw exceptionFactory.createDomainValidation("聚合根描述必须是字符串", "description", options.description);
+    throw exceptionFactory.createDomainValidation(
+      "聚合根描述必须是字符串",
+      "description",
+      options.description,
+    );
   }
 
   if (options.tags && !Array.isArray(options.tags)) {
-    throw exceptionFactory.createDomainValidation("聚合根标签必须是字符串数组", "tags", options.tags);
+    throw exceptionFactory.createDomainValidation(
+      "聚合根标签必须是字符串数组",
+      "tags",
+      options.tags,
+    );
   }
 
   if (options.tags && options.tags.some((tag) => typeof tag !== "string")) {
-    throw exceptionFactory.createDomainValidation("聚合根标签必须都是字符串", "tags", options.tags);
+    throw exceptionFactory.createDomainValidation(
+      "聚合根标签必须都是字符串",
+      "tags",
+      options.tags,
+    );
   }
 
   if (
     options.cacheTtl !== undefined &&
     (typeof options.cacheTtl !== "number" || options.cacheTtl <= 0)
   ) {
-    throw exceptionFactory.createDomainValidation("缓存TTL必须是正整数", "cacheTtl", options.cacheTtl);
+    throw exceptionFactory.createDomainValidation(
+      "缓存TTL必须是正整数",
+      "cacheTtl",
+      options.cacheTtl,
+    );
   }
 }
 
@@ -314,12 +342,21 @@ export class AggregateRegistry {
    */
   static register(aggregateClass: new (...args: unknown[]) => unknown): void {
     const metadata = getAggregateMetadata(aggregateClass);
+    const exceptionFactory = ExceptionFactory.getInstance();
     if (!metadata) {
-      throw exceptionFactory.createDomainValidation(`类 ${aggregateClass.name} 没有@Aggregate装饰器`, "aggregateClass", aggregateClass.name);
+      throw exceptionFactory.createDomainValidation(
+        `类 ${aggregateClass.name} 没有@Aggregate装饰器`,
+        "aggregateClass",
+        aggregateClass.name,
+      );
     }
 
     if (this.aggregates.has(metadata.name)) {
-      throw exceptionFactory.createDomainValidation(`聚合根名称 "${metadata.name}" 已经被注册`, "aggregateName", metadata.name);
+      throw exceptionFactory.createDomainValidation(
+        `聚合根名称 "${metadata.name}" 已经被注册`,
+        "aggregateName",
+        metadata.name,
+      );
     }
 
     this.aggregates.set(metadata.name, aggregateClass);

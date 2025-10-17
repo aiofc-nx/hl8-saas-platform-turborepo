@@ -1,6 +1,10 @@
-import { EntityId, TenantId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model";
 import { BaseEntity } from "../base/base-entity.js";
 import { OrganizationType } from "../../value-objects/types/organization-type.vo.js";
+import {
+  BusinessRuleViolationException,
+  DomainStateException,
+} from "../../../domain/exceptions/base/base-domain-exception.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
 
@@ -12,22 +16,22 @@ import type { IPartialAuditInfo } from "../base/audit-info.js";
 export interface OrganizationProps {
   /** 组织名称 */
   name: string;
-  
+
   /** 组织类型 */
   type: OrganizationType;
-  
+
   /** 组织描述 */
   description?: string;
-  
+
   /** 组织状态 */
   isActive: boolean;
-  
+
   /** 父组织ID（可选，用于组织层级） */
   parentId?: EntityId;
-  
+
   /** 组织路径（用于快速查询层级关系） */
   path?: string;
-  
+
   /** 组织排序 */
   sortOrder: number;
 }
@@ -114,7 +118,7 @@ export class Organization extends BaseEntity {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
-    
+
     this._name = props.name;
     this._type = props.type;
     this._description = props.description;
@@ -122,7 +126,7 @@ export class Organization extends BaseEntity {
     this._parentId = props.parentId;
     this._path = props.path;
     this._sortOrder = props.sortOrder;
-    
+
     this.validate();
   }
 
@@ -340,9 +344,12 @@ export class Organization extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw this._exceptionFactory.createDomainState("组织已激活", "active", "activate", { organizationId: this._id.value, isActive: this._isActive });
+      throw new DomainStateException("组织已激活", "active", "activate", {
+        organizationId: this.id.toString(),
+        isActive: this._isActive,
+      });
     }
-    
+
     this._isActive = true;
     this.updateTimestamp();
     this.logOperation("activate");
@@ -360,9 +367,12 @@ export class Organization extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw this._exceptionFactory.createDomainState("组织已停用", "inactive", "deactivate", { organizationId: this._id.value, isActive: this._isActive });
+      throw new DomainStateException("组织已停用", "inactive", "deactivate", {
+        organizationId: this.id.toString(),
+        isActive: this._isActive,
+      });
     }
-    
+
     this._isActive = false;
     this.updateTimestamp();
     this.logOperation("deactivate");
@@ -375,9 +385,9 @@ export class Organization extends BaseEntity {
    *
    * @returns 组织信息对象
    */
-  toData(): OrganizationProps & { id: string; createdAt: Date; updatedAt: Date } {
+  toData(): Record<string, unknown> {
     return {
-      id: this._id.toString(),
+      id: this.id.toString(),
       name: this._name,
       type: this._type,
       description: this._description,
@@ -385,8 +395,8 @@ export class Organization extends BaseEntity {
       parentId: this._parentId,
       path: this._path,
       sortOrder: this._sortOrder,
-      createdAt: this._auditInfo.createdAt,
-      updatedAt: this._auditInfo.updatedAt,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
     };
   }
 
@@ -410,10 +420,16 @@ export class Organization extends BaseEntity {
    */
   private validateName(name: string): void {
     if (!name || !name.trim()) {
-      throw this._exceptionFactory.createDomainValidation("组织名称不能为空", "name", name);
+      throw new BusinessRuleViolationException(
+        "组织名称不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (name.trim().length > 100) {
-      throw this._exceptionFactory.createDomainValidation("组织名称长度不能超过100字符", "name", name);
+      throw new BusinessRuleViolationException(
+        "组织名称长度不能超过100字符",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -424,10 +440,16 @@ export class Organization extends BaseEntity {
    */
   private validateType(type: OrganizationType): void {
     if (!type) {
-      throw this._exceptionFactory.createDomainValidation("组织类型不能为空", "type", type);
+      throw new BusinessRuleViolationException(
+        "组织类型不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (!Object.values(OrganizationType).includes(type)) {
-      throw this._exceptionFactory.createDomainValidation("无效的组织类型", "type", type);
+      throw new BusinessRuleViolationException(
+        "无效的组织类型",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -438,10 +460,18 @@ export class Organization extends BaseEntity {
    */
   private validateParent(parentId: EntityId): void {
     if (!parentId) {
-      throw this._exceptionFactory.createDomainValidation("父组织ID不能为空", "parentId", parentId);
+      throw new BusinessRuleViolationException(
+        "父组织ID不能为空",
+        "VALIDATION_FAILED",
+      );
     }
-    if (parentId.equals(this._id)) {
-      throw this._exceptionFactory.createDomainState("不能设置自己为父组织", "active", "setParent", { organizationId: this._id.value, parentId: parentId.value });
+    if (parentId.equals(this.id)) {
+      throw new DomainStateException(
+        "不能设置自己为父组织",
+        "active",
+        "setParent",
+        { organizationId: this.id.toString(), parentId: parentId.toString() },
+      );
     }
   }
 
@@ -452,7 +482,10 @@ export class Organization extends BaseEntity {
    */
   private validateSortOrder(sortOrder: number): void {
     if (sortOrder < 0) {
-      throw this._exceptionFactory.createDomainValidation("组织排序不能为负数", "sortOrder", sortOrder);
+      throw new BusinessRuleViolationException(
+        "组织排序不能为负数",
+        "VALIDATION_FAILED",
+      );
     }
   }
 }

@@ -1,6 +1,10 @@
-import { EntityId, TenantId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model";
 import { BaseEntity } from "../base/base-entity.js";
 import { DepartmentLevel } from "../../value-objects/types/department-level.vo.js";
+import {
+  BusinessRuleViolationException,
+  DomainStateException,
+} from "../../../domain/exceptions/base/base-domain-exception.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
 
@@ -12,28 +16,28 @@ import type { IPartialAuditInfo } from "../base/audit-info.js";
 export interface DepartmentProps {
   /** 部门名称 */
   name: string;
-  
+
   /** 部门层级 */
   level: DepartmentLevel;
-  
+
   /** 部门描述 */
   description?: string;
-  
+
   /** 部门状态 */
   isActive: boolean;
-  
+
   /** 父部门ID（可选，用于部门层级） */
   parentId?: EntityId;
-  
+
   /** 部门路径（用于快速查询层级关系） */
   path?: string;
-  
+
   /** 部门排序 */
   sortOrder: number;
-  
+
   /** 部门负责人ID（可选） */
   managerId?: EntityId;
-  
+
   /** 部门编码（可选，用于快速识别） */
   code?: string;
 }
@@ -122,7 +126,7 @@ export class Department extends BaseEntity {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
-    
+
     this._name = props.name;
     this._level = props.level;
     this._description = props.description;
@@ -132,7 +136,7 @@ export class Department extends BaseEntity {
     this._sortOrder = props.sortOrder;
     this._managerId = props.managerId;
     this._code = props.code;
-    
+
     this.validate();
   }
 
@@ -426,9 +430,12 @@ export class Department extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw this._exceptionFactory.createDomainState("部门已激活", "active", "activate", { departmentId: this._id.value, isActive: this._isActive });
+      throw new DomainStateException("部门已激活", "active", "activate", {
+        departmentId: this.id.toString(),
+        isActive: this._isActive,
+      });
     }
-    
+
     this._isActive = true;
     this.updateTimestamp();
     this.logOperation("activate");
@@ -446,9 +453,12 @@ export class Department extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw this._exceptionFactory.createDomainState("部门已停用", "inactive", "deactivate", { departmentId: this._id.value, isActive: this._isActive });
+      throw new DomainStateException("部门已停用", "inactive", "deactivate", {
+        departmentId: this.id.toString(),
+        isActive: this._isActive,
+      });
     }
-    
+
     this._isActive = false;
     this.updateTimestamp();
     this.logOperation("deactivate");
@@ -461,9 +471,9 @@ export class Department extends BaseEntity {
    *
    * @returns 部门信息对象
    */
-  toData(): DepartmentProps & { id: string; createdAt: Date; updatedAt: Date } {
+  toData(): Record<string, unknown> {
     return {
-      id: this._id.toString(),
+      id: this.id.toString(),
       name: this._name,
       level: this._level,
       description: this._description,
@@ -473,8 +483,8 @@ export class Department extends BaseEntity {
       sortOrder: this._sortOrder,
       managerId: this._managerId,
       code: this._code,
-      createdAt: this._auditInfo.createdAt,
-      updatedAt: this._auditInfo.updatedAt,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
     };
   }
 
@@ -501,10 +511,16 @@ export class Department extends BaseEntity {
    */
   private validateName(name: string): void {
     if (!name || !name.trim()) {
-      throw this._exceptionFactory.createDomainValidation("部门名称不能为空", "name", name);
+      throw new BusinessRuleViolationException(
+        "部门名称不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (name.trim().length > 100) {
-      throw this._exceptionFactory.createDomainValidation("部门名称长度不能超过100字符", "name", name);
+      throw new BusinessRuleViolationException(
+        "部门名称长度不能超过100字符",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -515,10 +531,16 @@ export class Department extends BaseEntity {
    */
   private validateLevel(level: DepartmentLevel): void {
     if (!level) {
-      throw this._exceptionFactory.createDomainValidation("部门层级不能为空", "level", level);
+      throw new BusinessRuleViolationException(
+        "部门层级不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (!DepartmentLevel.isValid(level.value)) {
-      throw this._exceptionFactory.createDomainValidation("无效的部门层级", "level", level);
+      throw new BusinessRuleViolationException(
+        "无效的部门层级",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -529,10 +551,18 @@ export class Department extends BaseEntity {
    */
   private validateParent(parentId: EntityId): void {
     if (!parentId) {
-      throw this._exceptionFactory.createDomainValidation("父部门ID不能为空", "parentId", parentId);
+      throw new BusinessRuleViolationException(
+        "父部门ID不能为空",
+        "VALIDATION_FAILED",
+      );
     }
-    if (parentId.equals(this._id)) {
-      throw this._exceptionFactory.createDomainState("不能设置自己为父部门", "active", "setParent", { departmentId: this._id.value, parentId: parentId.value });
+    if (parentId.equals(this.id)) {
+      throw new DomainStateException(
+        "不能设置自己为父部门",
+        "active",
+        "setParent",
+        { departmentId: this.id.toString(), parentId: parentId.toString() },
+      );
     }
   }
 
@@ -543,7 +573,10 @@ export class Department extends BaseEntity {
    */
   private validateSortOrder(sortOrder: number): void {
     if (sortOrder < 0) {
-      throw this._exceptionFactory.createDomainValidation("部门排序不能为负数", "sortOrder", sortOrder);
+      throw new BusinessRuleViolationException(
+        "部门排序不能为负数",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -554,7 +587,10 @@ export class Department extends BaseEntity {
    */
   private validateManager(managerId: EntityId): void {
     if (!managerId) {
-      throw this._exceptionFactory.createDomainValidation("负责人ID不能为空", "managerId", managerId);
+      throw new BusinessRuleViolationException(
+        "负责人ID不能为空",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -565,13 +601,22 @@ export class Department extends BaseEntity {
    */
   private validateCode(code: string): void {
     if (!code || !code.trim()) {
-      throw this._exceptionFactory.createDomainValidation("部门编码不能为空", "code", code);
+      throw new BusinessRuleViolationException(
+        "部门编码不能为空",
+        "VALIDATION_FAILED",
+      );
     }
     if (code.trim().length > 20) {
-      throw this._exceptionFactory.createDomainValidation("部门编码长度不能超过20字符", "code", code);
+      throw new BusinessRuleViolationException(
+        "部门编码长度不能超过20字符",
+        "VALIDATION_FAILED",
+      );
     }
     if (!/^[A-Z0-9_]+$/.test(code.trim())) {
-      throw this._exceptionFactory.createDomainValidation("部门编码只能包含大写字母、数字和下划线", "code", code);
+      throw new BusinessRuleViolationException(
+        "部门编码只能包含大写字母、数字和下划线",
+        "VALIDATION_FAILED",
+      );
     }
   }
 }

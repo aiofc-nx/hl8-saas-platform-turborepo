@@ -5,7 +5,11 @@
  * @since 1.0.0
  */
 
-import { ISpecification, SpecificationResult, SpecificationMetadata } from './specification.interface.js';
+import {
+  ISpecification,
+  SpecificationResult,
+  SpecificationMetadata,
+} from "./specification.interface.js";
 
 /**
  * 基础规范抽象类
@@ -35,9 +39,9 @@ export abstract class BaseSpecification<T> implements ISpecification<T> {
   constructor(metadata: Partial<SpecificationMetadata> = {}) {
     this.metadata = {
       name: this.constructor.name,
-      description: '基础规范',
-      version: '1.0.0',
-      category: 'default',
+      description: "基础规范",
+      version: "1.0.0",
+      category: "default",
       tags: [],
       priority: 0,
       enabled: true,
@@ -188,7 +192,7 @@ export abstract class BaseSpecification<T> implements ISpecification<T> {
    */
   check(candidate: T): SpecificationResult {
     const isSatisfied = this.isSatisfiedBy(candidate);
-    
+
     return {
       isSatisfied,
       errorMessage: isSatisfied ? undefined : this.getErrorMessage(candidate),
@@ -205,7 +209,7 @@ export abstract class BaseSpecification<T> implements ISpecification<T> {
    * @param candidate - 候选对象
    * @returns 错误消息
    */
-  protected getErrorMessage(candidate: T): string {
+  protected getErrorMessage(_candidate: T): string {
     return `${this.getName()} 规范不满足`;
   }
 
@@ -237,30 +241,32 @@ export class AndSpecification<T> extends BaseSpecification<T> {
     private right: ISpecification<T>,
   ) {
     super({
-      name: 'AndSpecification',
+      name: "AndSpecification",
       description: `(${left.getName()} AND ${right.getName()})`,
-      category: 'composite',
-      tags: ['and', 'composite'],
+      category: "composite",
+      tags: ["and", "composite"],
     });
   }
 
   isSatisfiedBy(candidate: T): boolean {
-    return this.left.isSatisfiedBy(candidate) && this.right.isSatisfiedBy(candidate);
+    return (
+      this.left.isSatisfiedBy(candidate) && this.right.isSatisfiedBy(candidate)
+    );
   }
 
   protected getErrorMessage(candidate: T): string {
-    const leftResult = this.left.check(candidate);
-    const rightResult = this.right.check(candidate);
-    
+    const leftSatisfied = this.left.isSatisfiedBy(candidate);
+    const rightSatisfied = this.right.isSatisfiedBy(candidate);
+
     const errors: string[] = [];
-    if (!leftResult.isSatisfied) {
-      errors.push(leftResult.errorMessage || `${this.left.getName()} 不满足`);
+    if (!leftSatisfied) {
+      errors.push(`${this.left.getName()} 不满足`);
     }
-    if (!rightResult.isSatisfied) {
-      errors.push(rightResult.errorMessage || `${this.right.getName()} 不满足`);
+    if (!rightSatisfied) {
+      errors.push(`${this.right.getName()} 不满足`);
     }
-    
-    return errors.join('; ');
+
+    return errors.join("; ");
   }
 }
 
@@ -276,18 +282,20 @@ export class OrSpecification<T> extends BaseSpecification<T> {
     private right: ISpecification<T>,
   ) {
     super({
-      name: 'OrSpecification',
+      name: "OrSpecification",
       description: `(${left.getName()} OR ${right.getName()})`,
-      category: 'composite',
-      tags: ['or', 'composite'],
+      category: "composite",
+      tags: ["or", "composite"],
     });
   }
 
   isSatisfiedBy(candidate: T): boolean {
-    return this.left.isSatisfiedBy(candidate) || this.right.isSatisfiedBy(candidate);
+    return (
+      this.left.isSatisfiedBy(candidate) || this.right.isSatisfiedBy(candidate)
+    );
   }
 
-  protected getErrorMessage(candidate: T): string {
+  protected getErrorMessage(_candidate: T): string {
     return `(${this.left.getName()} OR ${this.right.getName()}) 都不满足`;
   }
 }
@@ -301,10 +309,10 @@ export class OrSpecification<T> extends BaseSpecification<T> {
 export class NotSpecification<T> extends BaseSpecification<T> {
   constructor(private specification: ISpecification<T>) {
     super({
-      name: 'NotSpecification',
+      name: "NotSpecification",
       description: `NOT ${specification.getName()}`,
-      category: 'composite',
-      tags: ['not', 'composite'],
+      category: "composite",
+      tags: ["not", "composite"],
     });
   }
 
@@ -312,7 +320,7 @@ export class NotSpecification<T> extends BaseSpecification<T> {
     return !this.specification.isSatisfiedBy(candidate);
   }
 
-  protected getErrorMessage(candidate: T): string {
+  protected getErrorMessage(_candidate: T): string {
     return `NOT ${this.specification.getName()} 不满足`;
   }
 }

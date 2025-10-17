@@ -43,8 +43,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
-import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { InvalidPasswordPolicyException } from "../../exceptions/validation-exceptions.js";
+import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
 
 /**
  * 密码策略属性接口
@@ -118,7 +117,6 @@ export interface PasswordValidationResult {
  * 包含密码验证逻辑和策略管理功能
  */
 export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
-  private _exceptionFactory: ExceptionFactory;
   /**
    * 构造函数
    *
@@ -135,21 +133,29 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    * @override
    */
   protected override validate(props: PasswordPolicyProps): void {
-    if (!this._exceptionFactory) {
-      this._exceptionFactory = ExceptionFactory.getInstance();
-    }
-    
     if (props.minLength < 1 || props.minLength > props.maxLength) {
-      throw this._exceptionFactory.createInvalidPasswordPolicy(props, "密码最小长度必须大于0且不超过最大长度");
+      throw new BusinessRuleViolationException(
+        "密码最小长度必须大于0且不超过最大长度",
+        "VALIDATION_FAILED",
+      );
     }
     if (props.maxLength > 256) {
-      throw this._exceptionFactory.createInvalidPasswordPolicy(props, "密码最大长度不能超过256");
+      throw new BusinessRuleViolationException(
+        "密码最大长度不能超过256",
+        "VALIDATION_FAILED",
+      );
     }
     if (props.maxAge < 0) {
-      throw this._exceptionFactory.createInvalidPasswordPolicy(props, "密码最大使用期限不能为负数");
+      throw new BusinessRuleViolationException(
+        "密码最大使用期限不能为负数",
+        "VALIDATION_FAILED",
+      );
     }
     if (props.historyCount < 0) {
-      throw this._exceptionFactory.createInvalidPasswordPolicy(props, "密码历史记录数不能为负数");
+      throw new BusinessRuleViolationException(
+        "密码历史记录数不能为负数",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
@@ -452,24 +458,32 @@ export class PasswordPolicy extends BaseValueObject<PasswordPolicyProps> {
    * @since 1.0.0
    */
   private validateProps(props: PasswordPolicyProps): void {
-    if (!this._exceptionFactory) {
-      this._exceptionFactory = ExceptionFactory.getInstance();
-    }
-    
     if (props.minLength < 1 || props.minLength > 128) {
-      throw this._exceptionFactory.createInvalidPasswordPolicy(props, "密码最小长度必须在1-128之间");
+      throw new BusinessRuleViolationException(
+        "密码最小长度必须在1-128之间",
+        "VALIDATION_FAILED",
+      );
     }
 
     if (props.maxLength < props.minLength || props.maxLength > 128) {
-      throw this._exceptionFactory.createInvalidPasswordPolicy(props, "密码最大长度必须大于等于最小长度且不超过128");
+      throw new BusinessRuleViolationException(
+        "密码最大长度必须大于等于最小长度且不超过128",
+        "VALIDATION_FAILED",
+      );
     }
 
     if (props.maxAge < 1 || props.maxAge > 365) {
-      throw this._exceptionFactory.createInvalidPasswordPolicy(props, "密码有效期必须在1-365天之间");
+      throw new BusinessRuleViolationException(
+        "密码有效期必须在1-365天之间",
+        "VALIDATION_FAILED",
+      );
     }
 
     if (props.historyCount < 0 || props.historyCount > 50) {
-      throw this._exceptionFactory.createInvalidPasswordPolicy(props, "密码历史记录数量必须在0-50之间");
+      throw new BusinessRuleViolationException(
+        "密码历史记录数量必须在0-50之间",
+        "VALIDATION_FAILED",
+      );
     }
   }
 
