@@ -36,31 +36,43 @@ export class PhoneNumber extends BaseValueObject<string> {
    */
   protected validate(value: string): void {
     if (!value || !value.trim()) {
-      throw this._exceptionFactory.createInvalidPhoneNumber(value, '电话号码不能为空');
+      throw this._exceptionFactory.createInvalidPhoneNumber(
+        value,
+        "电话号码不能为空",
+      );
     }
 
     // 移除所有非数字字符
-    const digitsOnly = value.replace(/\D/g, '');
-    
+    const digitsOnly = value.replace(/\D/g, "");
+
     if (digitsOnly.length < 7) {
-      throw this._exceptionFactory.createInvalidPhoneNumber(value, '电话号码长度不能少于7位');
+      throw this._exceptionFactory.createInvalidPhoneNumber(
+        value,
+        "电话号码长度不能少于7位",
+      );
     }
 
     if (digitsOnly.length > 15) {
-      throw this._exceptionFactory.createInvalidPhoneNumber(value, '电话号码长度不能超过15位');
+      throw this._exceptionFactory.createInvalidPhoneNumber(
+        value,
+        "电话号码长度不能超过15位",
+      );
     }
-    
+
     // 使用验证器进行格式验证（电话号码作为用户名格式验证）
     const validatorResult = UsernameValidator.validateFormat(digitsOnly, {
       minLength: 7,
       maxLength: 15,
       allowNumbers: true,
       allowSpecialChars: false,
-      checkReservedWords: false
+      checkReservedWords: false,
     });
-    
+
     if (!validatorResult.isValid) {
-      throw this._exceptionFactory.createInvalidPhoneNumber(value, validatorResult.errors.join(', '));
+      throw this._exceptionFactory.createInvalidPhoneNumber(
+        value,
+        validatorResult.errors.join(", "),
+      );
     }
   }
 
@@ -72,7 +84,7 @@ export class PhoneNumber extends BaseValueObject<string> {
    */
   protected transform(value: string): string {
     // 移除所有非数字字符，保留数字
-    return value.replace(/\D/g, '');
+    return value.replace(/\D/g, "");
   }
 
   /**
@@ -91,15 +103,15 @@ export class PhoneNumber extends BaseValueObject<string> {
    * @param format - 格式化模式
    * @returns 格式化后的电话号码
    */
-  getFormatted(format: 'international' | 'national' | 'e164' = 'e164'): string {
+  getFormatted(format: "international" | "national" | "e164" = "e164"): string {
     const digits = this._value;
-    
+
     switch (format) {
-      case 'international':
+      case "international":
         return `+${digits}`;
-      case 'national':
+      case "national":
         return digits;
-      case 'e164':
+      case "e164":
         return `+${digits}`;
       default:
         return digits;
@@ -113,13 +125,13 @@ export class PhoneNumber extends BaseValueObject<string> {
    */
   getCountryCode(): string {
     const digits = this._value;
-    if (digits.startsWith('86')) {
-      return '86';
+    if (digits.startsWith("86")) {
+      return "86";
     }
-    if (digits.startsWith('1')) {
-      return '1';
+    if (digits.startsWith("1")) {
+      return "1";
     }
-    return '';
+    return "";
   }
 
   /**

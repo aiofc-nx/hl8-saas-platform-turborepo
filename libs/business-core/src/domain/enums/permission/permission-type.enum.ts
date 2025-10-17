@@ -176,7 +176,10 @@ export class PermissionTypeUtils {
    * @param type2 - 类型2
    * @returns 类型1是否等于或高于类型2
    */
-  static hasScopeOrHigher(type1: PermissionType, type2: PermissionType): boolean {
+  static hasScopeOrHigher(
+    type1: PermissionType,
+    type2: PermissionType,
+  ): boolean {
     return this.TYPE_HIERARCHY[type1] >= this.TYPE_HIERARCHY[type2];
   }
 

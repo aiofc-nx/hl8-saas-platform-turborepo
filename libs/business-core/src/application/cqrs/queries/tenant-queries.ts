@@ -33,22 +33,22 @@ export class GetTenantQuery extends BaseQuery {
 export class GetTenantsQuery extends BaseQuery {
   /** 平台ID */
   platformId?: EntityId;
-  
+
   /** 租户类型 */
   type?: TenantType;
-  
+
   /** 是否包含已删除的租户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -80,22 +80,22 @@ export class GetTenantsQuery extends BaseQuery {
 export class GetTenantsByPlatformQuery extends BaseQuery {
   /** 平台ID */
   platformId: EntityId;
-  
+
   /** 租户类型 */
   type?: TenantType;
-  
+
   /** 是否包含已删除的租户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -127,25 +127,25 @@ export class GetTenantsByPlatformQuery extends BaseQuery {
 export class SearchTenantsQuery extends BaseQuery {
   /** 搜索关键词 */
   keyword: string;
-  
+
   /** 平台ID */
   platformId?: EntityId;
-  
+
   /** 租户类型 */
   type?: TenantType;
-  
+
   /** 是否包含已删除的租户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -179,10 +179,10 @@ export class SearchTenantsQuery extends BaseQuery {
 export class CountTenantsQuery extends BaseQuery {
   /** 平台ID */
   platformId?: EntityId;
-  
+
   /** 租户类型 */
   type?: TenantType;
-  
+
   /** 是否包含已删除的租户 */
   includeDeleted?: boolean;
 

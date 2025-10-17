@@ -1,5 +1,10 @@
-import { TenantId } from "@hl8/isolation-model";
-import { TenantAggregate, TenantCreatedEvent, TenantUpdatedEvent, TenantDeletedEvent } from "./tenant-aggregate.js";
+import { TenantId, EntityId } from "@hl8/isolation-model";
+import {
+  TenantAggregate,
+  TenantCreatedEvent,
+  TenantUpdatedEvent,
+  TenantDeletedEvent,
+} from "./tenant-aggregate.js";
 import { TenantType } from "../value-objects/types/tenant-type.vo.js";
 import { IPartialAuditInfo } from "../entities/base/audit-info.js";
 
@@ -23,14 +28,14 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
         auditInfo,
       );
 
-      expect(tenantAggregate.tenant.name).toBe("测试租户");
+      expect(tenantAggregate.tenant.name).toBe("test-tenant");
       expect(tenantAggregate.tenant.type).toBe(TenantType.ENTERPRISE);
       expect(tenantAggregate.platformId).toEqual(platformId);
 
@@ -38,8 +43,10 @@ describe("TenantAggregate", () => {
       const events = tenantAggregate.getUncommittedEvents();
       expect(events).toHaveLength(1);
       expect(events[0]).toBeInstanceOf(TenantCreatedEvent);
-      expect((events[0] as TenantCreatedEvent).name).toBe("测试租户");
-      expect((events[0] as TenantCreatedEvent).type).toBe(TenantType.ENTERPRISE);
+      expect((events[0] as TenantCreatedEvent).name).toBe("test-tenant");
+      expect((events[0] as TenantCreatedEvent).type).toBe(
+        TenantType.ENTERPRISE,
+      );
     });
 
     it("应该验证租户上下文", () => {
@@ -47,7 +54,7 @@ describe("TenantAggregate", () => {
         new TenantAggregate(
           tenantId,
           {
-            name: "测试租户",
+            name: "test-tenant",
             type: TenantType.ENTERPRISE,
             platformId: platformId,
           },
@@ -62,7 +69,7 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
@@ -72,19 +79,19 @@ describe("TenantAggregate", () => {
     });
 
     it("应该更新租户名称并发布更新事件", () => {
-      tenantAggregate.updateName("新租户名称", "admin");
+      tenantAggregate.updateName("new-tenant-name", "admin");
 
-      expect(tenantAggregate.tenant.name).toBe("新租户名称");
+      expect(tenantAggregate.tenant.name).toBe("new-tenant-name");
 
       const events = tenantAggregate.getUncommittedEvents();
       expect(events).toHaveLength(1);
       expect(events[0]).toBeInstanceOf(TenantUpdatedEvent);
-      expect((events[0] as TenantUpdatedEvent).name).toBe("新租户名称");
+      expect((events[0] as TenantUpdatedEvent).name).toBe("new-tenant-name");
     });
 
     it("应该记录操作日志", () => {
       const logSpy = jest.spyOn(console, "info");
-      tenantAggregate.updateName("新租户名称", "admin");
+      tenantAggregate.updateName("new-tenant-name", "admin");
 
       expect(logSpy).toHaveBeenCalledWith("租户名称已更新", undefined);
       logSpy.mockRestore();
@@ -96,7 +103,7 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
@@ -122,7 +129,7 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
@@ -157,7 +164,7 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
@@ -192,7 +199,7 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
@@ -213,7 +220,7 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
@@ -244,7 +251,7 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
@@ -257,9 +264,9 @@ describe("TenantAggregate", () => {
 
       expect(data.id).toBe(tenantId.toString());
       expect(data.platformId).toBe(platformId.toString());
-      expect(data.tenant.name).toBe("测试租户");
-      expect(data.tenant.type).toBe(TenantType.ENTERPRISE.value);
-      expect(data.tenant.isDeleted).toBe(false);
+      expect((data.tenant as any).name).toBe("test-tenant");
+      expect((data.tenant as any).type).toBe(TenantType.ENTERPRISE.value);
+      expect((data.tenant as any).isDeleted).toBe(false);
     });
   });
 
@@ -268,7 +275,7 @@ describe("TenantAggregate", () => {
       tenantAggregate = new TenantAggregate(
         tenantId,
         {
-          name: "测试租户",
+          name: "test-tenant",
           type: TenantType.ENTERPRISE,
           platformId: platformId,
         },
@@ -281,7 +288,7 @@ describe("TenantAggregate", () => {
 
       expect(str).toContain("TenantAggregate");
       expect(str).toContain(tenantId.toString());
-      expect(str).toContain("测试租户");
+      expect(str).toContain("test-tenant");
       expect(str).toContain(TenantType.ENTERPRISE.value);
     });
   });

@@ -1,5 +1,5 @@
 import { BaseEntity } from "../base/base-entity.js";
-import { EntityId, TenantId } from "@hl8/isolation-model";
+import { EntityId } from "@hl8/isolation-model";
 import type { IPureLogger } from "@hl8/pure-logger";
 import { TenantType } from "../../value-objects/types/tenant-type.vo.js";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
@@ -57,8 +57,9 @@ export class Tenant extends BaseEntity {
   }
 
   rename(newName: string): void {
-    this.validateNameWithRules(newName);
-    this._name = newName.trim();
+    const trimmedName = newName.trim();
+    this.validateNameWithRules(trimmedName);
+    this._name = trimmedName;
     this.updateTimestamp();
     this.logOperation("rename", { name: this._name });
   }

@@ -23,22 +23,22 @@ import { BusinessRuleViolationException } from "../../domain/exceptions/base/bas
 export interface CreateUserRequest {
   /** 用户名 */
   username: string;
-  
+
   /** 邮箱地址 */
   email: string;
-  
+
   /** 手机号码 */
   phone?: string;
-  
+
   /** 用户姓名 */
   displayName: string;
-  
+
   /** 用户角色 */
   role: UserRole;
-  
+
   /** 用户描述 */
   description?: string;
-  
+
   /** 创建者标识符 */
   createdBy: string;
 }
@@ -49,22 +49,22 @@ export interface CreateUserRequest {
 export interface CreateUserResponse {
   /** 用户ID */
   userId: EntityId;
-  
+
   /** 用户名 */
   username: string;
-  
+
   /** 邮箱地址 */
   email: string;
-  
+
   /** 用户姓名 */
   displayName: string;
-  
+
   /** 用户角色 */
   role: UserRole;
-  
+
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 创建时间 */
   createdAt: Date;
 }
@@ -104,16 +104,10 @@ export class CreateUserUseCase extends BaseCommandUseCase<
     this.validateRequest(request);
 
     // 检查用户名唯一性
-    await this.validateUsernameUniqueness(
-      context.tenant!.id,
-      request.username,
-    );
+    await this.validateUsernameUniqueness(context.tenant!.id, request.username);
 
     // 检查邮箱唯一性
-    await this.validateEmailUniqueness(
-      context.tenant!.id,
-      request.email,
-    );
+    await this.validateEmailUniqueness(context.tenant!.id, request.email);
 
     // 创建用户实体
     const user = this.createUserEntity(request, context);
@@ -237,10 +231,7 @@ export class CreateUserUseCase extends BaseCommandUseCase<
     tenantId: TenantId,
     email: string,
   ): Promise<void> {
-    const existingUser = await this.userRepository.findByEmail(
-      tenantId,
-      email,
-    );
+    const existingUser = await this.userRepository.findByEmail(tenantId, email);
 
     if (existingUser) {
       throw new BusinessRuleViolationException(

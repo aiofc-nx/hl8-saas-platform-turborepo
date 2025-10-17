@@ -330,23 +330,43 @@ export abstract class BaseDomainEvent {
    */
   protected validate(): void {
     if (!this._eventId || this._eventId.isEmpty()) {
-      throw this._exceptionFactory.createDomainValidation("Event ID cannot be null or empty", "eventId", eventId);
+      throw this._exceptionFactory.createDomainValidation(
+        "Event ID cannot be null or empty",
+        "eventId",
+        eventId,
+      );
     }
 
     if (!this._aggregateId || this._aggregateId.isEmpty()) {
-      throw this._exceptionFactory.createDomainValidation("Aggregate ID cannot be null or empty", "aggregateId", this._aggregateId);
+      throw this._exceptionFactory.createDomainValidation(
+        "Aggregate ID cannot be null or empty",
+        "aggregateId",
+        this._aggregateId,
+      );
     }
 
     if (!this._tenantId) {
-      throw this._exceptionFactory.createDomainValidation("Tenant ID cannot be null or empty", "tenantId", this._tenantId);
+      throw this._exceptionFactory.createDomainValidation(
+        "Tenant ID cannot be null or empty",
+        "tenantId",
+        this._tenantId,
+      );
     }
 
     if (this._aggregateVersion < 1) {
-      throw this._exceptionFactory.createDomainValidation("Aggregate version must be greater than 0", "aggregateVersion", this._aggregateVersion);
+      throw this._exceptionFactory.createDomainValidation(
+        "Aggregate version must be greater than 0",
+        "aggregateVersion",
+        this._aggregateVersion,
+      );
     }
 
     if (this._eventVersion < 1) {
-      throw this._exceptionFactory.createDomainValidation("Event version must be greater than 0", "eventVersion", this._eventVersion);
+      throw this._exceptionFactory.createDomainValidation(
+        "Event version must be greater than 0",
+        "eventVersion",
+        this._eventVersion,
+      );
     }
   }
 }

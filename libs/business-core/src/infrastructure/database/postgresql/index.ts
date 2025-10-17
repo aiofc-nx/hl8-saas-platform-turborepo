@@ -8,22 +8,22 @@
  */
 
 // 平台相关表结构
-export * from './platform.schema.js';
+export * from "./platform.schema.js";
 
 // 租户相关表结构
-export * from './tenant.schema.js';
+export * from "./tenant.schema.js";
 
 // 组织相关表结构
-export * from './organization.schema.js';
+export * from "./organization.schema.js";
 
 // 部门相关表结构
-export * from './department.schema.js';
+export * from "./department.schema.js";
 
 // 用户相关表结构
-export * from './user.schema.js';
+export * from "./user.schema.js";
 
 // 身份认证相关表结构
-export * from './authentication.schema.js';
+export * from "./authentication.schema.js";
 
 // 权限相关表结构
-export * from './permission.schema.js';
+export * from "./permission.schema.js";

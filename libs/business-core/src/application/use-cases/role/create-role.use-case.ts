@@ -22,43 +22,43 @@ import type { IPureLogger } from "@hl8/pure-logger";
 export interface CreateRoleRequest {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 角色名称 */
   name: string;
-  
+
   /** 角色描述 */
   description?: string;
-  
+
   /** 角色类型 */
   type: RoleType;
-  
+
   /** 权限类型 */
   permissionType: PermissionType;
-  
+
   /** 权限动作列表 */
   actions: PermissionAction[];
-  
+
   /** 是否启用 */
   isActive?: boolean;
-  
+
   /** 是否系统角色 */
   isSystemRole?: boolean;
-  
+
   /** 是否可编辑 */
   isEditable?: boolean;
-  
+
   /** 角色优先级 */
   priority?: number;
-  
+
   /** 父角色ID */
   parentRoleId?: EntityId;
-  
+
   /** 角色标签 */
   tags?: string[];
-  
+
   /** 角色配置 */
   config?: Record<string, any>;
-  
+
   /** 创建者 */
   createdBy: string;
 }
@@ -69,46 +69,46 @@ export interface CreateRoleRequest {
 export interface CreateRoleResponse {
   /** 角色ID */
   roleId: EntityId;
-  
+
   /** 角色名称 */
   name: string;
-  
+
   /** 角色描述 */
   description?: string;
-  
+
   /** 角色类型 */
   type: string;
-  
+
   /** 权限类型 */
   permissionType: string;
-  
+
   /** 权限动作列表 */
   actions: string[];
-  
+
   /** 是否启用 */
   isActive: boolean;
-  
+
   /** 是否系统角色 */
   isSystemRole: boolean;
-  
+
   /** 是否可编辑 */
   isEditable: boolean;
-  
+
   /** 角色优先级 */
   priority: number;
-  
+
   /** 父角色ID */
   parentRoleId?: string;
-  
+
   /** 角色标签 */
   tags?: string[];
-  
+
   /** 角色配置 */
   config?: Record<string, any>;
-  
+
   /** 创建时间 */
   createdAt: Date;
-  
+
   /** 更新时间 */
   updatedAt: Date;
 }
@@ -137,7 +137,7 @@ export interface CreateRoleResponse {
  * ```typescript
  * // 创建角色用例
  * const createRoleUseCase = new CreateRoleUseCase(roleRepository, logger);
- * 
+ *
  * // 执行用例
  * const result = await createRoleUseCase.execute({
  *   tenantId: TenantId.generate(),
@@ -152,13 +152,16 @@ export interface CreateRoleResponse {
  *   priority: 100,
  *   createdBy: "system"
  * });
- * 
+ *
  * console.log(result.roleId); // 新创建的角色ID
  * ```
  *
  * @since 1.0.0
  */
-export class CreateRoleUseCase extends UseCase<CreateRoleRequest, CreateRoleResponse> {
+export class CreateRoleUseCase extends UseCase<
+  CreateRoleRequest,
+  CreateRoleResponse
+> {
   constructor(
     private readonly roleRepository: IRoleRepository,
     logger?: IPureLogger,
@@ -242,7 +245,7 @@ export class CreateRoleUseCase extends UseCase<CreateRoleRequest, CreateRoleResp
         description: role.description,
         type: role.type.value,
         permissionType: role.permissionType.value,
-        actions: role.actions.map(a => a.value),
+        actions: role.actions.map((a) => a.value),
         isActive: role.isActive,
         isSystemRole: role.isSystemRole,
         isEditable: role.isEditable,
@@ -254,11 +257,15 @@ export class CreateRoleUseCase extends UseCase<CreateRoleRequest, CreateRoleResp
         updatedAt: role.updatedAt,
       };
     } catch (error) {
-      this.logger?.error("创建角色失败", error instanceof Error ? error.stack : undefined, {
-        tenantId: request.tenantId.toString(),
-        name: request.name,
-        error: error instanceof Error ? error.message : String(error),
-      });
+      this.logger?.error(
+        "创建角色失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          tenantId: request.tenantId.toString(),
+          name: request.name,
+          error: error instanceof Error ? error.message : String(error),
+        },
+      );
       throw error;
     }
   }
@@ -303,7 +310,10 @@ export class CreateRoleUseCase extends UseCase<CreateRoleRequest, CreateRoleResp
    * @param name - 角色名称
    * @private
    */
-  private async checkRoleNameExists(tenantId: TenantId, name: string): Promise<void> {
+  private async checkRoleNameExists(
+    tenantId: TenantId,
+    name: string,
+  ): Promise<void> {
     const existingRole = await this.roleRepository.findByName(tenantId, name);
     if (existingRole) {
       throw new Error(`角色名称 "${name}" 已存在`);

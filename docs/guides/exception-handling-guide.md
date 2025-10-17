@@ -94,12 +94,12 @@ export abstract class BaseDomainException extends Error {
 
 ```typescript
 export enum DomainExceptionType {
-  BUSINESS_RULE = "business_rule",    // 业务规则违反
-  VALIDATION = "validation",          // 数据验证失败
-  STATE = "state",                    // 状态转换错误
-  PERMISSION = "permission",          // 权限不足
-  CONCURRENCY = "concurrency",        // 并发冲突
-  NOT_FOUND = "not_found",           // 资源未找到
+  BUSINESS_RULE = "business_rule", // 业务规则违反
+  VALIDATION = "validation", // 数据验证失败
+  STATE = "state", // 状态转换错误
+  PERMISSION = "permission", // 权限不足
+  CONCURRENCY = "concurrency", // 并发冲突
+  NOT_FOUND = "not_found", // 资源未找到
 }
 ```
 
@@ -107,9 +107,9 @@ export enum DomainExceptionType {
 
 ```typescript
 export enum DomainExceptionSeverity {
-  LOW = "low",           // 低级别：信息性异常
-  MEDIUM = "medium",     // 中级别：警告性异常
-  HIGH = "high",         // 高级别：错误性异常
+  LOW = "low", // 低级别：信息性异常
+  MEDIUM = "medium", // 中级别：警告性异常
+  HIGH = "high", // 高级别：错误性异常
   CRITICAL = "critical", // 关键级别：系统级异常
 }
 ```
@@ -353,7 +353,7 @@ private handleException(error: any, operation: string): never {
 throw new BusinessRuleViolationException(
   "租户名称不能为空",
   "TENANT_NAME_REQUIRED",
-  { tenantName: "" }
+  { tenantName: "" },
 );
 ```
 
@@ -407,25 +407,25 @@ async createTenant(@Body() request: CreateTenantDto) {
 
 ### 领域异常类型到应用异常的映射
 
-| 领域异常类型 | 应用异常类 | HTTP状态码 | 说明 |
-|-------------|-----------|-----------|------|
-| `DomainExceptionType.BUSINESS_RULE` | `BusinessRuleViolationException` | 400 | 业务规则违反 |
-| `DomainExceptionType.VALIDATION` | `ValidationException` | 400 | 数据验证失败 |
-| `DomainExceptionType.PERMISSION` | `UnauthorizedOperationException` | 403 | 权限不足 |
-| `DomainExceptionType.NOT_FOUND` | `ResourceNotFoundException` | 404 | 资源未找到 |
-| `DomainExceptionType.STATE` | `BusinessRuleViolationException` | 409 | 状态转换错误 |
-| `DomainExceptionType.CONCURRENCY` | `BusinessRuleViolationException` | 409 | 并发冲突 |
+| 领域异常类型                        | 应用异常类                       | HTTP状态码 | 说明         |
+| ----------------------------------- | -------------------------------- | ---------- | ------------ |
+| `DomainExceptionType.BUSINESS_RULE` | `BusinessRuleViolationException` | 400        | 业务规则违反 |
+| `DomainExceptionType.VALIDATION`    | `ValidationException`            | 400        | 数据验证失败 |
+| `DomainExceptionType.PERMISSION`    | `UnauthorizedOperationException` | 403        | 权限不足     |
+| `DomainExceptionType.NOT_FOUND`     | `ResourceNotFoundException`      | 404        | 资源未找到   |
+| `DomainExceptionType.STATE`         | `BusinessRuleViolationException` | 409        | 状态转换错误 |
+| `DomainExceptionType.CONCURRENCY`   | `BusinessRuleViolationException` | 409        | 并发冲突     |
 
 ### HTTP状态码规范
 
-| 状态码 | 异常类型 | 使用场景 |
-|-------|---------|---------|
-| 400 | BadRequest | 业务规则违反、数据验证失败 |
-| 401 | Unauthorized | 身份认证失败 |
-| 403 | Forbidden | 权限不足 |
-| 404 | NotFound | 资源未找到 |
-| 409 | Conflict | 资源冲突、状态错误 |
-| 500 | InternalServerError | 系统内部错误 |
+| 状态码 | 异常类型            | 使用场景                   |
+| ------ | ------------------- | -------------------------- |
+| 400    | BadRequest          | 业务规则违反、数据验证失败 |
+| 401    | Unauthorized        | 身份认证失败               |
+| 403    | Forbidden           | 权限不足                   |
+| 404    | NotFound            | 资源未找到                 |
+| 409    | Conflict            | 资源冲突、状态错误         |
+| 500    | InternalServerError | 系统内部错误               |
 
 ## 🎨 最佳实践
 
@@ -438,7 +438,7 @@ async createTenant(@Body() request: CreateTenantDto) {
 throw new BusinessRuleViolationException(
   "用户邮箱已存在",
   "USER_EMAIL_EXISTS",
-  { email: "user@example.com" }
+  { email: "user@example.com" },
 );
 
 // ❌ 错误：模糊的异常名称
@@ -449,14 +449,14 @@ throw new Error("Something went wrong");
 
 ```typescript
 // ✅ 正确：大写蛇形命名法
-"TENANT_NAME_REQUIRED"
-"USER_EMAIL_ALREADY_EXISTS"
-"PERMISSION_DENIED"
+"TENANT_NAME_REQUIRED";
+"USER_EMAIL_ALREADY_EXISTS";
+"PERMISSION_DENIED";
 
 // ❌ 错误：不一致的命名
-"tenantNameRequired"
-"user_email_already_exists"
-"PermissionDenied"
+"tenantNameRequired";
+"user_email_already_exists";
+"PermissionDenied";
 ```
 
 ### 2. 异常上下文信息
@@ -470,8 +470,8 @@ throw new BusinessRuleViolationException(
     tenantId: tenantId.toString(),
     currentUsers: 100,
     maxUsers: 100,
-    planType: "BASIC"
-  }
+    planType: "BASIC",
+  },
 );
 
 // ❌ 错误：缺少上下文信息
@@ -489,7 +489,7 @@ try {
     "外部服务调用失败",
     "EXTERNAL_SERVICE_ERROR",
     { service: "payment" },
-    error // 保留原始异常作为rootCause
+    error, // 保留原始异常作为rootCause
   );
 }
 ```
@@ -587,6 +587,7 @@ ExceptionModule.forRoot({
 ```
 
 在生产环境：
+
 - 自动隐藏敏感堆栈信息
 - 简化错误响应
 - 优化日志输出
@@ -597,18 +598,14 @@ ExceptionModule.forRoot({
 
 ```typescript
 // ✅ 好的做法：不暴露敏感信息
-throw new BusinessRuleViolationException(
-  "数据库操作失败",
-  "DATABASE_ERROR",
-  { operation: "save" }
-);
+throw new BusinessRuleViolationException("数据库操作失败", "DATABASE_ERROR", {
+  operation: "save",
+});
 
 // ❌ 避免暴露：敏感信息
-throw new BusinessRuleViolationException(
-  "数据库错误",
-  "DATABASE_ERROR",
-  { connectionString: "postgres://user:pass@host:5432/db" }
-);
+throw new BusinessRuleViolationException("数据库错误", "DATABASE_ERROR", {
+  connectionString: "postgres://user:pass@host:5432/db",
+});
 ```
 
 ### 2. 生产环境自动脱敏
@@ -641,9 +638,9 @@ describe("BusinessRuleViolationException", () => {
   it("should create exception with correct properties", () => {
     const exception = new BusinessRuleViolationException(
       "测试规则",
-      "TEST_RULE"
+      "TEST_RULE",
     );
-    
+
     expect(exception.errorType).toBe(DomainExceptionType.BUSINESS_RULE);
     expect(exception.severity).toBe(DomainExceptionSeverity.HIGH);
     expect(exception.errorCode).toBe("BUSINESS_RULE_VIOLATION_TEST_RULE");
@@ -658,13 +655,12 @@ describe("DomainExceptionConverter", () => {
   it("should convert domain exception to application exception", () => {
     const domainException = new BusinessRuleViolationException(
       "测试规则",
-      "TEST_RULE"
+      "TEST_RULE",
     );
-    
-    const appException = DomainExceptionConverter.toApplicationException(
-      domainException
-    );
-    
+
+    const appException =
+      DomainExceptionConverter.toApplicationException(domainException);
+
     expect(appException).toBeInstanceOf(BusinessRuleViolationException);
     expect(appException.message).toContain("业务规则违反");
   });
@@ -680,7 +676,7 @@ describe("Tenant API", () => {
       .post("/tenants")
       .send({ name: "", type: "ENTERPRISE" })
       .expect(400);
-    
+
     expect(response.body).toMatchObject({
       type: expect.stringContaining("BUSINESS_RULE_VIOLATION"),
       title: "业务规则违反",
@@ -732,6 +728,7 @@ describe("Tenant API", () => {
 ### 重要原则
 
 **领域层必须保持纯净性**：
+
 - 不能导入任何NestJS或外部框架的异常类
 - 所有异常必须继承自`BaseDomainException`或其子类
 - 使用枚举类型`DomainExceptionType`和`DomainExceptionSeverity`进行分类
@@ -744,7 +741,7 @@ import { BusinessRuleViolationException } from "../exceptions/base/base-domain-e
 
 throw new BusinessRuleViolationException(
   "租户名称不能为空",
-  "EMPTY_TENANT_NAME"
+  "EMPTY_TENANT_NAME",
 );
 
 // ✅ 正确的状态异常使用
@@ -754,7 +751,7 @@ throw new DomainStateException(
   "Cannot delete an entity that is already deleted",
   "DELETED",
   "DELETE",
-  { entityId: this.id.toString() }
+  { entityId: this.id.toString() },
 );
 ```
 
@@ -772,24 +769,26 @@ throw new ValidationError("数据验证失败");
 
 ### 领域异常使用场景
 
-| 组件类型 | 推荐异常类型 | 使用场景 |
-|---------|-------------|---------|
-| 实体（Entity） | `BusinessRuleViolationException` | 业务规则验证失败 |
-| 实体（Entity） | `DomainStateException` | 状态转换错误 |
-| 聚合根（Aggregate Root） | `BusinessRuleViolationException` | 业务规则验证失败 |
-| 聚合根（Aggregate Root） | `DomainPermissionException` | 跨租户操作禁止 |
-| 值对象（Value Object） | `DomainValidationException` | 数据格式验证失败 |
-| 领域服务（Domain Service） | `BusinessRuleViolationException` | 业务逻辑错误 |
+| 组件类型                   | 推荐异常类型                     | 使用场景         |
+| -------------------------- | -------------------------------- | ---------------- |
+| 实体（Entity）             | `BusinessRuleViolationException` | 业务规则验证失败 |
+| 实体（Entity）             | `DomainStateException`           | 状态转换错误     |
+| 聚合根（Aggregate Root）   | `BusinessRuleViolationException` | 业务规则验证失败 |
+| 聚合根（Aggregate Root）   | `DomainPermissionException`      | 跨租户操作禁止   |
+| 值对象（Value Object）     | `DomainValidationException`      | 数据格式验证失败 |
+| 领域服务（Domain Service） | `BusinessRuleViolationException` | 业务逻辑错误     |
 
 ## 📄 更新日志
 
 ### v1.1.0 (2024-01-15)
+
 - 修复领域层异常污染问题
 - 标准化领域层异常使用规范
 - 完善异常处理文档
 - 强化领域层纯净性原则
 
 ### v1.0.0 (2024-01-01)
+
 - 初始版本发布
 - 实现基础异常处理架构
 - 支持领域层、应用层、基础设施层异常处理

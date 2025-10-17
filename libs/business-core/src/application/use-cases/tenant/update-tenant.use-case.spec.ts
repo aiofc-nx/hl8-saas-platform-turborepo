@@ -341,15 +341,15 @@ describe("UpdateTenantUseCase", () => {
       mockRepository.save.mockResolvedValue(undefined);
 
       // Act
-      console.log('Test: calling useCase.execute');
+      console.log("Test: calling useCase.execute");
       const result = await useCase.execute(request, mockContext);
-      console.log('Test: useCase.execute completed, result:', result);
+      console.log("Test: useCase.execute completed, result:", result);
 
       // Assert
       expect(mockLogger.debug).toHaveBeenCalled();
       // Check the actual call to debug the issue
       const debugCalls = mockLogger.debug.mock.calls;
-      console.log('Debug calls:', debugCalls);
+      console.log("Debug calls:", debugCalls);
       expect(mockLogger.debug).toHaveBeenCalledWith(
         expect.stringContaining(
           "Use case completed successfully: UpdateTenant",

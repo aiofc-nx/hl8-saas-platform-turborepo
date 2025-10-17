@@ -63,7 +63,10 @@ export class BusinessRuleScopeUtils {
   /**
    * 作用域描述映射
    */
-  private static readonly SCOPE_DESCRIPTIONS: Record<BusinessRuleScope, string> = {
+  private static readonly SCOPE_DESCRIPTIONS: Record<
+    BusinessRuleScope,
+    string
+  > = {
     [BusinessRuleScope.FIELD]: "字段级规则",
     [BusinessRuleScope.ENTITY]: "实体级规则",
     [BusinessRuleScope.AGGREGATE]: "聚合级规则",
@@ -133,7 +136,10 @@ export class BusinessRuleScopeUtils {
    * @param scope2 - 作用域2
    * @returns 作用域1是否高于作用域2
    */
-  static hasHigherScope(scope1: BusinessRuleScope, scope2: BusinessRuleScope): boolean {
+  static hasHigherScope(
+    scope1: BusinessRuleScope,
+    scope2: BusinessRuleScope,
+  ): boolean {
     return this.SCOPE_HIERARCHY[scope1] > this.SCOPE_HIERARCHY[scope2];
   }
 
@@ -144,7 +150,10 @@ export class BusinessRuleScopeUtils {
    * @param scope2 - 作用域2
    * @returns 作用域1是否等于或高于作用域2
    */
-  static hasScopeOrHigher(scope1: BusinessRuleScope, scope2: BusinessRuleScope): boolean {
+  static hasScopeOrHigher(
+    scope1: BusinessRuleScope,
+    scope2: BusinessRuleScope,
+  ): boolean {
     return this.SCOPE_HIERARCHY[scope1] >= this.SCOPE_HIERARCHY[scope2];
   }
 

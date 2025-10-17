@@ -5,12 +5,12 @@
  * @since 1.0.0
  */
 
-import { ValidatorManager } from './validator-manager.js';
-import { ValidatorFactory } from './validator-factory.js';
-import { BusinessRuleManager } from '../rules/business-rule-manager.js';
-import { BusinessRuleFactory } from '../rules/business-rule-factory.js';
-import { IValidationResult } from './base-validator.interface.js';
-import { IBusinessRuleValidationResult } from '../rules/base-business-rule.interface.js';
+import { ValidatorManager } from "./validator-manager.js";
+import { ValidatorFactory } from "./validator-factory.js";
+import { BusinessRuleManager } from "../rules/business-rule-manager.js";
+import { BusinessRuleFactory } from "../rules/business-rule-factory.js";
+import { IValidationResult } from "./base-validator.interface.js";
+import { IBusinessRuleValidationResult } from "../rules/base-business-rule.interface.js";
 
 /**
  * 验证服务
@@ -22,7 +22,8 @@ export class ValidationService {
   private businessRuleManager: BusinessRuleManager;
 
   constructor() {
-    this.validatorManager = ValidatorFactory.getInstance().getValidatorManager();
+    this.validatorManager =
+      ValidatorFactory.getInstance().getValidatorManager();
     this.businessRuleManager = BusinessRuleFactory.createDefaultManager();
   }
 
@@ -33,65 +34,77 @@ export class ValidationService {
    * @param options - 验证选项
    * @returns 验证结果
    */
-  validateEmail(email: string, options: EmailValidationOptions = {}): ValidationResult {
+  validateEmail(
+    email: string,
+    options: EmailValidationOptions = {},
+  ): ValidationResult {
     const results: ValidationResult[] = [];
 
     // 使用验证器进行格式验证
-    const validatorResult = this.validatorManager.validate('email', email);
+    const validatorResult = this.validatorManager.validate("email", email);
     results.push({
-      type: 'validator',
-      name: 'email',
+      type: "validator",
+      name: "email",
       result: validatorResult,
-      passed: validatorResult.isValid
+      passed: validatorResult.isValid,
     });
 
     // 使用业务规则进行业务逻辑验证
-    const ruleResult = this.businessRuleManager.validateRule('EMAIL_FORMAT_RULE', email);
+    const ruleResult = this.businessRuleManager.validateRule(
+      "EMAIL_FORMAT_RULE",
+      email,
+    );
     results.push({
-      type: 'business_rule',
-      name: 'EMAIL_FORMAT_RULE',
+      type: "business_rule",
+      name: "EMAIL_FORMAT_RULE",
       result: {
         isValid: ruleResult.isValid,
         errors: ruleResult.errorMessage ? [ruleResult.errorMessage] : [],
-        context: { value: email }
+        context: { value: email },
       },
-      passed: ruleResult.isValid
+      passed: ruleResult.isValid,
     });
 
     // 域名白名单验证
     if (options.allowedDomains && options.allowedDomains.length > 0) {
-      const { EmailValidator } = require('./common/email.validator.js');
-      const domainResult = EmailValidator.validateDomainWhitelist(email, options.allowedDomains);
+      const { EmailValidator } = require("./common/email.validator.js");
+      const domainResult = EmailValidator.validateDomainWhitelist(
+        email,
+        options.allowedDomains,
+      );
       results.push({
-        type: 'validator',
-        name: 'email_domain_whitelist',
+        type: "validator",
+        name: "email_domain_whitelist",
         result: {
           isValid: domainResult.isValid,
           errors: domainResult.error ? [domainResult.error] : [],
-          context: { value: email, allowedDomains: options.allowedDomains }
+          context: { value: email, allowedDomains: options.allowedDomains },
         },
-        passed: domainResult.isValid
+        passed: domainResult.isValid,
       });
     }
 
     // 域名黑名单验证
     if (options.blockedDomains && options.blockedDomains.length > 0) {
-      const { EmailValidator } = require('./common/email.validator.js');
-      const domainResult = EmailValidator.validateDomainBlacklist(email, options.blockedDomains);
+      const { EmailValidator } = require("./common/email.validator.js");
+      const domainResult = EmailValidator.validateDomainBlacklist(
+        email,
+        options.blockedDomains,
+      );
       results.push({
-        type: 'validator',
-        name: 'email_domain_blacklist',
+        type: "validator",
+        name: "email_domain_blacklist",
         result: {
           isValid: domainResult.isValid,
           errors: domainResult.error ? [domainResult.error] : [],
-          context: { value: email, blockedDomains: options.blockedDomains }
+          context: { value: email, blockedDomains: options.blockedDomains },
         },
-        passed: domainResult.isValid
+        passed: domainResult.isValid,
       });
     }
 
-    const allPassed = results.every(r => r.passed);
-    const allErrors = results.flatMap(r => r.result.errors);
+    const allPassed = results.every((r) => r.passed);
+    const allErrors = results.flatMap((r) => r.result.errors);
 
     return {
       isValid: allPassed,
@@ -99,7 +112,7 @@ export class ValidationService {
       context: { value: email, results },
       passed: allPassed,
       failed: !allPassed,
-      results
+      results,
     };
   }
 
@@ -110,53 +123,65 @@ export class ValidationService {
    * @param options - 验证选项
    * @returns 验证结果
    */
-  validatePassword(password: string, options: PasswordValidationOptions = {}): ValidationResult {
+  validatePassword(
+    password: string,
+    options: PasswordValidationOptions = {},
+  ): ValidationResult {
     const results: ValidationResult[] = [];
 
     // 使用验证器进行格式验证
-    const validatorResult = this.validatorManager.validate('password', password);
+    const validatorResult = this.validatorManager.validate(
+      "password",
+      password,
+    );
     results.push({
-      type: 'validator',
-      name: 'password',
+      type: "validator",
+      name: "password",
       result: validatorResult,
-      passed: validatorResult.isValid
+      passed: validatorResult.isValid,
     });
 
     // 使用业务规则进行业务逻辑验证
-    const ruleResult = this.businessRuleManager.validateRule('PASSWORD_STRENGTH_RULE', password);
+    const ruleResult = this.businessRuleManager.validateRule(
+      "PASSWORD_STRENGTH_RULE",
+      password,
+    );
     results.push({
-      type: 'business_rule',
-      name: 'PASSWORD_STRENGTH_RULE',
+      type: "business_rule",
+      name: "PASSWORD_STRENGTH_RULE",
       result: {
         isValid: ruleResult.isValid,
         errors: ruleResult.errorMessage ? [ruleResult.errorMessage] : [],
-        context: { value: password }
+        context: { value: password },
       },
-      passed: ruleResult.isValid
+      passed: ruleResult.isValid,
     });
 
     // 密码历史验证
     if (options.passwordHistory && options.passwordHistory.length > 0) {
-      const { PasswordValidator } = require('./common/password.validator.js');
+      const { PasswordValidator } = require("./common/password.validator.js");
       const historyResult = PasswordValidator.validatePasswordHistory(
         password,
         options.passwordHistory,
-        options.maxHistoryCount || 5
+        options.maxHistoryCount || 5,
       );
       results.push({
-        type: 'validator',
-        name: 'password_history',
+        type: "validator",
+        name: "password_history",
         result: {
           isValid: historyResult.isValid,
           errors: historyResult.error ? [historyResult.error] : [],
-          context: { value: password, historyCount: options.passwordHistory.length }
+          context: {
+            value: password,
+            historyCount: options.passwordHistory.length,
+          },
         },
-        passed: historyResult.isValid
+        passed: historyResult.isValid,
       });
     }
 
-    const allPassed = results.every(r => r.passed);
-    const allErrors = results.flatMap(r => r.result.errors);
+    const allPassed = results.every((r) => r.passed);
+    const allErrors = results.flatMap((r) => r.result.errors);
 
     return {
       isValid: allPassed,
@@ -164,7 +189,7 @@ export class ValidationService {
       context: { value: password, results },
       passed: allPassed,
       failed: !allPassed,
-      results
+      results,
     };
   }
 
@@ -175,53 +200,65 @@ export class ValidationService {
    * @param options - 验证选项
    * @returns 验证结果
    */
-  validateUsername(username: string, options: UsernameValidationOptions = {}): ValidationResult {
+  validateUsername(
+    username: string,
+    options: UsernameValidationOptions = {},
+  ): ValidationResult {
     const results: ValidationResult[] = [];
 
     // 使用验证器进行格式验证
-    const validatorResult = this.validatorManager.validate('username', username);
+    const validatorResult = this.validatorManager.validate(
+      "username",
+      username,
+    );
     results.push({
-      type: 'validator',
-      name: 'username',
+      type: "validator",
+      name: "username",
       result: validatorResult,
-      passed: validatorResult.isValid
+      passed: validatorResult.isValid,
     });
 
     // 使用业务规则进行业务逻辑验证
-    const ruleResult = this.businessRuleManager.validateRule('USERNAME_FORMAT_RULE', username);
+    const ruleResult = this.businessRuleManager.validateRule(
+      "USERNAME_FORMAT_RULE",
+      username,
+    );
     results.push({
-      type: 'business_rule',
-      name: 'USERNAME_FORMAT_RULE',
+      type: "business_rule",
+      name: "USERNAME_FORMAT_RULE",
       result: {
         isValid: ruleResult.isValid,
         errors: ruleResult.errorMessage ? [ruleResult.errorMessage] : [],
-        context: { value: username }
+        context: { value: username },
       },
-      passed: ruleResult.isValid
+      passed: ruleResult.isValid,
     });
 
     // 唯一性验证
     if (options.existingUsernames && options.existingUsernames.length > 0) {
-      const { UsernameValidator } = require('./common/username.validator.js');
+      const { UsernameValidator } = require("./common/username.validator.js");
       const uniquenessResult = UsernameValidator.validateUniqueness(
         username,
         options.existingUsernames,
-        options.caseSensitive || false
+        options.caseSensitive || false,
       );
       results.push({
-        type: 'validator',
-        name: 'username_uniqueness',
+        type: "validator",
+        name: "username_uniqueness",
         result: {
           isValid: uniquenessResult.isValid,
           errors: uniquenessResult.error ? [uniquenessResult.error] : [],
-          context: { value: username, existingCount: options.existingUsernames.length }
+          context: {
+            value: username,
+            existingCount: options.existingUsernames.length,
+          },
         },
-        passed: uniquenessResult.isValid
+        passed: uniquenessResult.isValid,
       });
     }
 
-    const allPassed = results.every(r => r.passed);
-    const allErrors = results.flatMap(r => r.result.errors);
+    const allPassed = results.every((r) => r.passed);
+    const allErrors = results.flatMap((r) => r.result.errors);
 
     return {
       isValid: allPassed,
@@ -229,7 +266,7 @@ export class ValidationService {
       context: { value: username, results },
       passed: allPassed,
       failed: !allPassed,
-      results
+      results,
     };
   }
 
@@ -240,33 +277,39 @@ export class ValidationService {
    * @param options - 验证选项
    * @returns 验证结果
    */
-  validateTenantName(name: string, options: TenantNameValidationOptions = {}): ValidationResult {
+  validateTenantName(
+    name: string,
+    options: TenantNameValidationOptions = {},
+  ): ValidationResult {
     const results: ValidationResult[] = [];
 
     // 使用验证器进行格式验证
-    const validatorResult = this.validatorManager.validate('username', name);
+    const validatorResult = this.validatorManager.validate("username", name);
     results.push({
-      type: 'validator',
-      name: 'tenant_name',
+      type: "validator",
+      name: "tenant_name",
       result: validatorResult,
-      passed: validatorResult.isValid
+      passed: validatorResult.isValid,
     });
 
     // 使用业务规则进行业务逻辑验证
-    const ruleResult = this.businessRuleManager.validateRule('TENANT_NAME_RULE', name);
+    const ruleResult = this.businessRuleManager.validateRule(
+      "TENANT_NAME_RULE",
+      name,
+    );
     results.push({
-      type: 'business_rule',
-      name: 'TENANT_NAME_RULE',
+      type: "business_rule",
+      name: "TENANT_NAME_RULE",
       result: {
         isValid: ruleResult.isValid,
         errors: ruleResult.errorMessage ? [ruleResult.errorMessage] : [],
-        context: { value: name }
+        context: { value: name },
       },
-      passed: ruleResult.isValid
+      passed: ruleResult.isValid,
     });
 
-    const allPassed = results.every(r => r.passed);
-    const allErrors = results.flatMap(r => r.result.errors);
+    const allPassed = results.every((r) => r.passed);
+    const allErrors = results.flatMap((r) => r.result.errors);
 
     return {
       isValid: allPassed,
@@ -274,7 +317,7 @@ export class ValidationService {
       context: { value: name, results },
       passed: allPassed,
       failed: !allPassed,
-      results
+      results,
     };
   }
 
@@ -313,7 +356,7 @@ export interface ValidationResult {
  * 验证结果详情
  */
 export interface ValidationResultDetail {
-  type: 'validator' | 'business_rule';
+  type: "validator" | "business_rule";
   name: string;
   result: IValidationResult | IBusinessRuleValidationResult;
   passed: boolean;

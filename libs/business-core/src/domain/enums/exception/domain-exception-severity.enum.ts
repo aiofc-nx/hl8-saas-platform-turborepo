@@ -48,7 +48,10 @@ export class DomainExceptionSeverityUtils {
   /**
    * 严重级别层级映射
    */
-  private static readonly SEVERITY_HIERARCHY: Record<DomainExceptionSeverity, number> = {
+  private static readonly SEVERITY_HIERARCHY: Record<
+    DomainExceptionSeverity,
+    number
+  > = {
     [DomainExceptionSeverity.CRITICAL]: 4,
     [DomainExceptionSeverity.HIGH]: 3,
     [DomainExceptionSeverity.MEDIUM]: 2,
@@ -58,7 +61,10 @@ export class DomainExceptionSeverityUtils {
   /**
    * 严重级别描述映射
    */
-  private static readonly SEVERITY_DESCRIPTIONS: Record<DomainExceptionSeverity, string> = {
+  private static readonly SEVERITY_DESCRIPTIONS: Record<
+    DomainExceptionSeverity,
+    string
+  > = {
     [DomainExceptionSeverity.LOW]: "低级别",
     [DomainExceptionSeverity.MEDIUM]: "中级别",
     [DomainExceptionSeverity.HIGH]: "高级别",
@@ -117,8 +123,13 @@ export class DomainExceptionSeverityUtils {
    * @param severity2 - 级别2
    * @returns 级别1是否高于级别2
    */
-  static hasHigherSeverity(severity1: DomainExceptionSeverity, severity2: DomainExceptionSeverity): boolean {
-    return this.SEVERITY_HIERARCHY[severity1] > this.SEVERITY_HIERARCHY[severity2];
+  static hasHigherSeverity(
+    severity1: DomainExceptionSeverity,
+    severity2: DomainExceptionSeverity,
+  ): boolean {
+    return (
+      this.SEVERITY_HIERARCHY[severity1] > this.SEVERITY_HIERARCHY[severity2]
+    );
   }
 
   /**
@@ -128,8 +139,13 @@ export class DomainExceptionSeverityUtils {
    * @param severity2 - 级别2
    * @returns 级别1是否等于或高于级别2
    */
-  static hasSeverityOrHigher(severity1: DomainExceptionSeverity, severity2: DomainExceptionSeverity): boolean {
-    return this.SEVERITY_HIERARCHY[severity1] >= this.SEVERITY_HIERARCHY[severity2];
+  static hasSeverityOrHigher(
+    severity1: DomainExceptionSeverity,
+    severity2: DomainExceptionSeverity,
+  ): boolean {
+    return (
+      this.SEVERITY_HIERARCHY[severity1] >= this.SEVERITY_HIERARCHY[severity2]
+    );
   }
 
   /**
@@ -157,10 +173,7 @@ export class DomainExceptionSeverityUtils {
    * @returns 高严重级别数组
    */
   static getHighSeverities(): DomainExceptionSeverity[] {
-    return [
-      DomainExceptionSeverity.HIGH,
-      DomainExceptionSeverity.CRITICAL,
-    ];
+    return [DomainExceptionSeverity.HIGH, DomainExceptionSeverity.CRITICAL];
   }
 
   /**
@@ -169,9 +182,6 @@ export class DomainExceptionSeverityUtils {
    * @returns 低严重级别数组
    */
   static getLowSeverities(): DomainExceptionSeverity[] {
-    return [
-      DomainExceptionSeverity.LOW,
-      DomainExceptionSeverity.MEDIUM,
-    ];
+    return [DomainExceptionSeverity.LOW, DomainExceptionSeverity.MEDIUM];
   }
 }

@@ -36,7 +36,9 @@ describe("MfaType", () => {
     describe("getSecurityLevel", () => {
       it("应该返回高安全级别类型", () => {
         expect(MfaTypeUtils.getSecurityLevel(MfaType.TOTP)).toBe("high");
-        expect(MfaTypeUtils.getSecurityLevel(MfaType.HARDWARE_TOKEN)).toBe("high");
+        expect(MfaTypeUtils.getSecurityLevel(MfaType.HARDWARE_TOKEN)).toBe(
+          "high",
+        );
         expect(MfaTypeUtils.getSecurityLevel(MfaType.BIOMETRIC)).toBe("high");
       });
 
@@ -51,14 +53,14 @@ describe("MfaType", () => {
     });
 
     describe("isSupported", () => {
-    it("应该支持所有预定义的MFA类型", () => {
-      expect(MfaTypeUtils.isSupported(MfaType.TOTP)).toBe(true);
-      expect(MfaTypeUtils.isSupported(MfaType.SMS)).toBe(true);
-      expect(MfaTypeUtils.isSupported(MfaType.EMAIL)).toBe(true);
-      expect(MfaTypeUtils.isSupported(MfaType.BACKUP_CODES)).toBe(true);
-      expect(MfaTypeUtils.isSupported(MfaType.BIOMETRIC)).toBe(false); // 需要设备支持
-      expect(MfaTypeUtils.isSupported(MfaType.HARDWARE_TOKEN)).toBe(false); // 需要硬件设备
-    });
+      it("应该支持所有预定义的MFA类型", () => {
+        expect(MfaTypeUtils.isSupported(MfaType.TOTP)).toBe(true);
+        expect(MfaTypeUtils.isSupported(MfaType.SMS)).toBe(true);
+        expect(MfaTypeUtils.isSupported(MfaType.EMAIL)).toBe(true);
+        expect(MfaTypeUtils.isSupported(MfaType.BACKUP_CODES)).toBe(true);
+        expect(MfaTypeUtils.isSupported(MfaType.BIOMETRIC)).toBe(false); // 需要设备支持
+        expect(MfaTypeUtils.isSupported(MfaType.HARDWARE_TOKEN)).toBe(false); // 需要硬件设备
+      });
 
       it("应该不支持无效的MFA类型", () => {
         expect(MfaTypeUtils.isSupported("INVALID" as MfaType)).toBeUndefined();
@@ -68,23 +70,39 @@ describe("MfaType", () => {
 
     describe("getDescription", () => {
       it("应该返回正确的描述", () => {
-        expect(MfaTypeUtils.getDescription(MfaType.TOTP)).toContain("基于时间的一次性密码");
-        expect(MfaTypeUtils.getDescription(MfaType.SMS)).toContain("短信验证码");
-        expect(MfaTypeUtils.getDescription(MfaType.EMAIL)).toContain("邮箱验证码");
-        expect(MfaTypeUtils.getDescription(MfaType.BACKUP_CODES)).toContain("备用验证码");
-        expect(MfaTypeUtils.getDescription(MfaType.BIOMETRIC)).toContain("生物识别");
-        expect(MfaTypeUtils.getDescription(MfaType.HARDWARE_TOKEN)).toContain("硬件令牌");
+        expect(MfaTypeUtils.getDescription(MfaType.TOTP)).toContain(
+          "基于时间的一次性密码",
+        );
+        expect(MfaTypeUtils.getDescription(MfaType.SMS)).toContain(
+          "短信验证码",
+        );
+        expect(MfaTypeUtils.getDescription(MfaType.EMAIL)).toContain(
+          "邮箱验证码",
+        );
+        expect(MfaTypeUtils.getDescription(MfaType.BACKUP_CODES)).toContain(
+          "备用验证码",
+        );
+        expect(MfaTypeUtils.getDescription(MfaType.BIOMETRIC)).toContain(
+          "生物识别",
+        );
+        expect(MfaTypeUtils.getDescription(MfaType.HARDWARE_TOKEN)).toContain(
+          "硬件令牌",
+        );
       });
     });
 
     describe("isHighSecurityLevel", () => {
       it("应该正确识别高安全级别类型", () => {
         expect(MfaTypeUtils.isHighSecurityLevel(MfaType.TOTP)).toBe(true);
-        expect(MfaTypeUtils.isHighSecurityLevel(MfaType.HARDWARE_TOKEN)).toBe(true);
+        expect(MfaTypeUtils.isHighSecurityLevel(MfaType.HARDWARE_TOKEN)).toBe(
+          true,
+        );
         expect(MfaTypeUtils.isHighSecurityLevel(MfaType.BIOMETRIC)).toBe(true);
         expect(MfaTypeUtils.isHighSecurityLevel(MfaType.SMS)).toBe(false);
         expect(MfaTypeUtils.isHighSecurityLevel(MfaType.EMAIL)).toBe(false);
-        expect(MfaTypeUtils.isHighSecurityLevel(MfaType.BACKUP_CODES)).toBe(false);
+        expect(MfaTypeUtils.isHighSecurityLevel(MfaType.BACKUP_CODES)).toBe(
+          false,
+        );
       });
     });
 
@@ -103,11 +121,24 @@ describe("MfaType", () => {
 
     describe("compareSecurityLevel", () => {
       it("应该正确比较安全级别", () => {
-        expect(MfaTypeUtils.compareSecurityLevel(MfaType.TOTP, MfaType.SMS)).toBe(1);
-        expect(MfaTypeUtils.compareSecurityLevel(MfaType.SMS, MfaType.TOTP)).toBe(-1);
-        expect(MfaTypeUtils.compareSecurityLevel(MfaType.TOTP, MfaType.HARDWARE_TOKEN)).toBe(0);
-        expect(MfaTypeUtils.compareSecurityLevel(MfaType.SMS, MfaType.EMAIL)).toBe(0);
-        expect(MfaTypeUtils.compareSecurityLevel(MfaType.BACKUP_CODES, MfaType.TOTP)).toBe(-1);
+        expect(
+          MfaTypeUtils.compareSecurityLevel(MfaType.TOTP, MfaType.SMS),
+        ).toBe(1);
+        expect(
+          MfaTypeUtils.compareSecurityLevel(MfaType.SMS, MfaType.TOTP),
+        ).toBe(-1);
+        expect(
+          MfaTypeUtils.compareSecurityLevel(
+            MfaType.TOTP,
+            MfaType.HARDWARE_TOKEN,
+          ),
+        ).toBe(0);
+        expect(
+          MfaTypeUtils.compareSecurityLevel(MfaType.SMS, MfaType.EMAIL),
+        ).toBe(0);
+        expect(
+          MfaTypeUtils.compareSecurityLevel(MfaType.BACKUP_CODES, MfaType.TOTP),
+        ).toBe(-1);
       });
     });
 

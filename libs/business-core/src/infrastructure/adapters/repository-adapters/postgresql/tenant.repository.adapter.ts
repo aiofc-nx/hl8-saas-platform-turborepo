@@ -660,7 +660,7 @@ export class TenantRepositoryAdapter
           is_deleted = EXCLUDED.is_deleted
         RETURNING *
       `;
-      
+
       const values = [
         tenantData.id,
         tenantData.name,
@@ -695,13 +695,13 @@ export class TenantRepositoryAdapter
         FROM tenants 
         WHERE id = $1
       `;
-      
+
       const values = [id.toString()];
-      
+
       if (!includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       const result = await queryRunner.query(query, values);
       return result[0] || null;
     } catch (error) {
@@ -723,42 +723,42 @@ export class TenantRepositoryAdapter
         FROM tenants 
         WHERE platform_id = $1
       `;
-      
+
       const values = [platformId.toString()];
-      
+
       // 添加软删除过滤
       if (!options.includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       // 添加类型过滤
       if (options.type) {
         query += ` AND type = $${values.length + 1}`;
         values.push(options.type);
       }
-      
+
       // 添加名称搜索
       if (options.name) {
         query += ` AND name ILIKE $${values.length + 1}`;
         values.push(`%${options.name}%`);
       }
-      
+
       // 添加排序
-      const sortBy = options.sortBy || 'created_at';
-      const sortOrder = options.sortOrder || 'DESC';
+      const sortBy = options.sortBy || "created_at";
+      const sortOrder = options.sortOrder || "DESC";
       query += ` ORDER BY ${sortBy} ${sortOrder}`;
-      
+
       // 添加分页
       if (options.limit) {
         query += ` LIMIT $${values.length + 1}`;
         values.push(options.limit);
-        
+
         if (options.offset) {
           query += ` OFFSET $${values.length + 1}`;
           values.push(options.offset);
         }
       }
-      
+
       const result = await queryRunner.query(query, values);
       return result;
     } catch (error) {
@@ -781,13 +781,13 @@ export class TenantRepositoryAdapter
         FROM tenants 
         WHERE platform_id = $1 AND name = $2
       `;
-      
+
       const values = [platformId.toString(), name];
-      
+
       if (!includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       const result = await queryRunner.query(query, values);
       return result[0] || null;
     } catch (error) {
@@ -809,14 +809,14 @@ export class TenantRepositoryAdapter
         FROM tenants 
         WHERE platform_id = $1 AND name = $2 AND is_deleted = false
       `;
-      
+
       const values = [platformId.toString(), name];
-      
+
       if (excludeId) {
         query += ` AND id != $${values.length + 1}`;
         values.push(excludeId.toString());
       }
-      
+
       const result = await queryRunner.query(query, values);
       return parseInt(result[0].count) > 0;
     } catch (error) {
@@ -837,26 +837,26 @@ export class TenantRepositoryAdapter
         FROM tenants 
         WHERE platform_id = $1
       `;
-      
+
       const values = [platformId.toString()];
-      
+
       // 添加软删除过滤
       if (!options.includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       // 添加类型过滤
       if (options.type) {
         query += ` AND type = $${values.length + 1}`;
         values.push(options.type);
       }
-      
+
       // 添加名称搜索
       if (options.name) {
         query += ` AND name ILIKE $${values.length + 1}`;
         values.push(`%${options.name}%`);
       }
-      
+
       const result = await queryRunner.query(query, values);
       return parseInt(result[0].count);
     } catch (error) {
@@ -877,13 +877,13 @@ export class TenantRepositoryAdapter
         FROM tenants 
         WHERE id = $1
       `;
-      
+
       const values = [id.toString()];
-      
+
       if (!includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       const result = await queryRunner.query(query, values);
       return parseInt(result[0].count) > 0;
     } catch (error) {

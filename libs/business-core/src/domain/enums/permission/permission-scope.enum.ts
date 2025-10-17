@@ -63,13 +63,14 @@ export class PermissionScopeUtils {
   /**
    * 作用域描述映射
    */
-  private static readonly SCOPE_DESCRIPTIONS: Record<PermissionScope, string> = {
-    [PermissionScope.SYSTEM]: "系统级权限",
-    [PermissionScope.TENANT]: "租户级权限",
-    [PermissionScope.ORGANIZATION]: "组织级权限",
-    [PermissionScope.DEPARTMENT]: "部门级权限",
-    [PermissionScope.RESOURCE]: "资源级权限",
-  };
+  private static readonly SCOPE_DESCRIPTIONS: Record<PermissionScope, string> =
+    {
+      [PermissionScope.SYSTEM]: "系统级权限",
+      [PermissionScope.TENANT]: "租户级权限",
+      [PermissionScope.ORGANIZATION]: "组织级权限",
+      [PermissionScope.DEPARTMENT]: "部门级权限",
+      [PermissionScope.RESOURCE]: "资源级权限",
+    };
 
   /**
    * 检查是否为系统级权限
@@ -133,7 +134,10 @@ export class PermissionScopeUtils {
    * @param scope2 - 作用域2
    * @returns 作用域1是否高于作用域2
    */
-  static hasHigherScope(scope1: PermissionScope, scope2: PermissionScope): boolean {
+  static hasHigherScope(
+    scope1: PermissionScope,
+    scope2: PermissionScope,
+  ): boolean {
     return this.SCOPE_HIERARCHY[scope1] > this.SCOPE_HIERARCHY[scope2];
   }
 
@@ -144,7 +148,10 @@ export class PermissionScopeUtils {
    * @param scope2 - 作用域2
    * @returns 作用域1是否等于或高于作用域2
    */
-  static hasScopeOrHigher(scope1: PermissionScope, scope2: PermissionScope): boolean {
+  static hasScopeOrHigher(
+    scope1: PermissionScope,
+    scope2: PermissionScope,
+  ): boolean {
     return this.SCOPE_HIERARCHY[scope1] >= this.SCOPE_HIERARCHY[scope2];
   }
 

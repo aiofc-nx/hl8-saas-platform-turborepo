@@ -50,18 +50,18 @@ paths:
             type: string
             enum: [active, maintenance, disabled]
       responses:
-        '200':
+        "200":
           description: 成功获取平台列表
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlatformListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/PlatformListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     post:
       summary: 创建平台
@@ -73,24 +73,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePlatformRequest'
+              $ref: "#/components/schemas/CreatePlatformRequest"
       responses:
-        '201':
+        "201":
           description: 成功创建平台
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlatformResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          $ref: '#/components/responses/Conflict'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/PlatformResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /platforms/{platformId}:
     get:
@@ -107,20 +107,20 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: 成功获取平台详情
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlatformResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/PlatformResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     put:
       summary: 更新平台
@@ -140,24 +140,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdatePlatformRequest'
+              $ref: "#/components/schemas/UpdatePlatformRequest"
       responses:
-        '200':
+        "200":
           description: 成功更新平台
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlatformResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/PlatformResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     delete:
       summary: 删除平台
@@ -173,18 +173,18 @@ paths:
             type: string
             format: uuid
       responses:
-        '204':
+        "204":
           description: 成功删除平台
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '409':
-          $ref: '#/components/responses/Conflict'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   # 租户管理API
   /platforms/{platformId}/tenants:
@@ -230,20 +230,20 @@ paths:
             type: string
             enum: [active, suspended, disabled]
       responses:
-        '200':
+        "200":
           description: 成功获取租户列表
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TenantListResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/TenantListResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     post:
       summary: 创建租户
@@ -263,26 +263,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateTenantRequest'
+              $ref: "#/components/schemas/CreateTenantRequest"
       responses:
-        '201':
+        "201":
           description: 成功创建租户
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TenantResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '409':
-          $ref: '#/components/responses/Conflict'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/TenantResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /platforms/{platformId}/tenants/{tenantId}:
     get:
@@ -306,20 +306,20 @@ paths:
             type: string
             format: uuid
       responses:
-        '200':
+        "200":
           description: 成功获取租户详情
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TenantResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/TenantResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     put:
       summary: 更新租户
@@ -346,24 +346,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateTenantRequest'
+              $ref: "#/components/schemas/UpdateTenantRequest"
       responses:
-        '200':
+        "200":
           description: 成功更新租户
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TenantResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+                $ref: "#/components/schemas/TenantResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
     delete:
       summary: 删除租户
@@ -386,18 +386,18 @@ paths:
             type: string
             format: uuid
       responses:
-        '204':
+        "204":
           description: 成功删除租户
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '409':
-          $ref: '#/components/responses/Conflict'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
 components:
   securitySchemes:
@@ -440,9 +440,9 @@ components:
           enum: [active, maintenance, disabled]
           description: 平台状态
         settings:
-          $ref: '#/components/schemas/PlatformSettings'
+          $ref: "#/components/schemas/PlatformSettings"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
+          $ref: "#/components/schemas/AuditInfo"
 
     PlatformSettings:
       type: object
@@ -476,7 +476,7 @@ components:
           format: uri
           description: 平台域名
         settings:
-          $ref: '#/components/schemas/PlatformSettings'
+          $ref: "#/components/schemas/PlatformSettings"
 
     UpdatePlatformRequest:
       type: object
@@ -496,11 +496,11 @@ components:
           enum: [active, maintenance, disabled]
           description: 平台状态
         settings:
-          $ref: '#/components/schemas/PlatformSettings'
+          $ref: "#/components/schemas/PlatformSettings"
 
     PlatformResponse:
       allOf:
-        - $ref: '#/components/schemas/Platform'
+        - $ref: "#/components/schemas/Platform"
         - type: object
           properties:
             createdAt:
@@ -518,9 +518,9 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/PlatformResponse'
+            $ref: "#/components/schemas/PlatformResponse"
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
 
     # 租户相关Schema
     Tenant:
@@ -553,9 +553,9 @@ components:
           enum: [active, suspended, disabled]
           description: 租户状态
         settings:
-          $ref: '#/components/schemas/TenantSettings'
+          $ref: "#/components/schemas/TenantSettings"
         auditInfo:
-          $ref: '#/components/schemas/AuditInfo'
+          $ref: "#/components/schemas/AuditInfo"
 
     TenantSettings:
       type: object
@@ -589,7 +589,7 @@ components:
           enum: [enterprise, community, team, personal]
           description: 租户类型
         settings:
-          $ref: '#/components/schemas/TenantSettings'
+          $ref: "#/components/schemas/TenantSettings"
 
     UpdateTenantRequest:
       type: object
@@ -602,11 +602,11 @@ components:
           enum: [active, suspended, disabled]
           description: 租户状态
         settings:
-          $ref: '#/components/schemas/TenantSettings'
+          $ref: "#/components/schemas/TenantSettings"
 
     TenantResponse:
       allOf:
-        - $ref: '#/components/schemas/Tenant'
+        - $ref: "#/components/schemas/Tenant"
         - type: object
           properties:
             createdAt:
@@ -624,9 +624,9 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/TenantResponse'
+            $ref: "#/components/schemas/TenantResponse"
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
 
     # 通用Schema
     AuditInfo:
@@ -690,42 +690,42 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     Unauthorized:
       description: 未授权访问
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     Forbidden:
       description: 禁止访问
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     NotFound:
       description: 资源不存在
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     Conflict:
       description: 资源冲突
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
     InternalServerError:
       description: 服务器内部错误
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: "#/components/schemas/ErrorResponse"
 
 tags:
   - name: 平台管理

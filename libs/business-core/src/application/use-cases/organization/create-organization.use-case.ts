@@ -22,19 +22,19 @@ import { BusinessRuleViolationException } from "../../domain/exceptions/base/bas
 export interface CreateOrganizationRequest {
   /** 组织名称 */
   name: string;
-  
+
   /** 组织类型 */
   type: OrganizationType;
-  
+
   /** 组织描述 */
   description?: string;
-  
+
   /** 父组织ID（可选） */
   parentId?: EntityId;
-  
+
   /** 组织排序 */
   sortOrder?: number;
-  
+
   /** 创建者标识符 */
   createdBy: string;
 }
@@ -45,16 +45,16 @@ export interface CreateOrganizationRequest {
 export interface CreateOrganizationResponse {
   /** 组织ID */
   organizationId: EntityId;
-  
+
   /** 组织名称 */
   name: string;
-  
+
   /** 组织类型 */
   type: OrganizationType;
-  
+
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 创建时间 */
   createdAt: Date;
 }
@@ -72,7 +72,13 @@ export class CreateOrganizationUseCase extends BaseCommandUseCase<
     private readonly organizationRepository: IOrganizationRepository,
     private readonly _logger: FastifyLoggerService,
   ) {
-    super("CreateOrganization", "创建组织用例", "1.0.0", ["organization:create"], _logger);
+    super(
+      "CreateOrganization",
+      "创建组织用例",
+      "1.0.0",
+      ["organization:create"],
+      _logger,
+    );
   }
 
   /**

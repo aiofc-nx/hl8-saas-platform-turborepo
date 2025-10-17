@@ -231,9 +231,6 @@ export class ErrorCodesUtils {
    * @returns 技术错误代码数组
    */
   static getTechnicalCodes(): ErrorCodes[] {
-    return [
-      ErrorCodes.CONCURRENCY_CONFLICT,
-      ErrorCodes.CONFIGURATION_ERROR,
-    ];
+    return [ErrorCodes.CONCURRENCY_CONFLICT, ErrorCodes.CONFIGURATION_ERROR];
   }
 }

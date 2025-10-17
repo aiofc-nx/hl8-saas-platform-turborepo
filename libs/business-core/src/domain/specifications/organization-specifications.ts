@@ -5,11 +5,11 @@
  * @since 1.0.0
  */
 
-import { BaseSpecification } from './base/base-specification.js';
-import { Organization } from '../entities/organization/organization.entity.js';
-import { OrganizationType } from '../value-objects/types/organization-type.vo.js';
-import { OrganizationLevel } from '../value-objects/types/organization-level.vo.js';
-import { EntityId } from '@hl8/isolation-model';
+import { BaseSpecification } from "./base/base-specification.js";
+import { Organization } from "../entities/organization/organization.entity.js";
+import { OrganizationType } from "../value-objects/types/organization-type.vo.js";
+import { OrganizationLevel } from "../value-objects/types/organization-level.vo.js";
+import { EntityId } from "@hl8/isolation-model";
 
 /**
  * 组织激活规范
@@ -19,10 +19,10 @@ import { EntityId } from '@hl8/isolation-model';
 export class OrganizationActiveSpecification extends BaseSpecification<Organization> {
   constructor() {
     super({
-      name: 'OrganizationActiveSpecification',
-      description: '组织必须处于激活状态',
-      category: 'organization',
-      tags: ['organization', 'status', 'active'],
+      name: "OrganizationActiveSpecification",
+      description: "组织必须处于激活状态",
+      category: "organization",
+      tags: ["organization", "status", "active"],
       priority: 1,
     });
   }
@@ -46,10 +46,10 @@ export class OrganizationActiveSpecification extends BaseSpecification<Organizat
 export class OrganizationTypeSpecification extends BaseSpecification<Organization> {
   constructor(private requiredType: OrganizationType) {
     super({
-      name: 'OrganizationTypeSpecification',
+      name: "OrganizationTypeSpecification",
       description: `组织类型必须为 ${requiredType.value}`,
-      category: 'organization',
-      tags: ['organization', 'type'],
+      category: "organization",
+      tags: ["organization", "type"],
       priority: 1,
     });
   }
@@ -74,17 +74,19 @@ export class OrganizationLevelSpecification extends BaseSpecification<Organizati
     private maxLevel: OrganizationLevel,
   ) {
     super({
-      name: 'OrganizationLevelSpecification',
+      name: "OrganizationLevelSpecification",
       description: `组织层级必须在 ${minLevel.value} 到 ${maxLevel.value} 之间`,
-      category: 'organization',
-      tags: ['organization', 'level'],
+      category: "organization",
+      tags: ["organization", "level"],
       priority: 1,
     });
   }
 
   isSatisfiedBy(organization: Organization): boolean {
     const level = organization.level;
-    return level.value >= this.minLevel.value && level.value <= this.maxLevel.value;
+    return (
+      level.value >= this.minLevel.value && level.value <= this.maxLevel.value
+    );
   }
 
   protected getErrorMessage(organization: Organization): string {
@@ -103,23 +105,25 @@ export class OrganizationNameSpecification extends BaseSpecification<Organizatio
     private maxLength: number = 100,
   ) {
     super({
-      name: 'OrganizationNameSpecification',
+      name: "OrganizationNameSpecification",
       description: `组织名称长度必须在 ${minLength} 到 ${maxLength} 之间`,
-      category: 'organization',
-      tags: ['organization', 'name', 'validation'],
+      category: "organization",
+      tags: ["organization", "name", "validation"],
       priority: 1,
     });
   }
 
   isSatisfiedBy(organization: Organization): boolean {
     const name = organization.name;
-    return name && name.length >= this.minLength && name.length <= this.maxLength;
+    return (
+      name && name.length >= this.minLength && name.length <= this.maxLength
+    );
   }
 
   protected getErrorMessage(organization: Organization): string {
     const name = organization.name;
     if (!name) {
-      return '组织名称不能为空';
+      return "组织名称不能为空";
     }
     if (name.length < this.minLength) {
       return `组织名称长度不能少于 ${this.minLength} 个字符`;
@@ -127,7 +131,7 @@ export class OrganizationNameSpecification extends BaseSpecification<Organizatio
     if (name.length > this.maxLength) {
       return `组织名称长度不能超过 ${this.maxLength} 个字符`;
     }
-    return '组织名称不符合规范';
+    return "组织名称不符合规范";
   }
 }
 
@@ -139,10 +143,10 @@ export class OrganizationNameSpecification extends BaseSpecification<Organizatio
 export class OrganizationIdSpecification extends BaseSpecification<Organization> {
   constructor(private requiredId: EntityId) {
     super({
-      name: 'OrganizationIdSpecification',
+      name: "OrganizationIdSpecification",
       description: `组织ID必须为 ${requiredId.value}`,
-      category: 'organization',
-      tags: ['organization', 'id'],
+      category: "organization",
+      tags: ["organization", "id"],
       priority: 1,
     });
   }
@@ -164,10 +168,10 @@ export class OrganizationIdSpecification extends BaseSpecification<Organization>
 export class OrganizationDecisionTypeSpecification extends BaseSpecification<Organization> {
   constructor() {
     super({
-      name: 'OrganizationDecisionTypeSpecification',
-      description: '组织必须为决策类型',
-      category: 'organization',
-      tags: ['organization', 'type', 'decision'],
+      name: "OrganizationDecisionTypeSpecification",
+      description: "组织必须为决策类型",
+      category: "organization",
+      tags: ["organization", "type", "decision"],
       priority: 1,
     });
   }
@@ -189,10 +193,10 @@ export class OrganizationDecisionTypeSpecification extends BaseSpecification<Org
 export class OrganizationExecutionTypeSpecification extends BaseSpecification<Organization> {
   constructor() {
     super({
-      name: 'OrganizationExecutionTypeSpecification',
-      description: '组织必须为执行类型',
-      category: 'organization',
-      tags: ['organization', 'type', 'execution'],
+      name: "OrganizationExecutionTypeSpecification",
+      description: "组织必须为执行类型",
+      category: "organization",
+      tags: ["organization", "type", "execution"],
       priority: 1,
     });
   }
@@ -214,10 +218,10 @@ export class OrganizationExecutionTypeSpecification extends BaseSpecification<Or
 export class OrganizationHighLevelSpecification extends BaseSpecification<Organization> {
   constructor() {
     super({
-      name: 'OrganizationHighLevelSpecification',
-      description: '组织必须为高层级',
-      category: 'organization',
-      tags: ['organization', 'level', 'high'],
+      name: "OrganizationHighLevelSpecification",
+      description: "组织必须为高层级",
+      category: "organization",
+      tags: ["organization", "level", "high"],
       priority: 1,
     });
   }

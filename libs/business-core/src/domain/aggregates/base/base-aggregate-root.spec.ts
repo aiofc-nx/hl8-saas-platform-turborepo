@@ -18,7 +18,12 @@ import { TenantId } from "@hl8/isolation-model";
 describe("BaseAggregateRoot", () => {
   let aggregate: TestAggregate;
   let logger: IPureLogger;
-  let tenantContext: any;
+  let tenantContext: {
+    tenantId: string;
+    organizationId?: string;
+    departmentId?: string;
+    userId?: string;
+  };
 
   class TestEvent extends BaseDomainEvent {
     constructor(

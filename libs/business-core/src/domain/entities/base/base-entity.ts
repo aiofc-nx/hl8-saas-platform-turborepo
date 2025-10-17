@@ -512,7 +512,12 @@ export abstract class BaseEntity implements IEntity {
    * @returns 租户上下文信息，如果不存在则返回 null
    * @protected
    */
-  protected getTenantContext(): any | null {
+  protected getTenantContext(): {
+    tenantId: string;
+    organizationId?: string;
+    departmentId?: string;
+    userId?: string;
+  } | null {
     try {
       // 这里需要注入租户上下文提供者，但在实体中直接注入不太合适
       // 建议通过构造函数传入或使用静态方法
@@ -583,17 +588,19 @@ export abstract class BaseEntity implements IEntity {
   protected createDefaultLogger(): IPureLogger {
     // 创建一个模拟的日志记录器用于测试
     return {
-      debug: (message: string, context?: any) =>
+      debug: (message: string, context?: Record<string, unknown>) =>
         console.debug(message, context),
-      info: (message: string, context?: any) => console.info(message, context),
-      warn: (message: string, context?: any) => console.warn(message, context),
-      error: (message: string | Error, context?: any) =>
+      info: (message: string, context?: Record<string, unknown>) =>
+        console.info(message, context),
+      warn: (message: string, context?: Record<string, unknown>) =>
+        console.warn(message, context),
+      error: (message: string | Error, context?: Record<string, unknown>) =>
         console.error(message, context),
-      fatal: (message: string, context?: any) =>
+      fatal: (message: string, context?: Record<string, unknown>) =>
         console.error(message, context),
-      trace: (message: string, context?: any) =>
+      trace: (message: string, context?: Record<string, unknown>) =>
         console.trace(message, context),
-      child: (bindings?: any) => this,
+      child: (bindings?: Record<string, unknown>) => this,
       setLevel: (level: string) => {},
       getLevel: () => "info",
     } as unknown as IPureLogger;

@@ -6,14 +6,22 @@
  * @since 1.0.0
  */
 
-import { EntityId, TenantId, OrganizationId, DepartmentId } from "@hl8/isolation-model";
+import {
+  EntityId,
+  TenantId,
+  OrganizationId,
+  DepartmentId,
+} from "@hl8/isolation-model";
 import { BaseEntity } from "../base/base-entity.js";
 import { PermissionType } from "../../value-objects/types/permission-type.vo.js";
 import { PermissionAction } from "../../value-objects/types/permission-action.vo.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
 import { ExceptionFactory } from "../../exceptions/exception-factory.js";
-import { PermissionStateException, InvalidPermissionNameException, InvalidPermissionTypeException } from "../../exceptions/business-exceptions.js";
+import {
+  BusinessRuleViolationException,
+  DomainValidationException,
+} from "../../exceptions/base/base-domain-exception.js";
 
 /**
  * 权限实体属性接口
@@ -23,43 +31,43 @@ import { PermissionStateException, InvalidPermissionNameException, InvalidPermis
 export interface PermissionProps {
   /** 权限名称 */
   name: string;
-  
+
   /** 权限描述 */
   description?: string;
-  
+
   /** 权限类型 */
   type: PermissionType;
-  
+
   /** 权限动作 */
   action: PermissionAction;
-  
+
   /** 资源标识 */
   resource: string;
-  
+
   /** 资源ID */
   resourceId?: EntityId;
-  
+
   /** 是否启用 */
   isActive: boolean;
-  
+
   /** 是否系统权限 */
   isSystemPermission: boolean;
-  
+
   /** 是否可编辑 */
   isEditable: boolean;
-  
+
   /** 权限优先级 */
   priority: number;
-  
+
   /** 父权限ID */
   parentPermissionId?: EntityId;
-  
+
   /** 权限条件 */
   conditions?: Record<string, any>;
-  
+
   /** 权限标签 */
   tags?: string[];
-  
+
   /** 权限配置 */
   config?: Record<string, any>;
 }
@@ -108,11 +116,11 @@ export interface PermissionProps {
  *   },
  *   { createdBy: "system" }
  * );
- * 
+ *
  * // 检查权限
  * console.log(permission.canAccess("user")); // true
  * console.log(permission.canManage()); // true
- * 
+ *
  * // 添加条件
  * permission.addCondition("department", "IT");
  * ```
@@ -131,7 +139,7 @@ export class Permission extends BaseEntity {
   private _isEditable: boolean;
   private _priority: number;
   private _parentPermissionId?: EntityId;
-  private _conditions?: Record<string, any>;
+  private _conditions?: Record<string, string | number | boolean | null>;
   private _tags?: string[];
   private _config?: Record<string, any>;
   private _exceptionFactory: ExceptionFactory;
@@ -265,7 +273,9 @@ export class Permission extends BaseEntity {
    *
    * @returns 权限条件
    */
-  get conditions(): Record<string, any> | undefined {
+  get conditions():
+    | Record<string, string | number | boolean | null>
+    | undefined {
     return this._conditions ? { ...this._conditions } : undefined;
   }
 
@@ -372,7 +382,10 @@ export class Permission extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw this._exceptionFactory.createEntityAlreadyActive("权限", this.id);
+      throw new BusinessRuleViolationException(
+        "权限已激活",
+        "PERMISSION_ALREADY_ACTIVE",
+      );
     }
     this._isActive = true;
     this.updateTimestamp();
@@ -384,10 +397,21 @@ export class Permission extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw this._exceptionFactory.createEntityNotActive("权限", this.id);
+      throw new BusinessRuleViolationException(
+        "权限未激活",
+        "PERMISSION_NOT_ACTIVE",
+      );
     }
     if (this._isSystemPermission) {
-      throw this._exceptionFactory.createDomainState("系统权限不能停用", "system", "deactivate", { permissionId: this.id.value, isSystemPermission: this._isSystemPermission });
+      throw this._exceptionFactory.createDomainState(
+        "系统权限不能停用",
+        "system",
+        "deactivate",
+        {
+          permissionId: this.id.toString(),
+          isSystemPermission: this._isSystemPermission,
+        },
+      );
     }
     this._isActive = false;
     this.updateTimestamp();
@@ -415,7 +439,9 @@ export class Permission extends BaseEntity {
     this.validateParentPermission(parentPermissionId);
     this._parentPermissionId = parentPermissionId;
     this.updateTimestamp();
-    this.logOperation("setParentPermission", { parentPermissionId: parentPermissionId.toString() });
+    this.logOperation("setParentPermission", {
+      parentPermissionId: parentPermissionId.toString(),
+    });
   }
 
   /**
@@ -433,7 +459,7 @@ export class Permission extends BaseEntity {
    * @param key - 条件键
    * @param value - 条件值
    */
-  addCondition(key: string, value: any): void {
+  addCondition(key: string, value: string | number | boolean | null): void {
     this.validateConditionKey(key);
     if (!this._conditions) {
       this._conditions = {};
@@ -480,7 +506,7 @@ export class Permission extends BaseEntity {
    */
   removeTag(tag: string): void {
     if (this._tags) {
-      this._tags = this._tags.filter(t => t !== tag);
+      this._tags = this._tags.filter((t) => t !== tag);
       this.updateTimestamp();
       this.logOperation("removeTag", { tag });
     }
@@ -578,17 +604,19 @@ export class Permission extends BaseEntity {
    * @param context - 上下文条件
    * @returns 是否匹配
    */
-  matchesConditions(context: Record<string, any>): boolean {
+  matchesConditions(
+    context: Record<string, string | number | boolean | null>,
+  ): boolean {
     if (!this._conditions) {
       return true;
     }
-    
+
     for (const [key, value] of Object.entries(this._conditions)) {
       if (context[key] !== value) {
         return false;
       }
     }
-    
+
     return true;
   }
 
@@ -622,10 +650,14 @@ export class Permission extends BaseEntity {
    */
   private validateName(name: string): void {
     if (!name || !name.trim()) {
-      throw this._exceptionFactory.createInvalidPermissionName(name, "权限名称不能为空");
+      throw new DomainValidationException("权限名称不能为空", "name", name);
     }
     if (name.trim().length > 100) {
-      throw this._exceptionFactory.createInvalidPermissionName(name, "权限名称长度不能超过100字符");
+      throw new DomainValidationException(
+        "权限名称长度不能超过100字符",
+        "name",
+        name,
+      );
     }
   }
 
@@ -637,7 +669,11 @@ export class Permission extends BaseEntity {
    */
   private validateDescription(description?: string): void {
     if (description && description.trim().length > 500) {
-      throw this._exceptionFactory.createDomainValidation("权限描述长度不能超过500字符", "description", description);
+      throw this._exceptionFactory.createDomainValidation(
+        "权限描述长度不能超过500字符",
+        "description",
+        description,
+      );
     }
   }
 
@@ -649,10 +685,18 @@ export class Permission extends BaseEntity {
    */
   private validateResource(resource: string): void {
     if (!resource || !resource.trim()) {
-      throw this._exceptionFactory.createDomainValidation("资源标识不能为空", "resource", resource);
+      throw this._exceptionFactory.createDomainValidation(
+        "资源标识不能为空",
+        "resource",
+        resource,
+      );
     }
     if (resource.trim().length > 200) {
-      throw this._exceptionFactory.createDomainValidation("资源标识长度不能超过200字符", "resource", resource);
+      throw this._exceptionFactory.createDomainValidation(
+        "资源标识长度不能超过200字符",
+        "resource",
+        resource,
+      );
     }
   }
 
@@ -663,12 +707,28 @@ export class Permission extends BaseEntity {
    * @param newType - 新权限类型
    * @private
    */
-  private validateTypeChange(oldType: PermissionType, newType: PermissionType): void {
+  private validateTypeChange(
+    oldType: PermissionType,
+    newType: PermissionType,
+  ): void {
     if (!newType) {
-      throw this._exceptionFactory.createInvalidPermissionType(type.toString(), "权限类型不能为空");
+      throw new DomainValidationException(
+        "权限类型不能为空",
+        "type",
+        newType.toString(),
+      );
     }
-    if (this._isSystemPermission && oldType.isSystemPermission() && !newType.isSystemPermission()) {
-      throw this._exceptionFactory.createDomainState("系统权限不能变更为非系统权限", "system", "changeType", { oldType: oldType.value, newType: newType.value });
+    if (
+      this._isSystemPermission &&
+      oldType.isSystemPermission() &&
+      !newType.isSystemPermission()
+    ) {
+      throw this._exceptionFactory.createDomainState(
+        "系统权限不能变更为非系统权限",
+        "system",
+        "changeType",
+        { oldType: oldType.value, newType: newType.value },
+      );
     }
   }
 
@@ -679,9 +739,16 @@ export class Permission extends BaseEntity {
    * @param newAction - 新权限动作
    * @private
    */
-  private validateActionChange(oldAction: PermissionAction, newAction: PermissionAction): void {
+  private validateActionChange(
+    oldAction: PermissionAction,
+    newAction: PermissionAction,
+  ): void {
     if (!newAction) {
-      throw this._exceptionFactory.createInvalidPermissionAction(action.toString(), "权限动作不能为空");
+      throw new DomainValidationException(
+        "权限动作不能为空",
+        "action",
+        newAction.toString(),
+      );
     }
   }
 
@@ -693,7 +760,11 @@ export class Permission extends BaseEntity {
    */
   private validatePriority(priority: number): void {
     if (typeof priority !== "number" || priority < 0) {
-      throw this._exceptionFactory.createDomainValidation("权限优先级必须是非负数", "priority", priority);
+      throw this._exceptionFactory.createDomainValidation(
+        "权限优先级必须是非负数",
+        "priority",
+        priority,
+      );
     }
   }
 
@@ -705,10 +776,22 @@ export class Permission extends BaseEntity {
    */
   private validateParentPermission(parentPermissionId: EntityId): void {
     if (!parentPermissionId) {
-      throw this._exceptionFactory.createDomainValidation("父权限ID不能为空", "parentPermissionId", parentPermissionId);
+      throw this._exceptionFactory.createDomainValidation(
+        "父权限ID不能为空",
+        "parentPermissionId",
+        parentPermissionId,
+      );
     }
     if (parentPermissionId.equals(this.id)) {
-      throw this._exceptionFactory.createDomainState("权限不能设置自己为父权限", "active", "setParent", { permissionId: this.id.value, parentPermissionId: parentPermissionId.value });
+      throw this._exceptionFactory.createDomainState(
+        "权限不能设置自己为父权限",
+        "active",
+        "setParent",
+        {
+          permissionId: this.id.toString(),
+          parentPermissionId: parentPermissionId.toString(),
+        },
+      );
     }
   }
 
@@ -720,10 +803,18 @@ export class Permission extends BaseEntity {
    */
   private validateConditionKey(key: string): void {
     if (!key || !key.trim()) {
-      throw this._exceptionFactory.createDomainValidation("条件键不能为空", "conditionKey", conditionKey);
+      throw this._exceptionFactory.createDomainValidation(
+        "条件键不能为空",
+        "conditionKey",
+        key,
+      );
     }
     if (key.trim().length > 50) {
-      throw this._exceptionFactory.createDomainValidation("条件键长度不能超过50字符", "conditionKey", key);
+      throw this._exceptionFactory.createDomainValidation(
+        "条件键长度不能超过50字符",
+        "conditionKey",
+        key,
+      );
     }
   }
 
@@ -735,10 +826,18 @@ export class Permission extends BaseEntity {
    */
   private validateTag(tag: string): void {
     if (!tag || !tag.trim()) {
-      throw this._exceptionFactory.createDomainValidation("标签不能为空", "tag", tag);
+      throw this._exceptionFactory.createDomainValidation(
+        "标签不能为空",
+        "tag",
+        tag,
+      );
     }
     if (tag.trim().length > 50) {
-      throw this._exceptionFactory.createDomainValidation("标签长度不能超过50字符", "tag", tag);
+      throw this._exceptionFactory.createDomainValidation(
+        "标签长度不能超过50字符",
+        "tag",
+        tag,
+      );
     }
   }
 }

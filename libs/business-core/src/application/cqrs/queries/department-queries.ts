@@ -6,7 +6,12 @@
  * @since 1.0.0
  */
 
-import { EntityId, TenantId, OrganizationId, DepartmentId } from "@hl8/isolation-model";
+import {
+  EntityId,
+  TenantId,
+  OrganizationId,
+  DepartmentId,
+} from "@hl8/isolation-model";
 import { BaseQuery } from "./base/base-query.js";
 import { DepartmentLevel } from "../../../domain/value-objects/types/department-level.vo.js";
 
@@ -33,28 +38,28 @@ export class GetDepartmentQuery extends BaseQuery {
 export class GetDepartmentsQuery extends BaseQuery {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织ID */
   organizationId?: OrganizationId;
-  
+
   /** 部门层级 */
   level?: DepartmentLevel;
-  
+
   /** 父部门ID */
   parentDepartmentId?: DepartmentId;
-  
+
   /** 是否包含已删除的部门 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -90,25 +95,25 @@ export class GetDepartmentsQuery extends BaseQuery {
 export class GetDepartmentsByOrganizationQuery extends BaseQuery {
   /** 组织ID */
   organizationId: OrganizationId;
-  
+
   /** 部门层级 */
   level?: DepartmentLevel;
-  
+
   /** 父部门ID */
   parentDepartmentId?: DepartmentId;
-  
+
   /** 是否包含已删除的部门 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -142,22 +147,22 @@ export class GetDepartmentsByOrganizationQuery extends BaseQuery {
 export class GetChildDepartmentsQuery extends BaseQuery {
   /** 父部门ID */
   parentDepartmentId: DepartmentId;
-  
+
   /** 部门层级 */
   level?: DepartmentLevel;
-  
+
   /** 是否包含已删除的部门 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -189,28 +194,28 @@ export class GetChildDepartmentsQuery extends BaseQuery {
 export class SearchDepartmentsQuery extends BaseQuery {
   /** 搜索关键词 */
   keyword: string;
-  
+
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织ID */
   organizationId?: OrganizationId;
-  
+
   /** 部门层级 */
   level?: DepartmentLevel;
-  
+
   /** 是否包含已删除的部门 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -246,16 +251,16 @@ export class SearchDepartmentsQuery extends BaseQuery {
 export class CountDepartmentsQuery extends BaseQuery {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织ID */
   organizationId?: OrganizationId;
-  
+
   /** 部门层级 */
   level?: DepartmentLevel;
-  
+
   /** 父部门ID */
   parentDepartmentId?: DepartmentId;
-  
+
   /** 是否包含已删除的部门 */
   includeDeleted?: boolean;
 

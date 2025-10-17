@@ -388,11 +388,15 @@ export class MessageQueueAdapter {
 
             this.logger.debug(`处理消息成功: ${messageObj.messageId}`);
           } catch (error) {
-            this.logger.error(`处理消息失败: ${messageObj.messageId}`, error instanceof Error ? error.stack : undefined, {
-              messageId: messageObj.messageId,
-              messageType: messageObj.messageType,
-              handlerName: handler.handlerName,
-            });
+            this.logger.error(
+              `处理消息失败: ${messageObj.messageId}`,
+              error instanceof Error ? error.stack : undefined,
+              {
+                messageId: messageObj.messageId,
+                messageType: messageObj.messageType,
+                handlerName: handler.handlerName,
+              },
+            );
 
             // 错误处理
             if (handler.onError) {
@@ -525,7 +529,7 @@ export class MessageQueueAdapter {
     try {
       // 获取队列统计信息从RabbitMQ
       const stats = await this.rabbitmqService.getQueueStats(`${topic}.queue`);
-      
+
       return {
         messageCount: stats.messageCount,
         consumerCount: stats.consumerCount,
@@ -551,14 +555,14 @@ export class MessageQueueAdapter {
     try {
       // 清理所有队列的过期消息
       let totalCleaned = 0;
-      
+
       for (const [handlerName] of this.handlers) {
         const cleaned = await this.rabbitmqService.cleanupExpiredMessages(
           `${handlerName}.queue`,
         );
         totalCleaned += cleaned;
       }
-      
+
       this.logger.debug("清理过期消息完成", { totalCleaned });
       return totalCleaned;
     } catch (error) {

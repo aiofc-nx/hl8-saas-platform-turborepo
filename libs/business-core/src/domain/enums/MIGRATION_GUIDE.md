@@ -10,27 +10,27 @@
 
 ```typescript
 // 用户角色 - 在 value-objects/types/user-role.vo.ts
-import { UserRoleValue } from '../value-objects/types/user-role.vo.js';
+import { UserRoleValue } from "../value-objects/types/user-role.vo.js";
 
 // 用户状态 - 在 value-objects/types/user-status.vo.ts
-import { UserStatusValue } from '../value-objects/types/user-status.vo.js';
+import { UserStatusValue } from "../value-objects/types/user-status.vo.js";
 
 // 权限动作 - 在 value-objects/types/permission-action.vo.ts
-import { PermissionActionValue } from '../value-objects/types/permission-action.vo.js';
+import { PermissionActionValue } from "../value-objects/types/permission-action.vo.js";
 
 // 业务规则类型 - 在 rules/base-business-rule.interface.ts
-import { BusinessRuleType } from '../rules/base-business-rule.interface.js';
+import { BusinessRuleType } from "../rules/base-business-rule.interface.js";
 
 // 错误代码 - 在 constants/error-codes.ts
-import { ErrorCodes } from '../constants/error-codes.js';
+import { ErrorCodes } from "../constants/error-codes.js";
 ```
 
 ### 迁移后（集中管理）
 
 ```typescript
 // 统一从枚举模块导入
-import { 
-  UserRole, 
+import {
+  UserRole,
   UserRoleUtils,
   UserStatus,
   UserStatusUtils,
@@ -39,8 +39,8 @@ import {
   BusinessRuleType,
   BusinessRuleTypeUtils,
   ErrorCodes,
-  ErrorCodesUtils
-} from '../enums/index.js';
+  ErrorCodesUtils,
+} from "../enums/index.js";
 ```
 
 ## 具体迁移步骤
@@ -48,6 +48,7 @@ import {
 ### 1. 用户相关枚举迁移
 
 **迁移前：**
+
 ```typescript
 // 在 value-objects/types/user-role.vo.ts
 export enum UserRoleValue {
@@ -63,6 +64,7 @@ export enum UserStatusValue {
 ```
 
 **迁移后：**
+
 ```typescript
 // 在 enums/user/user-role.enum.ts
 export enum UserRole {
@@ -80,6 +82,7 @@ export enum UserStatus {
 ### 2. 权限相关枚举迁移
 
 **迁移前：**
+
 ```typescript
 // 在 value-objects/types/permission-action.vo.ts
 export enum PermissionActionValue {
@@ -95,6 +98,7 @@ export enum PermissionScope {
 ```
 
 **迁移后：**
+
 ```typescript
 // 在 enums/permission/permission-action.enum.ts
 export enum PermissionAction {
@@ -112,6 +116,7 @@ export enum PermissionScope {
 ### 3. 业务规则相关枚举迁移
 
 **迁移前：**
+
 ```typescript
 // 在 rules/base-business-rule.interface.ts
 export enum BusinessRuleType {
@@ -121,6 +126,7 @@ export enum BusinessRuleType {
 ```
 
 **迁移后：**
+
 ```typescript
 // 在 enums/business/business-rule-type.enum.ts
 export enum BusinessRuleType {
@@ -132,6 +138,7 @@ export enum BusinessRuleType {
 ### 4. 异常相关枚举迁移
 
 **迁移前：**
+
 ```typescript
 // 在 exceptions/base/base-domain-exception.ts
 export enum DomainExceptionType {
@@ -147,6 +154,7 @@ export enum ErrorCodes {
 ```
 
 **迁移后：**
+
 ```typescript
 // 在 enums/exception/domain-exception-type.enum.ts
 export enum DomainExceptionType {
@@ -166,6 +174,7 @@ export enum ErrorCodes {
 ### 1. 更新值对象文件
 
 **用户角色值对象：**
+
 ```typescript
 // 更新前
 import { UserRoleValue } from "../base-value-object.js";
@@ -175,6 +184,7 @@ import { UserRole } from "../../enums/index.js";
 ```
 
 **用户状态值对象：**
+
 ```typescript
 // 更新前
 import { UserStatusValue } from "../base-value-object.js";
@@ -187,7 +197,10 @@ import { UserStatus } from "../../enums/index.js";
 
 ```typescript
 // 更新前
-import { BusinessRuleType, BusinessRuleScope } from "./base-business-rule.interface.js";
+import {
+  BusinessRuleType,
+  BusinessRuleScope,
+} from "./base-business-rule.interface.js";
 
 // 更新后
 import { BusinessRuleType, BusinessRuleScope } from "../enums/index.js";
@@ -197,11 +210,18 @@ import { BusinessRuleType, BusinessRuleScope } from "../enums/index.js";
 
 ```typescript
 // 更新前
-import { DomainExceptionType, DomainExceptionSeverity } from "./base-domain-exception.js";
+import {
+  DomainExceptionType,
+  DomainExceptionSeverity,
+} from "./base-domain-exception.js";
 import { ErrorCodes } from "../constants/error-codes.js";
 
 // 更新后
-import { DomainExceptionType, DomainExceptionSeverity, ErrorCodes } from "../enums/index.js";
+import {
+  DomainExceptionType,
+  DomainExceptionSeverity,
+  ErrorCodes,
+} from "../enums/index.js";
 ```
 
 ## 工具类使用
@@ -209,13 +229,16 @@ import { DomainExceptionType, DomainExceptionSeverity, ErrorCodes } from "../enu
 ### 1. 用户角色工具类
 
 ```typescript
-import { UserRole, UserRoleUtils } from '../enums/index.js';
+import { UserRole, UserRoleUtils } from "../enums/index.js";
 
 // 检查角色
 const isAdmin = UserRoleUtils.isAdmin(UserRole.TENANT_ADMIN);
 
 // 角色比较
-const hasHigherRole = UserRoleUtils.hasHigherRole(UserRole.SUPER_ADMIN, UserRole.USER);
+const hasHigherRole = UserRoleUtils.hasHigherRole(
+  UserRole.SUPER_ADMIN,
+  UserRole.USER,
+);
 
 // 获取角色描述
 const description = UserRoleUtils.getDescription(UserRole.TENANT_ADMIN);
@@ -224,31 +247,37 @@ const description = UserRoleUtils.getDescription(UserRole.TENANT_ADMIN);
 ### 2. 权限动作工具类
 
 ```typescript
-import { PermissionAction, PermissionActionUtils } from '../enums/index.js';
+import { PermissionAction, PermissionActionUtils } from "../enums/index.js";
 
 // 检查动作
 const isCreate = PermissionActionUtils.isCreateAction(PermissionAction.CREATE);
 
 // 动作比较
 const hasHigherPermission = PermissionActionUtils.hasHigherPermission(
-  PermissionAction.MANAGE, 
-  PermissionAction.READ
+  PermissionAction.MANAGE,
+  PermissionAction.READ,
 );
 
 // 获取动作描述
-const description = PermissionActionUtils.getDescription(PermissionAction.CREATE);
+const description = PermissionActionUtils.getDescription(
+  PermissionAction.CREATE,
+);
 ```
 
 ### 3. 错误代码工具类
 
 ```typescript
-import { ErrorCodes, ErrorCodesUtils } from '../enums/index.js';
+import { ErrorCodes, ErrorCodesUtils } from "../enums/index.js";
 
 // 检查错误代码
-const isValidationFailed = ErrorCodesUtils.isValidationFailed(ErrorCodes.VALIDATION_FAILED);
+const isValidationFailed = ErrorCodesUtils.isValidationFailed(
+  ErrorCodes.VALIDATION_FAILED,
+);
 
 // 获取错误描述
-const description = ErrorCodesUtils.getDescription(ErrorCodes.VALIDATION_FAILED);
+const description = ErrorCodesUtils.getDescription(
+  ErrorCodes.VALIDATION_FAILED,
+);
 
 // 获取所有验证错误代码
 const validationCodes = ErrorCodesUtils.getValidationCodes();

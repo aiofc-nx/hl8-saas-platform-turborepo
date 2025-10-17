@@ -6,15 +6,15 @@
  */
 
 // 基础规范
-export * from './base/index.js';
+export * from "./base/index.js";
 
 // 业务规范
-export * from './tenant-specifications.js';
-export * from './organization-specifications.js';
-export * from './department-specifications.js';
+export * from "./tenant-specifications.js";
+export * from "./organization-specifications.js";
+export * from "./department-specifications.js";
 
 // 规范装饰器
-export * from './decorators/index.js';
+export * from "./decorators/index.js";
 
 // 规范工厂
-export * from './specification-factory.js';
+export * from "./specification-factory.js";

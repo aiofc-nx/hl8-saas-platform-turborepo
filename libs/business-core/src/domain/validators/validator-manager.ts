@@ -97,13 +97,16 @@ export class ValidatorManager {
     metadata?: ValidatorMetadata,
   ): void {
     this.validators.set(name, validator);
-    this.validatorMetadata.set(name, metadata || {
+    this.validatorMetadata.set(
       name,
-      version: "1.0.0",
-      description: `验证器: ${name}`,
-      category: "default",
-      tags: [],
-    });
+      metadata || {
+        name,
+        version: "1.0.0",
+        description: `验证器: ${name}`,
+        category: "default",
+        tags: [],
+      },
+    );
   }
 
   /**

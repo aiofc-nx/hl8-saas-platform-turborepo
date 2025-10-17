@@ -158,7 +158,10 @@ describe("GetTenantsUseCase", () => {
       });
 
       // Act
-      const result = await useCase.execute({ type: TenantType.ENTERPRISE }, mockContext);
+      const result = await useCase.execute(
+        { type: TenantType.ENTERPRISE },
+        mockContext,
+      );
 
       // Assert
       expect(result.tenants).toHaveLength(1);
@@ -248,10 +251,13 @@ describe("GetTenantsUseCase", () => {
       });
 
       // Act
-      const result = await useCase.execute({ 
-        sortBy: "name", 
-        sortOrder: "asc" 
-      }, mockContext);
+      const result = await useCase.execute(
+        {
+          sortBy: "name",
+          sortOrder: "asc",
+        },
+        mockContext,
+      );
 
       // Assert
       expect(result.tenants[0].name).toBe("租户A");
@@ -287,11 +293,14 @@ describe("GetTenantsUseCase", () => {
       });
 
       // Act
-      const result = await useCase.execute({ includeDeleted: true }, mockContext);
+      const result = await useCase.execute(
+        { includeDeleted: true },
+        mockContext,
+      );
 
       // Assert
       expect(result.tenants).toHaveLength(2);
-      expect(result.tenants.some(t => t.isDeleted)).toBe(true);
+      expect(result.tenants.some((t) => t.isDeleted)).toBe(true);
     });
 
     it("应该验证分页参数", async () => {

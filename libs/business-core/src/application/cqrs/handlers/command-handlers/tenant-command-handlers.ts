@@ -25,9 +25,7 @@ import type { IUseCaseContext } from "../../../use-cases/base/use-case.interface
  */
 @CommandHandler(CreateTenantCommand)
 export class CreateTenantCommandHandler extends BaseCommandHandler<CreateTenantCommand> {
-  constructor(
-    private readonly createTenantUseCase: CreateTenantUseCase,
-  ) {
+  constructor(private readonly createTenantUseCase: CreateTenantUseCase) {
     super();
   }
 
@@ -38,7 +36,10 @@ export class CreateTenantCommandHandler extends BaseCommandHandler<CreateTenantC
    * @param context - 执行上下文
    * @returns Promise<void>
    */
-  async handle(command: CreateTenantCommand, context: IUseCaseContext): Promise<void> {
+  async handle(
+    command: CreateTenantCommand,
+    context: IUseCaseContext,
+  ): Promise<void> {
     const request = {
       name: command.name,
       type: command.type,
@@ -58,9 +59,7 @@ export class CreateTenantCommandHandler extends BaseCommandHandler<CreateTenantC
  */
 @CommandHandler(UpdateTenantCommand)
 export class UpdateTenantCommandHandler extends BaseCommandHandler<UpdateTenantCommand> {
-  constructor(
-    private readonly updateTenantUseCase: UpdateTenantUseCase,
-  ) {
+  constructor(private readonly updateTenantUseCase: UpdateTenantUseCase) {
     super();
   }
 
@@ -71,7 +70,10 @@ export class UpdateTenantCommandHandler extends BaseCommandHandler<UpdateTenantC
    * @param context - 执行上下文
    * @returns Promise<void>
    */
-  async handle(command: UpdateTenantCommand, context: IUseCaseContext): Promise<void> {
+  async handle(
+    command: UpdateTenantCommand,
+    context: IUseCaseContext,
+  ): Promise<void> {
     const request = {
       tenantId: command.tenantId,
       name: command.name,
@@ -91,9 +93,7 @@ export class UpdateTenantCommandHandler extends BaseCommandHandler<UpdateTenantC
  */
 @CommandHandler(DeleteTenantCommand)
 export class DeleteTenantCommandHandler extends BaseCommandHandler<DeleteTenantCommand> {
-  constructor(
-    private readonly deleteTenantUseCase: DeleteTenantUseCase,
-  ) {
+  constructor(private readonly deleteTenantUseCase: DeleteTenantUseCase) {
     super();
   }
 
@@ -104,7 +104,10 @@ export class DeleteTenantCommandHandler extends BaseCommandHandler<DeleteTenantC
    * @param context - 执行上下文
    * @returns Promise<void>
    */
-  async handle(command: DeleteTenantCommand, context: IUseCaseContext): Promise<void> {
+  async handle(
+    command: DeleteTenantCommand,
+    context: IUseCaseContext,
+  ): Promise<void> {
     const request = {
       tenantId: command.tenantId,
       deletedBy: command.deletedBy,
@@ -122,9 +125,7 @@ export class DeleteTenantCommandHandler extends BaseCommandHandler<DeleteTenantC
  */
 @CommandHandler(ActivateTenantCommand)
 export class ActivateTenantCommandHandler extends BaseCommandHandler<ActivateTenantCommand> {
-  constructor(
-    private readonly updateTenantUseCase: UpdateTenantUseCase,
-  ) {
+  constructor(private readonly updateTenantUseCase: UpdateTenantUseCase) {
     super();
   }
 
@@ -135,7 +136,10 @@ export class ActivateTenantCommandHandler extends BaseCommandHandler<ActivateTen
    * @param context - 执行上下文
    * @returns Promise<void>
    */
-  async handle(command: ActivateTenantCommand, context: IUseCaseContext): Promise<void> {
+  async handle(
+    command: ActivateTenantCommand,
+    context: IUseCaseContext,
+  ): Promise<void> {
     const request = {
       tenantId: command.tenantId,
       status: "ACTIVE",
@@ -153,9 +157,7 @@ export class ActivateTenantCommandHandler extends BaseCommandHandler<ActivateTen
  */
 @CommandHandler(DeactivateTenantCommand)
 export class DeactivateTenantCommandHandler extends BaseCommandHandler<DeactivateTenantCommand> {
-  constructor(
-    private readonly updateTenantUseCase: UpdateTenantUseCase,
-  ) {
+  constructor(private readonly updateTenantUseCase: UpdateTenantUseCase) {
     super();
   }
 
@@ -166,7 +168,10 @@ export class DeactivateTenantCommandHandler extends BaseCommandHandler<Deactivat
    * @param context - 执行上下文
    * @returns Promise<void>
    */
-  async handle(command: DeactivateTenantCommand, context: IUseCaseContext): Promise<void> {
+  async handle(
+    command: DeactivateTenantCommand,
+    context: IUseCaseContext,
+  ): Promise<void> {
     const request = {
       tenantId: command.tenantId,
       status: "INACTIVE",

@@ -51,15 +51,16 @@ export class BusinessRuleTypeUtils {
   /**
    * 规则类型描述映射
    */
-  private static readonly TYPE_DESCRIPTIONS: Record<BusinessRuleType, string> = {
-    [BusinessRuleType.FORMAT_VALIDATION]: "格式验证规则",
-    [BusinessRuleType.BUSINESS_LOGIC]: "业务逻辑规则",
-    [BusinessRuleType.DATA_INTEGRITY]: "数据完整性规则",
-    [BusinessRuleType.PERMISSION_CHECK]: "权限验证规则",
-    [BusinessRuleType.QUOTA_LIMIT]: "配额限制规则",
-    [BusinessRuleType.TIME_CONSTRAINT]: "时间约束规则",
-    [BusinessRuleType.DEPENDENCY_CHECK]: "依赖关系规则",
-  };
+  private static readonly TYPE_DESCRIPTIONS: Record<BusinessRuleType, string> =
+    {
+      [BusinessRuleType.FORMAT_VALIDATION]: "格式验证规则",
+      [BusinessRuleType.BUSINESS_LOGIC]: "业务逻辑规则",
+      [BusinessRuleType.DATA_INTEGRITY]: "数据完整性规则",
+      [BusinessRuleType.PERMISSION_CHECK]: "权限验证规则",
+      [BusinessRuleType.QUOTA_LIMIT]: "配额限制规则",
+      [BusinessRuleType.TIME_CONSTRAINT]: "时间约束规则",
+      [BusinessRuleType.DEPENDENCY_CHECK]: "依赖关系规则",
+    };
 
   /**
    * 检查是否为格式验证规则

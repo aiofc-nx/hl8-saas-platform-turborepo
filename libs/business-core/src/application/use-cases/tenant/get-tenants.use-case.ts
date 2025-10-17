@@ -234,7 +234,7 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
   private mapToTenantInfo(tenant: any): TenantInfo {
     // 处理不同的数据结构
     const tenantData = tenant.tenant || tenant;
-    
+
     return {
       tenantId: tenant.id,
       name: tenantData.name,

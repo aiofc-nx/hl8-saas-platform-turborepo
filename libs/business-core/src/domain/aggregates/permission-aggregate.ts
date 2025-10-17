@@ -321,7 +321,7 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    * @param key - 条件键
    * @param value - 条件值
    */
-  addCondition(key: string, value: any): void {
+  addCondition(key: string, value: string | number | boolean | null): void {
     this.permission.addCondition(key, value);
     this.publishIsolationEvent(
       (id, version, context) =>

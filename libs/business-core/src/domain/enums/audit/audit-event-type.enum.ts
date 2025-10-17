@@ -235,10 +235,7 @@ export class AuditEventTypeUtils {
    * @returns 认证相关事件类型数组
    */
   static getAuthenticationTypes(): AuditEventType[] {
-    return [
-      AuditEventType.USER_LOGIN,
-      AuditEventType.USER_LOGOUT,
-    ];
+    return [AuditEventType.USER_LOGIN, AuditEventType.USER_LOGOUT];
   }
 
   /**
@@ -260,10 +257,7 @@ export class AuditEventTypeUtils {
    * @returns 权限管理相关事件类型数组
    */
   static getPermissionManagementTypes(): AuditEventType[] {
-    return [
-      AuditEventType.PERMISSION_ASSIGN,
-      AuditEventType.PERMISSION_REVOKE,
-    ];
+    return [AuditEventType.PERMISSION_ASSIGN, AuditEventType.PERMISSION_REVOKE];
   }
 
   /**
@@ -272,10 +266,7 @@ export class AuditEventTypeUtils {
    * @returns 数据操作相关事件类型数组
    */
   static getDataOperationTypes(): AuditEventType[] {
-    return [
-      AuditEventType.DATA_ACCESS,
-      AuditEventType.DATA_MODIFY,
-    ];
+    return [AuditEventType.DATA_ACCESS, AuditEventType.DATA_MODIFY];
   }
 
   /**
@@ -284,8 +275,6 @@ export class AuditEventTypeUtils {
    * @returns 系统管理相关事件类型数组
    */
   static getSystemManagementTypes(): AuditEventType[] {
-    return [
-      AuditEventType.SYSTEM_CONFIG,
-    ];
+    return [AuditEventType.SYSTEM_CONFIG];
   }
 }

@@ -6,4 +6,4 @@
  */
 
 // 规范装饰器
-export * from './specification.decorator.js';
+export * from "./specification.decorator.js";

@@ -124,8 +124,8 @@ import { EntityId } from "@hl8/isolation-model";
 import { IsolationContext, IsolationLevel } from "@hl8/isolation-model";
 import { BaseAggregateRoot } from "./base-aggregate-root.js";
 import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
-import { BusinessRuleViolationException } from "../../exceptions/business-rule-violation.exception.js";
-import { DomainPermissionException } from "../../exceptions/domain-permission.exception.js";
+import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
+import { DomainPermissionException } from "../../exceptions/base/base-domain-exception.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../../entities/base/audit-info.js";
 
@@ -150,9 +150,6 @@ export abstract class IsolationAwareAggregateRoot extends BaseAggregateRoot {
     logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
-
-    // 验证隔离上下文必须存在
-    this.ensureIsolationContext();
   }
 
   /**
@@ -166,7 +163,6 @@ export abstract class IsolationAwareAggregateRoot extends BaseAggregateRoot {
   protected setIsolationContext(context: IsolationContext): void {
     this._isolationContext = context;
   }
-
 
   /**
    * 确保隔离上下文存在

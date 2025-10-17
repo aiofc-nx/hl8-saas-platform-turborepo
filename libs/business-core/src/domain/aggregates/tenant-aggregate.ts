@@ -1,4 +1,4 @@
-import { EntityId } from "@hl8/isolation-model";
+import { EntityId, IsolationContext } from "@hl8/isolation-model";
 import { IsolationAwareAggregateRoot } from "./base/isolation-aware-aggregate-root.js";
 import { Tenant } from "../entities/tenant/tenant.entity.js";
 import { TenantType } from "../value-objects/types/tenant-type.vo.js";
@@ -9,7 +9,6 @@ import { BusinessRuleFactory } from "../rules/business-rule-factory.js";
 import { BusinessRuleManager } from "../rules/business-rule-manager.js";
 import { UsernameValidator } from "../validators/common/username.validator.js";
 import { ExceptionFactory } from "../exceptions/exception-factory.js";
-import { InvalidTenantNameException, TenantStateException } from "../exceptions/business-exceptions.js";
 
 /**
  * 租户创建事件
@@ -150,6 +149,9 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
   ) {
     super(id, auditInfo, logger);
 
+    // 设置隔离上下文
+    this.setIsolationContext(IsolationContext.tenant(props.platformId));
+
     this._ruleManager = BusinessRuleFactory.createTenantManager();
     this._exceptionFactory = ExceptionFactory.getInstance();
     this._platformId = props.platformId;
@@ -166,7 +168,7 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
         new TenantCreatedEvent(
           aggregateId,
           version,
-          context,
+          context.tenantId!,
           props.name,
           props.type,
           props.platformId,
@@ -210,18 +212,25 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
       minLength: 3,
       maxLength: 100,
       allowNumbers: true,
-      allowSpecialChars: false,
-      checkReservedWords: true
+      allowSpecialChars: true,
+      specialChars: "-_",
+      checkReservedWords: true,
     });
-    
+
     if (!validatorResult.isValid) {
-      throw this._exceptionFactory.createInvalidTenantName(name, validatorResult.errors.join(', '));
+      throw this._exceptionFactory.createInvalidTenantName(
+        name,
+        validatorResult.errors.join(", "),
+      );
     }
-    
+
     // 使用业务规则进行业务逻辑验证
-    const ruleResult = this._ruleManager.validateRule('TENANT_NAME_RULE', name);
+    const ruleResult = this._ruleManager.validateRule("TENANT_NAME_RULE", name);
     if (!ruleResult.isValid) {
-      throw this._exceptionFactory.createInvalidTenantName(name, ruleResult.errorMessage || '租户名称验证失败');
+      throw this._exceptionFactory.createInvalidTenantName(
+        name,
+        ruleResult.errorMessage || "租户名称验证失败",
+      );
     }
 
     const oldName = this._tenant.name;
@@ -229,11 +238,11 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
 
     // 发布租户更新事件
     this.publishIsolationEvent(
-      (aggregateId, version, tenantId) =>
+      (aggregateId, version, context) =>
         new TenantUpdatedEvent(
           aggregateId,
           version,
-          tenantId,
+          context.tenantId!,
           name,
           this._tenant.type,
         ),
@@ -266,11 +275,11 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
 
     // 发布租户更新事件
     this.publishIsolationEvent(
-      (aggregateId, version, tenantId) =>
+      (aggregateId, version, context) =>
         new TenantUpdatedEvent(
           aggregateId,
           version,
-          tenantId,
+          context.tenantId!,
           this._tenant.name,
           type,
         ),
@@ -299,7 +308,12 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
     this.ensureIsolationContext();
 
     if (this._tenant.isDeleted) {
-      throw this._exceptionFactory.createDomainState("租户已被删除", "deleted", "delete", { tenantId: this._tenant.id.value });
+      throw this._exceptionFactory.createDomainState(
+        "租户已被删除",
+        "deleted",
+        "delete",
+        { tenantId: this._tenant.id.toString() },
+      );
     }
 
     // 软删除租户
@@ -307,11 +321,11 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
 
     // 发布租户删除事件
     this.publishIsolationEvent(
-      (aggregateId, version, tenantId) =>
+      (aggregateId, version, context) =>
         new TenantDeletedEvent(
           aggregateId,
           version,
-          tenantId,
+          context.tenantId!,
           deletedBy,
           deleteReason,
         ),
@@ -336,7 +350,12 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
     this.ensureIsolationContext();
 
     if (!this._tenant.isDeleted) {
-      throw this._exceptionFactory.createDomainState("租户未被删除", "active", "restore", { tenantId: this._tenant.id.value });
+      throw this._exceptionFactory.createDomainState(
+        "租户未被删除",
+        "active",
+        "restore",
+        { tenantId: this._tenant.id.toString() },
+      );
     }
 
     // 恢复租户
@@ -344,11 +363,11 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
 
     // 发布租户更新事件
     this.publishIsolationEvent(
-      (aggregateId, version, tenantId) =>
+      (aggregateId, version, context) =>
         new TenantUpdatedEvent(
           aggregateId,
           version,
-          tenantId,
+          context.tenantId!,
           this._tenant.name,
           this._tenant.type,
         ),
@@ -405,8 +424,11 @@ export class TenantAggregate extends IsolationAwareAggregateRoot {
    * @param name - 租户名称
    * @returns 验证结果
    */
-  public validateTenantName(name: string): { isValid: boolean; errorMessage?: string } {
-    const result = this._ruleManager.validateRule('TENANT_NAME_RULE', name);
+  public validateTenantName(name: string): {
+    isValid: boolean;
+    errorMessage?: string;
+  } {
+    const result = this._ruleManager.validateRule("TENANT_NAME_RULE", name);
     return {
       isValid: result.isValid,
       errorMessage: result.errorMessage,

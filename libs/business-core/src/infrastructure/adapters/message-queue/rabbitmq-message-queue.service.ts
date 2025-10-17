@@ -81,21 +81,26 @@ export class RabbitMQMessageQueueService {
 
       // 这里应该实现实际的RabbitMQ连接逻辑
       // 由于RabbitMQ客户端库可能未安装，这里提供模拟实现
-      
+
       // 模拟连接过程
       this.logger.debug("正在连接到RabbitMQ...");
-      
+
       // 实际实现中会使用amqplib或类似的库
       // const amqp = require('amqplib');
       // this.connection = await amqp.connect('amqp://localhost');
       // this.channel = await this.connection.createChannel();
-      
+
       // 模拟连接成功
       this.connected = true;
       this.logger.debug("RabbitMQ连接成功");
     } catch (error) {
-      this.logger.error("RabbitMQ连接失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`RabbitMQ连接失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "RabbitMQ连接失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `RabbitMQ连接失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -131,8 +136,13 @@ export class RabbitMQMessageQueueService {
       this.connected = false;
       this.logger.debug("RabbitMQ连接已断开");
     } catch (error) {
-      this.logger.error("断开RabbitMQ连接失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`断开RabbitMQ连接失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "断开RabbitMQ连接失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `断开RabbitMQ连接失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -210,8 +220,13 @@ export class RabbitMQMessageQueueService {
 
       this.logger.debug("消息发布成功", { topic, messageId: message.id });
     } catch (error) {
-      this.logger.error("发布消息失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`发布消息失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "发布消息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `发布消息失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -253,30 +268,30 @@ export class RabbitMQMessageQueueService {
       // 批量发布消息
       for (const message of messages) {
         const messageBuffer = Buffer.from(JSON.stringify(message));
-        
-        const published = this.channel.publish(
-          topic,
-          "",
-          messageBuffer,
-          {
-            persistent: options.persistent || true,
-            priority: options.priority || 0,
-            expiration: options.ttl,
-          },
-        );
+
+        const published = this.channel.publish(topic, "", messageBuffer, {
+          persistent: options.persistent || true,
+          priority: options.priority || 0,
+          expiration: options.ttl,
+        });
 
         if (!published) {
           throw new Error(`消息发布失败: ${message.id}`);
         }
       }
 
-      this.logger.debug("批量消息发布成功", { 
-        topic, 
-        messageCount: messages.length 
+      this.logger.debug("批量消息发布成功", {
+        topic,
+        messageCount: messages.length,
       });
     } catch (error) {
-      this.logger.error("批量发布消息失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`批量发布消息失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "批量发布消息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `批量发布消息失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -339,20 +354,23 @@ export class RabbitMQMessageQueueService {
           try {
             // 解析消息
             const message = JSON.parse(msg.content.toString());
-            
+
             // 处理消息
             await handler(message);
-            
+
             // 确认消息
             this.channel.ack(msg);
-            
-            this.logger.debug("消息处理成功", { 
-              topic, 
-              messageId: message.id 
+
+            this.logger.debug("消息处理成功", {
+              topic,
+              messageId: message.id,
             });
           } catch (error) {
-            this.logger.error("消息处理失败", error instanceof Error ? error.stack : undefined);
-            
+            this.logger.error(
+              "消息处理失败",
+              error instanceof Error ? error.stack : undefined,
+            );
+
             // 拒绝消息并重新入队
             this.channel.nack(msg, false, true);
           }
@@ -361,8 +379,13 @@ export class RabbitMQMessageQueueService {
 
       this.logger.debug("消息订阅成功", { topic, queueName });
     } catch (error) {
-      this.logger.error("订阅消息失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`订阅消息失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "订阅消息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `订阅消息失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -388,14 +411,19 @@ export class RabbitMQMessageQueueService {
       }
 
       const targetQueueName = queueName || `${topic}.queue`;
-      
+
       // 取消消费
       await this.channel.cancel(targetQueueName);
-      
+
       this.logger.debug("取消订阅成功", { topic, queueName: targetQueueName });
     } catch (error) {
-      this.logger.error("取消订阅失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`取消订阅失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "取消订阅失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `取消订阅失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -423,8 +451,13 @@ export class RabbitMQMessageQueueService {
       // 实际实现中需要维护消息ID到消息对象的映射
       this.logger.debug("消息确认成功", { messageId });
     } catch (error) {
-      this.logger.error("确认消息失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`确认消息失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "确认消息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `确认消息失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -453,8 +486,13 @@ export class RabbitMQMessageQueueService {
       // 实际实现中需要维护消息ID到消息对象的映射
       this.logger.debug("消息拒绝成功", { messageId, requeue });
     } catch (error) {
-      this.logger.error("拒绝消息失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`拒绝消息失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "拒绝消息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `拒绝消息失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -482,14 +520,19 @@ export class RabbitMQMessageQueueService {
 
       // 获取队列信息
       const queueInfo = await this.channel.checkQueue(queueName);
-      
+
       return {
         messageCount: queueInfo.messageCount,
         consumerCount: queueInfo.consumerCount,
       };
     } catch (error) {
-      this.logger.error("获取队列统计信息失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`获取队列统计信息失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "获取队列统计信息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `获取队列统计信息失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -514,12 +557,17 @@ export class RabbitMQMessageQueueService {
 
       // 这里需要实现具体的过期消息清理逻辑
       // 实际实现中需要检查消息的TTL并删除过期消息
-      
+
       this.logger.debug("清理过期消息完成", { queueName });
       return 0; // 返回清理的消息数量
     } catch (error) {
-      this.logger.error("清理过期消息失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`清理过期消息失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "清理过期消息失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `清理过期消息失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -539,12 +587,17 @@ export class RabbitMQMessageQueueService {
       await this.channel.assertExchange(exchangeName, "topic", {
         durable: true,
       });
-      
+
       this.exchanges.set(exchangeName, true);
       this.logger.debug("交换器创建成功", { exchangeName });
     } catch (error) {
-      this.logger.error("创建交换器失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`创建交换器失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "创建交换器失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `创建交换器失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -571,12 +624,17 @@ export class RabbitMQMessageQueueService {
         exclusive: options.exclusive || false,
         autoDelete: options.autoDelete || false,
       });
-      
+
       this.queues.set(queueName, true);
       this.logger.debug("队列创建成功", { queueName });
     } catch (error) {
-      this.logger.error("创建队列失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`创建队列失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "创建队列失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `创建队列失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 }

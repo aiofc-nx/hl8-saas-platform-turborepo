@@ -33,25 +33,25 @@ export class GetOrganizationQuery extends BaseQuery {
 export class GetOrganizationsQuery extends BaseQuery {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织类型 */
   type?: OrganizationType;
-  
+
   /** 父组织ID */
   parentOrganizationId?: OrganizationId;
-  
+
   /** 是否包含已删除的组织 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -85,22 +85,22 @@ export class GetOrganizationsQuery extends BaseQuery {
 export class GetOrganizationsByTenantQuery extends BaseQuery {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织类型 */
   type?: OrganizationType;
-  
+
   /** 是否包含已删除的组织 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -132,22 +132,22 @@ export class GetOrganizationsByTenantQuery extends BaseQuery {
 export class GetChildOrganizationsQuery extends BaseQuery {
   /** 父组织ID */
   parentOrganizationId: OrganizationId;
-  
+
   /** 组织类型 */
   type?: OrganizationType;
-  
+
   /** 是否包含已删除的组织 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -179,25 +179,25 @@ export class GetChildOrganizationsQuery extends BaseQuery {
 export class SearchOrganizationsQuery extends BaseQuery {
   /** 搜索关键词 */
   keyword: string;
-  
+
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织类型 */
   type?: OrganizationType;
-  
+
   /** 是否包含已删除的组织 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -231,13 +231,13 @@ export class SearchOrganizationsQuery extends BaseQuery {
 export class CountOrganizationsQuery extends BaseQuery {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织类型 */
   type?: OrganizationType;
-  
+
   /** 父组织ID */
   parentOrganizationId?: OrganizationId;
-  
+
   /** 是否包含已删除的组织 */
   includeDeleted?: boolean;
 

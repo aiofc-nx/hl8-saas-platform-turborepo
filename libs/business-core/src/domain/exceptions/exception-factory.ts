@@ -5,8 +5,17 @@
  * @since 1.0.0
  */
 
-import { BaseDomainException, DomainExceptionType, DomainExceptionSeverity } from './base/base-domain-exception.js';
-import { BusinessRuleViolationException, DomainValidationException, DomainStateException, DomainPermissionException } from './base/base-domain-exception.js';
+import {
+  BaseDomainException,
+  DomainExceptionType,
+  DomainExceptionSeverity,
+} from "./base/base-domain-exception.js";
+import {
+  BusinessRuleViolationException,
+  DomainValidationException,
+  DomainStateException,
+  DomainPermissionException,
+} from "./base/base-domain-exception.js";
 
 // 业务异常
 import {
@@ -27,7 +36,7 @@ import {
   RoleNameAlreadyExistsException,
   PermissionException,
   PermissionNameAlreadyExistsException,
-} from './business-exceptions.js';
+} from "./business-exceptions.js";
 
 // 验证异常
 import {
@@ -48,7 +57,7 @@ import {
   InvalidOrganizationNameException,
   DepartmentNameValidationException,
   InvalidDepartmentNameException,
-} from './validation-exceptions.js';
+} from "./validation-exceptions.js";
 
 // 状态异常
 import {
@@ -66,7 +75,7 @@ import {
   UserNotLockedException,
   RoleAlreadyActiveException,
   RoleNotActiveException,
-} from './state-exceptions.js';
+} from "./state-exceptions.js";
 
 /**
  * 异常工厂
@@ -121,7 +130,12 @@ export class ExceptionFactory {
     fieldValue: unknown,
     context: Record<string, unknown> = {},
   ): DomainValidationException {
-    return new DomainValidationException(message, fieldName, fieldValue, context);
+    return new DomainValidationException(
+      message,
+      fieldName,
+      fieldValue,
+      context,
+    );
   }
 
   /**
@@ -139,7 +153,12 @@ export class ExceptionFactory {
     requestedOperation: string,
     context: Record<string, unknown> = {},
   ): DomainStateException {
-    return new DomainStateException(message, currentState, requestedOperation, context);
+    return new DomainStateException(
+      message,
+      currentState,
+      requestedOperation,
+      context,
+    );
   }
 
   /**
@@ -157,7 +176,12 @@ export class ExceptionFactory {
     resource: string,
     context: Record<string, unknown> = {},
   ): DomainPermissionException {
-    return new DomainPermissionException(message, requiredPermission, resource, context);
+    return new DomainPermissionException(
+      message,
+      requiredPermission,
+      resource,
+      context,
+    );
   }
 
   // 租户相关异常创建方法
@@ -169,7 +193,10 @@ export class ExceptionFactory {
    * @param existingTenantId - 已存在的租户ID
    * @returns 租户名称已存在异常
    */
-  createTenantNameAlreadyExists(tenantName: string, existingTenantId: string): TenantNameAlreadyExistsException {
+  createTenantNameAlreadyExists(
+    tenantName: string,
+    existingTenantId: string,
+  ): TenantNameAlreadyExistsException {
     return new TenantNameAlreadyExistsException(tenantName, existingTenantId);
   }
 
@@ -212,8 +239,14 @@ export class ExceptionFactory {
    * @param existingOrganizationId - 已存在的组织ID
    * @returns 组织名称已存在异常
    */
-  createOrganizationNameAlreadyExists(organizationName: string, existingOrganizationId: string): OrganizationNameAlreadyExistsException {
-    return new OrganizationNameAlreadyExistsException(organizationName, existingOrganizationId);
+  createOrganizationNameAlreadyExists(
+    organizationName: string,
+    existingOrganizationId: string,
+  ): OrganizationNameAlreadyExistsException {
+    return new OrganizationNameAlreadyExistsException(
+      organizationName,
+      existingOrganizationId,
+    );
   }
 
   /**
@@ -222,7 +255,9 @@ export class ExceptionFactory {
    * @param organizationType - 组织类型
    * @returns 无效组织类型异常
    */
-  createInvalidOrganizationType(organizationType: string): InvalidOrganizationTypeException {
+  createInvalidOrganizationType(
+    organizationType: string,
+  ): InvalidOrganizationTypeException {
     return new InvalidOrganizationTypeException(organizationType);
   }
 
@@ -235,8 +270,14 @@ export class ExceptionFactory {
    * @param existingDepartmentId - 已存在的部门ID
    * @returns 部门名称已存在异常
    */
-  createDepartmentNameAlreadyExists(departmentName: string, existingDepartmentId: string): DepartmentNameAlreadyExistsException {
-    return new DepartmentNameAlreadyExistsException(departmentName, existingDepartmentId);
+  createDepartmentNameAlreadyExists(
+    departmentName: string,
+    existingDepartmentId: string,
+  ): DepartmentNameAlreadyExistsException {
+    return new DepartmentNameAlreadyExistsException(
+      departmentName,
+      existingDepartmentId,
+    );
   }
 
   /**
@@ -246,7 +287,10 @@ export class ExceptionFactory {
    * @param maxLevel - 最大层级
    * @returns 无效部门层级异常
    */
-  createInvalidDepartmentLevel(level: number, maxLevel: number): InvalidDepartmentLevelException {
+  createInvalidDepartmentLevel(
+    level: number,
+    maxLevel: number,
+  ): InvalidDepartmentLevelException {
     return new InvalidDepartmentLevelException(level, maxLevel);
   }
 
@@ -259,7 +303,10 @@ export class ExceptionFactory {
    * @param existingUserId - 已存在的用户ID
    * @returns 用户邮箱已存在异常
    */
-  createUserEmailAlreadyExists(email: string, existingUserId: string): UserEmailAlreadyExistsException {
+  createUserEmailAlreadyExists(
+    email: string,
+    existingUserId: string,
+  ): UserEmailAlreadyExistsException {
     return new UserEmailAlreadyExistsException(email, existingUserId);
   }
 
@@ -270,7 +317,10 @@ export class ExceptionFactory {
    * @param existingUserId - 已存在的用户ID
    * @returns 用户用户名已存在异常
    */
-  createUserUsernameAlreadyExists(username: string, existingUserId: string): UserUsernameAlreadyExistsException {
+  createUserUsernameAlreadyExists(
+    username: string,
+    existingUserId: string,
+  ): UserUsernameAlreadyExistsException {
     return new UserUsernameAlreadyExistsException(username, existingUserId);
   }
 
@@ -293,7 +343,10 @@ export class ExceptionFactory {
    * @param existingUserId - 已存在的用户ID
    * @returns 邮箱已存在异常
    */
-  createEmailAlreadyExists(email: string, existingUserId: string): EmailAlreadyExistsException {
+  createEmailAlreadyExists(
+    email: string,
+    existingUserId: string,
+  ): EmailAlreadyExistsException {
     return new EmailAlreadyExistsException(email, existingUserId);
   }
 
@@ -323,7 +376,10 @@ export class ExceptionFactory {
    * @param reason - 原因
    * @returns 无效用户名异常
    */
-  createInvalidUsername(username: string, reason: string): InvalidUsernameException {
+  createInvalidUsername(
+    username: string,
+    reason: string,
+  ): InvalidUsernameException {
     return new InvalidUsernameException(username, reason);
   }
 
@@ -334,7 +390,10 @@ export class ExceptionFactory {
    * @param existingUserId - 已存在的用户ID
    * @returns 用户名已存在异常
    */
-  createUsernameAlreadyExists(username: string, existingUserId: string): UsernameAlreadyExistsException {
+  createUsernameAlreadyExists(
+    username: string,
+    existingUserId: string,
+  ): UsernameAlreadyExistsException {
     return new UsernameAlreadyExistsException(username, existingUserId);
   }
 
@@ -345,7 +404,10 @@ export class ExceptionFactory {
    * @param reason - 原因
    * @returns 无效电话号码异常
    */
-  createInvalidPhoneNumber(phoneNumber: string, reason: string): InvalidPhoneNumberException {
+  createInvalidPhoneNumber(
+    phoneNumber: string,
+    reason: string,
+  ): InvalidPhoneNumberException {
     return new InvalidPhoneNumberException(phoneNumber, reason);
   }
 
@@ -356,7 +418,10 @@ export class ExceptionFactory {
    * @param reason - 原因
    * @returns 无效租户名称异常
    */
-  createInvalidTenantName(tenantName: string, reason: string): InvalidTenantNameException {
+  createInvalidTenantName(
+    tenantName: string,
+    reason: string,
+  ): InvalidTenantNameException {
     return new InvalidTenantNameException(tenantName, reason);
   }
 
@@ -367,7 +432,10 @@ export class ExceptionFactory {
    * @param reason - 原因
    * @returns 无效组织名称异常
    */
-  createInvalidOrganizationName(organizationName: string, reason: string): InvalidOrganizationNameException {
+  createInvalidOrganizationName(
+    organizationName: string,
+    reason: string,
+  ): InvalidOrganizationNameException {
     return new InvalidOrganizationNameException(organizationName, reason);
   }
 
@@ -378,7 +446,10 @@ export class ExceptionFactory {
    * @param reason - 原因
    * @returns 无效部门名称异常
    */
-  createInvalidDepartmentName(departmentName: string, reason: string): InvalidDepartmentNameException {
+  createInvalidDepartmentName(
+    departmentName: string,
+    reason: string,
+  ): InvalidDepartmentNameException {
     return new InvalidDepartmentNameException(departmentName, reason);
   }
 
@@ -399,6 +470,12 @@ export class ExceptionFactory {
     context: Record<string, unknown> = {},
     severity: DomainExceptionSeverity = DomainExceptionSeverity.MEDIUM,
   ): BaseDomainException {
-    return new BaseDomainException(message, errorCode, errorType, context, severity);
+    return new BaseDomainException(
+      message,
+      errorCode,
+      errorType,
+      context,
+      severity,
+    );
   }
 }

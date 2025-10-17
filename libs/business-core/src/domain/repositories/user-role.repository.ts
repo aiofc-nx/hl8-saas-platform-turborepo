@@ -16,37 +16,37 @@ import { UserRole } from "../entities/user-role/user-role.entity.js";
 export interface UserRoleQueryOptions {
   /** 页码 */
   page?: number;
-  
+
   /** 每页数量 */
   limit?: number;
-  
+
   /** 是否启用 */
   isActive?: boolean;
-  
+
   /** 是否过期 */
   isExpired?: boolean;
-  
+
   /** 分配者ID */
   assignedBy?: UserId;
-  
+
   /** 分配时间范围 */
   assignedAtRange?: {
     start: Date;
     end: Date;
   };
-  
+
   /** 过期时间范围 */
   expiresAtRange?: {
     start: Date;
     end: Date;
   };
-  
+
   /** 搜索关键词 */
   search?: string;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序方向 */
   sortOrder?: "asc" | "desc";
 }
@@ -57,16 +57,16 @@ export interface UserRoleQueryOptions {
 export interface UserRoleQueryResult {
   /** 用户角色关联列表 */
   userRoles: UserRoleAggregate[];
-  
+
   /** 总数量 */
   total: number;
-  
+
   /** 页码 */
   page: number;
-  
+
   /** 每页数量 */
   limit: number;
-  
+
   /** 总页数 */
   totalPages: number;
 }
@@ -93,13 +93,13 @@ export interface UserRoleQueryResult {
  * ```typescript
  * // 创建用户角色仓储
  * const userRoleRepository = new UserRoleRepositoryAdapter(databaseService, logger);
- * 
+ *
  * // 保存用户角色关联
  * await userRoleRepository.save(userRoleAggregate);
- * 
+ *
  * // 查询用户角色关联
  * const userRole = await userRoleRepository.findById(tenantId, userRoleId);
- * 
+ *
  * // 查询用户的所有角色
  * const userRoles = await userRoleRepository.findByUser(tenantId, userId);
  * ```
@@ -122,7 +122,10 @@ export interface IUserRoleRepository {
    * @param userRoleId - 用户角色关联ID
    * @returns Promise<UserRoleAggregate | null>
    */
-  findById(tenantId: TenantId, userRoleId: EntityId): Promise<UserRoleAggregate | null>;
+  findById(
+    tenantId: TenantId,
+    userRoleId: EntityId,
+  ): Promise<UserRoleAggregate | null>;
 
   /**
    * 根据用户ID查找用户角色关联列表
@@ -132,7 +135,11 @@ export interface IUserRoleRepository {
    * @param options - 查询选项
    * @returns Promise<UserRoleAggregate[]>
    */
-  findByUser(tenantId: TenantId, userId: UserId, options?: UserRoleQueryOptions): Promise<UserRoleAggregate[]>;
+  findByUser(
+    tenantId: TenantId,
+    userId: UserId,
+    options?: UserRoleQueryOptions,
+  ): Promise<UserRoleAggregate[]>;
 
   /**
    * 根据角色ID查找用户角色关联列表
@@ -142,7 +149,11 @@ export interface IUserRoleRepository {
    * @param options - 查询选项
    * @returns Promise<UserRoleAggregate[]>
    */
-  findByRole(tenantId: TenantId, roleId: EntityId, options?: UserRoleQueryOptions): Promise<UserRoleAggregate[]>;
+  findByRole(
+    tenantId: TenantId,
+    roleId: EntityId,
+    options?: UserRoleQueryOptions,
+  ): Promise<UserRoleAggregate[]>;
 
   /**
    * 根据用户ID和角色ID查找用户角色关联
@@ -152,7 +163,11 @@ export interface IUserRoleRepository {
    * @param roleId - 角色ID
    * @returns Promise<UserRoleAggregate | null>
    */
-  findByUserAndRole(tenantId: TenantId, userId: UserId, roleId: EntityId): Promise<UserRoleAggregate | null>;
+  findByUserAndRole(
+    tenantId: TenantId,
+    userId: UserId,
+    roleId: EntityId,
+  ): Promise<UserRoleAggregate | null>;
 
   /**
    * 查询用户角色关联列表
@@ -161,7 +176,10 @@ export interface IUserRoleRepository {
    * @param options - 查询选项
    * @returns Promise<UserRoleQueryResult>
    */
-  findMany(tenantId: TenantId, options?: UserRoleQueryOptions): Promise<UserRoleQueryResult>;
+  findMany(
+    tenantId: TenantId,
+    options?: UserRoleQueryOptions,
+  ): Promise<UserRoleQueryResult>;
 
   /**
    * 检查用户角色关联是否存在
@@ -180,7 +198,11 @@ export interface IUserRoleRepository {
    * @param roleId - 角色ID
    * @returns Promise<boolean>
    */
-  hasRole(tenantId: TenantId, userId: UserId, roleId: EntityId): Promise<boolean>;
+  hasRole(
+    tenantId: TenantId,
+    userId: UserId,
+    roleId: EntityId,
+  ): Promise<boolean>;
 
   /**
    * 统计用户角色关联数量
@@ -226,7 +248,11 @@ export interface IUserRoleRepository {
    * @param roleId - 角色ID
    * @returns Promise<void>
    */
-  deleteByUserAndRole(tenantId: TenantId, userId: UserId, roleId: EntityId): Promise<void>;
+  deleteByUserAndRole(
+    tenantId: TenantId,
+    userId: UserId,
+    roleId: EntityId,
+  ): Promise<void>;
 
   /**
    * 批量删除用户角色关联
@@ -316,5 +342,8 @@ export interface IUserRoleRepository {
    * @param userRoleId - 用户角色关联ID
    * @returns Promise<{ userCount: number; roleCount: number }>
    */
-  getUsageStats(tenantId: TenantId, userRoleId: EntityId): Promise<{ userCount: number; roleCount: number }>;
+  getUsageStats(
+    tenantId: TenantId,
+    userRoleId: EntityId,
+  ): Promise<{ userCount: number; roleCount: number }>;
 }

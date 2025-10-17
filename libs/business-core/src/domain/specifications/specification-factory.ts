@@ -5,19 +5,34 @@
  * @since 1.0.0
  */
 
-import { ISpecification, SpecificationMetadata } from './base/specification.interface.js';
-import { BaseSpecification } from './base/base-specification.js';
-import { ExceptionFactory } from '../exceptions/exception-factory.js';
-import { TenantActiveSpecification, TenantTypeSpecification, TenantNameSpecification } from './tenant-specifications.js';
-import { OrganizationActiveSpecification, OrganizationTypeSpecification, OrganizationNameSpecification } from './organization-specifications.js';
-import { DepartmentActiveSpecification, DepartmentLevelSpecification, DepartmentNameSpecification } from './department-specifications.js';
-import { Tenant } from '../entities/tenant/tenant.entity.js';
-import { Organization } from '../entities/organization/organization.entity.js';
-import { Department } from '../entities/department/department.entity.js';
-import { TenantType } from '../value-objects/types/tenant-type.vo.js';
-import { OrganizationType } from '../value-objects/types/organization-type.vo.js';
-import { DepartmentLevel } from '../value-objects/types/department-level.vo.js';
-import { EntityId } from '@hl8/isolation-model';
+import {
+  ISpecification,
+  SpecificationMetadata,
+} from "./base/specification.interface.js";
+import { BaseSpecification } from "./base/base-specification.js";
+import { ExceptionFactory } from "../exceptions/exception-factory.js";
+import {
+  TenantActiveSpecification,
+  TenantTypeSpecification,
+  TenantNameSpecification,
+} from "./tenant-specifications.js";
+import {
+  OrganizationActiveSpecification,
+  OrganizationTypeSpecification,
+  OrganizationNameSpecification,
+} from "./organization-specifications.js";
+import {
+  DepartmentActiveSpecification,
+  DepartmentLevelSpecification,
+  DepartmentNameSpecification,
+} from "./department-specifications.js";
+import { Tenant } from "../entities/tenant/tenant.entity.js";
+import { Organization } from "../entities/organization/organization.entity.js";
+import { Department } from "../entities/department/department.entity.js";
+import { TenantType } from "../value-objects/types/tenant-type.vo.js";
+import { OrganizationType } from "../value-objects/types/organization-type.vo.js";
+import { DepartmentLevel } from "../value-objects/types/department-level.vo.js";
+import { EntityId } from "@hl8/isolation-model";
 
 /**
  * 规范工厂
@@ -54,20 +69,47 @@ export class SpecificationFactory {
    */
   private initializeDefaultSpecifications(): void {
     // 注册租户规范
-    this.registerSpecification('tenant-active', new TenantActiveSpecification());
-    this.registerSpecification('tenant-type-enterprise', new TenantTypeSpecification(TenantType.ENTERPRISE));
-    this.registerSpecification('tenant-type-community', new TenantTypeSpecification(TenantType.COMMUNITY));
-    this.registerSpecification('tenant-type-team', new TenantTypeSpecification(TenantType.TEAM));
-    this.registerSpecification('tenant-type-personal', new TenantTypeSpecification(TenantType.PERSONAL));
-    this.registerSpecification('tenant-name', new TenantNameSpecification());
+    this.registerSpecification(
+      "tenant-active",
+      new TenantActiveSpecification(),
+    );
+    this.registerSpecification(
+      "tenant-type-enterprise",
+      new TenantTypeSpecification(TenantType.ENTERPRISE),
+    );
+    this.registerSpecification(
+      "tenant-type-community",
+      new TenantTypeSpecification(TenantType.COMMUNITY),
+    );
+    this.registerSpecification(
+      "tenant-type-team",
+      new TenantTypeSpecification(TenantType.TEAM),
+    );
+    this.registerSpecification(
+      "tenant-type-personal",
+      new TenantTypeSpecification(TenantType.PERSONAL),
+    );
+    this.registerSpecification("tenant-name", new TenantNameSpecification());
 
     // 注册组织规范
-    this.registerSpecification('organization-active', new OrganizationActiveSpecification());
-    this.registerSpecification('organization-name', new OrganizationNameSpecification());
+    this.registerSpecification(
+      "organization-active",
+      new OrganizationActiveSpecification(),
+    );
+    this.registerSpecification(
+      "organization-name",
+      new OrganizationNameSpecification(),
+    );
 
     // 注册部门规范
-    this.registerSpecification('department-active', new DepartmentActiveSpecification());
-    this.registerSpecification('department-name', new DepartmentNameSpecification());
+    this.registerSpecification(
+      "department-active",
+      new DepartmentActiveSpecification(),
+    );
+    this.registerSpecification(
+      "department-name",
+      new DepartmentNameSpecification(),
+    );
   }
 
   /**
@@ -86,8 +128,8 @@ export class SpecificationFactory {
     this.specificationMetadata.set(name, {
       name,
       description: specification.getDescription(),
-      version: '1.0.0',
-      category: 'default',
+      version: "1.0.0",
+      category: "default",
       tags: [],
       priority: 0,
       enabled: true,
@@ -170,7 +212,10 @@ export class SpecificationFactory {
    * @param maxLength - 最大长度
    * @returns 租户名称规范
    */
-  createTenantNameSpecification(minLength: number = 3, maxLength: number = 100): ISpecification<Tenant> {
+  createTenantNameSpecification(
+    minLength: number = 3,
+    maxLength: number = 100,
+  ): ISpecification<Tenant> {
     return new TenantNameSpecification(minLength, maxLength);
   }
 
@@ -180,7 +225,9 @@ export class SpecificationFactory {
    * @param type - 组织类型
    * @returns 组织类型规范
    */
-  createOrganizationTypeSpecification(type: OrganizationType): ISpecification<Organization> {
+  createOrganizationTypeSpecification(
+    type: OrganizationType,
+  ): ISpecification<Organization> {
     return new OrganizationTypeSpecification(type);
   }
 
@@ -191,7 +238,10 @@ export class SpecificationFactory {
    * @param maxLength - 最大长度
    * @returns 组织名称规范
    */
-  createOrganizationNameSpecification(minLength: number = 3, maxLength: number = 100): ISpecification<Organization> {
+  createOrganizationNameSpecification(
+    minLength: number = 3,
+    maxLength: number = 100,
+  ): ISpecification<Organization> {
     return new OrganizationNameSpecification(minLength, maxLength);
   }
 
@@ -202,7 +252,10 @@ export class SpecificationFactory {
    * @param maxLevel - 最大层级
    * @returns 部门层级规范
    */
-  createDepartmentLevelSpecification(minLevel: DepartmentLevel, maxLevel: DepartmentLevel): ISpecification<Department> {
+  createDepartmentLevelSpecification(
+    minLevel: DepartmentLevel,
+    maxLevel: DepartmentLevel,
+  ): ISpecification<Department> {
     return new DepartmentLevelSpecification(minLevel, maxLevel);
   }
 
@@ -213,7 +266,10 @@ export class SpecificationFactory {
    * @param maxLength - 最大长度
    * @returns 部门名称规范
    */
-  createDepartmentNameSpecification(minLength: number = 3, maxLength: number = 100): ISpecification<Department> {
+  createDepartmentNameSpecification(
+    minLength: number = 3,
+    maxLength: number = 100,
+  ): ISpecification<Department> {
     return new DepartmentNameSpecification(minLength, maxLength);
   }
 
@@ -226,15 +282,15 @@ export class SpecificationFactory {
    */
   createCompositeSpecification<T>(
     specifications: ISpecification<T>[],
-    operator: 'and' | 'or' = 'and',
+    operator: "and" | "or" = "and",
   ): ISpecification<T> {
     if (specifications.length === 0) {
       throw this._exceptionFactory.createGenericException(
-        '规范列表不能为空',
-        'SPECIFICATION_LIST_EMPTY',
-        'validation',
+        "规范列表不能为空",
+        "SPECIFICATION_LIST_EMPTY",
+        "validation",
         { specifications: specifications.length },
-        'medium'
+        "medium",
       );
     }
 
@@ -244,7 +300,7 @@ export class SpecificationFactory {
 
     let result = specifications[0];
     for (let i = 1; i < specifications.length; i++) {
-      if (operator === 'and') {
+      if (operator === "and") {
         result = result.and(specifications[i]);
       } else {
         result = result.or(specifications[i]);
@@ -291,7 +347,7 @@ export class SpecificationFactory {
    */
   getStatistics(): SpecificationStatistics {
     const metadata = Array.from(this.specificationMetadata.values());
-    
+
     const categoryStats = metadata.reduce(
       (stats, meta) => {
         const category = meta.category;
@@ -305,7 +361,7 @@ export class SpecificationFactory {
       totalSpecifications: this.specifications.size,
       totalCategories: Object.keys(categoryStats).length,
       categoryStats,
-      specifications: metadata.map(meta => ({
+      specifications: metadata.map((meta) => ({
         name: meta.name,
         description: meta.description,
         category: meta.category,
@@ -338,8 +394,8 @@ class ConditionalSpecification<T> extends BaseSpecification<T> {
     super({
       name: `ConditionalSpecification_${specification.getName()}`,
       description: `条件规范: ${specification.getDescription()}`,
-      category: 'conditional',
-      tags: ['conditional', 'specification'],
+      category: "conditional",
+      tags: ["conditional", "specification"],
       priority: 0,
     });
   }
@@ -353,7 +409,7 @@ class ConditionalSpecification<T> extends BaseSpecification<T> {
 
   protected getErrorMessage(candidate: T): string {
     if (!this.condition(candidate)) {
-      return '条件不满足，规范跳过';
+      return "条件不满足，规范跳过";
     }
     return `条件规范: ${this.specification.getName()} 不满足`;
   }
@@ -374,8 +430,8 @@ class BusinessSpecification<T> extends BaseSpecification<T> {
     super({
       name,
       description,
-      category: 'business',
-      tags: ['business', 'specification'],
+      category: "business",
+      tags: ["business", "specification"],
       priority: 1,
     });
   }

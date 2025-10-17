@@ -54,7 +54,10 @@ export class DomainExceptionTypeUtils {
   /**
    * 异常类型描述映射
    */
-  private static readonly TYPE_DESCRIPTIONS: Record<DomainExceptionType, string> = {
+  private static readonly TYPE_DESCRIPTIONS: Record<
+    DomainExceptionType,
+    string
+  > = {
     [DomainExceptionType.BUSINESS_RULE]: "业务规则异常",
     [DomainExceptionType.VALIDATION]: "验证异常",
     [DomainExceptionType.STATE]: "状态异常",
@@ -167,9 +170,6 @@ export class DomainExceptionTypeUtils {
    * @returns 技术异常类型数组
    */
   static getTechnicalTypes(): DomainExceptionType[] {
-    return [
-      DomainExceptionType.CONCURRENCY,
-      DomainExceptionType.NOT_FOUND,
-    ];
+    return [DomainExceptionType.CONCURRENCY, DomainExceptionType.NOT_FOUND];
   }
 }

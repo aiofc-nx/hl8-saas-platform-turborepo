@@ -65,11 +65,11 @@ export enum PermissionActionValue {
  * ```typescript
  * // 创建权限动作
  * const action = PermissionAction.create('CREATE');
- * 
+ *
  * // 检查权限动作
  * console.log(action.isCreateAction()); // true
  * console.log(action.isManageAction()); // false
- * 
+ *
  * // 权限动作比较
  * const manageAction = PermissionAction.MANAGE;
  * console.log(action.hasHigherPermissionThan(manageAction)); // false
@@ -162,7 +162,9 @@ export class PermissionAction extends BaseValueObject<PermissionActionValue> {
       if (!this._exceptionFactory) {
         this._exceptionFactory = ExceptionFactory.getInstance();
       }
-      throw this._exceptionFactory.createInvalidPermissionAction(value.toString());
+      throw this._exceptionFactory.createInvalidPermissionAction(
+        value.toString(),
+      );
     }
   }
 

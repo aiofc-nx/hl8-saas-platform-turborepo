@@ -161,7 +161,7 @@ describe("PasswordPolicy", () => {
         maxLength: 128,
         requireSpecialChars: true,
       });
-      
+
       const result = policy.validatePassword("密码123!");
       expect(result.isValid).toBe(true);
     });
@@ -172,7 +172,7 @@ describe("PasswordPolicy", () => {
         maxLength: 128,
         requireSpecialChars: true,
       });
-      
+
       const result = policy.validatePassword("密码🚀123!");
       expect(result.isValid).toBe(true);
     });

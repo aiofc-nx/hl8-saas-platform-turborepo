@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { ISpecification } from '../base/specification.interface.js';
+import { ISpecification } from "../base/specification.interface.js";
 
 /**
  * 规范装饰器
@@ -29,12 +29,12 @@ export function Specification<T>(
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
-    
+
     // 创建规范元数据
     const specMetadata = {
       name: metadata.name || propertyKey,
       description: metadata.description || `${propertyKey} 规范`,
-      category: metadata.category || 'default',
+      category: metadata.category || "default",
       tags: metadata.tags || [],
       priority: metadata.priority || 0,
       enabled: metadata.enabled !== false,
@@ -43,9 +43,9 @@ export function Specification<T>(
     // 重写方法以支持规范功能
     descriptor.value = function (...args: any[]) {
       const result = originalMethod.apply(this, args);
-      
+
       // 如果返回的是布尔值，包装为规范结果
-      if (typeof result === 'boolean') {
+      if (typeof result === "boolean") {
         return {
           isSatisfied: result,
           errorMessage: result ? undefined : `${specMetadata.name} 规范不满足`,
@@ -58,14 +58,14 @@ export function Specification<T>(
           specificationDescription: specMetadata.description,
         };
       }
-      
+
       return result;
     };
 
     // 添加规范元数据到方法
     descriptor.value.metadata = specMetadata;
     descriptor.value.isSpecification = true;
-    
+
     return descriptor;
   };
 }
@@ -92,13 +92,13 @@ export function BusinessRule<T>(
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
-    
+
     // 创建业务规则元数据
     const ruleMetadata = {
       name: metadata.name || propertyKey,
       description: metadata.description || `${propertyKey} 业务规则`,
-      category: metadata.category || 'business-rule',
-      tags: [...(metadata.tags || []), 'business-rule'],
+      category: metadata.category || "business-rule",
+      tags: [...(metadata.tags || []), "business-rule"],
       priority: metadata.priority || 1,
       enabled: metadata.enabled !== false,
     };
@@ -106,23 +106,25 @@ export function BusinessRule<T>(
     // 重写方法以支持业务规则功能
     descriptor.value = function (...args: any[]) {
       const result = originalMethod.apply(this, args);
-      
+
       // 如果返回的是布尔值，包装为规范结果
-      if (typeof result === 'boolean') {
+      if (typeof result === "boolean") {
         return {
           isSatisfied: result,
-          errorMessage: result ? undefined : `${ruleMetadata.name} 业务规则不满足`,
+          errorMessage: result
+            ? undefined
+            : `${ruleMetadata.name} 业务规则不满足`,
           context: {
             specification: ruleMetadata.name,
             method: propertyKey,
             args: args,
-            type: 'business-rule',
+            type: "business-rule",
           },
           specificationName: ruleMetadata.name,
           specificationDescription: ruleMetadata.description,
         };
       }
-      
+
       return result;
     };
 
@@ -130,7 +132,7 @@ export function BusinessRule<T>(
     descriptor.value.metadata = ruleMetadata;
     descriptor.value.isSpecification = true;
     descriptor.value.isBusinessRule = true;
-    
+
     return descriptor;
   };
 }
@@ -157,13 +159,13 @@ export function Validation<T>(
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
-    
+
     // 创建验证元数据
     const validationMetadata = {
       name: metadata.name || propertyKey,
       description: metadata.description || `${propertyKey} 验证`,
-      category: metadata.category || 'validation',
-      tags: [...(metadata.tags || []), 'validation'],
+      category: metadata.category || "validation",
+      tags: [...(metadata.tags || []), "validation"],
       priority: metadata.priority || 2,
       enabled: metadata.enabled !== false,
     };
@@ -171,23 +173,25 @@ export function Validation<T>(
     // 重写方法以支持验证功能
     descriptor.value = function (...args: any[]) {
       const result = originalMethod.apply(this, args);
-      
+
       // 如果返回的是布尔值，包装为规范结果
-      if (typeof result === 'boolean') {
+      if (typeof result === "boolean") {
         return {
           isSatisfied: result,
-          errorMessage: result ? undefined : `${validationMetadata.name} 验证失败`,
+          errorMessage: result
+            ? undefined
+            : `${validationMetadata.name} 验证失败`,
           context: {
             specification: validationMetadata.name,
             method: propertyKey,
             args: args,
-            type: 'validation',
+            type: "validation",
           },
           specificationName: validationMetadata.name,
           specificationDescription: validationMetadata.description,
         };
       }
-      
+
       return result;
     };
 
@@ -195,7 +199,7 @@ export function Validation<T>(
     descriptor.value.metadata = validationMetadata;
     descriptor.value.isSpecification = true;
     descriptor.value.isValidation = true;
-    
+
     return descriptor;
   };
 }
@@ -209,7 +213,7 @@ export function Validation<T>(
  */
 export function CompositeSpecification<T>(
   specifications: ISpecification<T>[],
-  operator: 'and' | 'or' = 'and',
+  operator: "and" | "or" = "and",
 ) {
   return function (
     target: any,
@@ -217,23 +221,23 @@ export function CompositeSpecification<T>(
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
-    
+
     // 重写方法以支持组合规范功能
     descriptor.value = function (...args: any[]) {
-      const results = specifications.map(spec => spec.isSatisfiedBy(args[0]));
-      
+      const results = specifications.map((spec) => spec.isSatisfiedBy(args[0]));
+
       let isSatisfied: boolean;
-      if (operator === 'and') {
-        isSatisfied = results.every(result => result);
+      if (operator === "and") {
+        isSatisfied = results.every((result) => result);
       } else {
-        isSatisfied = results.some(result => result);
+        isSatisfied = results.some((result) => result);
       }
-      
+
       return {
         isSatisfied,
         errorMessage: isSatisfied ? undefined : `组合规范 (${operator}) 不满足`,
         context: {
-          specifications: specifications.map(spec => spec.getName()),
+          specifications: specifications.map((spec) => spec.getName()),
           operator,
           results,
           method: propertyKey,
@@ -248,14 +252,14 @@ export function CompositeSpecification<T>(
     descriptor.value.metadata = {
       name: `CompositeSpecification_${operator}`,
       description: `组合规范 (${operator})`,
-      category: 'composite',
-      tags: ['composite', operator],
+      category: "composite",
+      tags: ["composite", operator],
       priority: 0,
       enabled: true,
     };
     descriptor.value.isSpecification = true;
     descriptor.value.isComposite = true;
-    
+
     return descriptor;
   };
 }
@@ -277,11 +281,11 @@ export function ConditionalSpecification<T>(
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
-    
+
     // 重写方法以支持条件规范功能
     descriptor.value = function (...args: any[]) {
       const candidate = args[0];
-      
+
       if (!condition(candidate)) {
         return {
           isSatisfied: true,
@@ -296,11 +300,13 @@ export function ConditionalSpecification<T>(
           specificationDescription: `条件规范: ${specification.getDescription()}`,
         };
       }
-      
+
       const isSatisfied = specification.isSatisfiedBy(candidate);
       return {
         isSatisfied,
-        errorMessage: isSatisfied ? undefined : `${specification.getName()} 条件规范不满足`,
+        errorMessage: isSatisfied
+          ? undefined
+          : `${specification.getName()} 条件规范不满足`,
         context: {
           specification: specification.getName(),
           method: propertyKey,
@@ -316,14 +322,14 @@ export function ConditionalSpecification<T>(
     descriptor.value.metadata = {
       name: `ConditionalSpecification_${specification.getName()}`,
       description: `条件规范: ${specification.getDescription()}`,
-      category: 'conditional',
-      tags: ['conditional', 'specification'],
+      category: "conditional",
+      tags: ["conditional", "specification"],
       priority: 0,
       enabled: true,
     };
     descriptor.value.isSpecification = true;
     descriptor.value.isConditional = true;
-    
+
     return descriptor;
   };
 }

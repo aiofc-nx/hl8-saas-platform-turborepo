@@ -116,7 +116,11 @@ export class PathCalculationService {
       return childPath;
     } catch (error) {
       this.logger.error("计算部门路径失败", error);
-      throw this._exceptionFactory.createDomainValidation(`计算部门路径失败: ${error.message}`, "departmentPath", departmentId);
+      throw this._exceptionFactory.createDomainValidation(
+        `计算部门路径失败: ${error.message}`,
+        "departmentPath",
+        departmentId,
+      );
     }
   }
 
@@ -180,7 +184,11 @@ export class PathCalculationService {
       return childPath;
     } catch (error) {
       this.logger.error("计算组织路径失败", error);
-      throw this._exceptionFactory.createDomainValidation(`计算组织路径失败: ${error.message}`, "organizationPath", organizationId);
+      throw this._exceptionFactory.createDomainValidation(
+        `计算组织路径失败: ${error.message}`,
+        "organizationPath",
+        organizationId,
+      );
     }
   }
 
@@ -239,7 +247,11 @@ export class PathCalculationService {
       return updatedPaths;
     } catch (error) {
       this.logger.error("更新子节点路径失败", error);
-      throw this._exceptionFactory.createDomainValidation(`更新子节点路径失败: ${error.message}`, "childPath", parentId);
+      throw this._exceptionFactory.createDomainValidation(
+        `更新子节点路径失败: ${error.message}`,
+        "childPath",
+        parentId,
+      );
     }
   }
 
@@ -363,7 +375,11 @@ export class PathCalculationService {
    */
   private validateDepartmentId(departmentId: EntityId): void {
     if (!departmentId) {
-      throw this._exceptionFactory.createDomainValidation("部门ID不能为空", "departmentId", departmentId);
+      throw this._exceptionFactory.createDomainValidation(
+        "部门ID不能为空",
+        "departmentId",
+        departmentId,
+      );
     }
   }
 
@@ -374,7 +390,11 @@ export class PathCalculationService {
    */
   private validateOrganizationId(organizationId: EntityId): void {
     if (!organizationId) {
-      throw this._exceptionFactory.createDomainValidation("组织ID不能为空", "organizationId", organizationId);
+      throw this._exceptionFactory.createDomainValidation(
+        "组织ID不能为空",
+        "organizationId",
+        organizationId,
+      );
     }
   }
 
@@ -385,11 +405,19 @@ export class PathCalculationService {
    */
   private validateParentPath(parentPath: string): void {
     if (!parentPath || typeof parentPath !== "string") {
-      throw this._exceptionFactory.createDomainValidation("父路径不能为空", "parentPath", parentPath);
+      throw this._exceptionFactory.createDomainValidation(
+        "父路径不能为空",
+        "parentPath",
+        parentPath,
+      );
     }
 
     if (!this.validatePath(parentPath)) {
-      throw this._exceptionFactory.createDomainValidation("父路径格式无效", "parentPath", parentPath);
+      throw this._exceptionFactory.createDomainValidation(
+        "父路径格式无效",
+        "parentPath",
+        parentPath,
+      );
     }
   }
 
@@ -399,19 +427,31 @@ export class PathCalculationService {
    * @private
    */
   private validateNoCircularReference(path: string, currentId: EntityId): void {
-    const pathSegments = path.split("/").filter(segment => segment.length > 0);
+    const pathSegments = path
+      .split("/")
+      .filter((segment) => segment.length > 0);
     const currentIdString = currentId.toString();
 
     // 检查当前ID是否在路径中出现多次
-    const occurrences = pathSegments.filter(segment => segment === currentIdString);
+    const occurrences = pathSegments.filter(
+      (segment) => segment === currentIdString,
+    );
     if (occurrences.length > 1) {
-      throw this._exceptionFactory.createDomainValidation("路径包含循环引用", "path", path);
+      throw this._exceptionFactory.createDomainValidation(
+        "路径包含循环引用",
+        "path",
+        path,
+      );
     }
 
     // 检查路径中是否有重复的ID
     const uniqueSegments = new Set(pathSegments);
     if (pathSegments.length !== uniqueSegments.size) {
-      throw this._exceptionFactory.createDomainValidation("路径包含重复的ID", "path", path);
+      throw this._exceptionFactory.createDomainValidation(
+        "路径包含重复的ID",
+        "path",
+        path,
+      );
     }
   }
 }

@@ -167,7 +167,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
 
       // 5. 记录成功执行日志
       const executionTime = Date.now() - startTime;
-      console.log('BaseUseCase execute: calling logUseCaseSuccess');
+      console.log("BaseUseCase execute: calling logUseCaseSuccess");
       this.logUseCaseSuccess(
         request,
         response,
@@ -386,7 +386,10 @@ export abstract class BaseUseCase<TRequest, TResponse>
     context: IUseCaseContext,
     executionTime: number,
   ): void {
-    console.log('BaseUseCase logUseCaseSuccess called with logger:', this.logger);
+    console.log(
+      "BaseUseCase logUseCaseSuccess called with logger:",
+      this.logger,
+    );
     this.logger.debug(`Use case completed successfully: ${this.useCaseName}`, {
       useCaseName: this.useCaseName,
       useCaseVersion: this.useCaseVersion,

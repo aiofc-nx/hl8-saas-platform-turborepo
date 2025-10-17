@@ -5,8 +5,8 @@
  * @since 1.0.0
  */
 
-import { ValidatorManager } from './validator-manager.js';
-import { IBaseValidator } from './base-validator.interface.js';
+import { ValidatorManager } from "./validator-manager.js";
+import { IBaseValidator } from "./base-validator.interface.js";
 
 /**
  * 验证器工厂
@@ -50,19 +50,19 @@ export class ValidatorFactory {
   createEmailValidator(): IBaseValidator {
     return {
       validate: (value: string) => {
-        const { EmailValidator } = require('./common/email.validator.js');
+        const { EmailValidator } = require("./common/email.validator.js");
         const result = EmailValidator.validateFormat(value);
         return {
           isValid: result.isValid,
           errors: result.error ? [result.error] : [],
-          context: { value }
+          context: { value },
         };
       },
       validateAsync: async (value: string) => {
         return this.createEmailValidator().validate(value);
       },
-      getValidatorName: () => 'EmailValidator',
-      getValidatorVersion: () => '1.0.0'
+      getValidatorName: () => "EmailValidator",
+      getValidatorVersion: () => "1.0.0",
     };
   }
 
@@ -74,19 +74,19 @@ export class ValidatorFactory {
   createPasswordValidator(): IBaseValidator {
     return {
       validate: (value: string) => {
-        const { PasswordValidator } = require('./common/password.validator.js');
+        const { PasswordValidator } = require("./common/password.validator.js");
         const result = PasswordValidator.validateStrength(value);
         return {
           isValid: result.isValid,
           errors: result.errors,
-          context: { value, score: result.score }
+          context: { value, score: result.score },
         };
       },
       validateAsync: async (value: string) => {
         return this.createPasswordValidator().validate(value);
       },
-      getValidatorName: () => 'PasswordValidator',
-      getValidatorVersion: () => '1.0.0'
+      getValidatorName: () => "PasswordValidator",
+      getValidatorVersion: () => "1.0.0",
     };
   }
 
@@ -98,19 +98,19 @@ export class ValidatorFactory {
   createUsernameValidator(): IBaseValidator {
     return {
       validate: (value: string) => {
-        const { UsernameValidator } = require('./common/username.validator.js');
+        const { UsernameValidator } = require("./common/username.validator.js");
         const result = UsernameValidator.validateFormat(value);
         return {
           isValid: result.isValid,
           errors: result.errors,
-          context: { value }
+          context: { value },
         };
       },
       validateAsync: async (value: string) => {
         return this.createUsernameValidator().validate(value);
       },
-      getValidatorName: () => 'UsernameValidator',
-      getValidatorVersion: () => '1.0.0'
+      getValidatorName: () => "UsernameValidator",
+      getValidatorVersion: () => "1.0.0",
     };
   }
 
@@ -137,7 +137,7 @@ export class ValidatorFactory {
         return {
           isValid,
           errors: allErrors,
-          context: { value, validators: validators.length }
+          context: { value, validators: validators.length },
         };
       },
       validateAsync: async (value: unknown) => {
@@ -155,11 +155,11 @@ export class ValidatorFactory {
         return {
           isValid,
           errors: allErrors,
-          context: { value, validators: validators.length }
+          context: { value, validators: validators.length },
         };
       },
-      getValidatorName: () => 'CompositeValidator',
-      getValidatorVersion: () => '1.0.0'
+      getValidatorName: () => "CompositeValidator",
+      getValidatorVersion: () => "1.0.0",
     };
   }
 
@@ -172,7 +172,7 @@ export class ValidatorFactory {
    */
   createConditionalValidator(
     condition: (value: unknown) => boolean,
-    validator: IBaseValidator
+    validator: IBaseValidator,
   ): IBaseValidator {
     return {
       validate: (value: unknown) => {
@@ -180,7 +180,7 @@ export class ValidatorFactory {
           return {
             isValid: true,
             errors: [],
-            context: { value, skipped: true }
+            context: { value, skipped: true },
           };
         }
         return validator.validate(value);
@@ -190,13 +190,13 @@ export class ValidatorFactory {
           return {
             isValid: true,
             errors: [],
-            context: { value, skipped: true }
+            context: { value, skipped: true },
           };
         }
         return await validator.validateAsync(value);
       },
-      getValidatorName: () => 'ConditionalValidator',
-      getValidatorVersion: () => '1.0.0'
+      getValidatorName: () => "ConditionalValidator",
+      getValidatorVersion: () => "1.0.0",
     };
   }
 
@@ -218,7 +218,7 @@ export class ValidatorFactory {
         return {
           isValid: true,
           errors: [],
-          context: { value, validators: validators.length }
+          context: { value, validators: validators.length },
         };
       },
       validateAsync: async (value: unknown) => {
@@ -231,11 +231,11 @@ export class ValidatorFactory {
         return {
           isValid: true,
           errors: [],
-          context: { value, validators: validators.length }
+          context: { value, validators: validators.length },
         };
       },
-      getValidatorName: () => 'ChainValidator',
-      getValidatorVersion: () => '1.0.0'
+      getValidatorName: () => "ChainValidator",
+      getValidatorVersion: () => "1.0.0",
     };
   }
 

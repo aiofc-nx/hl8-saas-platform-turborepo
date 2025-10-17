@@ -25,19 +25,19 @@ import type { IPureLogger } from "@hl8/pure-logger";
 export interface PermissionContext {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 用户ID */
   userId: UserId;
-  
+
   /** 组织ID */
   organizationId?: EntityId;
-  
+
   /** 部门ID */
   departmentId?: EntityId;
-  
+
   /** 资源ID */
   resourceId?: EntityId;
-  
+
   /** 额外上下文 */
   extra?: Record<string, any>;
 }
@@ -48,16 +48,16 @@ export interface PermissionContext {
 export interface PermissionRule {
   /** 动作 */
   action: string;
-  
+
   /** 资源 */
   subject: string;
-  
+
   /** 条件 */
   conditions?: Record<string, any>;
-  
+
   /** 字段 */
   fields?: string[];
-  
+
   /** 是否允许 */
   allow: boolean;
 }
@@ -96,14 +96,14 @@ export interface PermissionRule {
  *   userRoleRepository,
  *   logger
  * );
- * 
+ *
  * // 检查权限
  * const canManage = await permissionService.can(
  *   context,
  *   "manage",
  *   "user"
  * );
- * 
+ *
  * // 获取用户权限
  * const ability = await permissionService.getUserAbility(context);
  * ```
@@ -137,12 +137,16 @@ export class PermissionService {
       const ability = await this.getUserAbility(context);
       return ability.can(action, subject, resourceId?.toString());
     } catch (error) {
-      this.logger?.error("权限检查失败", error instanceof Error ? error.stack : undefined, {
-        userId: context.userId.toString(),
-        action,
-        subject,
-        resourceId: resourceId?.toString(),
-      });
+      this.logger?.error(
+        "权限检查失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          userId: context.userId.toString(),
+          action,
+          subject,
+          resourceId: resourceId?.toString(),
+        },
+      );
       return false;
     }
   }
@@ -234,13 +238,13 @@ export class PermissionService {
   async getUserAbility(context: PermissionContext): Promise<Ability> {
     try {
       const { allow, forbid } = new AbilityBuilder(createMongoAbility);
-      
+
       // 获取用户角色
       const userRoles = await this.getUserRoles(context);
-      
+
       // 获取角色权限
       const permissions = await this.getRolePermissions(context, userRoles);
-      
+
       // 构建权限规则
       for (const permission of permissions) {
         const rule = this.buildPermissionRule(permission, context);
@@ -250,13 +254,17 @@ export class PermissionService {
           forbid(rule.action, rule.subject, rule.conditions, rule.fields);
         }
       }
-      
+
       return createMongoAbility(allow, forbid);
     } catch (error) {
-      this.logger?.error("获取用户权限能力失败", error instanceof Error ? error.stack : undefined, {
-        userId: context.userId.toString(),
-        tenantId: context.tenantId.toString(),
-      });
+      this.logger?.error(
+        "获取用户权限能力失败",
+        error instanceof Error ? error.stack : undefined,
+        {
+          userId: context.userId.toString(),
+          tenantId: context.tenantId.toString(),
+        },
+      );
       return createMongoAbility();
     }
   }
@@ -268,19 +276,27 @@ export class PermissionService {
    * @returns Promise<RoleAggregate[]>
    * @private
    */
-  private async getUserRoles(context: PermissionContext): Promise<RoleAggregate[]> {
-    const userRoleAggregates = await this.userRoleRepository.findByUser(context.tenantId, context.userId);
+  private async getUserRoles(
+    context: PermissionContext,
+  ): Promise<RoleAggregate[]> {
+    const userRoleAggregates = await this.userRoleRepository.findByUser(
+      context.tenantId,
+      context.userId,
+    );
     const roles: RoleAggregate[] = [];
-    
+
     for (const userRoleAggregate of userRoleAggregates) {
       if (userRoleAggregate.isValid()) {
-        const role = await this.roleRepository.findById(context.tenantId, userRoleAggregate.getUserRole().roleId);
+        const role = await this.roleRepository.findById(
+          context.tenantId,
+          userRoleAggregate.getUserRole().roleId,
+        );
         if (role) {
           roles.push(role);
         }
       }
     }
-    
+
     return roles;
   }
 
@@ -292,18 +308,24 @@ export class PermissionService {
    * @returns Promise<Permission[]>
    * @private
    */
-  private async getRolePermissions(context: PermissionContext, roles: RoleAggregate[]): Promise<Permission[]> {
+  private async getRolePermissions(
+    context: PermissionContext,
+    roles: RoleAggregate[],
+  ): Promise<Permission[]> {
     const permissions: Permission[] = [];
-    
+
     for (const role of roles) {
       const rolePermissions = role.getPermissions();
       for (const permission of rolePermissions) {
-        if (permission.isActive && permission.matchesConditions(context.extra || {})) {
+        if (
+          permission.isActive &&
+          permission.matchesConditions(context.extra || {})
+        ) {
           permissions.push(permission);
         }
       }
     }
-    
+
     return permissions;
   }
 
@@ -315,7 +337,10 @@ export class PermissionService {
    * @returns PermissionRule
    * @private
    */
-  private buildPermissionRule(permission: Permission, context: PermissionContext): PermissionRule {
+  private buildPermissionRule(
+    permission: Permission,
+    context: PermissionContext,
+  ): PermissionRule {
     return {
       action: permission.action.value,
       subject: permission.resource,
@@ -333,14 +358,17 @@ export class PermissionService {
    * @returns Record<string, any>
    * @private
    */
-  private buildConditions(permission: Permission, context: PermissionContext): Record<string, any> {
+  private buildConditions(
+    permission: Permission,
+    context: PermissionContext,
+  ): Record<string, any> {
     const conditions: Record<string, any> = {};
-    
+
     // 添加权限条件
     if (permission.conditions) {
       Object.assign(conditions, permission.conditions);
     }
-    
+
     // 添加上下文条件
     if (context.organizationId) {
       conditions.organizationId = context.organizationId.toString();
@@ -351,7 +379,7 @@ export class PermissionService {
     if (context.resourceId) {
       conditions.resourceId = context.resourceId.toString();
     }
-    
+
     return conditions;
   }
 
@@ -378,11 +406,11 @@ export class PermissionService {
   private mergePermissionRules(rules: PermissionRule[]): PermissionRule[] {
     const mergedRules: PermissionRule[] = [];
     const ruleMap = new Map<string, PermissionRule>();
-    
+
     for (const rule of rules) {
       const key = `${rule.action}:${rule.subject}`;
       const existingRule = ruleMap.get(key);
-      
+
       if (existingRule) {
         // 合并条件
         if (rule.conditions && existingRule.conditions) {
@@ -390,7 +418,9 @@ export class PermissionService {
         }
         // 合并字段
         if (rule.fields && existingRule.fields) {
-          existingRule.fields = [...new Set([...existingRule.fields, ...rule.fields])];
+          existingRule.fields = [
+            ...new Set([...existingRule.fields, ...rule.fields]),
+          ];
         }
         // 拒绝权限优先
         if (!rule.allow) {
@@ -400,7 +430,7 @@ export class PermissionService {
         ruleMap.set(key, { ...rule });
       }
     }
-    
+
     return Array.from(ruleMap.values());
   }
 
@@ -412,9 +442,9 @@ export class PermissionService {
    * @private
    */
   private checkPermissionConflicts(rules: PermissionRule[]): boolean {
-    const allowRules = rules.filter(r => r.allow);
-    const forbidRules = rules.filter(r => !r.allow);
-    
+    const allowRules = rules.filter((r) => r.allow);
+    const forbidRules = rules.filter((r) => !r.allow);
+
     for (const allowRule of allowRules) {
       for (const forbidRule of forbidRules) {
         if (this.isRuleConflict(allowRule, forbidRule)) {
@@ -422,7 +452,7 @@ export class PermissionService {
         }
       }
     }
-    
+
     return false;
   }
 
@@ -434,7 +464,10 @@ export class PermissionService {
    * @returns boolean
    * @private
    */
-  private isRuleConflict(rule1: PermissionRule, rule2: PermissionRule): boolean {
+  private isRuleConflict(
+    rule1: PermissionRule,
+    rule2: PermissionRule,
+  ): boolean {
     return rule1.action === rule2.action && rule1.subject === rule2.subject;
   }
 }

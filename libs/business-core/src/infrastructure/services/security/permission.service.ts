@@ -1,5 +1,5 @@
-import { Ability, AbilityBuilder, MongoQuery } from '@casl/ability';
-import type { Subject } from '@casl/ability';
+import { Ability, AbilityBuilder, MongoQuery } from "@casl/ability";
+import type { Subject } from "@casl/ability";
 
 /**
  * 权限服务（CASL能力构建器封装）
@@ -11,7 +11,13 @@ export class PermissionService {
   /**
    * 基于权限定义集合构建 Ability
    */
-  buildAbility(definitions: Array<{ action: string; subject: Subject; conditions?: MongoQuery }>): Ability {
+  buildAbility(
+    definitions: Array<{
+      action: string;
+      subject: Subject;
+      conditions?: MongoQuery;
+    }>,
+  ): Ability {
     const { can, cannot, build } = new AbilityBuilder<Ability>(Ability as any);
 
     for (const def of definitions) {
@@ -25,8 +31,9 @@ export class PermissionService {
     // 示例：保留接口以便后续策略加入 cannot 规则
     // cannot('delete', 'Tenant', { protected: true });
 
-    return build({ detectSubjectType: (item) => (item as any).type || (item as any).constructor?.name });
+    return build({
+      detectSubjectType: (item) =>
+        (item as any).type || (item as any).constructor?.name,
+    });
   }
 }
-
-

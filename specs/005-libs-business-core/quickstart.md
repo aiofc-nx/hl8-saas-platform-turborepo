@@ -46,120 +46,120 @@ pnpm build --filter=@hl8/business-core
 #### 创建平台
 
 ```typescript
-import { CreatePlatformUseCase } from '@hl8/business-core';
-import { EntityId } from '@hl8/isolation-model';
+import { CreatePlatformUseCase } from "@hl8/business-core";
+import { EntityId } from "@hl8/isolation-model";
 
 // 使用用例创建平台
 const createPlatformUseCase = new CreatePlatformUseCase(
   platformRepository,
-  eventPublisher
+  eventPublisher,
 );
 
 // 创建平台
 const platform = await createPlatformUseCase.execute({
-  name: 'HL8 SAAS平台',
-  description: '企业级SAAS服务平台',
-  domain: 'https://hl8.com',
+  name: "HL8 SAAS平台",
+  description: "企业级SAAS服务平台",
+  domain: "https://hl8.com",
   settings: {
     maxTenants: 1000,
     maxUsers: 10000,
-    features: ['multi-tenant', 'rbac', 'audit']
-  }
+    features: ["multi-tenant", "rbac", "audit"],
+  },
 });
 ```
 
 #### 创建租户
 
 ```typescript
-import { CreateTenantUseCase } from '@hl8/business-core';
-import { TenantType } from '@hl8/business-core';
+import { CreateTenantUseCase } from "@hl8/business-core";
+import { TenantType } from "@hl8/business-core";
 
 // 使用用例创建租户
 const createTenantUseCase = new CreateTenantUseCase(
   tenantRepository,
-  eventPublisher
+  eventPublisher,
 );
 
 // 创建企业租户
 const tenant = await createTenantUseCase.execute({
   platformId: platformId,
-  name: '企业租户',
+  name: "企业租户",
   type: TenantType.ENTERPRISE,
   settings: {
     maxUsers: 100,
     maxOrganizations: 10,
     maxDepartments: 50,
-    features: ['hr', 'finance', 'crm']
-  }
+    features: ["hr", "finance", "crm"],
+  },
 });
 ```
 
 #### 创建组织
 
 ```typescript
-import { CreateOrganizationUseCase } from '@hl8/business-core';
-import { OrganizationType } from '@hl8/business-core';
+import { CreateOrganizationUseCase } from "@hl8/business-core";
+import { OrganizationType } from "@hl8/business-core";
 
 // 使用用例创建组织
 const createOrganizationUseCase = new CreateOrganizationUseCase(
   organizationRepository,
-  eventPublisher
+  eventPublisher,
 );
 
 // 创建专业委员会
 const organization = await createOrganizationUseCase.execute({
   tenantId: tenantId,
-  name: '技术委员会',
+  name: "技术委员会",
   type: OrganizationType.COMMITTEE,
-  description: '负责技术决策和标准制定'
+  description: "负责技术决策和标准制定",
 });
 ```
 
 #### 创建部门
 
 ```typescript
-import { CreateDepartmentUseCase } from '@hl8/business-core';
-import { DepartmentLevel } from '@hl8/business-core';
+import { CreateDepartmentUseCase } from "@hl8/business-core";
+import { DepartmentLevel } from "@hl8/business-core";
 
 // 使用用例创建部门
 const createDepartmentUseCase = new CreateDepartmentUseCase(
   departmentRepository,
-  eventPublisher
+  eventPublisher,
 );
 
 // 创建一级部门
 const department = await createDepartmentUseCase.execute({
   tenantId: tenantId,
   organizationId: organizationId,
-  name: '技术部',
+  name: "技术部",
   level: DepartmentLevel.LEVEL_1,
   parentId: null,
-  path: '技术部'
+  path: "技术部",
 });
 ```
 
 #### 创建用户
 
 ```typescript
-import { CreateUserUseCase } from '@hl8/business-core';
-import { UserRole, UserStatus } from '@hl8/business-core';
+import { CreateUserUseCase } from "@hl8/business-core";
+import { UserRole, UserStatus } from "@hl8/business-core";
 
 // 使用用例创建用户
 const createUserUseCase = new CreateUserUseCase(
   userRepository,
   authenticationRepository,
-  eventPublisher
+  eventPublisher,
 );
 
 // 创建平台用户
 const user = await createUserUseCase.execute({
   platformId: platformId,
-  username: 'admin',
-  email: 'admin@hl8.com',
-  phone: '+86-138-0000-0000',
-  password: 'admin123',
+  username: "admin",
+  email: "admin@hl8.com",
+  phone: "+86-138-0000-0000",
+  password: "admin123",
   roles: [UserRole.PLATFORM_ADMIN],
-  status: UserStatus.ACTIVE
+  status: UserStatus.ACTIVE,
 });
 ```
 
@@ -168,14 +168,14 @@ const user = await createUserUseCase.execute({
 #### 分配用户角色
 
 ```typescript
-import { AssignUserRoleUseCase } from '@hl8/business-core';
-import { UserRole } from '@hl8/business-core';
+import { AssignUserRoleUseCase } from "@hl8/business-core";
+import { UserRole } from "@hl8/business-core";
 
 // 使用用例分配用户角色
 const assignUserRoleUseCase = new AssignUserRoleUseCase(
   userRepository,
   roleRepository,
-  eventPublisher
+  eventPublisher,
 );
 
 // 分配租户管理员角色
@@ -183,7 +183,7 @@ await assignUserRoleUseCase.execute({
   userId: userId,
   roleType: UserRole.TENANT_ADMIN,
   scope: RoleScope.TENANT_LEVEL,
-  tenantId: tenantId
+  tenantId: tenantId,
 });
 
 // 分配组织管理员角色
@@ -192,49 +192,53 @@ await assignUserRoleUseCase.execute({
   roleType: UserRole.ORGANIZATION_ADMIN,
   scope: RoleScope.ORGANIZATION_LEVEL,
   tenantId: tenantId,
-  organizationId: organizationId
+  organizationId: organizationId,
 });
 ```
 
 #### 基于CASL的权限管理
 
 ```typescript
-import { defineAbility, Ability } from '@casl/ability';
-import { PermissionService } from '@hl8/business-core';
+import { defineAbility, Ability } from "@casl/ability";
+import { PermissionService } from "@hl8/business-core";
 
 // 定义用户权限能力
 const userAbility = defineAbility((can, cannot) => {
   // 租户管理员权限
-  can('manage', 'Tenant', { id: user.tenantId });
-  can('read', 'Tenant', { id: user.tenantId });
-  can('update', 'Tenant', { id: user.tenantId });
-  
+  can("manage", "Tenant", { id: user.tenantId });
+  can("read", "Tenant", { id: user.tenantId });
+  can("update", "Tenant", { id: user.tenantId });
+
   // 组织管理权限
-  can('manage', 'Organization', { tenantId: user.tenantId });
-  can('read', 'Organization', { tenantId: user.tenantId });
-  can('create', 'Organization', { tenantId: user.tenantId });
-  
+  can("manage", "Organization", { tenantId: user.tenantId });
+  can("read", "Organization", { tenantId: user.tenantId });
+  can("create", "Organization", { tenantId: user.tenantId });
+
   // 部门管理权限
-  can('manage', 'Department', { tenantId: user.tenantId });
-  can('read', 'Department', { tenantId: user.tenantId });
-  can('create', 'Department', { tenantId: user.tenantId });
-  
+  can("manage", "Department", { tenantId: user.tenantId });
+  can("read", "Department", { tenantId: user.tenantId });
+  can("create", "Department", { tenantId: user.tenantId });
+
   // 用户管理权限
-  can('manage', 'User', { tenantId: user.tenantId });
-  can('read', 'User', { tenantId: user.tenantId });
-  can('update', 'User', { tenantId: user.tenantId });
+  can("manage", "User", { tenantId: user.tenantId });
+  can("read", "User", { tenantId: user.tenantId });
+  can("update", "User", { tenantId: user.tenantId });
 });
 
 // 创建权限服务
 const permissionService = new PermissionService(userAbility);
 
 // 检查权限
-const canManageTenant = permissionService.can('manage', 'Tenant', { id: tenantId });
-const canReadUsers = permissionService.can('read', 'User', { tenantId: user.tenantId });
+const canManageTenant = permissionService.can("manage", "Tenant", {
+  id: tenantId,
+});
+const canReadUsers = permissionService.can("read", "User", {
+  tenantId: user.tenantId,
+});
 
 // 权限验证并抛出异常
-permissionService.checkPermission('manage', 'Tenant', { id: tenantId });
-permissionService.checkPermission('read', 'User', { tenantId: user.tenantId });
+permissionService.checkPermission("manage", "Tenant", { id: tenantId });
+permissionService.checkPermission("read", "User", { tenantId: user.tenantId });
 ```
 
 ### 4. 身份认证
@@ -242,30 +246,30 @@ permissionService.checkPermission('read', 'User', { tenantId: user.tenantId });
 #### 用户登录
 
 ```typescript
-import { AuthenticateUserUseCase } from '@hl8/business-core';
+import { AuthenticateUserUseCase } from "@hl8/business-core";
 
 // 使用用例进行用户认证
 const authenticateUserUseCase = new AuthenticateUserUseCase(
   authenticationRepository,
   sessionRepository,
   passwordService,
-  eventPublisher
+  eventPublisher,
 );
 
 // 用户登录
 const authResult = await authenticateUserUseCase.execute({
-  email: 'admin@hl8.com',
-  password: 'admin123',
+  email: "admin@hl8.com",
+  password: "admin123",
   deviceInfo: {
-    deviceId: 'device-123',
-    deviceType: 'desktop',
-    osName: 'Windows',
-    osVersion: '10',
-    browserName: 'Chrome',
-    browserVersion: '120.0'
+    deviceId: "device-123",
+    deviceType: "desktop",
+    osName: "Windows",
+    osVersion: "10",
+    browserName: "Chrome",
+    browserVersion: "120.0",
   },
-  ipAddress: '192.168.1.100',
-  userAgent: 'Mozilla/5.0...'
+  ipAddress: "192.168.1.100",
+  userAgent: "Mozilla/5.0...",
 });
 
 // 获取访问令牌
@@ -276,12 +280,15 @@ const refreshToken = authResult.refreshToken;
 #### 会话管理
 
 ```typescript
-import { CreateSessionUseCase, ValidateSessionUseCase } from '@hl8/business-core';
+import {
+  CreateSessionUseCase,
+  ValidateSessionUseCase,
+} from "@hl8/business-core";
 
 // 创建会话
 const createSessionUseCase = new CreateSessionUseCase(
   sessionRepository,
-  eventPublisher
+  eventPublisher,
 );
 
 const session = await createSessionUseCase.execute({
@@ -290,16 +297,14 @@ const session = await createSessionUseCase.execute({
   deviceInfo: deviceInfo,
   ipAddress: ipAddress,
   userAgent: userAgent,
-  expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24小时
+  expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24小时
 });
 
 // 验证会话
-const validateSessionUseCase = new ValidateSessionUseCase(
-  sessionRepository
-);
+const validateSessionUseCase = new ValidateSessionUseCase(sessionRepository);
 
 const isValid = await validateSessionUseCase.execute({
-  sessionToken: sessionToken
+  sessionToken: sessionToken,
 });
 ```
 
@@ -308,21 +313,23 @@ const isValid = await validateSessionUseCase.execute({
 #### 发布领域事件
 
 ```typescript
-import { EventPublisher } from '@hl8/business-core';
+import { EventPublisher } from "@hl8/business-core";
 
 // 发布平台创建事件
-await eventPublisher.publish(new PlatformCreatedEvent({
-  platformId: platformId,
-  name: 'HL8 SAAS平台',
-  domain: 'https://hl8.com',
-  timestamp: new Date()
-}));
+await eventPublisher.publish(
+  new PlatformCreatedEvent({
+    platformId: platformId,
+    name: "HL8 SAAS平台",
+    domain: "https://hl8.com",
+    timestamp: new Date(),
+  }),
+);
 ```
 
 #### 订阅领域事件
 
 ```typescript
-import { EventSubscriber } from '@hl8/business-core';
+import { EventSubscriber } from "@hl8/business-core";
 
 // 订阅租户创建事件
 @EventSubscriber(TenantCreatedEvent)
@@ -330,10 +337,10 @@ export class TenantCreatedHandler {
   async handle(event: TenantCreatedEvent): Promise<void> {
     // 处理租户创建事件
     console.log(`租户 ${event.tenantId} 已创建`);
-    
+
     // 发送欢迎邮件
     await this.emailService.sendWelcomeEmail(event.tenantId);
-    
+
     // 初始化租户数据
     await this.tenantService.initializeTenantData(event.tenantId);
   }
@@ -345,54 +352,50 @@ export class TenantCreatedHandler {
 #### 查询平台列表
 
 ```typescript
-import { GetPlatformsQuery } from '@hl8/business-core';
+import { GetPlatformsQuery } from "@hl8/business-core";
 
 // 使用查询对象查询平台列表
-const getPlatformsQuery = new GetPlatformsQuery(
-  platformRepository
-);
+const getPlatformsQuery = new GetPlatformsQuery(platformRepository);
 
 const platforms = await getPlatformsQuery.execute({
   page: 1,
   limit: 20,
-  status: 'active'
+  status: "active",
 });
 ```
 
 #### 查询租户列表
 
 ```typescript
-import { GetTenantsQuery } from '@hl8/business-core';
+import { GetTenantsQuery } from "@hl8/business-core";
 
 // 使用查询对象查询租户列表
-const getTenantsQuery = new GetTenantsQuery(
-  tenantRepository
-);
+const getTenantsQuery = new GetTenantsQuery(tenantRepository);
 
 const tenants = await getTenantsQuery.execute({
   platformId: platformId,
   page: 1,
   limit: 20,
-  type: 'enterprise',
-  status: 'active'
+  type: "enterprise",
+  status: "active",
 });
 ```
 
 #### 查询组织架构
 
 ```typescript
-import { GetOrganizationsQuery } from '@hl8/business-core';
+import { GetOrganizationsQuery } from "@hl8/business-core";
 
 // 使用查询对象查询组织架构
 const getOrganizationsQuery = new GetOrganizationsQuery(
   organizationRepository,
-  departmentRepository
+  departmentRepository,
 );
 
 const organizations = await getOrganizationsQuery.execute({
   tenantId: tenantId,
   includeDepartments: true,
-  includeUsers: true
+  includeUsers: true,
 });
 ```
 
@@ -401,7 +404,7 @@ const organizations = await getOrganizationsQuery.execute({
 #### 多租户数据隔离
 
 ```typescript
-import { IsolationContext } from '@hl8/business-core';
+import { IsolationContext } from "@hl8/business-core";
 
 // 设置隔离上下文
 const context = new IsolationContext({
@@ -409,7 +412,7 @@ const context = new IsolationContext({
   tenantId: tenantId,
   organizationId: organizationId,
   departmentId: departmentId,
-  userId: userId
+  userId: userId,
 });
 
 // 在隔离上下文中执行操作
@@ -423,33 +426,35 @@ await context.execute(async () => {
 #### 基于CASL的权限验证
 
 ```typescript
-import { defineAbility } from '@casl/ability';
-import { PermissionService } from '@hl8/business-core';
+import { defineAbility } from "@casl/ability";
+import { PermissionService } from "@hl8/business-core";
 
 // 定义用户权限能力
 const userAbility = defineAbility((can, cannot) => {
   // 根据用户角色定义权限
   if (user.roles.includes(UserRole.PLATFORM_ADMIN)) {
-    can('manage', 'Platform');
-    can('manage', 'Tenant');
-    can('manage', 'Organization');
-    can('manage', 'Department');
-    can('manage', 'User');
+    can("manage", "Platform");
+    can("manage", "Tenant");
+    can("manage", "Organization");
+    can("manage", "Department");
+    can("manage", "User");
   } else if (user.roles.includes(UserRole.TENANT_ADMIN)) {
-    can('manage', 'Tenant', { id: user.tenantId });
-    can('manage', 'Organization', { tenantId: user.tenantId });
-    can('manage', 'Department', { tenantId: user.tenantId });
-    can('manage', 'User', { tenantId: user.tenantId });
+    can("manage", "Tenant", { id: user.tenantId });
+    can("manage", "Organization", { tenantId: user.tenantId });
+    can("manage", "Department", { tenantId: user.tenantId });
+    can("manage", "User", { tenantId: user.tenantId });
   } else if (user.roles.includes(UserRole.ORGANIZATION_ADMIN)) {
-    can('manage', 'Organization', { id: { $in: user.organizationIds } });
-    can('manage', 'Department', { organizationId: { $in: user.organizationIds } });
-    can('manage', 'User', { organizationId: { $in: user.organizationIds } });
+    can("manage", "Organization", { id: { $in: user.organizationIds } });
+    can("manage", "Department", {
+      organizationId: { $in: user.organizationIds },
+    });
+    can("manage", "User", { organizationId: { $in: user.organizationIds } });
   } else if (user.roles.includes(UserRole.DEPARTMENT_ADMIN)) {
-    can('manage', 'Department', { id: { $in: user.departmentIds } });
-    can('manage', 'User', { departmentId: { $in: user.departmentIds } });
+    can("manage", "Department", { id: { $in: user.departmentIds } });
+    can("manage", "User", { departmentId: { $in: user.departmentIds } });
   } else {
-    can('read', 'User', { id: user.id });
-    can('update', 'User', { id: user.id });
+    can("read", "User", { id: user.id });
+    can("update", "User", { id: user.id });
   }
 });
 
@@ -457,16 +462,22 @@ const userAbility = defineAbility((can, cannot) => {
 const permissionService = new PermissionService(userAbility);
 
 // 验证用户权限
-const canManageTenant = permissionService.can('manage', 'Tenant', { id: tenantId });
-const canReadUsers = permissionService.can('read', 'User', { tenantId: user.tenantId });
+const canManageTenant = permissionService.can("manage", "Tenant", {
+  id: tenantId,
+});
+const canReadUsers = permissionService.can("read", "User", {
+  tenantId: user.tenantId,
+});
 
 // 权限验证并抛出异常
 try {
-  permissionService.checkPermission('manage', 'Tenant', { id: tenantId });
-  permissionService.checkPermission('read', 'User', { tenantId: user.tenantId });
+  permissionService.checkPermission("manage", "Tenant", { id: tenantId });
+  permissionService.checkPermission("read", "User", {
+    tenantId: user.tenantId,
+  });
 } catch (error) {
   if (error instanceof ForbiddenException) {
-    console.log('权限不足:', error.message);
+    console.log("权限不足:", error.message);
   }
 }
 ```
@@ -537,15 +548,17 @@ try {
 ### 调试技巧
 
 1. **启用详细日志**
+
    ```typescript
    // 设置日志级别
-   logger.setLevel('debug');
+   logger.setLevel("debug");
    ```
 
 2. **使用调试工具**
+
    ```typescript
    // 启用调试模式
-   process.env.DEBUG = 'hl8:business-core:*';
+   process.env.DEBUG = "hl8:business-core:*";
    ```
 
 3. **监控系统指标**

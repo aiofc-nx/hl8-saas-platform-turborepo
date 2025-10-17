@@ -17,25 +17,25 @@ import { IPaginatedResult } from "./base/repository.interface.js";
 export interface DepartmentQueryOptions {
   /** 租户ID */
   tenantId?: TenantId;
-  
+
   /** 部门层级 */
   level?: DepartmentLevel;
-  
+
   /** 父部门ID */
   parentId?: EntityId;
-  
+
   /** 是否包含已删除的部门 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 }

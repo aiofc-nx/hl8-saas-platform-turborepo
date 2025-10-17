@@ -6,7 +6,13 @@
  * @since 1.0.0
  */
 
-import { EntityId, TenantId, UserId, OrganizationId, DepartmentId } from "@hl8/isolation-model";
+import {
+  EntityId,
+  TenantId,
+  UserId,
+  OrganizationId,
+  DepartmentId,
+} from "@hl8/isolation-model";
 import { BaseQuery } from "./base/base-query.js";
 import { UserStatus } from "../../../domain/value-objects/types/user-status.vo.js";
 import { UserRole } from "../../../domain/value-objects/types/user-role.vo.js";
@@ -34,31 +40,31 @@ export class GetUserQuery extends BaseQuery {
 export class GetUsersQuery extends BaseQuery {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织ID */
   organizationId?: OrganizationId;
-  
+
   /** 部门ID */
   departmentId?: DepartmentId;
-  
+
   /** 用户状态 */
   status?: UserStatus;
-  
+
   /** 用户角色 */
   role?: UserRole;
-  
+
   /** 是否包含已删除的用户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -96,28 +102,28 @@ export class GetUsersQuery extends BaseQuery {
 export class GetUsersByOrganizationQuery extends BaseQuery {
   /** 组织ID */
   organizationId: OrganizationId;
-  
+
   /** 部门ID */
   departmentId?: DepartmentId;
-  
+
   /** 用户状态 */
   status?: UserStatus;
-  
+
   /** 用户角色 */
   role?: UserRole;
-  
+
   /** 是否包含已删除的用户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -153,25 +159,25 @@ export class GetUsersByOrganizationQuery extends BaseQuery {
 export class GetUsersByDepartmentQuery extends BaseQuery {
   /** 部门ID */
   departmentId: DepartmentId;
-  
+
   /** 用户状态 */
   status?: UserStatus;
-  
+
   /** 用户角色 */
   role?: UserRole;
-  
+
   /** 是否包含已删除的用户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -205,25 +211,25 @@ export class GetUsersByDepartmentQuery extends BaseQuery {
 export class GetUsersByRoleQuery extends BaseQuery {
   /** 角色ID */
   roleId: EntityId;
-  
+
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 用户状态 */
   status?: UserStatus;
-  
+
   /** 是否包含已删除的用户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -257,34 +263,34 @@ export class GetUsersByRoleQuery extends BaseQuery {
 export class SearchUsersQuery extends BaseQuery {
   /** 搜索关键词 */
   keyword: string;
-  
+
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织ID */
   organizationId?: OrganizationId;
-  
+
   /** 部门ID */
   departmentId?: DepartmentId;
-  
+
   /** 用户状态 */
   status?: UserStatus;
-  
+
   /** 用户角色 */
   role?: UserRole;
-  
+
   /** 是否包含已删除的用户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
@@ -324,19 +330,19 @@ export class SearchUsersQuery extends BaseQuery {
 export class CountUsersQuery extends BaseQuery {
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 组织ID */
   organizationId?: OrganizationId;
-  
+
   /** 部门ID */
   departmentId?: DepartmentId;
-  
+
   /** 用户状态 */
   status?: UserStatus;
-  
+
   /** 用户角色 */
   role?: UserRole;
-  
+
   /** 是否包含已删除的用户 */
   includeDeleted?: boolean;
 

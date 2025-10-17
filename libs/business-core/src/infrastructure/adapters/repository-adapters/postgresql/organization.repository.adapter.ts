@@ -896,7 +896,7 @@ export class OrganizationRepositoryAdapter
           updated_by = EXCLUDED.updated_by,
           is_deleted = EXCLUDED.is_deleted
       `;
-      
+
       const org = organization.getOrganization();
       const values = [
         organization.id.toString(),
@@ -913,7 +913,7 @@ export class OrganizationRepositoryAdapter
       ];
 
       await this.dataSource.query(query, values);
-      
+
       this.logger.debug("保存组织数据成功", {
         organizationId: organization.id.toString(),
         tenantId: organization.tenantId.toString(),

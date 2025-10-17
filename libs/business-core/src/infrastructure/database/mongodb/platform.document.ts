@@ -29,34 +29,34 @@ import type { EntityId } from "@hl8/isolation-model";
 export interface PlatformDocument {
   /** 平台唯一标识符 */
   _id: EntityId;
-  
+
   /** 平台名称 */
   name: string;
-  
+
   /** 平台描述 */
   description: string;
-  
+
   /** 平台域名 */
   domain: string;
-  
+
   /** 平台状态 */
   status: "ACTIVE" | "MAINTENANCE" | "INACTIVE";
-  
+
   /** 平台配置（JSON格式） */
   settings: Record<string, any>;
-  
+
   /** 创建时间 */
   createdAt: Date;
-  
+
   /** 更新时间 */
   updatedAt: Date;
-  
+
   /** 创建者ID */
   createdBy: EntityId;
-  
+
   /** 更新者ID */
   updatedBy: EntityId;
-  
+
   /** 版本号（用于乐观锁） */
   version: number;
 }
@@ -69,28 +69,28 @@ export interface PlatformDocument {
 export interface PlatformUserDocument {
   /** 关联ID */
   _id: EntityId;
-  
+
   /** 平台ID */
   platformId: EntityId;
-  
+
   /** 用户ID */
   userId: EntityId;
-  
+
   /** 用户角色 */
   role: "PLATFORM_ADMIN" | "PLATFORM_USER";
 
   /** 关联状态 */
   status: "ACTIVE" | "INACTIVE";
-  
+
   /** 创建时间 */
   createdAt: Date;
-  
+
   /** 更新时间 */
   updatedAt: Date;
-  
+
   /** 创建者ID */
   createdBy: EntityId;
-  
+
   /** 更新者ID */
   updatedBy: EntityId;
 }
@@ -103,22 +103,22 @@ export interface PlatformUserDocument {
 export interface PlatformEventDocument {
   /** 事件ID */
   _id: EntityId;
-  
+
   /** 聚合根ID */
   aggregateId: EntityId;
-  
+
   /** 事件类型 */
   eventType: string;
-  
+
   /** 事件数据 */
   eventData: Record<string, any>;
-  
+
   /** 事件版本 */
   eventVersion: number;
-  
+
   /** 事件时间戳 */
   occurredAt: Date;
-  
+
   /** 事件元数据 */
   metadata: Record<string, any>;
 }
@@ -131,16 +131,16 @@ export interface PlatformEventDocument {
 export interface PlatformSnapshotDocument {
   /** 快照ID */
   _id: EntityId;
-  
+
   /** 聚合根ID */
   aggregateId: EntityId;
-  
+
   /** 快照数据 */
   snapshotData: Record<string, any>;
-  
+
   /** 快照版本 */
   snapshotVersion: number;
-  
+
   /** 快照时间戳 */
   createdAt: Date;
 }

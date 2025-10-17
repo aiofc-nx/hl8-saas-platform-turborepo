@@ -18,37 +18,37 @@ import { PermissionAction } from "../value-objects/types/permission-action.vo.js
 export interface PermissionQueryOptions {
   /** 页码 */
   page?: number;
-  
+
   /** 每页数量 */
   limit?: number;
-  
+
   /** 权限类型 */
   type?: PermissionType;
-  
+
   /** 权限动作 */
   action?: PermissionAction;
-  
+
   /** 资源标识 */
   resource?: string;
-  
+
   /** 是否启用 */
   isActive?: boolean;
-  
+
   /** 是否系统权限 */
   isSystemPermission?: boolean;
-  
+
   /** 是否可编辑 */
   isEditable?: boolean;
-  
+
   /** 权限标签 */
   tags?: string[];
-  
+
   /** 搜索关键词 */
   search?: string;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序方向 */
   sortOrder?: "asc" | "desc";
 }
@@ -59,16 +59,16 @@ export interface PermissionQueryOptions {
 export interface PermissionQueryResult {
   /** 权限列表 */
   permissions: PermissionAggregate[];
-  
+
   /** 总数量 */
   total: number;
-  
+
   /** 页码 */
   page: number;
-  
+
   /** 每页数量 */
   limit: number;
-  
+
   /** 总页数 */
   totalPages: number;
 }
@@ -95,13 +95,13 @@ export interface PermissionQueryResult {
  * ```typescript
  * // 创建权限仓储
  * const permissionRepository = new PermissionRepositoryAdapter(databaseService, logger);
- * 
+ *
  * // 保存权限
  * await permissionRepository.save(permissionAggregate);
- * 
+ *
  * // 查询权限
  * const permission = await permissionRepository.findById(tenantId, permissionId);
- * 
+ *
  * // 查询权限列表
  * const result = await permissionRepository.findMany(tenantId, {
  *   page: 1,
@@ -130,7 +130,10 @@ export interface IPermissionRepository {
    * @param permissionId - 权限ID
    * @returns Promise<PermissionAggregate | null>
    */
-  findById(tenantId: TenantId, permissionId: EntityId): Promise<PermissionAggregate | null>;
+  findById(
+    tenantId: TenantId,
+    permissionId: EntityId,
+  ): Promise<PermissionAggregate | null>;
 
   /**
    * 根据名称查找权限聚合根
@@ -139,7 +142,10 @@ export interface IPermissionRepository {
    * @param name - 权限名称
    * @returns Promise<PermissionAggregate | null>
    */
-  findByName(tenantId: TenantId, name: string): Promise<PermissionAggregate | null>;
+  findByName(
+    tenantId: TenantId,
+    name: string,
+  ): Promise<PermissionAggregate | null>;
 
   /**
    * 根据资源和动作查找权限聚合根
@@ -149,7 +155,11 @@ export interface IPermissionRepository {
    * @param action - 权限动作
    * @returns Promise<PermissionAggregate | null>
    */
-  findByResourceAndAction(tenantId: TenantId, resource: string, action: PermissionAction): Promise<PermissionAggregate | null>;
+  findByResourceAndAction(
+    tenantId: TenantId,
+    resource: string,
+    action: PermissionAction,
+  ): Promise<PermissionAggregate | null>;
 
   /**
    * 查询权限列表
@@ -158,7 +168,10 @@ export interface IPermissionRepository {
    * @param options - 查询选项
    * @returns Promise<PermissionQueryResult>
    */
-  findMany(tenantId: TenantId, options?: PermissionQueryOptions): Promise<PermissionQueryResult>;
+  findMany(
+    tenantId: TenantId,
+    options?: PermissionQueryOptions,
+  ): Promise<PermissionQueryResult>;
 
   /**
    * 根据类型查询权限列表
@@ -168,7 +181,11 @@ export interface IPermissionRepository {
    * @param options - 查询选项
    * @returns Promise<PermissionQueryResult>
    */
-  findByType(tenantId: TenantId, type: PermissionType, options?: PermissionQueryOptions): Promise<PermissionQueryResult>;
+  findByType(
+    tenantId: TenantId,
+    type: PermissionType,
+    options?: PermissionQueryOptions,
+  ): Promise<PermissionQueryResult>;
 
   /**
    * 根据动作查询权限列表
@@ -178,7 +195,11 @@ export interface IPermissionRepository {
    * @param options - 查询选项
    * @returns Promise<PermissionQueryResult>
    */
-  findByAction(tenantId: TenantId, action: PermissionAction, options?: PermissionQueryOptions): Promise<PermissionQueryResult>;
+  findByAction(
+    tenantId: TenantId,
+    action: PermissionAction,
+    options?: PermissionQueryOptions,
+  ): Promise<PermissionQueryResult>;
 
   /**
    * 根据资源查询权限列表
@@ -188,7 +209,11 @@ export interface IPermissionRepository {
    * @param options - 查询选项
    * @returns Promise<PermissionQueryResult>
    */
-  findByResource(tenantId: TenantId, resource: string, options?: PermissionQueryOptions): Promise<PermissionQueryResult>;
+  findByResource(
+    tenantId: TenantId,
+    resource: string,
+    options?: PermissionQueryOptions,
+  ): Promise<PermissionQueryResult>;
 
   /**
    * 根据标签查询权限列表
@@ -198,7 +223,11 @@ export interface IPermissionRepository {
    * @param options - 查询选项
    * @returns Promise<PermissionQueryResult>
    */
-  findByTags(tenantId: TenantId, tags: string[], options?: PermissionQueryOptions): Promise<PermissionQueryResult>;
+  findByTags(
+    tenantId: TenantId,
+    tags: string[],
+    options?: PermissionQueryOptions,
+  ): Promise<PermissionQueryResult>;
 
   /**
    * 根据父权限查询子权限列表
@@ -208,7 +237,11 @@ export interface IPermissionRepository {
    * @param options - 查询选项
    * @returns Promise<PermissionQueryResult>
    */
-  findByParentPermission(tenantId: TenantId, parentPermissionId: EntityId, options?: PermissionQueryOptions): Promise<PermissionQueryResult>;
+  findByParentPermission(
+    tenantId: TenantId,
+    parentPermissionId: EntityId,
+    options?: PermissionQueryOptions,
+  ): Promise<PermissionQueryResult>;
 
   /**
    * 检查权限是否存在
@@ -227,7 +260,11 @@ export interface IPermissionRepository {
    * @param excludePermissionId - 排除的权限ID（用于更新时检查）
    * @returns Promise<boolean>
    */
-  existsByName(tenantId: TenantId, name: string, excludePermissionId?: EntityId): Promise<boolean>;
+  existsByName(
+    tenantId: TenantId,
+    name: string,
+    excludePermissionId?: EntityId,
+  ): Promise<boolean>;
 
   /**
    * 检查资源和动作组合是否存在
@@ -238,7 +275,12 @@ export interface IPermissionRepository {
    * @param excludePermissionId - 排除的权限ID（用于更新时检查）
    * @returns Promise<boolean>
    */
-  existsByResourceAndAction(tenantId: TenantId, resource: string, action: PermissionAction, excludePermissionId?: EntityId): Promise<boolean>;
+  existsByResourceAndAction(
+    tenantId: TenantId,
+    resource: string,
+    action: PermissionAction,
+    excludePermissionId?: EntityId,
+  ): Promise<boolean>;
 
   /**
    * 统计权限数量
@@ -301,5 +343,8 @@ export interface IPermissionRepository {
    * @param permissionId - 权限ID
    * @returns Promise<{ roleCount: number; userCount: number }>
    */
-  getUsageStats(tenantId: TenantId, permissionId: EntityId): Promise<{ roleCount: number; userCount: number }>;
+  getUsageStats(
+    tenantId: TenantId,
+    permissionId: EntityId,
+  ): Promise<{ roleCount: number; userCount: number }>;
 }

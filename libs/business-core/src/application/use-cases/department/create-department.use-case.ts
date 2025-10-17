@@ -22,25 +22,25 @@ import { BusinessRuleViolationException } from "../../domain/exceptions/base/bas
 export interface CreateDepartmentRequest {
   /** 部门名称 */
   name: string;
-  
+
   /** 部门层级 */
   level: DepartmentLevel;
-  
+
   /** 部门描述 */
   description?: string;
-  
+
   /** 父部门ID（可选） */
   parentId?: EntityId;
-  
+
   /** 部门排序 */
   sortOrder?: number;
-  
+
   /** 部门负责人ID（可选） */
   managerId?: EntityId;
-  
+
   /** 部门编码（可选） */
   code?: string;
-  
+
   /** 创建者标识符 */
   createdBy: string;
 }
@@ -51,16 +51,16 @@ export interface CreateDepartmentRequest {
 export interface CreateDepartmentResponse {
   /** 部门ID */
   departmentId: EntityId;
-  
+
   /** 部门名称 */
   name: string;
-  
+
   /** 部门层级 */
   level: DepartmentLevel;
-  
+
   /** 租户ID */
   tenantId: TenantId;
-  
+
   /** 创建时间 */
   createdAt: Date;
 }
@@ -78,7 +78,13 @@ export class CreateDepartmentUseCase extends BaseCommandUseCase<
     private readonly departmentRepository: IDepartmentRepository,
     private readonly _logger: FastifyLoggerService,
   ) {
-    super("CreateDepartment", "创建部门用例", "1.0.0", ["department:create"], _logger);
+    super(
+      "CreateDepartment",
+      "创建部门用例",
+      "1.0.0",
+      ["department:create"],
+      _logger,
+    );
   }
 
   /**

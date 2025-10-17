@@ -29,34 +29,34 @@ import type { EntityId } from "@hl8/isolation-model";
 export interface PlatformTable {
   /** 平台唯一标识符 */
   id: EntityId;
-  
+
   /** 平台名称 */
   name: string;
-  
+
   /** 平台描述 */
   description: string;
-  
+
   /** 平台域名 */
   domain: string;
-  
+
   /** 平台状态 */
   status: "ACTIVE" | "MAINTENANCE" | "INACTIVE";
-  
+
   /** 平台配置（JSON格式） */
   settings: Record<string, any>;
-  
+
   /** 创建时间 */
   created_at: Date;
-  
+
   /** 更新时间 */
   updated_at: Date;
-  
+
   /** 创建者ID */
   created_by: EntityId;
-  
+
   /** 更新者ID */
   updated_by: EntityId;
-  
+
   /** 版本号（用于乐观锁） */
   version: number;
 }
@@ -69,28 +69,28 @@ export interface PlatformTable {
 export interface PlatformUserTable {
   /** 关联ID */
   id: EntityId;
-  
+
   /** 平台ID */
   platform_id: EntityId;
-  
+
   /** 用户ID */
   user_id: EntityId;
-  
+
   /** 用户角色 */
   role: "PLATFORM_ADMIN" | "PLATFORM_USER";
 
   /** 关联状态 */
   status: "ACTIVE" | "INACTIVE";
-  
+
   /** 创建时间 */
   created_at: Date;
-  
+
   /** 更新时间 */
   updated_at: Date;
-  
+
   /** 创建者ID */
   created_by: EntityId;
-  
+
   /** 更新者ID */
   updated_by: EntityId;
 }
@@ -103,22 +103,22 @@ export interface PlatformUserTable {
 export interface PlatformEventTable {
   /** 事件ID */
   id: EntityId;
-  
+
   /** 聚合根ID */
   aggregate_id: EntityId;
-  
+
   /** 事件类型 */
   event_type: string;
-  
+
   /** 事件数据 */
   event_data: Record<string, any>;
-  
+
   /** 事件版本 */
   event_version: number;
-  
+
   /** 事件时间戳 */
   occurred_at: Date;
-  
+
   /** 事件元数据 */
   metadata: Record<string, any>;
 }
@@ -131,16 +131,16 @@ export interface PlatformEventTable {
 export interface PlatformSnapshotTable {
   /** 快照ID */
   id: EntityId;
-  
+
   /** 聚合根ID */
   aggregate_id: EntityId;
-  
+
   /** 快照数据 */
   snapshot_data: Record<string, any>;
-  
+
   /** 快照版本 */
   snapshot_version: number;
-  
+
   /** 快照时间戳 */
   created_at: Date;
 }

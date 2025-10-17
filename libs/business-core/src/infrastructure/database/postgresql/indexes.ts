@@ -24,19 +24,19 @@
  */
 export const PLATFORM_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_platform_id',
-  
+  PRIMARY: "pk_platform_id",
+
   /** 平台名称唯一索引 */
-  UNIQUE_NAME: 'uk_platform_name',
-  
+  UNIQUE_NAME: "uk_platform_name",
+
   /** 平台域名唯一索引 */
-  UNIQUE_DOMAIN: 'uk_platform_domain',
-  
+  UNIQUE_DOMAIN: "uk_platform_domain",
+
   /** 平台状态索引 */
-  STATUS: 'idx_platform_status',
-  
+  STATUS: "idx_platform_status",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_platform_created_at',
+  CREATED_AT: "idx_platform_created_at",
 } as const;
 
 /**
@@ -44,19 +44,19 @@ export const PLATFORM_INDEXES = {
  */
 export const TENANT_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_tenant_id',
-  
+  PRIMARY: "pk_tenant_id",
+
   /** 平台+租户名称唯一索引 */
-  UNIQUE_PLATFORM_NAME: 'uk_tenant_platform_name',
-  
+  UNIQUE_PLATFORM_NAME: "uk_tenant_platform_name",
+
   /** 平台+租户状态索引 */
-  PLATFORM_STATUS: 'idx_tenant_platform_status',
-  
+  PLATFORM_STATUS: "idx_tenant_platform_status",
+
   /** 租户类型索引 */
-  TYPE: 'idx_tenant_type',
-  
+  TYPE: "idx_tenant_type",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_tenant_created_at',
+  CREATED_AT: "idx_tenant_created_at",
 } as const;
 
 /**
@@ -64,19 +64,19 @@ export const TENANT_INDEXES = {
  */
 export const ORGANIZATION_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_organization_id',
-  
+  PRIMARY: "pk_organization_id",
+
   /** 租户+组织名称唯一索引 */
-  UNIQUE_TENANT_NAME: 'uk_organization_tenant_name',
-  
+  UNIQUE_TENANT_NAME: "uk_organization_tenant_name",
+
   /** 租户+组织状态索引 */
-  TENANT_STATUS: 'idx_organization_tenant_status',
-  
+  TENANT_STATUS: "idx_organization_tenant_status",
+
   /** 组织类型索引 */
-  TYPE: 'idx_organization_type',
-  
+  TYPE: "idx_organization_type",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_organization_created_at',
+  CREATED_AT: "idx_organization_created_at",
 } as const;
 
 /**
@@ -84,25 +84,25 @@ export const ORGANIZATION_INDEXES = {
  */
 export const DEPARTMENT_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_department_id',
-  
+  PRIMARY: "pk_department_id",
+
   /** 组织+部门名称唯一索引 */
-  UNIQUE_ORGANIZATION_NAME: 'uk_department_organization_name',
-  
+  UNIQUE_ORGANIZATION_NAME: "uk_department_organization_name",
+
   /** 组织+部门状态索引 */
-  ORGANIZATION_STATUS: 'idx_department_organization_status',
-  
+  ORGANIZATION_STATUS: "idx_department_organization_status",
+
   /** 部门层级索引 */
-  LEVEL: 'idx_department_level',
-  
+  LEVEL: "idx_department_level",
+
   /** 上级部门索引 */
-  PARENT: 'idx_department_parent',
-  
+  PARENT: "idx_department_parent",
+
   /** 部门路径索引 */
-  PATH: 'idx_department_path',
-  
+  PATH: "idx_department_path",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_department_created_at',
+  CREATED_AT: "idx_department_created_at",
 } as const;
 
 /**
@@ -110,31 +110,31 @@ export const DEPARTMENT_INDEXES = {
  */
 export const USER_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_user_id',
-  
+  PRIMARY: "pk_user_id",
+
   /** 平台+用户名唯一索引 */
-  UNIQUE_PLATFORM_USERNAME: 'uk_user_platform_username',
-  
+  UNIQUE_PLATFORM_USERNAME: "uk_user_platform_username",
+
   /** 平台+邮箱唯一索引 */
-  UNIQUE_PLATFORM_EMAIL: 'uk_user_platform_email',
-  
+  UNIQUE_PLATFORM_EMAIL: "uk_user_platform_email",
+
   /** 平台+用户状态索引 */
-  PLATFORM_STATUS: 'idx_user_platform_status',
-  
+  PLATFORM_STATUS: "idx_user_platform_status",
+
   /** 租户+用户状态索引 */
-  TENANT_STATUS: 'idx_user_tenant_status',
-  
+  TENANT_STATUS: "idx_user_tenant_status",
+
   /** 组织+用户状态索引 */
-  ORGANIZATION_STATUS: 'idx_user_organization_status',
-  
+  ORGANIZATION_STATUS: "idx_user_organization_status",
+
   /** 部门+用户状态索引 */
-  DEPARTMENT_STATUS: 'idx_user_department_status',
-  
+  DEPARTMENT_STATUS: "idx_user_department_status",
+
   /** 最后登录时间索引 */
-  LAST_LOGIN: 'idx_user_last_login',
-  
+  LAST_LOGIN: "idx_user_last_login",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_user_created_at',
+  CREATED_AT: "idx_user_created_at",
 } as const;
 
 /**
@@ -142,25 +142,25 @@ export const USER_INDEXES = {
  */
 export const AUTHENTICATION_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_authentication_id',
-  
+  PRIMARY: "pk_authentication_id",
+
   /** 用户+认证类型唯一索引 */
-  UNIQUE_USER_TYPE: 'uk_authentication_user_type',
-  
+  UNIQUE_USER_TYPE: "uk_authentication_user_type",
+
   /** 平台+认证状态索引 */
-  PLATFORM_STATUS: 'idx_authentication_platform_status',
-  
+  PLATFORM_STATUS: "idx_authentication_platform_status",
+
   /** 租户+认证状态索引 */
-  TENANT_STATUS: 'idx_authentication_tenant_status',
-  
+  TENANT_STATUS: "idx_authentication_tenant_status",
+
   /** 认证类型索引 */
-  TYPE: 'idx_authentication_type',
-  
+  TYPE: "idx_authentication_type",
+
   /** 最后登录时间索引 */
-  LAST_LOGIN: 'idx_authentication_last_login',
-  
+  LAST_LOGIN: "idx_authentication_last_login",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_authentication_created_at',
+  CREATED_AT: "idx_authentication_created_at",
 } as const;
 
 /**
@@ -168,22 +168,22 @@ export const AUTHENTICATION_INDEXES = {
  */
 export const AUTH_SESSION_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_auth_session_id',
-  
+  PRIMARY: "pk_auth_session_id",
+
   /** 会话令牌唯一索引 */
-  UNIQUE_SESSION_TOKEN: 'uk_auth_session_token',
-  
+  UNIQUE_SESSION_TOKEN: "uk_auth_session_token",
+
   /** 用户+会话状态索引 */
-  USER_STATUS: 'idx_auth_session_user_status',
-  
+  USER_STATUS: "idx_auth_session_user_status",
+
   /** 会话过期时间索引 */
-  EXPIRES_AT: 'idx_auth_session_expires_at',
-  
+  EXPIRES_AT: "idx_auth_session_expires_at",
+
   /** 最后活动时间索引 */
-  LAST_ACTIVITY: 'idx_auth_session_last_activity',
-  
+  LAST_ACTIVITY: "idx_auth_session_last_activity",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_auth_session_created_at',
+  CREATED_AT: "idx_auth_session_created_at",
 } as const;
 
 /**
@@ -191,25 +191,25 @@ export const AUTH_SESSION_INDEXES = {
  */
 export const PERMISSION_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_permission_id',
-  
+  PRIMARY: "pk_permission_id",
+
   /** 平台+权限代码唯一索引 */
-  UNIQUE_PLATFORM_CODE: 'uk_permission_platform_code',
-  
+  UNIQUE_PLATFORM_CODE: "uk_permission_platform_code",
+
   /** 平台+权限状态索引 */
-  PLATFORM_STATUS: 'idx_permission_platform_status',
-  
+  PLATFORM_STATUS: "idx_permission_platform_status",
+
   /** 权限范围索引 */
-  SCOPE: 'idx_permission_scope',
-  
+  SCOPE: "idx_permission_scope",
+
   /** 权限主题索引 */
-  SUBJECT: 'idx_permission_subject',
-  
+  SUBJECT: "idx_permission_subject",
+
   /** 权限操作索引 */
-  ACTION: 'idx_permission_action',
-  
+  ACTION: "idx_permission_action",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_permission_created_at',
+  CREATED_AT: "idx_permission_created_at",
 } as const;
 
 /**
@@ -217,28 +217,28 @@ export const PERMISSION_INDEXES = {
  */
 export const ROLE_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_role_id',
-  
+  PRIMARY: "pk_role_id",
+
   /** 平台+角色代码唯一索引 */
-  UNIQUE_PLATFORM_CODE: 'uk_role_platform_code',
-  
+  UNIQUE_PLATFORM_CODE: "uk_role_platform_code",
+
   /** 租户+角色代码唯一索引 */
-  UNIQUE_TENANT_CODE: 'uk_role_tenant_code',
-  
+  UNIQUE_TENANT_CODE: "uk_role_tenant_code",
+
   /** 平台+角色状态索引 */
-  PLATFORM_STATUS: 'idx_role_platform_status',
-  
+  PLATFORM_STATUS: "idx_role_platform_status",
+
   /** 租户+角色状态索引 */
-  TENANT_STATUS: 'idx_role_tenant_status',
-  
+  TENANT_STATUS: "idx_role_tenant_status",
+
   /** 角色类型索引 */
-  TYPE: 'idx_role_type',
-  
+  TYPE: "idx_role_type",
+
   /** 角色级别索引 */
-  LEVEL: 'idx_role_level',
-  
+  LEVEL: "idx_role_level",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_role_created_at',
+  CREATED_AT: "idx_role_created_at",
 } as const;
 
 /**
@@ -246,31 +246,31 @@ export const ROLE_INDEXES = {
  */
 export const USER_ROLE_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_user_role_id',
-  
+  PRIMARY: "pk_user_role_id",
+
   /** 用户+角色唯一索引 */
-  UNIQUE_USER_ROLE: 'uk_user_role_user_role',
-  
+  UNIQUE_USER_ROLE: "uk_user_role_user_role",
+
   /** 用户+角色状态索引 */
-  USER_STATUS: 'idx_user_role_user_status',
-  
+  USER_STATUS: "idx_user_role_user_status",
+
   /** 角色+用户状态索引 */
-  ROLE_STATUS: 'idx_user_role_role_status',
-  
+  ROLE_STATUS: "idx_user_role_role_status",
+
   /** 平台+用户角色索引 */
-  PLATFORM_USER: 'idx_user_role_platform_user',
-  
+  PLATFORM_USER: "idx_user_role_platform_user",
+
   /** 租户+用户角色索引 */
-  TENANT_USER: 'idx_user_role_tenant_user',
-  
+  TENANT_USER: "idx_user_role_tenant_user",
+
   /** 组织+用户角色索引 */
-  ORGANIZATION_USER: 'idx_user_role_organization_user',
-  
+  ORGANIZATION_USER: "idx_user_role_organization_user",
+
   /** 部门+用户角色索引 */
-  DEPARTMENT_USER: 'idx_user_role_department_user',
-  
+  DEPARTMENT_USER: "idx_user_role_department_user",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_user_role_created_at',
+  CREATED_AT: "idx_user_role_created_at",
 } as const;
 
 /**
@@ -278,31 +278,31 @@ export const USER_ROLE_INDEXES = {
  */
 export const ROLE_PERMISSION_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_role_permission_id',
-  
+  PRIMARY: "pk_role_permission_id",
+
   /** 角色+权限唯一索引 */
-  UNIQUE_ROLE_PERMISSION: 'uk_role_permission_role_permission',
-  
+  UNIQUE_ROLE_PERMISSION: "uk_role_permission_role_permission",
+
   /** 角色+权限状态索引 */
-  ROLE_STATUS: 'idx_role_permission_role_status',
-  
+  ROLE_STATUS: "idx_role_permission_role_status",
+
   /** 权限+角色状态索引 */
-  PERMISSION_STATUS: 'idx_role_permission_permission_status',
-  
+  PERMISSION_STATUS: "idx_role_permission_permission_status",
+
   /** 平台+角色权限索引 */
-  PLATFORM_ROLE: 'idx_role_permission_platform_role',
-  
+  PLATFORM_ROLE: "idx_role_permission_platform_role",
+
   /** 租户+角色权限索引 */
-  TENANT_ROLE: 'idx_role_permission_tenant_role',
-  
+  TENANT_ROLE: "idx_role_permission_tenant_role",
+
   /** 组织+角色权限索引 */
-  ORGANIZATION_ROLE: 'idx_role_permission_organization_role',
-  
+  ORGANIZATION_ROLE: "idx_role_permission_organization_role",
+
   /** 部门+角色权限索引 */
-  DEPARTMENT_ROLE: 'idx_role_permission_department_role',
-  
+  DEPARTMENT_ROLE: "idx_role_permission_department_role",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_role_permission_created_at',
+  CREATED_AT: "idx_role_permission_created_at",
 } as const;
 
 /**
@@ -310,22 +310,22 @@ export const ROLE_PERMISSION_INDEXES = {
  */
 export const EVENT_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_event_id',
-  
+  PRIMARY: "pk_event_id",
+
   /** 聚合根+版本唯一索引 */
-  UNIQUE_AGGREGATE_VERSION: 'uk_event_aggregate_version',
-  
+  UNIQUE_AGGREGATE_VERSION: "uk_event_aggregate_version",
+
   /** 聚合根+事件类型索引 */
-  AGGREGATE_TYPE: 'idx_event_aggregate_type',
-  
+  AGGREGATE_TYPE: "idx_event_aggregate_type",
+
   /** 事件时间戳索引 */
-  OCCURRED_AT: 'idx_event_occurred_at',
-  
+  OCCURRED_AT: "idx_event_occurred_at",
+
   /** 事件类型索引 */
-  EVENT_TYPE: 'idx_event_event_type',
-  
+  EVENT_TYPE: "idx_event_event_type",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_event_created_at',
+  CREATED_AT: "idx_event_created_at",
 } as const;
 
 /**
@@ -333,14 +333,14 @@ export const EVENT_INDEXES = {
  */
 export const SNAPSHOT_INDEXES = {
   /** 主键索引 */
-  PRIMARY: 'pk_snapshot_id',
-  
+  PRIMARY: "pk_snapshot_id",
+
   /** 聚合根唯一索引 */
-  UNIQUE_AGGREGATE: 'uk_snapshot_aggregate',
-  
+  UNIQUE_AGGREGATE: "uk_snapshot_aggregate",
+
   /** 聚合根+版本索引 */
-  AGGREGATE_VERSION: 'idx_snapshot_aggregate_version',
-  
+  AGGREGATE_VERSION: "idx_snapshot_aggregate_version",
+
   /** 创建时间索引 */
-  CREATED_AT: 'idx_snapshot_created_at',
+  CREATED_AT: "idx_snapshot_created_at",
 } as const;

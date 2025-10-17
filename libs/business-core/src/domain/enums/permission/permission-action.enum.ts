@@ -82,7 +82,10 @@ export class PermissionActionUtils {
   /**
    * 动作描述映射
    */
-  private static readonly ACTION_DESCRIPTIONS: Record<PermissionAction, string> = {
+  private static readonly ACTION_DESCRIPTIONS: Record<
+    PermissionAction,
+    string
+  > = {
     [PermissionAction.CREATE]: "创建",
     [PermissionAction.READ]: "读取",
     [PermissionAction.UPDATE]: "更新",
@@ -207,7 +210,10 @@ export class PermissionActionUtils {
    * @param action2 - 动作2
    * @returns 动作1是否高于动作2
    */
-  static hasHigherPermission(action1: PermissionAction, action2: PermissionAction): boolean {
+  static hasHigherPermission(
+    action1: PermissionAction,
+    action2: PermissionAction,
+  ): boolean {
     return this.ACTION_HIERARCHY[action1] > this.ACTION_HIERARCHY[action2];
   }
 
@@ -218,7 +224,10 @@ export class PermissionActionUtils {
    * @param action2 - 动作2
    * @returns 动作1是否等于或高于动作2
    */
-  static hasPermissionOrHigher(action1: PermissionAction, action2: PermissionAction): boolean {
+  static hasPermissionOrHigher(
+    action1: PermissionAction,
+    action2: PermissionAction,
+  ): boolean {
     return this.ACTION_HIERARCHY[action1] >= this.ACTION_HIERARCHY[action2];
   }
 

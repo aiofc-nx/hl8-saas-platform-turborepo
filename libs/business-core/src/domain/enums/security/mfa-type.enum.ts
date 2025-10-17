@@ -173,11 +173,7 @@ export class MfaTypeUtils {
    * @returns 高安全级别类型数组
    */
   static getHighSecurityTypes(): MfaType[] {
-    return [
-      MfaType.BIOMETRIC,
-      MfaType.HARDWARE,
-      MfaType.APP,
-    ];
+    return [MfaType.BIOMETRIC, MfaType.HARDWARE, MfaType.APP];
   }
 
   /**
@@ -186,9 +182,6 @@ export class MfaTypeUtils {
    * @returns 低安全级别类型数组
    */
   static getLowSecurityTypes(): MfaType[] {
-    return [
-      MfaType.SMS,
-      MfaType.EMAIL,
-    ];
+    return [MfaType.SMS, MfaType.EMAIL];
   }
 }

@@ -393,7 +393,7 @@ export class DepartmentRepositoryAdapter
   ): Promise<DepartmentAggregate[]> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       let query = `
         SELECT id, name, level, organization_id, parent_id, path, description,
@@ -401,38 +401,38 @@ export class DepartmentRepositoryAdapter
         FROM departments 
         WHERE organization_id = $1
       `;
-      
+
       const values = [organizationId.toString()];
-      
+
       // 添加软删除过滤
       if (!options.includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       // 添加层级过滤
       if (options.level) {
         query += ` AND level = $${values.length + 1}`;
         values.push(options.level.value);
       }
-      
+
       // 添加排序
-      const sortBy = options.sortBy || 'created_at';
-      const sortOrder = options.sortOrder || 'DESC';
+      const sortBy = options.sortBy || "created_at";
+      const sortOrder = options.sortOrder || "DESC";
       query += ` ORDER BY ${sortBy} ${sortOrder}`;
-      
+
       // 添加分页
       if (options.limit) {
         query += ` LIMIT $${values.length + 1}`;
         values.push(options.limit);
-        
+
         if (options.offset) {
           query += ` OFFSET $${values.length + 1}`;
           values.push(options.offset);
         }
       }
-      
+
       const result = await queryRunner.query(query, values);
-      
+
       // 将数据库结果转换为聚合根
       const departments: DepartmentAggregate[] = [];
       for (const row of result) {
@@ -441,7 +441,7 @@ export class DepartmentRepositoryAdapter
           departments.push(department);
         }
       }
-      
+
       return departments;
     } catch (error) {
       this.logger.error("根据组织查询部门失败", error);
@@ -463,7 +463,7 @@ export class DepartmentRepositoryAdapter
   ): Promise<DepartmentAggregate | null> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       let query = `
         SELECT id, name, level, organization_id, parent_id, path, description,
@@ -471,26 +471,31 @@ export class DepartmentRepositoryAdapter
         FROM departments 
         WHERE tenant_id = $1 AND name = $2
       `;
-      
+
       const values = [tenantId.toString(), name];
-      
+
       if (parentId) {
         query += ` AND parent_id = $3`;
         values.push(parentId.toString());
       }
-      
+
       query += ` AND is_deleted = false`;
-      
+
       const result = await queryRunner.query(query, values);
-      
+
       if (result.length === 0) {
         return null;
       }
-      
+
       return await this.mapToDepartmentAggregate(result[0]);
     } catch (error) {
-      this.logger.error("根据名称查询部门失败", error instanceof Error ? error.stack : undefined);
-      throw new Error(`根据名称查询部门失败: ${error instanceof Error ? error.message : String(error)}`);
+      this.logger.error(
+        "根据名称查询部门失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw new Error(
+        `根据名称查询部门失败: ${error instanceof Error ? error.message : String(error)}`,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -508,21 +513,21 @@ export class DepartmentRepositoryAdapter
   ): Promise<boolean> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       let query = `
         SELECT COUNT(*) as count
         FROM departments 
         WHERE organization_id = $1 AND name = $2 AND is_deleted = false
       `;
-      
+
       const values = [organizationId.toString(), name];
-      
+
       if (excludeId) {
         query += ` AND id != $${values.length + 1}`;
         values.push(excludeId.toString());
       }
-      
+
       const result = await queryRunner.query(query, values);
       return parseInt(result[0].count) > 0;
     } catch (error) {
@@ -544,27 +549,27 @@ export class DepartmentRepositoryAdapter
   ): Promise<number> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       let query = `
         SELECT COUNT(*) as count
         FROM departments 
         WHERE organization_id = $1
       `;
-      
+
       const values = [organizationId.toString()];
-      
+
       // 添加软删除过滤
       if (!options.includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       // 添加层级过滤
       if (options.level) {
         query += ` AND level = $${values.length + 1}`;
         values.push(options.level.value);
       }
-      
+
       const result = await queryRunner.query(query, values);
       return parseInt(result[0].count);
     } catch (error) {
@@ -587,10 +592,10 @@ export class DepartmentRepositoryAdapter
   ): Promise<void> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       await queryRunner.startTransaction();
-      
+
       const query = `
         UPDATE departments 
         SET is_deleted = true, 
@@ -599,15 +604,15 @@ export class DepartmentRepositoryAdapter
             delete_reason = $3
         WHERE id = $1
       `;
-      
+
       const values = [id.toString(), deletedBy, deleteReason || null];
-      
+
       const result = await queryRunner.query(query, values);
-      
+
       if (result.rowCount === 0) {
         throw new Error("部门不存在或已被删除");
       }
-      
+
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -629,10 +634,10 @@ export class DepartmentRepositoryAdapter
   ): Promise<void> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       await queryRunner.startTransaction();
-      
+
       const query = `
         UPDATE departments 
         SET is_deleted = false, 
@@ -641,15 +646,15 @@ export class DepartmentRepositoryAdapter
             delete_reason = NULL
         WHERE id = $1
       `;
-      
+
       const values = [id.toString(), restoredBy];
-      
+
       const result = await queryRunner.query(query, values);
-      
+
       if (result.rowCount === 0) {
         throw new Error("部门不存在");
       }
-      
+
       await queryRunner.commitTransaction();
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -670,68 +675,69 @@ export class DepartmentRepositoryAdapter
   ): Promise<IPaginatedResult<DepartmentAggregate>> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       // 构建查询条件
       let whereConditions = [];
       const values = [];
-      
+
       if (options.tenantId) {
         whereConditions.push(`tenant_id = $${values.length + 1}`);
         values.push(options.tenantId.toString());
       }
-      
+
       if (options.organizationId) {
         whereConditions.push(`organization_id = $${values.length + 1}`);
         values.push(options.organizationId.toString());
       }
-      
+
       if (options.level) {
         whereConditions.push(`level = $${values.length + 1}`);
         values.push(options.level.value);
       }
-      
+
       if (options.name) {
         whereConditions.push(`name ILIKE $${values.length + 1}`);
         values.push(`%${options.name}%`);
       }
-      
+
       if (!options.includeDeleted) {
         whereConditions.push(`is_deleted = false`);
       }
-      
-      const whereClause = whereConditions.length > 0 
-        ? `WHERE ${whereConditions.join(' AND ')}`
-        : '';
-      
+
+      const whereClause =
+        whereConditions.length > 0
+          ? `WHERE ${whereConditions.join(" AND ")}`
+          : "";
+
       // 计算总数
       const countQuery = `SELECT COUNT(*) as count FROM departments ${whereClause}`;
       const countResult = await queryRunner.query(countQuery, values);
       const total = parseInt(countResult[0].count);
-      
+
       // 构建分页查询
       const page = options.page || 1;
       const limit = options.limit || 10;
       const offset = (page - 1) * limit;
-      
+
       let query = `
         SELECT id, name, level, organization_id, parent_id, path, description,
                created_at, updated_at, created_by, updated_by, is_deleted
         FROM departments 
         ${whereClause}
       `;
-      
+
       // 添加排序
-      const sortBy = options.sortBy || 'created_at';
-      const sortOrder = options.sortOrder || 'DESC';
+      const sortBy = options.sortBy || "created_at";
+      const sortOrder = options.sortOrder || "DESC";
       query += ` ORDER BY ${sortBy} ${sortOrder}`;
-      
+
       // 添加分页
       query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
       values.push(limit, offset);
-      
+
       const result = await queryRunner.query(query, values);
-      
+
       // 将数据库结果转换为聚合根
       const departments: DepartmentAggregate[] = [];
       for (const row of result) {
@@ -740,9 +746,9 @@ export class DepartmentRepositoryAdapter
           departments.push(department);
         }
       }
-      
+
       const totalPages = Math.ceil(total / limit);
-      
+
       return {
         items: departments,
         total,
@@ -765,7 +771,9 @@ export class DepartmentRepositoryAdapter
    *
    * @private
    */
-  private async mapToDepartmentAggregate(row: any): Promise<DepartmentAggregate | null> {
+  private async mapToDepartmentAggregate(
+    row: any,
+  ): Promise<DepartmentAggregate | null> {
     try {
       if (!row) {
         return null;
@@ -773,7 +781,7 @@ export class DepartmentRepositoryAdapter
 
       // 这里需要根据实际的DepartmentAggregate构造函数来创建实例
       // 由于DepartmentAggregate的具体实现可能不同，这里提供一个通用的映射逻辑
-      
+
       // 从数据库行中提取数据
       const departmentData = {
         id: EntityId.create(row.id),
@@ -796,7 +804,7 @@ export class DepartmentRepositoryAdapter
         departmentId: row.id,
         name: row.name,
       });
-      
+
       return null; // TODO: 实现具体的聚合根创建逻辑
     } catch (error) {
       this.logger.error("映射部门数据到聚合根失败", error);
@@ -902,15 +910,15 @@ export class DepartmentRepositoryAdapter
   async save(department: DepartmentAggregate): Promise<void> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       await queryRunner.startTransaction();
-      
+
       // 保存部门数据
       await this.saveDepartmentData(queryRunner, department);
-      
+
       await queryRunner.commitTransaction();
-      
+
       this.logger.debug("部门保存成功", {
         departmentId: department.id.toString(),
       });
@@ -932,14 +940,18 @@ export class DepartmentRepositoryAdapter
   ): Promise<DepartmentAggregate | null> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
-      const department = await this.findDepartmentDataById(queryRunner, id, includeDeleted);
-      
+      const department = await this.findDepartmentDataById(
+        queryRunner,
+        id,
+        includeDeleted,
+      );
+
       if (!department) {
         return null;
       }
-      
+
       return await this.mapToDepartmentAggregate(department);
     } catch (error) {
       this.logger.error("根据ID查找部门失败", error);
@@ -955,19 +967,19 @@ export class DepartmentRepositoryAdapter
   async delete(id: EntityId): Promise<void> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       await queryRunner.startTransaction();
-      
+
       const query = `DELETE FROM departments WHERE id = $1`;
       const result = await queryRunner.query(query, [id.toString()]);
-      
+
       if (result.rowCount === 0) {
         throw new Error("部门不存在");
       }
-      
+
       await queryRunner.commitTransaction();
-      
+
       this.logger.debug("部门删除成功", {
         departmentId: id.toString(),
       });
@@ -986,7 +998,7 @@ export class DepartmentRepositoryAdapter
   async exists(id: EntityId): Promise<boolean> {
     const queryRunner = this.databaseService.createQueryRunner();
     await queryRunner.connect();
-    
+
     try {
       const exists = await this.checkDepartmentExists(queryRunner, id, false);
       return exists;
@@ -1048,11 +1060,15 @@ export class DepartmentRepositoryAdapter
     try {
       // 计算部门路径
       const departmentEntity = department.getDepartment();
-      const calculatedPath = this.pathCalculationService.calculateDepartmentPath(
-        department.id,
-        departmentEntity.parentId,
-        await this.getParentDepartmentPath(queryRunner, departmentEntity.parentId)
-      );
+      const calculatedPath =
+        this.pathCalculationService.calculateDepartmentPath(
+          department.id,
+          departmentEntity.parentId,
+          await this.getParentDepartmentPath(
+            queryRunner,
+            departmentEntity.parentId,
+          ),
+        );
 
       // 更新部门实体的路径
       if (departmentEntity.path !== calculatedPath) {
@@ -1075,7 +1091,7 @@ export class DepartmentRepositoryAdapter
           is_deleted = EXCLUDED.is_deleted
         RETURNING *
       `;
-      
+
       const values = [
         department.id.toString(),
         departmentEntity.name,
@@ -1095,7 +1111,11 @@ export class DepartmentRepositoryAdapter
 
       // 如果路径发生变化，需要更新所有子部门的路径
       if (result[0].path !== calculatedPath) {
-        await this.updateChildDepartmentPaths(queryRunner, department.id, calculatedPath);
+        await this.updateChildDepartmentPaths(
+          queryRunner,
+          department.id,
+          calculatedPath,
+        );
       }
 
       return result[0];
@@ -1122,13 +1142,13 @@ export class DepartmentRepositoryAdapter
         FROM departments 
         WHERE id = $1
       `;
-      
+
       const values = [id.toString()];
-      
+
       if (!includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       const result = await queryRunner.query(query, values);
       return result[0] || null;
     } catch (error) {
@@ -1153,13 +1173,13 @@ export class DepartmentRepositoryAdapter
         FROM departments 
         WHERE id = $1
       `;
-      
+
       const values = [id.toString()];
-      
+
       if (!includeDeleted) {
         query += ` AND is_deleted = false`;
       }
-      
+
       const result = await queryRunner.query(query, values);
       return parseInt(result[0].count) > 0;
     } catch (error) {
@@ -1184,7 +1204,7 @@ export class DepartmentRepositoryAdapter
     try {
       const query = `SELECT path FROM departments WHERE id = $1 AND is_deleted = false`;
       const result = await queryRunner.query(query, [parentId.toString()]);
-      
+
       if (result.length === 0) {
         throw new Error("父部门不存在");
       }
@@ -1213,9 +1233,12 @@ export class DepartmentRepositoryAdapter
         FROM departments 
         WHERE path LIKE $1 AND id != $2 AND is_deleted = false
       `;
-      
+
       const oldPathPattern = `%/${departmentId.toString()}/%`;
-      const result = await queryRunner.query(query, [oldPathPattern, departmentId.toString()]);
+      const result = await queryRunner.query(query, [
+        oldPathPattern,
+        departmentId.toString(),
+      ]);
 
       // 更新每个子部门的路径
       for (const child of result) {
@@ -1223,7 +1246,7 @@ export class DepartmentRepositoryAdapter
         const newChildPath = this.pathCalculationService.updateChildPaths(
           oldPath,
           newPath,
-          [oldPath]
+          [oldPath],
         )[0];
 
         const updateQuery = `
@@ -1231,7 +1254,7 @@ export class DepartmentRepositoryAdapter
           SET path = $1, updated_at = NOW() 
           WHERE id = $2
         `;
-        
+
         await queryRunner.query(updateQuery, [newChildPath, child.id]);
       }
 

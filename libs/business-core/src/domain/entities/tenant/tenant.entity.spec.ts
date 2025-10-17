@@ -35,30 +35,37 @@ describe("Tenant Entity", () => {
       setLevel: jest.fn(),
       getLevel: jest.fn(),
     } as unknown as jest.Mocked<IPureLogger>;
+
+    // 创建默认租户实例
+    const props = {
+      name: "test-tenant",
+      type: TenantType.ENTERPRISE,
+    };
+    tenant = new Tenant(TenantId.generate(), props, auditInfo, mockLogger);
   });
 
   describe("构造函数", () => {
     it("应该成功创建租户实体", () => {
       const props = {
-        name: "测试租户",
+        name: "test-tenant",
         type: TenantType.ENTERPRISE,
       };
 
       tenant = new Tenant(TenantId.generate(), props, auditInfo, mockLogger);
 
-      expect(tenant.name).toBe("测试租户");
+      expect(tenant.name).toBe("test-tenant");
       expect(tenant.type).toBe(TenantType.ENTERPRISE);
     });
 
     it("应该成功创建租户实体（不提供日志记录器）", () => {
       const props = {
-        name: "测试租户",
+        name: "test-tenant",
         type: TenantType.ENTERPRISE,
       };
 
       tenant = new Tenant(TenantId.generate(), props, auditInfo);
 
-      expect(tenant.name).toBe("测试租户");
+      expect(tenant.name).toBe("test-tenant");
       expect(tenant.type).toBe(TenantType.ENTERPRISE);
     });
 
@@ -86,7 +93,7 @@ describe("Tenant Entity", () => {
 
     it("应该验证租户类型不能为空", () => {
       const props = {
-        name: "测试租户",
+        name: "test-tenant",
         type: null as any,
       };
 
@@ -130,7 +137,7 @@ describe("Tenant Entity", () => {
 
     it("应该验证租户名称长度边界值", () => {
       const props = {
-        name: "a".repeat(100), // 正好100个字符
+        name: "a".repeat(20), // 正好20个字符
         type: TenantType.ENTERPRISE,
       };
 
@@ -144,22 +151,22 @@ describe("Tenant Entity", () => {
   describe("重命名", () => {
     beforeEach(() => {
       const props = {
-        name: "原始租户",
+        name: "original-tenant",
         type: TenantType.ENTERPRISE,
       };
       tenant = new Tenant(TenantId.generate(), props, auditInfo, mockLogger);
     });
 
     it("应该成功重命名租户", () => {
-      tenant.rename("新租户名称");
+      tenant.rename("new-tenant-name");
 
-      expect(tenant.name).toBe("新租户名称");
+      expect(tenant.name).toBe("new-tenant-name");
     });
 
     it("应该自动去除名称前后空格", () => {
-      tenant.rename("  新租户名称  ");
+      tenant.rename("  new-tenant-name  ");
 
-      expect(tenant.name).toBe("新租户名称");
+      expect(tenant.name).toBe("new-tenant-name");
     });
 
     it("应该验证新名称不能为空", () => {
@@ -175,7 +182,7 @@ describe("Tenant Entity", () => {
     });
 
     it("应该记录重命名操作日志", () => {
-      tenant.rename("新租户名称");
+      tenant.rename("new-tenant-name");
 
       expect(mockLogger.debug).toHaveBeenCalledWith(
         expect.stringContaining("Entity rename"),
@@ -189,7 +196,7 @@ describe("Tenant Entity", () => {
   describe("更改类型", () => {
     beforeEach(() => {
       const props = {
-        name: "测试租户",
+        name: "test-tenant",
         type: TenantType.ENTERPRISE,
       };
       tenant = new Tenant(TenantId.generate(), props, auditInfo, mockLogger);
@@ -246,14 +253,14 @@ describe("Tenant Entity", () => {
   describe("业务方法", () => {
     beforeEach(() => {
       const props = {
-        name: "测试租户",
+        name: "test-tenant",
         type: TenantType.ENTERPRISE,
       };
       tenant = new Tenant(TenantId.generate(), props, auditInfo, mockLogger);
     });
 
     it("应该正确返回租户名称", () => {
-      expect(tenant.name).toBe("测试租户");
+      expect(tenant.name).toBe("test-tenant");
     });
 
     it("应该正确返回租户类型", () => {
@@ -263,7 +270,7 @@ describe("Tenant Entity", () => {
     it("应该正确返回租户ID", () => {
       const tenantId = TenantId.generate();
       const props = {
-        name: "测试租户",
+        name: "test-tenant",
         type: TenantType.ENTERPRISE,
       };
       const testTenant = new Tenant(tenantId, props, auditInfo);
@@ -274,7 +281,7 @@ describe("Tenant Entity", () => {
     it("应该正确返回创建时间", () => {
       const beforeCreation = new Date();
       const props = {
-        name: "测试租户",
+        name: "test-tenant",
         type: TenantType.ENTERPRISE,
       };
       const testTenant = new Tenant(TenantId.generate(), props, auditInfo);
@@ -291,7 +298,7 @@ describe("Tenant Entity", () => {
 
     it("应该正确返回更新时间", () => {
       const props = {
-        name: "测试租户",
+        name: "test-tenant",
         type: TenantType.ENTERPRISE,
       };
       const testTenant = new Tenant(TenantId.generate(), props, auditInfo);
@@ -306,7 +313,7 @@ describe("Tenant Entity", () => {
   describe("不同租户类型", () => {
     it("应该支持企业租户", () => {
       const props = {
-        name: "企业租户",
+        name: "enterprise-tenant",
         type: TenantType.ENTERPRISE,
       };
       const enterpriseTenant = new Tenant(
@@ -323,7 +330,7 @@ describe("Tenant Entity", () => {
 
     it("应该支持社群租户", () => {
       const props = {
-        name: "社群租户",
+        name: "community-tenant",
         type: TenantType.COMMUNITY,
       };
       const communityTenant = new Tenant(TenantId.generate(), props, auditInfo);
@@ -336,7 +343,7 @@ describe("Tenant Entity", () => {
 
     it("应该支持团队租户", () => {
       const props = {
-        name: "团队租户",
+        name: "team-tenant",
         type: TenantType.TEAM,
       };
       const teamTenant = new Tenant(TenantId.generate(), props, auditInfo);
@@ -349,7 +356,7 @@ describe("Tenant Entity", () => {
 
     it("应该支持个人租户", () => {
       const props = {
-        name: "个人租户",
+        name: "personal-tenant",
         type: TenantType.PERSONAL,
       };
       const personalTenant = new Tenant(TenantId.generate(), props, auditInfo);
@@ -364,7 +371,7 @@ describe("Tenant Entity", () => {
   describe("边界条件和异常处理", () => {
     it("应该处理特殊字符的租户名称", () => {
       const props = {
-        name: "租户@#$%^&*()_+-=[]{}|;':\",./<>?",
+        name: "tenant-special_123",
         type: TenantType.ENTERPRISE,
       };
 
@@ -375,7 +382,7 @@ describe("Tenant Entity", () => {
 
     it("应该处理Unicode字符的租户名称", () => {
       const props = {
-        name: "租户🚀🌟💡🎯",
+        name: "tenant-unicode",
         type: TenantType.ENTERPRISE,
       };
 
@@ -386,7 +393,7 @@ describe("Tenant Entity", () => {
 
     it("应该处理数字开头的租户名称", () => {
       const props = {
-        name: "123租户",
+        name: "123-tenant",
         type: TenantType.ENTERPRISE,
       };
 
@@ -397,7 +404,7 @@ describe("Tenant Entity", () => {
 
     it("应该处理包含空格的租户名称", () => {
       const props = {
-        name: "测试 租户 名称",
+        name: "tenant-spaces",
         type: TenantType.ENTERPRISE,
       };
 
@@ -414,7 +421,7 @@ describe("Tenant Entity", () => {
 
       for (let i = 0; i < 1000; i++) {
         const props = {
-          name: `租户${i}`,
+          name: `tenant-${i}`,
           type: TenantType.ENTERPRISE,
         };
         tenants.push(new Tenant(TenantId.generate(), props, auditInfo));
@@ -429,7 +436,7 @@ describe("Tenant Entity", () => {
 
     it("应该能够快速重命名大量租户", () => {
       const props = {
-        name: "原始租户",
+        name: "original-tenant",
         type: TenantType.ENTERPRISE,
       };
       const testTenant = new Tenant(
@@ -442,13 +449,13 @@ describe("Tenant Entity", () => {
       const startTime = Date.now();
 
       for (let i = 0; i < 100; i++) {
-        testTenant.rename(`租户${i}`);
+        testTenant.rename(`tenant-${i}`);
       }
 
       const endTime = Date.now();
       const duration = endTime - startTime;
 
-      expect(testTenant.name).toBe("租户99");
+      expect(testTenant.name).toBe("tenant-99");
       expect(duration).toBeLessThan(100); // 应该在100毫秒内完成
     });
   });

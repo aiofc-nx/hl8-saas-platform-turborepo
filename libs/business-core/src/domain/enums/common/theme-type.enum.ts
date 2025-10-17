@@ -159,11 +159,7 @@ export class ThemeTypeUtils {
    * @returns 系统主题类型数组
    */
   static getSystemTypes(): ThemeType[] {
-    return [
-      ThemeType.LIGHT,
-      ThemeType.DARK,
-      ThemeType.AUTO,
-    ];
+    return [ThemeType.LIGHT, ThemeType.DARK, ThemeType.AUTO];
   }
 
   /**
@@ -172,9 +168,6 @@ export class ThemeTypeUtils {
    * @returns 特殊主题类型数组
    */
   static getSpecialTypes(): ThemeType[] {
-    return [
-      ThemeType.HIGH_CONTRAST,
-      ThemeType.CUSTOM,
-    ];
+    return [ThemeType.HIGH_CONTRAST, ThemeType.CUSTOM];
   }
 }

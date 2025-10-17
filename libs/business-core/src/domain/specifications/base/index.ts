@@ -6,7 +6,7 @@
  */
 
 // 规范接口
-export * from './specification.interface.js';
+export * from "./specification.interface.js";
 
 // 基础规范类
-export * from './base-specification.js';
+export * from "./base-specification.js";

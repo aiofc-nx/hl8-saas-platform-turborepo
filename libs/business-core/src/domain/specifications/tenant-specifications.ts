@@ -5,10 +5,10 @@
  * @since 1.0.0
  */
 
-import { BaseSpecification } from './base/base-specification.js';
-import { Tenant } from '../entities/tenant/tenant.entity.js';
-import { TenantType } from '../value-objects/types/tenant-type.vo.js';
-import { EntityId } from '@hl8/isolation-model';
+import { BaseSpecification } from "./base/base-specification.js";
+import { Tenant } from "../entities/tenant/tenant.entity.js";
+import { TenantType } from "../value-objects/types/tenant-type.vo.js";
+import { EntityId } from "@hl8/isolation-model";
 
 /**
  * 租户激活规范
@@ -18,10 +18,10 @@ import { EntityId } from '@hl8/isolation-model';
 export class TenantActiveSpecification extends BaseSpecification<Tenant> {
   constructor() {
     super({
-      name: 'TenantActiveSpecification',
-      description: '租户必须处于激活状态',
-      category: 'tenant',
-      tags: ['tenant', 'status', 'active'],
+      name: "TenantActiveSpecification",
+      description: "租户必须处于激活状态",
+      category: "tenant",
+      tags: ["tenant", "status", "active"],
       priority: 1,
     });
   }
@@ -45,10 +45,10 @@ export class TenantActiveSpecification extends BaseSpecification<Tenant> {
 export class TenantTypeSpecification extends BaseSpecification<Tenant> {
   constructor(private requiredType: TenantType) {
     super({
-      name: 'TenantTypeSpecification',
+      name: "TenantTypeSpecification",
       description: `租户类型必须为 ${requiredType.value}`,
-      category: 'tenant',
-      tags: ['tenant', 'type'],
+      category: "tenant",
+      tags: ["tenant", "type"],
       priority: 1,
     });
   }
@@ -73,23 +73,25 @@ export class TenantNameSpecification extends BaseSpecification<Tenant> {
     private maxLength: number = 100,
   ) {
     super({
-      name: 'TenantNameSpecification',
+      name: "TenantNameSpecification",
       description: `租户名称长度必须在 ${minLength} 到 ${maxLength} 之间`,
-      category: 'tenant',
-      tags: ['tenant', 'name', 'validation'],
+      category: "tenant",
+      tags: ["tenant", "name", "validation"],
       priority: 1,
     });
   }
 
   isSatisfiedBy(tenant: Tenant): boolean {
     const name = tenant.name;
-    return name && name.length >= this.minLength && name.length <= this.maxLength;
+    return (
+      name && name.length >= this.minLength && name.length <= this.maxLength
+    );
   }
 
   protected getErrorMessage(tenant: Tenant): string {
     const name = tenant.name;
     if (!name) {
-      return '租户名称不能为空';
+      return "租户名称不能为空";
     }
     if (name.length < this.minLength) {
       return `租户名称长度不能少于 ${this.minLength} 个字符`;
@@ -97,7 +99,7 @@ export class TenantNameSpecification extends BaseSpecification<Tenant> {
     if (name.length > this.maxLength) {
       return `租户名称长度不能超过 ${this.maxLength} 个字符`;
     }
-    return '租户名称不符合规范';
+    return "租户名称不符合规范";
   }
 }
 
@@ -109,10 +111,10 @@ export class TenantNameSpecification extends BaseSpecification<Tenant> {
 export class TenantIdSpecification extends BaseSpecification<Tenant> {
   constructor(private requiredId: EntityId) {
     super({
-      name: 'TenantIdSpecification',
+      name: "TenantIdSpecification",
       description: `租户ID必须为 ${requiredId.value}`,
-      category: 'tenant',
-      tags: ['tenant', 'id'],
+      category: "tenant",
+      tags: ["tenant", "id"],
       priority: 1,
     });
   }
@@ -137,10 +139,10 @@ export class TenantCreatedTimeSpecification extends BaseSpecification<Tenant> {
     private endDate: Date,
   ) {
     super({
-      name: 'TenantCreatedTimeSpecification',
+      name: "TenantCreatedTimeSpecification",
       description: `租户创建时间必须在 ${startDate.toISOString()} 到 ${endDate.toISOString()} 之间`,
-      category: 'tenant',
-      tags: ['tenant', 'time', 'created'],
+      category: "tenant",
+      tags: ["tenant", "time", "created"],
       priority: 2,
     });
   }
@@ -165,16 +167,19 @@ export class TenantCreatedTimeSpecification extends BaseSpecification<Tenant> {
 export class TenantEnterpriseOrCommunitySpecification extends BaseSpecification<Tenant> {
   constructor() {
     super({
-      name: 'TenantEnterpriseOrCommunitySpecification',
-      description: '租户类型必须为企业或社区',
-      category: 'tenant',
-      tags: ['tenant', 'type', 'enterprise', 'community'],
+      name: "TenantEnterpriseOrCommunitySpecification",
+      description: "租户类型必须为企业或社区",
+      category: "tenant",
+      tags: ["tenant", "type", "enterprise", "community"],
       priority: 1,
     });
   }
 
   isSatisfiedBy(tenant: Tenant): boolean {
-    return tenant.type.equals(TenantType.ENTERPRISE) || tenant.type.equals(TenantType.COMMUNITY);
+    return (
+      tenant.type.equals(TenantType.ENTERPRISE) ||
+      tenant.type.equals(TenantType.COMMUNITY)
+    );
   }
 
   protected getErrorMessage(tenant: Tenant): string {
@@ -190,10 +195,10 @@ export class TenantEnterpriseOrCommunitySpecification extends BaseSpecification<
 export class TenantNotPersonalSpecification extends BaseSpecification<Tenant> {
   constructor() {
     super({
-      name: 'TenantNotPersonalSpecification',
-      description: '租户类型不能为个人',
-      category: 'tenant',
-      tags: ['tenant', 'type', 'not', 'personal'],
+      name: "TenantNotPersonalSpecification",
+      description: "租户类型不能为个人",
+      category: "tenant",
+      tags: ["tenant", "type", "not", "personal"],
       priority: 1,
     });
   }

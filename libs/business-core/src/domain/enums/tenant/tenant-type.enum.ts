@@ -201,12 +201,14 @@ export class TenantTypeUtils {
    * @returns 配额信息
    */
   static getQuota(type: TenantType): TenantQuota {
-    return this.TYPE_QUOTAS[type] || {
-      maxUsers: 0,
-      maxStorage: 0,
-      maxProjects: 0,
-      maxOrganizations: 0,
-    };
+    return (
+      this.TYPE_QUOTAS[type] || {
+        maxUsers: 0,
+        maxStorage: 0,
+        maxProjects: 0,
+        maxOrganizations: 0,
+      }
+    );
   }
 
   /**
@@ -246,8 +248,13 @@ export class TenantTypeUtils {
    * @param type2 - 类型2
    * @returns 类型1是否高于类型2
    */
-  static hasHigherPermissionLevel(type1: TenantType, type2: TenantType): boolean {
-    return this.TYPE_PERMISSION_LEVELS[type1] > this.TYPE_PERMISSION_LEVELS[type2];
+  static hasHigherPermissionLevel(
+    type1: TenantType,
+    type2: TenantType,
+  ): boolean {
+    return (
+      this.TYPE_PERMISSION_LEVELS[type1] > this.TYPE_PERMISSION_LEVELS[type2]
+    );
   }
 
   /**

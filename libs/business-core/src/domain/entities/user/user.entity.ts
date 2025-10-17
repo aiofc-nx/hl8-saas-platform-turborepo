@@ -464,7 +464,9 @@ export class User extends BaseEntity {
    */
   canLogin(): boolean {
     return (
-      this._isActive && this._status === UserStatus.ACTIVE && !this._lockedAt
+      this._isActive &&
+      this._status.value === UserStatus.ACTIVE.value &&
+      !this._lockedAt
     );
   }
 
@@ -474,7 +476,7 @@ export class User extends BaseEntity {
    * @returns 是否被锁定
    */
   isLocked(): boolean {
-    return this._status === UserStatus.LOCKED || !!this._lockedAt;
+    return this._status.value === UserStatus.LOCKED.value || !!this._lockedAt;
   }
 
   /**
@@ -483,7 +485,7 @@ export class User extends BaseEntity {
    * @returns 是否激活
    */
   isUserActive(): boolean {
-    return this._isActive && this._status === UserStatus.ACTIVE;
+    return this._isActive && this._status.value === UserStatus.ACTIVE.value;
   }
 
   /**

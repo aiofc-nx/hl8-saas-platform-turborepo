@@ -1,16 +1,15 @@
 /**
- * TenantAwareAggregateRoot 单元测试
+ * IsolationAwareAggregateRoot 单元测试
  *
- * @description 测试租户感知聚合根的核心功能
+ * @description 测试隔离感知聚合根的核心功能
  * @since 1.1.0
  */
 
 import { IsolationAwareAggregateRoot } from "./isolation-aware-aggregate-root.js";
-import { EntityId, TenantId } from "@hl8/isolation-model";
+import { EntityId, TenantId, IsolationContext } from "@hl8/isolation-model";
 import { IPartialAuditInfo } from "../../entities/base/audit-info.js";
 import { BaseDomainEvent } from "../../events/base/base-domain-event.js";
 import type { IPureLogger } from "@hl8/pure-logger";
-import { BadRequestException } from "@nestjs/common";
 
 /**
  * 测试用聚合根
@@ -19,14 +18,17 @@ class TestAggregate extends IsolationAwareAggregateRoot {
   constructor(
     id: EntityId,
     auditInfo: IPartialAuditInfo,
+    tenantId: EntityId,
     logger?: IPureLogger,
   ) {
     super(id, auditInfo, logger);
+    // 设置隔离上下文
+    this.setIsolationContext(IsolationContext.tenant(tenantId));
   }
 
   // 公开测试方法
-  public testEnsureTenantContext(): void {
-    this.ensureTenantContext();
+  public testEnsureIsolationContext(): void {
+    this.ensureIsolationContext();
   }
 
   public testEnsureSameTenant(
@@ -36,21 +38,21 @@ class TestAggregate extends IsolationAwareAggregateRoot {
     this.ensureSameTenant(entityTenantId, entityType);
   }
 
-  public testPublishTenantEvent(
+  public testPublishIsolationEvent(
     eventFactory: (
       aggregateId: EntityId,
       version: number,
-      tenantId: EntityId,
+      context: IsolationContext,
     ) => BaseDomainEvent,
   ): void {
-    this.publishTenantEvent(eventFactory);
+    this.publishIsolationEvent(eventFactory);
   }
 
-  public testLogTenantOperation(
+  public testLogIsolationOperation(
     message: string,
     data?: Record<string, unknown>,
   ): void {
-    this.logTenantOperation(message, data);
+    this.logIsolationOperation(message, data);
   }
 }
 
@@ -72,7 +74,7 @@ class TestEvent extends BaseDomainEvent {
   }
 }
 
-describe("TenantAwareAggregateRoot", () => {
+describe("IsolationAwareAggregateRoot", () => {
   let mockLogger: IPureLogger;
   let validTenantId: EntityId;
   let validAuditInfo: IPartialAuditInfo;
@@ -85,7 +87,7 @@ describe("TenantAwareAggregateRoot", () => {
       warn: () => {},
       debug: () => {},
       setContext: () => {},
-    } as unknown as Logger;
+    } as unknown as IPureLogger;
 
     // 创建有效的租户ID
     validTenantId = TenantId.create("550e8400-e29b-41d4-a716-446655440000");
@@ -103,12 +105,13 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
 
       // Assert
       expect(aggregate).toBeDefined();
-      expect(aggregate.getTenantId()).toEqual(validTenantId);
+      expect(aggregate.tenantId).toEqual(validTenantId);
     });
 
     it("应该在租户ID无效时抛出异常", () => {
@@ -125,12 +128,13 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
 
       // Act & Assert
       expect(() => {
-        aggregate.testEnsureTenantContext();
+        aggregate.testEnsureIsolationContext();
       }).not.toThrow();
     });
 
@@ -148,6 +152,7 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
       const sameTenantId = TenantId.create(
@@ -165,6 +170,7 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
       const differentTenantId = TenantId.create(
@@ -182,6 +188,7 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
       const differentTenantId = TenantId.generate();
@@ -191,9 +198,11 @@ describe("TenantAwareAggregateRoot", () => {
         aggregate.testEnsureSameTenant(differentTenantId, "Department");
         fail("应该抛出异常");
       } catch (error) {
-        expect(error.message).toContain("无法操作其他租户的Department，数据隔离策略禁止跨租户操作");
+        expect((error as Error).message).toContain(
+          "无法操作其他租户的Department，数据隔离策略禁止跨租户操作",
+        );
         // 检查错误消息是否包含实体类型
-        expect(error.message).toContain("Department");
+        expect((error as Error).message).toContain("Department");
       }
     });
   });
@@ -204,16 +213,17 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
       const eventFactory = (
         aggregateId: EntityId,
         version: number,
-        tenantId: EntityId,
-      ) => new TestEvent(aggregateId, version, tenantId, "test-data");
+        context: IsolationContext,
+      ) => new TestEvent(aggregateId, version, context.tenantId!, "test-data");
 
       // Act
-      aggregate.testPublishTenantEvent(eventFactory);
+      aggregate.testPublishIsolationEvent(eventFactory);
 
       // Assert
       const events = aggregate.domainEvents;
@@ -227,16 +237,17 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
       const eventFactory = (
         aggregateId: EntityId,
         version: number,
-        tenantId: EntityId,
-      ) => new TestEvent(aggregateId, version, tenantId, "test-data");
+        context: IsolationContext,
+      ) => new TestEvent(aggregateId, version, context.tenantId!, "test-data");
 
       // Act
-      aggregate.testPublishTenantEvent(eventFactory);
+      aggregate.testPublishIsolationEvent(eventFactory);
 
       // Assert
       const events = aggregate.domainEvents;
@@ -250,11 +261,12 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
 
       // Act
-      const tenantId = aggregate.getTenantId();
+      const tenantId = aggregate.tenantId;
 
       // Assert
       expect(tenantId).toEqual(validTenantId);
@@ -267,6 +279,7 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
       const sameTenantId = TenantId.create(
@@ -274,7 +287,7 @@ describe("TenantAwareAggregateRoot", () => {
       );
 
       // Act
-      const result = aggregate.belongsToTenant(sameTenantId);
+      const result = aggregate.tenantId.equals(sameTenantId);
 
       // Assert
       expect(result).toBe(true);
@@ -285,12 +298,13 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
       const differentTenantId = TenantId.generate();
 
       // Act
-      const result = aggregate.belongsToTenant(differentTenantId);
+      const result = aggregate.tenantId.equals(differentTenantId);
 
       // Assert
       expect(result).toBe(false);
@@ -303,13 +317,14 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
       const message = "测试操作";
       const data = { key: "value" };
 
       // Act
-      aggregate.testLogTenantOperation(message, data);
+      aggregate.testLogIsolationOperation(message, data);
 
       // Assert - 简化测试，只验证不抛出异常
       expect(true).toBe(true);
@@ -322,6 +337,7 @@ describe("TenantAwareAggregateRoot", () => {
       const aggregate = new TestAggregate(
         TenantId.generate(),
         validAuditInfo,
+        validTenantId,
         mockLogger,
       );
 

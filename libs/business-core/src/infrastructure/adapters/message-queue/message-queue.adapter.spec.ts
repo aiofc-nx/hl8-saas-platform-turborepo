@@ -8,7 +8,11 @@
 
 import { describe, it, expect, beforeEach, jest } from "@jest/globals";
 import { MessageQueueAdapter } from "./message-queue.adapter.js";
-import type { IMessageQueueConfig, IMessage, IMessageHandler } from "./message-queue.adapter.js";
+import type {
+  IMessageQueueConfig,
+  IMessage,
+  IMessageHandler,
+} from "./message-queue.adapter.js";
 import type { CacheService } from "@hl8/caching";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
@@ -61,7 +65,10 @@ describe("MessageQueueAdapter", () => {
     });
 
     it("应该使用默认配置创建适配器", () => {
-      const defaultAdapter = new MessageQueueAdapter(mockCacheService, mockLogger);
+      const defaultAdapter = new MessageQueueAdapter(
+        mockCacheService,
+        mockLogger,
+      );
       expect(defaultAdapter).toBeDefined();
     });
   });
@@ -121,9 +128,9 @@ describe("MessageQueueAdapter", () => {
         content: null,
       } as IMessage;
 
-      await expect(adapter.publish("test-topic", invalidMessage)).rejects.toThrow(
-        "消息ID不能为空",
-      );
+      await expect(
+        adapter.publish("test-topic", invalidMessage),
+      ).rejects.toThrow("消息ID不能为空");
     });
 
     it("应该验证消息类型", async () => {
@@ -221,9 +228,9 @@ describe("MessageQueueAdapter", () => {
     });
 
     it("应该验证处理器", async () => {
-      await expect(adapter.subscribe("test-topic", null as any)).rejects.toThrow(
-        "消息处理器不能为空",
-      );
+      await expect(
+        adapter.subscribe("test-topic", null as any),
+      ).rejects.toThrow("消息处理器不能为空");
     });
 
     it("应该验证主题名称", async () => {
@@ -319,7 +326,7 @@ describe("MessageQueueAdapter", () => {
 
     it("应该支持消息过滤", async () => {
       const filter = (message: IMessage) => message.messageType === "filtered";
-      
+
       await adapter.subscribe("test-topic", handler, filter);
 
       const message1: IMessage = {

@@ -26,9 +26,7 @@ import type { IUseCaseContext } from "../../../use-cases/base/use-case.interface
  */
 @QueryHandler(GetTenantQuery)
 export class GetTenantQueryHandler extends BaseQueryHandler<GetTenantQuery> {
-  constructor(
-    private readonly getTenantUseCase: GetTenantUseCase,
-  ) {
+  constructor(private readonly getTenantUseCase: GetTenantUseCase) {
     super();
   }
 
@@ -55,9 +53,7 @@ export class GetTenantQueryHandler extends BaseQueryHandler<GetTenantQuery> {
  */
 @QueryHandler(GetTenantsQuery)
 export class GetTenantsQueryHandler extends BaseQueryHandler<GetTenantsQuery> {
-  constructor(
-    private readonly getTenantsUseCase: GetTenantsUseCase,
-  ) {
+  constructor(private readonly getTenantsUseCase: GetTenantsUseCase) {
     super();
   }
 
@@ -90,9 +86,7 @@ export class GetTenantsQueryHandler extends BaseQueryHandler<GetTenantsQuery> {
  */
 @QueryHandler(GetTenantsByPlatformQuery)
 export class GetTenantsByPlatformQueryHandler extends BaseQueryHandler<GetTenantsByPlatformQuery> {
-  constructor(
-    private readonly getTenantsUseCase: GetTenantsUseCase,
-  ) {
+  constructor(private readonly getTenantsUseCase: GetTenantsUseCase) {
     super();
   }
 
@@ -103,7 +97,10 @@ export class GetTenantsByPlatformQueryHandler extends BaseQueryHandler<GetTenant
    * @param context - 执行上下文
    * @returns Promise<租户列表>
    */
-  async handle(query: GetTenantsByPlatformQuery, context: IUseCaseContext): Promise<any> {
+  async handle(
+    query: GetTenantsByPlatformQuery,
+    context: IUseCaseContext,
+  ): Promise<any> {
     const request = {
       platformId: query.platformId,
       type: query.type,
@@ -125,9 +122,7 @@ export class GetTenantsByPlatformQueryHandler extends BaseQueryHandler<GetTenant
  */
 @QueryHandler(SearchTenantsQuery)
 export class SearchTenantsQueryHandler extends BaseQueryHandler<SearchTenantsQuery> {
-  constructor(
-    private readonly searchTenantsUseCase: SearchTenantsUseCase,
-  ) {
+  constructor(private readonly searchTenantsUseCase: SearchTenantsUseCase) {
     super();
   }
 
@@ -138,7 +133,10 @@ export class SearchTenantsQueryHandler extends BaseQueryHandler<SearchTenantsQue
    * @param context - 执行上下文
    * @returns Promise<租户列表>
    */
-  async handle(query: SearchTenantsQuery, context: IUseCaseContext): Promise<any> {
+  async handle(
+    query: SearchTenantsQuery,
+    context: IUseCaseContext,
+  ): Promise<any> {
     const request = {
       keyword: query.keyword,
       platformId: query.platformId,
@@ -161,9 +159,7 @@ export class SearchTenantsQueryHandler extends BaseQueryHandler<SearchTenantsQue
  */
 @QueryHandler(CountTenantsQuery)
 export class CountTenantsQueryHandler extends BaseQueryHandler<CountTenantsQuery> {
-  constructor(
-    private readonly countTenantsUseCase: CountTenantsUseCase,
-  ) {
+  constructor(private readonly countTenantsUseCase: CountTenantsUseCase) {
     super();
   }
 
@@ -174,7 +170,10 @@ export class CountTenantsQueryHandler extends BaseQueryHandler<CountTenantsQuery
    * @param context - 执行上下文
    * @returns Promise<租户数量>
    */
-  async handle(query: CountTenantsQuery, context: IUseCaseContext): Promise<any> {
+  async handle(
+    query: CountTenantsQuery,
+    context: IUseCaseContext,
+  ): Promise<any> {
     const request = {
       platformId: query.platformId,
       type: query.type,

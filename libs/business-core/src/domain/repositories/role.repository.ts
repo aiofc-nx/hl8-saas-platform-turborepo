@@ -17,31 +17,31 @@ import { RoleType } from "../value-objects/types/role-type.vo.js";
 export interface RoleQueryOptions {
   /** 页码 */
   page?: number;
-  
+
   /** 每页数量 */
   limit?: number;
-  
+
   /** 角色类型 */
   type?: RoleType;
-  
+
   /** 是否启用 */
   isActive?: boolean;
-  
+
   /** 是否系统角色 */
   isSystemRole?: boolean;
-  
+
   /** 是否可编辑 */
   isEditable?: boolean;
-  
+
   /** 角色标签 */
   tags?: string[];
-  
+
   /** 搜索关键词 */
   search?: string;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序方向 */
   sortOrder?: "asc" | "desc";
 }
@@ -52,16 +52,16 @@ export interface RoleQueryOptions {
 export interface RoleQueryResult {
   /** 角色列表 */
   roles: RoleAggregate[];
-  
+
   /** 总数量 */
   total: number;
-  
+
   /** 页码 */
   page: number;
-  
+
   /** 每页数量 */
   limit: number;
-  
+
   /** 总页数 */
   totalPages: number;
 }
@@ -88,13 +88,13 @@ export interface RoleQueryResult {
  * ```typescript
  * // 创建角色仓储
  * const roleRepository = new RoleRepositoryAdapter(databaseService, logger);
- * 
+ *
  * // 保存角色
  * await roleRepository.save(roleAggregate);
- * 
+ *
  * // 查询角色
  * const role = await roleRepository.findById(tenantId, roleId);
- * 
+ *
  * // 查询角色列表
  * const result = await roleRepository.findMany(tenantId, {
  *   page: 1,
@@ -140,7 +140,10 @@ export interface IRoleRepository {
    * @param options - 查询选项
    * @returns Promise<RoleQueryResult>
    */
-  findMany(tenantId: TenantId, options?: RoleQueryOptions): Promise<RoleQueryResult>;
+  findMany(
+    tenantId: TenantId,
+    options?: RoleQueryOptions,
+  ): Promise<RoleQueryResult>;
 
   /**
    * 根据类型查询角色列表
@@ -150,7 +153,11 @@ export interface IRoleRepository {
    * @param options - 查询选项
    * @returns Promise<RoleQueryResult>
    */
-  findByType(tenantId: TenantId, type: RoleType, options?: RoleQueryOptions): Promise<RoleQueryResult>;
+  findByType(
+    tenantId: TenantId,
+    type: RoleType,
+    options?: RoleQueryOptions,
+  ): Promise<RoleQueryResult>;
 
   /**
    * 根据标签查询角色列表
@@ -160,7 +167,11 @@ export interface IRoleRepository {
    * @param options - 查询选项
    * @returns Promise<RoleQueryResult>
    */
-  findByTags(tenantId: TenantId, tags: string[], options?: RoleQueryOptions): Promise<RoleQueryResult>;
+  findByTags(
+    tenantId: TenantId,
+    tags: string[],
+    options?: RoleQueryOptions,
+  ): Promise<RoleQueryResult>;
 
   /**
    * 根据父角色查询子角色列表
@@ -170,7 +181,11 @@ export interface IRoleRepository {
    * @param options - 查询选项
    * @returns Promise<RoleQueryResult>
    */
-  findByParentRole(tenantId: TenantId, parentRoleId: EntityId, options?: RoleQueryOptions): Promise<RoleQueryResult>;
+  findByParentRole(
+    tenantId: TenantId,
+    parentRoleId: EntityId,
+    options?: RoleQueryOptions,
+  ): Promise<RoleQueryResult>;
 
   /**
    * 检查角色是否存在
@@ -189,7 +204,11 @@ export interface IRoleRepository {
    * @param excludeRoleId - 排除的角色ID（用于更新时检查）
    * @returns Promise<boolean>
    */
-  existsByName(tenantId: TenantId, name: string, excludeRoleId?: EntityId): Promise<boolean>;
+  existsByName(
+    tenantId: TenantId,
+    name: string,
+    excludeRoleId?: EntityId,
+  ): Promise<boolean>;
 
   /**
    * 统计角色数量
@@ -252,5 +271,8 @@ export interface IRoleRepository {
    * @param roleId - 角色ID
    * @returns Promise<{ userCount: number; permissionCount: number }>
    */
-  getUsageStats(tenantId: TenantId, roleId: EntityId): Promise<{ userCount: number; permissionCount: number }>;
+  getUsageStats(
+    tenantId: TenantId,
+    roleId: EntityId,
+  ): Promise<{ userCount: number; permissionCount: number }>;
 }

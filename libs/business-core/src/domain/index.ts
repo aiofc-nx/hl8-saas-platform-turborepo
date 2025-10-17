@@ -20,7 +20,7 @@ export type {
 // 聚合根系统（基础组件和装饰器）- 避免重复导出 EntityId
 export {
   BaseAggregateRoot,
-  TenantAwareAggregateRoot,
+  IsolationAwareAggregateRoot,
 } from "./aggregates/index.js";
 export type {
   IAggregateRoot,
@@ -41,7 +41,7 @@ export * from "./repositories/index.js";
 export * from "./exceptions/index.js";
 
 // 验证系统（通用功能组件）
-export * from "./validation/index.js";
+export * from "./validators/index.js";
 
 // 安全系统（通用功能组件）
 export * from "./security/index.js";

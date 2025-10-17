@@ -18,16 +18,16 @@ import { TenantType } from "../../../domain/value-objects/types/tenant-type.vo.j
 export class CreateTenantCommand extends BaseCommand {
   /** 租户名称 */
   name: string;
-  
+
   /** 租户类型 */
   type: TenantType;
-  
+
   /** 租户描述 */
   description?: string;
-  
+
   /** 平台ID */
   platformId: EntityId;
-  
+
   /** 创建者标识符 */
   createdBy: string;
 
@@ -55,16 +55,16 @@ export class CreateTenantCommand extends BaseCommand {
 export class UpdateTenantCommand extends BaseCommand {
   /** 租户ID */
   tenantId: EntityId;
-  
+
   /** 租户名称 */
   name?: string;
-  
+
   /** 租户类型 */
   type?: TenantType;
-  
+
   /** 租户描述 */
   description?: string;
-  
+
   /** 更新者标识符 */
   updatedBy: string;
 
@@ -92,18 +92,14 @@ export class UpdateTenantCommand extends BaseCommand {
 export class DeleteTenantCommand extends BaseCommand {
   /** 租户ID */
   tenantId: EntityId;
-  
+
   /** 删除者标识符 */
   deletedBy: string;
-  
+
   /** 删除原因 */
   deleteReason?: string;
 
-  constructor(
-    tenantId: EntityId,
-    deletedBy: string,
-    deleteReason?: string,
-  ) {
+  constructor(tenantId: EntityId, deletedBy: string, deleteReason?: string) {
     super("DeleteTenant", "删除租户命令");
     this.tenantId = tenantId;
     this.deletedBy = deletedBy;
@@ -119,7 +115,7 @@ export class DeleteTenantCommand extends BaseCommand {
 export class ActivateTenantCommand extends BaseCommand {
   /** 租户ID */
   tenantId: EntityId;
-  
+
   /** 激活者标识符 */
   activatedBy: string;
 
@@ -138,10 +134,10 @@ export class ActivateTenantCommand extends BaseCommand {
 export class DeactivateTenantCommand extends BaseCommand {
   /** 租户ID */
   tenantId: EntityId;
-  
+
   /** 停用者标识符 */
   deactivatedBy: string;
-  
+
   /** 停用原因 */
   deactivateReason?: string;
 

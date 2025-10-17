@@ -18,25 +18,25 @@ import { IPaginatedResult } from "./base/repository.interface.js";
 export interface UserQueryOptions {
   /** 租户ID */
   tenantId?: TenantId;
-  
+
   /** 用户状态 */
   status?: UserStatus;
-  
+
   /** 用户角色 */
   role?: UserRole;
-  
+
   /** 是否包含已删除的用户 */
   includeDeleted?: boolean;
-  
+
   /** 页码 */
   page?: number;
-  
+
   /** 每页记录数 */
   limit?: number;
-  
+
   /** 排序字段 */
   sortBy?: string;
-  
+
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 }
@@ -82,10 +82,7 @@ export interface IUserRepository {
    * @param email - 邮箱地址
    * @returns Promise<用户聚合根 | null>
    */
-  findByEmail(
-    tenantId: TenantId,
-    email: string,
-  ): Promise<UserAggregate | null>;
+  findByEmail(tenantId: TenantId, email: string): Promise<UserAggregate | null>;
 
   /**
    * 根据租户ID查找用户列表
@@ -138,10 +135,7 @@ export interface IUserRepository {
    * @param username - 用户名
    * @returns Promise<boolean>
    */
-  existsByUsername(
-    tenantId: TenantId,
-    username: string,
-  ): Promise<boolean>;
+  existsByUsername(tenantId: TenantId, username: string): Promise<boolean>;
 
   /**
    * 检查邮箱是否存在
@@ -150,10 +144,7 @@ export interface IUserRepository {
    * @param email - 邮箱地址
    * @returns Promise<boolean>
    */
-  existsByEmail(
-    tenantId: TenantId,
-    email: string,
-  ): Promise<boolean>;
+  existsByEmail(tenantId: TenantId, email: string): Promise<boolean>;
 
   /**
    * 统计用户数量
