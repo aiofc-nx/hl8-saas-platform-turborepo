@@ -15,6 +15,8 @@ import { PermissionType } from "../value-objects/types/permission-type.vo.js";
 import { PermissionAction } from "../value-objects/types/permission-action.vo.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
+import { ExceptionFactory } from "../exceptions/exception-factory.js";
+import { RoleStateException, InvalidRoleNameException } from "../exceptions/business-exceptions.js";
 
 /**
  * 角色聚合根
@@ -64,6 +66,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
   private role: Role;
   private permissions: Permission[] = [];
   private childRoles: Role[] = [];
+  private _exceptionFactory: ExceptionFactory;
 
   constructor(
     id: EntityId,
@@ -72,6 +75,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this.role = role;
   }
 
@@ -327,7 +331,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleUpdate(): void {
     if (!this.role.isEditable) {
-      throw new Error("角色不可编辑");
+      throw this._exceptionFactory.createDomainState("角色不可编辑", "system", "updateRole", { roleId: this.role.id.value, isEditable: this.role.isEditable });
     }
   }
 
@@ -340,10 +344,10 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleTypeChange(oldType: RoleType, newType: RoleType): void {
     if (!newType) {
-      throw new Error("角色类型不能为空");
+      throw this._exceptionFactory.createInvalidRoleType(type.toString(), "角色类型不能为空");
     }
     if (this.role.isSystemRole && oldType.isSystemRole() && !newType.isSystemRole()) {
-      throw new Error("系统角色不能变更为非系统角色");
+      throw this._exceptionFactory.createDomainState("系统角色不能变更为非系统角色", "system", "changeRoleType", { roleId: this.role.id.value, oldType: oldType.value, newType: newType.value });
     }
   }
 
@@ -355,10 +359,10 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionAssignment(permission: Permission): void {
     if (!permission) {
-      throw new Error("权限不能为空");
+      throw this._exceptionFactory.createDomainValidation("权限不能为空", "permission", permission);
     }
     if (!permission.isActive) {
-      throw new Error("权限未激活，无法分配");
+      throw this._exceptionFactory.createDomainState("权限未激活，无法分配", "inactive", "assignPermission", { permissionId: permission.id.value, isActive: permission.isActive });
     }
   }
 
@@ -370,7 +374,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionRemoval(permissionId: EntityId): void {
     if (!permissionId) {
-      throw new Error("权限ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("权限ID不能为空", "permissionId", permissionId);
     }
   }
 
@@ -382,7 +386,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionsAssignment(permissions: Permission[]): void {
     if (!permissions || permissions.length === 0) {
-      throw new Error("权限列表不能为空");
+      throw this._exceptionFactory.createDomainValidation("权限列表不能为空", "permissions", permissions);
     }
     for (const permission of permissions) {
       this.validatePermissionAssignment(permission);
@@ -396,7 +400,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionsClear(): void {
     if (this.role.isSystemRole) {
-      throw new Error("系统角色不能清空权限");
+      throw this._exceptionFactory.createDomainState("系统角色不能清空权限", "system", "clearPermissions", { roleId: this.role.id.value, isSystemRole: this.role.isSystemRole });
     }
   }
 

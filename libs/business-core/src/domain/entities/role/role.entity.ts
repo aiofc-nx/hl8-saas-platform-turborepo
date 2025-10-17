@@ -615,10 +615,10 @@ export class Role extends BaseEntity {
    */
   private validateTypeChange(oldType: RoleType, newType: RoleType): void {
     if (!newType) {
-      throw new Error("角色类型不能为空");
+      throw this._exceptionFactory.createInvalidRoleType(type.toString(), "角色类型不能为空");
     }
     if (this._isSystemRole && oldType.isSystemRole() && !newType.isSystemRole()) {
-      throw new Error("系统角色不能变更为非系统角色");
+      throw this._exceptionFactory.createDomainState("系统角色不能变更为非系统角色", "system", "changeType", { oldType: oldType.value, newType: newType.value });
     }
   }
 

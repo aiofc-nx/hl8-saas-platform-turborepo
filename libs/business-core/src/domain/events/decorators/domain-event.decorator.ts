@@ -48,6 +48,7 @@
  */
 
 import "reflect-metadata";
+import { ExceptionFactory } from '../../exceptions/exception-factory.js';
 
 /**
  * 领域事件配置选项
@@ -339,53 +340,54 @@ export function getEventHandlers(target: any): Array<{
  * @throws {Error} 当配置选项无效时抛出错误
  */
 function validateDomainEventOptions(options: DomainEventOptions): void {
+  const exceptionFactory = ExceptionFactory.getInstance();
   if (
     !options.name ||
     typeof options.name !== "string" ||
     options.name.trim().length === 0
   ) {
-    throw new Error("领域事件名称不能为空");
+    throw exceptionFactory.createDomainValidation("领域事件名称不能为空", "name", options.name);
   }
 
   if (options.version && typeof options.version !== "string") {
-    throw new Error("领域事件版本必须是字符串");
+    throw exceptionFactory.createDomainValidation("领域事件版本必须是字符串", "version", options.version);
   }
 
   if (options.description && typeof options.description !== "string") {
-    throw new Error("领域事件描述必须是字符串");
+    throw exceptionFactory.createDomainValidation("领域事件描述必须是字符串", "description", options.description);
   }
 
   if (options.category && typeof options.category !== "string") {
-    throw new Error("领域事件分类必须是字符串");
+    throw exceptionFactory.createDomainValidation("领域事件分类必须是字符串", "category", options.category);
   }
 
   if (options.tags && !Array.isArray(options.tags)) {
-    throw new Error("领域事件标签必须是字符串数组");
+    throw exceptionFactory.createDomainValidation("领域事件标签必须是字符串数组", "tags", options.tags);
   }
 
   if (options.tags && options.tags.some((tag) => typeof tag !== "string")) {
-    throw new Error("领域事件标签必须都是字符串");
+    throw exceptionFactory.createDomainValidation("领域事件标签必须都是字符串", "tags", options.tags);
   }
 
   if (
     options.retentionDays !== undefined &&
     (typeof options.retentionDays !== "number" || options.retentionDays < 0)
   ) {
-    throw new Error("事件保留期必须是非负整数");
+    throw exceptionFactory.createDomainValidation("事件保留期必须是非负整数", "retentionDays", options.retentionDays);
   }
 
   if (
     options.serialization?.exclude &&
     !Array.isArray(options.serialization.exclude)
   ) {
-    throw new Error("排除字段列表必须是字符串数组");
+    throw exceptionFactory.createDomainValidation("排除字段列表必须是字符串数组", "serialization.exclude", options.serialization?.exclude);
   }
 
   if (
     options.serialization?.include &&
     !Array.isArray(options.serialization.include)
   ) {
-    throw new Error("包含字段列表必须是字符串数组");
+    throw exceptionFactory.createDomainValidation("包含字段列表必须是字符串数组", "serialization.include", options.serialization?.include);
   }
 }
 
@@ -408,11 +410,11 @@ export class DomainEventRegistry {
   static register(eventClass: new (...args: unknown[]) => unknown): void {
     const metadata = getDomainEventMetadata(eventClass);
     if (!metadata) {
-      throw new Error(`类 ${eventClass.name} 没有@DomainEvent装饰器`);
+      throw exceptionFactory.createDomainValidation(`类 ${eventClass.name} 没有@DomainEvent装饰器`, "eventClass", eventClass.name);
     }
 
     if (this.events.has(metadata.name)) {
-      throw new Error(`领域事件名称 "${metadata.name}" 已经被注册`);
+      throw exceptionFactory.createDomainValidation(`领域事件名称 "${metadata.name}" 已经被注册`, "eventName", metadata.name);
     }
 
     this.events.set(metadata.name, eventClass);

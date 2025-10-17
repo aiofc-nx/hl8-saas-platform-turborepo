@@ -147,7 +147,7 @@ export abstract class BaseAggregateRoot
    */
   public addDomainEvent(event: BaseDomainEvent): void {
     if (!event) {
-      throw new Error("Domain event cannot be null or undefined");
+      throw this._exceptionFactory.createDomainValidation("Domain event cannot be null or undefined", "domainEvent", domainEvent);
     }
 
     // 尝试绑定多租户上下文信息
