@@ -13,6 +13,8 @@ import { PermissionType } from "../../value-objects/types/permission-type.vo.js"
 import { PermissionAction } from "../../value-objects/types/permission-action.vo.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { RoleStateException, InvalidRoleNameException } from "../../exceptions/business-exceptions.js";
 
 /**
  * 角色实体属性接口
@@ -125,6 +127,7 @@ export class Role extends BaseEntity {
   private _parentRoleId?: EntityId;
   private _tags?: string[];
   private _config?: Record<string, any>;
+  private _exceptionFactory: ExceptionFactory;
 
   constructor(
     id: EntityId,
@@ -133,6 +136,7 @@ export class Role extends BaseEntity {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this._name = props.name;
     this._description = props.description;
     this._type = props.type;
@@ -347,7 +351,7 @@ export class Role extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw new Error("角色已激活");
+      throw this._exceptionFactory.createEntityAlreadyActive("角色", this.id);
     }
     this._isActive = true;
     this.updateTimestamp();
@@ -359,10 +363,10 @@ export class Role extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw new Error("角色已停用");
+      throw this._exceptionFactory.createEntityNotActive("角色", this.id);
     }
     if (this._isSystemRole) {
-      throw new Error("系统角色不能停用");
+      throw this._exceptionFactory.createDomainState("系统角色不能停用", "system", "deactivate", { roleId: this.id.value, isSystemRole: this._isSystemRole });
     }
     this._isActive = false;
     this.updateTimestamp();
@@ -539,10 +543,10 @@ export class Role extends BaseEntity {
    */
   private validateName(name: string): void {
     if (!name || !name.trim()) {
-      throw new Error("角色名称不能为空");
+      throw this._exceptionFactory.createInvalidRoleName(name, "角色名称不能为空");
     }
     if (name.trim().length > 100) {
-      throw new Error("角色名称长度不能超过100字符");
+      throw this._exceptionFactory.createInvalidRoleName(name, "角色名称长度不能超过100字符");
     }
   }
 
@@ -554,7 +558,7 @@ export class Role extends BaseEntity {
    */
   private validateDescription(description?: string): void {
     if (description && description.trim().length > 500) {
-      throw new Error("角色描述长度不能超过500字符");
+      throw this._exceptionFactory.createDomainValidation("角色描述长度不能超过500字符", "description", description);
     }
   }
 
@@ -566,12 +570,12 @@ export class Role extends BaseEntity {
    */
   private validateActions(actions: PermissionAction[]): void {
     if (!actions || actions.length === 0) {
-      throw new Error("角色必须至少有一个权限动作");
+      throw this._exceptionFactory.createDomainValidation("角色必须至少有一个权限动作", "actions", actions);
     }
     const actionValues = actions.map(a => a.value);
     const uniqueValues = [...new Set(actionValues)];
     if (actionValues.length !== uniqueValues.length) {
-      throw new Error("权限动作不能重复");
+      throw this._exceptionFactory.createDomainValidation("权限动作不能重复", "actions", actions);
     }
   }
 
@@ -583,7 +587,7 @@ export class Role extends BaseEntity {
    */
   private validateActionAddition(action: PermissionAction): void {
     if (!action) {
-      throw new Error("权限动作不能为空");
+      throw this._exceptionFactory.createInvalidPermissionAction(action.toString(), "权限动作不能为空");
     }
   }
 
@@ -595,10 +599,10 @@ export class Role extends BaseEntity {
    */
   private validateActionRemoval(action: PermissionAction): void {
     if (!action) {
-      throw new Error("权限动作不能为空");
+      throw this._exceptionFactory.createInvalidPermissionAction(action.toString(), "权限动作不能为空");
     }
     if (this._actions.length === 1) {
-      throw new Error("角色必须至少有一个权限动作");
+      throw this._exceptionFactory.createDomainValidation("角色必须至少有一个权限动作", "actions", actions);
     }
   }
 

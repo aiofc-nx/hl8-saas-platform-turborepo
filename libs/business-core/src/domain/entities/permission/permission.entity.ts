@@ -637,7 +637,7 @@ export class Permission extends BaseEntity {
    */
   private validateDescription(description?: string): void {
     if (description && description.trim().length > 500) {
-      throw new Error("权限描述长度不能超过500字符");
+      throw this._exceptionFactory.createDomainValidation("权限描述长度不能超过500字符", "description", description);
     }
   }
 
@@ -649,10 +649,10 @@ export class Permission extends BaseEntity {
    */
   private validateResource(resource: string): void {
     if (!resource || !resource.trim()) {
-      throw new Error("资源标识不能为空");
+      throw this._exceptionFactory.createDomainValidation("资源标识不能为空", "resource", resource);
     }
     if (resource.trim().length > 200) {
-      throw new Error("资源标识长度不能超过200字符");
+      throw this._exceptionFactory.createDomainValidation("资源标识长度不能超过200字符", "resource", resource);
     }
   }
 
@@ -665,10 +665,10 @@ export class Permission extends BaseEntity {
    */
   private validateTypeChange(oldType: PermissionType, newType: PermissionType): void {
     if (!newType) {
-      throw new Error("权限类型不能为空");
+      throw this._exceptionFactory.createInvalidPermissionType(type.toString(), "权限类型不能为空");
     }
     if (this._isSystemPermission && oldType.isSystemPermission() && !newType.isSystemPermission()) {
-      throw new Error("系统权限不能变更为非系统权限");
+      throw this._exceptionFactory.createDomainState("系统权限不能变更为非系统权限", "system", "changeType", { oldType: oldType.value, newType: newType.value });
     }
   }
 
@@ -681,7 +681,7 @@ export class Permission extends BaseEntity {
    */
   private validateActionChange(oldAction: PermissionAction, newAction: PermissionAction): void {
     if (!newAction) {
-      throw new Error("权限动作不能为空");
+      throw this._exceptionFactory.createInvalidPermissionAction(action.toString(), "权限动作不能为空");
     }
   }
 
@@ -693,7 +693,7 @@ export class Permission extends BaseEntity {
    */
   private validatePriority(priority: number): void {
     if (typeof priority !== "number" || priority < 0) {
-      throw new Error("权限优先级必须是非负数");
+      throw this._exceptionFactory.createDomainValidation("权限优先级必须是非负数", "priority", priority);
     }
   }
 
@@ -705,10 +705,10 @@ export class Permission extends BaseEntity {
    */
   private validateParentPermission(parentPermissionId: EntityId): void {
     if (!parentPermissionId) {
-      throw new Error("父权限ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("父权限ID不能为空", "parentPermissionId", parentPermissionId);
     }
     if (parentPermissionId.equals(this.id)) {
-      throw new Error("权限不能设置自己为父权限");
+      throw this._exceptionFactory.createDomainState("权限不能设置自己为父权限", "active", "setParent", { permissionId: this.id.value, parentPermissionId: parentPermissionId.value });
     }
   }
 
@@ -720,10 +720,10 @@ export class Permission extends BaseEntity {
    */
   private validateConditionKey(key: string): void {
     if (!key || !key.trim()) {
-      throw new Error("条件键不能为空");
+      throw this._exceptionFactory.createDomainValidation("条件键不能为空", "conditionKey", conditionKey);
     }
     if (key.trim().length > 50) {
-      throw new Error("条件键长度不能超过50字符");
+      throw this._exceptionFactory.createDomainValidation("条件键长度不能超过50字符", "conditionKey", key);
     }
   }
 
@@ -735,10 +735,10 @@ export class Permission extends BaseEntity {
    */
   private validateTag(tag: string): void {
     if (!tag || !tag.trim()) {
-      throw new Error("标签不能为空");
+      throw this._exceptionFactory.createDomainValidation("标签不能为空", "tag", tag);
     }
     if (tag.trim().length > 50) {
-      throw new Error("标签长度不能超过50字符");
+      throw this._exceptionFactory.createDomainValidation("标签长度不能超过50字符", "tag", tag);
     }
   }
 }

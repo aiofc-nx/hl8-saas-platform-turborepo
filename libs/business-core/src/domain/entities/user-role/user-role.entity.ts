@@ -11,6 +11,8 @@ import { BaseEntity } from "../base/base-entity.js";
 import { Role } from "../role/role.entity.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { UserRoleStateException } from "../../exceptions/state-exceptions.js";
 
 /**
  * 用户角色关联实体属性接口
@@ -103,6 +105,7 @@ export class UserRole extends BaseEntity {
   private _assignedAt?: Date;
   private _expiresAt?: Date;
   private _config?: Record<string, any>;
+  private _exceptionFactory: ExceptionFactory;
 
   constructor(
     id: EntityId,
@@ -111,6 +114,7 @@ export class UserRole extends BaseEntity {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this._userId = props.userId;
     this._roleId = props.roleId;
     this._isActive = props.isActive;
@@ -199,7 +203,7 @@ export class UserRole extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw new Error("用户角色关联已激活");
+      throw this._exceptionFactory.createEntityAlreadyActive("用户角色关联", this.id);
     }
     this._isActive = true;
     this.updateTimestamp();
@@ -211,7 +215,7 @@ export class UserRole extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw new Error("用户角色关联已停用");
+      throw this._exceptionFactory.createEntityNotActive("用户角色关联", this.id);
     }
     this._isActive = false;
     this.updateTimestamp();
@@ -330,7 +334,7 @@ export class UserRole extends BaseEntity {
    */
   private validateUserId(userId: UserId): void {
     if (!userId) {
-      throw new Error("用户ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("用户ID不能为空", "userId", userId);
     }
   }
 
@@ -342,7 +346,7 @@ export class UserRole extends BaseEntity {
    */
   private validateRoleId(roleId: EntityId): void {
     if (!roleId) {
-      throw new Error("角色ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("角色ID不能为空", "roleId", roleId);
     }
   }
 
@@ -354,7 +358,7 @@ export class UserRole extends BaseEntity {
    */
   private validateReason(reason?: string): void {
     if (reason && reason.trim().length > 500) {
-      throw new Error("分配原因长度不能超过500字符");
+      throw this._exceptionFactory.createDomainValidation("分配原因长度不能超过500字符", "reason", reason);
     }
   }
 
@@ -366,7 +370,7 @@ export class UserRole extends BaseEntity {
    */
   private validateExpiration(expiresAt?: Date): void {
     if (expiresAt && expiresAt <= new Date()) {
-      throw new Error("过期时间必须是未来时间");
+      throw this._exceptionFactory.createDomainValidation("过期时间必须是未来时间", "expiresAt", expiresAt);
     }
   }
 }
