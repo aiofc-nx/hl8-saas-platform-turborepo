@@ -80,7 +80,7 @@ export interface IBaseBusinessRule<TValue = unknown> {
   /**
    * 规则标识符
    */
-  readonly id: EntityId;
+  readonly id: string;
 
   /**
    * 规则代码

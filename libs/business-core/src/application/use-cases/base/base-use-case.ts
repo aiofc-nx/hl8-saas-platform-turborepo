@@ -145,26 +145,35 @@ export abstract class BaseUseCase<TRequest, TResponse>
    *
    * @description 用例执行的主要入口点，包含完整的执行流程
    */
-  async execute(request: TRequest): Promise<TResponse> {
+  async execute(
+    request: TRequest,
+    context?: IUseCaseContext,
+  ): Promise<TResponse> {
     const startTime = Date.now();
-    const context = this.createContext();
+    const executionContext = context || this.createContext();
 
     try {
       // 1. 记录开始执行日志
-      this.logUseCaseStart(request, context);
+      this.logUseCaseStart(request, executionContext);
 
       // 2. 验证请求参数
       await this.validateRequest(request);
 
       // 3. 验证权限
-      await this.validatePermissions(context);
+      await this.validatePermissions(executionContext);
 
       // 4. 执行具体的用例逻辑
-      const response = await this.executeUseCase(request, context);
+      const response = await this.executeUseCase(request, executionContext);
 
       // 5. 记录成功执行日志
       const executionTime = Date.now() - startTime;
-      this.logUseCaseSuccess(request, response, context, executionTime);
+      console.log('BaseUseCase execute: calling logUseCaseSuccess');
+      this.logUseCaseSuccess(
+        request,
+        response,
+        executionContext,
+        executionTime,
+      );
 
       return response;
     } catch (error) {
@@ -172,7 +181,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
       const executionTime = Date.now() - startTime;
       const errorObj =
         error instanceof Error ? error : new Error(String(error));
-      this.logUseCaseError(request, errorObj, context, executionTime);
+      this.logUseCaseError(request, errorObj, executionContext, executionTime);
       throw error;
     }
   }
@@ -377,6 +386,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     context: IUseCaseContext,
     executionTime: number,
   ): void {
+    console.log('BaseUseCase logUseCaseSuccess called with logger:', this.logger);
     this.logger.debug(`Use case completed successfully: ${this.useCaseName}`, {
       useCaseName: this.useCaseName,
       useCaseVersion: this.useCaseVersion,
@@ -401,7 +411,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
       useCaseVersion: this.useCaseVersion,
       tenantId: context.tenant?.id,
       userId: context.user?.id,
-      requestId: context.request.id,
+      requestId: context.request?.id || "unknown",
       executionTime,
     });
   }
@@ -413,9 +423,25 @@ export abstract class BaseUseCase<TRequest, TResponse>
    * @protected
    */
   protected createDefaultLogger(): FastifyLoggerService {
-    // 注意：这里需要注入 PinoLogger，暂时返回 null
-    // 在实际使用中，应该通过依赖注入获取 FastifyLoggerService
-    return null as any;
+    // 创建一个模拟的日志记录器用于测试
+    return {
+      debug: (message: string, context?: any) =>
+        console.debug(message, context),
+      info: (message: string, context?: any) => console.info(message, context),
+      warn: (message: string, context?: any) => console.warn(message, context),
+      error: (message: string | Error, context?: any) =>
+        console.error(message, context),
+      fatal: (message: string, context?: any) =>
+        console.error(message, context),
+      trace: (message: string, context?: any) =>
+        console.trace(message, context),
+      log: (message: string, context?: any) => console.log(message, context),
+      verbose: (message: string, context?: any) =>
+        console.log(message, context),
+      getPinoLogger: () => null as any,
+      pinoLogger: null as any,
+      enrichContext: (context: any) => context,
+    } as unknown as FastifyLoggerService;
   }
 
   /**

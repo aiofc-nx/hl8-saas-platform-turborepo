@@ -8,6 +8,10 @@
 // 基础值对象
 export * from "./base-value-object.js";
 
+// 业务规则集成的值对象
+export * from "./email.vo.js";
+export * from "./phone-number.vo.js";
+
 // 通用值对象库（可重用的抽象基类）
 export * from "./common/index.js";
 

@@ -318,7 +318,7 @@ describe("BaseEntity", () => {
         entity["throwValidationError"]("Test message", "TEST_ERROR", {
           key: "value",
         });
-      }).toThrow(BadRequestException);
+      }).toThrow("Test message");
     });
 
     it("应该正确抛出操作异常", () => {

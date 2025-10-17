@@ -13,3 +13,9 @@ export * from "./base/index.js";
 
 // 装饰器
 export * from "./decorators/index.js";
+
+// 业务命令
+export * from "./tenant-commands.js";
+export * from "./organization-commands.js";
+export * from "./department-commands.js";
+export * from "./user-commands.js";

@@ -1,0 +1,563 @@
+---
+description: 聚合根开发规范
+globs:
+alwaysApply: true
+---
+# 聚合根开发规范（Aggregate Root Development Guide）
+
+## 概述
+
+本文档阐述在 `libs/business-core` 中开发聚合根的规范，包括聚合根设计原则、业务逻辑封装、事件管理和与隔离模型的协作方式。
+
+## 设计原则
+
+### 1. 聚合根职责
+
+- **业务协调**：管理实体生命周期，协调复杂的业务操作
+- **事务边界**：定义业务事务的边界，确保数据一致性
+- **事件发布**：管理领域事件的发布和订阅
+- **业务规则**：封装跨实体的业务规则和约束
+
+### 2. 聚合根与实体分离
+
+- **聚合根（Aggregate Root）**：管理实体生命周期，协调业务操作，发布领域事件
+- **实体（Entity）**：专注业务逻辑，状态管理
+- **分离原则**：聚合根专注业务协调，实体专注业务逻辑
+
+### 3. 继承关系
+
+```typescript
+// ✅ 正确：业务聚合根继承 TenantAwareAggregateRoot
+class TenantAggregate extends TenantAwareAggregateRoot { ... }
+class OrganizationAggregate extends TenantAwareAggregateRoot { ... }
+
+// ❌ 错误：不要直接继承 BaseEntity
+class TenantAggregate extends BaseEntity { ... }
+```
+
+### 4. 标识符使用
+
+- **聚合根ID**：使用 `@hl8/isolation-model` 的专用ID类型
+- **租户隔离**：通过 `TenantAwareAggregateRoot` 实现多租户数据隔离
+- **实体管理**：聚合根管理内部实体的生命周期
+
+## 聚合根开发规范
+
+### 1. 基础结构
+
+```typescript
+import { TenantAwareAggregateRoot } from './base/tenant-aware-aggregate-root.js';
+import { EntityId, TenantId } from '@hl8/isolation-model';
+import type { IPureLogger } from '@hl8/pure-logger';
+import type { IPartialAuditInfo } from '../entities/base/audit-info.js';
+
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  private organization: Organization;
+  private departments: Department[] = [];
+  private events: DomainEvent[] = [];
+
+  constructor(
+    id: EntityId,
+    tenantId: TenantId,
+    organization: Organization,
+    audit: IPartialAuditInfo,
+    logger?: IPureLogger,
+  ) {
+    super(id, tenantId, audit, logger);
+    this.organization = organization;
+  }
+}
+```
+
+### 2. 实体管理
+
+- **聚合根实体**：聚合根包含一个主要的实体
+- **子实体集合**：管理相关的子实体集合
+- **实体生命周期**：通过业务方法管理实体状态
+
+```typescript
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  private organization: Organization;
+  private departments: Department[] = [];
+
+  // 获取主要实体
+  getOrganization(): Organization {
+    return this.organization;
+  }
+
+  // 获取子实体集合
+  getDepartments(): Department[] {
+    return [...this.departments];
+  }
+
+  // 添加子实体
+  addDepartment(department: Department): void {
+    this.validateDepartmentAddition(department);
+    this.departments.push(department);
+    this.publishEvent(new DepartmentAddedEvent(department.id, this.organization.id));
+  }
+
+  // 移除子实体
+  removeDepartment(departmentId: EntityId): void {
+    const index = this.departments.findIndex(d => d.id.equals(departmentId));
+    if (index === -1) {
+      throw new Error('部门不存在');
+    }
+    
+    const department = this.departments[index];
+    this.departments.splice(index, 1);
+    this.publishEvent(new DepartmentRemovedEvent(departmentId, this.organization.id));
+  }
+}
+```
+
+### 3. 业务规则封装
+
+- **跨实体规则**：在聚合根中实现跨实体的业务规则
+- **业务约束**：确保业务操作符合业务规则
+- **状态一致性**：维护聚合内部的状态一致性
+
+```typescript
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  // 业务规则：组织类型变更
+  changeOrganizationType(newType: OrganizationType): void {
+    this.validateTypeChange(this.organization.type, newType);
+    this.organization.updateType(newType);
+    this.publishEvent(new OrganizationTypeChangedEvent(this.organization.id, newType));
+  }
+
+  // 业务规则：部门层级管理
+  addDepartment(department: Department): void {
+    this.validateDepartmentLevel(department.level);
+    this.validateDepartmentName(department.name);
+    this.departments.push(department);
+    this.publishEvent(new DepartmentAddedEvent(department.id, this.organization.id));
+  }
+
+  private validateTypeChange(oldType: OrganizationType, newType: OrganizationType): void {
+    // 业务规则：委员会不能降级为项目组
+    if (oldType.isDecisionType() && newType.isExecutionType()) {
+      throw new Error('委员会不能降级为项目组');
+    }
+  }
+
+  private validateDepartmentLevel(level: DepartmentLevel): void {
+    // 业务规则：部门层级不能超过组织层级
+    if (level.value > this.organization.level.value) {
+      throw new Error('部门层级不能超过组织层级');
+    }
+  }
+
+  private validateDepartmentName(name: string): void {
+    // 业务规则：部门名称在同一组织内必须唯一
+    const existingDepartment = this.departments.find(d => d.name === name);
+    if (existingDepartment) {
+      throw new Error('部门名称在同一组织内必须唯一');
+    }
+  }
+}
+```
+
+### 4. 事件管理
+
+- **事件发布**：通过 `publishEvent` 发布领域事件
+- **事件存储**：在 `_uncommittedEvents` 中存储未提交的事件
+- **事件清理**：通过 `markEventsAsCommitted` 清理已提交的事件
+
+```typescript
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  // 发布领域事件
+  private publishEvent(event: DomainEvent): void {
+    this._uncommittedEvents.push(event);
+    this.logOperation('publishEvent', { eventType: event.constructor.name });
+  }
+
+  // 获取未提交的事件
+  getUncommittedEvents(): DomainEvent[] {
+    return [...this._uncommittedEvents];
+  }
+
+  // 标记事件为已提交
+  markEventsAsCommitted(): void {
+    this._uncommittedEvents = [];
+  }
+
+  // 业务操作示例
+  renameOrganization(newName: string): void {
+    this.organization.updateName(newName);
+    this.publishEvent(new OrganizationRenamedEvent(this.organization.id, newName));
+  }
+
+  activateOrganization(): void {
+    this.organization.activate();
+    this.publishEvent(new OrganizationActivatedEvent(this.organization.id));
+  }
+}
+```
+
+### 5. 与隔离模型的协作
+
+```typescript
+// 聚合根定义时使用隔离模型的ID类型
+import { EntityId, TenantId, OrganizationId } from '@hl8/isolation-model';
+
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  constructor(
+    id: EntityId, // 使用隔离模型的EntityId
+    tenantId: TenantId, // 租户ID用于数据隔离
+    organization: Organization,
+    audit: IPartialAuditInfo,
+    logger?: IPureLogger,
+  ) {
+    super(id, tenantId, audit, logger);
+    this.organization = organization;
+  }
+
+  // 业务方法中确保租户隔离
+  addDepartment(department: Department): void {
+    this.ensureSameTenant(department.tenantId); // 确保部门属于同一租户
+    this.validateDepartmentAddition(department);
+    this.departments.push(department);
+    this.publishEvent(new DepartmentAddedEvent(department.id, this.organization.id));
+  }
+}
+```
+
+## 目录结构
+
+```
+libs/business-core/src/domain/aggregates/
+├── base/                           # 基础聚合根类
+│   ├── tenant-aware-aggregate-root.ts  # 租户感知聚合根基类
+│   └── aggregate-root.ts           # 聚合根基类
+├── tenant-aggregate.ts             # 租户聚合根
+├── organization-aggregate.ts       # 组织聚合根
+├── department-aggregate.ts        # 部门聚合根
+└── index.ts                       # 统一导出
+```
+
+## 命名规范
+
+### 1. 文件命名
+- 聚合根文件：`{aggregate-name}-aggregate.ts`
+- 基础类：`{base-class-name}.ts`
+- 导出文件：`index.ts`
+
+### 2. 类命名
+- 聚合根类：`{AggregateName}Aggregate`，如 `TenantAggregate`、`OrganizationAggregate`
+- 属性：`private _camelCase`
+- 方法：`camelCase`
+
+### 3. 方法命名
+- 业务操作：动词形式，如 `renameOrganization()`、`activateOrganization()`
+- 实体管理：`add*()`、`remove*()`、`update*()`
+- 事件相关：`publishEvent()`、`getUncommittedEvents()`
+
+## 充血模型设计
+
+### 1. 业务逻辑封装
+
+聚合根必须包含完整的业务逻辑，避免贫血模型：
+
+```typescript
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  // ✅ 充血模型：业务逻辑在聚合根内部
+  changeOrganizationType(newType: OrganizationType): void {
+    this.validateTypeChange(this.organization.type, newType);
+    this.organization.updateType(newType);
+    this.publishEvent(new OrganizationTypeChangedEvent(this.organization.id, newType));
+  }
+
+  // ✅ 业务规则封装在聚合根内部
+  private validateTypeChange(oldType: OrganizationType, newType: OrganizationType): void {
+    if (oldType.isDecisionType() && newType.isExecutionType()) {
+      throw new Error('委员会不能降级为项目组');
+    }
+    if (this.hasActiveDepartments() && newType.isExecutionType()) {
+      throw new Error('有活跃部门的组织不能降级为项目组');
+    }
+  }
+
+  // ✅ 业务方法控制状态变更
+  activateOrganization(): void {
+    if (this.organization.isActive) {
+      throw new Error('组织已激活');
+    }
+    this.organization.activate();
+    this.publishEvent(new OrganizationActivatedEvent(this.organization.id));
+  }
+}
+```
+
+### 2. 聚合根与实体分离
+
+```typescript
+// 实体：专注业务逻辑
+export class Organization extends BaseEntity {
+  updateName(newName: string): void {
+    this.validateName(newName);
+    this._name = newName;
+    this.updateTimestamp();
+  }
+}
+
+// 聚合根：管理实体生命周期，协调业务操作
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  private organization: Organization;
+  
+  renameOrganization(newName: string): void {
+    this.organization.updateName(newName);
+    this.publishEvent(new OrganizationRenamedEvent(this.organization.id, newName));
+  }
+}
+```
+
+### 3. 业务规则验证
+
+```typescript
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  addDepartment(department: Department): void {
+    this.validateDepartmentAddition(department);
+    this.departments.push(department);
+    this.publishEvent(new DepartmentAddedEvent(department.id, this.organization.id));
+  }
+
+  private validateDepartmentAddition(department: Department): void {
+    // 业务规则：部门必须属于同一租户
+    this.ensureSameTenant(department.tenantId);
+    
+    // 业务规则：部门层级不能超过组织层级
+    if (department.level.value > this.organization.level.value) {
+      throw new Error('部门层级不能超过组织层级');
+    }
+    
+    // 业务规则：部门名称在同一组织内必须唯一
+    const existingDepartment = this.departments.find(d => d.name === department.name);
+    if (existingDepartment) {
+      throw new Error('部门名称在同一组织内必须唯一');
+    }
+    
+    // 业务规则：组织必须激活才能添加部门
+    if (!this.organization.isActive) {
+      throw new Error('组织未激活，无法添加部门');
+    }
+  }
+}
+```
+
+## 事件管理
+
+### 1. 事件发布
+
+```typescript
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  // 发布领域事件
+  private publishEvent(event: DomainEvent): void {
+    this._uncommittedEvents.push(event);
+    this.logOperation('publishEvent', { eventType: event.constructor.name });
+  }
+
+  // 业务操作中发布事件
+  renameOrganization(newName: string): void {
+    this.organization.updateName(newName);
+    this.publishEvent(new OrganizationRenamedEvent(this.organization.id, newName));
+  }
+
+  activateOrganization(): void {
+    this.organization.activate();
+    this.publishEvent(new OrganizationActivatedEvent(this.organization.id));
+  }
+}
+```
+
+### 2. 事件存储和清理
+
+```typescript
+export class OrganizationAggregate extends TenantAwareAggregateRoot {
+  // 获取未提交的事件
+  getUncommittedEvents(): DomainEvent[] {
+    return [...this._uncommittedEvents];
+  }
+
+  // 标记事件为已提交
+  markEventsAsCommitted(): void {
+    this._uncommittedEvents = [];
+  }
+
+  // 重放事件（用于事件溯源）
+  replayEvents(events: DomainEvent[]): void {
+    for (const event of events) {
+      this.applyEvent(event);
+    }
+  }
+
+  private applyEvent(event: DomainEvent): void {
+    // 根据事件类型应用状态变更
+    if (event instanceof OrganizationRenamedEvent) {
+      this.organization.updateName(event.newName);
+    } else if (event instanceof OrganizationActivatedEvent) {
+      this.organization.activate();
+    }
+  }
+}
+```
+
+## 测试要求
+
+### 1. 单元测试覆盖
+- 聚合根创建和验证
+- 业务方法执行
+- 事件发布和存储
+- 跨实体业务规则
+- 异常情况处理
+
+### 2. 测试示例
+
+```typescript
+describe('OrganizationAggregate', () => {
+  it('should create organization aggregate with valid data', () => {
+    const organization = new Organization(/* ... */);
+    const aggregate = new OrganizationAggregate(
+      EntityId.generate(),
+      TenantId.generate(),
+      organization,
+      { createdBy: 'system' }
+    );
+    
+    expect(aggregate.getOrganization()).toBe(organization);
+    expect(aggregate.getDepartments()).toEqual([]);
+  });
+
+  it('should publish event when renaming organization', () => {
+    const aggregate = new OrganizationAggregate(/* ... */);
+    
+    aggregate.renameOrganization('New Name');
+    
+    const events = aggregate.getUncommittedEvents();
+    expect(events).toHaveLength(1);
+    expect(events[0]).toBeInstanceOf(OrganizationRenamedEvent);
+  });
+
+  it('should throw error when adding department with invalid level', () => {
+    const aggregate = new OrganizationAggregate(/* ... */);
+    const department = new Department(/* ... */);
+    
+    expect(() => aggregate.addDepartment(department)).toThrow('部门层级不能超过组织层级');
+  });
+});
+```
+
+## 最佳实践
+
+### 1. 聚合根设计
+- 保持聚合根纯净，不依赖基础设施
+- 业务逻辑封装在聚合根内部
+- 通过事件进行跨聚合通信
+
+### 2. 与实体的关系
+- **聚合根职责**：管理实体生命周期，协调业务操作，发布领域事件
+- **实体职责**：专注业务逻辑和状态管理
+- **分离原则**：聚合根不直接操作实体状态，通过业务方法协调
+
+### 3. 性能考虑
+- 避免在聚合根中执行重量级操作
+- 使用懒加载处理复杂关联
+- 合理使用缓存减少重复计算
+
+## 反模式清单
+
+### ❌ 禁止的做法
+
+1. **在聚合根中直接操作数据库**
+```typescript
+// 错误
+class OrganizationAggregate extends TenantAwareAggregateRoot {
+  async save() {
+    await this.repository.save(this); // 不要在聚合根中直接操作仓储
+  }
+}
+```
+
+2. **暴露可变属性**
+```typescript
+// 错误
+class OrganizationAggregate extends TenantAwareAggregateRoot {
+  public organization: Organization; // 应该使用私有属性和业务方法
+}
+```
+
+3. **在聚合根中处理外部依赖**
+```typescript
+// 错误
+class OrganizationAggregate extends TenantAwareAggregateRoot {
+  sendEmail() {
+    this.emailService.send(/* ... */); // 不要在聚合根中处理外部服务
+  }
+}
+```
+
+4. **贫血模型设计**
+```typescript
+// 错误：只有数据，没有业务逻辑
+class OrganizationAggregate extends TenantAwareAggregateRoot {
+  public organization: Organization;
+  public departments: Department[];
+  // 缺少业务方法
+}
+```
+
+5. **直接操作实体状态**
+```typescript
+// 错误
+class OrganizationAggregate extends TenantAwareAggregateRoot {
+  renameOrganization(newName: string): void {
+    this.organization._name = newName; // 不要直接操作实体状态
+  }
+}
+```
+
+### ✅ 推荐的做法
+
+1. **使用业务方法封装状态变更**
+```typescript
+class OrganizationAggregate extends TenantAwareAggregateRoot {
+  renameOrganization(newName: string): void {
+    this.organization.updateName(newName);
+    this.publishEvent(new OrganizationRenamedEvent(this.organization.id, newName));
+  }
+}
+```
+
+2. **通过事件进行跨聚合通信**
+```typescript
+class OrganizationAggregate extends TenantAwareAggregateRoot {
+  activateOrganization(): void {
+    this.organization.activate();
+    this.publishEvent(new OrganizationActivatedEvent(this.organization.id));
+  }
+}
+```
+
+3. **封装跨实体业务规则**
+```typescript
+class OrganizationAggregate extends TenantAwareAggregateRoot {
+  addDepartment(department: Department): void {
+    this.validateDepartmentAddition(department);
+    this.departments.push(department);
+    this.publishEvent(new DepartmentAddedEvent(department.id, this.organization.id));
+  }
+}
+```
+
+## 总结
+
+聚合根开发应遵循DDD原则和充血模型设计：
+
+1. **充血模型**：聚合根包含完整业务逻辑，避免贫血模型
+2. **职责分离**：聚合根专注业务协调，实体专注业务逻辑
+3. **继承关系**：继承`TenantAwareAggregateRoot`，使用`@hl8/isolation-model`的ID类型
+4. **业务封装**：通过业务方法封装状态变更，确保业务规则执行
+5. **事件管理**：通过事件进行跨聚合通信，实现松耦合
+6. **租户隔离**：通过`TenantAwareAggregateRoot`实现多租户数据隔离
+
+遵循这些原则可以确保聚合根设计符合DDD最佳实践，实现高内聚、低耦合的领域模型。

@@ -19,7 +19,18 @@ import type {
   IRepositoryQueryOptions,
 } from "../../../domain/repositories/base/base-repository.interface.js";
 import { EntityNotFoundError } from "../../../domain/repositories/base/base-repository.interface.js";
-import { DatabaseTransaction } from "../../../shared/types/database.types.js";
+import { DatabaseTransaction } from "../../../types/database.types.js";
+// 导入基础设施异常类型
+import {
+  DatabaseException,
+  CacheException,
+} from "../../../common/exceptions/infrastructure.exceptions.js";
+// 导入领域异常类型（用于重新抛出）
+import {
+  BusinessRuleViolationException,
+  DomainValidationException,
+  DomainStateException,
+} from "../../../domain/exceptions/base/base-domain-exception.js";
 
 /**
  * 仓储配置接口
@@ -75,6 +86,9 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   async findById(id: TId): Promise<TEntity | null> {
     try {
+      // 验证输入参数
+      this.validateEntityId(id);
+
       // 尝试从缓存获取
       if (this.config.enableCache) {
         const cached = await this.getFromCache(id);
@@ -111,6 +125,16 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
           operation: "findById",
         },
       );
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException
+      ) {
+        throw error;
+      }
+
       throw new EntityNotFoundError(
         `实体不存在: ${this.entityName}`,
         this.entityName,
@@ -127,6 +151,9 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   async save(entity: TEntity): Promise<void> {
     try {
+      // 验证实体
+      this.validateEntity(entity);
+
       await this.executeWithRetry(async () => {
         // 检查并发冲突
         if (this.config.enableOptimisticLocking) {
@@ -151,7 +178,22 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
           id: (entity as any).getId(),
         },
       );
-      throw error;
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException
+      ) {
+        // 领域异常直接重新抛出，让上层处理
+        throw error;
+      }
+
+      // 基础设施异常：数据库操作失败
+      throw new DatabaseException(
+        "save",
+        `保存实体失败: ${this.entityName} - ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -162,6 +204,9 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   async delete(id: TId): Promise<void> {
     try {
+      // 验证输入参数
+      this.validateEntityId(id);
+
       await this.executeWithRetry(async () => {
         // 检查实体是否存在
         const exists = await this.exists(id);
@@ -190,7 +235,18 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         error instanceof Error ? error.stack : undefined,
         { id },
       );
-      throw error;
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException ||
+        error instanceof EntityNotFoundError
+      ) {
+        throw error;
+      }
+
+      throw new DatabaseException("delete", `删除实体失败: ${this.entityName}`);
     }
   }
 
@@ -202,6 +258,9 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   async exists(id: TId): Promise<boolean> {
     try {
+      // 验证输入参数
+      this.validateEntityId(id);
+
       // 尝试从缓存检查
       if (this.config.enableCache) {
         const cached = await this.getFromCache(id);
@@ -238,7 +297,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         `获取实体总数失败: ${this.entityName}`,
         error instanceof Error ? error.stack : undefined,
       );
-      throw error;
+      throw new DatabaseException(
+        "count",
+        `获取实体总数失败: ${this.entityName}`,
+      );
     }
   }
 
@@ -256,7 +318,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         `查找所有实体失败: ${this.entityName}`,
         error instanceof Error ? error.stack : undefined,
       );
-      throw error;
+      throw new DatabaseException(
+        "findAll",
+        `查找所有实体失败: ${this.entityName}`,
+      );
     }
   }
 
@@ -267,6 +332,9 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   async saveAll(entities: TEntity[]): Promise<void> {
     try {
+      // 验证实体数组
+      this.validateEntityArray(entities);
+
       if (this.config.enableTransaction) {
         // 使用兼容性检查调用 transaction 方法
         if (typeof (this.databaseService as any).transaction === "function") {
@@ -301,7 +369,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         `批量保存实体失败: ${this.entityName}`,
         error instanceof Error ? error.stack : undefined,
       );
-      throw error;
+      throw new DatabaseException(
+        "saveAll",
+        `批量保存实体失败: ${this.entityName}`,
+      );
     }
   }
 
@@ -312,6 +383,9 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
    */
   async deleteAll(ids: TId[]): Promise<void> {
     try {
+      // 验证ID数组
+      this.validateEntityIdArray(ids);
+
       if (this.config.enableTransaction) {
         // 使用兼容性检查调用 transaction 方法
         if (typeof (this.databaseService as any).transaction === "function") {
@@ -346,11 +420,67 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
         `批量删除实体失败: ${this.entityName}`,
         error instanceof Error ? error.stack : undefined,
       );
-      throw error;
+      throw new DatabaseException(
+        "deleteAll",
+        `批量删除实体失败: ${this.entityName}`,
+      );
     }
   }
 
   // ==================== 私有方法 ====================
+
+  /**
+   * 验证实体ID
+   */
+  private validateEntityId(id: TId): void {
+    if (!id) {
+      throw new DomainValidationException("实体ID不能为空", "entityId", id, {
+        entityName: this.entityName,
+        operation: "validateEntityId",
+      });
+    }
+  }
+
+  /**
+   * 验证实体
+   */
+  private validateEntity(entity: TEntity): void {
+    if (!entity) {
+      throw new DomainValidationException("实体不能为空", "entity", entity, {
+        entityName: this.entityName,
+        operation: "validateEntity",
+      });
+    }
+  }
+
+  /**
+   * 验证实体数组
+   */
+  private validateEntityArray(entities: TEntity[]): void {
+    if (!entities || entities.length === 0) {
+      throw new DomainValidationException(
+        "实体数组不能为空",
+        "entities",
+        entities,
+        {
+          entityName: this.entityName,
+          operation: "validateEntityArray",
+        },
+      );
+    }
+  }
+
+  /**
+   * 验证实体ID数组
+   */
+  private validateEntityIdArray(ids: TId[]): void {
+    if (!ids || ids.length === 0) {
+      throw new DomainValidationException("实体ID数组不能为空", "ids", ids, {
+        entityName: this.entityName,
+        operation: "validateEntityIdArray",
+      });
+    }
+  }
 
   /**
    * 执行重试逻辑
@@ -373,7 +503,14 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
       }
     }
 
-    throw lastError || new Error("操作失败");
+    throw (
+      lastError ||
+      new DomainStateException("操作失败", "retrying", "executeWithRetry", {
+        entityName: this.entityName,
+        maxRetries: this.config.maxRetries,
+        operation: "executeWithRetry",
+      })
+    );
   }
 
   /**
@@ -433,7 +570,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   protected async getFromDatabase(_id: TId): Promise<TEntity | null> {
     // 实现具体的数据库查询逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error("需要实现具体的数据库查询逻辑");
+    throw new DatabaseException(
+      "getFromDatabase",
+      "需要实现具体的数据库查询逻辑",
+    );
   }
 
   /**
@@ -445,7 +585,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   ): Promise<void> {
     // 实现具体的数据库保存逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error("需要实现具体的数据库保存逻辑");
+    throw new DatabaseException(
+      "saveToDatabase",
+      "需要实现具体的数据库保存逻辑",
+    );
   }
 
   /**
@@ -457,7 +600,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   ): Promise<void> {
     // 实现具体的数据库删除逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error("需要实现具体的数据库删除逻辑");
+    throw new DatabaseException(
+      "deleteFromDatabase",
+      "需要实现具体的数据库删除逻辑",
+    );
   }
 
   /**
@@ -466,7 +612,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   private async existsInDatabase(_id: TId): Promise<boolean> {
     // 实现具体的数据库存在性检查逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error("需要实现具体的数据库存在性检查逻辑");
+    throw new DatabaseException(
+      "existsInDatabase",
+      "需要实现具体的数据库存在性检查逻辑",
+    );
   }
 
   /**
@@ -475,7 +624,10 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   private async countInDatabase(): Promise<number> {
     // 实现具体的数据库计数逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error("需要实现具体的数据库计数逻辑");
+    throw new DatabaseException(
+      "countInDatabase",
+      "需要实现具体的数据库计数逻辑",
+    );
   }
 
   /**
@@ -486,6 +638,9 @@ export class BaseRepositoryAdapter<TEntity extends IEntity, TId = EntityId>
   ): Promise<TEntity[]> {
     // 实现具体的数据库查询逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error("需要实现具体的数据库查询逻辑");
+    throw new DatabaseException(
+      "findAllFromDatabase",
+      "需要实现具体的数据库查询逻辑",
+    );
   }
 }

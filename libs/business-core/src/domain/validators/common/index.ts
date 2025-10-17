@@ -9,3 +9,8 @@
 export * from "./email.validator.js";
 export * from "./password.validator.js";
 export * from "./username.validator.js";
+
+// 验证器管理器
+export * from "../validator-manager.js";
+export * from "../validator-factory.js";
+export * from "../validation-service.js";

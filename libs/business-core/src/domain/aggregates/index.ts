@@ -15,5 +15,10 @@ export * from "./decorators/index.js";
 // 聚合根验证
 export * from "./validation/index.js";
 
-// 注意：具体业务实现的聚合根已移除，专注于通用功能组件
-// 通用验证和安全接口在对应的 domain/validation 和 domain/security 中提供
+// 业务聚合根
+export * from "./organization-aggregate.js";
+export * from "./department-aggregate.js";
+export * from "./tenant-aggregate.js";
+export * from "./role-aggregate.js";
+export * from "./permission-aggregate.js";
+export * from "./user-role-aggregate.js";

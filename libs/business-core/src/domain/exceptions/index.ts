@@ -7,3 +7,15 @@
 
 // 基础设施
 export * from "./base/index.js";
+
+// 业务异常
+export * from "./business-exceptions.js";
+
+// 验证异常
+export * from "./validation-exceptions.js";
+
+// 状态异常
+export * from "./state-exceptions.js";
+
+// 异常工厂
+export * from "./exception-factory.js";

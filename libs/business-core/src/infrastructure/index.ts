@@ -79,11 +79,17 @@ export * from "./adapters/ports/index.js";
 // 仓储适配器（领域层仓储适配器）
 export * from "./adapters/repositories/index.js";
 
+// PostgreSQL仓储适配器
+export * from "./adapters/repository-adapters/postgresql/index.js";
+
 // 领域服务适配器（领域层服务适配器）
 export * from "./adapters/services/index.js";
 
 // 事件存储适配器（事件溯源适配器）
 export * from "./adapters/event-store/index.js";
+
+// PostgreSQL事件溯源实现
+export * from "./event-sourcing/postgresql/index.js";
 
 // 消息队列适配器（消息发布订阅适配器）
 export * from "./adapters/message-queue/index.js";

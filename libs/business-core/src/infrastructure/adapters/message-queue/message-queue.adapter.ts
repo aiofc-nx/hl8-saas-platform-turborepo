@@ -9,9 +9,9 @@
  */
 
 import { Injectable } from "@nestjs/common";
-// import { MessagingService } from '@hl8/messaging'; // 暂时注释，等待模块实现
 import { CacheService } from "@hl8/caching";
 import { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import { RabbitMQMessageQueueService } from "./rabbitmq-message-queue.service.js";
 
 /**
  * 消息队列配置接口
@@ -104,9 +104,10 @@ export interface IMessageHandler {
 export class MessageQueueAdapter {
   private readonly config: IMessageQueueConfig;
   private readonly handlers = new Map<string, IMessageHandler>();
+  private connected = false;
+  private readonly rabbitmqService: RabbitMQMessageQueueService;
 
   constructor(
-    // private readonly messagingService: MessagingService, // 暂时注释，等待模块实现
     private readonly cacheService: CacheService,
     private readonly logger: FastifyLoggerService,
     config: Partial<IMessageQueueConfig> = {},
@@ -123,6 +124,72 @@ export class MessageQueueAdapter {
       enableCompression: config.enableCompression ?? false,
       enableEncryption: config.enableEncryption ?? false,
     };
+
+    // 初始化RabbitMQ服务
+    this.rabbitmqService = new RabbitMQMessageQueueService(
+      this.logger,
+      null as any,
+    );
+  }
+
+  /**
+   * 连接到消息队列
+   *
+   * @description 建立与消息队列的连接
+   */
+  async connect(): Promise<void> {
+    try {
+      if (this.connected) {
+        this.logger.log("消息队列已连接");
+        return;
+      }
+
+      // 连接到RabbitMQ
+      await this.rabbitmqService.connect();
+      this.connected = true;
+      this.logger.log("消息队列连接成功");
+    } catch (error) {
+      this.logger.error(
+        "消息队列连接失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * 断开消息队列连接
+   *
+   * @description 断开与消息队列的连接
+   */
+  async disconnect(): Promise<void> {
+    try {
+      if (!this.connected) {
+        this.logger.debug("消息队列未连接");
+        return;
+      }
+
+      // 断开RabbitMQ连接
+      await this.rabbitmqService.disconnect();
+      this.connected = false;
+      this.logger.log("消息队列连接已断开");
+    } catch (error) {
+      this.logger.error(
+        "断开消息队列连接失败",
+        error instanceof Error ? error.stack : undefined,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * 检查连接状态
+   *
+   * @description 检查消息队列连接状态
+   * @returns 连接状态
+   */
+  isConnected(): boolean {
+    return this.connected;
   }
 
   /**
@@ -165,9 +232,11 @@ export class MessageQueueAdapter {
         userId: options.userId,
       };
 
-      // 发布消息 - 暂时注释，等待 messaging 模块实现
-      // await this.messagingService.publish(topic, messageData);
-      console.warn("MessagingService 暂时不可用，消息发布被跳过");
+      // 发布消息到RabbitMQ
+      await this.rabbitmqService.publish(topic, messageData.payload, {
+        persistent: this.config.enablePersistence,
+        ttl: options.ttl || this.config.messageTtl,
+      });
 
       // 缓存消息（如果启用）
       if (this.config.enableCache) {
@@ -233,12 +302,12 @@ export class MessageQueueAdapter {
         };
       });
 
-      // 批量发布消息
-      // 批量发布消息 - 使用循环调用单个发布方法
-      for (const messageData of messageDataList) {
-        // await this.messagingService.publish(topic, messageData); // 暂时注释，等待模块实现
-        console.warn("MessagingService 暂时不可用，批量消息发布被跳过");
-      }
+      // 批量发布消息到RabbitMQ
+      const messagePayloads = messageDataList.map((msg) => msg.payload);
+      await this.rabbitmqService.publishBatch(topic, messagePayloads, {
+        persistent: this.config.enablePersistence,
+        ttl: options.ttl || this.config.messageTtl,
+      });
 
       // 缓存消息（如果启用）
       if (this.config.enableCache) {
@@ -284,53 +353,73 @@ export class MessageQueueAdapter {
       // 注册处理器
       this.handlers.set(handler.handlerName, handler);
 
-      // 订阅消息 - 暂时注释，等待 messaging 模块实现
-      // await this.messagingService.subscribe(
-      //   topic,
-      //   async (message: IMessage) => {
-      //     try {
-      //       // 检查消息是否过期
-      //       if (message.expiresAt && message.expiresAt < new Date()) {
-      //         this.logger.warn(`消息已过期: ${message.messageId}`);
-      //         return;
-      //       }
+      // 订阅消息到RabbitMQ
+      await this.rabbitmqService.subscribe(
+        topic,
+        async (message: any) => {
+          let messageObj: IMessage;
+          try {
+            // 构造消息对象
+            messageObj = {
+              messageId: message.id || this.generateMessageId(),
+              messageType: message.type || "Unknown",
+              payload: message,
+              metadata: message.metadata || {},
+              timestamp: message.timestamp || new Date(),
+              expiresAt: message.expiresAt,
+              retryCount: message.retryCount || 0,
+              tenantId: message.tenantId,
+              userId: message.userId,
+            };
 
-      //       // 处理消息
-      //       await handler.handle(message);
+            // 检查消息是否过期
+            if (messageObj.expiresAt && messageObj.expiresAt < new Date()) {
+              this.logger.warn(`消息已过期: ${messageObj.messageId}`);
+              return;
+            }
 
-      //       // 自动确认消息
-      //       if (options.autoAck) {
-      //         await this.ackMessage(message.messageId);
-      //       }
+            // 处理消息
+            await handler.handle(messageObj);
 
-      //       this.logger.debug(`处理消息成功: ${message.messageId}`);
-      //     } catch (error) {
-      //       this.logger.error(`处理消息失败: ${message.messageId}`, error, {
-      //         messageId: message.messageId,
-      //         messageType: message.messageType,
-      //         handlerName: handler.handlerName,
-      //       });
+            // 自动确认消息
+            if (options.autoAck) {
+              await this.ackMessage(messageObj.messageId);
+            }
 
-      //       // 错误处理
-      //       if (handler.onError) {
-      //         await handler.onError(error as Error, message);
-      //       }
+            this.logger.debug(`处理消息成功: ${messageObj.messageId}`);
+          } catch (error) {
+            this.logger.error(`处理消息失败: ${messageObj.messageId}`, error instanceof Error ? error.stack : undefined, {
+              messageId: messageObj.messageId,
+              messageType: messageObj.messageType,
+              handlerName: handler.handlerName,
+            });
 
-      //       // 重试逻辑
-      //       if (
-      //         this.config.enableRetry &&
-      //         message.retryCount < this.config.maxRetries
-      //       ) {
-      //         await this.retryMessage(message, options);
-      //       } else {
-      //         // 发送到死信队列
-      //         if (this.config.enableDeadLetterQueue) {
-      //           await this.sendToDeadLetterQueue(message, error as Error);
-      //         }
-      //       }
-      //     }
-      //   });
-      console.warn("MessagingService 暂时不可用，消息订阅被跳过");
+            // 错误处理
+            if (handler.onError) {
+              await handler.onError(error as Error, messageObj);
+            }
+
+            // 重试逻辑
+            if (
+              this.config.enableRetry &&
+              (messageObj.retryCount || 0) < this.config.maxRetries
+            ) {
+              await this.retryMessage(messageObj, options);
+            } else {
+              // 发送到死信队列
+              if (this.config.enableDeadLetterQueue) {
+                await this.sendToDeadLetterQueue(messageObj, error as Error);
+              }
+            }
+          }
+        },
+        {
+          queueName: options.queueName,
+          durable: options.durable,
+          exclusive: options.exclusive,
+          prefetchCount: options.prefetchCount,
+        },
+      );
 
       this.logger.debug(`订阅消息成功: ${topic}`);
     } catch (error) {
@@ -357,9 +446,8 @@ export class MessageQueueAdapter {
       // 移除处理器
       this.handlers.delete(handlerName);
 
-      // 取消订阅 - 暂时注释，等待 messaging 模块实现
-      // await this.messagingService.unsubscribe(topic);
-      console.warn("MessagingService 暂时不可用，取消订阅被跳过");
+      // 取消订阅RabbitMQ
+      await this.rabbitmqService.unsubscribe(topic);
 
       this.logger.debug(`取消订阅成功: ${topic}`);
     } catch (error) {
@@ -382,13 +470,8 @@ export class MessageQueueAdapter {
    */
   async ackMessage(messageId: string): Promise<void> {
     try {
-      // 确认消息 - 暂时注释，等待 messaging 模块实现
-      // if (typeof (this.messagingService as any).ack === "function") {
-      //   await (this.messagingService as any).ack(messageId);
-      // } else {
-      //   console.warn("MessagingService不支持ack方法");
-      // }
-      console.warn("MessagingService 暂时不可用，消息确认被跳过");
+      // 确认消息到RabbitMQ
+      await this.rabbitmqService.ackMessage(messageId);
 
       // 清除缓存
       if (this.config.enableCache) {
@@ -413,13 +496,8 @@ export class MessageQueueAdapter {
    */
   async nackMessage(messageId: string, requeue = false): Promise<void> {
     try {
-      // 拒绝消息 - 暂时注释，等待 messaging 模块实现
-      // if (typeof (this.messagingService as any).nack === "function") {
-      //   await (this.messagingService as any).nack(messageId, requeue);
-      // } else {
-      //   console.warn("MessagingService不支持nack方法");
-      // }
-      console.warn("MessagingService 暂时不可用，消息拒绝被跳过");
+      // 拒绝消息到RabbitMQ
+      await this.rabbitmqService.nackMessage(messageId, requeue);
 
       this.logger.debug(`拒绝消息成功: ${messageId}`);
     } catch (error) {
@@ -445,26 +523,15 @@ export class MessageQueueAdapter {
     errorCount: number;
   }> {
     try {
-      // 获取队列统计信息 - 暂时注释，等待 messaging 模块实现
-      // if (typeof (this.messagingService as any).getQueueStats === "function") {
-      //   return await (this.messagingService as any).getQueueStats(topic);
-      // } else {
-      //   console.warn("MessagingService不支持getQueueStats方法");
-      //   return {
-      //     messageCount: 0,
-      //     consumerCount: 0,
-      //     publishedCount: 0,
-      //     consumedCount: 0,
-      //     errorCount: 0,
-      //   };
-      // }
-      console.warn("MessagingService 暂时不可用，返回默认统计信息");
+      // 获取队列统计信息从RabbitMQ
+      const stats = await this.rabbitmqService.getQueueStats(`${topic}.queue`);
+      
       return {
-        messageCount: 0,
-        consumerCount: 0,
-        publishedCount: 0,
-        consumedCount: 0,
-        errorCount: 0,
+        messageCount: stats.messageCount,
+        consumerCount: stats.consumerCount,
+        publishedCount: 0, // 需要额外的统计逻辑
+        consumedCount: 0, // 需要额外的统计逻辑
+        errorCount: 0, // 需要额外的统计逻辑
       };
     } catch (error) {
       this.logger.error(
@@ -482,9 +549,18 @@ export class MessageQueueAdapter {
    */
   async cleanupExpiredMessages(): Promise<number> {
     try {
-      // 这里需要根据具体的消息队列实现来清理过期消息
-      // 实际实现中需要调用消息队列服务的清理方法
-      return 0;
+      // 清理所有队列的过期消息
+      let totalCleaned = 0;
+      
+      for (const [handlerName] of this.handlers) {
+        const cleaned = await this.rabbitmqService.cleanupExpiredMessages(
+          `${handlerName}.queue`,
+        );
+        totalCleaned += cleaned;
+      }
+      
+      this.logger.debug("清理过期消息完成", { totalCleaned });
+      return totalCleaned;
     } catch (error) {
       this.logger.error(
         "清理过期消息失败",

@@ -581,7 +581,22 @@ export abstract class BaseEntity implements IEntity {
    * @protected
    */
   protected createDefaultLogger(): IPureLogger {
-    return null as any; // TODO: 注入 IPureLogger'BaseEntity');
+    // 创建一个模拟的日志记录器用于测试
+    return {
+      debug: (message: string, context?: any) =>
+        console.debug(message, context),
+      info: (message: string, context?: any) => console.info(message, context),
+      warn: (message: string, context?: any) => console.warn(message, context),
+      error: (message: string | Error, context?: any) =>
+        console.error(message, context),
+      fatal: (message: string, context?: any) =>
+        console.error(message, context),
+      trace: (message: string, context?: any) =>
+        console.trace(message, context),
+      child: (bindings?: any) => this,
+      setLevel: (level: string) => {},
+      getLevel: () => "info",
+    } as unknown as IPureLogger;
   }
 
   /**

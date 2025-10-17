@@ -17,5 +17,12 @@ export * from "./decorators/index.js";
 // 注册表
 export * from "./registry/index.js";
 
+// 业务用例
+export * from "./tenant/index.js";
+export * from "./organization/index.js";
+export * from "./department/index.js";
+export * from "./user/index.js";
+export * from "./role/index.js";
+
 // 示例（可选导出，用于学习参考）
 // export * from './examples';

@@ -1,10 +1,15 @@
 import { EntityId } from "@hl8/isolation-model";
-import { TenantAwareAggregateRoot } from "./base/tenant-aware-aggregate-root.js";
+import { IsolationAwareAggregateRoot } from "./base/isolation-aware-aggregate-root.js";
 import { Tenant } from "../entities/tenant/tenant.entity.js";
 import { TenantType } from "../value-objects/types/tenant-type.vo.js";
 import { IPartialAuditInfo } from "../entities/base/audit-info.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import { BaseDomainEvent } from "../events/base/base-domain-event.js";
+import { BusinessRuleFactory } from "../rules/business-rule-factory.js";
+import { BusinessRuleManager } from "../rules/business-rule-manager.js";
+import { UsernameValidator } from "../validators/common/username.validator.js";
+import { ExceptionFactory } from "../exceptions/exception-factory.js";
+import { InvalidTenantNameException, TenantStateException } from "../exceptions/business-exceptions.js";
 
 /**
  * 租户创建事件
@@ -119,9 +124,11 @@ export class TenantDeletedEvent extends BaseDomainEvent {
  *
  * @since 1.0.0
  */
-export class TenantAggregate extends TenantAwareAggregateRoot {
+export class TenantAggregate extends IsolationAwareAggregateRoot {
   private _tenant: Tenant;
   private _platformId: EntityId;
+  private _ruleManager: BusinessRuleManager;
+  private _exceptionFactory: ExceptionFactory;
 
   /**
    * 构造函数
@@ -143,6 +150,8 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
   ) {
     super(id, auditInfo, logger);
 
+    this._ruleManager = BusinessRuleFactory.createTenantManager();
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this._platformId = props.platformId;
     this._tenant = new Tenant(
       id,
@@ -152,12 +161,12 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     );
 
     // 发布租户创建事件
-    this.publishTenantEvent(
-      (aggregateId, version, tenantId) =>
+    this.publishIsolationEvent(
+      (aggregateId, version, context) =>
         new TenantCreatedEvent(
           aggregateId,
           version,
-          tenantId,
+          context,
           props.name,
           props.type,
           props.platformId,
@@ -194,13 +203,32 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    * @throws {Error} 当名称为空或无效时
    */
   public updateName(name: string, updatedBy: string): void {
-    this.ensureTenantContext();
+    this.ensureIsolationContext();
+
+    // 使用验证器进行格式验证
+    const validatorResult = UsernameValidator.validateFormat(name, {
+      minLength: 3,
+      maxLength: 100,
+      allowNumbers: true,
+      allowSpecialChars: false,
+      checkReservedWords: true
+    });
+    
+    if (!validatorResult.isValid) {
+      throw this._exceptionFactory.createInvalidTenantName(name, validatorResult.errors.join(', '));
+    }
+    
+    // 使用业务规则进行业务逻辑验证
+    const ruleResult = this._ruleManager.validateRule('TENANT_NAME_RULE', name);
+    if (!ruleResult.isValid) {
+      throw this._exceptionFactory.createInvalidTenantName(name, ruleResult.errorMessage || '租户名称验证失败');
+    }
 
     const oldName = this._tenant.name;
     this._tenant.rename(name);
 
     // 发布租户更新事件
-    this.publishTenantEvent(
+    this.publishIsolationEvent(
       (aggregateId, version, tenantId) =>
         new TenantUpdatedEvent(
           aggregateId,
@@ -212,7 +240,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     );
 
     // 记录操作日志
-    this.logTenantOperation("租户名称已更新", {
+    this.logIsolationOperation("租户名称已更新", {
       oldName,
       newName: name,
       updatedBy,
@@ -231,13 +259,13 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    * @throws {Error} 当类型无效时
    */
   public updateType(type: TenantType, updatedBy: string): void {
-    this.ensureTenantContext();
+    this.ensureIsolationContext();
 
     const oldType = this._tenant.type;
     this._tenant.changeType(type);
 
     // 发布租户更新事件
-    this.publishTenantEvent(
+    this.publishIsolationEvent(
       (aggregateId, version, tenantId) =>
         new TenantUpdatedEvent(
           aggregateId,
@@ -249,7 +277,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     );
 
     // 记录操作日志
-    this.logTenantOperation("租户类型已更新", {
+    this.logIsolationOperation("租户类型已更新", {
       oldType: oldType.toString(),
       newType: type.toString(),
       updatedBy,
@@ -268,17 +296,17 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    * @throws {Error} 当租户已被删除时
    */
   public delete(deletedBy: string, deleteReason?: string): void {
-    this.ensureTenantContext();
+    this.ensureIsolationContext();
 
     if (this._tenant.isDeleted) {
-      throw new Error("租户已被删除");
+      throw this._exceptionFactory.createDomainState("租户已被删除", "deleted", "delete", { tenantId: this._tenant.id.value });
     }
 
     // 软删除租户
     this._tenant.markAsDeleted(deletedBy, deleteReason);
 
     // 发布租户删除事件
-    this.publishTenantEvent(
+    this.publishIsolationEvent(
       (aggregateId, version, tenantId) =>
         new TenantDeletedEvent(
           aggregateId,
@@ -290,7 +318,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     );
 
     // 记录操作日志
-    this.logTenantOperation("租户已删除", {
+    this.logIsolationOperation("租户已删除", {
       deletedBy,
       deleteReason,
       operation: "delete",
@@ -305,17 +333,17 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
    * @param restoredBy - 恢复者标识符
    */
   public restore(restoredBy: string): void {
-    this.ensureTenantContext();
+    this.ensureIsolationContext();
 
     if (!this._tenant.isDeleted) {
-      throw new Error("租户未被删除");
+      throw this._exceptionFactory.createDomainState("租户未被删除", "active", "restore", { tenantId: this._tenant.id.value });
     }
 
     // 恢复租户
     this._tenant.restore(restoredBy);
 
     // 发布租户更新事件
-    this.publishTenantEvent(
+    this.publishIsolationEvent(
       (aggregateId, version, tenantId) =>
         new TenantUpdatedEvent(
           aggregateId,
@@ -327,7 +355,7 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
     );
 
     // 记录操作日志
-    this.logTenantOperation("租户已恢复", {
+    this.logIsolationOperation("租户已恢复", {
       restoredBy,
       operation: "restore",
     });
@@ -359,6 +387,29 @@ export class TenantAggregate extends TenantAwareAggregateRoot {
       isDeleted: this._tenant.isDeleted,
       createdAt: this._tenant.createdAt,
       updatedAt: this._tenant.updatedAt,
+    };
+  }
+
+  /**
+   * 获取业务规则管理器
+   *
+   * @returns 业务规则管理器
+   */
+  public getRuleManager(): BusinessRuleManager {
+    return this._ruleManager;
+  }
+
+  /**
+   * 验证租户名称
+   *
+   * @param name - 租户名称
+   * @returns 验证结果
+   */
+  public validateTenantName(name: string): { isValid: boolean; errorMessage?: string } {
+    const result = this._ruleManager.validateRule('TENANT_NAME_RULE', name);
+    return {
+      isValid: result.isValid,
+      errorMessage: result.errorMessage,
     };
   }
 

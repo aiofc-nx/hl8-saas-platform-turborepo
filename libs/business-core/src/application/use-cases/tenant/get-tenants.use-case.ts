@@ -232,14 +232,17 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
    * @private
    */
   private mapToTenantInfo(tenant: any): TenantInfo {
+    // 处理不同的数据结构
+    const tenantData = tenant.tenant || tenant;
+    
     return {
       tenantId: tenant.id,
-      name: tenant.tenant.name,
-      type: tenant.tenant.type,
+      name: tenantData.name,
+      type: tenantData.type,
       platformId: tenant.platformId,
-      createdAt: tenant.tenant.createdAt,
-      updatedAt: tenant.tenant.updatedAt,
-      isDeleted: tenant.tenant.isDeleted,
+      createdAt: tenantData.createdAt,
+      updatedAt: tenantData.updatedAt,
+      isDeleted: tenantData.isDeleted,
     };
   }
 }

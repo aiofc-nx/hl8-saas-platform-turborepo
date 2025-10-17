@@ -17,12 +17,20 @@ import { EntityId } from "@hl8/isolation-model";
 import { BaseAggregateRoot } from "../../../domain/aggregates/base/base-aggregate-root.js";
 import { BaseDomainEvent } from "../../../domain/events/base/base-domain-event.js";
 import { IEntity } from "../../../domain/entities/base/entity.interface.js";
-import type {
-  IRepository,
-  IRepositoryQueryOptions,
-  IPaginatedResult,
-} from "../../../domain/repositories/base/base-repository.interface.js";
+import type { IRepository } from "../../../domain/repositories/base/base-repository.interface.js";
 import { BaseRepositoryAdapter } from "./base-repository.adapter.js";
+// 导入基础设施异常类型
+import {
+  DatabaseException,
+  CacheException,
+  MessageQueueException,
+} from "../../../common/exceptions/infrastructure.exceptions.js";
+// 导入领域异常类型（用于重新抛出）
+import {
+  BusinessRuleViolationException,
+  DomainValidationException,
+  DomainStateException,
+} from "../../../domain/exceptions/base/base-domain-exception.js";
 
 /**
  * 聚合根仓储配置接口
@@ -123,7 +131,22 @@ export class BaseAggregateRepositoryAdapter<
           id: (aggregate as any).getId(),
         },
       );
-      throw error;
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException
+      ) {
+        // 领域异常直接重新抛出，让上层处理
+        throw error;
+      }
+
+      // 基础设施异常：数据库操作失败
+      throw new DatabaseException(
+        "save",
+        `保存聚合根失败: ${this.entityName} - ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -197,7 +220,22 @@ export class BaseAggregateRepositoryAdapter<
         error instanceof Error ? error.stack : undefined,
         { id },
       );
-      throw error;
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException
+      ) {
+        // 领域异常直接重新抛出，让上层处理
+        throw error;
+      }
+
+      // 基础设施异常：数据库操作失败
+      throw new DatabaseException(
+        "findById",
+        `查找聚合根失败: ${this.entityName} - ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -223,7 +261,20 @@ export class BaseAggregateRepositoryAdapter<
           id,
         },
       );
-      throw error;
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException
+      ) {
+        throw error;
+      }
+
+      throw new DatabaseException(
+        "getVersion",
+        `获取聚合根版本失败: ${this.entityName}`,
+      );
     }
   }
 
@@ -254,7 +305,20 @@ export class BaseAggregateRepositoryAdapter<
           id,
         },
       );
-      throw error;
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException
+      ) {
+        throw error;
+      }
+
+      throw new DatabaseException(
+        "getEvents",
+        `获取聚合根事件失败: ${this.entityName}`,
+      );
     }
   }
 
@@ -279,7 +343,20 @@ export class BaseAggregateRepositoryAdapter<
           id,
         },
       );
-      throw error;
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException
+      ) {
+        throw error;
+      }
+
+      throw new DatabaseException(
+        "getSnapshot",
+        `获取聚合根快照失败: ${this.entityName}`,
+      );
     }
   }
 
@@ -324,7 +401,20 @@ export class BaseAggregateRepositoryAdapter<
         `批量删除聚合根失败: ${this.entityName}`,
         error instanceof Error ? error.stack : undefined,
       );
-      throw error;
+
+      // 根据错误类型进行异常转换
+      if (
+        error instanceof BusinessRuleViolationException ||
+        error instanceof DomainValidationException ||
+        error instanceof DomainStateException
+      ) {
+        throw error;
+      }
+
+      throw new DatabaseException(
+        "deleteAll",
+        `批量删除聚合根失败: ${this.entityName}`,
+      );
     }
   }
 
@@ -336,7 +426,10 @@ export class BaseAggregateRepositoryAdapter<
   private async saveAggregateState(aggregate: T): Promise<void> {
     // 实现具体的聚合根状态保存逻辑
     // 这里需要根据具体的数据库服务来实现
-    throw new Error("需要实现具体的聚合根状态保存逻辑");
+    throw new DatabaseException(
+      "saveAggregateState",
+      "需要实现具体的聚合根状态保存逻辑",
+    );
   }
 
   /**
@@ -382,7 +475,7 @@ export class BaseAggregateRepositoryAdapter<
   /**
    * 创建快照
    */
-  private async createSnapshot(aggregate: T): Promise<void> {
+  protected async createSnapshot(aggregate: T): Promise<void> {
     const snapshot = {
       id: (aggregate as any).getId(),
       version: aggregate.getVersion(),
@@ -399,7 +492,10 @@ export class BaseAggregateRepositoryAdapter<
   private async restoreFromSnapshot(snapshot: any): Promise<T | null> {
     // 实现具体的快照恢复逻辑
     // 这里需要根据具体的聚合根类型来实现
-    throw new Error("需要实现具体的快照恢复逻辑");
+    throw new DatabaseException(
+      "restoreFromSnapshot",
+      "需要实现具体的快照恢复逻辑",
+    );
   }
 
   /**
@@ -425,7 +521,10 @@ export class BaseAggregateRepositoryAdapter<
   private async rebuildFromEvents(id: TId): Promise<T | null> {
     // 实现具体的事件重建逻辑
     // 这里需要根据具体的聚合根类型来实现
-    throw new Error("需要实现具体的事件重建逻辑");
+    throw new DatabaseException(
+      "rebuildFromEvents",
+      "需要实现具体的事件重建逻辑",
+    );
   }
 
   /**
@@ -434,7 +533,7 @@ export class BaseAggregateRepositoryAdapter<
   private async storeEvent(event: BaseDomainEvent): Promise<void> {
     // 实现具体的事件存储逻辑
     // 这里需要根据具体的事件存储服务来实现
-    throw new Error("需要实现具体的事件存储逻辑");
+    throw new DatabaseException("storeEvent", "需要实现具体的事件存储逻辑");
   }
 
   /**
@@ -443,7 +542,10 @@ export class BaseAggregateRepositoryAdapter<
   private async getVersionFromEventStore(id: TId): Promise<number> {
     // 实现具体的事件存储版本获取逻辑
     // 这里需要根据具体的事件存储服务来实现
-    throw new Error("需要实现具体的事件存储版本获取逻辑");
+    throw new DatabaseException(
+      "getVersionFromEventStore",
+      "需要实现具体的事件存储版本获取逻辑",
+    );
   }
 
   /**
@@ -456,7 +558,10 @@ export class BaseAggregateRepositoryAdapter<
   ): Promise<BaseDomainEvent[]> {
     // 实现具体的事件存储事件获取逻辑
     // 这里需要根据具体的事件存储服务来实现
-    throw new Error("需要实现具体的事件存储事件获取逻辑");
+    throw new DatabaseException(
+      "getEventsFromEventStore",
+      "需要实现具体的事件存储事件获取逻辑",
+    );
   }
 
   /**
@@ -465,7 +570,10 @@ export class BaseAggregateRepositoryAdapter<
   private async getSnapshotFromStore(id: TId): Promise<any> {
     // 实现具体的快照存储获取逻辑
     // 这里需要根据具体的快照存储服务来实现
-    throw new Error("需要实现具体的快照存储获取逻辑");
+    throw new DatabaseException(
+      "getSnapshotFromStore",
+      "需要实现具体的快照存储获取逻辑",
+    );
   }
 
   /**
@@ -474,6 +582,6 @@ export class BaseAggregateRepositoryAdapter<
   private async storeSnapshot(snapshot: any): Promise<void> {
     // 实现具体的快照存储逻辑
     // 这里需要根据具体的快照存储服务来实现
-    throw new Error("需要实现具体的快照存储逻辑");
+    throw new DatabaseException("storeSnapshot", "需要实现具体的快照存储逻辑");
   }
 }

@@ -167,14 +167,6 @@ libs/business-core/
 │   │   │   │   └── *.spec.ts
 │   │   │   ├── department/
 │   │   │   │   ├── department.entity.ts
-│   │   │   │   ├── level1-department.entity.ts
-│   │   │   │   ├── level2-department.entity.ts
-│   │   │   │   ├── level3-department.entity.ts
-│   │   │   │   ├── level4-department.entity.ts
-│   │   │   │   ├── level5-department.entity.ts
-│   │   │   │   ├── level6-department.entity.ts
-│   │   │   │   ├── level7-department.entity.ts
-│   │   │   │   ├── level8-department.entity.ts
 │   │   │   │   └── *.spec.ts
 │   │   │   ├── user/
 │   │   │   │   ├── user.entity.ts
@@ -316,33 +308,87 @@ libs/business-core/
 │   │   │   │   ├── delete-role.use-case.ts
 │   │   │   │   └── *.spec.ts
 │   │   │   └── index.ts
-│   │   ├── commands/
-│   │   │   ├── platform-commands.ts
-│   │   │   ├── tenant-commands.ts
-│   │   │   ├── organization-commands.ts
-│   │   │   ├── department-commands.ts
-│   │   │   ├── user-commands.ts
-│   │   │   ├── authentication-commands.ts
-│   │   │   ├── session-commands.ts
-│   │   │   ├── permission-commands.ts
-│   │   │   ├── role-commands.ts
-│   │   │   └── *.spec.ts
-│   │   ├── queries/
-│   │   │   ├── platform-queries.ts
-│   │   │   ├── tenant-queries.ts
-│   │   │   ├── organization-queries.ts
-│   │   │   ├── department-queries.ts
-│   │   │   ├── user-queries.ts
-│   │   │   ├── authentication-queries.ts
-│   │   │   ├── session-queries.ts
-│   │   │   ├── permission-queries.ts
-│   │   │   ├── role-queries.ts
-│   │   │   └── *.spec.ts
-│   │   ├── handlers/
-│   │   │   ├── command-handlers/
-│   │   │   ├── query-handlers/
-│   │   │   ├── event-handlers/
-│   │   │   └── *.spec.ts
+│   │   ├── cqrs/
+│   │   │   ├── commands/
+│   │   │   │   ├── platform-commands.ts
+│   │   │   │   ├── tenant-commands.ts
+│   │   │   │   ├── organization-commands.ts
+│   │   │   │   ├── department-commands.ts
+│   │   │   │   ├── user-commands.ts
+│   │   │   │   ├── authentication-commands.ts
+│   │   │   │   ├── session-commands.ts
+│   │   │   │   ├── permission-commands.ts
+│   │   │   │   ├── role-commands.ts
+│   │   │   │   └── *.spec.ts
+│   │   │   ├── queries/
+│   │   │   │   ├── platform-queries.ts
+│   │   │   │   ├── tenant-queries.ts
+│   │   │   │   ├── organization-queries.ts
+│   │   │   │   ├── department-queries.ts
+│   │   │   │   ├── user-queries.ts
+│   │   │   │   ├── authentication-queries.ts
+│   │   │   │   ├── session-queries.ts
+│   │   │   │   ├── permission-queries.ts
+│   │   │   │   ├── role-queries.ts
+│   │   │   │   └── *.spec.ts
+│   │   │   ├── handlers/
+│   │   │   │   ├── command-handlers/
+│   │   │   │   │   ├── platform-command-handlers.ts
+│   │   │   │   │   ├── tenant-command-handlers.ts
+│   │   │   │   │   ├── organization-command-handlers.ts
+│   │   │   │   │   ├── department-command-handlers.ts
+│   │   │   │   │   ├── user-command-handlers.ts
+│   │   │   │   │   ├── authentication-command-handlers.ts
+│   │   │   │   │   ├── session-command-handlers.ts
+│   │   │   │   │   ├── permission-command-handlers.ts
+│   │   │   │   │   ├── role-command-handlers.ts
+│   │   │   │   │   └── *.spec.ts
+│   │   │   │   ├── query-handlers/
+│   │   │   │   │   ├── platform-query-handlers.ts
+│   │   │   │   │   ├── tenant-query-handlers.ts
+│   │   │   │   │   ├── organization-query-handlers.ts
+│   │   │   │   │   ├── department-query-handlers.ts
+│   │   │   │   │   ├── user-query-handlers.ts
+│   │   │   │   │   ├── authentication-query-handlers.ts
+│   │   │   │   │   ├── session-query-handlers.ts
+│   │   │   │   │   ├── permission-query-handlers.ts
+│   │   │   │   │   ├── role-query-handlers.ts
+│   │   │   │   │   └── *.spec.ts
+│   │   │   │   ├── event-handlers/
+│   │   │   │   │   ├── platform-event-handlers.ts
+│   │   │   │   │   ├── tenant-event-handlers.ts
+│   │   │   │   │   ├── organization-event-handlers.ts
+│   │   │   │   │   ├── department-event-handlers.ts
+│   │   │   │   │   ├── user-event-handlers.ts
+│   │   │   │   │   ├── authentication-event-handlers.ts
+│   │   │   │   │   ├── session-event-handlers.ts
+│   │   │   │   │   ├── permission-event-handlers.ts
+│   │   │   │   │   ├── role-event-handlers.ts
+│   │   │   │   │   └── *.spec.ts
+│   │   │   │   └── *.spec.ts
+│   │   │   ├── projectors/
+│   │   │   │   ├── platform-projectors.ts
+│   │   │   │   ├── tenant-projectors.ts
+│   │   │   │   ├── organization-projectors.ts
+│   │   │   │   ├── department-projectors.ts
+│   │   │   │   ├── user-projectors.ts
+│   │   │   │   ├── authentication-projectors.ts
+│   │   │   │   ├── session-projectors.ts
+│   │   │   │   ├── permission-projectors.ts
+│   │   │   │   ├── role-projectors.ts
+│   │   │   │   └── *.spec.ts
+│   │   │   ├── sagas/
+│   │   │   │   ├── platform-sagas.ts
+│   │   │   │   ├── tenant-sagas.ts
+│   │   │   │   ├── organization-sagas.ts
+│   │   │   │   ├── department-sagas.ts
+│   │   │   │   ├── user-sagas.ts
+│   │   │   │   ├── authentication-sagas.ts
+│   │   │   │   ├── session-sagas.ts
+│   │   │   │   ├── permission-sagas.ts
+│   │   │   │   ├── role-sagas.ts
+│   │   │   │   └── *.spec.ts
+│   │   │   └── index.ts
 │   │   └── index.ts
 │   ├── infrastructure/
 │   │   ├── adapters/
@@ -400,10 +446,11 @@ libs/business-core/
 │   │   │   ├── infrastructure.factory.ts
 │   │   │   ├── infrastructure.manager.ts
 │   │   │   └── *.spec.ts
-│   │   ├── mappers/
-│   │   │   ├── domain.mappers.ts
-│   │   │   ├── dto.mappers.ts
-│   │   │   └── *.spec.ts
+│   │   │   ├── mappers/
+│   │   │   │   ├── domain.mappers.ts
+│   │   │   │   ├── dto.mappers.ts
+│   │   │   │   └── *.spec.ts
+│   │   │   └── index.ts
 │   │   └── index.ts
 │   └── index.ts
 ├── __tests__/
@@ -430,308 +477,7 @@ libs/business-core/
 └── package.json
 ```
 
-**Structure Decision**: 基于现有的libs/business-core架构，扩展领域实体、值对象、聚合根、仓储、服务、事件等核心组件，遵循Clean Architecture分层原则，支持多租户数据隔离和事件驱动架构。
-
-## 实体开发规范
-
-### 充血模型设计
-
-- **充血模型**：实体包含业务逻辑，而非贫血模型（只有数据）
-- **业务规则封装**：所有业务规则都在实体内部实现
-- **状态变更控制**：通过业务方法控制状态变更，确保业务规则执行
-
-### 实体与聚合根分离
-
-- **实体（Entity）**：业务数据记录，包含业务逻辑
-- **聚合根（Aggregate Root）**：管理实体生命周期，协调业务操作
-- **分离原则**：实体专注业务逻辑，聚合根专注业务协调
-
-### 继承关系
-
-```typescript
-// ✅ 正确：业务实体继承 BaseEntity
-class Tenant extends BaseEntity { ... }
-class User extends BaseEntity { ... }
-
-// ❌ 错误：不要继承 IsolationContext
-class Tenant extends IsolationContext { ... }
-```
-
-### 标识符使用
-
-- **业务实体ID**：使用 `@hl8/isolation-model` 的专用ID类型
-- **隔离查询**：使用 `IsolationContext` 进行数据过滤
-
-### 实体开发规范
-
-#### 基础结构
-
-```typescript
-import { BaseEntity } from '../base/base-entity.js';
-import { EntityId, TenantId } from '@hl8/isolation-model';
-import type { IPureLogger } from '@hl8/pure-logger';
-import type { IPartialAuditInfo } from '../base/audit-info.js';
-
-export class Tenant extends BaseEntity {
-  private _name: string;
-  private _type: TenantType;
-
-  constructor(
-    id: EntityId,
-    props: { name: string; type: TenantType },
-    audit: IPartialAuditInfo,
-    logger?: IPureLogger,
-  ) {
-    super(id, audit, logger);
-    this._name = props.name;
-    this._type = props.type;
-    this.validate();
-  }
-}
-```
-
-#### 属性设计
-
-- **私有属性**：使用 `private _property` 命名
-- **只读访问器**：提供 `get property()` 方法
-- **业务方法**：封装状态变更逻辑
-
-```typescript
-// 属性定义
-private _name: string;
-private _status: TenantStatus;
-
-// 只读访问器
-get name(): string {
-  return this._name;
-}
-
-get status(): TenantStatus {
-  return this._status;
-}
-
-// 业务方法
-rename(newName: string): void {
-  this.validateName(newName);
-  this._name = newName.trim();
-  this.updateTimestamp();
-  this.logOperation('rename', { name: this._name });
-}
-```
-
-#### 业务规则封装
-
-- **验证逻辑**：在 `validate()` 方法中实现
-- **业务约束**：在业务方法中检查
-- **状态转换**：通过业务方法控制
-
-```typescript
-protected override validate(): void {
-  super.validate();
-  this.validateName(this._name);
-  this.validateType(this._type);
-}
-
-private validateName(name: string): void {
-  if (!name || !name.trim()) {
-    throw new Error('租户名称不能为空');
-  }
-  if (name.trim().length > 100) {
-    throw new Error('租户名称长度不能超过100');
-  }
-}
-```
-
-#### 与隔离模型的协作
-
-```typescript
-// 实体定义时使用隔离模型的ID类型
-import { EntityId, TenantId, OrganizationId } from '@hl8/isolation-model';
-
-export class Tenant extends BaseEntity {
-  constructor(
-    id: EntityId, // 使用隔离模型的EntityId
-    props: { name: string; type: TenantType },
-    audit: IPartialAuditInfo,
-    logger?: IPureLogger,
-  ) {
-    super(id, audit, logger);
-    // ...
-  }
-}
-
-// 查询时使用隔离上下文
-const context = IsolationContext.tenant(tenantId);
-const tenants = await tenantRepository.findByContext(context);
-```
-
-### 充血模型设计
-
-#### 业务逻辑封装
-
-实体必须包含完整的业务逻辑，避免贫血模型：
-
-```typescript
-export class Tenant extends BaseEntity {
-  private _status: TenantStatus;
-  private _quota: TenantQuota;
-
-  // ✅ 充血模型：业务逻辑在实体内部
-  activate(): void {
-    this.validateActivation();
-    this._status = TenantStatus.ACTIVE;
-    this.updateTimestamp();
-    this.logOperation('activate');
-  }
-
-  // ✅ 业务规则封装在实体内部
-  private validateActivation(): void {
-    if (this._status === TenantStatus.ACTIVE) {
-      throw new Error('租户已激活');
-    }
-    if (!this._quota.isValid()) {
-      throw new Error('租户配额无效，无法激活');
-    }
-  }
-
-  // ✅ 业务方法控制状态变更
-  deactivate(): void {
-    if (this._status === TenantStatus.INACTIVE) {
-      throw new Error('租户已停用');
-    }
-    this._status = TenantStatus.INACTIVE;
-    this.updateTimestamp();
-    this.logOperation('deactivate');
-  }
-}
-```
-
-#### 实体与聚合根分离
-
-```typescript
-// 实体：专注业务逻辑
-export class Tenant extends BaseEntity {
-  private _name: string;
-  private _type: TenantType;
-
-  rename(newName: string): void {
-    this.validateName(newName);
-    this._name = newName;
-    this.updateTimestamp();
-  }
-
-  changeType(newType: TenantType): void {
-    this.validateTypeChange(newType);
-    this._type = newType;
-    this.updateTimestamp();
-  }
-}
-
-// 聚合根：管理实体生命周期，协调业务操作
-export class TenantAggregate {
-  private tenant: Tenant;
-  private events: DomainEvent[] = [];
-
-  renameTenant(newName: string): void {
-    this.tenant.rename(newName);
-    this.events.push(new TenantRenamedEvent(this.tenant.id, newName));
-  }
-
-  changeTenantType(newType: TenantType): void {
-    this.tenant.changeType(newType);
-    this.events.push(new TenantTypeChangedEvent(this.tenant.id, newType));
-  }
-
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-```
-
-### 反模式清单
-
-#### ❌ 禁止的做法
-
-1. **继承隔离上下文**
-```typescript
-// 错误
-class Tenant extends IsolationContext { ... }
-```
-
-2. **在实体中直接操作数据库**
-```typescript
-// 错误
-class Tenant extends BaseEntity {
-  async save() {
-    await this.repository.save(this); // 不要在实体中直接操作仓储
-  }
-}
-```
-
-3. **暴露可变属性**
-```typescript
-// 错误
-class Tenant extends BaseEntity {
-  public name: string; // 应该使用私有属性和业务方法
-}
-```
-
-4. **在实体中处理外部依赖**
-```typescript
-// 错误
-class Tenant extends BaseEntity {
-  sendEmail() {
-    this.emailService.send(/* ... */); // 不要在实体中处理外部服务
-  }
-}
-```
-
-5. **贫血模型设计**
-```typescript
-// 错误：只有数据，没有业务逻辑
-class Tenant extends BaseEntity {
-  public name: string;
-  public type: TenantType;
-  // 缺少业务方法
-}
-```
-
-#### ✅ 推荐的做法
-
-1. **使用业务方法封装状态变更**
-```typescript
-class Tenant extends BaseEntity {
-  rename(newName: string): void {
-    this.validateName(newName);
-    this._name = newName;
-    this.updateTimestamp();
-  }
-}
-```
-
-2. **通过聚合根处理复杂业务逻辑**
-```typescript
-class TenantAggregate {
-  private tenant: Tenant;
-  
-  renameTenant(newName: string): void {
-    this.tenant.rename(newName);
-    this.publishEvent(new TenantRenamedEvent(this.tenant.id, newName));
-  }
-}
-```
-
-### 总结
-
-实体开发应遵循DDD原则和充血模型设计：
-
-1. **充血模型**：实体包含完整业务逻辑，避免贫血模型
-2. **职责分离**：实体专注业务逻辑，聚合根专注业务协调
-3. **继承关系**：继承`BaseEntity`，使用`@hl8/isolation-model`的ID类型
-4. **业务封装**：通过业务方法封装状态变更，确保业务规则执行
-5. **隔离协作**：通过`IsolationContext`进行查询时的数据过滤，而不是继承关系
-
-遵循这些原则可以确保实体设计符合DDD最佳实践，实现高内聚、低耦合的领域模型。
+**Structure Decision**: 基于现有的libs/business-core架构，扩展领域实体、值对象、聚合根、仓储、服务、事件等核心组件，遵循Clean Architecture分层原则，支持多租户数据隔离和事件驱动架构。新增CQRS命令查询分离、事件溯源、事件驱动架构的完整实现结构。
 
 ## Complexity Tracking
 

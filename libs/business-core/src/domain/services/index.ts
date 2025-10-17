@@ -7,3 +7,7 @@
 
 // 基础设施
 export * from "./base/index.js";
+
+// 业务服务
+export * from "./permission.service.js";
+export * from "./path-calculation.service.js";

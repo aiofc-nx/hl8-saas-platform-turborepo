@@ -1,6 +1,11 @@
 import { EntityId } from "@hl8/isolation-model";
 import { TenantAggregate } from "../aggregates/tenant-aggregate.js";
 import { TenantType } from "../value-objects/types/tenant-type.vo.js";
+import { IAggregateRepository } from "./base/base-aggregate-repository.interface.js";
+import {
+  IRepositoryQueryOptions,
+  IPaginatedResult,
+} from "./base/base-repository.interface.js";
 
 /**
  * 租户仓储接口
@@ -43,77 +48,8 @@ import { TenantType } from "../value-objects/types/tenant-type.vo.js";
  *
  * @since 1.0.0
  */
-export interface ITenantRepository {
-  /**
-   * 保存租户聚合根
-   *
-   * @description 保存租户聚合根到持久化存储，支持创建和更新操作。
-   * 自动处理乐观锁控制、事件发布和事务管理。
-   *
-   * ## 业务规则
-   *
-   * ### 保存规则
-   * - 新租户：创建新的持久化记录
-   * - 更新租户：使用乐观锁控制并发
-   * - 事件发布：保存成功后发布领域事件
-   * - 事务性：保存操作必须在事务中执行
-   *
-   * ### 验证规则
-   * - 租户名称在同一平台内必须唯一
-   * - 租户必须属于有效的平台
-   * - 租户类型必须有效
-   * - 租户状态必须一致
-   *
-   * @param tenant - 租户聚合根
-   * @returns Promise<租户聚合根>
-   *
-   * @throws {Error} 当租户名称重复时
-   * @throws {Error} 当平台不存在时
-   * @throws {Error} 当并发冲突时
-   *
-   * @example
-   * ```typescript
-   * const savedTenant = await tenantRepository.save(tenantAggregate);
-   * console.log('租户已保存:', savedTenant.id.toString());
-   * ```
-   */
-  save(tenant: TenantAggregate): Promise<TenantAggregate>;
-
-  /**
-   * 根据ID查找租户
-   *
-   * @description 根据租户ID查找租户聚合根，支持软删除的租户查询。
-   *
-   * ## 业务规则
-   *
-   * ### 查询规则
-   * - 支持查找已删除的租户（用于恢复操作）
-   * - 租户不存在时返回null
-   * - 查询结果包含完整的聚合根状态
-   * - 查询操作不触发领域事件
-   *
-   * ### 权限规则
-   * - 只能查询当前平台下的租户
-   * - 跨平台租户查询被禁止
-   * - 查询操作需要适当的权限验证
-   *
-   * @param id - 租户ID
-   * @param includeDeleted - 是否包含已删除的租户，默认false
-   * @returns Promise<租户聚合根 | null>
-   *
-   * @example
-   * ```typescript
-   * const tenant = await tenantRepository.findById(tenantId);
-   * if (tenant) {
-   *   console.log('找到租户:', tenant.tenant.name);
-   * }
-   * ```
-   */
-  findById(
-    id: EntityId,
-    includeDeleted?: boolean,
-  ): Promise<TenantAggregate | null>;
-
+export interface ITenantRepository
+  extends IAggregateRepository<TenantAggregate, EntityId> {
   /**
    * 根据平台ID查找租户列表
    *
@@ -257,7 +193,7 @@ export interface ITenantRepository {
   ): Promise<number>;
 
   /**
-   * 删除租户
+   * 软删除租户
    *
    * @description 软删除租户，将租户标记为已删除状态。
    *
@@ -285,10 +221,14 @@ export interface ITenantRepository {
    *
    * @example
    * ```typescript
-   * await tenantRepository.delete(tenantId, 'admin', '租户不再需要');
+   * await tenantRepository.softDelete(tenantId, 'admin', '租户不再需要');
    * ```
    */
-  delete(id: EntityId, deletedBy: string, deleteReason?: string): Promise<void>;
+  softDelete(
+    id: EntityId,
+    deletedBy: string,
+    deleteReason?: string,
+  ): Promise<void>;
 
   /**
    * 恢复租户

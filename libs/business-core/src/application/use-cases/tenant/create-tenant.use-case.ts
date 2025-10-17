@@ -123,18 +123,18 @@ export class CreateTenantUseCase extends BaseCommandUseCase<
     const tenantAggregate = this.createTenantAggregate(request);
 
     // 保存租户（事务边界）
-    const savedTenant = await this.tenantRepository.save(tenantAggregate);
+    await this.tenantRepository.save(tenantAggregate);
 
     // 发布领域事件
-    await this.publishDomainEvents(savedTenant);
+    await this.publishDomainEvents(tenantAggregate);
 
     // 返回响应
     return {
-      tenantId: savedTenant.id,
-      name: savedTenant.tenant.name,
-      type: savedTenant.tenant.type,
-      platformId: savedTenant.platformId,
-      createdAt: savedTenant.tenant.createdAt,
+      tenantId: tenantAggregate.id,
+      name: tenantAggregate.tenant.name,
+      type: tenantAggregate.tenant.type,
+      platformId: tenantAggregate.platformId,
+      createdAt: tenantAggregate.tenant.createdAt,
     };
   }
 

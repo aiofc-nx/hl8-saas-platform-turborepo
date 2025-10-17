@@ -93,7 +93,7 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
     private readonly tenantRepository: ITenantRepository,
     private readonly _logger: FastifyLoggerService,
   ) {
-    super("UpdateTenant", "更新租户用例", "1.0.0", ["tenant:update"]);
+    super("UpdateTenant", "更新租户用例", "1.0.0", ["tenant:update"], _logger);
   }
 
   /**
@@ -131,18 +131,18 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
     this.updateTenantAggregate(existingTenant, request);
 
     // 保存租户（事务边界）
-    const savedTenant = await this.tenantRepository.save(existingTenant);
+    await this.tenantRepository.save(existingTenant);
 
     // 发布领域事件
-    await this.publishDomainEvents(savedTenant);
+    await this.publishDomainEvents(existingTenant);
 
     // 返回响应
     return {
-      tenantId: savedTenant.id,
-      name: savedTenant.tenant.name,
-      type: savedTenant.tenant.type,
-      platformId: savedTenant.platformId,
-      updatedAt: savedTenant.tenant.updatedAt,
+      tenantId: existingTenant.id,
+      name: existingTenant.tenant.name,
+      type: existingTenant.tenant.type,
+      platformId: existingTenant.platformId,
+      updatedAt: existingTenant.tenant.updatedAt,
     };
   }
 
@@ -177,6 +177,13 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
           "TENANT_NAME_TOO_LONG",
         );
       }
+    }
+
+    if (request.type !== undefined && !request.type) {
+      throw new BusinessRuleViolationException(
+        "租户类型不能为空",
+        "EMPTY_TENANT_TYPE",
+      );
     }
 
     if (!request.updatedBy || request.updatedBy.trim().length === 0) {

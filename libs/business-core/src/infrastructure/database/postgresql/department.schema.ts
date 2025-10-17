@@ -1,0 +1,164 @@
+/**
+ * 部门数据库模式定义
+ *
+ * @description 定义Department实体的数据库表结构
+ * 支持多租户数据隔离和事件溯源
+ *
+ * ## 业务规则
+ *
+ * ### 数据隔离规则
+ * - 部门级数据：包含platformId + tenantId + organizationId + departmentId
+ * - 所有部门数据必须包含完整的隔离字段
+ * - 部门数据在部门级别进行隔离
+ *
+ * ### 部门层级规则
+ * - 支持8层嵌套的部门结构
+ * - 部门路径必须反映层级关系
+ * - 部门层级必须符合业务规则
+ *
+ * @since 1.0.0
+ */
+
+import type { EntityId } from "@hl8/isolation-model";
+
+/**
+ * 部门表结构
+ *
+ * @description 存储部门基本信息
+ */
+export interface DepartmentTable {
+  /** 部门唯一标识符 */
+  id: EntityId;
+  
+  /** 所属平台ID */
+  platform_id: EntityId;
+  
+  /** 所属租户ID */
+  tenant_id: EntityId;
+  
+  /** 所属组织ID */
+  organization_id: EntityId;
+  
+  /** 上级部门ID */
+  parent_id: EntityId | null;
+  
+  /** 部门名称 */
+  name: string;
+  
+  /** 部门层级（1-8） */
+  level: number;
+  
+  /** 部门路径 */
+  path: string;
+  
+  /** 部门状态 */
+  status: "ACTIVE" | "INACTIVE";
+  
+  /** 创建时间 */
+  created_at: Date;
+  
+  /** 更新时间 */
+  updated_at: Date;
+  
+  /** 创建者ID */
+  created_by: EntityId;
+  
+  /** 更新者ID */
+  updated_by: EntityId;
+  
+  /** 版本号（用于乐观锁） */
+  version: number;
+}
+
+/**
+ * 部门用户关联表
+ *
+ * @description 存储部门用户关联关系
+ */
+export interface DepartmentUserTable {
+  /** 关联ID */
+  id: EntityId;
+  
+  /** 平台ID */
+  platform_id: EntityId;
+  
+  /** 租户ID */
+  tenant_id: EntityId;
+  
+  /** 组织ID */
+  organization_id: EntityId;
+  
+  /** 部门ID */
+  department_id: EntityId;
+  
+  /** 用户ID */
+  user_id: EntityId;
+  
+  /** 用户角色 */
+  role: "DEPARTMENT_ADMIN" | "DEPARTMENT_USER";
+
+  /** 关联状态 */
+  status: "ACTIVE" | "INACTIVE";
+  
+  /** 创建时间 */
+  created_at: Date;
+  
+  /** 更新时间 */
+  updated_at: Date;
+  
+  /** 创建者ID */
+  created_by: EntityId;
+  
+  /** 更新者ID */
+  updated_by: EntityId;
+}
+
+/**
+ * 部门事件表
+ *
+ * @description 存储部门相关的事件溯源数据
+ */
+export interface DepartmentEventTable {
+  /** 事件ID */
+  id: EntityId;
+  
+  /** 聚合根ID */
+  aggregate_id: EntityId;
+  
+  /** 事件类型 */
+  event_type: string;
+  
+  /** 事件数据 */
+  event_data: Record<string, any>;
+  
+  /** 事件版本 */
+  event_version: number;
+  
+  /** 事件时间戳 */
+  occurred_at: Date;
+  
+  /** 事件元数据 */
+  metadata: Record<string, any>;
+}
+
+/**
+ * 部门快照表
+ *
+ * @description 存储部门聚合根的快照数据
+ */
+export interface DepartmentSnapshotTable {
+  /** 快照ID */
+  id: EntityId;
+  
+  /** 聚合根ID */
+  aggregate_id: EntityId;
+  
+  /** 快照数据 */
+  snapshot_data: Record<string, any>;
+  
+  /** 快照版本 */
+  snapshot_version: number;
+  
+  /** 快照时间戳 */
+  created_at: Date;
+}

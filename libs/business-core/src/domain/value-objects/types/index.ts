@@ -13,3 +13,10 @@
 
 // 通用与业务类型值对象导出
 export * from "./tenant-type.vo.js";
+export * from "./user-role.vo.js";
+export * from "./user-status.vo.js";
+export * from "./organization-type.vo.js";
+export * from "./department-level.vo.js";
+export * from "./role-type.vo.js";
+export * from "./permission-type.vo.js";
+export * from "./permission-action.vo.js";
