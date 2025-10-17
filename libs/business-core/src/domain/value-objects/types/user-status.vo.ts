@@ -7,6 +7,8 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { InvalidUserStatusException } from "../../exceptions/validation-exceptions.js";
 
 /**
  * 用户状态枚举
@@ -58,6 +60,7 @@ export enum UserStatusValue {
  * @since 1.0.0
  */
 export class UserStatus extends BaseValueObject<UserStatusValue> {
+  private _exceptionFactory: ExceptionFactory;
   /**
    * 创建用户状态
    *
@@ -103,10 +106,14 @@ export class UserStatus extends BaseValueObject<UserStatusValue> {
    * @protected
    */
   protected validate(value: UserStatusValue): void {
+    if (!this._exceptionFactory) {
+      this._exceptionFactory = ExceptionFactory.getInstance();
+    }
+    
     this.validateNotEmpty(value, "用户状态");
     const validStatuses = Object.values(UserStatusValue);
     if (!validStatuses.includes(value)) {
-      throw new Error(`无效的用户状态: ${value}`);
+      throw this._exceptionFactory.createInvalidUserStatus(value, `无效的用户状态: ${value}`);
     }
   }
 

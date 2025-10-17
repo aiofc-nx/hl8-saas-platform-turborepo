@@ -7,6 +7,8 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { InvalidUserRoleException } from "../../exceptions/validation-exceptions.js";
 
 /**
  * 用户角色枚举
@@ -66,6 +68,7 @@ export enum UserRoleValue {
  * @since 1.0.0
  */
 export class UserRole extends BaseValueObject<UserRoleValue> {
+  private _exceptionFactory: ExceptionFactory;
   /**
    * 创建用户角色
    *
@@ -132,10 +135,14 @@ export class UserRole extends BaseValueObject<UserRoleValue> {
    * @protected
    */
   protected validate(value: UserRoleValue): void {
+    if (!this._exceptionFactory) {
+      this._exceptionFactory = ExceptionFactory.getInstance();
+    }
+    
     this.validateNotEmpty(value, "用户角色");
     const validRoles = Object.values(UserRoleValue);
     if (!validRoles.includes(value)) {
-      throw new Error(`无效的用户角色: ${value}`);
+      throw this._exceptionFactory.createInvalidUserRole(value, `无效的用户角色: ${value}`);
     }
   }
 

@@ -22,8 +22,11 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { InvalidPhoneNumberException } from "../../exceptions/validation-exceptions.js";
 
 export class PhoneNumber extends BaseValueObject<string> {
+  private _exceptionFactory: ExceptionFactory;
   /**
    * 验证电话号码格式
    *
@@ -31,18 +34,22 @@ export class PhoneNumber extends BaseValueObject<string> {
    * @override
    */
   protected validate(value: string): void {
+    if (!this._exceptionFactory) {
+      this._exceptionFactory = ExceptionFactory.getInstance();
+    }
+    
     this.validateNotEmpty(value, "电话号码");
 
     // 移除空格和连字符后的长度验证
     const cleanValue = value.replace(/[\s-]/g, "");
     if (cleanValue.length < 8 || cleanValue.length > 16) {
-      throw new Error("电话号码长度必须在8-16个字符之间");
+      throw this._exceptionFactory.createInvalidPhoneNumber(value, "电话号码长度必须在8-16个字符之间");
     }
 
     // 格式验证（支持国际格式）
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     if (!phoneRegex.test(cleanValue)) {
-      throw new Error(`电话号码格式无效: ${value}`);
+      throw this._exceptionFactory.createInvalidPhoneNumber(value, `电话号码格式无效: ${value}`);
     }
   }
 

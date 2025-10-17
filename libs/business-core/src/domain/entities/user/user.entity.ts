@@ -507,13 +507,13 @@ export class User extends BaseEntity {
    */
   private validateUsername(username: string): void {
     if (!username || !username.trim()) {
-      throw new Error("用户名不能为空");
+      throw this._exceptionFactory.createDomainValidation("用户名不能为空", "username", username);
     }
     if (username.trim().length > 50) {
-      throw new Error("用户名长度不能超过50字符");
+      throw this._exceptionFactory.createDomainValidation("用户名长度不能超过50字符", "username", username);
     }
     if (!/^[a-zA-Z0-9_]+$/.test(username.trim())) {
-      throw new Error("用户名只能包含字母、数字和下划线");
+      throw this._exceptionFactory.createDomainValidation("用户名只能包含字母、数字和下划线", "username", username);
     }
   }
 
@@ -525,11 +525,11 @@ export class User extends BaseEntity {
    */
   private validateEmail(email: string): void {
     if (!email || !email.trim()) {
-      throw new Error("邮箱地址不能为空");
+      throw this._exceptionFactory.createDomainValidation("邮箱地址不能为空", "email", email);
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.trim())) {
-      throw new Error("邮箱地址格式不正确");
+      throw this._exceptionFactory.createDomainValidation("邮箱地址格式不正确", "email", email);
     }
   }
 
@@ -543,7 +543,7 @@ export class User extends BaseEntity {
     if (phone && phone.trim()) {
       const phoneRegex = /^1[3-9]\d{9}$/;
       if (!phoneRegex.test(phone.trim())) {
-        throw new Error("手机号码格式不正确");
+        throw this._exceptionFactory.createDomainValidation("手机号码格式不正确", "phone", phone);
       }
     }
   }
@@ -556,10 +556,10 @@ export class User extends BaseEntity {
    */
   private validateDisplayName(displayName: string): void {
     if (!displayName || !displayName.trim()) {
-      throw new Error("用户姓名不能为空");
+      throw this._exceptionFactory.createDomainValidation("用户姓名不能为空", "displayName", displayName);
     }
     if (displayName.trim().length > 100) {
-      throw new Error("用户姓名长度不能超过100字符");
+      throw this._exceptionFactory.createDomainValidation("用户姓名长度不能超过100字符", "displayName", displayName);
     }
   }
 
@@ -571,7 +571,7 @@ export class User extends BaseEntity {
    */
   private validateStatus(status: UserStatus): void {
     if (!status) {
-      throw new Error("用户状态不能为空");
+      throw this._exceptionFactory.createDomainValidation("用户状态不能为空", "status", status);
     }
   }
 
@@ -583,7 +583,7 @@ export class User extends BaseEntity {
    */
   private validateRole(role: UserRole): void {
     if (!role) {
-      throw new Error("用户角色不能为空");
+      throw this._exceptionFactory.createDomainValidation("用户角色不能为空", "role", role);
     }
   }
 }

@@ -1,4 +1,6 @@
 import { BaseValueObject } from "../base-value-object.js";
+import { ExceptionFactory } from "../../exceptions/exception-factory.js";
+import { InvalidDepartmentLevelException } from "../../exceptions/validation-exceptions.js";
 
 /**
  * 部门层级值对象
@@ -44,6 +46,7 @@ import { BaseValueObject } from "../base-value-object.js";
  * @since 1.0.0
  */
 export class DepartmentLevel extends BaseValueObject<number> {
+  private _exceptionFactory: ExceptionFactory;
   /** 一级部门 - 最高层级 */
   static readonly LEVEL_1 = 1;
 
@@ -75,11 +78,15 @@ export class DepartmentLevel extends BaseValueObject<number> {
    * @override
    */
   protected override validate(value: number): void {
+    if (!this._exceptionFactory) {
+      this._exceptionFactory = ExceptionFactory.getInstance();
+    }
+    
     if (!Number.isInteger(value)) {
-      throw new Error("部门层级必须是整数");
+      throw this._exceptionFactory.createInvalidDepartmentLevel(value, "部门层级必须是整数");
     }
     if (value < 1 || value > 8) {
-      throw new Error("部门层级必须在1-8之间");
+      throw this._exceptionFactory.createInvalidDepartmentLevel(value, "部门层级必须在1-8之间");
     }
   }
 

@@ -13,6 +13,8 @@ import { PermissionType } from "../value-objects/types/permission-type.vo.js";
 import { PermissionAction } from "../value-objects/types/permission-action.vo.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
+import { ExceptionFactory } from "../exceptions/exception-factory.js";
+import { PermissionStateException, InvalidPermissionTypeException, InvalidPermissionActionException } from "../exceptions/business-exceptions.js";
 
 /**
  * 权限聚合根
@@ -61,6 +63,7 @@ import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 export class PermissionAggregate extends IsolationAwareAggregateRoot {
   private permission: Permission;
   private childPermissions: Permission[] = [];
+  private _exceptionFactory: ExceptionFactory;
 
   constructor(
     id: EntityId,
@@ -69,6 +72,7 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this.permission = permission;
   }
 
@@ -360,7 +364,7 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionUpdate(): void {
     if (!this.permission.isEditable) {
-      throw new Error("权限不可编辑");
+      throw this._exceptionFactory.createDomainState("权限不可编辑", "system", "updatePermission", { permissionId: this.permission.id.value, isEditable: this.permission.isEditable });
     }
   }
 
@@ -373,10 +377,10 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionTypeChange(oldType: PermissionType, newType: PermissionType): void {
     if (!newType) {
-      throw new Error("权限类型不能为空");
+      throw this._exceptionFactory.createInvalidPermissionType(type.toString(), "权限类型不能为空");
     }
     if (this.permission.isSystemPermission && oldType.isSystemPermission() && !newType.isSystemPermission()) {
-      throw new Error("系统权限不能变更为非系统权限");
+      throw this._exceptionFactory.createDomainState("系统权限不能变更为非系统权限", "system", "changePermissionType", { permissionId: this.permission.id.value, oldType: oldType.value, newType: newType.value });
     }
   }
 
@@ -389,7 +393,7 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionActionChange(oldAction: PermissionAction, newAction: PermissionAction): void {
     if (!newAction) {
-      throw new Error("权限动作不能为空");
+      throw this._exceptionFactory.createInvalidPermissionAction(action.toString(), "权限动作不能为空");
     }
   }
 
@@ -400,10 +404,10 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validatePermissionDeactivation(): void {
     if (this.permission.isSystemPermission) {
-      throw new Error("系统权限不能停用");
+      throw this._exceptionFactory.createDomainState("系统权限不能停用", "system", "deactivate", { permissionId: this.permission.id.value, isSystemPermission: this.permission.isSystemPermission });
     }
     if (this.childPermissions.length > 0) {
-      throw new Error("有子权限的权限不能停用");
+      throw this._exceptionFactory.createDomainState("有子权限的权限不能停用", "active", "deactivate", { permissionId: this.permission.id.value, childPermissionsCount: this.childPermissions.length });
     }
   }
 
@@ -415,10 +419,10 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validateParentPermission(parentPermissionId: EntityId): void {
     if (!parentPermissionId) {
-      throw new Error("父权限ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("父权限ID不能为空", "parentPermissionId", parentPermissionId);
     }
     if (parentPermissionId.equals(this.permission.id)) {
-      throw new Error("权限不能设置自己为父权限");
+      throw this._exceptionFactory.createDomainState("权限不能设置自己为父权限", "active", "setParent", { permissionId: this.permission.id.value, parentPermissionId: parentPermissionId.value });
     }
   }
 
@@ -430,13 +434,13 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validateChildPermissionCreation(childPermission: Permission): void {
     if (!childPermission) {
-      throw new Error("子权限不能为空");
+      throw this._exceptionFactory.createDomainValidation("子权限不能为空", "childPermission", childPermission);
     }
     if (childPermission.id.equals(this.permission.id)) {
-      throw new Error("权限不能设置自己为子权限");
+      throw this._exceptionFactory.createDomainState("权限不能设置自己为子权限", "active", "createChildPermission", { permissionId: this.permission.id.value, childPermissionId: childPermission.id.value });
     }
     if (this.childPermissions.some(p => p.id.equals(childPermission.id))) {
-      throw new Error("子权限已存在");
+      throw this._exceptionFactory.createDomainState("子权限已存在", "active", "createChildPermission", { permissionId: this.permission.id.value, childPermissionId: childPermission.id.value });
     }
   }
 
@@ -448,7 +452,7 @@ export class PermissionAggregate extends IsolationAwareAggregateRoot {
    */
   private validateChildPermissionRemoval(childPermissionId: EntityId): void {
     if (!childPermissionId) {
-      throw new Error("子权限ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("子权限ID不能为空", "childPermissionId", childPermissionId);
     }
   }
 }

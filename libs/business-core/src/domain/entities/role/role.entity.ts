@@ -631,7 +631,7 @@ export class Role extends BaseEntity {
    */
   private validatePermissionTypeChange(oldType: PermissionType, newType: PermissionType): void {
     if (!newType) {
-      throw new Error("权限类型不能为空");
+      throw this._exceptionFactory.createDomainValidation("权限类型不能为空", "newType", newType);
     }
   }
 
@@ -643,7 +643,7 @@ export class Role extends BaseEntity {
    */
   private validatePriority(priority: number): void {
     if (typeof priority !== "number" || priority < 0) {
-      throw new Error("角色优先级必须是非负数");
+      throw this._exceptionFactory.createDomainValidation("角色优先级必须是非负数", "priority", priority);
     }
   }
 
@@ -655,10 +655,10 @@ export class Role extends BaseEntity {
    */
   private validateParentRole(parentRoleId: EntityId): void {
     if (!parentRoleId) {
-      throw new Error("父角色ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("父角色ID不能为空", "parentRoleId", parentRoleId);
     }
     if (parentRoleId.equals(this.id)) {
-      throw new Error("角色不能设置自己为父角色");
+      throw this._exceptionFactory.createDomainState("角色不能设置自己为父角色", "active", "setParentRole", { roleId: this.id.value, parentRoleId: parentRoleId.value });
     }
   }
 
@@ -670,10 +670,10 @@ export class Role extends BaseEntity {
    */
   private validateTag(tag: string): void {
     if (!tag || !tag.trim()) {
-      throw new Error("标签不能为空");
+      throw this._exceptionFactory.createDomainValidation("标签不能为空", "tag", tag);
     }
     if (tag.trim().length > 50) {
-      throw new Error("标签长度不能超过50字符");
+      throw this._exceptionFactory.createDomainValidation("标签长度不能超过50字符", "tag", tag);
     }
   }
 }

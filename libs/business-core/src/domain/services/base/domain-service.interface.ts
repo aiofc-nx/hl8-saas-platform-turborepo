@@ -1,3 +1,5 @@
+import { ExceptionFactory } from '../../exceptions/exception-factory.js';
+
 /**
  * 领域服务接口
  *
@@ -230,12 +232,14 @@ export abstract class BaseDomainService implements IDomainService {
   protected readonly serviceName: string;
   protected readonly serviceVersion: string;
   protected readonly serviceDescription: string;
+  private _exceptionFactory: ExceptionFactory;
 
   constructor(
     serviceName: string,
     serviceVersion = "1.0.0",
     serviceDescription = "",
   ) {
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this.serviceName = serviceName;
     this.serviceVersion = serviceVersion;
     this.serviceDescription = serviceDescription;
@@ -299,7 +303,7 @@ export abstract class BaseDomainService implements IDomainService {
    */
   protected validatePrecondition(condition: boolean, message: string): void {
     if (!condition) {
-      throw new Error(`[${this.serviceName}] 前置条件验证失败: ${message}`);
+      throw this._exceptionFactory.createDomainValidation(`[${this.serviceName}] 前置条件验证失败: ${message}`, "precondition", condition);
     }
   }
 
@@ -312,7 +316,7 @@ export abstract class BaseDomainService implements IDomainService {
    */
   protected validatePostcondition(condition: boolean, message: string): void {
     if (!condition) {
-      throw new Error(`[${this.serviceName}] 后置条件验证失败: ${message}`);
+      throw this._exceptionFactory.createDomainValidation(`[${this.serviceName}] 后置条件验证失败: ${message}`, "postcondition", condition);
     }
   }
 

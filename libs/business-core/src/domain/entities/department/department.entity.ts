@@ -426,7 +426,7 @@ export class Department extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw new Error("部门已激活");
+      throw this._exceptionFactory.createDomainState("部门已激活", "active", "activate", { departmentId: this._id.value, isActive: this._isActive });
     }
     
     this._isActive = true;
@@ -446,7 +446,7 @@ export class Department extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw new Error("部门已停用");
+      throw this._exceptionFactory.createDomainState("部门已停用", "inactive", "deactivate", { departmentId: this._id.value, isActive: this._isActive });
     }
     
     this._isActive = false;
@@ -501,10 +501,10 @@ export class Department extends BaseEntity {
    */
   private validateName(name: string): void {
     if (!name || !name.trim()) {
-      throw new Error("部门名称不能为空");
+      throw this._exceptionFactory.createDomainValidation("部门名称不能为空", "name", name);
     }
     if (name.trim().length > 100) {
-      throw new Error("部门名称长度不能超过100字符");
+      throw this._exceptionFactory.createDomainValidation("部门名称长度不能超过100字符", "name", name);
     }
   }
 
@@ -515,10 +515,10 @@ export class Department extends BaseEntity {
    */
   private validateLevel(level: DepartmentLevel): void {
     if (!level) {
-      throw new Error("部门层级不能为空");
+      throw this._exceptionFactory.createDomainValidation("部门层级不能为空", "level", level);
     }
     if (!DepartmentLevel.isValid(level.value)) {
-      throw new Error("无效的部门层级");
+      throw this._exceptionFactory.createDomainValidation("无效的部门层级", "level", level);
     }
   }
 
@@ -529,10 +529,10 @@ export class Department extends BaseEntity {
    */
   private validateParent(parentId: EntityId): void {
     if (!parentId) {
-      throw new Error("父部门ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("父部门ID不能为空", "parentId", parentId);
     }
     if (parentId.equals(this._id)) {
-      throw new Error("不能设置自己为父部门");
+      throw this._exceptionFactory.createDomainState("不能设置自己为父部门", "active", "setParent", { departmentId: this._id.value, parentId: parentId.value });
     }
   }
 
@@ -543,7 +543,7 @@ export class Department extends BaseEntity {
    */
   private validateSortOrder(sortOrder: number): void {
     if (sortOrder < 0) {
-      throw new Error("部门排序不能为负数");
+      throw this._exceptionFactory.createDomainValidation("部门排序不能为负数", "sortOrder", sortOrder);
     }
   }
 
@@ -554,7 +554,7 @@ export class Department extends BaseEntity {
    */
   private validateManager(managerId: EntityId): void {
     if (!managerId) {
-      throw new Error("负责人ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("负责人ID不能为空", "managerId", managerId);
     }
   }
 
@@ -565,13 +565,13 @@ export class Department extends BaseEntity {
    */
   private validateCode(code: string): void {
     if (!code || !code.trim()) {
-      throw new Error("部门编码不能为空");
+      throw this._exceptionFactory.createDomainValidation("部门编码不能为空", "code", code);
     }
     if (code.trim().length > 20) {
-      throw new Error("部门编码长度不能超过20字符");
+      throw this._exceptionFactory.createDomainValidation("部门编码长度不能超过20字符", "code", code);
     }
     if (!/^[A-Z0-9_]+$/.test(code.trim())) {
-      throw new Error("部门编码只能包含大写字母、数字和下划线");
+      throw this._exceptionFactory.createDomainValidation("部门编码只能包含大写字母、数字和下划线", "code", code);
     }
   }
 }

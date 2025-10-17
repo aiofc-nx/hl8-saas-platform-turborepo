@@ -1,3 +1,5 @@
+import { ExceptionFactory } from '../exceptions/exception-factory.js';
+
 /**
  * 基础值对象抽象类
  *
@@ -53,6 +55,8 @@
  */
 
 export abstract class BaseValueObject<T> {
+  private _exceptionFactory: ExceptionFactory;
+  
   /**
    * 值对象的内部值
    *
@@ -67,6 +71,7 @@ export abstract class BaseValueObject<T> {
    * @param value 值对象的值
    */
   constructor(value: T) {
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this.validate(value);
     this._value = this.transform(value);
   }
@@ -182,8 +187,10 @@ export abstract class BaseValueObject<T> {
     fieldName = "值",
   ): void {
     if (value.length < min || value.length > max) {
-      throw new Error(
+      throw this._exceptionFactory.createDomainValidation(
         `${fieldName}长度必须在${min}-${max}个字符之间，当前长度：${value.length}`,
+        fieldName,
+        value
       );
     }
   }
@@ -212,7 +219,7 @@ export abstract class BaseValueObject<T> {
     message: string,
   ): void {
     if (!pattern.test(value)) {
-      throw new Error(message);
+      throw this._exceptionFactory.createDomainValidation(message, "pattern", value);
     }
   }
 
@@ -234,7 +241,7 @@ export abstract class BaseValueObject<T> {
     fieldName = "值",
   ): void {
     if (value === null || value === undefined || value.length === 0) {
-      throw new Error(`${fieldName}不能为空`);
+      throw this._exceptionFactory.createDomainValidation(`${fieldName}不能为空`, fieldName, value);
     }
   }
 
@@ -260,7 +267,7 @@ export abstract class BaseValueObject<T> {
     fieldName = "值",
   ): void {
     if (value < min || value > max) {
-      throw new Error(`${fieldName}必须在${min}-${max}之间，当前值：${value}`);
+      throw this._exceptionFactory.createDomainValidation(`${fieldName}必须在${min}-${max}之间，当前值：${value}`, fieldName, value);
     }
   }
 
@@ -279,7 +286,7 @@ export abstract class BaseValueObject<T> {
    */
   protected validateInteger(value: number, fieldName = "值"): void {
     if (!Number.isInteger(value)) {
-      throw new Error(`${fieldName}必须是整数`);
+      throw this._exceptionFactory.createDomainValidation(`${fieldName}必须是整数`, fieldName, value);
     }
   }
 
@@ -298,7 +305,7 @@ export abstract class BaseValueObject<T> {
    */
   protected validatePositive(value: number, fieldName = "值"): void {
     if (value <= 0) {
-      throw new Error(`${fieldName}必须是正数`);
+      throw this._exceptionFactory.createDomainValidation(`${fieldName}必须是正数`, fieldName, value);
     }
   }
 
@@ -322,8 +329,10 @@ export abstract class BaseValueObject<T> {
     fieldName = "值",
   ): void {
     if (!allowedValues.includes(value)) {
-      throw new Error(
+      throw this._exceptionFactory.createDomainValidation(
         `${fieldName}必须是以下值之一：${allowedValues.join(", ")}`,
+        fieldName,
+        value
       );
     }
   }

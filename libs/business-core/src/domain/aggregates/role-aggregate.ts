@@ -412,13 +412,13 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateChildRoleCreation(childRole: Role): void {
     if (!childRole) {
-      throw new Error("子角色不能为空");
+      throw this._exceptionFactory.createDomainValidation("子角色不能为空", "childRole", childRole);
     }
     if (childRole.id.equals(this.role.id)) {
-      throw new Error("角色不能设置自己为子角色");
+      throw this._exceptionFactory.createDomainState("角色不能设置自己为子角色", "active", "createChildRole", { roleId: this.role.id.value, childRoleId: childRole.id.value });
     }
     if (this.childRoles.some(r => r.id.equals(childRole.id))) {
-      throw new Error("子角色已存在");
+      throw this._exceptionFactory.createDomainState("子角色已存在", "active", "createChildRole", { roleId: this.role.id.value, childRoleId: childRole.id.value });
     }
   }
 
@@ -430,7 +430,7 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateChildRoleRemoval(childRoleId: EntityId): void {
     if (!childRoleId) {
-      throw new Error("子角色ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("子角色ID不能为空", "childRoleId", childRoleId);
     }
   }
 
@@ -441,10 +441,10 @@ export class RoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleDeactivation(): void {
     if (this.role.isSystemRole) {
-      throw new Error("系统角色不能停用");
+      throw this._exceptionFactory.createDomainState("系统角色不能停用", "system", "deactivate", { roleId: this.role.id.value, isSystemRole: this.role.isSystemRole });
     }
     if (this.childRoles.length > 0) {
-      throw new Error("有子角色的角色不能停用");
+      throw this._exceptionFactory.createDomainState("有子角色的角色不能停用", "active", "deactivate", { roleId: this.role.id.value, childRolesCount: this.childRoles.length });
     }
   }
 }

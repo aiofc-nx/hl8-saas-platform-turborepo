@@ -340,7 +340,7 @@ export class Organization extends BaseEntity {
    */
   activate(): void {
     if (this._isActive) {
-      throw new Error("组织已激活");
+      throw this._exceptionFactory.createDomainState("组织已激活", "active", "activate", { organizationId: this._id.value, isActive: this._isActive });
     }
     
     this._isActive = true;
@@ -360,7 +360,7 @@ export class Organization extends BaseEntity {
    */
   deactivate(): void {
     if (!this._isActive) {
-      throw new Error("组织已停用");
+      throw this._exceptionFactory.createDomainState("组织已停用", "inactive", "deactivate", { organizationId: this._id.value, isActive: this._isActive });
     }
     
     this._isActive = false;
@@ -410,10 +410,10 @@ export class Organization extends BaseEntity {
    */
   private validateName(name: string): void {
     if (!name || !name.trim()) {
-      throw new Error("组织名称不能为空");
+      throw this._exceptionFactory.createDomainValidation("组织名称不能为空", "name", name);
     }
     if (name.trim().length > 100) {
-      throw new Error("组织名称长度不能超过100字符");
+      throw this._exceptionFactory.createDomainValidation("组织名称长度不能超过100字符", "name", name);
     }
   }
 
@@ -424,10 +424,10 @@ export class Organization extends BaseEntity {
    */
   private validateType(type: OrganizationType): void {
     if (!type) {
-      throw new Error("组织类型不能为空");
+      throw this._exceptionFactory.createDomainValidation("组织类型不能为空", "type", type);
     }
     if (!Object.values(OrganizationType).includes(type)) {
-      throw new Error("无效的组织类型");
+      throw this._exceptionFactory.createDomainValidation("无效的组织类型", "type", type);
     }
   }
 
@@ -438,10 +438,10 @@ export class Organization extends BaseEntity {
    */
   private validateParent(parentId: EntityId): void {
     if (!parentId) {
-      throw new Error("父组织ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("父组织ID不能为空", "parentId", parentId);
     }
     if (parentId.equals(this._id)) {
-      throw new Error("不能设置自己为父组织");
+      throw this._exceptionFactory.createDomainState("不能设置自己为父组织", "active", "setParent", { organizationId: this._id.value, parentId: parentId.value });
     }
   }
 
@@ -452,7 +452,7 @@ export class Organization extends BaseEntity {
    */
   private validateSortOrder(sortOrder: number): void {
     if (sortOrder < 0) {
-      throw new Error("组织排序不能为负数");
+      throw this._exceptionFactory.createDomainValidation("组织排序不能为负数", "sortOrder", sortOrder);
     }
   }
 }

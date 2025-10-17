@@ -41,8 +41,11 @@
  * @since 1.0.0
  */
 import { BaseValueObject } from "./base-value-object.js";
+import { ExceptionFactory } from "../exceptions/exception-factory.js";
+import { InvalidTenantTypeException } from "../exceptions/validation-exceptions.js";
 
 export class TenantType extends BaseValueObject<string> {
+  private _exceptionFactory: ExceptionFactory;
   /**
    * 企业租户
    */
@@ -90,13 +93,15 @@ export class TenantType extends BaseValueObject<string> {
    * @protected
    */
   protected validate(value: string): void {
+    if (!this._exceptionFactory) {
+      this._exceptionFactory = ExceptionFactory.getInstance();
+    }
+    
     this.validateNotEmpty(value, "租户类型");
 
     const validTypes = ["ENTERPRISE", "COMMUNITY", "TEAM", "PERSONAL"];
     if (!validTypes.includes(value.toUpperCase())) {
-      throw new Error(
-        `无效的租户类型: ${value}。有效类型: ${validTypes.join(", ")}`,
-      );
+      throw this._exceptionFactory.createInvalidTenantType(value, `无效的租户类型: ${value}。有效类型: ${validTypes.join(", ")}`);
     }
   }
 
@@ -131,7 +136,7 @@ export class TenantType extends BaseValueObject<string> {
       case "PERSONAL":
         return TenantType.PERSONAL;
       default:
-        throw new Error(`无效的租户类型: ${value}`);
+        throw this._exceptionFactory.createInvalidTenantType(value, `无效的租户类型: ${value}`);
     }
   }
 

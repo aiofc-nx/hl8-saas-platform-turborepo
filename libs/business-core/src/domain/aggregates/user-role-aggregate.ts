@@ -13,6 +13,8 @@ import { Role } from "../entities/role/role.entity.js";
 import { Permission } from "../entities/permission/permission.entity.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
+import { ExceptionFactory } from "../exceptions/exception-factory.js";
+import { UserRoleStateException } from "../exceptions/business-exceptions.js";
 
 /**
  * 用户角色关联聚合根
@@ -62,6 +64,7 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
   private userRole: UserRole;
   private roles: Role[] = [];
   private permissions: Permission[] = [];
+  private _exceptionFactory: ExceptionFactory;
 
   constructor(
     id: EntityId,
@@ -70,6 +73,7 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
     logger?: IPureLogger,
   ) {
     super(id, audit, logger);
+    this._exceptionFactory = ExceptionFactory.getInstance();
     this.userRole = userRole;
   }
 
@@ -373,10 +377,10 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleAssignment(role: Role): void {
     if (!role) {
-      throw new Error("角色不能为空");
+      throw this._exceptionFactory.createDomainValidation("角色不能为空", "role", role);
     }
     if (!role.isActive) {
-      throw new Error("角色未激活，无法分配");
+      throw this._exceptionFactory.createDomainState("角色未激活，无法分配", "inactive", "assignRole", { roleId: role.id.value, isActive: role.isActive });
     }
   }
 
@@ -388,7 +392,7 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRoleRemoval(roleId: EntityId): void {
     if (!roleId) {
-      throw new Error("角色ID不能为空");
+      throw this._exceptionFactory.createDomainValidation("角色ID不能为空", "roleId", roleId);
     }
   }
 
@@ -400,7 +404,7 @@ export class UserRoleAggregate extends IsolationAwareAggregateRoot {
    */
   private validateRolesAssignment(roles: Role[]): void {
     if (!roles || roles.length === 0) {
-      throw new Error("角色列表不能为空");
+      throw this._exceptionFactory.createDomainValidation("角色列表不能为空", "roles", roles);
     }
     for (const role of roles) {
       this.validateRoleAssignment(role);
