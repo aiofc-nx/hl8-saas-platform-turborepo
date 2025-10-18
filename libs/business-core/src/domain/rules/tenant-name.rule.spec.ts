@@ -2,7 +2,7 @@ import { TenantNameRule } from "./tenant-name.rule.js";
 import {
   BusinessRuleType,
   BusinessRuleScope,
-} from "../enums/business/index.js";
+} from "../../common/enums/business/index.js";
 
 describe("TenantNameRule", () => {
   let rule: TenantNameRule;

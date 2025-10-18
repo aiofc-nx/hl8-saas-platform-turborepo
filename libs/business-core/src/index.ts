@@ -181,7 +181,7 @@ export * from "./interface/middleware/common/index.js";
 export {
   UserStatus as CommonUserStatus,
   UserStatusUtils as CommonUserStatusUtils,
-} from "./domain/enums/common/index.js";
+} from "./common/enums/user/index.js";
 
 // 通用类型导出
 export * from "./domain/types/common/index.js";

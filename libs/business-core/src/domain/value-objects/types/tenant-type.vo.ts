@@ -46,7 +46,7 @@ import { ErrorCodes } from "../../constants/index.js";
 import {
   TenantType as TenantTypeEnum,
   TenantTypeUtils,
-} from "../../enums/index.js";
+} from "../../../common/enums/index.js";
 
 export class TenantType extends BaseValueObject<string> {
   /**

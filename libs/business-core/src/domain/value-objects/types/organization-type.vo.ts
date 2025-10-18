@@ -4,7 +4,7 @@ import { ErrorCodes } from "../../constants/index.js";
 import {
   OrganizationType as OrganizationTypeEnum,
   OrganizationTypeUtils,
-} from "../../enums/index.js";
+} from "../../../common/enums/index.js";
 
 /**
  * 组织类型值对象
