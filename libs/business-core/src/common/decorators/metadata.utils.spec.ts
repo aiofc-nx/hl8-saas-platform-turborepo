@@ -118,7 +118,7 @@ describe("元数据工具函数", () => {
       } as unknown;
 
       // 设置元数据
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       setMetadata(TestClass, testKey, testData as any);
 
       // 检查元数据是否存在

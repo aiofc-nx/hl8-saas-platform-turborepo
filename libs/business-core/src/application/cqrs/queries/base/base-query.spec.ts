@@ -103,7 +103,7 @@ class TestQuery extends BaseQuery {
       { filter: this.filter },
     );
     // 复制排序规则
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     (copy as any)._sortRules = [...sortRules];
     return copy as this;
   }
@@ -169,7 +169,7 @@ describe("BaseQuery", () => {
       const query2 = TestQuery.create("filter2", tenantId, "user-123");
 
       // 手动设置相同的查询ID
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       (query1 as any)._queryId = (query2 as any)._queryId;
 
       expect(query1.equals(query2)).toBe(true);

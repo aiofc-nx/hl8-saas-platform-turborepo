@@ -208,26 +208,40 @@ describe("CommandBus", () => {
   });
 
   describe("中间件", () => {
-    let middleware1: { execute: (context: Record<string, unknown>, next: () => Promise<void>) => Promise<void> };
-    let middleware2: { execute: (context: Record<string, unknown>, next: () => Promise<void>) => Promise<void> };
+    let middleware1: {
+      execute: (
+        context: Record<string, unknown>,
+        next: () => Promise<void>,
+      ) => Promise<void>;
+    };
+    let middleware2: {
+      execute: (
+        context: Record<string, unknown>,
+        next: () => Promise<void>,
+      ) => Promise<void>;
+    };
 
     beforeEach(() => {
       middleware1 = {
         name: "middleware1",
         priority: 1,
-        execute: jest.fn((context: Record<string, unknown>, next: () => Promise<void>) => {
-          console.log("中间件1: 执行前");
-          return next();
-        }),
+        execute: jest.fn(
+          (context: Record<string, unknown>, next: () => Promise<void>) => {
+            console.log("中间件1: 执行前");
+            return next();
+          },
+        ),
       };
 
       middleware2 = {
         name: "middleware2",
         priority: 2,
-        execute: jest.fn((context: Record<string, unknown>, next: () => Promise<void>) => {
-          console.log("中间件2: 执行前");
-          return next();
-        }),
+        execute: jest.fn(
+          (context: Record<string, unknown>, next: () => Promise<void>) => {
+            console.log("中间件2: 执行前");
+            return next();
+          },
+        ),
       };
 
       commandBus.registerHandler("TestCommand", new TestCommandHandler());

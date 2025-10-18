@@ -1,14 +1,15 @@
 import { EntityId, TenantId } from "@hl8/isolation-model";
 import { TenantType } from "../../../domain/value-objects/types/tenant-type.vo.js";
 import type { ITenantRepository } from "../../../domain/repositories/tenant.repository.js";
+import type { TenantAggregate } from "../../../domain/aggregates/tenant-aggregate.js";
 import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import { UseCase } from "../decorators/use-case.decorator.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
@@ -176,7 +177,7 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
         "INVALID_PAGE",
         "页码必须大于0",
         "页码必须大于0",
-        400
+        400,
       );
     }
 
@@ -188,7 +189,7 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
         "INVALID_LIMIT",
         "每页记录数必须在1-100之间",
         "每页记录数必须在1-100之间",
-        400
+        400,
       );
     }
 
@@ -200,7 +201,7 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
         "INVALID_SORT_BY",
         "无效的排序字段",
         "无效的排序字段",
-        400
+        400,
       );
     }
 
@@ -209,7 +210,7 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
         "INVALID_SORT_ORDER",
         "无效的排序顺序",
         "无效的排序顺序",
-        400
+        400,
       );
     }
   }
@@ -248,17 +249,16 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
    * @private
    */
   private mapToTenantInfo(tenant: TenantAggregate): TenantInfo {
-    // 处理不同的数据结构
-    const tenantData = tenant.tenant || tenant;
+    const tenantEntity = tenant.tenant;
 
     return {
       tenantId: tenant.id,
-      name: tenantData.name,
-      type: tenantData.type,
+      name: tenantEntity.name,
+      type: tenantEntity.type,
       platformId: tenant.platformId,
-      createdAt: tenantData.createdAt,
-      updatedAt: tenantData.updatedAt,
-      isDeleted: tenantData.isDeleted,
+      createdAt: tenantEntity.createdAt,
+      updatedAt: tenantEntity.updatedAt,
+      isDeleted: tenantEntity.isDeleted,
     };
   }
 }

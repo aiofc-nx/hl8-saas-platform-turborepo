@@ -76,7 +76,10 @@ import {
   DEFAULT_ENVIRONMENT,
 } from "../../../common/constants/constants.js";
 import type { IsolationContext } from "@hl8/isolation-model";
-import { ValidationException, UnauthorizedOperationException } from "../../../common/exceptions/business.exceptions.js";
+import {
+  ValidationException,
+  UnauthorizedOperationException,
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 用例执行结果
@@ -244,7 +247,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
         "REQUEST_REQUIRED",
         "请求参数不能为空",
         `[${this.useCaseName}] 请求参数不能为空`,
-        400
+        400,
       );
     }
 
@@ -268,7 +271,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
     if (!context.user) {
       throw new UnauthorizedOperationException(
         `[${this.useCaseName}] 用例需要用户身份验证`,
-        "anonymous"
+        "anonymous",
       );
     }
 
@@ -283,7 +286,7 @@ export abstract class BaseUseCase<TRequest, TResponse>
       );
       throw new UnauthorizedOperationException(
         `[${this.useCaseName}] 权限不足，缺少权限: ${missingPermissions.join(", ")}`,
-        context.user.id?.toString()
+        context.user.id?.toString(),
       );
     }
   }
@@ -438,15 +441,18 @@ export abstract class BaseUseCase<TRequest, TResponse>
     return {
       debug: (message: string, context?: Record<string, unknown>) =>
         console.debug(message, context),
-      info: (message: string, context?: Record<string, unknown>) => console.info(message, context),
-      warn: (message: string, context?: Record<string, unknown>) => console.warn(message, context),
+      info: (message: string, context?: Record<string, unknown>) =>
+        console.info(message, context),
+      warn: (message: string, context?: Record<string, unknown>) =>
+        console.warn(message, context),
       error: (message: string | Error, context?: Record<string, unknown>) =>
         console.error(message, context),
       fatal: (message: string, context?: Record<string, unknown>) =>
         console.error(message, context),
       trace: (message: string, context?: Record<string, unknown>) =>
         console.trace(message, context),
-      log: (message: string, context?: Record<string, unknown>) => console.log(message, context),
+      log: (message: string, context?: Record<string, unknown>) =>
+        console.log(message, context),
       verbose: (message: string, context?: Record<string, unknown>) =>
         console.log(message, context),
       getPinoLogger: () => null as unknown,

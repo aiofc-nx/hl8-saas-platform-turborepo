@@ -55,7 +55,13 @@ import { ValidationException } from "../../../common/exceptions/business.excepti
 import { UseCaseType } from "../../../common/enums/application/use-case-type.enum.js";
 
 // 导入用例类型定义
-import type { IUseCaseOptions, IUseCaseMetadata } from "../../../common/types/application/use-case.types.js";
+import type {
+  IUseCaseOptions,
+  IUseCaseMetadata,
+} from "../../../common/types/application/use-case.types.js";
+
+// 导入装饰器类型定义
+import type { ClassConstructor } from "../../../common/types/application/decorator.types.js";
 
 // 导入用例常量
 import { USE_CASE_METADATA_KEY } from "../../../common/constants/application/use-case.constants.js";
@@ -88,12 +94,13 @@ import { USE_CASE_METADATA_KEY } from "../../../common/constants/application/use
  * ```
  */
 export function UseCase(options: IUseCaseOptions): ClassDecorator {
-  return function (target: ClassConstructor): void {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  return function <TFunction extends Function>(target: TFunction) {
     // 验证配置选项
     validateUseCaseOptions(options);
 
     // 设置默认值
-    const metadata: Required<IUseCaseOptions> = {
+    const metadata: IUseCaseOptions = {
       name: options.name,
       description: options.description,
       type: options.type as UseCaseType,
@@ -103,15 +110,9 @@ export function UseCase(options: IUseCaseOptions): ClassDecorator {
       tags: options.tags || [],
       critical: options.critical || false,
       monitored: options.monitored !== false, // 默认启用监控
-      cache: {
-        enabled: options.cache?.enabled || false,
-        ttl: options.cache?.ttl || 300,
-        keyPrefix: options.cache?.keyPrefix || options.name.toLowerCase(),
-      },
-      timeout: {
-        execution: options.timeout?.execution || 30000, // 默认30秒
-        alertOnTimeout: options.timeout?.alertOnTimeout !== false,
-      },
+      cacheable: options.cacheable || false,
+      cacheTtl: options.cacheTtl || 300,
+      timeout: options.timeout || 30000, // 默认30秒
     };
 
     // 存储元数据
@@ -159,7 +160,7 @@ export function getUseCaseMetadata(
  * ```
  */
 export function isUseCase(target: unknown): boolean {
-  return getUseCaseMetadata(target) !== undefined;
+  return getUseCaseMetadata(target as ClassConstructor | object) !== undefined;
 }
 
 /**
@@ -178,7 +179,7 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
       "USE_CASE_NAME_REQUIRED",
       "用例名称不能为空",
       "用例名称不能为空",
-      400
+      400,
     );
   }
 
@@ -187,16 +188,16 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
       "USE_CASE_DESCRIPTION_REQUIRED",
       "用例描述不能为空",
       "用例描述不能为空",
-      400
+      400,
     );
   }
 
   if (!options.type || !["command", "query"].includes(options.type as string)) {
     throw new ValidationException(
       "INVALID_USE_CASE_TYPE",
-      "用例类型必须是 \"command\" 或 \"query\"",
-      "用例类型必须是 \"command\" 或 \"query\"",
-      400
+      '用例类型必须是 "command" 或 "query"',
+      '用例类型必须是 "command" 或 "query"',
+      400,
     );
   }
 
@@ -205,7 +206,7 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
       "INVALID_USE_CASE_VERSION",
       "用例版本必须是字符串",
       "用例版本必须是字符串",
-      400
+      400,
     );
   }
 
@@ -214,7 +215,7 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
       "INVALID_USE_CASE_PERMISSIONS",
       "用例权限必须是字符串数组",
       "用例权限必须是字符串数组",
-      400
+      400,
     );
   }
 
@@ -226,7 +227,7 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
       "INVALID_USE_CASE_PERMISSION_TYPE",
       "用例权限必须都是字符串",
       "用例权限必须都是字符串",
-      400
+      400,
     );
   }
 
@@ -235,7 +236,7 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
       "INVALID_USE_CASE_CATEGORY",
       "用例分类必须是字符串",
       "用例分类必须是字符串",
-      400
+      400,
     );
   }
 
@@ -244,7 +245,7 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
       "INVALID_USE_CASE_TAGS",
       "用例标签必须是字符串数组",
       "用例标签必须是字符串数组",
-      400
+      400,
     );
   }
 
@@ -253,32 +254,31 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
       "INVALID_USE_CASE_TAG_TYPE",
       "用例标签必须都是字符串",
       "用例标签必须都是字符串",
-      400
+      400,
     );
   }
 
   if (
-    options.timeout?.execution &&
-    (typeof options.timeout.execution !== "number" ||
-      options.timeout.execution <= 0)
+    options.timeout &&
+    (typeof options.timeout !== "number" || options.timeout <= 0)
   ) {
     throw new ValidationException(
       "INVALID_USE_CASE_TIMEOUT",
       "用例超时时间必须是正整数",
       "用例超时时间必须是正整数",
-      400
+      400,
     );
   }
 
   if (
-    options.cache?.ttl &&
-    (typeof options.cache.ttl !== "number" || options.cache.ttl <= 0)
+    options.cacheTtl &&
+    (typeof options.cacheTtl !== "number" || options.cacheTtl <= 0)
   ) {
     throw new ValidationException(
       "INVALID_USE_CASE_CACHE_TTL",
       "缓存TTL必须是正整数",
       "缓存TTL必须是正整数",
-      400
+      400,
     );
   }
 }

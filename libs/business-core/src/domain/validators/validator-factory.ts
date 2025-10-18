@@ -49,8 +49,8 @@ export class ValidatorFactory {
    */
   createEmailValidator(): IBaseValidator {
     return {
-      validate: (value: string) => {
-        const { EmailValidator } = require("./common/email.validator.js");
+      validate: async (value: string) => {
+        const { EmailValidator } = await import("./common/email.validator.js");
         const result = EmailValidator.validateFormat(value);
         return {
           isValid: result.isValid,
@@ -73,8 +73,10 @@ export class ValidatorFactory {
    */
   createPasswordValidator(): IBaseValidator {
     return {
-      validate: (value: string) => {
-        const { PasswordValidator } = require("./common/password.validator.js");
+      validate: async (value: string) => {
+        const { PasswordValidator } = await import(
+          "./common/password.validator.js"
+        );
         const result = PasswordValidator.validateStrength(value);
         return {
           isValid: result.isValid,
@@ -97,8 +99,10 @@ export class ValidatorFactory {
    */
   createUsernameValidator(): IBaseValidator {
     return {
-      validate: (value: string) => {
-        const { UsernameValidator } = require("./common/username.validator.js");
+      validate: async (value: string) => {
+        const { UsernameValidator } = await import(
+          "./common/username.validator.js"
+        );
         const result = UsernameValidator.validateFormat(value);
         return {
           isValid: result.isValid,

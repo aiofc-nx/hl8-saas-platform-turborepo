@@ -49,8 +49,14 @@ import { UserUseCaseServices } from "./user-use-case-services.js";
 import { TenantUseCaseServices } from "./tenant-use-case-services.js";
 
 // 输入输出类型
-import type { CreateUserRequest, CreateUserResponse } from "../use-cases/user/create-user.use-case.js";
-import type { CreateTenantRequest, CreateTenantResponse } from "../use-cases/tenant/create-tenant.use-case.js";
+import type {
+  CreateUserRequest,
+  CreateUserResponse,
+} from "../use-cases/user/create-user.use-case.js";
+import type {
+  CreateTenantRequest,
+  CreateTenantResponse,
+} from "../use-cases/tenant/create-tenant.use-case.js";
 
 /**
  * 创建用户并分配租户请求
@@ -163,7 +169,9 @@ export class UserApplicationService {
       });
 
       // 1. 创建租户
-      const tenantResult = await this.tenantUseCaseServices.createTenant(request.tenantData);
+      const tenantResult = await this.tenantUseCaseServices.createTenant(
+        request.tenantData,
+      );
 
       // 2. 创建用户并关联租户
       const userResult = await this.userUseCaseServices.createUser({
@@ -275,7 +283,10 @@ export class UserApplicationService {
    * const userInfo = await userApplicationService.getUserCompleteInfo(userId, tenantId);
    * ```
    */
-  async getUserCompleteInfo(userId: EntityId, tenantId: TenantId): Promise<any> {
+  async getUserCompleteInfo(
+    userId: EntityId,
+    tenantId: TenantId,
+  ): Promise<any> {
     try {
       this.logger.debug("开始获取用户完整信息", {
         userId: userId.toString(),

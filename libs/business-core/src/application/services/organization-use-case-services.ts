@@ -64,13 +64,34 @@ import type { IActivateOrganizationUseCase } from "../use-cases/organization/act
 import type { IDeactivateOrganizationUseCase } from "../use-cases/organization/deactivate-organization.use-case.js";
 
 // 输入输出类型
-import type { CreateOrganizationRequest, CreateOrganizationResponse } from "../use-cases/organization/create-organization.use-case.js";
-import type { UpdateOrganizationRequest, UpdateOrganizationResponse } from "../use-cases/organization/update-organization.use-case.js";
-import type { DeleteOrganizationRequest, DeleteOrganizationResponse } from "../use-cases/organization/delete-organization.use-case.js";
-import type { GetOrganizationRequest, GetOrganizationResponse } from "../use-cases/organization/get-organization.use-case.js";
-import type { GetOrganizationsRequest, GetOrganizationsResponse } from "../use-cases/organization/get-organizations.use-case.js";
-import type { ActivateOrganizationRequest, ActivateOrganizationResponse } from "../use-cases/organization/activate-organization.use-case.js";
-import type { DeactivateOrganizationRequest, DeactivateOrganizationResponse } from "../use-cases/organization/deactivate-organization.use-case.js";
+import type {
+  CreateOrganizationRequest,
+  CreateOrganizationResponse,
+} from "../use-cases/organization/create-organization.use-case.js";
+import type {
+  UpdateOrganizationRequest,
+  UpdateOrganizationResponse,
+} from "../use-cases/organization/update-organization.use-case.js";
+import type {
+  DeleteOrganizationRequest,
+  DeleteOrganizationResponse,
+} from "../use-cases/organization/delete-organization.use-case.js";
+import type {
+  GetOrganizationRequest,
+  GetOrganizationResponse,
+} from "../use-cases/organization/get-organization.use-case.js";
+import type {
+  GetOrganizationsRequest,
+  GetOrganizationsResponse,
+} from "../use-cases/organization/get-organizations.use-case.js";
+import type {
+  ActivateOrganizationRequest,
+  ActivateOrganizationResponse,
+} from "../use-cases/organization/activate-organization.use-case.js";
+import type {
+  DeactivateOrganizationRequest,
+  DeactivateOrganizationResponse,
+} from "../use-cases/organization/deactivate-organization.use-case.js";
 
 /**
  * 组织用例服务集合
@@ -107,16 +128,26 @@ export class OrganizationUseCaseServices {
    * });
    * ```
    */
-  async createOrganization(request: CreateOrganizationRequest): Promise<CreateOrganizationResponse> {
+  async createOrganization(
+    request: CreateOrganizationRequest,
+  ): Promise<CreateOrganizationResponse> {
     try {
-      this.logger.info("开始创建组织", { name: request.name, type: request.type.value });
-      
+      this.logger.info("开始创建组织", {
+        name: request.name,
+        type: request.type.value,
+      });
+
       const response = await this.createOrganizationUseCase.execute(request);
-      
-      this.logger.info("组织创建成功", { organizationId: response.organizationId.toString() });
+
+      this.logger.info("组织创建成功", {
+        organizationId: response.organizationId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("组织创建失败", { error: error.message, name: request.name });
+      this.logger.error("组织创建失败", {
+        error: error.message,
+        name: request.name,
+      });
       throw error;
     }
   }
@@ -139,16 +170,25 @@ export class OrganizationUseCaseServices {
    * });
    * ```
    */
-  async updateOrganization(request: UpdateOrganizationRequest): Promise<UpdateOrganizationResponse> {
+  async updateOrganization(
+    request: UpdateOrganizationRequest,
+  ): Promise<UpdateOrganizationResponse> {
     try {
-      this.logger.info("开始更新组织", { organizationId: request.organizationId.toString() });
-      
+      this.logger.info("开始更新组织", {
+        organizationId: request.organizationId.toString(),
+      });
+
       const response = await this.updateOrganizationUseCase.execute(request);
-      
-      this.logger.info("组织更新成功", { organizationId: response.organizationId.toString() });
+
+      this.logger.info("组织更新成功", {
+        organizationId: response.organizationId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("组织更新失败", { error: error.message, organizationId: request.organizationId.toString() });
+      this.logger.error("组织更新失败", {
+        error: error.message,
+        organizationId: request.organizationId.toString(),
+      });
       throw error;
     }
   }
@@ -170,16 +210,25 @@ export class OrganizationUseCaseServices {
    * });
    * ```
    */
-  async deleteOrganization(request: DeleteOrganizationRequest): Promise<DeleteOrganizationResponse> {
+  async deleteOrganization(
+    request: DeleteOrganizationRequest,
+  ): Promise<DeleteOrganizationResponse> {
     try {
-      this.logger.info("开始删除组织", { organizationId: request.organizationId.toString() });
-      
+      this.logger.info("开始删除组织", {
+        organizationId: request.organizationId.toString(),
+      });
+
       const response = await this.deleteOrganizationUseCase.execute(request);
-      
-      this.logger.info("组织删除成功", { organizationId: response.organizationId.toString() });
+
+      this.logger.info("组织删除成功", {
+        organizationId: response.organizationId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("组织删除失败", { error: error.message, organizationId: request.organizationId.toString() });
+      this.logger.error("组织删除失败", {
+        error: error.message,
+        organizationId: request.organizationId.toString(),
+      });
       throw error;
     }
   }
@@ -199,16 +248,25 @@ export class OrganizationUseCaseServices {
    * });
    * ```
    */
-  async getOrganization(request: GetOrganizationRequest): Promise<GetOrganizationResponse> {
+  async getOrganization(
+    request: GetOrganizationRequest,
+  ): Promise<GetOrganizationResponse> {
     try {
-      this.logger.debug("开始获取组织", { organizationId: request.organizationId.toString() });
-      
+      this.logger.debug("开始获取组织", {
+        organizationId: request.organizationId.toString(),
+      });
+
       const response = await this.getOrganizationUseCase.execute(request);
-      
-      this.logger.debug("组织获取成功", { organizationId: response.organization.id.toString() });
+
+      this.logger.debug("组织获取成功", {
+        organizationId: response.organization.id.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("组织获取失败", { error: error.message, organizationId: request.organizationId.toString() });
+      this.logger.error("组织获取失败", {
+        error: error.message,
+        organizationId: request.organizationId.toString(),
+      });
       throw error;
     }
   }
@@ -231,25 +289,27 @@ export class OrganizationUseCaseServices {
    * });
    * ```
    */
-  async getOrganizations(request: GetOrganizationsRequest): Promise<GetOrganizationsResponse> {
+  async getOrganizations(
+    request: GetOrganizationsRequest,
+  ): Promise<GetOrganizationsResponse> {
     try {
-      this.logger.debug("开始获取组织列表", { 
+      this.logger.debug("开始获取组织列表", {
         tenantId: request.tenantId.toString(),
         page: request.page,
-        limit: request.limit
+        limit: request.limit,
       });
-      
+
       const response = await this.getOrganizationsUseCase.execute(request);
-      
-      this.logger.debug("组织列表获取成功", { 
+
+      this.logger.debug("组织列表获取成功", {
         total: response.total,
-        count: response.organizations.length
+        count: response.organizations.length,
       });
       return response;
     } catch (error) {
-      this.logger.error("组织列表获取失败", { 
-        error: error.message, 
-        tenantId: request.tenantId.toString() 
+      this.logger.error("组织列表获取失败", {
+        error: error.message,
+        tenantId: request.tenantId.toString(),
       });
       throw error;
     }
@@ -271,16 +331,25 @@ export class OrganizationUseCaseServices {
    * });
    * ```
    */
-  async activateOrganization(request: ActivateOrganizationRequest): Promise<ActivateOrganizationResponse> {
+  async activateOrganization(
+    request: ActivateOrganizationRequest,
+  ): Promise<ActivateOrganizationResponse> {
     try {
-      this.logger.info("开始激活组织", { organizationId: request.organizationId.toString() });
-      
+      this.logger.info("开始激活组织", {
+        organizationId: request.organizationId.toString(),
+      });
+
       const response = await this.activateOrganizationUseCase.execute(request);
-      
-      this.logger.info("组织激活成功", { organizationId: response.organizationId.toString() });
+
+      this.logger.info("组织激活成功", {
+        organizationId: response.organizationId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("组织激活失败", { error: error.message, organizationId: request.organizationId.toString() });
+      this.logger.error("组织激活失败", {
+        error: error.message,
+        organizationId: request.organizationId.toString(),
+      });
       throw error;
     }
   }
@@ -302,16 +371,26 @@ export class OrganizationUseCaseServices {
    * });
    * ```
    */
-  async deactivateOrganization(request: DeactivateOrganizationRequest): Promise<DeactivateOrganizationResponse> {
+  async deactivateOrganization(
+    request: DeactivateOrganizationRequest,
+  ): Promise<DeactivateOrganizationResponse> {
     try {
-      this.logger.info("开始停用组织", { organizationId: request.organizationId.toString() });
-      
-      const response = await this.deactivateOrganizationUseCase.execute(request);
-      
-      this.logger.info("组织停用成功", { organizationId: response.organizationId.toString() });
+      this.logger.info("开始停用组织", {
+        organizationId: request.organizationId.toString(),
+      });
+
+      const response =
+        await this.deactivateOrganizationUseCase.execute(request);
+
+      this.logger.info("组织停用成功", {
+        organizationId: response.organizationId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("组织停用失败", { error: error.message, organizationId: request.organizationId.toString() });
+      this.logger.error("组织停用失败", {
+        error: error.message,
+        organizationId: request.organizationId.toString(),
+      });
       throw error;
     }
   }

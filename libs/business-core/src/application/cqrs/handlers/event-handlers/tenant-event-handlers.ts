@@ -53,7 +53,9 @@ import type { INotificationService } from "../ports/notification-service.interfa
  * @description 处理TenantCreatedEvent，发送通知邮件并记录审计日志
  */
 @EventsHandler(TenantCreatedEvent)
-export class TenantCreatedEventHandler implements IEventHandler<TenantCreatedEvent> {
+export class TenantCreatedEventHandler
+  implements IEventHandler<TenantCreatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -93,7 +95,9 @@ export class TenantCreatedEventHandler implements IEventHandler<TenantCreatedEve
    * @param event - 租户创建事件
    * @private
    */
-  private async sendTenantCreatedNotification(event: TenantCreatedEvent): Promise<void> {
+  private async sendTenantCreatedNotification(
+    event: TenantCreatedEvent,
+  ): Promise<void> {
     try {
       // 发送给租户管理员
       await this.emailService.sendTenantCreatedEmail(
@@ -119,7 +123,9 @@ export class TenantCreatedEventHandler implements IEventHandler<TenantCreatedEve
  * @description 处理TenantUpdatedEvent，记录审计日志并发送通知
  */
 @EventsHandler(TenantUpdatedEvent)
-export class TenantUpdatedEventHandler implements IEventHandler<TenantUpdatedEvent> {
+export class TenantUpdatedEventHandler
+  implements IEventHandler<TenantUpdatedEvent>
+{
   constructor(
     private readonly auditService: IAuditService,
     private readonly notificationService: INotificationService,
@@ -155,7 +161,9 @@ export class TenantUpdatedEventHandler implements IEventHandler<TenantUpdatedEve
  * @description 处理TenantDeletedEvent，记录审计日志并发送通知
  */
 @EventsHandler(TenantDeletedEvent)
-export class TenantDeletedEventHandler implements IEventHandler<TenantDeletedEvent> {
+export class TenantDeletedEventHandler
+  implements IEventHandler<TenantDeletedEvent>
+{
   constructor(
     private readonly auditService: IAuditService,
     private readonly notificationService: INotificationService,
@@ -191,7 +199,9 @@ export class TenantDeletedEventHandler implements IEventHandler<TenantDeletedEve
  * @description 处理TenantActivatedEvent，发送激活通知并记录审计日志
  */
 @EventsHandler(TenantActivatedEvent)
-export class TenantActivatedEventHandler implements IEventHandler<TenantActivatedEvent> {
+export class TenantActivatedEventHandler
+  implements IEventHandler<TenantActivatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -230,7 +240,9 @@ export class TenantActivatedEventHandler implements IEventHandler<TenantActivate
    * @param event - 租户激活事件
    * @private
    */
-  private async sendTenantActivatedNotification(event: TenantActivatedEvent): Promise<void> {
+  private async sendTenantActivatedNotification(
+    event: TenantActivatedEvent,
+  ): Promise<void> {
     try {
       // 发送给租户管理员
       await this.emailService.sendTenantActivatedEmail(
@@ -256,7 +268,9 @@ export class TenantActivatedEventHandler implements IEventHandler<TenantActivate
  * @description 处理TenantDeactivatedEvent，发送停用通知并记录审计日志
  */
 @EventsHandler(TenantDeactivatedEvent)
-export class TenantDeactivatedEventHandler implements IEventHandler<TenantDeactivatedEvent> {
+export class TenantDeactivatedEventHandler
+  implements IEventHandler<TenantDeactivatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -295,7 +309,9 @@ export class TenantDeactivatedEventHandler implements IEventHandler<TenantDeacti
    * @param event - 租户停用事件
    * @private
    */
-  private async sendTenantDeactivatedNotification(event: TenantDeactivatedEvent): Promise<void> {
+  private async sendTenantDeactivatedNotification(
+    event: TenantDeactivatedEvent,
+  ): Promise<void> {
     try {
       // 发送给租户管理员
       await this.emailService.sendTenantDeactivatedEmail(

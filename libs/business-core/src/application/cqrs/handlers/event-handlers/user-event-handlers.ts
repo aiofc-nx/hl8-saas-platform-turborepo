@@ -27,7 +27,7 @@
  * ```typescript
  * // 用户创建事件处理器
  * const handler = new UserCreatedEventHandler(emailService, auditService, logger);
- * 
+ *
  * // 处理用户创建事件
  * await handler.handle(userCreatedEvent);
  * ```

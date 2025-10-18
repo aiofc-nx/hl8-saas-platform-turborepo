@@ -20,7 +20,7 @@
  * @example
  * ```typescript
  * const activateUserUseCase = new ActivateUserUseCase(userRepository, eventBus, transactionManager, logger);
- * 
+ *
  * const result = await activateUserUseCase.execute({
  *   userId: userId,
  *   activatedBy: 'admin'
@@ -37,11 +37,11 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException 
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -90,17 +90,25 @@ export interface IActivateUserUseCase {
  *
  * @description 激活用户账户，使其可以正常使用系统
  */
-export class ActivateUserUseCase extends BaseCommandUseCase<
-  ActivateUserRequest,
-  ActivateUserResponse
-> implements IActivateUserUseCase {
+export class ActivateUserUseCase
+  extends BaseCommandUseCase<ActivateUserRequest, ActivateUserResponse>
+  implements IActivateUserUseCase
+{
   constructor(
     private readonly userRepository: IUserRepository,
     eventBus?: IEventBus,
     transactionManager?: ITransactionManager,
     logger?: FastifyLoggerService,
   ) {
-    super("ActivateUser", "激活用户用例", "1.0.0", ["user:activate"], eventBus, transactionManager, logger);
+    super(
+      "ActivateUser",
+      "激活用户用例",
+      "1.0.0",
+      ["user:activate"],
+      eventBus,
+      transactionManager,
+      logger,
+    );
   }
 
   /**
@@ -117,7 +125,7 @@ export class ActivateUserUseCase extends BaseCommandUseCase<
     await this.validateUserExists(request.userId, request.tenantId);
     await this.validateActivatePermissions(request, context);
     await this.validateUserCanBeActivated(request);
-    
+
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", request.userId.toString());
@@ -125,10 +133,10 @@ export class ActivateUserUseCase extends BaseCommandUseCase<
 
     // 激活用户
     userAggregate.activateUser(request.activatedBy, request.activateReason);
-    
+
     // 保存用户
     await this.userRepository.save(userAggregate);
-    
+
     // 发布领域事件
     await this.publishDomainEvents(userAggregate);
 
@@ -156,7 +164,7 @@ export class ActivateUserUseCase extends BaseCommandUseCase<
         "USER_ID_REQUIRED",
         "用户ID不能为空",
         "用户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -164,7 +172,7 @@ export class ActivateUserUseCase extends BaseCommandUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.activatedBy) {
@@ -172,7 +180,7 @@ export class ActivateUserUseCase extends BaseCommandUseCase<
         "ACTIVATED_BY_REQUIRED",
         "激活者不能为空",
         "激活者是必填字段",
-        400
+        400,
       );
     }
   }
@@ -184,16 +192,19 @@ export class ActivateUserUseCase extends BaseCommandUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateUserExists(userId: EntityId, tenantId: TenantId): Promise<void> {
+  private async validateUserExists(
+    userId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", userId.toString());
     }
     if (!userAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "用户不属于指定租户",
-        { userId: userId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("用户不属于指定租户", {
+        userId: userId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -210,11 +221,11 @@ export class ActivateUserUseCase extends BaseCommandUseCase<
   ): Promise<void> {
     // 检查是否为管理员
     const isAdmin = context.user?.role === "ADMIN";
-    
+
     if (!isAdmin) {
       throw new UnauthorizedOperationException(
         "激活用户",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -225,27 +236,29 @@ export class ActivateUserUseCase extends BaseCommandUseCase<
    * @param request - 激活用户请求
    * @private
    */
-  private async validateUserCanBeActivated(request: ActivateUserRequest): Promise<void> {
+  private async validateUserCanBeActivated(
+    request: ActivateUserRequest,
+  ): Promise<void> {
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", request.userId.toString());
     }
 
     const user = userAggregate.getUser();
-    
+
     // 检查用户状态
     if (user.status === "ACTIVE") {
-      throw new BusinessRuleViolationException(
-        "用户已激活",
-        { userId: request.userId.toString(), userStatus: user.status }
-      );
+      throw new BusinessRuleViolationException("用户已激活", {
+        userId: request.userId.toString(),
+        userStatus: user.status,
+      });
     }
-    
+
     if (user.status === "DELETED") {
-      throw new BusinessRuleViolationException(
-        "已删除的用户不能激活",
-        { userId: request.userId.toString(), userStatus: user.status }
-      );
+      throw new BusinessRuleViolationException("已删除的用户不能激活", {
+        userId: request.userId.toString(),
+        userStatus: user.status,
+      });
     }
   }
 }

@@ -57,7 +57,10 @@ import {
   IMiddleware,
   IMessageContext,
 } from "./cqrs-bus.interface.js";
-import { ResourceNotFoundException, BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
+import {
+  ResourceNotFoundException,
+  BusinessRuleViolationException,
+} from "../../../common/exceptions/business.exceptions.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**
@@ -121,7 +124,7 @@ export class QueryBus implements IQueryBus {
       if (!canHandle) {
         throw new BusinessRuleViolationException(
           `Handler cannot process query: ${queryType}`,
-          { queryType, handlerName: handler.constructor.name }
+          { queryType, handlerName: handler.constructor.name },
         );
       }
 
@@ -136,10 +139,10 @@ export class QueryBus implements IQueryBus {
     });
 
     if (!result) {
-      throw new BusinessRuleViolationException(
-        "查询执行失败：未返回结果",
-        { queryType, queryId: query.queryId.toString() }
-      );
+      throw new BusinessRuleViolationException("查询执行失败：未返回结果", {
+        queryType,
+        queryId: query.queryId.toString(),
+      });
     }
     return result;
   }
@@ -158,14 +161,14 @@ export class QueryBus implements IQueryBus {
     if (this.handlers.has(queryType)) {
       throw new BusinessRuleViolationException(
         `Handler already registered for query type: ${queryType}`,
-        { queryType }
+        { queryType },
       );
     }
 
     if (!handler.supports(queryType)) {
       throw new BusinessRuleViolationException(
         `Handler does not support query type: ${queryType}`,
-        { queryType, handlerName: handler.constructor.name }
+        { queryType, handlerName: handler.constructor.name },
       );
     }
 

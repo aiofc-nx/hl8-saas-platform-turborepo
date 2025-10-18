@@ -67,7 +67,7 @@ export class ValidationService {
 
     // 域名白名单验证
     if (options.allowedDomains && options.allowedDomains.length > 0) {
-      const { EmailValidator } = require("./common/email.validator.js");
+      const { EmailValidator } = await import("./common/email.validator.js");
       const domainResult = EmailValidator.validateDomainWhitelist(
         email,
         options.allowedDomains,
@@ -86,7 +86,7 @@ export class ValidationService {
 
     // 域名黑名单验证
     if (options.blockedDomains && options.blockedDomains.length > 0) {
-      const { EmailValidator } = require("./common/email.validator.js");
+      const { EmailValidator } = await import("./common/email.validator.js");
       const domainResult = EmailValidator.validateDomainBlacklist(
         email,
         options.blockedDomains,
@@ -159,7 +159,9 @@ export class ValidationService {
 
     // 密码历史验证
     if (options.passwordHistory && options.passwordHistory.length > 0) {
-      const { PasswordValidator } = require("./common/password.validator.js");
+      const { PasswordValidator } = await import(
+        "./common/password.validator.js"
+      );
       const historyResult = PasswordValidator.validatePasswordHistory(
         password,
         options.passwordHistory,
@@ -236,7 +238,9 @@ export class ValidationService {
 
     // 唯一性验证
     if (options.existingUsernames && options.existingUsernames.length > 0) {
-      const { UsernameValidator } = require("./common/username.validator.js");
+      const { UsernameValidator } = await import(
+        "./common/username.validator.js"
+      );
       const uniquenessResult = UsernameValidator.validateUniqueness(
         username,
         options.existingUsernames,
@@ -279,7 +283,7 @@ export class ValidationService {
    */
   validateTenantName(
     name: string,
-    options: TenantNameValidationOptions = {},
+    _options: TenantNameValidationOptions = {},
   ): ValidationResult {
     const results: ValidationResult[] = [];
 
@@ -390,5 +394,12 @@ export interface UsernameValidationOptions {
  * 租户名称验证选项
  */
 export interface TenantNameValidationOptions {
-  // 租户名称验证选项
+  /** 允许的租户名称模式 */
+  allowedPatterns?: string[];
+  /** 禁止的租户名称模式 */
+  blockedPatterns?: string[];
+  /** 是否检查唯一性 */
+  checkUniqueness?: boolean;
+  /** 已存在的租户名称列表 */
+  existingNames?: string[];
 }

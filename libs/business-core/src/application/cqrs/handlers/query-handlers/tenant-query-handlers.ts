@@ -27,7 +27,7 @@
  * ```typescript
  * // 获取租户查询处理器
  * const handler = new GetTenantQueryHandler(getTenantUseCase, logger);
- * 
+ *
  * // 处理获取租户查询
  * const result = await handler.handle(getTenantQuery);
  * ```
@@ -45,8 +45,14 @@ import { GetTenantQuery } from "../../queries/tenant-queries.js";
 import { GetTenantsQuery } from "../../queries/tenant-queries.js";
 
 // 输入输出类型
-import type { GetTenantRequest, GetTenantResponse } from "../../../use-cases/tenant/get-tenant.use-case.js";
-import type { GetTenantsRequest, GetTenantsResponse } from "../../../use-cases/tenant/get-tenants.use-case.js";
+import type {
+  GetTenantRequest,
+  GetTenantResponse,
+} from "../../../use-cases/tenant/get-tenant.use-case.js";
+import type {
+  GetTenantsRequest,
+  GetTenantsResponse,
+} from "../../../use-cases/tenant/get-tenants.use-case.js";
 
 /**
  * 获取租户查询处理器

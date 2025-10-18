@@ -475,7 +475,10 @@ export class Permission extends BaseEntity {
    * @param key - 条件键
    */
   removeCondition(key: string): void {
-    if (this._conditions && this._conditions.hasOwnProperty(key)) {
+    if (
+      this._conditions &&
+      Object.prototype.hasOwnProperty.call(this._conditions, key)
+    ) {
       delete this._conditions[key];
       this.updateTimestamp();
       this.logOperation("removeCondition", { key });

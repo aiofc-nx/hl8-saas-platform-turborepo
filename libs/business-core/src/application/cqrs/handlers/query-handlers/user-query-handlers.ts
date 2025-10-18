@@ -20,7 +20,7 @@
  * ```typescript
  * // 获取用户查询处理器
  * const getUserQueryHandler = new GetUserQueryHandler(getUserUseCase, logger);
- * 
+ *
  * // 处理获取用户查询
  * const result = await getUserQueryHandler.execute(getUserQuery);
  * ```
@@ -37,8 +37,16 @@ import { GetUserQuery } from "../../queries/user-queries.js";
 import { GetUserListQuery } from "../../queries/user-queries.js";
 
 // 用例服务
-import type { IGetUserUseCase, GetUserRequest, GetUserResponse } from "../../../use-cases/user/get-user.use-case.js";
-import type { IGetUserListUseCase, GetUserListRequest, GetUserListResponse } from "../../../use-cases/user/get-user-list.use-case.js";
+import type {
+  IGetUserUseCase,
+  GetUserRequest,
+  GetUserResponse,
+} from "../../../use-cases/user/get-user.use-case.js";
+import type {
+  IGetUserListUseCase,
+  GetUserListRequest,
+  GetUserListResponse,
+} from "../../../use-cases/user/get-user-list.use-case.js";
 
 /**
  * 获取用户查询处理器
@@ -46,7 +54,9 @@ import type { IGetUserListUseCase, GetUserListRequest, GetUserListResponse } fro
  * @description 处理GetUserQuery，委托给GetUserUseCase执行查询逻辑
  */
 @QueryHandler(GetUserQuery)
-export class GetUserQueryHandler implements IQueryHandler<GetUserQuery, GetUserResponse> {
+export class GetUserQueryHandler
+  implements IQueryHandler<GetUserQuery, GetUserResponse>
+{
   constructor(
     private readonly getUserUseCase: IGetUserUseCase,
     private readonly logger: FastifyLoggerService,
@@ -90,7 +100,9 @@ export class GetUserQueryHandler implements IQueryHandler<GetUserQuery, GetUserR
  * @description 处理GetUserListQuery，委托给GetUserListUseCase执行查询逻辑
  */
 @QueryHandler(GetUserListQuery)
-export class GetUserListQueryHandler implements IQueryHandler<GetUserListQuery, GetUserListResponse> {
+export class GetUserListQueryHandler
+  implements IQueryHandler<GetUserListQuery, GetUserListResponse>
+{
   constructor(
     private readonly getUserListUseCase: IGetUserListUseCase,
     private readonly logger: FastifyLoggerService,

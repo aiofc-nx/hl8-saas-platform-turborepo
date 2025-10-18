@@ -7,11 +7,14 @@
     "noEmit": true,
     "emitDeclarationOnly": true
   },
+  "include": ["src"],
   "exclude": [
     "node_modules",
     "dist",
+    "examples",
+    "jest.config.ts",
     "**/*.spec.ts",
-    "__tests__",
+    "**/__tests__/**",
     "**/*.test.ts"
   ]
 }

@@ -49,8 +49,14 @@ import { TenantUseCaseServices } from "./tenant-use-case-services.js";
 import { UserUseCaseServices } from "./user-use-case-services.js";
 
 // 输入输出类型
-import type { CreateTenantRequest, CreateTenantResponse } from "../use-cases/tenant/create-tenant.use-case.js";
-import type { CreateUserRequest, CreateUserResponse } from "../use-cases/user/create-user.use-case.js";
+import type {
+  CreateTenantRequest,
+  CreateTenantResponse,
+} from "../use-cases/tenant/create-tenant.use-case.js";
+import type {
+  CreateUserRequest,
+  CreateUserResponse,
+} from "../use-cases/user/create-user.use-case.js";
 
 /**
  * 创建租户并初始化管理员请求
@@ -132,7 +138,9 @@ export class TenantApplicationService {
       });
 
       // 1. 创建租户
-      const tenantResult = await this.tenantUseCaseServices.createTenant(request.tenantData);
+      const tenantResult = await this.tenantUseCaseServices.createTenant(
+        request.tenantData,
+      );
 
       // 2. 创建管理员用户
       const adminResult = await this.userUseCaseServices.createUser({
@@ -180,7 +188,9 @@ export class TenantApplicationService {
       });
 
       // 获取租户信息
-      const tenantResult = await this.tenantUseCaseServices.getTenant({ tenantId });
+      const tenantResult = await this.tenantUseCaseServices.getTenant({
+        tenantId,
+      });
 
       // 获取租户用户列表
       const usersResult = await this.userUseCaseServices.getUserList({
@@ -195,8 +205,8 @@ export class TenantApplicationService {
         userCount: usersResult.total,
         statistics: {
           totalUsers: usersResult.total,
-          activeUsers: usersResult.users.filter(u => u.isActive).length,
-          inactiveUsers: usersResult.users.filter(u => !u.isActive).length,
+          activeUsers: usersResult.users.filter((u) => u.isActive).length,
+          inactiveUsers: usersResult.users.filter((u) => !u.isActive).length,
         },
       };
 

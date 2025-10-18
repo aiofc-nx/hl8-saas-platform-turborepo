@@ -178,8 +178,15 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
     useCaseVersion = "1.0.0",
     requiredPermissions: string[] = [],
     protected readonly cacheService?: ICacheService,
+    logger?: FastifyLoggerService,
   ) {
-    super(useCaseName, useCaseDescription, useCaseVersion, requiredPermissions);
+    super(
+      useCaseName,
+      useCaseDescription,
+      useCaseVersion,
+      requiredPermissions,
+      logger,
+    );
   }
 
   /**
@@ -245,7 +252,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
         "TENANT_CONTEXT_REQUIRED",
         "缺少租户上下文",
         `[${this.useCaseName}] 缺少租户上下文`,
-        400
+        400,
       );
     }
 
@@ -254,7 +261,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
         "USER_CONTEXT_REQUIRED",
         "缺少用户上下文",
         `[${this.useCaseName}] 缺少用户上下文`,
-        400
+        400,
       );
     }
 
@@ -349,7 +356,10 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    * @param options - 查询选项
    * @returns 应用选项后的查询
    */
-  protected applyQueryOptions(query: Record<string, unknown>, options: QueryOptions): Record<string, unknown> {
+  protected applyQueryOptions(
+    query: Record<string, unknown>,
+    options: QueryOptions,
+  ): Record<string, unknown> {
     // 这个方法的具体实现依赖于查询技术（如ORM）
     // 子类可以重写此方法来实现特定的查询选项应用逻辑
     return query;
@@ -364,7 +374,10 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    * @param context - 执行上下文
    * @returns 脱敏后的数据
    */
-  protected sanitizeData(data: Record<string, unknown>, context: IUseCaseContext): Record<string, unknown> {
+  protected sanitizeData(
+    data: Record<string, unknown>,
+    context: IUseCaseContext,
+  ): Record<string, unknown> {
     // 子类可以重写此方法来实现具体的数据脱敏逻辑
     return data;
   }

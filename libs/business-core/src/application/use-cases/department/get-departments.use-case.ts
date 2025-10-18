@@ -19,7 +19,7 @@
  * @example
  * ```typescript
  * const getDepartmentsUseCase = new GetDepartmentsUseCase(departmentRepository, cacheService, logger);
- * 
+ *
  * const result = await getDepartmentsUseCase.execute({
  *   tenantId: tenantId,
  *   page: 1,
@@ -37,11 +37,9 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -72,7 +70,7 @@ export interface DepartmentQueryOptions {
 /**
  * 获取部门列表请求
  */
-export interface GetDepartmentsRequest extends DepartmentQueryOptions {}
+export type GetDepartmentsRequest = DepartmentQueryOptions;
 
 /**
  * 获取部门列表响应
@@ -123,16 +121,23 @@ export interface IGetDepartmentsUseCase {
  *
  * @description 获取部门列表，支持分页、过滤和排序
  */
-export class GetDepartmentsUseCase extends BaseQueryUseCase<
-  GetDepartmentsRequest,
-  GetDepartmentsResponse
-> implements IGetDepartmentsUseCase {
+export class GetDepartmentsUseCase
+  extends BaseQueryUseCase<GetDepartmentsRequest, GetDepartmentsResponse>
+  implements IGetDepartmentsUseCase
+{
   constructor(
     private readonly departmentRepository: IDepartmentRepository,
     cacheService?: ICacheService,
     logger?: FastifyLoggerService,
   ) {
-    super("GetDepartments", "获取部门列表用例", "1.0.0", ["department:read"], cacheService, logger);
+    super(
+      "GetDepartments",
+      "获取部门列表用例",
+      "1.0.0",
+      ["department:read"],
+      cacheService,
+      logger,
+    );
   }
 
   /**
@@ -147,10 +152,10 @@ export class GetDepartmentsUseCase extends BaseQueryUseCase<
   ): Promise<GetDepartmentsResponse> {
     this.validateRequest(request);
     await this.validateQueryPermissions(request, context);
-    
+
     // 设置默认查询选项
     const queryOptions = this.setDefaultOptions(request);
-    
+
     // 尝试从缓存获取
     const cacheKey = this.getCacheKey(queryOptions);
     const cachedResult = await this.getFromCache(cacheKey);
@@ -159,10 +164,11 @@ export class GetDepartmentsUseCase extends BaseQueryUseCase<
     }
 
     // 从数据库获取
-    const { departments, total } = await this.departmentRepository.findMany(queryOptions);
-    
+    const { departments, total } =
+      await this.departmentRepository.findMany(queryOptions);
+
     // 映射部门信息
-    const departmentInfos = departments.map(departmentAggregate => {
+    const departmentInfos = departments.map((departmentAggregate) => {
       const department = departmentAggregate.getDepartment();
       return {
         id: departmentAggregate.id,
@@ -204,7 +210,7 @@ export class GetDepartmentsUseCase extends BaseQueryUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (request.page && request.page < 1) {
@@ -212,7 +218,7 @@ export class GetDepartmentsUseCase extends BaseQueryUseCase<
         "INVALID_PAGE",
         "页码必须大于0",
         "页码必须大于0",
-        400
+        400,
       );
     }
     if (request.limit && (request.limit < 1 || request.limit > 100)) {
@@ -220,7 +226,7 @@ export class GetDepartmentsUseCase extends BaseQueryUseCase<
         "INVALID_LIMIT",
         "每页数量必须在1-100之间",
         "每页数量必须在1-100之间",
-        400
+        400,
       );
     }
   }
@@ -238,11 +244,11 @@ export class GetDepartmentsUseCase extends BaseQueryUseCase<
   ): Promise<void> {
     // 检查是否为租户管理员
     const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
-    
+
     if (!isTenantAdmin) {
       throw new UnauthorizedOperationException(
         "查看部门列表",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -254,7 +260,9 @@ export class GetDepartmentsUseCase extends BaseQueryUseCase<
    * @returns 查询选项
    * @private
    */
-  private setDefaultOptions(request: GetDepartmentsRequest): DepartmentQueryOptions {
+  private setDefaultOptions(
+    request: GetDepartmentsRequest,
+  ): DepartmentQueryOptions {
     return {
       tenantId: request.tenantId,
       page: request.page || 1,

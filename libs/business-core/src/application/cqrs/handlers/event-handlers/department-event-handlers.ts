@@ -53,7 +53,9 @@ import type { INotificationService } from "../ports/notification-service.interfa
  * @description 处理DepartmentCreatedEvent，发送通知邮件并记录审计日志
  */
 @EventsHandler(DepartmentCreatedEvent)
-export class DepartmentCreatedEventHandler implements IEventHandler<DepartmentCreatedEvent> {
+export class DepartmentCreatedEventHandler
+  implements IEventHandler<DepartmentCreatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -76,7 +78,9 @@ export class DepartmentCreatedEventHandler implements IEventHandler<DepartmentCr
       // 3. 发送系统通知
       await this.notificationService.sendDepartmentCreatedNotification(event);
 
-      this.logger.info(`部门创建事件处理成功: ${event.departmentId.toString()}`);
+      this.logger.info(
+        `部门创建事件处理成功: ${event.departmentId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理部门创建事件失败: ${event.departmentId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -93,7 +97,9 @@ export class DepartmentCreatedEventHandler implements IEventHandler<DepartmentCr
    * @param event - 部门创建事件
    * @private
    */
-  private async sendDepartmentCreatedNotification(event: DepartmentCreatedEvent): Promise<void> {
+  private async sendDepartmentCreatedNotification(
+    event: DepartmentCreatedEvent,
+  ): Promise<void> {
     try {
       // 发送给部门管理员
       await this.emailService.sendDepartmentCreatedEmail(
@@ -103,7 +109,9 @@ export class DepartmentCreatedEventHandler implements IEventHandler<DepartmentCr
         event.createdBy,
       );
 
-      this.logger.debug(`部门创建通知邮件已发送: ${event.departmentId.toString()}`);
+      this.logger.debug(
+        `部门创建通知邮件已发送: ${event.departmentId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `发送部门创建通知邮件失败: ${event.departmentId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -120,7 +128,9 @@ export class DepartmentCreatedEventHandler implements IEventHandler<DepartmentCr
  * @description 处理DepartmentUpdatedEvent，记录审计日志并发送通知
  */
 @EventsHandler(DepartmentUpdatedEvent)
-export class DepartmentUpdatedEventHandler implements IEventHandler<DepartmentUpdatedEvent> {
+export class DepartmentUpdatedEventHandler
+  implements IEventHandler<DepartmentUpdatedEvent>
+{
   constructor(
     private readonly auditService: IAuditService,
     private readonly notificationService: INotificationService,
@@ -139,7 +149,9 @@ export class DepartmentUpdatedEventHandler implements IEventHandler<DepartmentUp
       // 2. 发送系统通知
       await this.notificationService.sendDepartmentUpdatedNotification(event);
 
-      this.logger.info(`部门更新事件处理成功: ${event.departmentId.toString()}`);
+      this.logger.info(
+        `部门更新事件处理成功: ${event.departmentId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理部门更新事件失败: ${event.departmentId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -156,7 +168,9 @@ export class DepartmentUpdatedEventHandler implements IEventHandler<DepartmentUp
  * @description 处理DepartmentDeletedEvent，记录审计日志并发送通知
  */
 @EventsHandler(DepartmentDeletedEvent)
-export class DepartmentDeletedEventHandler implements IEventHandler<DepartmentDeletedEvent> {
+export class DepartmentDeletedEventHandler
+  implements IEventHandler<DepartmentDeletedEvent>
+{
   constructor(
     private readonly auditService: IAuditService,
     private readonly notificationService: INotificationService,
@@ -175,7 +189,9 @@ export class DepartmentDeletedEventHandler implements IEventHandler<DepartmentDe
       // 2. 发送系统通知
       await this.notificationService.sendDepartmentDeletedNotification(event);
 
-      this.logger.info(`部门删除事件处理成功: ${event.departmentId.toString()}`);
+      this.logger.info(
+        `部门删除事件处理成功: ${event.departmentId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理部门删除事件失败: ${event.departmentId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -192,7 +208,9 @@ export class DepartmentDeletedEventHandler implements IEventHandler<DepartmentDe
  * @description 处理DepartmentActivatedEvent，发送激活通知并记录审计日志
  */
 @EventsHandler(DepartmentActivatedEvent)
-export class DepartmentActivatedEventHandler implements IEventHandler<DepartmentActivatedEvent> {
+export class DepartmentActivatedEventHandler
+  implements IEventHandler<DepartmentActivatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -215,7 +233,9 @@ export class DepartmentActivatedEventHandler implements IEventHandler<Department
       // 3. 发送系统通知
       await this.notificationService.sendDepartmentActivatedNotification(event);
 
-      this.logger.info(`部门激活事件处理成功: ${event.departmentId.toString()}`);
+      this.logger.info(
+        `部门激活事件处理成功: ${event.departmentId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理部门激活事件失败: ${event.departmentId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -231,7 +251,9 @@ export class DepartmentActivatedEventHandler implements IEventHandler<Department
    * @param event - 部门激活事件
    * @private
    */
-  private async sendDepartmentActivatedNotification(event: DepartmentActivatedEvent): Promise<void> {
+  private async sendDepartmentActivatedNotification(
+    event: DepartmentActivatedEvent,
+  ): Promise<void> {
     try {
       // 发送给部门管理员
       await this.emailService.sendDepartmentActivatedEmail(
@@ -240,7 +262,9 @@ export class DepartmentActivatedEventHandler implements IEventHandler<Department
         event.activatedBy,
       );
 
-      this.logger.debug(`部门激活通知邮件已发送: ${event.departmentId.toString()}`);
+      this.logger.debug(
+        `部门激活通知邮件已发送: ${event.departmentId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `发送部门激活通知邮件失败: ${event.departmentId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -257,7 +281,9 @@ export class DepartmentActivatedEventHandler implements IEventHandler<Department
  * @description 处理DepartmentDeactivatedEvent，发送停用通知并记录审计日志
  */
 @EventsHandler(DepartmentDeactivatedEvent)
-export class DepartmentDeactivatedEventHandler implements IEventHandler<DepartmentDeactivatedEvent> {
+export class DepartmentDeactivatedEventHandler
+  implements IEventHandler<DepartmentDeactivatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -278,9 +304,13 @@ export class DepartmentDeactivatedEventHandler implements IEventHandler<Departme
       await this.auditService.logDepartmentDeactivation(event);
 
       // 3. 发送系统通知
-      await this.notificationService.sendDepartmentDeactivatedNotification(event);
+      await this.notificationService.sendDepartmentDeactivatedNotification(
+        event,
+      );
 
-      this.logger.info(`部门停用事件处理成功: ${event.departmentId.toString()}`);
+      this.logger.info(
+        `部门停用事件处理成功: ${event.departmentId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理部门停用事件失败: ${event.departmentId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -296,7 +326,9 @@ export class DepartmentDeactivatedEventHandler implements IEventHandler<Departme
    * @param event - 部门停用事件
    * @private
    */
-  private async sendDepartmentDeactivatedNotification(event: DepartmentDeactivatedEvent): Promise<void> {
+  private async sendDepartmentDeactivatedNotification(
+    event: DepartmentDeactivatedEvent,
+  ): Promise<void> {
     try {
       // 发送给部门管理员
       await this.emailService.sendDepartmentDeactivatedEmail(
@@ -306,7 +338,9 @@ export class DepartmentDeactivatedEventHandler implements IEventHandler<Departme
         event.deactivateReason,
       );
 
-      this.logger.debug(`部门停用通知邮件已发送: ${event.departmentId.toString()}`);
+      this.logger.debug(
+        `部门停用通知邮件已发送: ${event.departmentId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `发送部门停用通知邮件失败: ${event.departmentId.toString()}: ${error instanceof Error ? error.message : String(error)}`,

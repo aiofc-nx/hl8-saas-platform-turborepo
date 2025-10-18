@@ -52,7 +52,10 @@ import {
   IMessageContext,
 } from "./cqrs-bus.interface.js";
 import { TenantId } from "@hl8/isolation-model";
-import { ResourceNotFoundException, BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
+import {
+  ResourceNotFoundException,
+  BusinessRuleViolationException,
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 命令总线实现
@@ -101,7 +104,7 @@ export class CommandBus implements ICommandBus {
       if (!canHandle) {
         throw new BusinessRuleViolationException(
           `Handler cannot process command: ${commandType}`,
-          { commandType, handlerName: handler.constructor.name }
+          { commandType, handlerName: handler.constructor.name },
         );
       }
 
@@ -124,14 +127,14 @@ export class CommandBus implements ICommandBus {
     if (this.handlers.has(commandType)) {
       throw new BusinessRuleViolationException(
         `Handler already registered for command type: ${commandType}`,
-        { commandType }
+        { commandType },
       );
     }
 
     if (!handler.supports(commandType)) {
       throw new BusinessRuleViolationException(
         `Handler does not support command type: ${commandType}`,
-        { commandType, handlerName: handler.constructor.name }
+        { commandType, handlerName: handler.constructor.name },
       );
     }
 

@@ -6,7 +6,6 @@ import { BaseCommandUseCase } from "../base/base-command-use-case.js";
 import { UseCase } from "../decorators/use-case.decorator.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
 import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
-import { DomainExceptionConverter } from "../../../common/exceptions/business.exceptions.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
@@ -208,7 +207,6 @@ export class CreateTenantUseCase extends BaseCommandUseCase<
       throw new BusinessRuleViolationException(
         `租户名称 "${name}" 在同一平台下已存在`,
         "TENANT_NAME_DUPLICATE",
-        { name, platformId: platformId.toString() },
       );
     }
   }

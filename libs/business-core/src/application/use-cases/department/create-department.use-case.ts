@@ -14,12 +14,9 @@ import { DepartmentLevel } from "../../domain/value-objects/types/department-lev
 import type { IDepartmentRepository } from "../../domain/repositories/department.repository.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
-  UnauthorizedOperationException,
-  BusinessRuleViolationException,
-  ResourceAlreadyExistsException
+import {
+  ValidationException,
+  ResourceAlreadyExistsException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -158,7 +155,7 @@ export class CreateDepartmentUseCase extends BaseCommandUseCase<
         "DEPARTMENT_NAME_REQUIRED",
         "部门名称不能为空",
         "部门名称是必填字段",
-        400
+        400,
       );
     }
 
@@ -167,7 +164,7 @@ export class CreateDepartmentUseCase extends BaseCommandUseCase<
         "DEPARTMENT_NAME_TOO_LONG",
         "部门名称长度不能超过100字符",
         "部门名称长度不能超过100字符",
-        400
+        400,
       );
     }
 
@@ -176,7 +173,7 @@ export class CreateDepartmentUseCase extends BaseCommandUseCase<
         "DEPARTMENT_LEVEL_REQUIRED",
         "部门层级不能为空",
         "部门层级是必填字段",
-        400
+        400,
       );
     }
 
@@ -185,7 +182,7 @@ export class CreateDepartmentUseCase extends BaseCommandUseCase<
         "CREATED_BY_REQUIRED",
         "创建者标识符不能为空",
         "创建者标识符是必填字段",
-        400
+        400,
       );
     }
   }
@@ -210,10 +207,7 @@ export class CreateDepartmentUseCase extends BaseCommandUseCase<
     );
 
     if (existingDepartment) {
-      throw new ResourceAlreadyExistsException(
-        "部门",
-        name
-      );
+      throw new ResourceAlreadyExistsException("部门", name);
     }
   }
 

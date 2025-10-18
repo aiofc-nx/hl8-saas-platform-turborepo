@@ -67,7 +67,6 @@ export function CommandHandler<TCommand extends ICommand>(
   commandClass: new (...args: unknown[]) => TCommand,
   options: ICommandHandlerOptions = {},
 ): ClassDecorator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (target: ClassConstructor) {
     // 获取命令类型
     const commandInstance = new commandClass();
@@ -113,7 +112,6 @@ export function CommandHandler<TCommand extends ICommand>(
  * @returns 命令处理器元数据
  */
 export function getCommandHandlerMetadata(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   target: ClassConstructor,
 ): ICommandMetadata | undefined {
   return Reflect.getMetadata(COMMAND_HANDLER_METADATA_KEY, target);
@@ -125,10 +123,7 @@ export function getCommandHandlerMetadata(
  * @param target - 要检查的目标
  * @returns 如果是命令处理器返回true，否则返回false
  */
-export function isCommandHandler(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: ClassConstructor,
-): boolean {
+export function isCommandHandler(target: ClassConstructor): boolean {
   return Reflect.hasMetadata(COMMAND_HANDLER_METADATA_KEY, target);
 }
 
@@ -163,7 +158,6 @@ export function Command(options: {
   category?: string;
   tags?: string[];
 }): ClassDecorator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (target: ClassConstructor) {
     const metadata: ICommandMetadata = {
       commandType: options.type,
@@ -196,7 +190,6 @@ export function Command(options: {
  * @returns 命令元数据
  */
 export function getCommandMetadata(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   target: ClassConstructor,
 ): ICommandMetadata | undefined {
   return Reflect.getMetadata(COMMAND_METADATA_KEY, target);
@@ -208,9 +201,6 @@ export function getCommandMetadata(
  * @param target - 要检查的目标
  * @returns 如果是命令返回true，否则返回false
  */
-export function isCommand(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: ClassConstructor,
-): boolean {
+export function isCommand(target: ClassConstructor): boolean {
   return Reflect.hasMetadata(COMMAND_METADATA_KEY, target);
 }

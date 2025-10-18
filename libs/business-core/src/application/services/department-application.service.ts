@@ -49,8 +49,14 @@ import { DepartmentUseCaseServices } from "./department-use-case-services.js";
 import { UserUseCaseServices } from "./user-use-case-services.js";
 
 // 输入输出类型
-import type { CreateDepartmentRequest, CreateDepartmentResponse } from "../use-cases/department/create-department.use-case.js";
-import type { CreateUserRequest, CreateUserResponse } from "../use-cases/user/create-user.use-case.js";
+import type {
+  CreateDepartmentRequest,
+  CreateDepartmentResponse,
+} from "../use-cases/department/create-department.use-case.js";
+import type {
+  CreateUserRequest,
+  CreateUserResponse,
+} from "../use-cases/user/create-user.use-case.js";
 
 /**
  * 创建部门并分配管理员请求
@@ -163,7 +169,10 @@ export class DepartmentApplicationService {
       });
 
       // 1. 创建部门
-      const departmentResult = await this.departmentUseCaseServices.createDepartment(request.departmentData);
+      const departmentResult =
+        await this.departmentUseCaseServices.createDepartment(
+          request.departmentData,
+        );
 
       // 2. 创建管理员用户
       const managerResult = await this.userUseCaseServices.createUser({
@@ -220,12 +229,18 @@ export class DepartmentApplicationService {
       });
 
       const successful: CreateDepartmentResponse[] = [];
-      const failed: Array<{ departmentData: CreateDepartmentRequest; error: string }> = [];
+      const failed: Array<{
+        departmentData: CreateDepartmentRequest;
+        error: string;
+      }> = [];
 
       // 并发创建部门
       const createPromises = request.departments.map(async (departmentData) => {
         try {
-          const departmentResult = await this.departmentUseCaseServices.createDepartment(departmentData);
+          const departmentResult =
+            await this.departmentUseCaseServices.createDepartment(
+              departmentData,
+            );
           successful.push(departmentResult);
         } catch (error) {
           failed.push({
@@ -273,7 +288,10 @@ export class DepartmentApplicationService {
    * const departmentInfo = await departmentApplicationService.getDepartmentCompleteInfo(departmentId, tenantId);
    * ```
    */
-  async getDepartmentCompleteInfo(departmentId: EntityId, tenantId: TenantId): Promise<any> {
+  async getDepartmentCompleteInfo(
+    departmentId: EntityId,
+    tenantId: TenantId,
+  ): Promise<any> {
     try {
       this.logger.debug("开始获取部门完整信息", {
         departmentId: departmentId.toString(),
@@ -281,7 +299,11 @@ export class DepartmentApplicationService {
       });
 
       // 获取部门信息
-      const departmentResult = await this.departmentUseCaseServices.getDepartment({ departmentId, tenantId });
+      const departmentResult =
+        await this.departmentUseCaseServices.getDepartment({
+          departmentId,
+          tenantId,
+        });
 
       // 获取部门用户列表
       const usersResult = await this.userUseCaseServices.getUserList({
@@ -297,8 +319,11 @@ export class DepartmentApplicationService {
         userCount: usersResult.total,
         statistics: {
           totalUsers: usersResult.total,
-          activeUsers: usersResult.users.filter(u => u.status === "ACTIVE").length,
-          inactiveUsers: usersResult.users.filter(u => u.status === "INACTIVE").length,
+          activeUsers: usersResult.users.filter((u) => u.status === "ACTIVE")
+            .length,
+          inactiveUsers: usersResult.users.filter(
+            (u) => u.status === "INACTIVE",
+          ).length,
         },
       };
 
@@ -350,10 +375,11 @@ export class DepartmentApplicationService {
       });
 
       // 1. 激活部门
-      const activateResult = await this.departmentUseCaseServices.activateDepartment({
-        departmentId,
-        activatedBy,
-      });
+      const activateResult =
+        await this.departmentUseCaseServices.activateDepartment({
+          departmentId,
+          activatedBy,
+        });
 
       // 2. 获取部门成员
       const usersResult = await this.userUseCaseServices.getUserList({

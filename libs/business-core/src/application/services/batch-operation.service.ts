@@ -21,7 +21,7 @@
  * ```typescript
  * // 批量创建用户
  * const batchService = new BatchOperationService(logger);
- * 
+ *
  * const result = await batchService.batchCreateUsers(users, {
  *   batchSize: 100,
  *   concurrency: 5,
@@ -39,15 +39,24 @@ import { OrganizationUseCaseServices } from "./organization-use-case-services.js
 import { DepartmentUseCaseServices } from "./department-use-case-services.js";
 
 // 输入输出类型
-import type { CreateUserRequest, CreateUserResponse } from "../use-cases/user/create-user.use-case.js";
-import type { CreateOrganizationRequest, CreateOrganizationResponse } from "../use-cases/organization/create-organization.use-case.js";
-import type { CreateDepartmentRequest, CreateDepartmentResponse } from "../use-cases/department/create-department.use-case.js";
+import type {
+  CreateUserRequest,
+  CreateUserResponse,
+} from "../use-cases/user/create-user.use-case.js";
+import type {
+  CreateOrganizationRequest,
+  CreateOrganizationResponse,
+} from "../use-cases/organization/create-organization.use-case.js";
+import type {
+  CreateDepartmentRequest,
+  CreateDepartmentResponse,
+} from "../use-cases/department/create-department.use-case.js";
 
 // 导入批量操作相关类型
-import type { 
-  BatchOperationOptions, 
-  BatchOperationResult, 
-  BatchOperationProgress 
+import type {
+  BatchOperationOptions,
+  BatchOperationResult,
+  BatchOperationProgress,
 } from "../../common/types/application/batch-operation.types.js";
 
 /**
@@ -102,11 +111,15 @@ export class BatchOperationService {
     });
 
     const successful: CreateUserResponse[] = [];
-    const failed: Array<{ item: CreateUserRequest; error: string; retryCount: number }> = [];
+    const failed: Array<{
+      item: CreateUserRequest;
+      error: string;
+      retryCount: number;
+    }> = [];
 
     // 分批处理
     const batches = this.createBatches(users, defaultOptions.batchSize!);
-    
+
     for (const batch of batches) {
       const batchResults = await this.processBatch(
         batch,
@@ -167,15 +180,23 @@ export class BatchOperationService {
     });
 
     const successful: CreateOrganizationResponse[] = [];
-    const failed: Array<{ item: CreateOrganizationRequest; error: string; retryCount: number }> = [];
+    const failed: Array<{
+      item: CreateOrganizationRequest;
+      error: string;
+      retryCount: number;
+    }> = [];
 
     // 分批处理
-    const batches = this.createBatches(organizations, defaultOptions.batchSize!);
-    
+    const batches = this.createBatches(
+      organizations,
+      defaultOptions.batchSize!,
+    );
+
     for (const batch of batches) {
       const batchResults = await this.processBatch(
         batch,
-        (organization) => this.organizationUseCaseServices.createOrganization(organization),
+        (organization) =>
+          this.organizationUseCaseServices.createOrganization(organization),
         defaultOptions,
       );
 
@@ -232,15 +253,20 @@ export class BatchOperationService {
     });
 
     const successful: CreateDepartmentResponse[] = [];
-    const failed: Array<{ item: CreateDepartmentRequest; error: string; retryCount: number }> = [];
+    const failed: Array<{
+      item: CreateDepartmentRequest;
+      error: string;
+      retryCount: number;
+    }> = [];
 
     // 分批处理
     const batches = this.createBatches(departments, defaultOptions.batchSize!);
-    
+
     for (const batch of batches) {
       const batchResults = await this.processBatch(
         batch,
-        (department) => this.departmentUseCaseServices.createDepartment(department),
+        (department) =>
+          this.departmentUseCaseServices.createDepartment(department),
         defaultOptions,
       );
 
@@ -296,7 +322,10 @@ export class BatchOperationService {
     batch: T[],
     operation: (item: T) => Promise<R>,
     options: BatchOperationOptions,
-  ): Promise<{ successful: R[]; failed: Array<{ item: T; error: string; retryCount: number }> }> {
+  ): Promise<{
+    successful: R[];
+    failed: Array<{ item: T; error: string; retryCount: number }>;
+  }> {
     const successful: R[] = [];
     const failed: Array<{ item: T; error: string; retryCount: number }> = [];
 
@@ -365,7 +394,7 @@ export class BatchOperationService {
    * @private
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
 
@@ -388,7 +417,7 @@ class Semaphore {
       return;
     }
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.waiting.push(resolve);
     });
   }

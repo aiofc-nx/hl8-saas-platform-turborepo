@@ -19,7 +19,7 @@
  * @example
  * ```typescript
  * const getOrganizationUseCase = new GetOrganizationUseCase(organizationRepository, cacheService, logger);
- * 
+ *
  * const result = await getOrganizationUseCase.execute({
  *   organizationId: organizationId,
  *   tenantId: tenantId
@@ -35,11 +35,11 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -91,16 +91,23 @@ export interface IGetOrganizationUseCase {
  *
  * @description 获取单个组织的详细信息
  */
-export class GetOrganizationUseCase extends BaseQueryUseCase<
-  GetOrganizationRequest,
-  GetOrganizationResponse
-> implements IGetOrganizationUseCase {
+export class GetOrganizationUseCase
+  extends BaseQueryUseCase<GetOrganizationRequest, GetOrganizationResponse>
+  implements IGetOrganizationUseCase
+{
   constructor(
     private readonly organizationRepository: IOrganizationRepository,
     cacheService?: ICacheService,
     logger?: FastifyLoggerService,
   ) {
-    super("GetOrganization", "获取组织用例", "1.0.0", ["organization:read"], cacheService, logger);
+    super(
+      "GetOrganization",
+      "获取组织用例",
+      "1.0.0",
+      ["organization:read"],
+      cacheService,
+      logger,
+    );
   }
 
   /**
@@ -114,9 +121,12 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
     context: IUseCaseContext,
   ): Promise<GetOrganizationResponse> {
     this.validateRequest(request);
-    await this.validateOrganizationExists(request.organizationId, request.tenantId);
+    await this.validateOrganizationExists(
+      request.organizationId,
+      request.tenantId,
+    );
     await this.validateQueryPermissions(request, context);
-    
+
     // 尝试从缓存获取
     const cacheKey = this.getCacheKey(request);
     const cachedResult = await this.getFromCache(cacheKey);
@@ -125,9 +135,14 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
     }
 
     // 从数据库获取
-    const organizationAggregate = await this.organizationRepository.findById(request.organizationId);
+    const organizationAggregate = await this.organizationRepository.findById(
+      request.organizationId,
+    );
     if (!organizationAggregate) {
-      throw new ResourceNotFoundException("组织", request.organizationId.toString());
+      throw new ResourceNotFoundException(
+        "组织",
+        request.organizationId.toString(),
+      );
     }
 
     const organization = organizationAggregate.getOrganization();
@@ -162,7 +177,7 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
         "ORGANIZATION_ID_REQUIRED",
         "组织ID不能为空",
         "组织ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -170,7 +185,7 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
   }
@@ -182,16 +197,20 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateOrganizationExists(organizationId: EntityId, tenantId: TenantId): Promise<void> {
-    const organizationAggregate = await this.organizationRepository.findById(organizationId);
+  private async validateOrganizationExists(
+    organizationId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
+    const organizationAggregate =
+      await this.organizationRepository.findById(organizationId);
     if (!organizationAggregate) {
       throw new ResourceNotFoundException("组织", organizationId.toString());
     }
     if (!organizationAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "组织不属于指定租户",
-        { organizationId: organizationId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("组织不属于指定租户", {
+        organizationId: organizationId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -207,13 +226,16 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
     context: IUseCaseContext,
   ): Promise<void> {
     // 检查是否为组织成员或管理员
-    const isOrganizationMember = context.user?.organizations?.includes(request.organizationId);
-    const isAdmin = context.user?.role === "ADMIN" || context.user?.role === "TENANT_ADMIN";
-    
+    const isOrganizationMember = context.user?.organizations?.includes(
+      request.organizationId,
+    );
+    const isAdmin =
+      context.user?.role === "ADMIN" || context.user?.role === "TENANT_ADMIN";
+
     if (!isOrganizationMember && !isAdmin) {
       throw new UnauthorizedOperationException(
         "查看组织信息",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }

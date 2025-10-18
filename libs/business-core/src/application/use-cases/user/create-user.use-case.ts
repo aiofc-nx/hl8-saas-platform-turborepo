@@ -8,14 +8,14 @@
 
 import { EntityId, TenantId } from "@hl8/isolation-model";
 import { BaseCommandUseCase } from "../base/base-command-use-case.js";
-import { UserAggregate } from "../../domain/aggregates/user-aggregate.js";
-import { User } from "../../domain/entities/user/user.entity.js";
-import { UserStatus } from "../../domain/value-objects/types/user-status.vo.js";
-import { UserRole } from "../../domain/value-objects/types/user-role.vo.js";
-import type { IUserRepository } from "../../domain/repositories/user.repository.js";
+import { UserRoleAggregate } from "../../../domain/aggregates/user-role-aggregate.js";
+import { User } from "../../../domain/entities/user/user.entity.js";
+import { UserStatus } from "../../../domain/value-objects/types/user-status.vo.js";
+import { UserRole } from "../../../domain/value-objects/types/user-role.vo.js";
+import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
-import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
  * 创建用户请求接口
@@ -104,21 +104,36 @@ export class CreateUserUseCase extends BaseCommandUseCase<
     this.validateRequest(request);
 
     // 检查用户名唯一性
-    await this.validateUsernameUniqueness(context.tenant!.id, request.username);
+    await this.validateUsernameUniqueness(
+      context.tenant!.id as unknown as TenantId,
+      request.username,
+    );
 
     // 检查邮箱唯一性
-    await this.validateEmailUniqueness(context.tenant!.id, request.email);
+    await this.validateEmailUniqueness(
+      context.tenant!.id as unknown as TenantId,
+      request.email,
+    );
 
     // 创建用户实体
     const user = this.createUserEntity(request, context);
 
+    // 创建用户角色关联实体
+    const userRole = new UserRole({
+      userId: user.id,
+      roleId: crypto.randomUUID() as unknown as EntityId,
+      isActive: true,
+      reason: "新用户创建",
+      assignedBy: crypto.randomUUID() as unknown as EntityId,
+      assignedAt: new Date(),
+    });
+
     // 创建用户聚合根
-    const userAggregate = new UserAggregate(
-      EntityId.generate(),
+    const userAggregate = new UserRoleAggregate(
+      crypto.randomUUID() as unknown as EntityId,
       context.tenant!.id,
-      user,
-      this.buildAuditInfo(request.createdBy, context),
-      this.logger,
+      userRole,
+      { createdBy: request.createdBy, createdAt: new Date() },
     );
 
     // 保存用户（事务边界）
@@ -130,12 +145,12 @@ export class CreateUserUseCase extends BaseCommandUseCase<
     // 返回响应
     return {
       userId: userAggregate.id,
-      username: userAggregate.getUser().username,
-      email: userAggregate.getUser().email,
-      displayName: userAggregate.getUser().displayName,
-      role: userAggregate.getUser().role,
+      username: user.username,
+      email: user.email,
+      displayName: user.displayName,
+      role: user.role,
       tenantId: userAggregate.tenantId,
-      createdAt: userAggregate.getUser().createdAt,
+      createdAt: user.createdAt,
     };
   }
 
@@ -143,9 +158,9 @@ export class CreateUserUseCase extends BaseCommandUseCase<
    * 验证请求参数
    *
    * @param request - 创建用户请求
-   * @private
+   * @protected
    */
-  private validateRequest(request: CreateUserRequest): void {
+  protected validateRequest(request: CreateUserRequest): void {
     if (!request.username || !request.username.trim()) {
       throw new BusinessRuleViolationException(
         "用户名不能为空",
@@ -254,7 +269,7 @@ export class CreateUserUseCase extends BaseCommandUseCase<
     context: IUseCaseContext,
   ): User {
     return new User(
-      EntityId.generate(),
+      EntityId.fromString(crypto.randomUUID()),
       {
         username: request.username.trim(),
         email: request.email.trim().toLowerCase(),
@@ -266,7 +281,7 @@ export class CreateUserUseCase extends BaseCommandUseCase<
         isActive: true,
         failedLoginAttempts: 0,
       },
-      this.buildAuditInfo(request.createdBy, context),
+      { createdBy: request.createdBy, createdAt: new Date() },
       this.logger,
     );
   }

@@ -72,15 +72,15 @@ export class EventBus implements IEventBus {
     this.logger.debug(`开始发布 ${events.length} 个事件`);
 
     // 并发发布所有事件
-    const publishPromises = events.map(event => this.publish(event));
-    
+    const publishPromises = events.map((event) => this.publish(event));
+
     try {
       await Promise.all(publishPromises);
       this.logger.info(`成功发布 ${events.length} 个事件`);
     } catch (error) {
-      this.logger.error("批量发布事件失败", { 
-        error: error.message, 
-        eventCount: events.length 
+      this.logger.error("批量发布事件失败", {
+        error: error.message,
+        eventCount: events.length,
       });
       throw error;
     }
@@ -103,11 +103,15 @@ export class EventBus implements IEventBus {
       return;
     }
 
-    this.logger.debug(`开始处理事件 ${eventType}，找到 ${handlers.length} 个处理器`);
+    this.logger.debug(
+      `开始处理事件 ${eventType}，找到 ${handlers.length} 个处理器`,
+    );
 
     // 并发处理所有处理器
-    const handlerPromises = handlers.map(handler => this.handleEvent(handler, event));
-    
+    const handlerPromises = handlers.map((handler) =>
+      this.handleEvent(handler, event),
+    );
+
     try {
       await Promise.all(handlerPromises);
       this.logger.debug(`事件 ${eventType} 处理完成`);
@@ -132,15 +136,17 @@ export class EventBus implements IEventBus {
     }
 
     const handlers = this.handlers.get(eventType)!;
-    
+
     // 检查是否已经订阅
     if (handlers.includes(handler)) {
-      this.logger.warn(`处理器 ${handler.getName()} 已经订阅了事件类型 ${eventType}`);
+      this.logger.warn(
+        `处理器 ${handler.getName()} 已经订阅了事件类型 ${eventType}`,
+      );
       return;
     }
 
     handlers.push(handler);
-    
+
     // 按优先级排序
     handlers.sort((a, b) => a.getPriority() - b.getPriority());
 
@@ -165,18 +171,22 @@ export class EventBus implements IEventBus {
 
     const index = handlers.indexOf(handler);
     if (index === -1) {
-      this.logger.warn(`处理器 ${handler.getName()} 没有订阅事件类型 ${eventType}`);
+      this.logger.warn(
+        `处理器 ${handler.getName()} 没有订阅事件类型 ${eventType}`,
+      );
       return;
     }
 
     handlers.splice(index, 1);
-    
+
     // 如果没有处理器了，删除事件类型
     if (handlers.length === 0) {
       this.handlers.delete(eventType);
     }
 
-    this.logger.info(`处理器 ${handler.getName()} 取消订阅事件类型 ${eventType}`);
+    this.logger.info(
+      `处理器 ${handler.getName()} 取消订阅事件类型 ${eventType}`,
+    );
   }
 
   /**
@@ -212,18 +222,25 @@ export class EventBus implements IEventBus {
    * @param event - 领域事件
    * @private
    */
-  private async handleEvent(handler: IEventHandler, event: DomainEvent): Promise<void> {
+  private async handleEvent(
+    handler: IEventHandler,
+    event: DomainEvent,
+  ): Promise<void> {
     try {
-      this.logger.debug(`处理器 ${handler.getName()} 开始处理事件 ${event.constructor.name}`);
-      
+      this.logger.debug(
+        `处理器 ${handler.getName()} 开始处理事件 ${event.constructor.name}`,
+      );
+
       await handler.handle(event);
-      
-      this.logger.debug(`处理器 ${handler.getName()} 成功处理事件 ${event.constructor.name}`);
+
+      this.logger.debug(
+        `处理器 ${handler.getName()} 成功处理事件 ${event.constructor.name}`,
+      );
     } catch (error) {
       this.logger.error(`处理器 ${handler.getName()} 处理事件失败`, {
         eventType: event.constructor.name,
         handlerName: handler.getName(),
-        error: error.message
+        error: error.message,
       });
       throw error;
     }

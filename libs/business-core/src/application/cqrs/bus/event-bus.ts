@@ -214,7 +214,7 @@ export class EventBus implements IEventBus {
     if (!handler.supports(eventType)) {
       throw new BusinessRuleViolationException(
         `Handler does not support event type: ${eventType}`,
-        { eventType, handlerName: handler.constructor.name }
+        { eventType, handlerName: handler.constructor.name },
       );
     }
 

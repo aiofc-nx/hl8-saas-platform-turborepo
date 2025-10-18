@@ -70,7 +70,10 @@ import type {
   IQueryBus,
   IEventBus,
 } from "./cqrs-bus.interface.js";
-import { ResourceNotFoundException, BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
+import {
+  ResourceNotFoundException,
+  BusinessRuleViolationException,
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * CQRS 总线统计信息
@@ -306,7 +309,7 @@ export class CQRSBus implements ICQRSBus {
     if (this._isInitialized) {
       throw new BusinessRuleViolationException(
         "CQRS Bus is already initialized",
-        { busName: "CQRSBus" }
+        { busName: "CQRSBus" },
       );
     }
 
@@ -334,7 +337,7 @@ export class CQRSBus implements ICQRSBus {
     } catch (error) {
       throw new BusinessRuleViolationException(
         `Failed to initialize CQRS Bus: ${error}`,
-        { error: error instanceof Error ? error.message : String(error) }
+        { error: error instanceof Error ? error.message : String(error) },
       );
     }
   }
@@ -349,36 +352,32 @@ export class CQRSBus implements ICQRSBus {
    */
   public async shutdown(): Promise<void> {
     if (!this._isInitialized) {
-      throw new BusinessRuleViolationException(
-        "CQRS Bus is not initialized",
-        { busName: "CQRSBus" }
-      );
+      throw new BusinessRuleViolationException("CQRS Bus is not initialized", {
+        busName: "CQRSBus",
+      });
     }
 
     try {
       // 清理资源
       if ("clearHandlers" in this._commandBus) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this._commandBus as any).clearHandlers();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         (this._commandBus as any).clearMiddlewares();
       }
 
       if ("clearHandlers" in this._queryBus) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this._queryBus as any).clearHandlers();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         (this._queryBus as any).clearMiddlewares();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         (this._queryBus as any).clearCache();
       }
 
       if ("clearHandlers" in this._eventBus) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this._eventBus as any).clearHandlers();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         (this._eventBus as any).clearSubscriptions();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         (this._eventBus as any).clearMiddlewares();
       }
 
@@ -386,7 +385,7 @@ export class CQRSBus implements ICQRSBus {
     } catch (error) {
       throw new BusinessRuleViolationException(
         `Failed to shutdown CQRS Bus: ${error}`,
-        { error: error instanceof Error ? error.message : String(error) }
+        { error: error instanceof Error ? error.message : String(error) },
       );
     }
   }
@@ -424,8 +423,7 @@ export class CQRSBus implements ICQRSBus {
       registeredHandlers: this._commandBus.getRegisteredCommandTypes().length,
       middlewares:
         "getMiddlewareCount" in this._commandBus
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (this._commandBus as any).getMiddlewareCount()
+          ? (this._commandBus as any).getMiddlewareCount()
           : 0,
     };
 
@@ -433,13 +431,11 @@ export class CQRSBus implements ICQRSBus {
       registeredHandlers: this._queryBus.getRegisteredQueryTypes().length,
       middlewares:
         "getMiddlewareCount" in this._queryBus
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (this._queryBus as any).getMiddlewareCount()
+          ? (this._queryBus as any).getMiddlewareCount()
           : 0,
       cacheEntries:
         "getCacheStats" in this._queryBus
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (this._queryBus as any).getCacheStats().totalEntries
+          ? (this._queryBus as any).getCacheStats().totalEntries
           : 0,
     };
 
@@ -447,13 +443,11 @@ export class CQRSBus implements ICQRSBus {
       registeredHandlers: this._eventBus.getRegisteredEventTypes().length,
       subscriptions:
         "getHandlerCount" in this._eventBus
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (this._eventBus as any).getHandlerCount()
+          ? (this._eventBus as any).getHandlerCount()
           : 0,
       middlewares:
         "getMiddlewareCount" in this._eventBus
-          ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (this._eventBus as any).getMiddlewareCount()
+          ? (this._eventBus as any).getMiddlewareCount()
           : 0,
     };
 
@@ -541,7 +535,7 @@ export class CQRSBus implements ICQRSBus {
     if (!this._isInitialized) {
       throw new BusinessRuleViolationException(
         "CQRS Bus is not initialized. Call initialize() first.",
-        { busName: "CQRSBus" }
+        { busName: "CQRSBus" },
       );
     }
   }

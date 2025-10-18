@@ -5,12 +5,12 @@ import type { ITenantRepository } from "../../../domain/repositories/tenant.repo
 import { BaseCommandUseCase } from "../base/base-command-use-case.js";
 import { UseCase } from "../decorators/use-case.decorator.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
   BusinessRuleViolationException,
-  ResourceAlreadyExistsException
+  ResourceAlreadyExistsException,
 } from "../../../common/exceptions/business.exceptions.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
@@ -167,7 +167,7 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
 
@@ -177,7 +177,7 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
           "TENANT_NAME_REQUIRED",
           "租户名称不能为空",
           "租户名称是必填字段",
-          400
+          400,
         );
       }
 
@@ -186,7 +186,7 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
           "TENANT_NAME_TOO_LONG",
           "租户名称长度不能超过100个字符",
           "租户名称长度不能超过100个字符",
-          400
+          400,
         );
       }
     }
@@ -196,7 +196,7 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
         "TENANT_TYPE_REQUIRED",
         "租户类型不能为空",
         "租户类型是必填字段",
-        400
+        400,
       );
     }
 
@@ -205,7 +205,7 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
         "UPDATED_BY_REQUIRED",
         "更新者标识符不能为空",
         "更新者标识符是必填字段",
-        400
+        400,
       );
     }
   }

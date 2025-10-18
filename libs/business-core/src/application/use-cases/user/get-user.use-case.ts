@@ -19,7 +19,7 @@
  * @example
  * ```typescript
  * const getUserUseCase = new GetUserUseCase(userRepository, cacheService, logger);
- * 
+ *
  * const result = await getUserUseCase.execute({
  *   userId: userId,
  *   tenantId: tenantId
@@ -35,11 +35,11 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException 
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -97,16 +97,23 @@ export interface IGetUserUseCase {
  *
  * @description 获取单个用户的详细信息
  */
-export class GetUserUseCase extends BaseQueryUseCase<
-  GetUserRequest,
-  GetUserResponse
-> implements IGetUserUseCase {
+export class GetUserUseCase
+  extends BaseQueryUseCase<GetUserRequest, GetUserResponse>
+  implements IGetUserUseCase
+{
   constructor(
     private readonly userRepository: IUserRepository,
     cacheService?: ICacheService,
     logger?: FastifyLoggerService,
   ) {
-    super("GetUser", "获取用户用例", "1.0.0", ["user:read"], cacheService, logger);
+    super(
+      "GetUser",
+      "获取用户用例",
+      "1.0.0",
+      ["user:read"],
+      cacheService,
+      logger,
+    );
   }
 
   /**
@@ -122,7 +129,7 @@ export class GetUserUseCase extends BaseQueryUseCase<
     this.validateRequest(request);
     await this.validateUserExists(request.userId, request.tenantId);
     await this.validateQueryPermissions(request, context);
-    
+
     // 尝试从缓存获取
     const cacheKey = this.getCacheKey(request);
     const cachedResult = await this.getFromCache(cacheKey);
@@ -171,7 +178,7 @@ export class GetUserUseCase extends BaseQueryUseCase<
         "USER_ID_REQUIRED",
         "用户ID不能为空",
         "用户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -179,7 +186,7 @@ export class GetUserUseCase extends BaseQueryUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
   }
@@ -191,16 +198,19 @@ export class GetUserUseCase extends BaseQueryUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateUserExists(userId: EntityId, tenantId: TenantId): Promise<void> {
+  private async validateUserExists(
+    userId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", userId.toString());
     }
     if (!userAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "用户不属于指定租户",
-        { userId: userId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("用户不属于指定租户", {
+        userId: userId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -218,11 +228,11 @@ export class GetUserUseCase extends BaseQueryUseCase<
     // 检查是否为用户本人或管理员
     const isSelf = context.user?.id.equals(request.userId);
     const isAdmin = context.user?.role === "ADMIN";
-    
+
     if (!isSelf && !isAdmin) {
       throw new UnauthorizedOperationException(
         "查询用户信息",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }

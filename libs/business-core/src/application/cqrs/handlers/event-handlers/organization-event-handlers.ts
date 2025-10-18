@@ -53,7 +53,9 @@ import type { INotificationService } from "../ports/notification-service.interfa
  * @description 处理OrganizationCreatedEvent，发送通知邮件并记录审计日志
  */
 @EventsHandler(OrganizationCreatedEvent)
-export class OrganizationCreatedEventHandler implements IEventHandler<OrganizationCreatedEvent> {
+export class OrganizationCreatedEventHandler
+  implements IEventHandler<OrganizationCreatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -76,7 +78,9 @@ export class OrganizationCreatedEventHandler implements IEventHandler<Organizati
       // 3. 发送系统通知
       await this.notificationService.sendOrganizationCreatedNotification(event);
 
-      this.logger.info(`组织创建事件处理成功: ${event.organizationId.toString()}`);
+      this.logger.info(
+        `组织创建事件处理成功: ${event.organizationId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理组织创建事件失败: ${event.organizationId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -93,7 +97,9 @@ export class OrganizationCreatedEventHandler implements IEventHandler<Organizati
    * @param event - 组织创建事件
    * @private
    */
-  private async sendOrganizationCreatedNotification(event: OrganizationCreatedEvent): Promise<void> {
+  private async sendOrganizationCreatedNotification(
+    event: OrganizationCreatedEvent,
+  ): Promise<void> {
     try {
       // 发送给组织管理员
       await this.emailService.sendOrganizationCreatedEmail(
@@ -102,7 +108,9 @@ export class OrganizationCreatedEventHandler implements IEventHandler<Organizati
         event.createdBy,
       );
 
-      this.logger.debug(`组织创建通知邮件已发送: ${event.organizationId.toString()}`);
+      this.logger.debug(
+        `组织创建通知邮件已发送: ${event.organizationId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `发送组织创建通知邮件失败: ${event.organizationId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -119,7 +127,9 @@ export class OrganizationCreatedEventHandler implements IEventHandler<Organizati
  * @description 处理OrganizationUpdatedEvent，记录审计日志并发送通知
  */
 @EventsHandler(OrganizationUpdatedEvent)
-export class OrganizationUpdatedEventHandler implements IEventHandler<OrganizationUpdatedEvent> {
+export class OrganizationUpdatedEventHandler
+  implements IEventHandler<OrganizationUpdatedEvent>
+{
   constructor(
     private readonly auditService: IAuditService,
     private readonly notificationService: INotificationService,
@@ -138,7 +148,9 @@ export class OrganizationUpdatedEventHandler implements IEventHandler<Organizati
       // 2. 发送系统通知
       await this.notificationService.sendOrganizationUpdatedNotification(event);
 
-      this.logger.info(`组织更新事件处理成功: ${event.organizationId.toString()}`);
+      this.logger.info(
+        `组织更新事件处理成功: ${event.organizationId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理组织更新事件失败: ${event.organizationId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -155,7 +167,9 @@ export class OrganizationUpdatedEventHandler implements IEventHandler<Organizati
  * @description 处理OrganizationDeletedEvent，记录审计日志并发送通知
  */
 @EventsHandler(OrganizationDeletedEvent)
-export class OrganizationDeletedEventHandler implements IEventHandler<OrganizationDeletedEvent> {
+export class OrganizationDeletedEventHandler
+  implements IEventHandler<OrganizationDeletedEvent>
+{
   constructor(
     private readonly auditService: IAuditService,
     private readonly notificationService: INotificationService,
@@ -174,7 +188,9 @@ export class OrganizationDeletedEventHandler implements IEventHandler<Organizati
       // 2. 发送系统通知
       await this.notificationService.sendOrganizationDeletedNotification(event);
 
-      this.logger.info(`组织删除事件处理成功: ${event.organizationId.toString()}`);
+      this.logger.info(
+        `组织删除事件处理成功: ${event.organizationId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理组织删除事件失败: ${event.organizationId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -191,7 +207,9 @@ export class OrganizationDeletedEventHandler implements IEventHandler<Organizati
  * @description 处理OrganizationActivatedEvent，发送激活通知并记录审计日志
  */
 @EventsHandler(OrganizationActivatedEvent)
-export class OrganizationActivatedEventHandler implements IEventHandler<OrganizationActivatedEvent> {
+export class OrganizationActivatedEventHandler
+  implements IEventHandler<OrganizationActivatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -212,9 +230,13 @@ export class OrganizationActivatedEventHandler implements IEventHandler<Organiza
       await this.auditService.logOrganizationActivation(event);
 
       // 3. 发送系统通知
-      await this.notificationService.sendOrganizationActivatedNotification(event);
+      await this.notificationService.sendOrganizationActivatedNotification(
+        event,
+      );
 
-      this.logger.info(`组织激活事件处理成功: ${event.organizationId.toString()}`);
+      this.logger.info(
+        `组织激活事件处理成功: ${event.organizationId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理组织激活事件失败: ${event.organizationId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -230,7 +252,9 @@ export class OrganizationActivatedEventHandler implements IEventHandler<Organiza
    * @param event - 组织激活事件
    * @private
    */
-  private async sendOrganizationActivatedNotification(event: OrganizationActivatedEvent): Promise<void> {
+  private async sendOrganizationActivatedNotification(
+    event: OrganizationActivatedEvent,
+  ): Promise<void> {
     try {
       // 发送给组织管理员
       await this.emailService.sendOrganizationActivatedEmail(
@@ -238,7 +262,9 @@ export class OrganizationActivatedEventHandler implements IEventHandler<Organiza
         event.activatedBy,
       );
 
-      this.logger.debug(`组织激活通知邮件已发送: ${event.organizationId.toString()}`);
+      this.logger.debug(
+        `组织激活通知邮件已发送: ${event.organizationId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `发送组织激活通知邮件失败: ${event.organizationId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -255,7 +281,9 @@ export class OrganizationActivatedEventHandler implements IEventHandler<Organiza
  * @description 处理OrganizationDeactivatedEvent，发送停用通知并记录审计日志
  */
 @EventsHandler(OrganizationDeactivatedEvent)
-export class OrganizationDeactivatedEventHandler implements IEventHandler<OrganizationDeactivatedEvent> {
+export class OrganizationDeactivatedEventHandler
+  implements IEventHandler<OrganizationDeactivatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -276,9 +304,13 @@ export class OrganizationDeactivatedEventHandler implements IEventHandler<Organi
       await this.auditService.logOrganizationDeactivation(event);
 
       // 3. 发送系统通知
-      await this.notificationService.sendOrganizationDeactivatedNotification(event);
+      await this.notificationService.sendOrganizationDeactivatedNotification(
+        event,
+      );
 
-      this.logger.info(`组织停用事件处理成功: ${event.organizationId.toString()}`);
+      this.logger.info(
+        `组织停用事件处理成功: ${event.organizationId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `处理组织停用事件失败: ${event.organizationId.toString()}: ${error instanceof Error ? error.message : String(error)}`,
@@ -294,7 +326,9 @@ export class OrganizationDeactivatedEventHandler implements IEventHandler<Organi
    * @param event - 组织停用事件
    * @private
    */
-  private async sendOrganizationDeactivatedNotification(event: OrganizationDeactivatedEvent): Promise<void> {
+  private async sendOrganizationDeactivatedNotification(
+    event: OrganizationDeactivatedEvent,
+  ): Promise<void> {
     try {
       // 发送给组织管理员
       await this.emailService.sendOrganizationDeactivatedEmail(
@@ -303,7 +337,9 @@ export class OrganizationDeactivatedEventHandler implements IEventHandler<Organi
         event.deactivateReason,
       );
 
-      this.logger.debug(`组织停用通知邮件已发送: ${event.organizationId.toString()}`);
+      this.logger.debug(
+        `组织停用通知邮件已发送: ${event.organizationId.toString()}`,
+      );
     } catch (error) {
       this.logger.error(
         `发送组织停用通知邮件失败: ${event.organizationId.toString()}: ${error instanceof Error ? error.message : String(error)}`,

@@ -19,7 +19,7 @@
  * @example
  * ```typescript
  * const getUserListUseCase = new GetUserListUseCase(userRepository, cacheService, logger);
- * 
+ *
  * const result = await getUserListUseCase.execute({
  *   tenantId: tenantId,
  *   page: 1,
@@ -37,11 +37,11 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException 
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -72,7 +72,14 @@ export interface UserQueryOptions {
 /**
  * 获取用户列表请求
  */
-export interface GetUserListRequest extends UserQueryOptions {}
+export interface GetUserListRequest extends UserQueryOptions {
+  /** 查询关键词 */
+  query?: string;
+  /** 排序字段 */
+  sortBy?: string;
+  /** 排序方向 */
+  sortOrder?: "asc" | "desc";
+}
 
 /**
  * 获取用户列表响应
@@ -123,16 +130,23 @@ export interface IGetUserListUseCase {
  *
  * @description 获取用户列表，支持分页、过滤和排序
  */
-export class GetUserListUseCase extends BaseQueryUseCase<
-  GetUserListRequest,
-  GetUserListResponse
-> implements IGetUserListUseCase {
+export class GetUserListUseCase
+  extends BaseQueryUseCase<GetUserListRequest, GetUserListResponse>
+  implements IGetUserListUseCase
+{
   constructor(
     private readonly userRepository: IUserRepository,
     cacheService?: ICacheService,
     logger?: FastifyLoggerService,
   ) {
-    super("GetUserList", "获取用户列表用例", "1.0.0", ["user:read"], cacheService, logger);
+    super(
+      "GetUserList",
+      "获取用户列表用例",
+      "1.0.0",
+      ["user:read"],
+      cacheService,
+      logger,
+    );
   }
 
   /**
@@ -147,10 +161,10 @@ export class GetUserListUseCase extends BaseQueryUseCase<
   ): Promise<GetUserListResponse> {
     this.validateRequest(request);
     await this.validateQueryPermissions(request, context);
-    
+
     // 设置默认查询选项
     const queryOptions = this.setDefaultOptions(request);
-    
+
     // 尝试从缓存获取
     const cacheKey = this.getCacheKey(queryOptions);
     const cachedResult = await this.getFromCache(cacheKey);
@@ -160,9 +174,9 @@ export class GetUserListUseCase extends BaseQueryUseCase<
 
     // 从数据库获取
     const { users, total } = await this.userRepository.findMany(queryOptions);
-    
+
     // 映射用户信息
-    const userInfos = users.map(userAggregate => {
+    const userInfos = users.map((userAggregate) => {
       const user = userAggregate.getUser();
       return {
         id: userAggregate.id,
@@ -204,7 +218,7 @@ export class GetUserListUseCase extends BaseQueryUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (request.page && request.page < 1) {
@@ -212,7 +226,7 @@ export class GetUserListUseCase extends BaseQueryUseCase<
         "INVALID_PAGE",
         "页码必须大于0",
         "页码必须大于0",
-        400
+        400,
       );
     }
     if (request.limit && (request.limit < 1 || request.limit > 100)) {
@@ -220,7 +234,7 @@ export class GetUserListUseCase extends BaseQueryUseCase<
         "INVALID_LIMIT",
         "每页数量必须在1-100之间",
         "每页数量必须在1-100之间",
-        400
+        400,
       );
     }
   }
@@ -238,11 +252,11 @@ export class GetUserListUseCase extends BaseQueryUseCase<
   ): Promise<void> {
     // 检查是否为管理员
     const isAdmin = context.user?.role === "ADMIN";
-    
+
     if (!isAdmin) {
       throw new UnauthorizedOperationException(
         "查询用户列表",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }

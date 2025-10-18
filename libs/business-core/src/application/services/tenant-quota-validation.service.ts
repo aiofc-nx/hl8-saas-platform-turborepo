@@ -21,7 +21,7 @@
  * ```typescript
  * // 验证租户配额
  * const quotaService = new TenantQuotaValidationService(tenantRepository, logger);
- * 
+ *
  * const isValid = await quotaService.validateUserQuota(tenantId, 1);
  * if (!isValid) {
  *   throw new Error('用户数量超出配额限制');
@@ -142,7 +142,9 @@ export class TenantQuotaValidationService {
 
       const result: QuotaValidationResult = {
         isValid,
-        reason: isValid ? undefined : `用户数量超出配额限制。当前: ${currentUsers}, 新增: ${additionalUsers}, 限制: ${quotaInfo.maxUsers}`,
+        reason: isValid
+          ? undefined
+          : `用户数量超出配额限制。当前: ${currentUsers}, 新增: ${additionalUsers}, 限制: ${quotaInfo.maxUsers}`,
         currentUsage: currentUsers,
         quotaLimit: quotaInfo.maxUsers,
         remainingQuota: quotaInfo.maxUsers - currentUsers,
@@ -196,7 +198,8 @@ export class TenantQuotaValidationService {
       const quotaInfo = tenantType.getResourceQuota();
 
       // 获取当前组织数量
-      const currentOrganizations = await this.organizationRepository.countByTenant(tenantId);
+      const currentOrganizations =
+        await this.organizationRepository.countByTenant(tenantId);
 
       // 验证配额
       const totalOrganizations = currentOrganizations + additionalOrganizations;
@@ -204,7 +207,9 @@ export class TenantQuotaValidationService {
 
       const result: QuotaValidationResult = {
         isValid,
-        reason: isValid ? undefined : `组织数量超出配额限制。当前: ${currentOrganizations}, 新增: ${additionalOrganizations}, 限制: ${quotaInfo.maxOrganizations}`,
+        reason: isValid
+          ? undefined
+          : `组织数量超出配额限制。当前: ${currentOrganizations}, 新增: ${additionalOrganizations}, 限制: ${quotaInfo.maxOrganizations}`,
         currentUsage: currentOrganizations,
         quotaLimit: quotaInfo.maxOrganizations,
         remainingQuota: quotaInfo.maxOrganizations - currentOrganizations,
@@ -266,7 +271,9 @@ export class TenantQuotaValidationService {
 
       const result: QuotaValidationResult = {
         isValid,
-        reason: isValid ? undefined : `存储空间超出配额限制。当前: ${currentStorage}GB, 新增: ${additionalStorage}GB, 限制: ${quotaInfo.maxStorage}GB`,
+        reason: isValid
+          ? undefined
+          : `存储空间超出配额限制。当前: ${currentStorage}GB, 新增: ${additionalStorage}GB, 限制: ${quotaInfo.maxStorage}GB`,
         currentUsage: currentStorage,
         quotaLimit: quotaInfo.maxStorage,
         remainingQuota: quotaInfo.maxStorage - currentStorage,
@@ -321,11 +328,12 @@ export class TenantQuotaValidationService {
       const quotaInfo = tenantType.getResourceQuota();
 
       // 获取当前使用量
-      const [currentUsers, currentOrganizations, currentStorage] = await Promise.all([
-        this.userRepository.countByTenant(tenantId),
-        this.organizationRepository.countByTenant(tenantId),
-        this.getCurrentStorageUsage(tenantId),
-      ]);
+      const [currentUsers, currentOrganizations, currentStorage] =
+        await Promise.all([
+          this.userRepository.countByTenant(tenantId),
+          this.organizationRepository.countByTenant(tenantId),
+          this.getCurrentStorageUsage(tenantId),
+        ]);
 
       const result: TenantQuotaInfo = {
         tenantId,

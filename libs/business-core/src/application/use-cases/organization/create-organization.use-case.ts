@@ -14,12 +14,12 @@ import { OrganizationType } from "../../domain/value-objects/types/organization-
 import type { IOrganizationRepository } from "../../domain/repositories/organization.repository.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
   BusinessRuleViolationException,
-  ResourceAlreadyExistsException
+  ResourceAlreadyExistsException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -152,7 +152,7 @@ export class CreateOrganizationUseCase extends BaseCommandUseCase<
         "ORGANIZATION_NAME_REQUIRED",
         "组织名称不能为空",
         "组织名称是必填字段",
-        400
+        400,
       );
     }
 
@@ -161,7 +161,7 @@ export class CreateOrganizationUseCase extends BaseCommandUseCase<
         "ORGANIZATION_NAME_TOO_LONG",
         "组织名称长度不能超过100字符",
         "组织名称长度不能超过100字符",
-        400
+        400,
       );
     }
 
@@ -170,7 +170,7 @@ export class CreateOrganizationUseCase extends BaseCommandUseCase<
         "ORGANIZATION_TYPE_REQUIRED",
         "组织类型不能为空",
         "组织类型是必填字段",
-        400
+        400,
       );
     }
 
@@ -179,7 +179,7 @@ export class CreateOrganizationUseCase extends BaseCommandUseCase<
         "CREATED_BY_REQUIRED",
         "创建者标识符不能为空",
         "创建者标识符是必填字段",
-        400
+        400,
       );
     }
   }
@@ -204,10 +204,7 @@ export class CreateOrganizationUseCase extends BaseCommandUseCase<
     );
 
     if (existingOrganization) {
-      throw new ResourceAlreadyExistsException(
-        "组织",
-        name
-      );
+      throw new ResourceAlreadyExistsException("组织", name);
     }
   }
 

@@ -678,7 +678,7 @@ export class DepartmentRepositoryAdapter
 
     try {
       // 构建查询条件
-      let whereConditions = [];
+      const whereConditions = [];
       const values = [];
 
       if (options.tenantId) {

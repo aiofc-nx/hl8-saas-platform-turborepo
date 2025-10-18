@@ -21,7 +21,7 @@
  * ```typescript
  * // 解决权限冲突
  * const conflictService = new PermissionConflictResolutionService(userRepository, logger);
- * 
+ *
  * const result = await conflictService.resolvePermissionConflicts(userId);
  * if (result.hasConflicts) {
  *   console.log('权限冲突:', result.conflicts);
@@ -44,7 +44,11 @@ import { ResourceNotFoundException } from "../../../common/exceptions/business.e
  */
 export interface PermissionConflictInfo {
   /** 冲突类型 */
-  conflictType: "ROLE_CONFLICT" | "PERMISSION_CONFLICT" | "SCOPE_CONFLICT" | "INHERITANCE_CONFLICT";
+  conflictType:
+    | "ROLE_CONFLICT"
+    | "PERMISSION_CONFLICT"
+    | "SCOPE_CONFLICT"
+    | "INHERITANCE_CONFLICT";
   /** 冲突描述 */
   description: string;
   /** 冲突的权限 */
@@ -70,7 +74,11 @@ export interface PermissionConflictResolutionResult {
   /** 解决建议 */
   resolutions: Array<{
     /** 建议类型 */
-    type: "REMOVE_ROLE" | "ADJUST_PERMISSION" | "CLARIFY_SCOPE" | "UPDATE_INHERITANCE";
+    type:
+      | "REMOVE_ROLE"
+      | "ADJUST_PERMISSION"
+      | "CLARIFY_SCOPE"
+      | "UPDATE_INHERITANCE";
     /** 建议描述 */
     description: string;
     /** 建议操作 */
@@ -157,14 +165,24 @@ export class PermissionConflictResolutionService {
       const userPermissionInfo = await this.getUserPermissionInfo(userId);
 
       // 分析权限冲突
-      const conflicts = await this.analyzePermissionConflicts(userPermissionInfo);
+      const conflicts =
+        await this.analyzePermissionConflicts(userPermissionInfo);
 
       // 生成解决建议
-      const resolutions = await this.generateResolutionSuggestions(conflicts, userPermissionInfo);
+      const resolutions = await this.generateResolutionSuggestions(
+        conflicts,
+        userPermissionInfo,
+      );
 
       // 计算最终权限
-      const finalPermissions = await this.calculateFinalPermissions(userPermissionInfo, conflicts);
-      const finalRoles = await this.calculateFinalRoles(userPermissionInfo, conflicts);
+      const finalPermissions = await this.calculateFinalPermissions(
+        userPermissionInfo,
+        conflicts,
+      );
+      const finalRoles = await this.calculateFinalRoles(
+        userPermissionInfo,
+        conflicts,
+      );
 
       const result: PermissionConflictResolutionResult = {
         hasConflicts: conflicts.length > 0,
@@ -198,7 +216,9 @@ export class PermissionConflictResolutionService {
    * @returns Promise<用户权限信息>
    * @private
    */
-  private async getUserPermissionInfo(userId: EntityId): Promise<UserPermissionInfo> {
+  private async getUserPermissionInfo(
+    userId: EntityId,
+  ): Promise<UserPermissionInfo> {
     // 获取用户信息
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
@@ -215,7 +235,10 @@ export class PermissionConflictResolutionService {
     const directPermissions = await this.getUserDirectPermissions(userId);
 
     // 获取继承权限
-    const inheritedPermissions = await this.getUserInheritedPermissions(userId, tenantId);
+    const inheritedPermissions = await this.getUserInheritedPermissions(
+      userId,
+      tenantId,
+    );
 
     // 计算有效权限
     const effectivePermissions = this.calculateEffectivePermissions(
@@ -250,7 +273,8 @@ export class PermissionConflictResolutionService {
     conflicts.push(...roleConflicts);
 
     // 分析权限冲突
-    const permissionConflicts = this.analyzePermissionConflicts(userPermissionInfo);
+    const permissionConflicts =
+      this.analyzePermissionConflicts(userPermissionInfo);
     conflicts.push(...permissionConflicts);
 
     // 分析作用域冲突
@@ -274,11 +298,13 @@ export class PermissionConflictResolutionService {
    * @returns 角色冲突列表
    * @private
    */
-  private analyzeRoleConflicts(roles: Array<{ name: string; permissions?: string[] }>): PermissionConflictInfo[] {
+  private analyzeRoleConflicts(
+    roles: Array<{ name: string; permissions?: string[] }>,
+  ): PermissionConflictInfo[] {
     const conflicts: PermissionConflictInfo[] = [];
 
     // 检查是否有冲突的角色组合
-    const roleNames = roles.map(role => role.name);
+    const roleNames = roles.map((role) => role.name);
     const conflictingRolePairs = [
       ["ADMIN", "USER"],
       ["MANAGER", "EMPLOYEE"],
@@ -307,7 +333,9 @@ export class PermissionConflictResolutionService {
    * @returns 权限冲突列表
    * @private
    */
-  private analyzePermissionConflicts(userPermissionInfo: UserPermissionInfo): PermissionConflictInfo[] {
+  private analyzePermissionConflicts(
+    userPermissionInfo: UserPermissionInfo,
+  ): PermissionConflictInfo[] {
     const conflicts: PermissionConflictInfo[] = [];
 
     // 检查权限冲突
@@ -344,7 +372,9 @@ export class PermissionConflictResolutionService {
    * @returns 作用域冲突列表
    * @private
    */
-  private analyzeScopeConflicts(roles: Array<{ name: string; permissions?: string[] }>): PermissionConflictInfo[] {
+  private analyzeScopeConflicts(
+    roles: Array<{ name: string; permissions?: string[] }>,
+  ): PermissionConflictInfo[] {
     const conflicts: PermissionConflictInfo[] = [];
 
     // 检查作用域冲突
@@ -380,8 +410,8 @@ export class PermissionConflictResolutionService {
     const conflicts: PermissionConflictInfo[] = [];
 
     // 检查继承冲突
-    const conflictingPermissions = directPermissions.filter(perm => 
-      inheritedPermissions.includes(perm)
+    const conflictingPermissions = directPermissions.filter((perm) =>
+      inheritedPermissions.includes(perm),
     );
 
     if (conflictingPermissions.length > 0) {
@@ -408,12 +438,14 @@ export class PermissionConflictResolutionService {
   private async generateResolutionSuggestions(
     conflicts: PermissionConflictInfo[],
     userPermissionInfo: UserPermissionInfo,
-  ): Promise<Array<{
-    type: string;
-    description: string;
-    actions: string[];
-    priority: "HIGH" | "MEDIUM" | "LOW";
-  }>> {
+  ): Promise<
+    Array<{
+      type: string;
+      description: string;
+      actions: string[];
+      priority: "HIGH" | "MEDIUM" | "LOW";
+    }>
+  > {
     const resolutions: Array<{
       type: string;
       description: string;
@@ -482,10 +514,10 @@ export class PermissionConflictResolutionService {
         // 保留高权限，移除低权限
         const highPriorityPermissions = ["WRITE", "DELETE", "EDIT"];
         const lowPriorityPermissions = ["READ", "CREATE", "VIEW"];
-        
+
         for (const perm of conflict.conflictingPermissions) {
           if (lowPriorityPermissions.includes(perm)) {
-            finalPermissions = finalPermissions.filter(p => p !== perm);
+            finalPermissions = finalPermissions.filter((p) => p !== perm);
           }
         }
       }
@@ -507,7 +539,7 @@ export class PermissionConflictResolutionService {
     conflicts: PermissionConflictInfo[],
   ): Promise<string[]> {
     // 基于冲突解决策略计算最终角色
-    let finalRoles = userPermissionInfo.roles.map(role => role.name);
+    let finalRoles = userPermissionInfo.roles.map((role) => role.name);
 
     // 移除冲突角色
     for (const conflict of conflicts) {
@@ -515,10 +547,10 @@ export class PermissionConflictResolutionService {
         // 保留高权限角色，移除低权限角色
         const highPriorityRoles = ["ADMIN", "MANAGER"];
         const lowPriorityRoles = ["USER", "EMPLOYEE"];
-        
+
         for (const role of conflict.conflictingRoles) {
           if (lowPriorityRoles.includes(role)) {
-            finalRoles = finalRoles.filter(r => r !== role);
+            finalRoles = finalRoles.filter((r) => r !== role);
           }
         }
       }
@@ -535,7 +567,10 @@ export class PermissionConflictResolutionService {
    * @returns Promise<角色列表>
    * @private
    */
-  private async getUserRoles(userId: EntityId, tenantId: TenantId): Promise<any[]> {
+  private async getUserRoles(
+    userId: EntityId,
+    tenantId: TenantId,
+  ): Promise<any[]> {
     // 这里需要根据实际业务逻辑实现
     // 暂时返回空数组
     return [];
@@ -562,7 +597,10 @@ export class PermissionConflictResolutionService {
    * @returns Promise<继承权限列表>
    * @private
    */
-  private async getUserInheritedPermissions(userId: EntityId, tenantId: TenantId): Promise<string[]> {
+  private async getUserInheritedPermissions(
+    userId: EntityId,
+    tenantId: TenantId,
+  ): Promise<string[]> {
     // 这里需要根据实际业务逻辑实现
     // 暂时返回空数组
     return [];

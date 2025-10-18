@@ -49,8 +49,14 @@ import { OrganizationUseCaseServices } from "./organization-use-case-services.js
 import { DepartmentUseCaseServices } from "./department-use-case-services.js";
 
 // 输入输出类型
-import type { CreateOrganizationRequest, CreateOrganizationResponse } from "../use-cases/organization/create-organization.use-case.js";
-import type { CreateDepartmentRequest, CreateDepartmentResponse } from "../use-cases/department/create-department.use-case.js";
+import type {
+  CreateOrganizationRequest,
+  CreateOrganizationResponse,
+} from "../use-cases/organization/create-organization.use-case.js";
+import type {
+  CreateDepartmentRequest,
+  CreateDepartmentResponse,
+} from "../use-cases/department/create-department.use-case.js";
 
 /**
  * 创建组织并初始化部门请求
@@ -157,14 +163,18 @@ export class OrganizationApplicationService {
       });
 
       // 1. 创建组织
-      const organizationResult = await this.organizationUseCaseServices.createOrganization(request.organizationData);
+      const organizationResult =
+        await this.organizationUseCaseServices.createOrganization(
+          request.organizationData,
+        );
 
       // 2. 创建初始部门
-      const departmentResult = await this.departmentUseCaseServices.createDepartment({
-        ...request.departmentData,
-        organizationId: organizationResult.organizationId,
-        tenantId: request.organizationData.tenantId,
-      });
+      const departmentResult =
+        await this.departmentUseCaseServices.createDepartment({
+          ...request.departmentData,
+          organizationId: organizationResult.organizationId,
+          tenantId: request.organizationData.tenantId,
+        });
 
       this.logger.info("组织和部门创建成功", {
         organizationId: organizationResult.organizationId.toString(),
@@ -214,20 +224,28 @@ export class OrganizationApplicationService {
       });
 
       const successful: CreateOrganizationResponse[] = [];
-      const failed: Array<{ organizationData: CreateOrganizationRequest; error: string }> = [];
+      const failed: Array<{
+        organizationData: CreateOrganizationRequest;
+        error: string;
+      }> = [];
 
       // 并发创建组织
-      const createPromises = request.organizations.map(async (organizationData) => {
-        try {
-          const organizationResult = await this.organizationUseCaseServices.createOrganization(organizationData);
-          successful.push(organizationResult);
-        } catch (error) {
-          failed.push({
-            organizationData,
-            error: error.message,
-          });
-        }
-      });
+      const createPromises = request.organizations.map(
+        async (organizationData) => {
+          try {
+            const organizationResult =
+              await this.organizationUseCaseServices.createOrganization(
+                organizationData,
+              );
+            successful.push(organizationResult);
+          } catch (error) {
+            failed.push({
+              organizationData,
+              error: error.message,
+            });
+          }
+        },
+      );
 
       await Promise.all(createPromises);
 
@@ -267,7 +285,10 @@ export class OrganizationApplicationService {
    * const organizationInfo = await organizationApplicationService.getOrganizationCompleteInfo(organizationId, tenantId);
    * ```
    */
-  async getOrganizationCompleteInfo(organizationId: EntityId, tenantId: TenantId): Promise<any> {
+  async getOrganizationCompleteInfo(
+    organizationId: EntityId,
+    tenantId: TenantId,
+  ): Promise<any> {
     try {
       this.logger.debug("开始获取组织完整信息", {
         organizationId: organizationId.toString(),
@@ -276,7 +297,10 @@ export class OrganizationApplicationService {
 
       // 并发获取组织和部门信息
       const [organizationResult, departmentsResult] = await Promise.all([
-        this.organizationUseCaseServices.getOrganization({ organizationId, tenantId }),
+        this.organizationUseCaseServices.getOrganization({
+          organizationId,
+          tenantId,
+        }),
         this.departmentUseCaseServices.getDepartments({
           tenantId,
           page: 1,
@@ -291,8 +315,12 @@ export class OrganizationApplicationService {
         departmentCount: departmentsResult.total,
         statistics: {
           totalDepartments: departmentsResult.total,
-          activeDepartments: departmentsResult.departments.filter(d => d.status === "ACTIVE").length,
-          inactiveDepartments: departmentsResult.departments.filter(d => d.status === "INACTIVE").length,
+          activeDepartments: departmentsResult.departments.filter(
+            (d) => d.status === "ACTIVE",
+          ).length,
+          inactiveDepartments: departmentsResult.departments.filter(
+            (d) => d.status === "INACTIVE",
+          ).length,
         },
       };
 
@@ -344,18 +372,20 @@ export class OrganizationApplicationService {
       });
 
       // 1. 激活组织
-      const activateResult = await this.organizationUseCaseServices.activateOrganization({
-        organizationId,
-        activatedBy,
-      });
+      const activateResult =
+        await this.organizationUseCaseServices.activateOrganization({
+          organizationId,
+          activatedBy,
+        });
 
       // 2. 获取组织成员
-      const departmentsResult = await this.departmentUseCaseServices.getDepartments({
-        tenantId,
-        page: 1,
-        limit: 1,
-        filters: { organizationId },
-      });
+      const departmentsResult =
+        await this.departmentUseCaseServices.getDepartments({
+          tenantId,
+          page: 1,
+          limit: 1,
+          filters: { organizationId },
+        });
 
       if (departmentsResult.departments.length > 0) {
         // 这里可以添加发送通知的逻辑

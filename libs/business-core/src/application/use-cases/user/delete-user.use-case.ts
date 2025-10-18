@@ -20,7 +20,7 @@
  * @example
  * ```typescript
  * const deleteUserUseCase = new DeleteUserUseCase(userRepository, eventBus, transactionManager, logger);
- * 
+ *
  * const result = await deleteUserUseCase.execute({
  *   userId: userId,
  *   deletedBy: 'admin',
@@ -38,11 +38,11 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException 
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -89,17 +89,25 @@ export interface IDeleteUserUseCase {
  *
  * @description 删除用户，包括软删除和硬删除
  */
-export class DeleteUserUseCase extends BaseCommandUseCase<
-  DeleteUserRequest,
-  DeleteUserResponse
-> implements IDeleteUserUseCase {
+export class DeleteUserUseCase
+  extends BaseCommandUseCase<DeleteUserRequest, DeleteUserResponse>
+  implements IDeleteUserUseCase
+{
   constructor(
     private readonly userRepository: IUserRepository,
     eventBus?: IEventBus,
     transactionManager?: ITransactionManager,
     logger?: FastifyLoggerService,
   ) {
-    super("DeleteUser", "删除用户用例", "1.0.0", ["user:delete"], eventBus, transactionManager, logger);
+    super(
+      "DeleteUser",
+      "删除用户用例",
+      "1.0.0",
+      ["user:delete"],
+      eventBus,
+      transactionManager,
+      logger,
+    );
   }
 
   /**
@@ -116,7 +124,7 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
     await this.validateUserExists(request.userId, request.tenantId);
     await this.validateDeletePermissions(request, context);
     await this.validateUserCanBeDeleted(request);
-    
+
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", request.userId.toString());
@@ -124,10 +132,10 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
 
     // 删除用户
     userAggregate.deleteUser(request.deletedBy, request.deleteReason);
-    
+
     // 保存用户
     await this.userRepository.save(userAggregate);
-    
+
     // 发布领域事件
     await this.publishDomainEvents(userAggregate);
 
@@ -152,7 +160,7 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
         "USER_ID_REQUIRED",
         "用户ID不能为空",
         "用户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -160,7 +168,7 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.deletedBy) {
@@ -168,7 +176,7 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
         "DELETED_BY_REQUIRED",
         "删除者不能为空",
         "删除者是必填字段",
-        400
+        400,
       );
     }
   }
@@ -180,16 +188,19 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateUserExists(userId: EntityId, tenantId: TenantId): Promise<void> {
+  private async validateUserExists(
+    userId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", userId.toString());
     }
     if (!userAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "用户不属于指定租户",
-        { userId: userId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("用户不属于指定租户", {
+        userId: userId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -206,11 +217,11 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
   ): Promise<void> {
     // 检查是否为管理员
     const isAdmin = context.user?.role === "ADMIN";
-    
+
     if (!isAdmin) {
       throw new UnauthorizedOperationException(
         "删除用户",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -221,28 +232,30 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
    * @param request - 删除用户请求
    * @private
    */
-  private async validateUserCanBeDeleted(request: DeleteUserRequest): Promise<void> {
+  private async validateUserCanBeDeleted(
+    request: DeleteUserRequest,
+  ): Promise<void> {
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", request.userId.toString());
     }
 
     const user = userAggregate.getUser();
-    
+
     // 检查是否为系统管理员
     if (user.role === "SYSTEM_ADMIN") {
-      throw new BusinessRuleViolationException(
-        "不能删除系统管理员",
-        { userId: request.userId.toString(), userRole: user.role }
-      );
+      throw new BusinessRuleViolationException("不能删除系统管理员", {
+        userId: request.userId.toString(),
+        userRole: user.role,
+      });
     }
-    
+
     // 检查用户状态
     if (user.status === "DELETED") {
-      throw new BusinessRuleViolationException(
-        "用户已被删除",
-        { userId: request.userId.toString(), userStatus: user.status }
-      );
+      throw new BusinessRuleViolationException("用户已被删除", {
+        userId: request.userId.toString(),
+        userStatus: user.status,
+      });
     }
   }
 }

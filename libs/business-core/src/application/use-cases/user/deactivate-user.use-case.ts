@@ -20,7 +20,7 @@
  * @example
  * ```typescript
  * const deactivateUserUseCase = new DeactivateUserUseCase(userRepository, eventBus, transactionManager, logger);
- * 
+ *
  * const result = await deactivateUserUseCase.execute({
  *   userId: userId,
  *   deactivatedBy: 'admin',
@@ -38,11 +38,11 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException 
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -93,17 +93,25 @@ export interface IDeactivateUserUseCase {
  *
  * @description 停用用户账户，禁止其使用系统
  */
-export class DeactivateUserUseCase extends BaseCommandUseCase<
-  DeactivateUserRequest,
-  DeactivateUserResponse
-> implements IDeactivateUserUseCase {
+export class DeactivateUserUseCase
+  extends BaseCommandUseCase<DeactivateUserRequest, DeactivateUserResponse>
+  implements IDeactivateUserUseCase
+{
   constructor(
     private readonly userRepository: IUserRepository,
     eventBus?: IEventBus,
     transactionManager?: ITransactionManager,
     logger?: FastifyLoggerService,
   ) {
-    super("DeactivateUser", "停用用户用例", "1.0.0", ["user:deactivate"], eventBus, transactionManager, logger);
+    super(
+      "DeactivateUser",
+      "停用用户用例",
+      "1.0.0",
+      ["user:deactivate"],
+      eventBus,
+      transactionManager,
+      logger,
+    );
   }
 
   /**
@@ -120,18 +128,21 @@ export class DeactivateUserUseCase extends BaseCommandUseCase<
     await this.validateUserExists(request.userId, request.tenantId);
     await this.validateDeactivatePermissions(request, context);
     await this.validateUserCanBeDeactivated(request);
-    
+
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", request.userId.toString());
     }
 
     // 停用用户
-    userAggregate.deactivateUser(request.deactivatedBy, request.deactivateReason);
-    
+    userAggregate.deactivateUser(
+      request.deactivatedBy,
+      request.deactivateReason,
+    );
+
     // 保存用户
     await this.userRepository.save(userAggregate);
-    
+
     // 发布领域事件
     await this.publishDomainEvents(userAggregate);
 
@@ -160,7 +171,7 @@ export class DeactivateUserUseCase extends BaseCommandUseCase<
         "USER_ID_REQUIRED",
         "用户ID不能为空",
         "用户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -168,7 +179,7 @@ export class DeactivateUserUseCase extends BaseCommandUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.deactivatedBy) {
@@ -176,7 +187,7 @@ export class DeactivateUserUseCase extends BaseCommandUseCase<
         "DEACTIVATED_BY_REQUIRED",
         "停用者不能为空",
         "停用者是必填字段",
-        400
+        400,
       );
     }
   }
@@ -188,16 +199,19 @@ export class DeactivateUserUseCase extends BaseCommandUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateUserExists(userId: EntityId, tenantId: TenantId): Promise<void> {
+  private async validateUserExists(
+    userId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", userId.toString());
     }
     if (!userAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "用户不属于指定租户",
-        { userId: userId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("用户不属于指定租户", {
+        userId: userId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -214,11 +228,11 @@ export class DeactivateUserUseCase extends BaseCommandUseCase<
   ): Promise<void> {
     // 检查是否为管理员
     const isAdmin = context.user?.role === "ADMIN";
-    
+
     if (!isAdmin) {
       throw new UnauthorizedOperationException(
         "停用用户",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -229,35 +243,37 @@ export class DeactivateUserUseCase extends BaseCommandUseCase<
    * @param request - 停用用户请求
    * @private
    */
-  private async validateUserCanBeDeactivated(request: DeactivateUserRequest): Promise<void> {
+  private async validateUserCanBeDeactivated(
+    request: DeactivateUserRequest,
+  ): Promise<void> {
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
       throw new ResourceNotFoundException("用户", request.userId.toString());
     }
 
     const user = userAggregate.getUser();
-    
+
     // 检查是否为系统管理员
     if (user.role === "SYSTEM_ADMIN") {
-      throw new BusinessRuleViolationException(
-        "不能停用系统管理员",
-        { userId: request.userId.toString(), userRole: user.role }
-      );
+      throw new BusinessRuleViolationException("不能停用系统管理员", {
+        userId: request.userId.toString(),
+        userRole: user.role,
+      });
     }
-    
+
     // 检查用户状态
     if (user.status === "INACTIVE") {
-      throw new BusinessRuleViolationException(
-        "用户已停用",
-        { userId: request.userId.toString(), userStatus: user.status }
-      );
+      throw new BusinessRuleViolationException("用户已停用", {
+        userId: request.userId.toString(),
+        userStatus: user.status,
+      });
     }
-    
+
     if (user.status === "DELETED") {
-      throw new BusinessRuleViolationException(
-        "已删除的用户不能停用",
-        { userId: request.userId.toString(), userStatus: user.status }
-      );
+      throw new BusinessRuleViolationException("已删除的用户不能停用", {
+        userId: request.userId.toString(),
+        userStatus: user.status,
+      });
     }
   }
 }

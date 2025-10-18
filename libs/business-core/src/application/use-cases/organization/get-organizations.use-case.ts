@@ -19,7 +19,7 @@
  * @example
  * ```typescript
  * const getOrganizationsUseCase = new GetOrganizationsUseCase(organizationRepository, cacheService, logger);
- * 
+ *
  * const result = await getOrganizationsUseCase.execute({
  *   tenantId: tenantId,
  *   page: 1,
@@ -37,11 +37,11 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -71,7 +71,14 @@ export interface OrganizationQueryOptions {
 /**
  * 获取组织列表请求
  */
-export interface GetOrganizationsRequest extends OrganizationQueryOptions {}
+export interface GetOrganizationsRequest extends OrganizationQueryOptions {
+  /** 查询参数 */
+  query?: string;
+  /** 排序字段 */
+  sortBy?: string;
+  /** 排序方向 */
+  sortOrder?: "asc" | "desc";
+}
 
 /**
  * 获取组织列表响应
@@ -120,16 +127,23 @@ export interface IGetOrganizationsUseCase {
  *
  * @description 获取组织列表，支持分页、过滤和排序
  */
-export class GetOrganizationsUseCase extends BaseQueryUseCase<
-  GetOrganizationsRequest,
-  GetOrganizationsResponse
-> implements IGetOrganizationsUseCase {
+export class GetOrganizationsUseCase
+  extends BaseQueryUseCase<GetOrganizationsRequest, GetOrganizationsResponse>
+  implements IGetOrganizationsUseCase
+{
   constructor(
     private readonly organizationRepository: IOrganizationRepository,
     cacheService?: ICacheService,
     logger?: FastifyLoggerService,
   ) {
-    super("GetOrganizations", "获取组织列表用例", "1.0.0", ["organization:read"], cacheService, logger);
+    super(
+      "GetOrganizations",
+      "获取组织列表用例",
+      "1.0.0",
+      ["organization:read"],
+      cacheService,
+      logger,
+    );
   }
 
   /**
@@ -144,10 +158,10 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
   ): Promise<GetOrganizationsResponse> {
     this.validateRequest(request);
     await this.validateQueryPermissions(request, context);
-    
+
     // 设置默认查询选项
     const queryOptions = this.setDefaultOptions(request);
-    
+
     // 尝试从缓存获取
     const cacheKey = this.getCacheKey(queryOptions);
     const cachedResult = await this.getFromCache(cacheKey);
@@ -156,10 +170,11 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
     }
 
     // 从数据库获取
-    const { organizations, total } = await this.organizationRepository.findMany(queryOptions);
-    
+    const { organizations, total } =
+      await this.organizationRepository.findMany(queryOptions);
+
     // 映射组织信息
-    const organizationInfos = organizations.map(organizationAggregate => {
+    const organizationInfos = organizations.map((organizationAggregate) => {
       const organization = organizationAggregate.getOrganization();
       return {
         id: organizationAggregate.id,
@@ -200,7 +215,7 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (request.page && request.page < 1) {
@@ -208,7 +223,7 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
         "INVALID_PAGE",
         "页码必须大于0",
         "页码必须大于0",
-        400
+        400,
       );
     }
     if (request.limit && (request.limit < 1 || request.limit > 100)) {
@@ -216,7 +231,7 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
         "INVALID_LIMIT",
         "每页数量必须在1-100之间",
         "每页数量必须在1-100之间",
-        400
+        400,
       );
     }
   }
@@ -234,11 +249,11 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
   ): Promise<void> {
     // 检查是否为租户管理员
     const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
-    
+
     if (!isTenantAdmin) {
       throw new UnauthorizedOperationException(
         "查看组织列表",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -250,7 +265,9 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
    * @returns 查询选项
    * @private
    */
-  private setDefaultOptions(request: GetOrganizationsRequest): OrganizationQueryOptions {
+  private setDefaultOptions(
+    request: GetOrganizationsRequest,
+  ): OrganizationQueryOptions {
     return {
       tenantId: request.tenantId,
       page: request.page || 1,

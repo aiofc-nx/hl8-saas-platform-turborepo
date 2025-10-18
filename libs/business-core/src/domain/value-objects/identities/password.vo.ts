@@ -53,7 +53,7 @@ export class Password extends BaseValueObject<string> {
       const hasUpper = /[A-Z]/.test(value);
       const hasLower = /[a-z]/.test(value);
       const hasNumber = /[0-9]/.test(value);
-      const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value);
+      const hasSpecial = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value);
 
       if (!hasUpper) {
         throw new WeakPasswordException("密码必须包含大写字母", value);

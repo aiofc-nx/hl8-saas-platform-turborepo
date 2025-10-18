@@ -20,7 +20,7 @@
  * @example
  * ```typescript
  * const updateDepartmentUseCase = new UpdateDepartmentUseCase(departmentRepository, eventBus, transactionManager, logger);
- * 
+ *
  * const result = await updateDepartmentUseCase.execute({
  *   departmentId: departmentId,
  *   name: '新部门名称',
@@ -35,16 +35,15 @@
 import { EntityId, TenantId } from "@hl8/isolation-model";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { BaseCommandUseCase } from "../base/base-command-use-case.js";
-import type { IUseCaseContext } from "../use-case.interface.js";
+import type { IUseCaseContext } from "../base/use-case.interface.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
   BusinessRuleViolationException,
-  ResourceAlreadyExistsException
 } from "../../../common/exceptions/business.exceptions.js";
 import type { DepartmentLevel } from "../../../domain/value-objects/types/department-level.vo.js";
 import type { DepartmentAggregate } from "../../../domain/aggregates/department-aggregate.js";
@@ -103,17 +102,24 @@ export interface IUpdateDepartmentUseCase {
  *
  * @description 更新部门信息，包括基本信息、层级、父部门等
  */
-export class UpdateDepartmentUseCase extends BaseCommandUseCase<
-  UpdateDepartmentRequest,
-  UpdateDepartmentResponse
-> implements IUpdateDepartmentUseCase {
+export class UpdateDepartmentUseCase
+  extends BaseCommandUseCase<UpdateDepartmentRequest, UpdateDepartmentResponse>
+  implements IUpdateDepartmentUseCase
+{
   constructor(
     private readonly departmentRepository: IDepartmentRepository,
     eventBus?: IEventBus,
     transactionManager?: ITransactionManager,
-    logger?: FastifyLoggerService,
+    _logger?: FastifyLoggerService,
   ) {
-    super("UpdateDepartment", "更新部门用例", "1.0.0", ["department:update"], eventBus, transactionManager, logger);
+    super(
+      "UpdateDepartment",
+      "更新部门用例",
+      "1.0.0",
+      ["department:update"],
+      eventBus,
+      transactionManager,
+    );
   }
 
   /**
@@ -130,18 +136,23 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
     await this.validateDepartmentExists(request.departmentId, request.tenantId);
     await this.validateUpdatePermissions(request, context);
     await this.validateDepartmentHierarchy(request);
-    
-    const departmentAggregate = await this.departmentRepository.findById(request.departmentId);
+
+    const departmentAggregate = await this.departmentRepository.findById(
+      request.departmentId,
+    );
     if (!departmentAggregate) {
-      throw new ResourceNotFoundException("部门", request.departmentId.toString());
+      throw new ResourceNotFoundException(
+        "部门",
+        request.departmentId.toString(),
+      );
     }
 
     // 更新部门信息
     this.updateDepartmentInfo(departmentAggregate, request);
-    
+
     // 保存部门
     await this.departmentRepository.save(departmentAggregate);
-    
+
     // 发布领域事件
     await this.publishDomainEvents(departmentAggregate);
 
@@ -150,7 +161,7 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
       tenantId: departmentAggregate.tenantId,
       name: departmentAggregate.getDepartment().name,
       level: departmentAggregate.getDepartment().level,
-      parentDepartmentId: departmentAggregate.getDepartment().parentDepartmentId,
+      parentDepartmentId: departmentAggregate.getDepartment().parentId,
       description: departmentAggregate.getDepartment().description,
       updatedAt: departmentAggregate.getDepartment().updatedAt,
     };
@@ -160,15 +171,15 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
    * 验证请求参数
    *
    * @param request - 更新部门请求
-   * @private
+   * @protected
    */
-  private validateRequest(request: UpdateDepartmentRequest): void {
+  protected validateRequest(request: UpdateDepartmentRequest): void {
     if (!request.departmentId) {
       throw new ValidationException(
         "DEPARTMENT_ID_REQUIRED",
         "部门ID不能为空",
         "部门ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -176,7 +187,7 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.updatedBy) {
@@ -184,7 +195,7 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
         "UPDATED_BY_REQUIRED",
         "更新者不能为空",
         "更新者是必填字段",
-        400
+        400,
       );
     }
   }
@@ -196,16 +207,20 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateDepartmentExists(departmentId: EntityId, tenantId: TenantId): Promise<void> {
-    const departmentAggregate = await this.departmentRepository.findById(departmentId);
+  private async validateDepartmentExists(
+    departmentId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
+    const departmentAggregate =
+      await this.departmentRepository.findById(departmentId);
     if (!departmentAggregate) {
       throw new ResourceNotFoundException("部门", departmentId.toString());
     }
     if (!departmentAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "部门不属于指定租户",
-        { departmentId: departmentId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("部门不属于指定租户", {
+        departmentId: departmentId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -221,13 +236,13 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
     context: IUseCaseContext,
   ): Promise<void> {
     // 检查是否为部门管理员或租户管理员
-    const isDepartmentAdmin = context.user?.role === "DEPARTMENT_ADMIN";
-    const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
-    
+    const isDepartmentAdmin = context.user?.roles?.includes("DEPARTMENT_ADMIN");
+    const isTenantAdmin = context.user?.roles?.includes("TENANT_ADMIN");
+
     if (!isDepartmentAdmin && !isTenantAdmin) {
       throw new UnauthorizedOperationException(
         "更新部门信息",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -238,21 +253,31 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
    * @param request - 更新部门请求
    * @private
    */
-  private async validateDepartmentHierarchy(request: UpdateDepartmentRequest): Promise<void> {
+  private async validateDepartmentHierarchy(
+    request: UpdateDepartmentRequest,
+  ): Promise<void> {
     if (request.parentDepartmentId) {
-      const parentDepartment = await this.departmentRepository.findById(request.parentDepartmentId);
+      const parentDepartment = await this.departmentRepository.findById(
+        request.parentDepartmentId,
+      );
       if (!parentDepartment) {
-        throw new ResourceNotFoundException("父部门", request.parentDepartmentId.toString());
+        throw new ResourceNotFoundException(
+          "父部门",
+          request.parentDepartmentId.toString(),
+        );
       }
-      
+
       // 检查层级关系
-      if (request.level && parentDepartment.getDepartment().level.value >= request.level.value) {
+      if (
+        request.level &&
+        parentDepartment.getDepartment().level.value >= request.level.value
+      ) {
         throw new BusinessRuleViolationException(
           "父部门层级不能大于等于子部门层级",
-          { 
+          {
             parentLevel: parentDepartment.getDepartment().level.value,
-            childLevel: request.level.value 
-          }
+            childLevel: request.level.value,
+          },
         );
       }
     }
@@ -265,25 +290,28 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
    * @param request - 更新部门请求
    * @private
    */
-  private updateDepartmentInfo(departmentAggregate: DepartmentAggregate, request: UpdateDepartmentRequest): void {
+  private updateDepartmentInfo(
+    departmentAggregate: DepartmentAggregate,
+    request: UpdateDepartmentRequest,
+  ): void {
     const department = departmentAggregate.getDepartment();
-    
+
     if (request.name) {
       department.updateName(request.name);
     }
-    
+
     if (request.level) {
       department.updateLevel(request.level);
     }
-    
+
     if (request.parentDepartmentId !== undefined) {
-      department.updateParentDepartment(request.parentDepartmentId);
+      department.setParent(request.parentDepartmentId);
     }
-    
+
     if (request.description !== undefined) {
       department.updateDescription(request.description);
     }
-    
-    departmentAggregate.updateDepartment(department);
+
+    // 部门实体已通过直接调用方法更新，无需额外操作
   }
 }

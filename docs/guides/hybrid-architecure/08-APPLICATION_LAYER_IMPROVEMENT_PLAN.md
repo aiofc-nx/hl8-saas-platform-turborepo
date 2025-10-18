@@ -38,16 +38,19 @@
 ### 2.1 符合规范的部分 ✅
 
 #### 用例为中心的设计承诺
+
 - **命名规范**: 正确使用了 `XxxUseCase` 命名
 - **单一职责**: 每个用例类都专注于一个具体的业务场景
 - **用例逻辑**: 正确实现了用例逻辑，协调领域对象完成业务场景
 
 #### Clean Architecture 分层
+
 - **用例服务**: 正确实现了用例服务
 - **基础类设计**: 提供了 `BaseCommandUseCase` 和 `BaseQueryUseCase`
 - **依赖注入**: 通过构造函数注入依赖，符合依赖倒置原则
 
 #### CQRS 架构支持
+
 - **命令分离**: 实现了命令对象
 - **查询分离**: 实现了查询用例
 - **处理器分离**: 提供了命令处理器和查询处理器的分离
@@ -55,9 +58,11 @@
 ### 2.2 需要改进的部分 ⚠️
 
 #### 用例服务组织方式
+
 **问题**: 缺少用例服务集合类来统一管理相关用例
 
 **当前实现**:
+
 ```typescript
 // 当前：分散的用例类
 export class CreateUserUseCase { ... }
@@ -66,6 +71,7 @@ export class GetUserUseCase { ... }
 ```
 
 **目标实现**:
+
 ```typescript
 // 目标：用例服务集合
 export class UserUseCaseServices {
@@ -78,9 +84,11 @@ export class UserUseCaseServices {
 ```
 
 #### 事件处理机制
+
 **问题**: 事件发布机制不完整，缺少事件总线注入
 
 **当前实现**:
+
 ```typescript
 // 当前：注释掉的事件发布
 protected async publishDomainEvents(aggregateRoot: any): Promise<void> {
@@ -89,6 +97,7 @@ protected async publishDomainEvents(aggregateRoot: any): Promise<void> {
 ```
 
 **目标实现**:
+
 ```typescript
 // 目标：完整的事件发布机制
 export class CreateUserUseCase extends BaseCommandUseCase {
@@ -108,9 +117,11 @@ export class CreateUserUseCase extends BaseCommandUseCase {
 ```
 
 #### 事务管理机制
+
 **问题**: 事务管理机制不完整，缺少事务管理器注入
 
 **当前实现**:
+
 ```typescript
 // 当前：空的事务方法
 protected async beginTransaction(): Promise<void> {
@@ -119,6 +130,7 @@ protected async beginTransaction(): Promise<void> {
 ```
 
 **目标实现**:
+
 ```typescript
 // 目标：完整的事务管理
 export class CreateUserUseCase extends BaseCommandUseCase {
@@ -127,7 +139,10 @@ export class CreateUserUseCase extends BaseCommandUseCase {
     // ... 其他依赖
   ) {}
 
-  protected async executeCommand(request: TRequest, context: IUseCaseContext): Promise<TResponse> {
+  protected async executeCommand(
+    request: TRequest,
+    context: IUseCaseContext,
+  ): Promise<TResponse> {
     return await this.transactionManager.execute(async () => {
       // 在事务中执行所有操作
       return await this.executeCommandLogic(request, context);
@@ -137,9 +152,11 @@ export class CreateUserUseCase extends BaseCommandUseCase {
 ```
 
 #### 缓存机制
+
 **问题**: 查询用例的缓存机制不完整
 
 **当前实现**:
+
 ```typescript
 // 当前：空的缓存方法
 protected async getFromCache(cacheKey: string): Promise<TResponse | null> {
@@ -149,6 +166,7 @@ protected async getFromCache(cacheKey: string): Promise<TResponse | null> {
 ```
 
 **目标实现**:
+
 ```typescript
 // 目标：完整的缓存机制
 export class GetUserUseCase extends BaseQueryUseCase {
@@ -161,7 +179,11 @@ export class GetUserUseCase extends BaseQueryUseCase {
     return await this.cacheService.get<TResponse>(cacheKey);
   }
 
-  protected async cacheResult(cacheKey: string, result: TResponse, ttl?: number): Promise<void> {
+  protected async cacheResult(
+    cacheKey: string,
+    result: TResponse,
+    ttl?: number,
+  ): Promise<void> {
     await this.cacheService.set(cacheKey, result, ttl);
   }
 }
@@ -174,37 +196,45 @@ export class GetUserUseCase extends BaseQueryUseCase {
 ### 3.1 阶段一：核心基础设施完善（优先级：高）
 
 #### 1. 完善用例服务集合类
+
 **目标**: 为每个业务模块创建统一的用例服务集合
 
 **具体任务**:
+
 - [ ] 创建 `UserUseCaseServices` 类
-- [ ] 创建 `TenantUseCaseServices` 类  
+- [ ] 创建 `TenantUseCaseServices` 类
 - [ ] 创建 `OrganizationUseCaseServices` 类
 - [ ] 创建 `DepartmentUseCaseServices` 类
 - [ ] 创建 `RoleUseCaseServices` 类
 
 #### 2. 完善事件处理机制
+
 **目标**: 注入事件总线，实现完整的事件发布机制
 
 **具体任务**:
+
 - [ ] 创建 `IEventBus` 接口
 - [ ] 实现 `EventBus` 类
 - [ ] 在用例中注入事件总线
 - [ ] 实现完整的事件发布逻辑
 
 #### 3. 完善事务管理机制
+
 **目标**: 注入事务管理器，实现完整的事务管理
 
 **具体任务**:
+
 - [ ] 创建 `ITransactionManager` 接口
 - [ ] 实现 `TransactionManager` 类
 - [ ] 在用例中注入事务管理器
 - [ ] 实现完整的事务管理逻辑
 
 #### 4. 完善缓存机制
+
 **目标**: 注入缓存服务，实现完整的缓存机制
 
 **具体任务**:
+
 - [ ] 创建 `ICacheService` 接口
 - [ ] 实现 `CacheService` 类
 - [ ] 在查询用例中注入缓存服务
@@ -213,9 +243,11 @@ export class GetUserUseCase extends BaseQueryUseCase {
 ### 3.2 阶段二：应用服务层完善（优先级：高）
 
 #### 5. 创建应用服务类
+
 **目标**: 协调多个用例服务的高级应用服务
 
 **具体任务**:
+
 - [ ] 创建 `UserApplicationService` 类
 - [ ] 创建 `TenantApplicationService` 类
 - [ ] 创建 `OrganizationApplicationService` 类
@@ -225,18 +257,22 @@ export class GetUserUseCase extends BaseQueryUseCase {
 ### 3.3 阶段三：CQRS完善（优先级：中）
 
 #### 6. 完善CQRS处理器
+
 **目标**: 实现完整的命令和查询处理器
 
 **具体任务**:
+
 - [ ] 完善命令处理器实现
 - [ ] 完善查询处理器实现
 - [ ] 实现命令总线
 - [ ] 实现查询总线
 
 #### 7. 添加事件处理器
+
 **目标**: 实现领域事件的处理机制
 
 **具体任务**:
+
 - [ ] 创建事件处理器基类
 - [ ] 实现用户事件处理器
 - [ ] 实现租户事件处理器
@@ -245,9 +281,11 @@ export class GetUserUseCase extends BaseQueryUseCase {
 ### 3.4 阶段四：依赖注入配置（优先级：中）
 
 #### 8. 完善依赖注入配置
+
 **目标**: 配置所有应用层组件的依赖注入
 
 **具体任务**:
+
 - [ ] 创建应用层模块配置
 - [ ] 配置用例服务依赖注入
 - [ ] 配置应用服务依赖注入
@@ -262,6 +300,7 @@ export class GetUserUseCase extends BaseQueryUseCase {
 #### 4.1.1 完善用例服务集合类
 
 **文件结构**:
+
 ```
 libs/business-core/src/application/use-cases/
 ├── user/
@@ -280,6 +319,7 @@ libs/business-core/src/application/use-cases/
 ```
 
 **实现示例**:
+
 ```typescript
 // libs/business-core/src/application/use-cases/user/user-use-case-services.ts
 /**
@@ -326,7 +366,10 @@ export class UserUseCaseServices {
    * @param data - 更新用户数据
    * @returns 更新用户结果
    */
-  async updateUser(userId: string, data: UpdateUserData): Promise<UpdateUserResult> {
+  async updateUser(
+    userId: string,
+    data: UpdateUserData,
+  ): Promise<UpdateUserResult> {
     const input = new UpdateUserInput(userId, data);
     const output = await this.updateUserUseCase.execute(input);
     return new UpdateUserResult(output.userId);
@@ -362,6 +405,7 @@ export class UserUseCaseServices {
 #### 4.1.2 完善事件处理机制
 
 **文件结构**:
+
 ```
 libs/business-core/src/application/ports/
 ├── event-bus.interface.ts
@@ -370,6 +414,7 @@ libs/business-core/src/application/ports/
 ```
 
 **实现示例**:
+
 ```typescript
 // libs/business-core/src/application/ports/event-bus.interface.ts
 /**
@@ -419,6 +464,7 @@ export interface IEventBus {
 #### 4.1.3 完善事务管理机制
 
 **文件结构**:
+
 ```
 libs/business-core/src/application/ports/
 ├── transaction-manager.interface.ts
@@ -427,6 +473,7 @@ libs/business-core/src/application/ports/
 ```
 
 **实现示例**:
+
 ```typescript
 // libs/business-core/src/application/ports/transaction-manager.interface.ts
 /**
@@ -471,6 +518,7 @@ export interface ITransactionManager {
 #### 4.1.4 完善缓存机制
 
 **文件结构**:
+
 ```
 libs/business-core/src/application/ports/
 ├── cache-service.interface.ts
@@ -479,6 +527,7 @@ libs/business-core/src/application/ports/
 ```
 
 **实现示例**:
+
 ```typescript
 // libs/business-core/src/application/ports/cache-service.interface.ts
 /**
@@ -537,6 +586,7 @@ export interface ICacheService {
 #### 4.2.1 创建应用服务类
 
 **文件结构**:
+
 ```
 libs/business-core/src/application/services/
 ├── user-application.service.ts
@@ -546,6 +596,7 @@ libs/business-core/src/application/services/
 ```
 
 **实现示例**:
+
 ```typescript
 // libs/business-core/src/application/services/user-application.service.ts
 /**
@@ -569,7 +620,9 @@ export class UserApplicationService {
    * @param data - 创建用户数据
    * @returns 创建用户结果
    */
-  async createUserWithTenant(data: CreateUserWithTenantData): Promise<CreateUserWithTenantResult> {
+  async createUserWithTenant(
+    data: CreateUserWithTenantData,
+  ): Promise<CreateUserWithTenantResult> {
     try {
       // 1. 创建租户
       const tenantResult = await this.tenantUseCaseServices.createTenant({
@@ -590,7 +643,7 @@ export class UserApplicationService {
 
       return new CreateUserWithTenantResult(userResult, tenantResult);
     } catch (error) {
-      this.logger.error('创建用户和租户失败', error);
+      this.logger.error("创建用户和租户失败", error);
       throw error;
     }
   }
@@ -601,7 +654,9 @@ export class UserApplicationService {
    * @param data - 批量创建用户数据
    * @returns 批量创建用户结果
    */
-  async batchCreateUsers(data: BatchCreateUsersData): Promise<BatchCreateUsersResult> {
+  async batchCreateUsers(
+    data: BatchCreateUsersData,
+  ): Promise<BatchCreateUsersResult> {
     const results: CreateUserResult[] = [];
     const errors: CreateUserError[] = [];
 
@@ -624,6 +679,7 @@ export class UserApplicationService {
 #### 4.3.1 完善CQRS处理器
 
 **文件结构**:
+
 ```
 libs/business-core/src/application/cqrs/handlers/
 ├── command-handlers/
@@ -641,6 +697,7 @@ libs/business-core/src/application/cqrs/handlers/
 ```
 
 **实现示例**:
+
 ```typescript
 // libs/business-core/src/application/cqrs/handlers/command-handlers/tenant-command-handlers.ts
 /**
@@ -651,7 +708,9 @@ libs/business-core/src/application/cqrs/handlers/
  * @since 1.0.0
  */
 @CommandHandler(CreateTenantCommand)
-export class CreateTenantCommandHandler implements ICommandHandler<CreateTenantCommand, CreateTenantResult> {
+export class CreateTenantCommandHandler
+  implements ICommandHandler<CreateTenantCommand, CreateTenantResult>
+{
   constructor(
     private readonly createTenantUseCase: ICreateTenantUseCase,
     private readonly logger: FastifyLoggerService,
@@ -668,7 +727,7 @@ export class CreateTenantCommandHandler implements ICommandHandler<CreateTenantC
       const output = await this.createTenantUseCase.execute(input);
       return new CreateTenantResult(output.tenantId, output.name);
     } catch (error) {
-      this.logger.error('创建租户命令处理失败', error);
+      this.logger.error("创建租户命令处理失败", error);
       throw error;
     }
   }
@@ -678,6 +737,7 @@ export class CreateTenantCommandHandler implements ICommandHandler<CreateTenantC
 #### 4.3.2 添加事件处理器
 
 **实现示例**:
+
 ```typescript
 // libs/business-core/src/application/cqrs/handlers/event-handlers/user-event-handlers.ts
 /**
@@ -688,7 +748,9 @@ export class CreateTenantCommandHandler implements ICommandHandler<CreateTenantC
  * @since 1.0.0
  */
 @EventsHandler(UserCreatedEvent)
-export class UserCreatedEventHandler implements IEventHandler<UserCreatedEvent> {
+export class UserCreatedEventHandler
+  implements IEventHandler<UserCreatedEvent>
+{
   constructor(
     private readonly emailService: IEmailService,
     private readonly auditService: IAuditService,
@@ -699,13 +761,13 @@ export class UserCreatedEventHandler implements IEventHandler<UserCreatedEvent> 
     try {
       // 发送欢迎邮件
       await this.emailService.sendWelcomeEmail(event.email, event.username);
-      
+
       // 记录审计日志
       await this.auditService.logUserCreation(event);
-      
-      this.logger.info('用户创建事件处理完成', { userId: event.userId });
+
+      this.logger.info("用户创建事件处理完成", { userId: event.userId });
     } catch (error) {
-      this.logger.error('用户创建事件处理失败', error);
+      this.logger.error("用户创建事件处理失败", error);
       throw error;
     }
   }
@@ -717,6 +779,7 @@ export class UserCreatedEventHandler implements IEventHandler<UserCreatedEvent> 
 #### 4.4.1 完善依赖注入配置
 
 **文件结构**:
+
 ```
 libs/business-core/src/application/
 ├── application.module.ts
@@ -729,6 +792,7 @@ libs/business-core/src/application/
 ```
 
 **实现示例**:
+
 ```typescript
 // libs/business-core/src/application/application.module.ts
 /**
@@ -739,31 +803,23 @@ libs/business-core/src/application/
  * @since 1.0.0
  */
 @Module({
-  imports: [
-    UseCaseModule,
-    ServiceModule,
-    CQRSModule,
-  ],
+  imports: [UseCaseModule, ServiceModule, CQRSModule],
   providers: [
     // 基础设施服务
     {
-      provide: 'IEventBus',
+      provide: "IEventBus",
       useClass: EventBus,
     },
     {
-      provide: 'ITransactionManager',
+      provide: "ITransactionManager",
       useClass: TransactionManager,
     },
     {
-      provide: 'ICacheService',
+      provide: "ICacheService",
       useClass: CacheService,
     },
   ],
-  exports: [
-    UseCaseModule,
-    ServiceModule,
-    CQRSModule,
-  ],
+  exports: [UseCaseModule, ServiceModule, CQRSModule],
 })
 export class ApplicationModule {}
 ```
@@ -773,6 +829,7 @@ export class ApplicationModule {}
 ## 5. 实施时间表
 
 ### 第1周：核心基础设施
+
 - [ ] **第1天**: 完善用例服务集合类
 - [ ] **第2天**: 完善事件处理机制
 - [ ] **第3天**: 完善事务管理机制
@@ -780,6 +837,7 @@ export class ApplicationModule {}
 - [ ] **第5天**: 代码审查和测试
 
 ### 第2周：应用服务层
+
 - [ ] **第1天**: 创建应用服务类
 - [ ] **第2天**: 完善依赖注入配置
 - [ ] **第3天**: 集成测试
@@ -787,6 +845,7 @@ export class ApplicationModule {}
 - [ ] **第5天**: 代码审查
 
 ### 第3周：CQRS完善
+
 - [ ] **第1天**: 完善CQRS处理器
 - [ ] **第2天**: 添加事件处理器
 - [ ] **第3天**: 实现命令和查询总线
@@ -794,6 +853,7 @@ export class ApplicationModule {}
 - [ ] **第5天**: 代码审查
 
 ### 第4周：测试和优化
+
 - [ ] **第1天**: 编写单元测试
 - [ ] **第2天**: 编写集成测试
 - [ ] **第3天**: 性能测试和优化
@@ -870,6 +930,7 @@ export class ApplicationModule {}
 这个改进计划将确保应用层代码完全符合混合架构规范，为整个系统提供坚实可靠的应用层基础。通过分阶段实施，我们可以逐步提升代码质量，最终实现一个高质量、高性能、高可维护性的应用层架构。
 
 **关键成功因素**:
+
 1. **用例为中心**: 坚持用例为中心的设计原则
 2. **事件驱动**: 实现完整的事件驱动架构
 3. **事务管理**: 确保数据一致性
@@ -882,6 +943,7 @@ export class ApplicationModule {}
 ---
 
 **相关文档**:
+
 - [应用层开发指南](./07-APPLICATION_LAYER_DEVELOPMENT_GUIDE.md)
 - [领域层开发指南](./06-DOMAIN_LAYER_DEVELOPMENT_GUIDE.md)
 - [混合架构总览](./01-HYBRID_ARCHITECTURE_OVERVIEW.md)

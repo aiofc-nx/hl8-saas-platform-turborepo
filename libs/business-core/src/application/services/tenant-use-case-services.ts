@@ -64,13 +64,34 @@ import type { IActivateTenantUseCase } from "../use-cases/tenant/activate-tenant
 import type { IDeactivateTenantUseCase } from "../use-cases/tenant/deactivate-tenant.use-case.js";
 
 // 输入输出类型
-import type { CreateTenantRequest, CreateTenantResponse } from "../use-cases/tenant/create-tenant.use-case.js";
-import type { UpdateTenantRequest, UpdateTenantResponse } from "../use-cases/tenant/update-tenant.use-case.js";
-import type { DeleteTenantRequest, DeleteTenantResponse } from "../use-cases/tenant/delete-tenant.use-case.js";
-import type { GetTenantRequest, GetTenantResponse } from "../use-cases/tenant/get-tenant.use-case.js";
-import type { GetTenantsRequest, GetTenantsResponse } from "../use-cases/tenant/get-tenants.use-case.js";
-import type { ActivateTenantRequest, ActivateTenantResponse } from "../use-cases/tenant/activate-tenant.use-case.js";
-import type { DeactivateTenantRequest, DeactivateTenantResponse } from "../use-cases/tenant/deactivate-tenant.use-case.js";
+import type {
+  CreateTenantRequest,
+  CreateTenantResponse,
+} from "../use-cases/tenant/create-tenant.use-case.js";
+import type {
+  UpdateTenantRequest,
+  UpdateTenantResponse,
+} from "../use-cases/tenant/update-tenant.use-case.js";
+import type {
+  DeleteTenantRequest,
+  DeleteTenantResponse,
+} from "../use-cases/tenant/delete-tenant.use-case.js";
+import type {
+  GetTenantRequest,
+  GetTenantResponse,
+} from "../use-cases/tenant/get-tenant.use-case.js";
+import type {
+  GetTenantsRequest,
+  GetTenantsResponse,
+} from "../use-cases/tenant/get-tenants.use-case.js";
+import type {
+  ActivateTenantRequest,
+  ActivateTenantResponse,
+} from "../use-cases/tenant/activate-tenant.use-case.js";
+import type {
+  DeactivateTenantRequest,
+  DeactivateTenantResponse,
+} from "../use-cases/tenant/deactivate-tenant.use-case.js";
 
 /**
  * 租户用例服务集合
@@ -107,16 +128,26 @@ export class TenantUseCaseServices {
    * });
    * ```
    */
-  async createTenant(request: CreateTenantRequest): Promise<CreateTenantResponse> {
+  async createTenant(
+    request: CreateTenantRequest,
+  ): Promise<CreateTenantResponse> {
     try {
-      this.logger.info("开始创建租户", { name: request.name, type: request.type.value });
-      
+      this.logger.info("开始创建租户", {
+        name: request.name,
+        type: request.type.value,
+      });
+
       const response = await this.createTenantUseCase.execute(request);
-      
-      this.logger.info("租户创建成功", { tenantId: response.tenantId.toString() });
+
+      this.logger.info("租户创建成功", {
+        tenantId: response.tenantId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("租户创建失败", { error: error.message, name: request.name });
+      this.logger.error("租户创建失败", {
+        error: error.message,
+        name: request.name,
+      });
       throw error;
     }
   }
@@ -139,16 +170,25 @@ export class TenantUseCaseServices {
    * });
    * ```
    */
-  async updateTenant(request: UpdateTenantRequest): Promise<UpdateTenantResponse> {
+  async updateTenant(
+    request: UpdateTenantRequest,
+  ): Promise<UpdateTenantResponse> {
     try {
-      this.logger.info("开始更新租户", { tenantId: request.tenantId.toString() });
-      
+      this.logger.info("开始更新租户", {
+        tenantId: request.tenantId.toString(),
+      });
+
       const response = await this.updateTenantUseCase.execute(request);
-      
-      this.logger.info("租户更新成功", { tenantId: response.tenantId.toString() });
+
+      this.logger.info("租户更新成功", {
+        tenantId: response.tenantId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("租户更新失败", { error: error.message, tenantId: request.tenantId.toString() });
+      this.logger.error("租户更新失败", {
+        error: error.message,
+        tenantId: request.tenantId.toString(),
+      });
       throw error;
     }
   }
@@ -170,16 +210,25 @@ export class TenantUseCaseServices {
    * });
    * ```
    */
-  async deleteTenant(request: DeleteTenantRequest): Promise<DeleteTenantResponse> {
+  async deleteTenant(
+    request: DeleteTenantRequest,
+  ): Promise<DeleteTenantResponse> {
     try {
-      this.logger.info("开始删除租户", { tenantId: request.tenantId.toString() });
-      
+      this.logger.info("开始删除租户", {
+        tenantId: request.tenantId.toString(),
+      });
+
       const response = await this.deleteTenantUseCase.execute(request);
-      
-      this.logger.info("租户删除成功", { tenantId: response.tenantId.toString() });
+
+      this.logger.info("租户删除成功", {
+        tenantId: response.tenantId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("租户删除失败", { error: error.message, tenantId: request.tenantId.toString() });
+      this.logger.error("租户删除失败", {
+        error: error.message,
+        tenantId: request.tenantId.toString(),
+      });
       throw error;
     }
   }
@@ -201,14 +250,21 @@ export class TenantUseCaseServices {
    */
   async getTenant(request: GetTenantRequest): Promise<GetTenantResponse> {
     try {
-      this.logger.debug("开始获取租户", { tenantId: request.tenantId.toString() });
-      
+      this.logger.debug("开始获取租户", {
+        tenantId: request.tenantId.toString(),
+      });
+
       const response = await this.getTenantUseCase.execute(request);
-      
-      this.logger.debug("租户获取成功", { tenantId: response.tenant.id.toString() });
+
+      this.logger.debug("租户获取成功", {
+        tenantId: response.tenant.id.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("租户获取失败", { error: error.message, tenantId: request.tenantId.toString() });
+      this.logger.error("租户获取失败", {
+        error: error.message,
+        tenantId: request.tenantId.toString(),
+      });
       throw error;
     }
   }
@@ -233,23 +289,23 @@ export class TenantUseCaseServices {
    */
   async getTenants(request: GetTenantsRequest): Promise<GetTenantsResponse> {
     try {
-      this.logger.debug("开始获取租户列表", { 
+      this.logger.debug("开始获取租户列表", {
         platformId: request.platformId?.toString(),
         page: request.page,
-        limit: request.limit
+        limit: request.limit,
       });
-      
+
       const response = await this.getTenantsUseCase.execute(request);
-      
-      this.logger.debug("租户列表获取成功", { 
+
+      this.logger.debug("租户列表获取成功", {
         total: response.total,
-        count: response.tenants.length
+        count: response.tenants.length,
       });
       return response;
     } catch (error) {
-      this.logger.error("租户列表获取失败", { 
-        error: error.message, 
-        platformId: request.platformId?.toString() 
+      this.logger.error("租户列表获取失败", {
+        error: error.message,
+        platformId: request.platformId?.toString(),
       });
       throw error;
     }
@@ -271,16 +327,25 @@ export class TenantUseCaseServices {
    * });
    * ```
    */
-  async activateTenant(request: ActivateTenantRequest): Promise<ActivateTenantResponse> {
+  async activateTenant(
+    request: ActivateTenantRequest,
+  ): Promise<ActivateTenantResponse> {
     try {
-      this.logger.info("开始激活租户", { tenantId: request.tenantId.toString() });
-      
+      this.logger.info("开始激活租户", {
+        tenantId: request.tenantId.toString(),
+      });
+
       const response = await this.activateTenantUseCase.execute(request);
-      
-      this.logger.info("租户激活成功", { tenantId: response.tenantId.toString() });
+
+      this.logger.info("租户激活成功", {
+        tenantId: response.tenantId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("租户激活失败", { error: error.message, tenantId: request.tenantId.toString() });
+      this.logger.error("租户激活失败", {
+        error: error.message,
+        tenantId: request.tenantId.toString(),
+      });
       throw error;
     }
   }
@@ -302,16 +367,25 @@ export class TenantUseCaseServices {
    * });
    * ```
    */
-  async deactivateTenant(request: DeactivateTenantRequest): Promise<DeactivateTenantResponse> {
+  async deactivateTenant(
+    request: DeactivateTenantRequest,
+  ): Promise<DeactivateTenantResponse> {
     try {
-      this.logger.info("开始停用租户", { tenantId: request.tenantId.toString() });
-      
+      this.logger.info("开始停用租户", {
+        tenantId: request.tenantId.toString(),
+      });
+
       const response = await this.deactivateTenantUseCase.execute(request);
-      
-      this.logger.info("租户停用成功", { tenantId: response.tenantId.toString() });
+
+      this.logger.info("租户停用成功", {
+        tenantId: response.tenantId.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("租户停用失败", { error: error.message, tenantId: request.tenantId.toString() });
+      this.logger.error("租户停用失败", {
+        error: error.message,
+        tenantId: request.tenantId.toString(),
+      });
       throw error;
     }
   }

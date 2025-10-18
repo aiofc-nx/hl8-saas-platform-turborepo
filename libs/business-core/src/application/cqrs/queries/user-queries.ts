@@ -20,7 +20,7 @@
  * ```typescript
  * // 获取用户查询
  * const getUserQuery = new GetUserQuery(userId, tenantId);
- * 
+ *
  * // 获取用户列表查询
  * const getUserListQuery = new GetUserListQuery(tenantId, 1, 20);
  * ```
@@ -56,7 +56,12 @@ export class GetUserListQuery extends BaseQuery {
     public readonly tenantId: TenantId,
     public readonly page?: number,
     public readonly limit?: number,
-    public readonly sortBy?: "username" | "displayName" | "email" | "createdAt" | "updatedAt",
+    public readonly sortBy?:
+      | "username"
+      | "displayName"
+      | "email"
+      | "createdAt"
+      | "updatedAt",
     public readonly sortOrder?: "asc" | "desc",
     public readonly filters?: {
       status?: string;

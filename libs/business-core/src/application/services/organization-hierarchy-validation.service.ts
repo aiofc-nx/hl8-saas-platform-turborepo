@@ -21,7 +21,7 @@
  * ```typescript
  * // 验证组织层级
  * const hierarchyService = new OrganizationHierarchyValidationService(organizationRepository, departmentRepository, logger);
- * 
+ *
  * const isValid = await hierarchyService.validateOrganizationHierarchy(organizationId);
  * if (!isValid) {
  *   throw new Error('组织层级结构不完整');
@@ -36,9 +36,9 @@ import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import { DepartmentLevel } from "../../../domain/value-objects/types/department-level.vo.js";
-import { 
-  ResourceNotFoundException, 
-  BusinessRuleViolationException 
+import {
+  ResourceNotFoundException,
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -129,7 +129,8 @@ export class OrganizationHierarchyValidationService {
       });
 
       // 获取组织信息
-      const organizationAggregate = await this.organizationRepository.findById(organizationId);
+      const organizationAggregate =
+        await this.organizationRepository.findById(organizationId);
       if (!organizationAggregate) {
         throw new ResourceNotFoundException("组织", organizationId.toString());
       }
@@ -139,7 +140,8 @@ export class OrganizationHierarchyValidationService {
       const organizationLevel = organization.level?.value || 1;
 
       // 获取组织下的所有部门
-      const departments = await this.departmentRepository.findByOrganization(organizationId);
+      const departments =
+        await this.departmentRepository.findByOrganization(organizationId);
 
       // 构建层级信息
       const hierarchyInfo = await this.buildHierarchyInfo(
@@ -150,7 +152,8 @@ export class OrganizationHierarchyValidationService {
       );
 
       // 验证层级结构
-      const validationResult = await this.validateHierarchyStructure(hierarchyInfo);
+      const validationResult =
+        await this.validateHierarchyStructure(hierarchyInfo);
 
       this.logger.debug("组织层级结构验证完成", {
         organizationId: organizationId.toString(),
@@ -185,7 +188,8 @@ export class OrganizationHierarchyValidationService {
       });
 
       // 获取部门信息
-      const departmentAggregate = await this.departmentRepository.findById(departmentId);
+      const departmentAggregate =
+        await this.departmentRepository.findById(departmentId);
       if (!departmentAggregate) {
         throw new ResourceNotFoundException("部门", departmentId.toString());
       }
@@ -196,7 +200,8 @@ export class OrganizationHierarchyValidationService {
       const departmentLevel = department.level.value;
 
       // 获取组织信息
-      const organizationAggregate = await this.organizationRepository.findById(organizationId);
+      const organizationAggregate =
+        await this.organizationRepository.findById(organizationId);
       if (!organizationAggregate) {
         throw new ResourceNotFoundException("组织", organizationId.toString());
       }
@@ -250,10 +255,15 @@ export class OrganizationHierarchyValidationService {
     organizationId: EntityId,
     organizationName: string,
     organizationLevel: number,
-    departments: Array<{ id: string; name: string; level: number; parentId?: string }>,
+    departments: Array<{
+      id: string;
+      name: string;
+      level: number;
+      parentId?: string;
+    }>,
   ): Promise<OrganizationHierarchyInfo> {
     // 构建部门信息
-    const departmentInfos = departments.map(departmentAggregate => {
+    const departmentInfos = departments.map((departmentAggregate) => {
       const department = departmentAggregate.getDepartment();
       return {
         departmentId: departmentAggregate.id,
@@ -277,7 +287,11 @@ export class OrganizationHierarchyValidationService {
     }
 
     // 检查层级完整性
-    const isLevelComplete = this.checkLevelCompleteness(levelCounts, minLevel, maxLevel);
+    const isLevelComplete = this.checkLevelCompleteness(
+      levelCounts,
+      minLevel,
+      maxLevel,
+    );
 
     return {
       organizationId,
@@ -329,7 +343,9 @@ export class OrganizationHierarchyValidationService {
     // 验证父部门关系
     for (const dept of hierarchyInfo.departments) {
       if (dept.parentDepartmentId) {
-        const parentDept = hierarchyInfo.departments.find(d => d.departmentId.equals(dept.parentDepartmentId));
+        const parentDept = hierarchyInfo.departments.find((d) =>
+          d.departmentId.equals(dept.parentDepartmentId),
+        );
         if (parentDept && parentDept.departmentLevel >= dept.departmentLevel) {
           reasons.push(`部门 ${dept.departmentName} 的父部门层级不正确`);
           suggestions.push("请检查部门层级关系");

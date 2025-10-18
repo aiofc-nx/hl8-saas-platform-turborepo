@@ -65,13 +65,34 @@ import type { IActivateUserUseCase } from "../use-cases/user/activate-user.use-c
 import type { IDeactivateUserUseCase } from "../use-cases/user/deactivate-user.use-case.js";
 
 // 输入输出类型
-import type { CreateUserRequest, CreateUserResponse } from "../use-cases/user/create-user.use-case.js";
-import type { UpdateUserRequest, UpdateUserResponse } from "../use-cases/user/update-user.use-case.js";
-import type { DeleteUserRequest, DeleteUserResponse } from "../use-cases/user/delete-user.use-case.js";
-import type { GetUserRequest, GetUserResponse } from "../use-cases/user/get-user.use-case.js";
-import type { GetUserListRequest, GetUserListResponse } from "../use-cases/user/get-user-list.use-case.js";
-import type { ActivateUserRequest, ActivateUserResponse } from "../use-cases/user/activate-user.use-case.js";
-import type { DeactivateUserRequest, DeactivateUserResponse } from "../use-cases/user/deactivate-user.use-case.js";
+import type {
+  CreateUserRequest,
+  CreateUserResponse,
+} from "../use-cases/user/create-user.use-case.js";
+import type {
+  UpdateUserRequest,
+  UpdateUserResponse,
+} from "../use-cases/user/update-user.use-case.js";
+import type {
+  DeleteUserRequest,
+  DeleteUserResponse,
+} from "../use-cases/user/delete-user.use-case.js";
+import type {
+  GetUserRequest,
+  GetUserResponse,
+} from "../use-cases/user/get-user.use-case.js";
+import type {
+  GetUserListRequest,
+  GetUserListResponse,
+} from "../use-cases/user/get-user-list.use-case.js";
+import type {
+  ActivateUserRequest,
+  ActivateUserResponse,
+} from "../use-cases/user/activate-user.use-case.js";
+import type {
+  DeactivateUserRequest,
+  DeactivateUserResponse,
+} from "../use-cases/user/deactivate-user.use-case.js";
 
 /**
  * 用户用例服务集合
@@ -111,14 +132,20 @@ export class UserUseCaseServices {
    */
   async createUser(request: CreateUserRequest): Promise<CreateUserResponse> {
     try {
-      this.logger.info("开始创建用户", { email: request.email, username: request.username });
-      
+      this.logger.info("开始创建用户", {
+        email: request.email,
+        username: request.username,
+      });
+
       const response = await this.createUserUseCase.execute(request);
-      
+
       this.logger.info("用户创建成功", { userId: response.userId.toString() });
       return response;
     } catch (error) {
-      this.logger.error("用户创建失败", { error: error.message, email: request.email });
+      this.logger.error("用户创建失败", {
+        error: error.message,
+        email: request.email,
+      });
       throw error;
     }
   }
@@ -144,13 +171,16 @@ export class UserUseCaseServices {
   async updateUser(request: UpdateUserRequest): Promise<UpdateUserResponse> {
     try {
       this.logger.info("开始更新用户", { userId: request.userId.toString() });
-      
+
       const response = await this.updateUserUseCase.execute(request);
-      
+
       this.logger.info("用户更新成功", { userId: response.userId.toString() });
       return response;
     } catch (error) {
-      this.logger.error("用户更新失败", { error: error.message, userId: request.userId.toString() });
+      this.logger.error("用户更新失败", {
+        error: error.message,
+        userId: request.userId.toString(),
+      });
       throw error;
     }
   }
@@ -175,13 +205,16 @@ export class UserUseCaseServices {
   async deleteUser(request: DeleteUserRequest): Promise<DeleteUserResponse> {
     try {
       this.logger.info("开始删除用户", { userId: request.userId.toString() });
-      
+
       const response = await this.deleteUserUseCase.execute(request);
-      
+
       this.logger.info("用户删除成功", { userId: response.userId.toString() });
       return response;
     } catch (error) {
-      this.logger.error("用户删除失败", { error: error.message, userId: request.userId.toString() });
+      this.logger.error("用户删除失败", {
+        error: error.message,
+        userId: request.userId.toString(),
+      });
       throw error;
     }
   }
@@ -205,13 +238,18 @@ export class UserUseCaseServices {
   async getUser(request: GetUserRequest): Promise<GetUserResponse> {
     try {
       this.logger.debug("开始获取用户", { userId: request.userId.toString() });
-      
+
       const response = await this.getUserUseCase.execute(request);
-      
-      this.logger.debug("用户获取成功", { userId: response.user.id.toString() });
+
+      this.logger.debug("用户获取成功", {
+        userId: response.user.id.toString(),
+      });
       return response;
     } catch (error) {
-      this.logger.error("用户获取失败", { error: error.message, userId: request.userId.toString() });
+      this.logger.error("用户获取失败", {
+        error: error.message,
+        userId: request.userId.toString(),
+      });
       throw error;
     }
   }
@@ -236,23 +274,23 @@ export class UserUseCaseServices {
    */
   async getUserList(request: GetUserListRequest): Promise<GetUserListResponse> {
     try {
-      this.logger.debug("开始获取用户列表", { 
+      this.logger.debug("开始获取用户列表", {
         tenantId: request.tenantId.toString(),
         page: request.page,
-        limit: request.limit
+        limit: request.limit,
       });
-      
+
       const response = await this.getUserListUseCase.execute(request);
-      
-      this.logger.debug("用户列表获取成功", { 
+
+      this.logger.debug("用户列表获取成功", {
         total: response.total,
-        count: response.users.length
+        count: response.users.length,
       });
       return response;
     } catch (error) {
-      this.logger.error("用户列表获取失败", { 
-        error: error.message, 
-        tenantId: request.tenantId.toString() 
+      this.logger.error("用户列表获取失败", {
+        error: error.message,
+        tenantId: request.tenantId.toString(),
       });
       throw error;
     }
@@ -274,16 +312,21 @@ export class UserUseCaseServices {
    * });
    * ```
    */
-  async activateUser(request: ActivateUserRequest): Promise<ActivateUserResponse> {
+  async activateUser(
+    request: ActivateUserRequest,
+  ): Promise<ActivateUserResponse> {
     try {
       this.logger.info("开始激活用户", { userId: request.userId.toString() });
-      
+
       const response = await this.activateUserUseCase.execute(request);
-      
+
       this.logger.info("用户激活成功", { userId: response.userId.toString() });
       return response;
     } catch (error) {
-      this.logger.error("用户激活失败", { error: error.message, userId: request.userId.toString() });
+      this.logger.error("用户激活失败", {
+        error: error.message,
+        userId: request.userId.toString(),
+      });
       throw error;
     }
   }
@@ -305,16 +348,21 @@ export class UserUseCaseServices {
    * });
    * ```
    */
-  async deactivateUser(request: DeactivateUserRequest): Promise<DeactivateUserResponse> {
+  async deactivateUser(
+    request: DeactivateUserRequest,
+  ): Promise<DeactivateUserResponse> {
     try {
       this.logger.info("开始停用用户", { userId: request.userId.toString() });
-      
+
       const response = await this.deactivateUserUseCase.execute(request);
-      
+
       this.logger.info("用户停用成功", { userId: response.userId.toString() });
       return response;
     } catch (error) {
-      this.logger.error("用户停用失败", { error: error.message, userId: request.userId.toString() });
+      this.logger.error("用户停用失败", {
+        error: error.message,
+        userId: request.userId.toString(),
+      });
       throw error;
     }
   }

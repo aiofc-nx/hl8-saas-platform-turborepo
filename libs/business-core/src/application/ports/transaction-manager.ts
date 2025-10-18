@@ -66,28 +66,32 @@ export class TransactionManager implements ITransactionManager {
    */
   async execute<T>(operation: () => Promise<T>): Promise<T> {
     const transactionId = this.generateTransactionId();
-    
+
     try {
       this.logger.debug(`开始事务 ${transactionId}`);
       await this.begin();
-      
+
       const result = await operation();
-      
+
       this.logger.debug(`提交事务 ${transactionId}`);
       await this.commit();
-      
+
       return result;
     } catch (error) {
-      this.logger.error(`事务 ${transactionId} 执行失败，开始回滚`, { error: error.message });
-      
+      this.logger.error(`事务 ${transactionId} 执行失败，开始回滚`, {
+        error: error.message,
+      });
+
       try {
         await this.rollback();
         this.logger.info(`事务 ${transactionId} 回滚成功`);
       } catch (rollbackError) {
-        this.logger.error(`事务 ${transactionId} 回滚失败`, { error: rollbackError.message });
+        this.logger.error(`事务 ${transactionId} 回滚失败`, {
+          error: rollbackError.message,
+        });
         throw rollbackError;
       }
-      
+
       throw error;
     } finally {
       this.currentTransaction = null;
@@ -112,7 +116,7 @@ export class TransactionManager implements ITransactionManager {
       // 这里需要注入数据库连接来开始事务
       // this.currentTransaction = await this.database.beginTransaction();
       this.transactionId = this.generateTransactionId();
-      
+
       this.logger.debug(`事务 ${this.transactionId} 开始`);
     } catch (error) {
       this.logger.error("开始事务失败", { error: error.message });
@@ -136,7 +140,7 @@ export class TransactionManager implements ITransactionManager {
     try {
       // 这里需要注入数据库连接来提交事务
       // await this.currentTransaction.commit();
-      
+
       this.logger.debug(`事务 ${this.transactionId} 提交成功`);
     } catch (error) {
       this.logger.error("提交事务失败", { error: error.message });
@@ -163,7 +167,7 @@ export class TransactionManager implements ITransactionManager {
     try {
       // 这里需要注入数据库连接来回滚事务
       // await this.currentTransaction.rollback();
-      
+
       this.logger.debug(`事务 ${this.transactionId} 回滚成功`);
     } catch (error) {
       this.logger.error("回滚事务失败", { error: error.message });

@@ -219,7 +219,6 @@ export const MAPPER_METADATA_KEY = Symbol("mapper");
  * @returns 类装饰器函数
  */
 export function DomainMapper(options: IDomainMapperOptions): ClassDecorator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (target: any) {
     const metadata: IMapperMetadata = {
       mapperType: MapperType.DOMAIN,
@@ -245,7 +244,6 @@ export function DomainMapper(options: IDomainMapperOptions): ClassDecorator {
  * @returns 类装饰器函数
  */
 export function AggregateMapper(options: IDomainMapperOptions): ClassDecorator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (target: any) {
     const metadata: IMapperMetadata = {
       mapperType: MapperType.AGGREGATE,
@@ -273,7 +271,6 @@ export function AggregateMapper(options: IDomainMapperOptions): ClassDecorator {
 export function ValueObjectMapper(
   options: IValueObjectMapperOptions,
 ): ClassDecorator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (target: any) {
     const metadata: IMapperMetadata = {
       mapperType: MapperType.VALUE_OBJECT,
@@ -297,7 +294,6 @@ export function ValueObjectMapper(
  * @returns 类装饰器函数
  */
 export function DtoMapper(options: IDtoMapperOptions): ClassDecorator {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return function (target: any) {
     const metadata: IMapperMetadata = {
       mapperType: MapperType.DTO,
@@ -319,10 +315,7 @@ export function DtoMapper(options: IDtoMapperOptions): ClassDecorator {
  * @param target - 目标类或实例
  * @returns 映射器元数据
  */
-export function getMapperMetadata(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: any,
-): IMapperMetadata | undefined {
+export function getMapperMetadata(target: any): IMapperMetadata | undefined {
   return Reflect.getMetadata(MAPPER_METADATA_KEY, target);
 }
 
@@ -332,10 +325,7 @@ export function getMapperMetadata(
  * @param target - 要检查的目标
  * @returns 如果是映射器返回true，否则返回false
  */
-export function isMapper(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: any,
-): boolean {
+export function isMapper(target: any): boolean {
   return Reflect.hasMetadata(MAPPER_METADATA_KEY, target);
 }
 
@@ -346,11 +336,7 @@ export function isMapper(
  * @param mapperType - 映射器类型
  * @returns 如果是指定类型的映射器返回true，否则返回false
  */
-export function isMapperOfType(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: any,
-  mapperType: MapperType,
-): boolean {
+export function isMapperOfType(target: any, mapperType: MapperType): boolean {
   const metadata = getMapperMetadata(target);
   return metadata?.mapperType === mapperType;
 }

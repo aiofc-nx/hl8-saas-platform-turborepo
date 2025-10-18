@@ -20,7 +20,7 @@
  * @example
  * ```typescript
  * const deleteDepartmentUseCase = new DeleteDepartmentUseCase(departmentRepository, eventBus, transactionManager, logger);
- * 
+ *
  * const result = await deleteDepartmentUseCase.execute({
  *   departmentId: departmentId,
  *   deletedBy: 'admin',
@@ -38,11 +38,11 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -89,17 +89,25 @@ export interface IDeleteDepartmentUseCase {
  *
  * @description 删除部门，包括软删除和硬删除
  */
-export class DeleteDepartmentUseCase extends BaseCommandUseCase<
-  DeleteDepartmentRequest,
-  DeleteDepartmentResponse
-> implements IDeleteDepartmentUseCase {
+export class DeleteDepartmentUseCase
+  extends BaseCommandUseCase<DeleteDepartmentRequest, DeleteDepartmentResponse>
+  implements IDeleteDepartmentUseCase
+{
   constructor(
     private readonly departmentRepository: IDepartmentRepository,
     eventBus?: IEventBus,
     transactionManager?: ITransactionManager,
     logger?: FastifyLoggerService,
   ) {
-    super("DeleteDepartment", "删除部门用例", "1.0.0", ["department:delete"], eventBus, transactionManager, logger);
+    super(
+      "DeleteDepartment",
+      "删除部门用例",
+      "1.0.0",
+      ["department:delete"],
+      eventBus,
+      transactionManager,
+      logger,
+    );
   }
 
   /**
@@ -116,18 +124,26 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
     await this.validateDepartmentExists(request.departmentId, request.tenantId);
     await this.validateDeletePermissions(request, context);
     await this.validateDepartmentCanBeDeleted(request);
-    
-    const departmentAggregate = await this.departmentRepository.findById(request.departmentId);
+
+    const departmentAggregate = await this.departmentRepository.findById(
+      request.departmentId,
+    );
     if (!departmentAggregate) {
-      throw new ResourceNotFoundException("部门", request.departmentId.toString());
+      throw new ResourceNotFoundException(
+        "部门",
+        request.departmentId.toString(),
+      );
     }
 
     // 删除部门
-    departmentAggregate.deleteDepartment(request.deletedBy, request.deleteReason);
-    
+    departmentAggregate.deleteDepartment(
+      request.deletedBy,
+      request.deleteReason,
+    );
+
     // 保存部门
     await this.departmentRepository.save(departmentAggregate);
-    
+
     // 发布领域事件
     await this.publishDomainEvents(departmentAggregate);
 
@@ -137,6 +153,7 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
       deletedAt: new Date(),
       deletedBy: request.deletedBy,
       deleteReason: request.deleteReason,
+      softDelete: request.softDelete ?? true,
     };
   }
 
@@ -152,7 +169,7 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
         "DEPARTMENT_ID_REQUIRED",
         "部门ID不能为空",
         "部门ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -160,7 +177,7 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.deletedBy) {
@@ -168,7 +185,7 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
         "DELETED_BY_REQUIRED",
         "删除者不能为空",
         "删除者是必填字段",
-        400
+        400,
       );
     }
   }
@@ -180,16 +197,20 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateDepartmentExists(departmentId: EntityId, tenantId: TenantId): Promise<void> {
-    const departmentAggregate = await this.departmentRepository.findById(departmentId);
+  private async validateDepartmentExists(
+    departmentId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
+    const departmentAggregate =
+      await this.departmentRepository.findById(departmentId);
     if (!departmentAggregate) {
       throw new ResourceNotFoundException("部门", departmentId.toString());
     }
     if (!departmentAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "部门不属于指定租户",
-        { departmentId: departmentId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("部门不属于指定租户", {
+        departmentId: departmentId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -206,11 +227,11 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
   ): Promise<void> {
     // 检查是否为租户管理员
     const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
-    
+
     if (!isTenantAdmin) {
       throw new UnauthorizedOperationException(
         "删除部门",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -221,27 +242,34 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
    * @param request - 删除部门请求
    * @private
    */
-  private async validateDepartmentCanBeDeleted(request: DeleteDepartmentRequest): Promise<void> {
-    const departmentAggregate = await this.departmentRepository.findById(request.departmentId);
+  private async validateDepartmentCanBeDeleted(
+    request: DeleteDepartmentRequest,
+  ): Promise<void> {
+    const departmentAggregate = await this.departmentRepository.findById(
+      request.departmentId,
+    );
     if (!departmentAggregate) {
-      throw new ResourceNotFoundException("部门", request.departmentId.toString());
+      throw new ResourceNotFoundException(
+        "部门",
+        request.departmentId.toString(),
+      );
     }
 
     const department = departmentAggregate.getDepartment();
-    
+
     // 检查部门状态
     if (department.status === "DELETED") {
-      throw new BusinessRuleViolationException(
-        "部门已被删除",
-        { departmentId: request.departmentId.toString(), status: department.status }
-      );
+      throw new BusinessRuleViolationException("部门已被删除", {
+        departmentId: request.departmentId.toString(),
+        status: department.status,
+      });
     }
-    
+
     // 检查是否有下属部门
     if (!request.forceDelete && departmentAggregate.hasSubDepartments()) {
       throw new BusinessRuleViolationException(
         "部门下有子部门，不能删除。请先删除所有子部门或使用强制删除",
-        { departmentId: request.departmentId.toString() }
+        { departmentId: request.departmentId.toString() },
       );
     }
   }

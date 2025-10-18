@@ -20,7 +20,7 @@
  * @example
  * ```typescript
  * const updateOrganizationUseCase = new UpdateOrganizationUseCase(organizationRepository, eventBus, transactionManager, logger);
- * 
+ *
  * const result = await updateOrganizationUseCase.execute({
  *   organizationId: organizationId,
  *   name: '新组织名称',
@@ -35,18 +35,18 @@
 import { EntityId, TenantId } from "@hl8/isolation-model";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { BaseCommandUseCase } from "../base/base-command-use-case.js";
-import type { IUseCaseContext } from "../use-case.interface.js";
+import type { IUseCaseContext } from "../base/use-case.interface.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
   BusinessRuleViolationException,
-  ResourceAlreadyExistsException
 } from "../../../common/exceptions/business.exceptions.js";
 import type { OrganizationType } from "../../../domain/value-objects/types/organization-type.vo.js";
+import type { OrganizationAggregate } from "../../../domain/aggregates/organization-aggregate.js";
 
 /**
  * 更新组织请求
@@ -90,7 +90,9 @@ export interface UpdateOrganizationResponse {
  * 更新组织用例接口
  */
 export interface IUpdateOrganizationUseCase {
-  execute(request: UpdateOrganizationRequest): Promise<UpdateOrganizationResponse>;
+  execute(
+    request: UpdateOrganizationRequest,
+  ): Promise<UpdateOrganizationResponse>;
 }
 
 /**
@@ -98,17 +100,27 @@ export interface IUpdateOrganizationUseCase {
  *
  * @description 更新组织信息，包括基本信息、类型、层级等
  */
-export class UpdateOrganizationUseCase extends BaseCommandUseCase<
-  UpdateOrganizationRequest,
-  UpdateOrganizationResponse
-> implements IUpdateOrganizationUseCase {
+export class UpdateOrganizationUseCase
+  extends BaseCommandUseCase<
+    UpdateOrganizationRequest,
+    UpdateOrganizationResponse
+  >
+  implements IUpdateOrganizationUseCase
+{
   constructor(
     private readonly organizationRepository: IOrganizationRepository,
     eventBus?: IEventBus,
     transactionManager?: ITransactionManager,
     logger?: FastifyLoggerService,
   ) {
-    super("UpdateOrganization", "更新组织用例", "1.0.0", ["organization:update"], eventBus, transactionManager, logger);
+    super(
+      "UpdateOrganization",
+      "更新组织用例",
+      "1.0.0",
+      ["organization:update"],
+      eventBus,
+      transactionManager,
+    );
   }
 
   /**
@@ -122,20 +134,28 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
     context: IUseCaseContext,
   ): Promise<UpdateOrganizationResponse> {
     this.validateRequest(request);
-    await this.validateOrganizationExists(request.organizationId, request.tenantId);
+    await this.validateOrganizationExists(
+      request.organizationId,
+      request.tenantId,
+    );
     await this.validateUpdatePermissions(request, context);
-    
-    const organizationAggregate = await this.organizationRepository.findById(request.organizationId);
+
+    const organizationAggregate = await this.organizationRepository.findById(
+      request.organizationId,
+    );
     if (!organizationAggregate) {
-      throw new ResourceNotFoundException("组织", request.organizationId.toString());
+      throw new ResourceNotFoundException(
+        "组织",
+        request.organizationId.toString(),
+      );
     }
 
     // 更新组织信息
     this.updateOrganizationInfo(organizationAggregate, request);
-    
+
     // 保存组织
     await this.organizationRepository.save(organizationAggregate);
-    
+
     // 发布领域事件
     await this.publishDomainEvents(organizationAggregate);
 
@@ -153,15 +173,15 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
    * 验证请求参数
    *
    * @param request - 更新组织请求
-   * @private
+   * @protected
    */
-  private validateRequest(request: UpdateOrganizationRequest): void {
+  protected validateRequest(request: UpdateOrganizationRequest): void {
     if (!request.organizationId) {
       throw new ValidationException(
         "ORGANIZATION_ID_REQUIRED",
         "组织ID不能为空",
         "组织ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -169,7 +189,7 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.updatedBy) {
@@ -177,7 +197,7 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
         "UPDATED_BY_REQUIRED",
         "更新者不能为空",
         "更新者是必填字段",
-        400
+        400,
       );
     }
   }
@@ -189,16 +209,20 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateOrganizationExists(organizationId: EntityId, tenantId: TenantId): Promise<void> {
-    const organizationAggregate = await this.organizationRepository.findById(organizationId);
+  private async validateOrganizationExists(
+    organizationId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
+    const organizationAggregate =
+      await this.organizationRepository.findById(organizationId);
     if (!organizationAggregate) {
       throw new ResourceNotFoundException("组织", organizationId.toString());
     }
     if (!organizationAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "组织不属于指定租户",
-        { organizationId: organizationId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("组织不属于指定租户", {
+        organizationId: organizationId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -214,13 +238,14 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
     context: IUseCaseContext,
   ): Promise<void> {
     // 检查是否为组织管理员或租户管理员
-    const isOrganizationAdmin = context.user?.role === "ORGANIZATION_ADMIN";
-    const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
-    
+    const isOrganizationAdmin =
+      context.user?.roles?.includes("ORGANIZATION_ADMIN");
+    const isTenantAdmin = context.user?.roles?.includes("TENANT_ADMIN");
+
     if (!isOrganizationAdmin && !isTenantAdmin) {
       throw new UnauthorizedOperationException(
         "更新组织信息",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -232,21 +257,24 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
    * @param request - 更新组织请求
    * @private
    */
-  private updateOrganizationInfo(organizationAggregate: OrganizationAggregate, request: UpdateOrganizationRequest): void {
+  private updateOrganizationInfo(
+    organizationAggregate: OrganizationAggregate,
+    request: UpdateOrganizationRequest,
+  ): void {
     const organization = organizationAggregate.getOrganization();
-    
+
     if (request.name) {
       organization.updateName(request.name);
     }
-    
+
     if (request.type) {
       organization.updateType(request.type);
     }
-    
+
     if (request.description !== undefined) {
       organization.updateDescription(request.description);
     }
-    
-    organizationAggregate.updateOrganization(organization);
+
+    // 组织实体已通过直接调用方法更新，无需额外操作
   }
 }

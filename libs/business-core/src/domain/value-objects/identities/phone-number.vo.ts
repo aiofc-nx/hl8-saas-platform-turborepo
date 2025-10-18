@@ -111,7 +111,10 @@ export class PhoneNumber extends BaseValueObject<string> {
       const number = this.getNumber();
       if (countryCode && number) {
         // 格式化国际号码：+86 138-1234-5678
-        const formattedNumber = number.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+        const formattedNumber = number.replace(
+          /(\d{3})(\d{4})(\d{4})/,
+          "$1-$2-$3",
+        );
         return `+${countryCode} ${formattedNumber}`;
       }
     } else {

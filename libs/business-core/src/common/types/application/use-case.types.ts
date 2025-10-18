@@ -186,7 +186,11 @@ export interface IUseCaseOptions {
     /** 是否启用事务 */
     enabled: boolean;
     /** 事务隔离级别 */
-    isolationLevel?: "read-uncommitted" | "read-committed" | "repeatable-read" | "serializable";
+    isolationLevel?:
+      | "read-uncommitted"
+      | "read-committed"
+      | "repeatable-read"
+      | "serializable";
     /** 事务超时时间（毫秒） */
     timeout?: number;
   };
@@ -343,7 +347,11 @@ export interface IUseCaseMetadata {
    */
   transaction?: {
     enabled: boolean;
-    isolationLevel?: "read-uncommitted" | "read-committed" | "repeatable-read" | "serializable";
+    isolationLevel?:
+      | "read-uncommitted"
+      | "read-committed"
+      | "repeatable-read"
+      | "serializable";
     timeout?: number;
   };
 

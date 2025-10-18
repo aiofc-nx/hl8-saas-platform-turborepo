@@ -152,7 +152,10 @@ export abstract class BaseCommandUseCase<
    *
    * @param aggregateRoot - 聚合根实例
    */
-  protected async publishDomainEvents(aggregateRoot: { getUncommittedEvents(): unknown[]; markEventsAsCommitted(): void }): Promise<void> {
+  protected async publishDomainEvents(aggregateRoot: {
+    getUncommittedEvents(): unknown[];
+    markEventsAsCommitted(): void;
+  }): Promise<void> {
     if (
       !aggregateRoot ||
       typeof aggregateRoot.getUncommittedEvents !== "function"
@@ -183,7 +186,10 @@ export abstract class BaseCommandUseCase<
       this.logEventPublicationError(events, error);
       throw new BusinessRuleViolationException(
         `[${this.useCaseName}] 事件发布失败: ${error instanceof Error ? error.message : String(error)}`,
-        { useCaseName: this.useCaseName, error: error instanceof Error ? error.message : String(error) }
+        {
+          useCaseName: this.useCaseName,
+          error: error instanceof Error ? error.message : String(error),
+        },
       );
     }
   }

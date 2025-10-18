@@ -21,7 +21,7 @@
  * ```typescript
  * // 分页查询用户
  * const paginationService = new PaginationService(cacheService, logger);
- * 
+ *
  * const result = await paginationService.paginateUsers({
  *   tenantId: tenantId,
  *   page: 1,
@@ -42,16 +42,25 @@ import { OrganizationUseCaseServices } from "./organization-use-case-services.js
 import { DepartmentUseCaseServices } from "./department-use-case-services.js";
 
 // 输入输出类型
-import type { GetUserListRequest, GetUserListResponse } from "../use-cases/user/get-user-list.use-case.js";
-import type { GetOrganizationsRequest, GetOrganizationsResponse } from "../use-cases/organization/get-organizations.use-case.js";
-import type { GetDepartmentsRequest, GetDepartmentsResponse } from "../use-cases/department/get-departments.use-case.js";
+import type {
+  GetUserListRequest,
+  GetUserListResponse,
+} from "../use-cases/user/get-user-list.use-case.js";
+import type {
+  GetOrganizationsRequest,
+  GetOrganizationsResponse,
+} from "../use-cases/organization/get-organizations.use-case.js";
+import type {
+  GetDepartmentsRequest,
+  GetDepartmentsResponse,
+} from "../use-cases/department/get-departments.use-case.js";
 
 // 导入分页相关类型
-import type { 
-  PaginationOptions, 
-  PaginationResult, 
-  CursorPaginationOptions, 
-  CursorPaginationResult 
+import type {
+  PaginationOptions,
+  PaginationResult,
+  CursorPaginationOptions,
+  CursorPaginationResult,
 } from "../../common/types/application/pagination.types.js";
 
 /**
@@ -96,7 +105,8 @@ export class PaginationService {
 
     try {
       // 尝试从缓存获取
-      const cachedResult = await this.cacheService.get<PaginationResult<any>>(cacheKey);
+      const cachedResult =
+        await this.cacheService.get<PaginationResult<any>>(cacheKey);
       if (cachedResult) {
         this.logger.debug("从缓存获取用户分页结果", { cacheKey });
         return cachedResult;
@@ -171,7 +181,8 @@ export class PaginationService {
 
     try {
       // 尝试从缓存获取
-      const cachedResult = await this.cacheService.get<PaginationResult<any>>(cacheKey);
+      const cachedResult =
+        await this.cacheService.get<PaginationResult<any>>(cacheKey);
       if (cachedResult) {
         this.logger.debug("从缓存获取组织分页结果", { cacheKey });
         return cachedResult;
@@ -188,7 +199,8 @@ export class PaginationService {
         includeDeleted: false,
       };
 
-      const result = await this.organizationUseCaseServices.getOrganizations(request);
+      const result =
+        await this.organizationUseCaseServices.getOrganizations(request);
 
       // 构建分页结果
       const paginationResult: PaginationResult<any> = {
@@ -246,7 +258,8 @@ export class PaginationService {
 
     try {
       // 尝试从缓存获取
-      const cachedResult = await this.cacheService.get<PaginationResult<any>>(cacheKey);
+      const cachedResult =
+        await this.cacheService.get<PaginationResult<any>>(cacheKey);
       if (cachedResult) {
         this.logger.debug("从缓存获取部门分页结果", { cacheKey });
         return cachedResult;
@@ -263,7 +276,8 @@ export class PaginationService {
         includeDeleted: false,
       };
 
-      const result = await this.departmentUseCaseServices.getDepartments(request);
+      const result =
+        await this.departmentUseCaseServices.getDepartments(request);
 
       // 构建分页结果
       const paginationResult: PaginationResult<any> = {
@@ -331,7 +345,8 @@ export class PaginationService {
 
     try {
       // 尝试从缓存获取
-      const cachedResult = await this.cacheService.get<CursorPaginationResult<any>>(cacheKey);
+      const cachedResult =
+        await this.cacheService.get<CursorPaginationResult<any>>(cacheKey);
       if (cachedResult) {
         this.logger.debug("从缓存获取用户游标分页结果", { cacheKey });
         return cachedResult;
@@ -388,7 +403,11 @@ export class PaginationService {
    * @returns 缓存键
    * @private
    */
-  private getCacheKey(type: string, tenantId: TenantId, options: PaginationOptions): string {
+  private getCacheKey(
+    type: string,
+    tenantId: TenantId,
+    options: PaginationOptions,
+  ): string {
     const filtersStr = JSON.stringify(options.filters || {});
     return `pagination:${type}:${tenantId.toString()}:${options.page}:${options.limit}:${options.sortBy}:${options.sortOrder}:${filtersStr}`;
   }
@@ -402,7 +421,11 @@ export class PaginationService {
    * @returns 缓存键
    * @private
    */
-  private getCursorCacheKey(type: string, tenantId: TenantId, options: CursorPaginationOptions): string {
+  private getCursorCacheKey(
+    type: string,
+    tenantId: TenantId,
+    options: CursorPaginationOptions,
+  ): string {
     const filtersStr = JSON.stringify(options.filters || {});
     return `cursor_pagination:${type}:${tenantId.toString()}:${options.cursor}:${options.limit}:${options.sortBy}:${options.sortOrder}:${filtersStr}`;
   }
@@ -415,7 +438,10 @@ export class PaginationService {
    * @returns 下一个游标
    * @private
    */
-  private generateNextCursor(data: Array<Record<string, unknown>>, sortBy?: string): string | undefined {
+  private generateNextCursor(
+    data: Array<Record<string, unknown>>,
+    sortBy?: string,
+  ): string | undefined {
     if (data.length === 0) {
       return undefined;
     }

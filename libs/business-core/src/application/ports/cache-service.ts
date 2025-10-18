@@ -68,7 +68,7 @@ export class CacheService implements ICacheService {
     this.logger = logger;
     this.defaultTtl = defaultTtl;
     this.maxSize = maxSize;
-    
+
     // 启动清理任务
     this.startCleanupTask();
   }
@@ -84,7 +84,7 @@ export class CacheService implements ICacheService {
   async get<T>(key: string): Promise<T | null> {
     try {
       this.operations++;
-      
+
       const item = this.cache.get(key);
       if (!item) {
         this.misses++;
@@ -122,7 +122,7 @@ export class CacheService implements ICacheService {
   async set<T>(key: string, value: T, ttl?: number): Promise<void> {
     try {
       this.operations++;
-      
+
       // 检查缓存大小限制
       if (this.cache.size >= this.maxSize) {
         this.evictOldest();
@@ -136,7 +136,9 @@ export class CacheService implements ICacheService {
       };
 
       this.cache.set(key, item);
-      this.logger.debug(`缓存设置成功: ${key}, TTL: ${ttl || this.defaultTtl}s`);
+      this.logger.debug(
+        `缓存设置成功: ${key}, TTL: ${ttl || this.defaultTtl}s`,
+      );
     } catch (error) {
       this.logger.error(`设置缓存失败: ${key}`, { error: error.message });
       // 缓存失败不应该影响主要业务逻辑
@@ -154,7 +156,7 @@ export class CacheService implements ICacheService {
   async delete(key: string): Promise<void> {
     try {
       this.operations++;
-      
+
       const deleted = this.cache.delete(key);
       if (deleted) {
         this.logger.debug(`缓存删除成功: ${key}`);
@@ -176,7 +178,7 @@ export class CacheService implements ICacheService {
   async clear(): Promise<void> {
     try {
       this.operations++;
-      
+
       this.cache.clear();
       this.logger.info("缓存已清空");
     } catch (error) {
@@ -195,7 +197,7 @@ export class CacheService implements ICacheService {
   async exists(key: string): Promise<boolean> {
     try {
       this.operations++;
-      
+
       const item = this.cache.get(key);
       if (!item) {
         return false;
@@ -225,7 +227,7 @@ export class CacheService implements ICacheService {
   async ttl(key: string): Promise<number> {
     try {
       this.operations++;
-      
+
       const item = this.cache.get(key);
       if (!item) {
         return -2; // 不存在
@@ -256,9 +258,9 @@ export class CacheService implements ICacheService {
   async mget<T>(keys: string[]): Promise<Map<string, T>> {
     try {
       this.operations++;
-      
+
       const result = new Map<string, T>();
-      
+
       for (const key of keys) {
         const value = await this.get<T>(key);
         if (value !== null) {
@@ -266,7 +268,9 @@ export class CacheService implements ICacheService {
         }
       }
 
-      this.logger.debug(`批量获取缓存: ${keys.length} 个键，命中 ${result.size} 个`);
+      this.logger.debug(
+        `批量获取缓存: ${keys.length} 个键，命中 ${result.size} 个`,
+      );
       return result;
     } catch (error) {
       this.logger.error("批量获取缓存失败", { error: error.message });
@@ -286,7 +290,7 @@ export class CacheService implements ICacheService {
   async mset<T>(data: Map<string, T>, ttl?: number): Promise<void> {
     try {
       this.operations++;
-      
+
       for (const [key, value] of data) {
         await this.set(key, value, ttl);
       }
@@ -307,7 +311,7 @@ export class CacheService implements ICacheService {
   async getStats(): Promise<CacheStats> {
     const total = this.hits + this.misses;
     const hitRate = total > 0 ? (this.hits / total) * 100 : 0;
-    
+
     return {
       hits: this.hits,
       misses: this.misses,
@@ -359,12 +363,12 @@ export class CacheService implements ICacheService {
    */
   private calculateMemoryUsage(): number {
     let totalSize = 0;
-    
+
     for (const [key, item] of this.cache) {
       totalSize += key.length * 2; // 字符串长度 * 2（UTF-16）
       totalSize += JSON.stringify(item).length * 2;
     }
-    
+
     return totalSize;
   }
 

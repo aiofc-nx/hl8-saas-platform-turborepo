@@ -19,7 +19,7 @@
  * @example
  * ```typescript
  * const getDepartmentUseCase = new GetDepartmentUseCase(departmentRepository, cacheService, logger);
- * 
+ *
  * const result = await getDepartmentUseCase.execute({
  *   departmentId: departmentId,
  *   tenantId: tenantId
@@ -35,11 +35,11 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -93,16 +93,23 @@ export interface IGetDepartmentUseCase {
  *
  * @description 获取单个部门的详细信息
  */
-export class GetDepartmentUseCase extends BaseQueryUseCase<
-  GetDepartmentRequest,
-  GetDepartmentResponse
-> implements IGetDepartmentUseCase {
+export class GetDepartmentUseCase
+  extends BaseQueryUseCase<GetDepartmentRequest, GetDepartmentResponse>
+  implements IGetDepartmentUseCase
+{
   constructor(
     private readonly departmentRepository: IDepartmentRepository,
     cacheService?: ICacheService,
     logger?: FastifyLoggerService,
   ) {
-    super("GetDepartment", "获取部门用例", "1.0.0", ["department:read"], cacheService, logger);
+    super(
+      "GetDepartment",
+      "获取部门用例",
+      "1.0.0",
+      ["department:read"],
+      cacheService,
+      logger,
+    );
   }
 
   /**
@@ -118,7 +125,7 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
     this.validateRequest(request);
     await this.validateDepartmentExists(request.departmentId, request.tenantId);
     await this.validateQueryPermissions(request, context);
-    
+
     // 尝试从缓存获取
     const cacheKey = this.getCacheKey(request);
     const cachedResult = await this.getFromCache(cacheKey);
@@ -127,9 +134,14 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
     }
 
     // 从数据库获取
-    const departmentAggregate = await this.departmentRepository.findById(request.departmentId);
+    const departmentAggregate = await this.departmentRepository.findById(
+      request.departmentId,
+    );
     if (!departmentAggregate) {
-      throw new ResourceNotFoundException("部门", request.departmentId.toString());
+      throw new ResourceNotFoundException(
+        "部门",
+        request.departmentId.toString(),
+      );
     }
 
     const department = departmentAggregate.getDepartment();
@@ -165,7 +177,7 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
         "DEPARTMENT_ID_REQUIRED",
         "部门ID不能为空",
         "部门ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -173,7 +185,7 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
   }
@@ -185,16 +197,20 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateDepartmentExists(departmentId: EntityId, tenantId: TenantId): Promise<void> {
-    const departmentAggregate = await this.departmentRepository.findById(departmentId);
+  private async validateDepartmentExists(
+    departmentId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
+    const departmentAggregate =
+      await this.departmentRepository.findById(departmentId);
     if (!departmentAggregate) {
       throw new ResourceNotFoundException("部门", departmentId.toString());
     }
     if (!departmentAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "部门不属于指定租户",
-        { departmentId: departmentId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("部门不属于指定租户", {
+        departmentId: departmentId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -210,13 +226,16 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
     context: IUseCaseContext,
   ): Promise<void> {
     // 检查是否为部门成员或管理员
-    const isDepartmentMember = context.user?.departments?.includes(request.departmentId);
-    const isAdmin = context.user?.role === "ADMIN" || context.user?.role === "TENANT_ADMIN";
-    
+    const isDepartmentMember = context.user?.departments?.includes(
+      request.departmentId,
+    );
+    const isAdmin =
+      context.user?.role === "ADMIN" || context.user?.role === "TENANT_ADMIN";
+
     if (!isDepartmentMember && !isAdmin) {
       throw new UnauthorizedOperationException(
         "查看部门信息",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
