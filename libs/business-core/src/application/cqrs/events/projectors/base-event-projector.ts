@@ -48,7 +48,7 @@
  *     await this.userReadRepository.save(readModel);
  *   }
  *
- *   protected extractEventData(event: UserCreatedEvent): any {
+   *   protected extractEventData(event: UserCreatedEvent): Record<string, unknown> {
  *     return {
  *       userId: event.userId,
  *       name: event.name,

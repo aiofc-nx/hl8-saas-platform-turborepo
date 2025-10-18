@@ -436,22 +436,22 @@ export abstract class BaseUseCase<TRequest, TResponse>
   protected createDefaultLogger(): FastifyLoggerService {
     // 创建一个模拟的日志记录器用于测试
     return {
-      debug: (message: string, context?: any) =>
+      debug: (message: string, context?: Record<string, unknown>) =>
         console.debug(message, context),
-      info: (message: string, context?: any) => console.info(message, context),
-      warn: (message: string, context?: any) => console.warn(message, context),
-      error: (message: string | Error, context?: any) =>
+      info: (message: string, context?: Record<string, unknown>) => console.info(message, context),
+      warn: (message: string, context?: Record<string, unknown>) => console.warn(message, context),
+      error: (message: string | Error, context?: Record<string, unknown>) =>
         console.error(message, context),
-      fatal: (message: string, context?: any) =>
+      fatal: (message: string, context?: Record<string, unknown>) =>
         console.error(message, context),
-      trace: (message: string, context?: any) =>
+      trace: (message: string, context?: Record<string, unknown>) =>
         console.trace(message, context),
-      log: (message: string, context?: any) => console.log(message, context),
-      verbose: (message: string, context?: any) =>
+      log: (message: string, context?: Record<string, unknown>) => console.log(message, context),
+      verbose: (message: string, context?: Record<string, unknown>) =>
         console.log(message, context),
-      getPinoLogger: () => null as any,
-      pinoLogger: null as any,
-      enrichContext: (context: any) => context,
+      getPinoLogger: () => null as unknown,
+      pinoLogger: null as unknown,
+      enrichContext: (context: Record<string, unknown>) => context,
     } as unknown as FastifyLoggerService;
   }
 

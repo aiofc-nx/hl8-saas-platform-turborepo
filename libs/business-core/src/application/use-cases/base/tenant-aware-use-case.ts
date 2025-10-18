@@ -33,7 +33,7 @@
  *   constructor(
  *     private readonly userRepository: IUserRepository,
  *     private readonly eventBus: IDomainEventBus,
- *     tenantContextService: any,
+ *     tenantContextService: { getCurrentTenant(): TenantId },
  *     logger: FastifyLoggerService
  *   ) {
  *     super('CreateUser', '创建用户用例', '1.0.0', ['user:create'], tenantContextService, logger);
@@ -70,14 +70,14 @@ export abstract class TenantAwareUseCase<
   TRequest,
   TResponse,
 > extends BaseUseCase<TRequest, TResponse> {
-  protected readonly tenantContextService: any;
+  protected readonly tenantContextService: { getCurrentTenant(): TenantId };
 
   constructor(
     useCaseName: string,
     useCaseDescription: string,
     useCaseVersion = "1.0.0",
     requiredPermissions: string[] = [],
-    tenantContextService: any,
+    tenantContextService: { getCurrentTenant(): TenantId },
     logger?: FastifyLoggerService,
   ) {
     super(
@@ -256,7 +256,7 @@ export abstract class TenantAwareUseCase<
    */
   private logTenantAwareUseCaseError(
     request: TRequest,
-    error: any,
+    error: Error,
     context: IUseCaseContext,
     executionTime: number,
   ): void {

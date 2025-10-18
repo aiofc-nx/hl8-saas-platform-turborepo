@@ -34,7 +34,7 @@
 import { EntityId, TenantId } from "@hl8/isolation-model";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import { BaseCommandUseCase } from "../base/base-command-use-case.js";
-import type { IUseCaseContext } from "../use-case.interface.js";
+import type { IUseCaseContext } from "../base/use-case.interface.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
@@ -111,7 +111,6 @@ export class DeleteOrganizationUseCase
       ["organization:delete"],
       eventBus,
       transactionManager,
-      logger,
     );
   }
 
@@ -144,10 +143,7 @@ export class DeleteOrganizationUseCase
     }
 
     // 删除组织
-    organizationAggregate.deleteOrganization(
-      request.deletedBy,
-      request.deleteReason,
-    );
+    organizationAggregate.deactivateOrganization();
 
     // 保存组织
     await this.organizationRepository.save(organizationAggregate);
@@ -168,9 +164,9 @@ export class DeleteOrganizationUseCase
    * 验证请求参数
    *
    * @param request - 删除组织请求
-   * @private
+   * @protected
    */
-  private validateRequest(request: DeleteOrganizationRequest): void {
+  protected validateRequest(request: DeleteOrganizationRequest): void {
     if (!request.organizationId) {
       throw new ValidationException(
         "ORGANIZATION_ID_REQUIRED",
@@ -233,7 +229,7 @@ export class DeleteOrganizationUseCase
     context: IUseCaseContext,
   ): Promise<void> {
     // 检查是否为租户管理员
-    const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
+    const isTenantAdmin = context.user?.roles?.includes("TENANT_ADMIN");
 
     if (!isTenantAdmin) {
       throw new UnauthorizedOperationException(
@@ -265,10 +261,10 @@ export class DeleteOrganizationUseCase
     const organization = organizationAggregate.getOrganization();
 
     // 检查组织状态
-    if (organization.status === "DELETED") {
+    if (!organization.isActive) {
       throw new BusinessRuleViolationException("组织已被删除", {
         organizationId: request.organizationId.toString(),
-        status: organization.status,
+        isActive: organization.isActive,
       });
     }
 

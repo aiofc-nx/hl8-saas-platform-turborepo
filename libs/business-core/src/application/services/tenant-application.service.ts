@@ -59,7 +59,7 @@ export interface CreateTenantWithAdminRequest {
   /** 租户数据 */
   tenantData: {
     name: string;
-    type: any;
+    type: string;
     platformId: EntityId;
     createdBy: string;
   };

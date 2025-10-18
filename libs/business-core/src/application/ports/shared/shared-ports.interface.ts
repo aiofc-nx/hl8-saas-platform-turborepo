@@ -31,7 +31,7 @@
  *     private readonly validator: IValidationPort
  *   ) {}
  *
- *   async handle(request: any): Promise<any> {
+ *   async handle(request: Record<string, unknown>): Promise<Record<string, unknown>> {
  *     const requestId = this.idGenerator.generate();
  *     const startTime = this.timeProvider.now();
  *

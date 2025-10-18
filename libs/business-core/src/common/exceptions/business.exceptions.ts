@@ -10,6 +10,7 @@ import type { BaseDomainException } from "../../domain/exceptions/base/base-doma
 import {
   DomainExceptionType,
   DomainStateException,
+  DomainValidationException,
 } from "../../domain/exceptions/base/base-domain-exception.js";
 
 /**
@@ -185,4 +186,4 @@ export class ResourceStateException extends ApplicationException {
 }
 
 // 导出领域异常类
-export { DomainStateException };
+export { DomainStateException, DomainValidationException };

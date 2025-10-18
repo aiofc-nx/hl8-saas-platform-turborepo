@@ -17,130 +17,14 @@ interface IAsyncContext {
   getDepartmentId?(): string;
 }
 
-/**
- * Saga 状态枚举
- */
-export enum SagaStatus {
-  /**
-   * 未开始
-   */
-  NOT_STARTED = "NOT_STARTED",
+// 导入Saga相关枚举
+import { SagaStatus } from "../../../common/enums/application/saga-status.enum.js";
 
-  /**
-   * 运行中
-   */
-  RUNNING = "RUNNING",
+// 导入Saga步骤类型枚举
+import { SagaStepType } from "../../../common/enums/application/saga-step-type.enum.js";
 
-  /**
-   * 已完成
-   */
-  COMPLETED = "COMPLETED",
-
-  /**
-   * 已失败
-   */
-  FAILED = "FAILED",
-
-  /**
-   * 已取消
-   */
-  CANCELLED = "CANCELLED",
-
-  /**
-   * 补偿中
-   */
-  COMPENSATING = "COMPENSATING",
-
-  /**
-   * 已补偿
-   */
-  COMPENSATED = "COMPENSATED",
-
-  /**
-   * 超时
-   */
-  TIMEOUT = "TIMEOUT",
-}
-
-/**
- * Saga 步骤类型枚举
- */
-export enum SagaStepType {
-  /**
-   * 命令步骤
-   */
-  COMMAND = "COMMAND",
-
-  /**
-   * 事件步骤
-   */
-  EVENT = "EVENT",
-
-  /**
-   * 补偿步骤
-   */
-  COMPENSATION = "COMPENSATION",
-
-  /**
-   * 超时步骤
-   */
-  TIMEOUT = "TIMEOUT",
-
-  /**
-   * 条件步骤
-   */
-  CONDITION = "CONDITION",
-
-  /**
-   * 并行步骤
-   */
-  PARALLEL = "PARALLEL",
-
-  /**
-   * 顺序步骤
-   */
-  SEQUENTIAL = "SEQUENTIAL",
-}
-
-/**
- * Saga 步骤状态枚举
- */
-export enum SagaStepStatus {
-  /**
-   * 待执行
-   */
-  PENDING = "PENDING",
-
-  /**
-   * 执行中
-   */
-  EXECUTING = "EXECUTING",
-
-  /**
-   * 已完成
-   */
-  COMPLETED = "COMPLETED",
-
-  /**
-   * 已失败
-   */
-  FAILED = "FAILED",
-
-  /**
-   * 已跳过
-   */
-  SKIPPED = "SKIPPED",
-
-  /**
-   * 补偿中
-   */
-  COMPENSATING = "COMPENSATING",
-
-  /**
-   * 已补偿
-   */
-  COMPENSATED = "COMPENSATED",
-}
+// 导入Saga步骤状态枚举
+import { SagaStepStatus } from "../../../common/enums/application/saga-step-status.enum.js";
 
 /**
  * Saga 步骤接口

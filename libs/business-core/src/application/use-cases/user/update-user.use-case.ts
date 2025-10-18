@@ -237,7 +237,7 @@ export class UpdateUserUseCase extends BaseCommandUseCase<
    * @param request - 更新用户请求
    * @private
    */
-  private updateUserInfo(userAggregate: any, request: UpdateUserRequest): void {
+  private updateUserInfo(userAggregate: UserAggregate, request: UpdateUserRequest): void {
     const user = userAggregate.getUser();
     
     if (request.displayName) {

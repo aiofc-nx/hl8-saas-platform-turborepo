@@ -274,7 +274,7 @@ export class PermissionConflictResolutionService {
    * @returns 角色冲突列表
    * @private
    */
-  private analyzeRoleConflicts(roles: any[]): PermissionConflictInfo[] {
+  private analyzeRoleConflicts(roles: Array<{ name: string; permissions?: string[] }>): PermissionConflictInfo[] {
     const conflicts: PermissionConflictInfo[] = [];
 
     // 检查是否有冲突的角色组合
@@ -344,7 +344,7 @@ export class PermissionConflictResolutionService {
    * @returns 作用域冲突列表
    * @private
    */
-  private analyzeScopeConflicts(roles: any[]): PermissionConflictInfo[] {
+  private analyzeScopeConflicts(roles: Array<{ name: string; permissions?: string[] }>): PermissionConflictInfo[] {
     const conflicts: PermissionConflictInfo[] = [];
 
     // 检查作用域冲突

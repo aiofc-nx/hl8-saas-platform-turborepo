@@ -459,7 +459,7 @@ export class CoreExplorerService {
   ): IHandlerInfo | null {
     try {
       let handlerType: "command" | "query" | "event" | "saga";
-      let metadata: any;
+      let metadata: Record<string, unknown>;
 
       if (isCommandHandler(handlerClass)) {
         handlerType = "command";

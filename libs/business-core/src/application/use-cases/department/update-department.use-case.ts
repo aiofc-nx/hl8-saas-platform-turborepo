@@ -47,6 +47,7 @@ import {
   ResourceAlreadyExistsException
 } from "../../../common/exceptions/business.exceptions.js";
 import type { DepartmentLevel } from "../../../domain/value-objects/types/department-level.vo.js";
+import type { DepartmentAggregate } from "../../../domain/aggregates/department-aggregate.js";
 
 /**
  * 更新部门请求
@@ -264,7 +265,7 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
    * @param request - 更新部门请求
    * @private
    */
-  private updateDepartmentInfo(departmentAggregate: any, request: UpdateDepartmentRequest): void {
+  private updateDepartmentInfo(departmentAggregate: DepartmentAggregate, request: UpdateDepartmentRequest): void {
     const department = departmentAggregate.getDepartment();
     
     if (request.name) {

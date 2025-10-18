@@ -10,3 +10,6 @@ export * from "./use-case.constants.js";
 
 // CQRS相关常量
 export * from "./cqrs.constants.js";
+
+// 元数据键常量
+export * from "./metadata-keys.constants.js";

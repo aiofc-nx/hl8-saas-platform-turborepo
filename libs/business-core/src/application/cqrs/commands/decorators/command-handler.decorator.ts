@@ -37,81 +37,11 @@
  */
 
 import { ICommand, ICommandMetadata } from "../base/command.interface.js";
+// 导入命令处理器相关类型
+import type { ICommandHandlerOptions } from "../../../../common/types/application/command-handler.types.js";
 
-/**
- * 命令处理器选项接口
- */
-export interface ICommandHandlerOptions {
-  /**
-   * 处理器描述
-   */
-  description?: string;
-
-  /**
-   * 处理器版本
-   */
-  version?: string;
-
-  /**
-   * 所需权限
-   */
-  requiredPermissions?: string[];
-
-  /**
-   * 处理器分类
-   */
-  category?: string;
-
-  /**
-   * 处理器标签
-   */
-  tags?: string[];
-
-  /**
-   * 是否需要事务
-   */
-  requiresTransaction?: boolean;
-
-  /**
-   * 超时配置
-   */
-  timeout?: {
-    execution: number;
-    alertOnTimeout?: boolean;
-  };
-
-  /**
-   * 重试配置
-   */
-  retry?: {
-    maxAttempts: number;
-    backoffStrategy: "fixed" | "exponential" | "linear";
-    baseDelay: number;
-  };
-
-  /**
-   * 缓存配置
-   */
-  cache?: {
-    enabled: boolean;
-    ttl: number;
-    keyPrefix: string;
-  };
-
-  /**
-   * 监控配置
-   */
-  monitoring?: {
-    enabled: boolean;
-    slowThreshold: number;
-    errorThreshold: number;
-  };
-}
-
-/**
- * 命令处理器元数据键
- */
-export const COMMAND_HANDLER_METADATA_KEY = Symbol("commandHandler");
+// 导入元数据键常量
+import { COMMAND_HANDLER_METADATA_KEY } from "../../../../common/constants/application/metadata-keys.constants.js";
 
 /**
  * 命令处理器装饰器
@@ -138,7 +68,7 @@ export function CommandHandler<TCommand extends ICommand>(
   options: ICommandHandlerOptions = {},
 ): ClassDecorator {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return function (target: any) {
+  return function (target: ClassConstructor) {
     // 获取命令类型
     const commandInstance = new commandClass();
     const commandType = commandInstance.commandType;
@@ -184,7 +114,7 @@ export function CommandHandler<TCommand extends ICommand>(
  */
 export function getCommandHandlerMetadata(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: any,
+  target: ClassConstructor,
 ): ICommandMetadata | undefined {
   return Reflect.getMetadata(COMMAND_HANDLER_METADATA_KEY, target);
 }
@@ -197,15 +127,13 @@ export function getCommandHandlerMetadata(
  */
 export function isCommandHandler(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: any,
+  target: ClassConstructor,
 ): boolean {
   return Reflect.hasMetadata(COMMAND_HANDLER_METADATA_KEY, target);
 }
 
-/**
- * 命令装饰器元数据键
- */
-export const COMMAND_METADATA_KEY = Symbol("command");
+// 导入命令元数据键常量
+import { COMMAND_METADATA_KEY } from "../../../../common/constants/application/metadata-keys.constants.js";
 
 /**
  * 命令装饰器
@@ -236,7 +164,7 @@ export function Command(options: {
   tags?: string[];
 }): ClassDecorator {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return function (target: any) {
+  return function (target: ClassConstructor) {
     const metadata: ICommandMetadata = {
       commandType: options.type,
       description: options.description || `${options.type} 命令`,
@@ -269,7 +197,7 @@ export function Command(options: {
  */
 export function getCommandMetadata(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: any,
+  target: ClassConstructor,
 ): ICommandMetadata | undefined {
   return Reflect.getMetadata(COMMAND_METADATA_KEY, target);
 }
@@ -282,7 +210,7 @@ export function getCommandMetadata(
  */
 export function isCommand(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: any,
+  target: ClassConstructor,
 ): boolean {
   return Reflect.hasMetadata(COMMAND_METADATA_KEY, target);
 }

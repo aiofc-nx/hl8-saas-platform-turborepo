@@ -283,7 +283,7 @@ export interface IEventValidator {
    * @param event 要验证的事件
    * @returns 验证结果
    */
-  validate(event: any): IEventValidationResult;
+  validate(event: Record<string, unknown>): IEventValidationResult;
 }
 
 /**

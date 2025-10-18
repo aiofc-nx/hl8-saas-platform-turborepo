@@ -55,7 +55,7 @@
  *   }
  *
  *   validate(): ICommandValidationResult {
- *     const errors: any[] = [];
+ *     const errors: string[] = [];
  *
  *     if (!this.name) errors.push({ field: 'name', message: '用户名不能为空' });
  *     if (!this.email) errors.push({ field: 'email', message: '邮箱不能为空' });

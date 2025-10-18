@@ -152,7 +152,7 @@ export abstract class BaseCommandUseCase<
    *
    * @param aggregateRoot - 聚合根实例
    */
-  protected async publishDomainEvents(aggregateRoot: any): Promise<void> {
+  protected async publishDomainEvents(aggregateRoot: { getUncommittedEvents(): unknown[]; markEventsAsCommitted(): void }): Promise<void> {
     if (
       !aggregateRoot ||
       typeof aggregateRoot.getUncommittedEvents !== "function"
@@ -231,7 +231,7 @@ export abstract class BaseCommandUseCase<
   /**
    * 记录事件发布日志
    */
-  private logEventPublication(events: any[]): void {
+  private logEventPublication(events: unknown[]): void {
     this.log("info", `发布了 ${events.length} 个领域事件`, {
       eventTypes: events.map(
         (event) => event.eventType || event.constructor.name,
@@ -242,7 +242,7 @@ export abstract class BaseCommandUseCase<
   /**
    * 记录事件发布失败日志
    */
-  private logEventPublicationError(events: any[], error: any): void {
+  private logEventPublicationError(events: unknown[], error: Error): void {
     this.log("error", "事件发布失败", {
       eventCount: events.length,
       error: error.message,
@@ -259,7 +259,7 @@ export abstract class BaseCommandUseCase<
   protected log(
     level: "debug" | "info" | "warn" | "error",
     message: string,
-    data?: any,
+    data?: Record<string, unknown>,
   ): void {
     const logMessage = `[${this.useCaseName}] ${message}`;
     if (data) {
@@ -282,7 +282,7 @@ export abstract class BaseCommandUseCase<
   protected createExecutionResult(
     success: boolean,
     data?: TResponse,
-    error?: any,
+    error?: Error,
     context?: IUseCaseContext,
     executionTime?: number,
   ): IUseCaseExecutionResult<TResponse> {
@@ -316,7 +316,7 @@ export class BusinessRuleViolationError extends Error {
   constructor(
     message: string,
     public readonly ruleName?: string,
-    public readonly ruleDetails?: any,
+    public readonly ruleDetails?: Record<string, unknown>,
   ) {
     super(message);
     this.name = "BusinessRuleViolationError";

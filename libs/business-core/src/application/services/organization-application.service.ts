@@ -59,14 +59,14 @@ export interface CreateOrganizationWithDepartmentRequest {
   /** 组织数据 */
   organizationData: {
     name: string;
-    type: any;
+    type: string;
     tenantId: TenantId;
     createdBy: string;
   };
   /** 部门数据 */
   departmentData: {
     name: string;
-    level: any;
+    level: number;
     createdBy: string;
   };
 }

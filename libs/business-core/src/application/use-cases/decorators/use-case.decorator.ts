@@ -88,7 +88,7 @@ import { USE_CASE_METADATA_KEY } from "../../../common/constants/application/use
  * ```
  */
 export function UseCase(options: IUseCaseOptions): ClassDecorator {
-  return function (target: any): any {
+  return function (target: ClassConstructor): void {
     // 验证配置选项
     validateUseCaseOptions(options);
 
@@ -136,7 +136,7 @@ export function UseCase(options: IUseCaseOptions): ClassDecorator {
  * ```
  */
 export function getUseCaseMetadata(
-  target: any,
+  target: ClassConstructor | object,
 ): Required<IUseCaseOptions> | undefined {
   const targetClass =
     typeof target === "function" ? target : target.constructor;

@@ -54,39 +54,14 @@
  * @since 1.0.0
  */
 
-/**
- * 应用层异常类型枚举
- */
-export enum ApplicationExceptionType {
-  VALIDATION = "validation",
-  BUSINESS_LOGIC = "business_logic",
-  AUTHORIZATION = "authorization",
-  RESOURCE_NOT_FOUND = "resource_not_found",
-  CONCURRENCY = "concurrency",
-  EXTERNAL_SERVICE = "external_service",
-  CONFIGURATION = "configuration",
-  INFRASTRUCTURE = "infrastructure",
-}
+// 导入应用层异常相关枚举
+import { ApplicationExceptionType } from "../../../common/enums/application/application-exception-type.enum.js";
 
-/**
- * 应用层异常严重级别枚举
- */
-export enum ApplicationExceptionSeverity {
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  CRITICAL = "critical",
-}
+// 导入应用层异常严重级别枚举
+import { ApplicationExceptionSeverity } from "../../../common/enums/application/application-exception-severity.enum.js";
 
-/**
- * 应用层异常恢复策略枚举
- */
-export enum ApplicationExceptionRecoveryStrategy {
-  NONE = "none",
-  RETRY = "retry",
-  FALLBACK = "fallback",
-  COMPENSATE = "compensate",
-}
+// 导入应用层异常恢复策略枚举
+import { ApplicationExceptionRecoveryStrategy } from "../../../common/enums/application/application-exception-recovery-strategy.enum.js";
 
 /**
  * 基础应用层异常类

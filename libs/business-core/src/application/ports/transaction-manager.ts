@@ -48,7 +48,7 @@ import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
  * @description 实现事务管理功能，支持事务的开始、提交、回滚等操作
  */
 export class TransactionManager implements ITransactionManager {
-  private currentTransaction: any = null;
+  private currentTransaction: unknown = null;
   private transactionId: string | null = null;
   private readonly logger: FastifyLoggerService;
 

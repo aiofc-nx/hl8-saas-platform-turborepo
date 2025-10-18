@@ -94,10 +94,10 @@ describe("UpdateTenantUseCase", () => {
         updatedAt: new Date(),
       },
       platformId: TenantId.generate(),
-      updateName: jest.fn().mockImplementation((name: any) => {
+      updateName: jest.fn().mockImplementation((name: string) => {
         mockTenantAggregate.tenant.name = name;
       }),
-      updateType: jest.fn().mockImplementation((type: any, updatedBy: any) => {
+      updateType: jest.fn().mockImplementation((type: TenantType, updatedBy: string) => {
         mockTenantAggregate.tenant.type = type;
       }),
       getStatus: jest.fn().mockReturnValue({

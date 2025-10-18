@@ -232,7 +232,7 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
    * @param request - 更新组织请求
    * @private
    */
-  private updateOrganizationInfo(organizationAggregate: any, request: UpdateOrganizationRequest): void {
+  private updateOrganizationInfo(organizationAggregate: OrganizationAggregate, request: UpdateOrganizationRequest): void {
     const organization = organizationAggregate.getOrganization();
     
     if (request.name) {

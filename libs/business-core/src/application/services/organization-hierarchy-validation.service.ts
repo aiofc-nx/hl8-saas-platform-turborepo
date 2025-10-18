@@ -250,7 +250,7 @@ export class OrganizationHierarchyValidationService {
     organizationId: EntityId,
     organizationName: string,
     organizationLevel: number,
-    departments: any[],
+    departments: Array<{ id: string; name: string; level: number; parentId?: string }>,
   ): Promise<OrganizationHierarchyInfo> {
     // 构建部门信息
     const departmentInfos = departments.map(departmentAggregate => {
@@ -355,8 +355,8 @@ export class OrganizationHierarchyValidationService {
    * @private
    */
   private async validateDepartmentLevelRelation(
-    department: any,
-    organization: any,
+    department: { id: string; name: string; level: number; parentId?: string },
+    organization: { id: string; name: string; level: number },
     hierarchyInfo: OrganizationHierarchyInfo,
   ): Promise<HierarchyValidationResult> {
     const reasons: string[] = [];

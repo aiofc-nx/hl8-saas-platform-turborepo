@@ -34,7 +34,7 @@ import type {
 export class CacheService implements ICacheService {
   private readonly memoryCache = new Map<
     string,
-    { value: any; expires: number }
+    { value: unknown; expires: number }
   >();
   private readonly defaultTTL = 1800; // 30分钟
   private hitCount = 0;

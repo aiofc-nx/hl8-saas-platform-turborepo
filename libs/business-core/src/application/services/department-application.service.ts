@@ -59,7 +59,7 @@ export interface CreateDepartmentWithManagerRequest {
   /** 部门数据 */
   departmentData: {
     name: string;
-    level: any;
+    level: number;
     organizationId: EntityId;
     tenantId: TenantId;
     createdBy: string;

@@ -62,13 +62,13 @@ export interface CreateUserWithTenantRequest {
     username: string;
     password: string;
     displayName: string;
-    role: any;
+    role: string;
     createdBy: string;
   };
   /** 租户数据 */
   tenantData: {
     name: string;
-    type: any;
+    type: string;
     platformId: EntityId;
     createdBy: string;
   };

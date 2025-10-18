@@ -56,7 +56,7 @@ import { TenantId } from "@hl8/isolation-model";
  *   }
  *
  *   validate(): IQueryValidationResult {
- *     const errors: any[] = [];
+ *     const errors: string[] = [];
  *
  *     if (!this.targetUserId) {
  *       errors.push({ field: 'targetUserId', message: '用户ID不能为空' });

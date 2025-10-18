@@ -208,14 +208,14 @@ describe("CommandBus", () => {
   });
 
   describe("中间件", () => {
-    let middleware1: any;
-    let middleware2: any;
+    let middleware1: { execute: (context: Record<string, unknown>, next: () => Promise<void>) => Promise<void> };
+    let middleware2: { execute: (context: Record<string, unknown>, next: () => Promise<void>) => Promise<void> };
 
     beforeEach(() => {
       middleware1 = {
         name: "middleware1",
         priority: 1,
-        execute: jest.fn((context: any, next: any) => {
+        execute: jest.fn((context: Record<string, unknown>, next: () => Promise<void>) => {
           console.log("中间件1: 执行前");
           return next();
         }),
@@ -224,7 +224,7 @@ describe("CommandBus", () => {
       middleware2 = {
         name: "middleware2",
         priority: 2,
-        execute: jest.fn((context: any, next: any) => {
+        execute: jest.fn((context: Record<string, unknown>, next: () => Promise<void>) => {
           console.log("中间件2: 执行前");
           return next();
         }),

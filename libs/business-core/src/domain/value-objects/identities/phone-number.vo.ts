@@ -90,4 +90,34 @@ export class PhoneNumber extends BaseValueObject<string> {
     }
     return this.value;
   }
+
+  /**
+   * 检查是否为国际号码
+   *
+   * @returns {boolean} 如果是国际号码返回true，否则返回false
+   */
+  public isInternational(): boolean {
+    return this.value.startsWith("+");
+  }
+
+  /**
+   * 获取格式化显示
+   *
+   * @returns {string} 格式化后的电话号码
+   */
+  public getFormattedDisplay(): string {
+    if (this.isInternational()) {
+      const countryCode = this.getCountryCode();
+      const number = this.getNumber();
+      if (countryCode && number) {
+        // 格式化国际号码：+86 138-1234-5678
+        const formattedNumber = number.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+        return `+${countryCode} ${formattedNumber}`;
+      }
+    } else {
+      // 格式化国内号码：138-1234-5678
+      return this.value.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+    }
+    return this.value;
+  }
 }

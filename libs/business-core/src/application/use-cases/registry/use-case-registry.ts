@@ -66,7 +66,7 @@ interface IUseCaseRegistration {
   /**
    * 用例类
    */
-  useCaseClass: any;
+  useCaseClass: ClassConstructor;
 
   /**
    * 用例实例工厂

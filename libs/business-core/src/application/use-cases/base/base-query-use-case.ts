@@ -349,7 +349,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    * @param options - 查询选项
    * @returns 应用选项后的查询
    */
-  protected applyQueryOptions(query: any, options: QueryOptions): any {
+  protected applyQueryOptions(query: Record<string, unknown>, options: QueryOptions): Record<string, unknown> {
     // 这个方法的具体实现依赖于查询技术（如ORM）
     // 子类可以重写此方法来实现特定的查询选项应用逻辑
     return query;
@@ -364,7 +364,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    * @param context - 执行上下文
    * @returns 脱敏后的数据
    */
-  protected sanitizeData(data: any, context: IUseCaseContext): any {
+  protected sanitizeData(data: Record<string, unknown>, context: IUseCaseContext): Record<string, unknown> {
     // 子类可以重写此方法来实现具体的数据脱敏逻辑
     return data;
   }
