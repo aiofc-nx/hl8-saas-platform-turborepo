@@ -61,6 +61,7 @@ import {
   IMiddleware,
   IMessageContext,
 } from "./cqrs-bus.interface.js";
+import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 事件处理器注册信息
@@ -211,7 +212,10 @@ export class EventBus implements IEventBus {
     handler: IEventHandler<TEvent>,
   ): void {
     if (!handler.supports(eventType)) {
-      throw new Error(`Handler does not support event type: ${eventType}`);
+      throw new BusinessRuleViolationException(
+        `Handler does not support event type: ${eventType}`,
+        { eventType, handlerName: handler.constructor.name }
+      );
     }
 
     const registrations = this.handlers.get(eventType) || [];

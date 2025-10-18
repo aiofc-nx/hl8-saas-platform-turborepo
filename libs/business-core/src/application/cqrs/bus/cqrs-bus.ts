@@ -70,6 +70,7 @@ import type {
   IQueryBus,
   IEventBus,
 } from "./cqrs-bus.interface.js";
+import { ResourceNotFoundException, BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * CQRS 总线统计信息
@@ -282,7 +283,7 @@ export class CQRSBus implements ICQRSBus {
     // 1. 获取用例实例
     const useCase = this._useCaseRegistry.get<TRequest, TResponse>(useCaseName);
     if (!useCase) {
-      throw new Error(`用例 ${useCaseName} 未找到`);
+      throw new ResourceNotFoundException("用例", useCaseName);
     }
 
     // 2. 执行用例
@@ -303,7 +304,10 @@ export class CQRSBus implements ICQRSBus {
    */
   public async initialize(): Promise<void> {
     if (this._isInitialized) {
-      throw new Error("CQRS Bus is already initialized");
+      throw new BusinessRuleViolationException(
+        "CQRS Bus is already initialized",
+        { busName: "CQRSBus" }
+      );
     }
 
     try {
@@ -328,7 +332,10 @@ export class CQRSBus implements ICQRSBus {
 
       this._isInitialized = true;
     } catch (error) {
-      throw new Error(`Failed to initialize CQRS Bus: ${error}`);
+      throw new BusinessRuleViolationException(
+        `Failed to initialize CQRS Bus: ${error}`,
+        { error: error instanceof Error ? error.message : String(error) }
+      );
     }
   }
 
@@ -342,7 +349,10 @@ export class CQRSBus implements ICQRSBus {
    */
   public async shutdown(): Promise<void> {
     if (!this._isInitialized) {
-      throw new Error("CQRS Bus is not initialized");
+      throw new BusinessRuleViolationException(
+        "CQRS Bus is not initialized",
+        { busName: "CQRSBus" }
+      );
     }
 
     try {
@@ -374,7 +384,10 @@ export class CQRSBus implements ICQRSBus {
 
       this._isInitialized = false;
     } catch (error) {
-      throw new Error(`Failed to shutdown CQRS Bus: ${error}`);
+      throw new BusinessRuleViolationException(
+        `Failed to shutdown CQRS Bus: ${error}`,
+        { error: error instanceof Error ? error.message : String(error) }
+      );
     }
   }
 
@@ -526,7 +539,10 @@ export class CQRSBus implements ICQRSBus {
    */
   private ensureInitialized(): void {
     if (!this._isInitialized) {
-      throw new Error("CQRS Bus is not initialized. Call initialize() first.");
+      throw new BusinessRuleViolationException(
+        "CQRS Bus is not initialized. Call initialize() first.",
+        { busName: "CQRSBus" }
+      );
     }
   }
 }

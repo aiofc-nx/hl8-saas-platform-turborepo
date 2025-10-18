@@ -57,6 +57,7 @@ import {
   IMiddleware,
   IMessageContext,
 } from "./cqrs-bus.interface.js";
+import { ResourceNotFoundException, BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 import { TenantId } from "@hl8/isolation-model";
 
 /**
@@ -85,7 +86,7 @@ export class QueryBus implements IQueryBus {
     const handler = this.handlers.get(queryType);
 
     if (!handler) {
-      throw new Error(`No handler registered for query type: ${queryType}`);
+      throw new ResourceNotFoundException("查询处理器", queryType);
     }
 
     // 创建消息上下文
@@ -118,7 +119,10 @@ export class QueryBus implements IQueryBus {
       // 检查是否可以处理
       const canHandle = await handler.canHandle(query);
       if (!canHandle) {
-        throw new Error(`Handler cannot process query: ${queryType}`);
+        throw new BusinessRuleViolationException(
+          `Handler cannot process query: ${queryType}`,
+          { queryType, handlerName: handler.constructor.name }
+        );
       }
 
       // 执行查询
@@ -132,7 +136,10 @@ export class QueryBus implements IQueryBus {
     });
 
     if (!result) {
-      throw new Error("查询执行失败：未返回结果");
+      throw new BusinessRuleViolationException(
+        "查询执行失败：未返回结果",
+        { queryType, queryId: query.queryId.toString() }
+      );
     }
     return result;
   }
@@ -149,13 +156,17 @@ export class QueryBus implements IQueryBus {
     TResult extends IQueryResult,
   >(queryType: string, handler: IQueryHandler<TQuery, TResult>): void {
     if (this.handlers.has(queryType)) {
-      throw new Error(
+      throw new BusinessRuleViolationException(
         `Handler already registered for query type: ${queryType}`,
+        { queryType }
       );
     }
 
     if (!handler.supports(queryType)) {
-      throw new Error(`Handler does not support query type: ${queryType}`);
+      throw new BusinessRuleViolationException(
+        `Handler does not support query type: ${queryType}`,
+        { queryType, handlerName: handler.constructor.name }
+      );
     }
 
     this.handlers.set(queryType, handler);
