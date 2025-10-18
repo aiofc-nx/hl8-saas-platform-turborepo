@@ -51,6 +51,7 @@
  */
 
 import "reflect-metadata";
+import { ValidationException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 用例类型枚举
@@ -332,42 +333,87 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
     typeof options.name !== "string" ||
     options.name.trim().length === 0
   ) {
-    throw new Error("用例名称不能为空");
+    throw new ValidationException(
+      "USE_CASE_NAME_REQUIRED",
+      "用例名称不能为空",
+      "用例名称不能为空",
+      400
+    );
   }
 
   if (!options.description || typeof options.description !== "string") {
-    throw new Error("用例描述不能为空");
+    throw new ValidationException(
+      "USE_CASE_DESCRIPTION_REQUIRED",
+      "用例描述不能为空",
+      "用例描述不能为空",
+      400
+    );
   }
 
   if (!options.type || !["command", "query"].includes(options.type as string)) {
-    throw new Error('用例类型必须是 "command" 或 "query"');
+    throw new ValidationException(
+      "INVALID_USE_CASE_TYPE",
+      "用例类型必须是 \"command\" 或 \"query\"",
+      "用例类型必须是 \"command\" 或 \"query\"",
+      400
+    );
   }
 
   if (options.version && typeof options.version !== "string") {
-    throw new Error("用例版本必须是字符串");
+    throw new ValidationException(
+      "INVALID_USE_CASE_VERSION",
+      "用例版本必须是字符串",
+      "用例版本必须是字符串",
+      400
+    );
   }
 
   if (options.permissions && !Array.isArray(options.permissions)) {
-    throw new Error("用例权限必须是字符串数组");
+    throw new ValidationException(
+      "INVALID_USE_CASE_PERMISSIONS",
+      "用例权限必须是字符串数组",
+      "用例权限必须是字符串数组",
+      400
+    );
   }
 
   if (
     options.permissions &&
     options.permissions.some((p) => typeof p !== "string")
   ) {
-    throw new Error("用例权限必须都是字符串");
+    throw new ValidationException(
+      "INVALID_USE_CASE_PERMISSION_TYPE",
+      "用例权限必须都是字符串",
+      "用例权限必须都是字符串",
+      400
+    );
   }
 
   if (options.category && typeof options.category !== "string") {
-    throw new Error("用例分类必须是字符串");
+    throw new ValidationException(
+      "INVALID_USE_CASE_CATEGORY",
+      "用例分类必须是字符串",
+      "用例分类必须是字符串",
+      400
+    );
   }
 
   if (options.tags && !Array.isArray(options.tags)) {
-    throw new Error("用例标签必须是字符串数组");
+    throw new ValidationException(
+      "INVALID_USE_CASE_TAGS",
+      "用例标签必须是字符串数组",
+      "用例标签必须是字符串数组",
+      400
+    );
   }
 
   if (options.tags && options.tags.some((tag) => typeof tag !== "string")) {
-    throw new Error("用例标签必须都是字符串");
+    throw new ValidationException(
+      "INVALID_USE_CASE_TAG_TYPE",
+      "用例标签必须都是字符串",
+      "用例标签必须都是字符串",
+      400
+    );
   }
 
   if (
@@ -375,13 +421,23 @@ function validateUseCaseOptions(options: IUseCaseOptions): void {
     (typeof options.timeout.execution !== "number" ||
       options.timeout.execution <= 0)
   ) {
-    throw new Error("用例超时时间必须是正整数");
+    throw new ValidationException(
+      "INVALID_USE_CASE_TIMEOUT",
+      "用例超时时间必须是正整数",
+      "用例超时时间必须是正整数",
+      400
+    );
   }
 
   if (
     options.cache?.ttl &&
     (typeof options.cache.ttl !== "number" || options.cache.ttl <= 0)
   ) {
-    throw new Error("缓存TTL必须是正整数");
+    throw new ValidationException(
+      "INVALID_USE_CASE_CACHE_TTL",
+      "缓存TTL必须是正整数",
+      "缓存TTL必须是正整数",
+      400
+    );
   }
 }
