@@ -76,6 +76,7 @@ import {
   DEFAULT_ENVIRONMENT,
 } from "../../../constants.js";
 import type { IsolationContext } from "@hl8/isolation-model";
+import { ValidationException, UnauthorizedOperationException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 用例执行结果
@@ -239,7 +240,12 @@ export abstract class BaseUseCase<TRequest, TResponse>
    */
   protected validateRequest(request: TRequest): void {
     if (request === null || request === undefined) {
-      throw new Error(`[${this.useCaseName}] 请求参数不能为空`);
+      throw new ValidationException(
+        "REQUEST_REQUIRED",
+        "请求参数不能为空",
+        `[${this.useCaseName}] 请求参数不能为空`,
+        400
+      );
     }
 
     // 基础验证逻辑
@@ -260,7 +266,10 @@ export abstract class BaseUseCase<TRequest, TResponse>
     }
 
     if (!context.user) {
-      throw new Error(`[${this.useCaseName}] 用例需要用户身份验证`);
+      throw new UnauthorizedOperationException(
+        `[${this.useCaseName}] 用例需要用户身份验证`,
+        "anonymous"
+      );
     }
 
     const userPermissions = context.user.permissions || [];
@@ -272,10 +281,9 @@ export abstract class BaseUseCase<TRequest, TResponse>
       const missingPermissions = this.requiredPermissions.filter(
         (permission) => !userPermissions.includes(permission),
       );
-      throw new Error(
-        `[${this.useCaseName}] 权限不足，缺少权限: ${missingPermissions.join(
-          ", ",
-        )}`,
+      throw new UnauthorizedOperationException(
+        `[${this.useCaseName}] 权限不足，缺少权限: ${missingPermissions.join(", ")}`,
+        context.user.id?.toString()
       );
     }
   }

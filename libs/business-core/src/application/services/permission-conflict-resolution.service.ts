@@ -37,6 +37,7 @@ import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
+import { ResourceNotFoundException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 权限冲突信息
@@ -201,7 +202,7 @@ export class PermissionConflictResolutionService {
     // 获取用户信息
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
-      throw new Error("用户不存在");
+      throw new ResourceNotFoundException("用户", userId.toString());
     }
 
     const user = userAggregate.getUser();

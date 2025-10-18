@@ -76,6 +76,7 @@ import type { IUseCaseExecutionResult } from "./base-use-case.js";
 import { BaseUseCase } from "./base-use-case.js";
 import type { IUseCaseContext } from "./use-case.interface.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
+import { ValidationException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 查询选项接口
@@ -240,11 +241,21 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
   ): Promise<void> {
     // 基础的租户隔离验证
     if (!context.tenant?.id) {
-      throw new Error(`[${this.useCaseName}] 缺少租户上下文`);
+      throw new ValidationException(
+        "TENANT_CONTEXT_REQUIRED",
+        "缺少租户上下文",
+        `[${this.useCaseName}] 缺少租户上下文`,
+        400
+      );
     }
 
     if (!context.user?.id) {
-      throw new Error(`[${this.useCaseName}] 缺少用户上下文`);
+      throw new ValidationException(
+        "USER_CONTEXT_REQUIRED",
+        "缺少用户上下文",
+        `[${this.useCaseName}] 缺少用户上下文`,
+        400
+      );
     }
 
     // 具体的租户权限验证逻辑需要在子类中实现

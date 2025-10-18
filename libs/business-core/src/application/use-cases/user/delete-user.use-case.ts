@@ -119,7 +119,7 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
     
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
-      throw new Error("用户不存在");
+      throw new ResourceNotFoundException("用户", request.userId.toString());
     }
 
     // 删除用户

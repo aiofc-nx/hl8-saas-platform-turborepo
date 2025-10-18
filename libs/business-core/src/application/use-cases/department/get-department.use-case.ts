@@ -129,7 +129,7 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
     // 从数据库获取
     const departmentAggregate = await this.departmentRepository.findById(request.departmentId);
     if (!departmentAggregate) {
-      throw new Error("部门不存在");
+      throw new ResourceNotFoundException("部门", request.departmentId.toString());
     }
 
     const department = departmentAggregate.getDepartment();

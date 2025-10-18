@@ -133,7 +133,7 @@ export class GetUserUseCase extends BaseQueryUseCase<
     // 从数据库获取
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
-      throw new Error("用户不存在");
+      throw new ResourceNotFoundException("用户", request.userId.toString());
     }
 
     const user = userAggregate.getUser();

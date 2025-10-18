@@ -38,6 +38,7 @@ import type { IUserRepository } from "../../../domain/repositories/user.reposito
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import { TenantType } from "../../../domain/value-objects/types/tenant-type.vo.js";
+import { ResourceNotFoundException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 租户配额信息
@@ -125,7 +126,7 @@ export class TenantQuotaValidationService {
       // 获取租户信息
       const tenantAggregate = await this.tenantRepository.findById(tenantId);
       if (!tenantAggregate) {
-        throw new Error("租户不存在");
+        throw new ResourceNotFoundException("租户", tenantId.toString());
       }
 
       const tenant = tenantAggregate.getTenant();
@@ -187,7 +188,7 @@ export class TenantQuotaValidationService {
       // 获取租户信息
       const tenantAggregate = await this.tenantRepository.findById(tenantId);
       if (!tenantAggregate) {
-        throw new Error("租户不存在");
+        throw new ResourceNotFoundException("租户", tenantId.toString());
       }
 
       const tenant = tenantAggregate.getTenant();
@@ -249,7 +250,7 @@ export class TenantQuotaValidationService {
       // 获取租户信息
       const tenantAggregate = await this.tenantRepository.findById(tenantId);
       if (!tenantAggregate) {
-        throw new Error("租户不存在");
+        throw new ResourceNotFoundException("租户", tenantId.toString());
       }
 
       const tenant = tenantAggregate.getTenant();
@@ -312,7 +313,7 @@ export class TenantQuotaValidationService {
       // 获取租户信息
       const tenantAggregate = await this.tenantRepository.findById(tenantId);
       if (!tenantAggregate) {
-        throw new Error("租户不存在");
+        throw new ResourceNotFoundException("租户", tenantId.toString());
       }
 
       const tenant = tenantAggregate.getTenant();

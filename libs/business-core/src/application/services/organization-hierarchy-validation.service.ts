@@ -36,6 +36,10 @@ import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import { DepartmentLevel } from "../../../domain/value-objects/types/department-level.vo.js";
+import { 
+  ResourceNotFoundException, 
+  BusinessRuleViolationException 
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 组织层级信息
@@ -127,7 +131,7 @@ export class OrganizationHierarchyValidationService {
       // 获取组织信息
       const organizationAggregate = await this.organizationRepository.findById(organizationId);
       if (!organizationAggregate) {
-        throw new Error("组织不存在");
+        throw new ResourceNotFoundException("组织", organizationId.toString());
       }
 
       const organization = organizationAggregate.getOrganization();
@@ -183,7 +187,7 @@ export class OrganizationHierarchyValidationService {
       // 获取部门信息
       const departmentAggregate = await this.departmentRepository.findById(departmentId);
       if (!departmentAggregate) {
-        throw new Error("部门不存在");
+        throw new ResourceNotFoundException("部门", departmentId.toString());
       }
 
       const department = departmentAggregate.getDepartment();
@@ -194,7 +198,7 @@ export class OrganizationHierarchyValidationService {
       // 获取组织信息
       const organizationAggregate = await this.organizationRepository.findById(organizationId);
       if (!organizationAggregate) {
-        throw new Error("组织不存在");
+        throw new ResourceNotFoundException("组织", organizationId.toString());
       }
 
       const organization = organizationAggregate.getOrganization();

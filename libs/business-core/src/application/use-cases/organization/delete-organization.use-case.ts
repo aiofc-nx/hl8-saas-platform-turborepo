@@ -20,7 +20,7 @@
  * @example
  * ```typescript
  * const deleteOrganizationUseCase = new DeleteOrganizationUseCase(organizationRepository, eventBus, transactionManager, logger);
- * 
+ *
  * const result = await deleteOrganizationUseCase.execute({
  *   organizationId: organizationId,
  *   deletedBy: 'admin',
@@ -38,11 +38,11 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
-import { 
-  ValidationException, 
-  ResourceNotFoundException, 
+import {
+  ValidationException,
+  ResourceNotFoundException,
   UnauthorizedOperationException,
-  BusinessRuleViolationException
+  BusinessRuleViolationException,
 } from "../../../common/exceptions/business.exceptions.js";
 
 /**
@@ -81,7 +81,9 @@ export interface DeleteOrganizationResponse {
  * 删除组织用例接口
  */
 export interface IDeleteOrganizationUseCase {
-  execute(request: DeleteOrganizationRequest): Promise<DeleteOrganizationResponse>;
+  execute(
+    request: DeleteOrganizationRequest,
+  ): Promise<DeleteOrganizationResponse>;
 }
 
 /**
@@ -89,17 +91,28 @@ export interface IDeleteOrganizationUseCase {
  *
  * @description 删除组织，包括软删除和硬删除
  */
-export class DeleteOrganizationUseCase extends BaseCommandUseCase<
-  DeleteOrganizationRequest,
-  DeleteOrganizationResponse
-> implements IDeleteOrganizationUseCase {
+export class DeleteOrganizationUseCase
+  extends BaseCommandUseCase<
+    DeleteOrganizationRequest,
+    DeleteOrganizationResponse
+  >
+  implements IDeleteOrganizationUseCase
+{
   constructor(
     private readonly organizationRepository: IOrganizationRepository,
     eventBus?: IEventBus,
     transactionManager?: ITransactionManager,
     logger?: FastifyLoggerService,
   ) {
-    super("DeleteOrganization", "删除组织用例", "1.0.0", ["organization:delete"], eventBus, transactionManager, logger);
+    super(
+      "DeleteOrganization",
+      "删除组织用例",
+      "1.0.0",
+      ["organization:delete"],
+      eventBus,
+      transactionManager,
+      logger,
+    );
   }
 
   /**
@@ -113,21 +126,32 @@ export class DeleteOrganizationUseCase extends BaseCommandUseCase<
     context: IUseCaseContext,
   ): Promise<DeleteOrganizationResponse> {
     this.validateRequest(request);
-    await this.validateOrganizationExists(request.organizationId, request.tenantId);
+    await this.validateOrganizationExists(
+      request.organizationId,
+      request.tenantId,
+    );
     await this.validateDeletePermissions(request, context);
     await this.validateOrganizationCanBeDeleted(request);
-    
-    const organizationAggregate = await this.organizationRepository.findById(request.organizationId);
+
+    const organizationAggregate = await this.organizationRepository.findById(
+      request.organizationId,
+    );
     if (!organizationAggregate) {
-      throw new Error("组织不存在");
+      throw new ResourceNotFoundException(
+        "组织",
+        request.organizationId.toString(),
+      );
     }
 
     // 删除组织
-    organizationAggregate.deleteOrganization(request.deletedBy, request.deleteReason);
-    
+    organizationAggregate.deleteOrganization(
+      request.deletedBy,
+      request.deleteReason,
+    );
+
     // 保存组织
     await this.organizationRepository.save(organizationAggregate);
-    
+
     // 发布领域事件
     await this.publishDomainEvents(organizationAggregate);
 
@@ -152,7 +176,7 @@ export class DeleteOrganizationUseCase extends BaseCommandUseCase<
         "ORGANIZATION_ID_REQUIRED",
         "组织ID不能为空",
         "组织ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.tenantId) {
@@ -160,7 +184,7 @@ export class DeleteOrganizationUseCase extends BaseCommandUseCase<
         "TENANT_ID_REQUIRED",
         "租户ID不能为空",
         "租户ID是必填字段",
-        400
+        400,
       );
     }
     if (!request.deletedBy) {
@@ -168,7 +192,7 @@ export class DeleteOrganizationUseCase extends BaseCommandUseCase<
         "DELETED_BY_REQUIRED",
         "删除者不能为空",
         "删除者是必填字段",
-        400
+        400,
       );
     }
   }
@@ -180,16 +204,20 @@ export class DeleteOrganizationUseCase extends BaseCommandUseCase<
    * @param tenantId - 租户ID
    * @private
    */
-  private async validateOrganizationExists(organizationId: EntityId, tenantId: TenantId): Promise<void> {
-    const organizationAggregate = await this.organizationRepository.findById(organizationId);
+  private async validateOrganizationExists(
+    organizationId: EntityId,
+    tenantId: TenantId,
+  ): Promise<void> {
+    const organizationAggregate =
+      await this.organizationRepository.findById(organizationId);
     if (!organizationAggregate) {
       throw new ResourceNotFoundException("组织", organizationId.toString());
     }
     if (!organizationAggregate.tenantId.equals(tenantId)) {
-      throw new BusinessRuleViolationException(
-        "组织不属于指定租户",
-        { organizationId: organizationId.toString(), tenantId: tenantId.toString() }
-      );
+      throw new BusinessRuleViolationException("组织不属于指定租户", {
+        organizationId: organizationId.toString(),
+        tenantId: tenantId.toString(),
+      });
     }
   }
 
@@ -206,11 +234,11 @@ export class DeleteOrganizationUseCase extends BaseCommandUseCase<
   ): Promise<void> {
     // 检查是否为租户管理员
     const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
-    
+
     if (!isTenantAdmin) {
       throw new UnauthorizedOperationException(
         "删除组织",
-        context.user?.id.toString()
+        context.user?.id.toString(),
       );
     }
   }
@@ -221,22 +249,35 @@ export class DeleteOrganizationUseCase extends BaseCommandUseCase<
    * @param request - 删除组织请求
    * @private
    */
-  private async validateOrganizationCanBeDeleted(request: DeleteOrganizationRequest): Promise<void> {
-    const organizationAggregate = await this.organizationRepository.findById(request.organizationId);
+  private async validateOrganizationCanBeDeleted(
+    request: DeleteOrganizationRequest,
+  ): Promise<void> {
+    const organizationAggregate = await this.organizationRepository.findById(
+      request.organizationId,
+    );
     if (!organizationAggregate) {
-      throw new Error("组织不存在");
+      throw new ResourceNotFoundException(
+        "组织",
+        request.organizationId.toString(),
+      );
     }
 
     const organization = organizationAggregate.getOrganization();
-    
+
     // 检查组织状态
     if (organization.status === "DELETED") {
-      throw new Error("组织已被删除");
+      throw new BusinessRuleViolationException("组织已被删除", {
+        organizationId: request.organizationId.toString(),
+        status: organization.status,
+      });
     }
-    
+
     // 检查是否有下属部门
     if (!request.forceDelete && organizationAggregate.hasDepartments()) {
-      throw new Error("组织下有部门，不能删除。请先删除所有下属部门或使用强制删除");
+      throw new BusinessRuleViolationException(
+        "组织下有部门，不能删除。请先删除所有下属部门或使用强制删除",
+        { organizationId: request.organizationId.toString() },
+      );
     }
   }
 }

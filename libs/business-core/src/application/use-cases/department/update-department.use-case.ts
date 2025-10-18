@@ -132,7 +132,7 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
     
     const departmentAggregate = await this.departmentRepository.findById(request.departmentId);
     if (!departmentAggregate) {
-      throw new Error("部门不存在");
+      throw new ResourceNotFoundException("部门", request.departmentId.toString());
     }
 
     // 更新部门信息
@@ -241,12 +241,18 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
     if (request.parentDepartmentId) {
       const parentDepartment = await this.departmentRepository.findById(request.parentDepartmentId);
       if (!parentDepartment) {
-        throw new Error("父部门不存在");
+        throw new ResourceNotFoundException("父部门", request.parentDepartmentId.toString());
       }
       
       // 检查层级关系
       if (request.level && parentDepartment.getDepartment().level.value >= request.level.value) {
-        throw new Error("父部门层级不能大于等于子部门层级");
+        throw new BusinessRuleViolationException(
+          "父部门层级不能大于等于子部门层级",
+          { 
+            parentLevel: parentDepartment.getDepartment().level.value,
+            childLevel: request.level.value 
+          }
+        );
       }
     }
   }

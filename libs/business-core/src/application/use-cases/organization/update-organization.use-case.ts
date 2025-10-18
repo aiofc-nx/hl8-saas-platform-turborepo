@@ -127,7 +127,7 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
     
     const organizationAggregate = await this.organizationRepository.findById(request.organizationId);
     if (!organizationAggregate) {
-      throw new Error("组织不存在");
+      throw new ResourceNotFoundException("组织", request.organizationId.toString());
     }
 
     // 更新组织信息

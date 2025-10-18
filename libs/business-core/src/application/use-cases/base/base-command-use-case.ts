@@ -78,6 +78,7 @@ import { BaseUseCase } from "./base-use-case.js";
 import type { IUseCaseContext } from "./use-case.interface.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
+import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 基础命令用例抽象类
@@ -180,8 +181,9 @@ export abstract class BaseCommandUseCase<
       this.logEventPublication(events);
     } catch (error) {
       this.logEventPublicationError(events, error);
-      throw new Error(
+      throw new BusinessRuleViolationException(
         `[${this.useCaseName}] 事件发布失败: ${error instanceof Error ? error.message : String(error)}`,
+        { useCaseName: this.useCaseName, error: error instanceof Error ? error.message : String(error) }
       );
     }
   }

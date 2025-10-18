@@ -119,7 +119,7 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
     
     const departmentAggregate = await this.departmentRepository.findById(request.departmentId);
     if (!departmentAggregate) {
-      throw new Error("部门不存在");
+      throw new ResourceNotFoundException("部门", request.departmentId.toString());
     }
 
     // 删除部门
@@ -224,19 +224,25 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
   private async validateDepartmentCanBeDeleted(request: DeleteDepartmentRequest): Promise<void> {
     const departmentAggregate = await this.departmentRepository.findById(request.departmentId);
     if (!departmentAggregate) {
-      throw new Error("部门不存在");
+      throw new ResourceNotFoundException("部门", request.departmentId.toString());
     }
 
     const department = departmentAggregate.getDepartment();
     
     // 检查部门状态
     if (department.status === "DELETED") {
-      throw new Error("部门已被删除");
+      throw new BusinessRuleViolationException(
+        "部门已被删除",
+        { departmentId: request.departmentId.toString(), status: department.status }
+      );
     }
     
     // 检查是否有下属部门
     if (!request.forceDelete && departmentAggregate.hasSubDepartments()) {
-      throw new Error("部门下有子部门，不能删除。请先删除所有子部门或使用强制删除");
+      throw new BusinessRuleViolationException(
+        "部门下有子部门，不能删除。请先删除所有子部门或使用强制删除",
+        { departmentId: request.departmentId.toString() }
+      );
     }
   }
 }
