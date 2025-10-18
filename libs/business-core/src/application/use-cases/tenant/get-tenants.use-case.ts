@@ -4,7 +4,12 @@ import type { ITenantRepository } from "../../../domain/repositories/tenant.repo
 import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import { UseCase } from "../decorators/use-case.decorator.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
-import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException
+} from "../../../common/exceptions/business.exceptions.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
@@ -167,16 +172,23 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
    */
   private validateQueryOptions(options: TenantQueryOptions): void {
     if (options.page !== undefined && options.page < 1) {
-      throw new BusinessRuleViolationException("页码必须大于0", "INVALID_PAGE");
+      throw new ValidationException(
+        "INVALID_PAGE",
+        "页码必须大于0",
+        "页码必须大于0",
+        400
+      );
     }
 
     if (
       options.limit !== undefined &&
       (options.limit < 1 || options.limit > 100)
     ) {
-      throw new BusinessRuleViolationException(
-        "每页记录数必须在1-100之间",
+      throw new ValidationException(
         "INVALID_LIMIT",
+        "每页记录数必须在1-100之间",
+        "每页记录数必须在1-100之间",
+        400
       );
     }
 
@@ -184,16 +196,20 @@ export class GetTenantsUseCase extends BaseQueryUseCase<
       options.sortBy &&
       !["name", "type", "createdAt", "updatedAt"].includes(options.sortBy)
     ) {
-      throw new BusinessRuleViolationException(
-        "无效的排序字段",
+      throw new ValidationException(
         "INVALID_SORT_BY",
+        "无效的排序字段",
+        "无效的排序字段",
+        400
       );
     }
 
     if (options.sortOrder && !["asc", "desc"].includes(options.sortOrder)) {
-      throw new BusinessRuleViolationException(
-        "无效的排序顺序",
+      throw new ValidationException(
         "INVALID_SORT_ORDER",
+        "无效的排序顺序",
+        "无效的排序顺序",
+        400
       );
     }
   }

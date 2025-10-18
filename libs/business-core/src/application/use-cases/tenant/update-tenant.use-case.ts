@@ -5,7 +5,13 @@ import type { ITenantRepository } from "../../../domain/repositories/tenant.repo
 import { BaseCommandUseCase } from "../base/base-command-use-case.js";
 import { UseCase } from "../decorators/use-case.decorator.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
-import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException,
+  ResourceAlreadyExistsException
+} from "../../../common/exceptions/business.exceptions.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**
@@ -157,39 +163,49 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
    */
   protected validateRequest(request: UpdateTenantRequest): void {
     if (!request.tenantId || request.tenantId.isEmpty()) {
-      throw new BusinessRuleViolationException(
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
         "租户ID不能为空",
-        "INVALID_TENANT_ID",
+        "租户ID是必填字段",
+        400
       );
     }
 
     if (request.name !== undefined) {
       if (!request.name || request.name.trim().length === 0) {
-        throw new BusinessRuleViolationException(
+        throw new ValidationException(
+          "TENANT_NAME_REQUIRED",
           "租户名称不能为空",
-          "EMPTY_TENANT_NAME",
+          "租户名称是必填字段",
+          400
         );
       }
 
       if (request.name.trim().length > 100) {
-        throw new BusinessRuleViolationException(
-          "租户名称长度不能超过100个字符",
+        throw new ValidationException(
           "TENANT_NAME_TOO_LONG",
+          "租户名称长度不能超过100个字符",
+          "租户名称长度不能超过100个字符",
+          400
         );
       }
     }
 
     if (request.type !== undefined && !request.type) {
-      throw new BusinessRuleViolationException(
+      throw new ValidationException(
+        "TENANT_TYPE_REQUIRED",
         "租户类型不能为空",
-        "EMPTY_TENANT_TYPE",
+        "租户类型是必填字段",
+        400
       );
     }
 
     if (!request.updatedBy || request.updatedBy.trim().length === 0) {
-      throw new BusinessRuleViolationException(
+      throw new ValidationException(
+        "UPDATED_BY_REQUIRED",
         "更新者标识符不能为空",
-        "EMPTY_UPDATER",
+        "更新者标识符是必填字段",
+        400
       );
     }
   }
@@ -209,10 +225,7 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
   ): Promise<TenantAggregate> {
     const tenant = await this.tenantRepository.findById(tenantId);
     if (!tenant) {
-      throw new BusinessRuleViolationException(
-        `租户不存在: ${tenantId.toString()}`,
-        "TENANT_NOT_FOUND",
-      );
+      throw new ResourceNotFoundException("租户", tenantId.toString());
     }
     return tenant;
   }
@@ -240,10 +253,7 @@ export class UpdateTenantUseCase extends BaseCommandUseCase<
     );
 
     if (existingTenant && !existingTenant.id.equals(excludeTenantId)) {
-      throw new BusinessRuleViolationException(
-        `租户名称 "${name}" 在同一平台下已存在`,
-        "TENANT_NAME_DUPLICATE",
-      );
+      throw new ResourceAlreadyExistsException("租户", name);
     }
   }
 
