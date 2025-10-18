@@ -1,452 +1,91 @@
 /**
- * 基础命令类
+ * 基础命令抽象类
  *
- * 命令是 CQRS 模式中的写操作，表示用户或系统想要执行的动作。
- * 命令封装了执行操作所需的所有数据，并包含必要的元数据。
+ * @description 为所有命令对象提供一个基础结构，包含命令名称和描述。
  *
  * ## 业务规则
  *
- * ### 命令标识规则
- * - 每个命令必须具有唯一的命令标识符
- * - 命令标识符用于命令的去重和追踪
- * - 命令标识符必须符合 EntityId 的格式要求
+ * ### 命令设计规则
+ * - 命令表示用户的意图，不包含业务逻辑
+ * - 命令应该是不可变的，创建后不能修改
+ * - 命令应该包含执行命令所需的所有信息
+ * - 命令应该支持序列化和反序列化
  *
- * ### 租户隔离规则
- * - 每个命令必须包含租户标识符
- * - 支持多租户架构的命令隔离
- * - 租户信息不可为空
+ * ### 命令验证规则
+ * - 命令创建时应该验证必要参数
+ * - 命令参数应该符合业务规则
+ * - 命令参数应该进行类型检查
  *
- * ### 时间戳规则
- * - 命令创建时间使用 UTC 时区
- * - 时间戳精度到毫秒级别
- * - 命令时间不可修改
- *
- * ### 版本控制规则
- * - 命令版本用于命令演化管理
- * - 版本号从 1 开始递增
- * - 支持向后兼容的命令处理
- *
- * ### 元数据规则
- * - 命令必须包含必要的元数据
- * - 包括用户信息、IP 地址、用户代理等
- * - 元数据用于审计和追踪
- *
- * @description 所有命令的基类，提供命令的一致行为
  * @example
  * ```typescript
+ * // 创建用户命令
  * class CreateUserCommand extends BaseCommand {
  *   constructor(
- *     public readonly email: string,
- *     public readonly name: string,
- *     public readonly password: string,
- *     tenantId: string,
- *     userId: string
+ *     public readonly username: string,
+ *     public readonly email: string
  *   ) {
- *     super(tenantId, userId);
- *   }
- *
- *   get commandType(): string {
- *     return 'CreateUser';
+ *     super("CreateUserCommand", "创建用户命令");
  *   }
  * }
- *
- * // 创建命令
- * const command = new CreateUserCommand(
- *   'user@example.com',
- *   '张三',
- *   'password123',
- *   'tenant-123',
- *   'user-456'
- * );
  * ```
  *
  * @since 1.0.0
  */
-import { EntityId } from "@hl8/isolation-model";
-import { TenantId } from "@hl8/isolation-model";
-import { ICommand, ICommandValidationResult } from "./command.interface.js";
 
-export abstract class BaseCommand implements ICommand {
-  private readonly _commandId: EntityId;
-  private readonly _tenantId: string;
-  private readonly _userId: string;
-  private readonly _createdAt: Date;
-  private readonly _commandVersion: number;
-  private readonly _metadata: Record<string, unknown>;
+/**
+ * 基础命令抽象类
+ *
+ * @description 为所有命令对象提供一个基础结构，包含命令名称和描述。
+ */
+export abstract class BaseCommand {
+  /**
+   * 命令名称
+   */
+  public readonly commandName: string;
 
   /**
-   * 构造函数
-   *
-   * @param tenantId - 租户标识符
-   * @param userId - 用户标识符
-   * @param commandVersion - 命令版本号，默认为 1
-   * @param metadata - 额外的元数据
+   * 命令描述
    */
-  protected constructor(
-    tenantId: string,
-    userId: string,
-    commandVersion = 1,
-    metadata: Record<string, unknown> = {},
-  ) {
-    this._commandId = TenantId.generate();
-    this._tenantId = tenantId;
-    this._userId = userId;
-    this._createdAt = new Date();
-    this._commandVersion = commandVersion;
-    this._metadata = { ...metadata };
+  public readonly description: string;
 
-    this.validateInternal();
+  /**
+   * 命令ID
+   */
+  public readonly id: string;
+
+  /**
+   * 创建时间
+   */
+  public readonly createdAt: Date;
+
+  constructor(commandName: string, description: string) {
+    this.commandName = commandName;
+    this.description = description;
+    this.id = this.generateId();
+    this.createdAt = new Date();
   }
 
   /**
-   * 获取命令标识符（EntityId 类型）
+   * 生成命令ID
    *
-   * @returns 命令唯一标识符
+   * @returns 命令ID
+   * @private
    */
-  public get commandIdEntity(): EntityId {
-    return this._commandId;
+  private generateId(): string {
+    return `${this.commandName}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
   /**
-   * 获取命令创建时间
+   * 转换为JSON
    *
-   * @returns 命令创建时间
+   * @returns JSON对象
    */
-  public get createdAt(): Date {
-    return this._createdAt;
-  }
-
-  /**
-   * 获取命令版本号
-   *
-   * @returns 命令版本号
-   */
-  public get commandVersion(): number {
-    return this._commandVersion;
-  }
-
-  /**
-   * 获取命令元数据
-   *
-   * @returns 命令元数据
-   */
-  public get metadata(): Record<string, unknown> {
-    return { ...this._metadata };
-  }
-
-  /**
-   * 获取命令类型名称
-   *
-   * 子类必须重写此方法以返回具体的命令类型名称。
-   *
-   * @returns 命令类型名称
-   */
-  public abstract get commandType(): string;
-
-  /**
-   * 获取命令标识符（ICommand 接口要求）
-   *
-   * @returns 命令标识符字符串
-   */
-  public get commandId(): string {
-    return this._commandId.toString();
-  }
-
-  /**
-   * 获取命令时间戳（ICommand 接口要求）
-   *
-   * @returns 命令时间戳
-   */
-  public get timestamp(): Date {
-    return this._createdAt;
-  }
-
-  /**
-   * 获取用户ID（ICommand 接口要求）
-   *
-   * @returns 用户ID
-   */
-  public get userId(): string | undefined {
-    return this._userId;
-  }
-
-  /**
-   * 获取租户ID（ICommand 接口要求）
-   *
-   * @returns 租户ID
-   */
-  public get tenantId(): string | undefined {
-    return this._tenantId;
-  }
-
-  /**
-   * 获取命令的业务数据
-   *
-   * 子类应该重写此方法以返回命令的业务数据。
-   * 默认实现返回空对象。
-   *
-   * @returns 命令的业务数据
-   */
-  public get commandData(): Record<string, unknown> {
-    return {};
-  }
-
-  /**
-   * 检查两个命令是否相等
-   *
-   * 命令的相等性基于命令标识符比较。
-   *
-   * @param other - 要比较的另一个命令
-   * @returns 如果两个命令相等则返回 true，否则返回 false
-   */
-  public equals(other: BaseCommand | null | undefined): boolean {
-    if (other === null || other === undefined) {
-      return false;
-    }
-
-    if (!(other instanceof this.constructor)) {
-      return false;
-    }
-
-    return this._commandId.equals(other._commandId);
-  }
-
-  /**
-   * 获取命令的哈希码
-   *
-   * 用于在 Map 或 Set 中使用命令作为键。
-   *
-   * @returns 哈希码字符串
-   */
-  public getHashCode(): string {
-    return this._commandId.getHashCode();
-  }
-
-  /**
-   * 将命令转换为字符串表示
-   *
-   * @returns 字符串表示
-   */
-  public toString(): string {
-    return `${this.commandType}(${this._commandId.toString()})`;
-  }
-
-  /**
-   * 将命令转换为 JSON 表示
-   *
-   * @returns JSON 表示
-   */
-  public toJSON(): Record<string, unknown> {
+  toJSON(): Record<string, any> {
     return {
-      commandId: this._commandId.toString(),
-      commandType: this.commandType,
-      tenantId: this._tenantId,
-      userId: this._userId,
-      createdAt: this._createdAt.toISOString(),
-      commandVersion: this._commandVersion,
-      commandData: this.commandData,
-      metadata: this._metadata,
+      id: this.id,
+      commandName: this.commandName,
+      description: this.description,
+      createdAt: this.createdAt,
     };
-  }
-
-  /**
-   * 获取命令的类型名称
-   *
-   * @returns 类型名称
-   */
-  public getTypeName(): string {
-    return this.constructor.name;
-  }
-
-  /**
-   * 比较两个命令的大小
-   *
-   * 基于命令创建时间进行比较。
-   *
-   * @param other - 要比较的另一个命令
-   * @returns 比较结果：-1 表示小于，0 表示等于，1 表示大于
-   */
-  public compareTo(other: BaseCommand): number {
-    if (other === null || other === undefined) {
-      return 1;
-    }
-
-    if (this._createdAt < other._createdAt) {
-      return -1;
-    }
-    if (this._createdAt > other._createdAt) {
-      return 1;
-    }
-
-    // 如果时间相同，按命令ID比较
-    return this._commandId.compareTo(other._commandId);
-  }
-
-  /**
-   * 检查命令是否为指定类型
-   *
-   * @param commandType - 命令类型名称
-   * @returns 如果命令是指定类型则返回 true，否则返回 false
-   */
-  public isOfType(commandType: string): boolean {
-    return this.commandType === commandType;
-  }
-
-  /**
-   * 检查命令是否属于指定的租户
-   *
-   * @param tenantId - 租户标识符
-   * @returns 如果命令属于指定的租户则返回 true，否则返回 false
-   */
-  public belongsToTenant(tenantId: string): boolean {
-    return this._tenantId === tenantId;
-  }
-
-  /**
-   * 检查命令是否属于指定的用户
-   *
-   * @param userId - 用户标识符
-   * @returns 如果命令属于指定的用户则返回 true，否则返回 false
-   */
-  public belongsToUser(userId: string): boolean {
-    return this._userId === userId;
-  }
-
-  /**
-   * 获取元数据值
-   *
-   * @param key - 元数据键
-   * @returns 元数据值，如果不存在则返回 undefined
-   */
-  public getMetadata(key: string): unknown {
-    return this._metadata[key];
-  }
-
-  /**
-   * 检查是否包含指定的元数据键
-   *
-   * @param key - 元数据键
-   * @returns 如果包含指定的元数据键则返回 true，否则返回 false
-   */
-  public hasMetadata(key: string): boolean {
-    return key in this._metadata;
-  }
-
-  /**
-   * 验证命令的有效性（ICommand 接口要求）
-   *
-   * @returns 验证结果
-   */
-  public validate(): ICommandValidationResult {
-    const errors: Array<{ field: string; message: string; code?: string }> = [];
-
-    if (!this._commandId || this._commandId.isEmpty()) {
-      errors.push({
-        field: "commandId",
-        message: "Command ID cannot be null or empty",
-      });
-    }
-
-    if (!this._tenantId) {
-      errors.push({
-        field: "tenantId",
-        message: "Tenant ID cannot be null or empty",
-      });
-    }
-
-    if (!this._userId) {
-      errors.push({
-        field: "userId",
-        message: "User ID cannot be null or empty",
-      });
-    }
-
-    if (this._commandVersion < 1) {
-      errors.push({
-        field: "commandVersion",
-        message: "Command version must be greater than 0",
-      });
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
-  }
-
-  /**
-   * 获取命令的业务标识符（ICommand 接口要求）
-   *
-   * @returns 业务标识符字符串
-   */
-  public getBusinessIdentifier(): string {
-    return `${this.commandType}(${this._commandId.toString()})`;
-  }
-
-  /**
-   * 转换为纯数据对象（ICommand 接口要求）
-   *
-   * @returns 包含所有命令数据的纯对象
-   */
-  public toData(): Record<string, unknown> {
-    return {
-      commandId: this._commandId.toString(),
-      commandType: this.commandType,
-      timestamp: this._createdAt,
-      userId: this._userId,
-      tenantId: this._tenantId,
-      commandVersion: this._commandVersion,
-      commandData: this.commandData,
-      metadata: this._metadata,
-    };
-  }
-
-  /**
-   * 获取命令版本（ICommand 接口要求）
-   *
-   * @returns 命令版本号
-   */
-  public getVersion(): string {
-    return this._commandVersion.toString();
-  }
-
-  /**
-   * 获取命令优先级（ICommand 接口要求）
-   *
-   * @returns 优先级（数字越大优先级越高）
-   */
-  public getPriority(): number {
-    return 0; // 默认优先级
-  }
-
-  /**
-   * 检查命令是否过期（ICommand 接口要求）
-   *
-   * @param expirationTime - 过期时间（可选，使用默认过期策略）
-   * @returns 如果已过期返回true，否则返回false
-   */
-  public isExpired(expirationTime?: number): boolean {
-    const defaultExpirationTime = 24 * 60 * 60 * 1000; // 24小时
-    const expiration = expirationTime || defaultExpirationTime;
-    const now = new Date().getTime();
-    return now - this._createdAt.getTime() > expiration;
-  }
-
-  /**
-   * 验证命令的有效性（内部方法）
-   *
-   * 子类应该重写此方法以实现具体的验证逻辑。
-   *
-   * @throws {Error} 当命令无效时
-   * @protected
-   */
-  protected validateInternal(): void {
-    const validation = this.validate();
-    if (!validation.isValid) {
-      const errorMessages = validation.errors
-        .map((error) => `${error.field}: ${error.message}`)
-        .join(", ");
-      throw new Error(`Command validation failed: ${errorMessages}`);
-    }
   }
 }

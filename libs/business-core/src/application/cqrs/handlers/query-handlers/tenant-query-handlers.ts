@@ -1,48 +1,95 @@
 /**
  * 租户查询处理器
  *
- * @description 处理租户相关的查询，包括获取、搜索、统计等操作
+ * @description 处理租户相关的查询，包括获取租户信息、租户列表等操作
+ *
+ * ## 业务规则
+ *
+ * ### 查询处理规则
+ * - 每个查询处理器只处理一种类型的查询
+ * - 查询处理器应该验证查询参数的有效性
+ * - 查询处理器应该优化查询性能
+ * - 查询处理器应该支持缓存
+ *
+ * ### 查询验证规则
+ * - 验证查询参数的有效性
+ * - 验证权限和访问控制
+ * - 验证数据访问范围
+ * - 验证查询复杂度
+ *
+ * ### 查询执行规则
+ * - 查询执行应该是幂等的
+ * - 查询执行应该支持缓存
+ * - 查询执行应该优化性能
+ * - 查询执行应该支持分页
+ *
+ * @example
+ * ```typescript
+ * // 获取租户查询处理器
+ * const handler = new GetTenantQueryHandler(getTenantUseCase, logger);
+ * 
+ * // 处理获取租户查询
+ * const result = await handler.handle(getTenantQuery);
+ * ```
  *
  * @since 1.0.0
  */
 
-import { QueryHandler } from "../../decorators/query-handler.decorator.js";
-import { BaseQueryHandler } from "../../base/base-query-handler.js";
+import { EntityId, TenantId } from "@hl8/isolation-model";
+import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
+import type { IGetTenantUseCase } from "../../../use-cases/tenant/get-tenant.use-case.js";
+import type { IGetTenantsUseCase } from "../../../use-cases/tenant/get-tenants.use-case.js";
+
+// 查询类型
 import { GetTenantQuery } from "../../queries/tenant-queries.js";
 import { GetTenantsQuery } from "../../queries/tenant-queries.js";
-import { GetTenantsByPlatformQuery } from "../../queries/tenant-queries.js";
-import { SearchTenantsQuery } from "../../queries/tenant-queries.js";
-import { CountTenantsQuery } from "../../queries/tenant-queries.js";
-import { GetTenantUseCase } from "../../../use-cases/tenant/get-tenant.use-case.js";
-import { GetTenantsUseCase } from "../../../use-cases/tenant/get-tenants.use-case.js";
-import { SearchTenantsUseCase } from "../../../use-cases/tenant/search-tenants.use-case.js";
-import { CountTenantsUseCase } from "../../../use-cases/tenant/count-tenants.use-case.js";
-import type { IUseCaseContext } from "../../../use-cases/base/use-case.interface.js";
+
+// 输入输出类型
+import type { GetTenantRequest, GetTenantResponse } from "../../../use-cases/tenant/get-tenant.use-case.js";
+import type { GetTenantsRequest, GetTenantsResponse } from "../../../use-cases/tenant/get-tenants.use-case.js";
 
 /**
  * 获取租户查询处理器
  *
- * @description 处理获取租户的查询
+ * @description 处理获取租户信息的查询
  */
-@QueryHandler(GetTenantQuery)
-export class GetTenantQueryHandler extends BaseQueryHandler<GetTenantQuery> {
-  constructor(private readonly getTenantUseCase: GetTenantUseCase) {
-    super();
-  }
+export class GetTenantQueryHandler {
+  constructor(
+    private readonly getTenantUseCase: IGetTenantUseCase,
+    private readonly logger: FastifyLoggerService,
+  ) {}
 
   /**
    * 处理获取租户查询
    *
    * @param query - 获取租户查询
-   * @param context - 执行上下文
-   * @returns Promise<租户信息>
+   * @returns Promise<获取租户结果>
    */
-  async handle(query: GetTenantQuery, context: IUseCaseContext): Promise<any> {
-    const request = {
-      tenantId: query.tenantId,
-    };
+  async handle(query: GetTenantQuery): Promise<GetTenantResponse> {
+    try {
+      this.logger.debug("开始处理获取租户查询", {
+        tenantId: query.tenantId.toString(),
+      });
 
-    return await this.getTenantUseCase.execute(request, context);
+      const request: GetTenantRequest = {
+        tenantId: query.tenantId,
+      };
+
+      const response = await this.getTenantUseCase.execute(request);
+
+      this.logger.debug("获取租户查询处理成功", {
+        tenantId: response.tenant.id.toString(),
+        name: response.tenant.name,
+      });
+
+      return response;
+    } catch (error) {
+      this.logger.error("获取租户查询处理失败", {
+        error: error.message,
+        tenantId: query.tenantId.toString(),
+      });
+      throw error;
+    }
   }
 }
 
@@ -51,135 +98,54 @@ export class GetTenantQueryHandler extends BaseQueryHandler<GetTenantQuery> {
  *
  * @description 处理获取租户列表的查询
  */
-@QueryHandler(GetTenantsQuery)
-export class GetTenantsQueryHandler extends BaseQueryHandler<GetTenantsQuery> {
-  constructor(private readonly getTenantsUseCase: GetTenantsUseCase) {
-    super();
-  }
+export class GetTenantsQueryHandler {
+  constructor(
+    private readonly getTenantsUseCase: IGetTenantsUseCase,
+    private readonly logger: FastifyLoggerService,
+  ) {}
 
   /**
    * 处理获取租户列表查询
    *
    * @param query - 获取租户列表查询
-   * @param context - 执行上下文
-   * @returns Promise<租户列表>
+   * @returns Promise<获取租户列表结果>
    */
-  async handle(query: GetTenantsQuery, context: IUseCaseContext): Promise<any> {
-    const request = {
-      platformId: query.platformId,
-      type: query.type,
-      includeDeleted: query.includeDeleted,
-      page: query.page,
-      limit: query.limit,
-      sortBy: query.sortBy,
-      sortOrder: query.sortOrder,
-    };
+  async handle(query: GetTenantsQuery): Promise<GetTenantsResponse> {
+    try {
+      this.logger.debug("开始处理获取租户列表查询", {
+        platformId: query.platformId?.toString(),
+        page: query.page,
+        limit: query.limit,
+        filters: query.filters,
+      });
 
-    return await this.getTenantsUseCase.execute(request, context);
-  }
-}
+      const request: GetTenantsRequest = {
+        platformId: query.platformId,
+        type: query.type,
+        name: query.name,
+        includeDeleted: query.includeDeleted,
+        page: query.page,
+        limit: query.limit,
+        sortBy: query.sortBy,
+        sortOrder: query.sortOrder,
+      };
 
-/**
- * 根据平台获取租户查询处理器
- *
- * @description 处理根据平台获取租户的查询
- */
-@QueryHandler(GetTenantsByPlatformQuery)
-export class GetTenantsByPlatformQueryHandler extends BaseQueryHandler<GetTenantsByPlatformQuery> {
-  constructor(private readonly getTenantsUseCase: GetTenantsUseCase) {
-    super();
-  }
+      const response = await this.getTenantsUseCase.execute(request);
 
-  /**
-   * 处理根据平台获取租户查询
-   *
-   * @param query - 根据平台获取租户查询
-   * @param context - 执行上下文
-   * @returns Promise<租户列表>
-   */
-  async handle(
-    query: GetTenantsByPlatformQuery,
-    context: IUseCaseContext,
-  ): Promise<any> {
-    const request = {
-      platformId: query.platformId,
-      type: query.type,
-      includeDeleted: query.includeDeleted,
-      page: query.page,
-      limit: query.limit,
-      sortBy: query.sortBy,
-      sortOrder: query.sortOrder,
-    };
+      this.logger.debug("获取租户列表查询处理成功", {
+        total: response.total,
+        count: response.tenants.length,
+        page: response.page,
+        limit: response.limit,
+      });
 
-    return await this.getTenantsUseCase.execute(request, context);
-  }
-}
-
-/**
- * 搜索租户查询处理器
- *
- * @description 处理搜索租户的查询
- */
-@QueryHandler(SearchTenantsQuery)
-export class SearchTenantsQueryHandler extends BaseQueryHandler<SearchTenantsQuery> {
-  constructor(private readonly searchTenantsUseCase: SearchTenantsUseCase) {
-    super();
-  }
-
-  /**
-   * 处理搜索租户查询
-   *
-   * @param query - 搜索租户查询
-   * @param context - 执行上下文
-   * @returns Promise<租户列表>
-   */
-  async handle(
-    query: SearchTenantsQuery,
-    context: IUseCaseContext,
-  ): Promise<any> {
-    const request = {
-      keyword: query.keyword,
-      platformId: query.platformId,
-      type: query.type,
-      includeDeleted: query.includeDeleted,
-      page: query.page,
-      limit: query.limit,
-      sortBy: query.sortBy,
-      sortOrder: query.sortOrder,
-    };
-
-    return await this.searchTenantsUseCase.execute(request, context);
-  }
-}
-
-/**
- * 统计租户查询处理器
- *
- * @description 处理统计租户的查询
- */
-@QueryHandler(CountTenantsQuery)
-export class CountTenantsQueryHandler extends BaseQueryHandler<CountTenantsQuery> {
-  constructor(private readonly countTenantsUseCase: CountTenantsUseCase) {
-    super();
-  }
-
-  /**
-   * 处理统计租户查询
-   *
-   * @param query - 统计租户查询
-   * @param context - 执行上下文
-   * @returns Promise<租户数量>
-   */
-  async handle(
-    query: CountTenantsQuery,
-    context: IUseCaseContext,
-  ): Promise<any> {
-    const request = {
-      platformId: query.platformId,
-      type: query.type,
-      includeDeleted: query.includeDeleted,
-    };
-
-    return await this.countTenantsUseCase.execute(request, context);
+      return response;
+    } catch (error) {
+      this.logger.error("获取租户列表查询处理失败", {
+        error: error.message,
+        platformId: query.platformId?.toString(),
+      });
+      throw error;
+    }
   }
 }

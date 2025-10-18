@@ -1,20 +1,39 @@
 /**
- * 用户CQRS命令
+ * 用户命令
  *
- * @description 定义用户相关的命令，包括创建、更新、删除等操作
+ * @description 定义用户相关的命令，包括创建、更新、删除、激活、停用等
+ *
+ * ## 业务规则
+ *
+ * ### 命令设计规则
+ * - 命令表示用户的意图，不包含业务逻辑
+ * - 命令应该是不可变的，创建后不能修改
+ * - 命令应该包含执行命令所需的所有信息
+ * - 命令应该支持序列化和反序列化
+ *
+ * ### 命令验证规则
+ * - 命令创建时应该验证必要参数
+ * - 命令参数应该符合业务规则
+ * - 命令参数应该进行类型检查
+ *
+ * @example
+ * ```typescript
+ * // 创建用户命令
+ * const createUserCommand = new CreateUserCommand(
+ *   'username',
+ *   'email@example.com',
+ *   'displayName',
+ *   'ADMIN',
+ *   tenantId,
+ *   'admin'
+ * );
+ * ```
  *
  * @since 1.0.0
  */
 
-import {
-  EntityId,
-  UserId,
-  OrganizationId,
-  DepartmentId,
-} from "@hl8/isolation-model";
+import { EntityId, TenantId } from "@hl8/isolation-model";
 import { BaseCommand } from "./base/base-command.js";
-import { UserStatus } from "../../../domain/value-objects/types/user-status.vo.js";
-import { UserRole } from "../../../domain/value-objects/types/user-role.vo.js";
 
 /**
  * 创建用户命令
@@ -22,65 +41,17 @@ import { UserRole } from "../../../domain/value-objects/types/user-role.vo.js";
  * @description 创建新用户的命令
  */
 export class CreateUserCommand extends BaseCommand {
-  /** 用户名 */
-  username: string;
-
-  /** 邮箱地址 */
-  email: string;
-
-  /** 手机号码 */
-  phone?: string;
-
-  /** 用户状态 */
-  status: UserStatus;
-
-  /** 用户角色 */
-  role: UserRole;
-
-  /** 用户姓名 */
-  displayName: string;
-
-  /** 头像URL */
-  avatarUrl?: string;
-
-  /** 用户描述 */
-  description?: string;
-
-  /** 组织ID */
-  organizationId?: OrganizationId;
-
-  /** 部门ID */
-  departmentId?: DepartmentId;
-
   constructor(
-    username: string,
-    email: string,
-    status: UserStatus,
-    role: UserRole,
-    displayName: string,
-    tenantId: string,
-    createdBy: string,
-    phone?: string,
-    avatarUrl?: string,
-    description?: string,
-    organizationId?: OrganizationId,
-    departmentId?: DepartmentId,
+    public readonly username: string,
+    public readonly email: string,
+    public readonly phoneNumber?: string,
+    public readonly displayName?: string,
+    public readonly role?: string,
+    public readonly tenantId?: TenantId,
+    public readonly createdBy?: string,
+    public readonly description?: string,
   ) {
-    super(tenantId, createdBy);
-    this.username = username;
-    this.email = email;
-    this.status = status;
-    this.role = role;
-    this.displayName = displayName;
-    this.phone = phone;
-    this.avatarUrl = avatarUrl;
-    this.description = description;
-    this.organizationId = organizationId;
-    this.departmentId = departmentId;
-  }
-
-  get commandType(): string {
-    return "CreateUser";
+    super("CreateUserCommand", "创建用户命令");
   }
 }
 
@@ -90,60 +61,18 @@ export class CreateUserCommand extends BaseCommand {
  * @description 更新用户信息的命令
  */
 export class UpdateUserCommand extends BaseCommand {
-  /** 目标用户ID */
-  targetUserId: UserId;
-
-  /** 用户名 */
-  username?: string;
-
-  /** 邮箱地址 */
-  email?: string;
-
-  /** 手机号码 */
-  phone?: string;
-
-  /** 用户状态 */
-  status?: UserStatus;
-
-  /** 用户角色 */
-  role?: UserRole;
-
-  /** 用户姓名 */
-  displayName?: string;
-
-  /** 头像URL */
-  avatarUrl?: string;
-
-  /** 用户描述 */
-  description?: string;
-
   constructor(
-    userId: UserId,
-    tenantId: string,
-    updatedBy: string,
-    username?: string,
-    email?: string,
-    phone?: string,
-    status?: UserStatus,
-    role?: UserRole,
-    displayName?: string,
-    avatarUrl?: string,
-    description?: string,
+    public readonly userId: EntityId,
+    public readonly tenantId: TenantId,
+    public readonly displayName?: string,
+    public readonly email?: string,
+    public readonly phoneNumber?: string,
+    public readonly avatarUrl?: string,
+    public readonly role?: string,
+    public readonly updatedBy?: string,
+    public readonly updateReason?: string,
   ) {
-    super(tenantId, updatedBy);
-    this.targetUserId = userId;
-    this.username = username;
-    this.email = email;
-    this.phone = phone;
-    this.status = status;
-    this.role = role;
-    this.displayName = displayName;
-    this.avatarUrl = avatarUrl;
-    this.description = description;
-  }
-
-  get commandType(): string {
-    return "UpdateUser";
+    super("UpdateUserCommand", "更新用户命令");
   }
 }
 
@@ -153,25 +82,14 @@ export class UpdateUserCommand extends BaseCommand {
  * @description 删除用户的命令
  */
 export class DeleteUserCommand extends BaseCommand {
-  /** 目标用户ID */
-  targetUserId: UserId;
-
-  /** 删除原因 */
-  deleteReason?: string;
-
   constructor(
-    userId: UserId,
-    tenantId: string,
-    deletedBy: string,
-    deleteReason?: string,
+    public readonly userId: EntityId,
+    public readonly tenantId: TenantId,
+    public readonly deletedBy?: string,
+    public readonly deleteReason?: string,
+    public readonly forceDelete?: boolean,
   ) {
-    super(tenantId, deletedBy);
-    this.targetUserId = userId;
-    this.deleteReason = deleteReason;
-  }
-
-  get commandType(): string {
-    return "DeleteUser";
+    super("DeleteUserCommand", "删除用户命令");
   }
 }
 
@@ -181,16 +99,13 @@ export class DeleteUserCommand extends BaseCommand {
  * @description 激活用户的命令
  */
 export class ActivateUserCommand extends BaseCommand {
-  /** 目标用户ID */
-  targetUserId: UserId;
-
-  constructor(userId: UserId, tenantId: string, activatedBy: string) {
-    super(tenantId, activatedBy);
-    this.targetUserId = userId;
-  }
-
-  get commandType(): string {
-    return "ActivateUser";
+  constructor(
+    public readonly userId: EntityId,
+    public readonly tenantId: TenantId,
+    public readonly activatedBy?: string,
+    public readonly activateReason?: string,
+  ) {
+    super("ActivateUserCommand", "激活用户命令");
   }
 }
 
@@ -200,156 +115,12 @@ export class ActivateUserCommand extends BaseCommand {
  * @description 停用用户的命令
  */
 export class DeactivateUserCommand extends BaseCommand {
-  /** 目标用户ID */
-  targetUserId: UserId;
-
-  /** 停用原因 */
-  deactivateReason?: string;
-
   constructor(
-    userId: UserId,
-    tenantId: string,
-    deactivatedBy: string,
-    deactivateReason?: string,
+    public readonly userId: EntityId,
+    public readonly tenantId: TenantId,
+    public readonly deactivatedBy?: string,
+    public readonly deactivateReason?: string,
   ) {
-    super(tenantId, deactivatedBy);
-    this.targetUserId = userId;
-    this.deactivateReason = deactivateReason;
-  }
-
-  get commandType(): string {
-    return "DeactivateUser";
-  }
-}
-
-/**
- * 分配用户角色命令
- *
- * @description 分配用户角色的命令
- */
-export class AssignUserRoleCommand extends BaseCommand {
-  /** 目标用户ID */
-  targetUserId: UserId;
-
-  /** 角色ID */
-  roleId: EntityId;
-
-  /** 分配原因 */
-  reason?: string;
-
-  /** 过期时间 */
-  expiresAt?: Date;
-
-  constructor(
-    userId: UserId,
-    roleId: EntityId,
-    tenantId: string,
-    assignedBy: string,
-    reason?: string,
-    expiresAt?: Date,
-  ) {
-    super(tenantId, assignedBy);
-    this.targetUserId = userId;
-    this.roleId = roleId;
-    this.reason = reason;
-    this.expiresAt = expiresAt;
-  }
-
-  get commandType(): string {
-    return "AssignUserRole";
-  }
-}
-
-/**
- * 移除用户角色命令
- *
- * @description 移除用户角色的命令
- */
-export class RemoveUserRoleCommand extends BaseCommand {
-  /** 目标用户ID */
-  targetUserId: UserId;
-
-  /** 角色ID */
-  roleId: EntityId;
-
-  /** 移除原因 */
-  reason?: string;
-
-  constructor(
-    userId: UserId,
-    roleId: EntityId,
-    tenantId: string,
-    removedBy: string,
-    reason?: string,
-  ) {
-    super(tenantId, removedBy);
-    this.targetUserId = userId;
-    this.roleId = roleId;
-    this.reason = reason;
-  }
-
-  get commandType(): string {
-    return "RemoveUserRole";
-  }
-}
-
-/**
- * 移动用户命令
- *
- * @description 移动用户到新部门/组织的命令
- */
-export class MoveUserCommand extends BaseCommand {
-  /** 目标用户ID */
-  targetUserId: UserId;
-
-  /** 新组织ID */
-  newOrganizationId?: OrganizationId;
-
-  /** 新部门ID */
-  newDepartmentId?: DepartmentId;
-
-  constructor(
-    userId: UserId,
-    tenantId: string,
-    movedBy: string,
-    newOrganizationId?: OrganizationId,
-    newDepartmentId?: DepartmentId,
-  ) {
-    super(tenantId, movedBy);
-    this.targetUserId = userId;
-    this.newOrganizationId = newOrganizationId;
-    this.newDepartmentId = newDepartmentId;
-  }
-
-  get commandType(): string {
-    return "MoveUser";
-  }
-}
-
-/**
- * 重置用户密码命令
- *
- * @description 重置用户密码的命令
- */
-export class ResetUserPasswordCommand extends BaseCommand {
-  /** 目标用户ID */
-  targetUserId: UserId;
-
-  /** 新密码 */
-  newPassword: string;
-
-  constructor(
-    userId: UserId,
-    newPassword: string,
-    tenantId: string,
-    resetBy: string,
-  ) {
-    super(tenantId, resetBy);
-    this.targetUserId = userId;
-    this.newPassword = newPassword;
-  }
-
-  get commandType(): string {
-    return "ResetUserPassword";
+    super("DeactivateUserCommand", "停用用户命令");
   }
 }

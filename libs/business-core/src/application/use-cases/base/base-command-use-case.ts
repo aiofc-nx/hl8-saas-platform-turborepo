@@ -76,6 +76,8 @@
 import type { IUseCaseExecutionResult } from "./base-use-case.js";
 import { BaseUseCase } from "./base-use-case.js";
 import type { IUseCaseContext } from "./use-case.interface.js";
+import type { IEventBus } from "../../ports/event-bus.interface.js";
+import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
 
 /**
  * 基础命令用例抽象类
@@ -92,6 +94,8 @@ export abstract class BaseCommandUseCase<
     useCaseDescription: string,
     useCaseVersion = "1.0.0",
     requiredPermissions: string[] = [],
+    protected readonly eventBus?: IEventBus,
+    protected readonly transactionManager?: ITransactionManager,
   ) {
     super(useCaseName, useCaseDescription, useCaseVersion, requiredPermissions);
   }
@@ -161,8 +165,12 @@ export abstract class BaseCommandUseCase<
     }
 
     try {
-      // 这里需要注入事件总线来发布事件
-      // await this.eventBus.publishAll(events);
+      // 发布事件
+      if (this.eventBus) {
+        await this.eventBus.publishAll(events);
+      } else {
+        this.log("warn", "事件总线未注入，跳过事件发布");
+      }
 
       // 清除已发布的事件
       if (typeof aggregateRoot.clearEvents === "function") {
@@ -185,8 +193,11 @@ export abstract class BaseCommandUseCase<
    * 子类可以重写此方法来自定义事务行为
    */
   protected async beginTransaction(): Promise<void> {
-    // 事务逻辑将在具体实现中注入
-    this.log("debug", "开始事务");
+    if (this.transactionManager) {
+      await this.transactionManager.begin();
+    } else {
+      this.log("warn", "事务管理器未注入，跳过事务开始");
+    }
   }
 
   /**
@@ -195,8 +206,11 @@ export abstract class BaseCommandUseCase<
    * @description 提交数据库事务
    */
   protected async commitTransaction(): Promise<void> {
-    // 事务逻辑将在具体实现中注入
-    this.log("debug", "提交事务");
+    if (this.transactionManager) {
+      await this.transactionManager.commit();
+    } else {
+      this.log("warn", "事务管理器未注入，跳过事务提交");
+    }
   }
 
   /**
@@ -205,8 +219,11 @@ export abstract class BaseCommandUseCase<
    * @description 回滚数据库事务
    */
   protected async rollbackTransaction(): Promise<void> {
-    // 事务逻辑将在具体实现中注入
-    this.log("debug", "回滚事务");
+    if (this.transactionManager) {
+      await this.transactionManager.rollback();
+    } else {
+      this.log("warn", "事务管理器未注入，跳过事务回滚");
+    }
   }
 
   /**

@@ -75,6 +75,7 @@
 import type { IUseCaseExecutionResult } from "./base-use-case.js";
 import { BaseUseCase } from "./base-use-case.js";
 import type { IUseCaseContext } from "./use-case.interface.js";
+import type { ICacheService } from "../../ports/cache-service.interface.js";
 
 /**
  * 查询选项接口
@@ -175,6 +176,7 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
     useCaseDescription: string,
     useCaseVersion = "1.0.0",
     requiredPermissions: string[] = [],
+    protected readonly cacheService?: ICacheService,
   ) {
     super(useCaseName, useCaseDescription, useCaseVersion, requiredPermissions);
   }
@@ -283,9 +285,12 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
    */
   protected async getFromCache(cacheKey: string): Promise<TResponse | null> {
     try {
-      // 缓存逻辑将在具体实现中注入
-      // return await this.cacheService.get(cacheKey);
-      return null;
+      if (this.cacheService) {
+        return await this.cacheService.get<TResponse>(cacheKey);
+      } else {
+        this.logger?.debug("缓存服务未注入，跳过缓存读取");
+        return null;
+      }
     } catch (error) {
       this.logger?.warn("缓存读取失败", {
         cacheKey,
@@ -308,11 +313,13 @@ export abstract class BaseQueryUseCase<TRequest, TResponse> extends BaseUseCase<
     ttl?: number,
   ): Promise<void> {
     try {
-      const cacheTtl = ttl || this.defaultCacheTtl;
-      // 缓存逻辑将在具体实现中注入
-      // await this.cacheService.set(cacheKey, result, cacheTtl);
-
-      this.logger?.debug("查询结果已缓存", { cacheKey, ttl: cacheTtl });
+      if (this.cacheService) {
+        const cacheTtl = ttl || this.defaultCacheTtl;
+        await this.cacheService.set(cacheKey, result, cacheTtl);
+        this.logger?.debug("查询结果已缓存", { cacheKey, ttl: cacheTtl });
+      } else {
+        this.logger?.debug("缓存服务未注入，跳过缓存写入");
+      }
     } catch (error) {
       this.logger?.warn("缓存写入失败", {
         cacheKey,

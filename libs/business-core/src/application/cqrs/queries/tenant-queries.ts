@@ -1,7 +1,7 @@
 /**
  * 租户CQRS查询
  *
- * @description 定义租户相关的查询，包括获取、搜索、统计等操作
+ * @description 定义租户相关的查询，包括获取租户信息、租户列表等操作
  *
  * @since 1.0.0
  */
@@ -13,13 +13,13 @@ import { TenantType } from "../../../domain/value-objects/types/tenant-type.vo.j
 /**
  * 获取租户查询
  *
- * @description 根据ID获取租户的查询
+ * @description 获取单个租户信息的查询
  */
 export class GetTenantQuery extends BaseQuery {
   /** 租户ID */
-  tenantId: EntityId;
+  tenantId: TenantId;
 
-  constructor(tenantId: EntityId) {
+  constructor(tenantId: TenantId) {
     super("GetTenant", "获取租户查询");
     this.tenantId = tenantId;
   }
@@ -37,163 +37,47 @@ export class GetTenantsQuery extends BaseQuery {
   /** 租户类型 */
   type?: TenantType;
 
+  /** 租户名称 */
+  name?: string;
+
   /** 是否包含已删除的租户 */
   includeDeleted?: boolean;
 
   /** 页码 */
   page?: number;
 
-  /** 每页记录数 */
+  /** 每页数量 */
   limit?: number;
 
   /** 排序字段 */
-  sortBy?: string;
+  sortBy?: "name" | "type" | "createdAt" | "updatedAt";
 
   /** 排序顺序 */
   sortOrder?: "asc" | "desc";
 
+  /** 过滤条件 */
+  filters?: Record<string, any>;
+
   constructor(
     platformId?: EntityId,
     type?: TenantType,
-    includeDeleted?: boolean,
-    page?: number,
-    limit?: number,
-    sortBy?: string,
-    sortOrder?: "asc" | "desc",
+    name?: string,
+    includeDeleted = false,
+    page = 1,
+    limit = 20,
+    sortBy = "createdAt",
+    sortOrder = "desc",
+    filters?: Record<string, any>,
   ) {
     super("GetTenants", "获取租户列表查询");
     this.platformId = platformId;
     this.type = type;
+    this.name = name;
     this.includeDeleted = includeDeleted;
     this.page = page;
     this.limit = limit;
     this.sortBy = sortBy;
     this.sortOrder = sortOrder;
-  }
-}
-
-/**
- * 根据平台获取租户查询
- *
- * @description 根据平台ID获取租户列表的查询
- */
-export class GetTenantsByPlatformQuery extends BaseQuery {
-  /** 平台ID */
-  platformId: EntityId;
-
-  /** 租户类型 */
-  type?: TenantType;
-
-  /** 是否包含已删除的租户 */
-  includeDeleted?: boolean;
-
-  /** 页码 */
-  page?: number;
-
-  /** 每页记录数 */
-  limit?: number;
-
-  /** 排序字段 */
-  sortBy?: string;
-
-  /** 排序顺序 */
-  sortOrder?: "asc" | "desc";
-
-  constructor(
-    platformId: EntityId,
-    type?: TenantType,
-    includeDeleted?: boolean,
-    page?: number,
-    limit?: number,
-    sortBy?: string,
-    sortOrder?: "asc" | "desc",
-  ) {
-    super("GetTenantsByPlatform", "根据平台获取租户查询");
-    this.platformId = platformId;
-    this.type = type;
-    this.includeDeleted = includeDeleted;
-    this.page = page;
-    this.limit = limit;
-    this.sortBy = sortBy;
-    this.sortOrder = sortOrder;
-  }
-}
-
-/**
- * 搜索租户查询
- *
- * @description 根据关键词搜索租户的查询
- */
-export class SearchTenantsQuery extends BaseQuery {
-  /** 搜索关键词 */
-  keyword: string;
-
-  /** 平台ID */
-  platformId?: EntityId;
-
-  /** 租户类型 */
-  type?: TenantType;
-
-  /** 是否包含已删除的租户 */
-  includeDeleted?: boolean;
-
-  /** 页码 */
-  page?: number;
-
-  /** 每页记录数 */
-  limit?: number;
-
-  /** 排序字段 */
-  sortBy?: string;
-
-  /** 排序顺序 */
-  sortOrder?: "asc" | "desc";
-
-  constructor(
-    keyword: string,
-    platformId?: EntityId,
-    type?: TenantType,
-    includeDeleted?: boolean,
-    page?: number,
-    limit?: number,
-    sortBy?: string,
-    sortOrder?: "asc" | "desc",
-  ) {
-    super("SearchTenants", "搜索租户查询");
-    this.keyword = keyword;
-    this.platformId = platformId;
-    this.type = type;
-    this.includeDeleted = includeDeleted;
-    this.page = page;
-    this.limit = limit;
-    this.sortBy = sortBy;
-    this.sortOrder = sortOrder;
-  }
-}
-
-/**
- * 统计租户查询
- *
- * @description 统计租户数量的查询
- */
-export class CountTenantsQuery extends BaseQuery {
-  /** 平台ID */
-  platformId?: EntityId;
-
-  /** 租户类型 */
-  type?: TenantType;
-
-  /** 是否包含已删除的租户 */
-  includeDeleted?: boolean;
-
-  constructor(
-    platformId?: EntityId,
-    type?: TenantType,
-    includeDeleted?: boolean,
-  ) {
-    super("CountTenants", "统计租户查询");
-    this.platformId = platformId;
-    this.type = type;
-    this.includeDeleted = includeDeleted;
+    this.filters = filters;
   }
 }
