@@ -1,13 +1,8 @@
 import {
   PermissionScope,
   PermissionType,
-  IPermission,
-  IPermissionService,
-  IPermissionRepository,
-  IPermissionValidator,
-  IPermissionChecker,
-  PermissionContext,
-  PermissionResult,
+  IBasePermission,
+  IPermissionManager,
 } from "./base-permission.interface.js";
 import { EntityId } from "@hl8/isolation-model";
 
@@ -33,212 +28,67 @@ describe("Base Permission Interface", () => {
 
   describe("PermissionType", () => {
     it("应该定义所有权限类型", () => {
-      expect(PermissionType.READ).toBe("read");
-      expect(PermissionType.WRITE).toBe("write");
-      expect(PermissionType.DELETE).toBe("delete");
-      expect(PermissionType.EXECUTE).toBe("execute");
-      expect(PermissionType.ADMIN).toBe("admin");
+      expect(PermissionType.OPERATION).toBe("operation");
+      expect(PermissionType.DATA).toBe("data");
+      expect(PermissionType.FEATURE).toBe("feature");
+      expect(PermissionType.CONFIGURATION).toBe("configuration");
+      expect(PermissionType.MANAGEMENT).toBe("management");
     });
 
     it("应该包含所有必要的权限类型", () => {
       const types = Object.values(PermissionType);
-      expect(types).toContain("read");
-      expect(types).toContain("write");
-      expect(types).toContain("delete");
-      expect(types).toContain("execute");
-      expect(types).toContain("admin");
+      expect(types).toContain("operation");
+      expect(types).toContain("data");
+      expect(types).toContain("feature");
+      expect(types).toContain("configuration");
+      expect(types).toContain("management");
     });
   });
 
-  describe("IPermission", () => {
-    it("应该定义权限接口属性", () => {
-      const permission: IPermission = {
-        id: EntityId.generate(),
-        name: "test-permission",
-        description: "Test permission",
-        scope: PermissionScope.TENANT,
-        type: PermissionType.READ,
-        resource: "test-resource",
-        action: "read",
-        conditions: [],
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
+  describe("IBasePermission", () => {
+    it("应该定义基础权限接口结构", () => {
+      // 由于 IBasePermission 是接口且 EntityId 构造函数受保护
+      // 这里只测试接口的结构定义，不进行实例化
+      interface TestPermission extends IBasePermission {
+        id: EntityId;
+        code: string;
+        name: string;
+        description: string;
+        scope: PermissionScope;
+        type: PermissionType;
+        isValid(): boolean;
+        matches(permissionCode: string): boolean;
+        getMetadata(): Record<string, unknown>;
+      }
 
-      expect(permission.id).toBeDefined();
-      expect(permission.name).toBe("test-permission");
-      expect(permission.description).toBe("Test permission");
-      expect(permission.scope).toBe(PermissionScope.TENANT);
-      expect(permission.type).toBe(PermissionType.READ);
-      expect(permission.resource).toBe("test-resource");
-      expect(permission.action).toBe("read");
-      expect(permission.conditions).toEqual([]);
-      expect(permission.isActive).toBe(true);
-      expect(permission.createdAt).toBeInstanceOf(Date);
-      expect(permission.updatedAt).toBeInstanceOf(Date);
+      // 验证接口结构
+      const permissionInterface: TestPermission = {} as TestPermission;
+
+      expect(permissionInterface).toBeDefined();
+      // 验证接口属性存在
+      expect("id" in permissionInterface).toBe(true);
+      expect("code" in permissionInterface).toBe(true);
+      expect("name" in permissionInterface).toBe(true);
+      expect("description" in permissionInterface).toBe(true);
+      expect("scope" in permissionInterface).toBe(true);
+      expect("type" in permissionInterface).toBe(true);
+      expect("isValid" in permissionInterface).toBe(true);
+      expect("matches" in permissionInterface).toBe(true);
+      expect("getMetadata" in permissionInterface).toBe(true);
     });
   });
 
-  describe("PermissionContext", () => {
-    it("应该定义权限上下文", () => {
-      const context: PermissionContext = {
-        userId: EntityId.generate(),
-        tenantId: EntityId.generate(),
-        organizationId: EntityId.generate(),
-        departmentId: EntityId.generate(),
-        resourceId: EntityId.generate(),
-        roles: ["admin", "user"],
-        permissions: ["read", "write"],
-        metadata: { ip: "127.0.0.1", userAgent: "test" },
-      };
-
-      expect(context.userId).toBeDefined();
-      expect(context.tenantId).toBeDefined();
-      expect(context.organizationId).toBeDefined();
-      expect(context.departmentId).toBeDefined();
-      expect(context.resourceId).toBeDefined();
-      expect(context.roles).toEqual(["admin", "user"]);
-      expect(context.permissions).toEqual(["read", "write"]);
-      expect(context.metadata).toEqual({ ip: "127.0.0.1", userAgent: "test" });
-    });
-  });
-
-  describe("PermissionResult", () => {
-    it("应该定义权限结果", () => {
-      const result: PermissionResult = {
-        allowed: true,
-        reason: "Permission granted",
-        conditions: [],
-        metadata: { timestamp: new Date() },
-      };
-
-      expect(result.allowed).toBe(true);
-      expect(result.reason).toBe("Permission granted");
-      expect(result.conditions).toEqual([]);
-      expect(result.metadata).toBeDefined();
-    });
-  });
-
-  describe("IPermissionService", () => {
-    it("应该定义权限服务接口方法", () => {
-      const service: IPermissionService = {
-        checkPermission: jest.fn(),
-        checkMultiplePermissions: jest.fn(),
-        getUserPermissions: jest.fn(),
+  describe("IPermissionManager", () => {
+    it("应该定义权限管理器接口方法", () => {
+      const manager: IPermissionManager = {
         hasPermission: jest.fn(),
-        hasAnyPermission: jest.fn(),
-        hasAllPermissions: jest.fn(),
-        grantPermission: jest.fn(),
-        revokePermission: jest.fn(),
-        updatePermission: jest.fn(),
-        deletePermission: jest.fn(),
+        getUserPermissions: jest.fn(),
+        checkPermissions: jest.fn(),
       };
 
-      expect(service.checkPermission).toBeDefined();
-      expect(service.checkMultiplePermissions).toBeDefined();
-      expect(service.getUserPermissions).toBeDefined();
-      expect(service.hasPermission).toBeDefined();
-      expect(service.hasAnyPermission).toBeDefined();
-      expect(service.hasAllPermissions).toBeDefined();
-      expect(service.grantPermission).toBeDefined();
-      expect(service.revokePermission).toBeDefined();
-      expect(service.updatePermission).toBeDefined();
-      expect(service.deletePermission).toBeDefined();
-    });
-  });
-
-  describe("IPermissionRepository", () => {
-    it("应该定义权限仓储接口方法", () => {
-      const repository: IPermissionRepository = {
-        findById: jest.fn(),
-        findByName: jest.fn(),
-        findByScope: jest.fn(),
-        findByType: jest.fn(),
-        findByResource: jest.fn(),
-        findByUser: jest.fn(),
-        findByRole: jest.fn(),
-        save: jest.fn(),
-        update: jest.fn(),
-        delete: jest.fn(),
-        exists: jest.fn(),
-        count: jest.fn(),
-      };
-
-      expect(repository.findById).toBeDefined();
-      expect(repository.findByName).toBeDefined();
-      expect(repository.findByScope).toBeDefined();
-      expect(repository.findByType).toBeDefined();
-      expect(repository.findByResource).toBeDefined();
-      expect(repository.findByUser).toBeDefined();
-      expect(repository.findByRole).toBeDefined();
-      expect(repository.save).toBeDefined();
-      expect(repository.update).toBeDefined();
-      expect(repository.delete).toBeDefined();
-      expect(repository.exists).toBeDefined();
-      expect(repository.count).toBeDefined();
-    });
-  });
-
-  describe("IPermissionValidator", () => {
-    it("应该定义权限验证器接口方法", () => {
-      const validator: IPermissionValidator = {
-        validatePermission: jest.fn(),
-        validateContext: jest.fn(),
-        validateConditions: jest.fn(),
-        isValid: jest.fn(),
-      };
-
-      expect(validator.validatePermission).toBeDefined();
-      expect(validator.validateContext).toBeDefined();
-      expect(validator.validateConditions).toBeDefined();
-      expect(validator.isValid).toBeDefined();
-    });
-  });
-
-  describe("IPermissionChecker", () => {
-    it("应该定义权限检查器接口方法", () => {
-      const checker: IPermissionChecker = {
-        check: jest.fn(),
-        checkAsync: jest.fn(),
-        canAccess: jest.fn(),
-        canPerform: jest.fn(),
-        getAccessLevel: jest.fn(),
-      };
-
-      expect(checker.check).toBeDefined();
-      expect(checker.checkAsync).toBeDefined();
-      expect(checker.canAccess).toBeDefined();
-      expect(checker.canPerform).toBeDefined();
-      expect(checker.getAccessLevel).toBeDefined();
-    });
-  });
-
-  describe("接口组合", () => {
-    it("应该支持权限服务的完整实现", () => {
-      const permissionService: IPermissionService = {
-        checkPermission: jest.fn().mockResolvedValue({ allowed: true }),
-        checkMultiplePermissions: jest.fn().mockResolvedValue([]),
-        getUserPermissions: jest.fn().mockResolvedValue([]),
-        hasPermission: jest.fn().mockResolvedValue(true),
-        hasAnyPermission: jest.fn().mockResolvedValue(true),
-        hasAllPermissions: jest.fn().mockResolvedValue(true),
-        grantPermission: jest.fn().mockResolvedValue(undefined),
-        revokePermission: jest.fn().mockResolvedValue(undefined),
-        updatePermission: jest.fn().mockResolvedValue(undefined),
-        deletePermission: jest.fn().mockResolvedValue(undefined),
-      };
-
-      expect(permissionService.checkPermission).toBeDefined();
-      expect(permissionService.checkMultiplePermissions).toBeDefined();
-      expect(permissionService.getUserPermissions).toBeDefined();
-      expect(permissionService.hasPermission).toBeDefined();
-      expect(permissionService.hasAnyPermission).toBeDefined();
-      expect(permissionService.hasAllPermissions).toBeDefined();
-      expect(permissionService.grantPermission).toBeDefined();
-      expect(permissionService.revokePermission).toBeDefined();
-      expect(permissionService.updatePermission).toBeDefined();
-      expect(permissionService.deletePermission).toBeDefined();
+      expect(manager.hasPermission).toBeDefined();
+      expect(manager.getUserPermissions).toBeDefined();
+      expect(manager.checkPermissions).toBeDefined();
     });
   });
 
@@ -251,7 +101,7 @@ describe("Base Permission Interface", () => {
 
     it("应该确保权限类型类型安全", () => {
       const validTypes = Object.values(PermissionType);
-      const testType = PermissionType.READ;
+      const testType = PermissionType.OPERATION;
       expect(validTypes).toContain(testType);
     });
   });

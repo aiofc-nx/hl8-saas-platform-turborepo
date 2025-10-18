@@ -37,8 +37,9 @@ describe("DepartmentAggregate", () => {
       info: jest.fn(),
       warn: jest.fn(),
       error: jest.fn(),
-      trace: jest.fn(),
       child: jest.fn().mockReturnThis(),
+      setLevel: jest.fn(),
+      getLevel: jest.fn().mockReturnValue("info"),
     };
   });
 

@@ -1,4 +1,4 @@
-import { BusinessRules } from "./business-rules.js";
+import { BusinessRules, BusinessRuleValidator } from "./business-rules.js";
 
 describe("BusinessRules", () => {
   describe("名称长度限制", () => {
@@ -17,185 +17,161 @@ describe("BusinessRules", () => {
     });
 
     it("应该定义最小描述长度", () => {
-      expect(BusinessRules.MIN_DESCRIPTION_LENGTH).toBe(0);
+      expect(BusinessRules.MIN_DESCRIPTION_LENGTH).toBe(1);
     });
   });
 
-  describe("密码规则", () => {
-    it("应该定义密码最小长度", () => {
-      expect(BusinessRules.PASSWORD_MIN_LENGTH).toBe(8);
-    });
-
-    it("应该定义密码最大长度", () => {
-      expect(BusinessRules.PASSWORD_MAX_LENGTH).toBe(128);
-    });
-
-    it("应该定义密码复杂度要求", () => {
-      expect(BusinessRules.PASSWORD_REQUIRE_UPPERCASE).toBe(true);
-      expect(BusinessRules.PASSWORD_REQUIRE_LOWERCASE).toBe(true);
-      expect(BusinessRules.PASSWORD_REQUIRE_NUMBERS).toBe(true);
-      expect(BusinessRules.PASSWORD_REQUIRE_SPECIAL_CHARS).toBe(true);
-    });
-  });
-
-  describe("邮箱规则", () => {
+  describe("邮箱长度限制", () => {
     it("应该定义邮箱最大长度", () => {
-      expect(BusinessRules.EMAIL_MAX_LENGTH).toBe(254);
+      expect(BusinessRules.MAX_EMAIL_LENGTH).toBe(254);
     });
 
     it("应该定义邮箱最小长度", () => {
-      expect(BusinessRules.EMAIL_MIN_LENGTH).toBe(5);
+      expect(BusinessRules.MIN_EMAIL_LENGTH).toBe(5);
     });
   });
 
-  describe("用户名规则", () => {
-    it("应该定义用户名最大长度", () => {
-      expect(BusinessRules.USERNAME_MAX_LENGTH).toBe(50);
+  describe("电话号码长度限制", () => {
+    it("应该定义电话号码最大长度", () => {
+      expect(BusinessRules.MAX_PHONE_LENGTH).toBe(16);
     });
 
-    it("应该定义用户名最小长度", () => {
-      expect(BusinessRules.USERNAME_MIN_LENGTH).toBe(3);
+    it("应该定义电话号码最小长度", () => {
+      expect(BusinessRules.MIN_PHONE_LENGTH).toBe(8);
     });
   });
 
-  describe("层级规则", () => {
-    it("应该定义部门最大层级", () => {
-      expect(BusinessRules.DEPARTMENT_MAX_LEVEL).toBe(8);
+  describe("密码长度限制", () => {
+    it("应该定义密码最小长度", () => {
+      expect(BusinessRules.MIN_PASSWORD_LENGTH).toBe(8);
     });
 
+    it("应该定义密码最大长度", () => {
+      expect(BusinessRules.MAX_PASSWORD_LENGTH).toBe(128);
+    });
+  });
+
+  describe("组织层级限制", () => {
     it("应该定义组织最大层级", () => {
-      expect(BusinessRules.ORGANIZATION_MAX_LEVEL).toBe(5);
+      expect(BusinessRules.MAX_ORGANIZATION_LEVEL).toBe(10);
     });
 
-    it("应该定义租户最大层级", () => {
-      expect(BusinessRules.TENANT_MAX_LEVEL).toBe(3);
-    });
-  });
-
-  describe("配额规则", () => {
-    it("应该定义默认用户配额", () => {
-      expect(BusinessRules.DEFAULT_USER_QUOTA).toBe(100);
-    });
-
-    it("应该定义默认部门配额", () => {
-      expect(BusinessRules.DEFAULT_DEPARTMENT_QUOTA).toBe(50);
-    });
-
-    it("应该定义默认组织配额", () => {
-      expect(BusinessRules.DEFAULT_ORGANIZATION_QUOTA).toBe(20);
+    it("应该定义组织最小层级", () => {
+      expect(BusinessRules.MIN_ORGANIZATION_LEVEL).toBe(1);
     });
   });
 
-  describe("时间规则", () => {
-    it("应该定义会话超时时间", () => {
-      expect(BusinessRules.SESSION_TIMEOUT_MINUTES).toBe(30);
+  describe("部门层级限制", () => {
+    it("应该定义部门最大层级", () => {
+      expect(BusinessRules.MAX_DEPARTMENT_LEVEL).toBe(5);
     });
 
-    it("应该定义令牌过期时间", () => {
-      expect(BusinessRules.TOKEN_EXPIRY_HOURS).toBe(24);
-    });
-
-    it("应该定义密码重置过期时间", () => {
-      expect(BusinessRules.PASSWORD_RESET_EXPIRY_HOURS).toBe(1);
+    it("应该定义部门最小层级", () => {
+      expect(BusinessRules.MIN_DEPARTMENT_LEVEL).toBe(1);
     });
   });
 
-  describe("重试规则", () => {
-    it("应该定义最大重试次数", () => {
-      expect(BusinessRules.MAX_RETRY_ATTEMPTS).toBe(3);
+  describe("用户配额限制", () => {
+    it("应该定义每个租户最大用户数", () => {
+      expect(BusinessRules.MAX_USERS_PER_TENANT).toBe(10000);
     });
 
-    it("应该定义重试间隔", () => {
-      expect(BusinessRules.RETRY_DELAY_MS).toBe(1000);
-    });
-  });
-
-  describe("缓存规则", () => {
-    it("应该定义默认缓存时间", () => {
-      expect(BusinessRules.DEFAULT_CACHE_TTL_SECONDS).toBe(300);
-    });
-
-    it("应该定义最大缓存时间", () => {
-      expect(BusinessRules.MAX_CACHE_TTL_SECONDS).toBe(3600);
+    it("应该定义每个租户最大组织数", () => {
+      expect(BusinessRules.MAX_ORGANIZATIONS_PER_TENANT).toBe(100);
     });
   });
 
-  describe("分页规则", () => {
-    it("应该定义默认页面大小", () => {
-      expect(BusinessRules.DEFAULT_PAGE_SIZE).toBe(20);
+  describe("权限级别限制", () => {
+    it("应该定义最大权限级别", () => {
+      expect(BusinessRules.MAX_PERMISSION_LEVEL).toBe(10);
     });
 
-    it("应该定义最大页面大小", () => {
-      expect(BusinessRules.MAX_PAGE_SIZE).toBe(100);
-    });
-
-    it("应该定义最小页面大小", () => {
-      expect(BusinessRules.MIN_PAGE_SIZE).toBe(1);
+    it("应该定义最小权限级别", () => {
+      expect(BusinessRules.MIN_PERMISSION_LEVEL).toBe(1);
     });
   });
 
-  describe("文件规则", () => {
-    it("应该定义最大文件大小", () => {
-      expect(BusinessRules.MAX_FILE_SIZE_MB).toBe(10);
+  describe("角色数量限制", () => {
+    it("应该定义每个用户最大角色数", () => {
+      expect(BusinessRules.MAX_ROLES_PER_USER).toBe(10);
     });
 
-    it("应该定义允许的文件类型", () => {
-      expect(BusinessRules.ALLOWED_FILE_TYPES).toEqual([
-        "image/jpeg",
-        "image/png",
-        "image/gif",
-        "application/pdf",
-        "text/plain",
-      ]);
+    it("应该定义每个角色最大权限数", () => {
+      expect(BusinessRules.MAX_PERMISSIONS_PER_ROLE).toBe(100);
     });
   });
 
-  describe("验证规则", () => {
-    it("应该定义邮箱验证正则", () => {
-      expect(BusinessRules.EMAIL_REGEX).toBeInstanceOf(RegExp);
-      expect(BusinessRules.EMAIL_REGEX.test("test@example.com")).toBe(true);
-      expect(BusinessRules.EMAIL_REGEX.test("invalid-email")).toBe(false);
-    });
-
-    it("应该定义用户名验证正则", () => {
-      expect(BusinessRules.USERNAME_REGEX).toBeInstanceOf(RegExp);
-      expect(BusinessRules.USERNAME_REGEX.test("validuser123")).toBe(true);
-      expect(BusinessRules.USERNAME_REGEX.test("invalid@user")).toBe(false);
-    });
-
-    it("应该定义密码验证正则", () => {
-      expect(BusinessRules.PASSWORD_REGEX).toBeInstanceOf(RegExp);
-      expect(BusinessRules.PASSWORD_REGEX.test("ValidPass123!")).toBe(true);
-      expect(BusinessRules.PASSWORD_REGEX.test("weak")).toBe(false);
+  describe("事件数量限制", () => {
+    it("应该定义每个聚合根最大事件数", () => {
+      expect(BusinessRules.MAX_EVENTS_PER_AGGREGATE).toBe(1000);
     });
   });
 
-  describe("业务逻辑规则", () => {
-    it("应该定义租户类型限制", () => {
-      expect(BusinessRules.ALLOWED_TENANT_TYPES).toEqual([
-        "ENTERPRISE",
-        "COMMUNITY",
-        "TEAM",
-        "PERSONAL",
-      ]);
+  describe("审计信息长度限制", () => {
+    it("应该定义最大审计原因长度", () => {
+      expect(BusinessRules.MAX_AUDIT_REASON_LENGTH).toBe(200);
     });
 
-    it("应该定义组织类型限制", () => {
-      expect(BusinessRules.ALLOWED_ORGANIZATION_TYPES).toEqual([
-        "COMPANY",
-        "DEPARTMENT",
-        "TEAM",
-        "PROJECT",
-      ]);
+    it("应该定义最大审计操作长度", () => {
+      expect(BusinessRules.MAX_AUDIT_OPERATION_LENGTH).toBe(50);
+    });
+  });
+
+  describe("BusinessRuleValidator", () => {
+    it("应该验证名称长度", () => {
+      expect(BusinessRuleValidator.validateNameLength("测试名称")).toBe(true);
+      expect(BusinessRuleValidator.validateNameLength("")).toBe(false);
+      expect(BusinessRuleValidator.validateNameLength("a".repeat(101))).toBe(
+        false,
+      );
     });
 
-    it("应该定义用户状态限制", () => {
-      expect(BusinessRules.ALLOWED_USER_STATUSES).toEqual([
-        "ACTIVE",
-        "INACTIVE",
-        "SUSPENDED",
-        "PENDING",
-      ]);
+    it("应该验证邮箱长度", () => {
+      expect(
+        BusinessRuleValidator.validateEmailLength("test@example.com"),
+      ).toBe(true);
+      expect(BusinessRuleValidator.validateEmailLength("a@b")).toBe(false);
+      expect(BusinessRuleValidator.validateEmailLength("a".repeat(255))).toBe(
+        false,
+      );
+    });
+
+    it("应该验证电话号码长度", () => {
+      expect(BusinessRuleValidator.validatePhoneLength("13800138000")).toBe(
+        true,
+      );
+      expect(BusinessRuleValidator.validatePhoneLength("123")).toBe(false);
+      expect(BusinessRuleValidator.validatePhoneLength("1".repeat(17))).toBe(
+        false,
+      );
+    });
+
+    it("应该验证密码长度", () => {
+      expect(BusinessRuleValidator.validatePasswordLength("password123")).toBe(
+        true,
+      );
+      expect(BusinessRuleValidator.validatePasswordLength("123")).toBe(false);
+      expect(
+        BusinessRuleValidator.validatePasswordLength("a".repeat(129)),
+      ).toBe(false);
+    });
+
+    it("应该验证组织层级", () => {
+      expect(BusinessRuleValidator.validateOrganizationLevel(5)).toBe(true);
+      expect(BusinessRuleValidator.validateOrganizationLevel(0)).toBe(false);
+      expect(BusinessRuleValidator.validateOrganizationLevel(11)).toBe(false);
+    });
+
+    it("应该验证部门层级", () => {
+      expect(BusinessRuleValidator.validateDepartmentLevel(3)).toBe(true);
+      expect(BusinessRuleValidator.validateDepartmentLevel(0)).toBe(false);
+      expect(BusinessRuleValidator.validateDepartmentLevel(6)).toBe(false);
+    });
+
+    it("应该验证权限级别", () => {
+      expect(BusinessRuleValidator.validatePermissionLevel(5)).toBe(true);
+      expect(BusinessRuleValidator.validatePermissionLevel(0)).toBe(false);
+      expect(BusinessRuleValidator.validatePermissionLevel(11)).toBe(false);
     });
   });
 
@@ -205,29 +181,26 @@ describe("BusinessRules", () => {
         BusinessRules.MAX_NAME_LENGTH,
         BusinessRules.MIN_NAME_LENGTH,
         BusinessRules.MAX_DESCRIPTION_LENGTH,
-        BusinessRules.PASSWORD_MIN_LENGTH,
-        BusinessRules.PASSWORD_MAX_LENGTH,
-        BusinessRules.EMAIL_MAX_LENGTH,
-        BusinessRules.EMAIL_MIN_LENGTH,
-        BusinessRules.USERNAME_MAX_LENGTH,
-        BusinessRules.USERNAME_MIN_LENGTH,
-        BusinessRules.DEPARTMENT_MAX_LEVEL,
-        BusinessRules.ORGANIZATION_MAX_LEVEL,
-        BusinessRules.TENANT_MAX_LEVEL,
-        BusinessRules.DEFAULT_USER_QUOTA,
-        BusinessRules.DEFAULT_DEPARTMENT_QUOTA,
-        BusinessRules.DEFAULT_ORGANIZATION_QUOTA,
-        BusinessRules.SESSION_TIMEOUT_MINUTES,
-        BusinessRules.TOKEN_EXPIRY_HOURS,
-        BusinessRules.PASSWORD_RESET_EXPIRY_HOURS,
-        BusinessRules.MAX_RETRY_ATTEMPTS,
-        BusinessRules.RETRY_DELAY_MS,
-        BusinessRules.DEFAULT_CACHE_TTL_SECONDS,
-        BusinessRules.MAX_CACHE_TTL_SECONDS,
-        BusinessRules.DEFAULT_PAGE_SIZE,
-        BusinessRules.MAX_PAGE_SIZE,
-        BusinessRules.MIN_PAGE_SIZE,
-        BusinessRules.MAX_FILE_SIZE_MB,
+        BusinessRules.MIN_DESCRIPTION_LENGTH,
+        BusinessRules.MAX_EMAIL_LENGTH,
+        BusinessRules.MIN_EMAIL_LENGTH,
+        BusinessRules.MAX_PHONE_LENGTH,
+        BusinessRules.MIN_PHONE_LENGTH,
+        BusinessRules.MIN_PASSWORD_LENGTH,
+        BusinessRules.MAX_PASSWORD_LENGTH,
+        BusinessRules.MAX_ORGANIZATION_LEVEL,
+        BusinessRules.MIN_ORGANIZATION_LEVEL,
+        BusinessRules.MAX_DEPARTMENT_LEVEL,
+        BusinessRules.MIN_DEPARTMENT_LEVEL,
+        BusinessRules.MAX_USERS_PER_TENANT,
+        BusinessRules.MAX_ORGANIZATIONS_PER_TENANT,
+        BusinessRules.MAX_PERMISSION_LEVEL,
+        BusinessRules.MIN_PERMISSION_LEVEL,
+        BusinessRules.MAX_ROLES_PER_USER,
+        BusinessRules.MAX_PERMISSIONS_PER_ROLE,
+        BusinessRules.MAX_EVENTS_PER_AGGREGATE,
+        BusinessRules.MAX_AUDIT_REASON_LENGTH,
+        BusinessRules.MAX_AUDIT_OPERATION_LENGTH,
       ];
 
       numericConstants.forEach((value) => {
@@ -242,27 +215,35 @@ describe("BusinessRules", () => {
       expect(BusinessRules.MAX_DESCRIPTION_LENGTH).toBeGreaterThan(
         BusinessRules.MIN_DESCRIPTION_LENGTH,
       );
-      expect(BusinessRules.PASSWORD_MAX_LENGTH).toBeGreaterThan(
-        BusinessRules.PASSWORD_MIN_LENGTH,
+      expect(BusinessRules.MAX_EMAIL_LENGTH).toBeGreaterThan(
+        BusinessRules.MIN_EMAIL_LENGTH,
       );
-      expect(BusinessRules.EMAIL_MAX_LENGTH).toBeGreaterThan(
-        BusinessRules.EMAIL_MIN_LENGTH,
+      expect(BusinessRules.MAX_PHONE_LENGTH).toBeGreaterThan(
+        BusinessRules.MIN_PHONE_LENGTH,
       );
-      expect(BusinessRules.USERNAME_MAX_LENGTH).toBeGreaterThan(
-        BusinessRules.USERNAME_MIN_LENGTH,
+      expect(BusinessRules.MAX_PASSWORD_LENGTH).toBeGreaterThan(
+        BusinessRules.MIN_PASSWORD_LENGTH,
+      );
+    });
+
+    it("层级限制应该合理", () => {
+      expect(BusinessRules.MAX_ORGANIZATION_LEVEL).toBeGreaterThan(
+        BusinessRules.MIN_ORGANIZATION_LEVEL,
+      );
+      expect(BusinessRules.MAX_DEPARTMENT_LEVEL).toBeGreaterThan(
+        BusinessRules.MIN_DEPARTMENT_LEVEL,
+      );
+      expect(BusinessRules.MAX_PERMISSION_LEVEL).toBeGreaterThan(
+        BusinessRules.MIN_PERMISSION_LEVEL,
       );
     });
 
     it("配额限制应该合理", () => {
-      expect(BusinessRules.DEFAULT_USER_QUOTA).toBeGreaterThan(0);
-      expect(BusinessRules.DEFAULT_DEPARTMENT_QUOTA).toBeGreaterThan(0);
-      expect(BusinessRules.DEFAULT_ORGANIZATION_QUOTA).toBeGreaterThan(0);
-    });
-
-    it("时间限制应该合理", () => {
-      expect(BusinessRules.SESSION_TIMEOUT_MINUTES).toBeGreaterThan(0);
-      expect(BusinessRules.TOKEN_EXPIRY_HOURS).toBeGreaterThan(0);
-      expect(BusinessRules.PASSWORD_RESET_EXPIRY_HOURS).toBeGreaterThan(0);
+      expect(BusinessRules.MAX_USERS_PER_TENANT).toBeGreaterThan(0);
+      expect(BusinessRules.MAX_ORGANIZATIONS_PER_TENANT).toBeGreaterThan(0);
+      expect(BusinessRules.MAX_ROLES_PER_USER).toBeGreaterThan(0);
+      expect(BusinessRules.MAX_PERMISSIONS_PER_ROLE).toBeGreaterThan(0);
+      expect(BusinessRules.MAX_EVENTS_PER_AGGREGATE).toBeGreaterThan(0);
     });
   });
 });

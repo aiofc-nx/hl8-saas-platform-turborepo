@@ -1,7 +1,7 @@
-import { ErrorCodes } from "./error-codes.js";
+import { ErrorCodes, ErrorCodeValidator } from "./error-codes.js";
 
 describe("ErrorCodes", () => {
-  describe("验证错误", () => {
+  describe("基础错误代码", () => {
     it("应该定义验证失败错误代码", () => {
       expect(ErrorCodes.VALIDATION_FAILED).toBe("VALIDATION_FAILED");
     });
@@ -12,174 +12,38 @@ describe("ErrorCodes", () => {
       );
     });
 
-    it("应该定义数据完整性错误代码", () => {
-      expect(ErrorCodes.DATA_INTEGRITY_VIOLATION).toBe(
-        "DATA_INTEGRITY_VIOLATION",
-      );
-    });
-  });
-
-  describe("认证错误", () => {
-    it("应该定义认证失败错误代码", () => {
-      expect(ErrorCodes.AUTHENTICATION_FAILED).toBe("AUTHENTICATION_FAILED");
+    it("应该定义实体不存在错误代码", () => {
+      expect(ErrorCodes.ENTITY_NOT_FOUND).toBe("ENTITY_NOT_FOUND");
     });
 
-    it("应该定义授权失败错误代码", () => {
-      expect(ErrorCodes.AUTHORIZATION_FAILED).toBe("AUTHORIZATION_FAILED");
+    it("应该定义重复实体错误代码", () => {
+      expect(ErrorCodes.DUPLICATE_ENTITY).toBe("DUPLICATE_ENTITY");
     });
 
-    it("应该定义令牌无效错误代码", () => {
-      expect(ErrorCodes.INVALID_TOKEN).toBe("INVALID_TOKEN");
-    });
-
-    it("应该定义令牌过期错误代码", () => {
-      expect(ErrorCodes.TOKEN_EXPIRED).toBe("TOKEN_EXPIRED");
-    });
-  });
-
-  describe("资源错误", () => {
-    it("应该定义资源未找到错误代码", () => {
-      expect(ErrorCodes.RESOURCE_NOT_FOUND).toBe("RESOURCE_NOT_FOUND");
-    });
-
-    it("应该定义资源已存在错误代码", () => {
-      expect(ErrorCodes.RESOURCE_ALREADY_EXISTS).toBe(
-        "RESOURCE_ALREADY_EXISTS",
-      );
-    });
-
-    it("应该定义资源冲突错误代码", () => {
-      expect(ErrorCodes.RESOURCE_CONFLICT).toBe("RESOURCE_CONFLICT");
-    });
-  });
-
-  describe("租户错误", () => {
-    it("应该定义租户未找到错误代码", () => {
-      expect(ErrorCodes.TENANT_NOT_FOUND).toBe("TENANT_NOT_FOUND");
-    });
-
-    it("应该定义租户已存在错误代码", () => {
-      expect(ErrorCodes.TENANT_ALREADY_EXISTS).toBe("TENANT_ALREADY_EXISTS");
-    });
-
-    it("应该定义租户已停用错误代码", () => {
-      expect(ErrorCodes.TENANT_DEACTIVATED).toBe("TENANT_DEACTIVATED");
-    });
-
-    it("应该定义租户配额超限错误代码", () => {
-      expect(ErrorCodes.TENANT_QUOTA_EXCEEDED).toBe("TENANT_QUOTA_EXCEEDED");
-    });
-  });
-
-  describe("组织错误", () => {
-    it("应该定义组织未找到错误代码", () => {
-      expect(ErrorCodes.ORGANIZATION_NOT_FOUND).toBe("ORGANIZATION_NOT_FOUND");
-    });
-
-    it("应该定义组织已存在错误代码", () => {
-      expect(ErrorCodes.ORGANIZATION_ALREADY_EXISTS).toBe(
-        "ORGANIZATION_ALREADY_EXISTS",
-      );
-    });
-
-    it("应该定义组织层级超限错误代码", () => {
-      expect(ErrorCodes.ORGANIZATION_LEVEL_EXCEEDED).toBe(
-        "ORGANIZATION_LEVEL_EXCEEDED",
-      );
-    });
-  });
-
-  describe("部门错误", () => {
-    it("应该定义部门未找到错误代码", () => {
-      expect(ErrorCodes.DEPARTMENT_NOT_FOUND).toBe("DEPARTMENT_NOT_FOUND");
-    });
-
-    it("应该定义部门已存在错误代码", () => {
-      expect(ErrorCodes.DEPARTMENT_ALREADY_EXISTS).toBe(
-        "DEPARTMENT_ALREADY_EXISTS",
-      );
-    });
-
-    it("应该定义部门层级超限错误代码", () => {
-      expect(ErrorCodes.DEPARTMENT_LEVEL_EXCEEDED).toBe(
-        "DEPARTMENT_LEVEL_EXCEEDED",
-      );
-    });
-
-    it("应该定义部门循环引用错误代码", () => {
-      expect(ErrorCodes.DEPARTMENT_CIRCULAR_REFERENCE).toBe(
-        "DEPARTMENT_CIRCULAR_REFERENCE",
-      );
-    });
-  });
-
-  describe("用户错误", () => {
-    it("应该定义用户未找到错误代码", () => {
-      expect(ErrorCodes.USER_NOT_FOUND).toBe("USER_NOT_FOUND");
-    });
-
-    it("应该定义用户已存在错误代码", () => {
-      expect(ErrorCodes.USER_ALREADY_EXISTS).toBe("USER_ALREADY_EXISTS");
-    });
-
-    it("应该定义用户已停用错误代码", () => {
-      expect(ErrorCodes.USER_DEACTIVATED).toBe("USER_DEACTIVATED");
-    });
-
-    it("应该定义用户邮箱已存在错误代码", () => {
-      expect(ErrorCodes.USER_EMAIL_ALREADY_EXISTS).toBe(
-        "USER_EMAIL_ALREADY_EXISTS",
-      );
-    });
-
-    it("应该定义用户名已存在错误代码", () => {
-      expect(ErrorCodes.USER_USERNAME_ALREADY_EXISTS).toBe(
-        "USER_USERNAME_ALREADY_EXISTS",
-      );
-    });
-  });
-
-  describe("角色错误", () => {
-    it("应该定义角色未找到错误代码", () => {
-      expect(ErrorCodes.ROLE_NOT_FOUND).toBe("ROLE_NOT_FOUND");
-    });
-
-    it("应该定义角色已存在错误代码", () => {
-      expect(ErrorCodes.ROLE_ALREADY_EXISTS).toBe("ROLE_ALREADY_EXISTS");
-    });
-
-    it("应该定义角色权限不足错误代码", () => {
-      expect(ErrorCodes.ROLE_PERMISSION_DENIED).toBe("ROLE_PERMISSION_DENIED");
-    });
-  });
-
-  describe("权限错误", () => {
-    it("应该定义权限未找到错误代码", () => {
-      expect(ErrorCodes.PERMISSION_NOT_FOUND).toBe("PERMISSION_NOT_FOUND");
-    });
-
-    it("应该定义权限已存在错误代码", () => {
-      expect(ErrorCodes.PERMISSION_ALREADY_EXISTS).toBe(
-        "PERMISSION_ALREADY_EXISTS",
+    it("应该定义状态转换无效错误代码", () => {
+      expect(ErrorCodes.INVALID_STATE_TRANSITION).toBe(
+        "INVALID_STATE_TRANSITION",
       );
     });
 
     it("应该定义权限不足错误代码", () => {
-      expect(ErrorCodes.PERMISSION_DENIED).toBe("PERMISSION_DENIED");
-    });
-  });
-
-  describe("系统错误", () => {
-    it("应该定义系统错误代码", () => {
-      expect(ErrorCodes.SYSTEM_ERROR).toBe("SYSTEM_ERROR");
+      expect(ErrorCodes.INSUFFICIENT_PERMISSIONS).toBe(
+        "INSUFFICIENT_PERMISSIONS",
+      );
     });
 
-    it("应该定义数据库错误代码", () => {
-      expect(ErrorCodes.DATABASE_ERROR).toBe("DATABASE_ERROR");
+    it("应该定义操作不允许错误代码", () => {
+      expect(ErrorCodes.OPERATION_NOT_ALLOWED).toBe("OPERATION_NOT_ALLOWED");
     });
 
-    it("应该定义网络错误代码", () => {
-      expect(ErrorCodes.NETWORK_ERROR).toBe("NETWORK_ERROR");
+    it("应该定义数据完整性违反错误代码", () => {
+      expect(ErrorCodes.DATA_INTEGRITY_VIOLATION).toBe(
+        "DATA_INTEGRITY_VIOLATION",
+      );
+    });
+
+    it("应该定义并发冲突错误代码", () => {
+      expect(ErrorCodes.CONCURRENCY_CONFLICT).toBe("CONCURRENCY_CONFLICT");
     });
 
     it("应该定义配置错误代码", () => {
@@ -187,31 +51,57 @@ describe("ErrorCodes", () => {
     });
   });
 
-  describe("外部服务错误", () => {
-    it("应该定义外部服务错误代码", () => {
-      expect(ErrorCodes.EXTERNAL_SERVICE_ERROR).toBe("EXTERNAL_SERVICE_ERROR");
+  describe("ErrorCodeValidator", () => {
+    it("应该验证错误代码是否有效", () => {
+      expect(ErrorCodeValidator.isValid("VALIDATION_FAILED")).toBe(true);
+      expect(ErrorCodeValidator.isValid("INVALID_CODE")).toBe(false);
     });
 
-    it("应该定义外部服务超时错误代码", () => {
-      expect(ErrorCodes.EXTERNAL_SERVICE_TIMEOUT).toBe(
-        "EXTERNAL_SERVICE_TIMEOUT",
-      );
+    it("应该获取所有错误代码", () => {
+      const allCodes = ErrorCodeValidator.getAllCodes();
+      expect(allCodes).toContain("VALIDATION_FAILED");
+      expect(allCodes).toContain("BUSINESS_RULE_VIOLATION");
+      expect(allCodes).toContain("ENTITY_NOT_FOUND");
+      expect(allCodes).toContain("DUPLICATE_ENTITY");
+      expect(allCodes).toContain("INVALID_STATE_TRANSITION");
+      expect(allCodes).toContain("INSUFFICIENT_PERMISSIONS");
+      expect(allCodes).toContain("OPERATION_NOT_ALLOWED");
+      expect(allCodes).toContain("DATA_INTEGRITY_VIOLATION");
+      expect(allCodes).toContain("CONCURRENCY_CONFLICT");
+      expect(allCodes).toContain("CONFIGURATION_ERROR");
     });
 
-    it("应该定义外部服务不可用错误代码", () => {
-      expect(ErrorCodes.EXTERNAL_SERVICE_UNAVAILABLE).toBe(
-        "EXTERNAL_SERVICE_UNAVAILABLE",
-      );
-    });
-  });
-
-  describe("并发错误", () => {
-    it("应该定义并发冲突错误代码", () => {
-      expect(ErrorCodes.CONCURRENCY_CONFLICT).toBe("CONCURRENCY_CONFLICT");
-    });
-
-    it("应该定义乐观锁失败错误代码", () => {
-      expect(ErrorCodes.OPTIMISTIC_LOCK_FAILED).toBe("OPTIMISTIC_LOCK_FAILED");
+    it("应该获取错误代码描述", () => {
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.VALIDATION_FAILED),
+      ).toBe("验证失败");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.BUSINESS_RULE_VIOLATION),
+      ).toBe("业务规则违反");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.ENTITY_NOT_FOUND),
+      ).toBe("实体不存在");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.DUPLICATE_ENTITY),
+      ).toBe("重复实体");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.INVALID_STATE_TRANSITION),
+      ).toBe("状态转换无效");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.INSUFFICIENT_PERMISSIONS),
+      ).toBe("权限不足");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.OPERATION_NOT_ALLOWED),
+      ).toBe("操作不允许");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.DATA_INTEGRITY_VIOLATION),
+      ).toBe("数据完整性违反");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.CONCURRENCY_CONFLICT),
+      ).toBe("并发冲突");
+      expect(
+        ErrorCodeValidator.getDescription(ErrorCodes.CONFIGURATION_ERROR),
+      ).toBe("配置错误");
     });
   });
 
@@ -241,17 +131,20 @@ describe("ErrorCodes", () => {
       expect(errorCodeValues).toContain(ErrorCodes.VALIDATION_FAILED);
       expect(errorCodeValues).toContain(ErrorCodes.BUSINESS_RULE_VIOLATION);
 
-      // 认证错误
-      expect(errorCodeValues).toContain(ErrorCodes.AUTHENTICATION_FAILED);
-      expect(errorCodeValues).toContain(ErrorCodes.AUTHORIZATION_FAILED);
+      // 实体错误
+      expect(errorCodeValues).toContain(ErrorCodes.ENTITY_NOT_FOUND);
+      expect(errorCodeValues).toContain(ErrorCodes.DUPLICATE_ENTITY);
 
-      // 资源错误
-      expect(errorCodeValues).toContain(ErrorCodes.RESOURCE_NOT_FOUND);
-      expect(errorCodeValues).toContain(ErrorCodes.RESOURCE_ALREADY_EXISTS);
+      // 权限错误
+      expect(errorCodeValues).toContain(ErrorCodes.INSUFFICIENT_PERMISSIONS);
+      expect(errorCodeValues).toContain(ErrorCodes.OPERATION_NOT_ALLOWED);
 
-      // 系统错误
-      expect(errorCodeValues).toContain(ErrorCodes.SYSTEM_ERROR);
-      expect(errorCodeValues).toContain(ErrorCodes.DATABASE_ERROR);
+      // 数据错误
+      expect(errorCodeValues).toContain(ErrorCodes.DATA_INTEGRITY_VIOLATION);
+      expect(errorCodeValues).toContain(ErrorCodes.CONCURRENCY_CONFLICT);
+
+      // 配置错误
+      expect(errorCodeValues).toContain(ErrorCodes.CONFIGURATION_ERROR);
     });
   });
 });
