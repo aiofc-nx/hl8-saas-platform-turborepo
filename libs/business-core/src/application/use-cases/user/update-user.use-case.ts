@@ -39,6 +39,12 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException 
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 更新用户请求
@@ -156,13 +162,28 @@ export class UpdateUserUseCase extends BaseCommandUseCase<
    */
   private validateRequest(request: UpdateUserRequest): void {
     if (!request.userId) {
-      throw new Error("用户ID不能为空");
+      throw new ValidationException(
+        "USER_ID_REQUIRED",
+        "用户ID不能为空",
+        "用户ID是必填字段",
+        400
+      );
     }
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
     if (!request.updatedBy) {
-      throw new Error("更新者不能为空");
+      throw new ValidationException(
+        "UPDATED_BY_REQUIRED",
+        "更新者不能为空",
+        "更新者是必填字段",
+        400
+      );
     }
   }
 
@@ -176,10 +197,13 @@ export class UpdateUserUseCase extends BaseCommandUseCase<
   private async validateUserExists(userId: EntityId, tenantId: TenantId): Promise<void> {
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
-      throw new Error("用户不存在");
+      throw new ResourceNotFoundException("用户", userId.toString());
     }
     if (!userAggregate.tenantId.equals(tenantId)) {
-      throw new Error("用户不属于指定租户");
+      throw new BusinessRuleViolationException(
+        "用户不属于指定租户",
+        { userId: userId.toString(), tenantId: tenantId.toString() }
+      );
     }
   }
 
@@ -199,7 +223,10 @@ export class UpdateUserUseCase extends BaseCommandUseCase<
     const isAdmin = context.user?.role === "ADMIN";
     
     if (!isSelf && !isAdmin) {
-      throw new Error("没有权限更新用户信息");
+      throw new UnauthorizedOperationException(
+        "更新用户信息",
+        context.user?.id.toString()
+      );
     }
   }
 

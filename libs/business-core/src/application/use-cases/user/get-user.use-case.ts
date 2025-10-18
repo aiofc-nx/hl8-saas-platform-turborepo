@@ -35,6 +35,12 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException 
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 获取用户请求
@@ -161,10 +167,20 @@ export class GetUserUseCase extends BaseQueryUseCase<
    */
   private validateRequest(request: GetUserRequest): void {
     if (!request.userId) {
-      throw new Error("用户ID不能为空");
+      throw new ValidationException(
+        "USER_ID_REQUIRED",
+        "用户ID不能为空",
+        "用户ID是必填字段",
+        400
+      );
     }
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
   }
 
@@ -178,10 +194,13 @@ export class GetUserUseCase extends BaseQueryUseCase<
   private async validateUserExists(userId: EntityId, tenantId: TenantId): Promise<void> {
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
-      throw new Error("用户不存在");
+      throw new ResourceNotFoundException("用户", userId.toString());
     }
     if (!userAggregate.tenantId.equals(tenantId)) {
-      throw new Error("用户不属于指定租户");
+      throw new BusinessRuleViolationException(
+        "用户不属于指定租户",
+        { userId: userId.toString(), tenantId: tenantId.toString() }
+      );
     }
   }
 
@@ -201,7 +220,10 @@ export class GetUserUseCase extends BaseQueryUseCase<
     const isAdmin = context.user?.role === "ADMIN";
     
     if (!isSelf && !isAdmin) {
-      throw new Error("没有权限查看用户信息");
+      throw new UnauthorizedOperationException(
+        "查询用户信息",
+        context.user?.id.toString()
+      );
     }
   }
 

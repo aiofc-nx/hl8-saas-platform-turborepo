@@ -37,6 +37,12 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException 
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 用户查询选项
@@ -194,13 +200,28 @@ export class GetUserListUseCase extends BaseQueryUseCase<
    */
   private validateRequest(request: GetUserListRequest): void {
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
     if (request.page && request.page < 1) {
-      throw new Error("页码必须大于0");
+      throw new ValidationException(
+        "INVALID_PAGE",
+        "页码必须大于0",
+        "页码必须大于0",
+        400
+      );
     }
     if (request.limit && (request.limit < 1 || request.limit > 100)) {
-      throw new Error("每页数量必须在1-100之间");
+      throw new ValidationException(
+        "INVALID_LIMIT",
+        "每页数量必须在1-100之间",
+        "每页数量必须在1-100之间",
+        400
+      );
     }
   }
 
@@ -219,7 +240,10 @@ export class GetUserListUseCase extends BaseQueryUseCase<
     const isAdmin = context.user?.role === "ADMIN";
     
     if (!isAdmin) {
-      throw new Error("只有管理员可以查看用户列表");
+      throw new UnauthorizedOperationException(
+        "查询用户列表",
+        context.user?.id.toString()
+      );
     }
   }
 

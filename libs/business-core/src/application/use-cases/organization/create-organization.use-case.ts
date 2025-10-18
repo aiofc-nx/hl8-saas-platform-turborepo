@@ -14,7 +14,13 @@ import { OrganizationType } from "../../domain/value-objects/types/organization-
 import type { IOrganizationRepository } from "../../domain/repositories/organization.repository.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { BusinessRuleViolationException } from "../../domain/exceptions/base/base-domain-exception.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException,
+  ResourceAlreadyExistsException
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 创建组织请求接口
@@ -142,30 +148,38 @@ export class CreateOrganizationUseCase extends BaseCommandUseCase<
    */
   private validateRequest(request: CreateOrganizationRequest): void {
     if (!request.name || !request.name.trim()) {
-      throw new BusinessRuleViolationException(
-        "组织名称不能为空",
+      throw new ValidationException(
         "ORGANIZATION_NAME_REQUIRED",
+        "组织名称不能为空",
+        "组织名称是必填字段",
+        400
       );
     }
 
     if (request.name.trim().length > 100) {
-      throw new BusinessRuleViolationException(
-        "组织名称长度不能超过100字符",
+      throw new ValidationException(
         "ORGANIZATION_NAME_TOO_LONG",
+        "组织名称长度不能超过100字符",
+        "组织名称长度不能超过100字符",
+        400
       );
     }
 
     if (!request.type) {
-      throw new BusinessRuleViolationException(
-        "组织类型不能为空",
+      throw new ValidationException(
         "ORGANIZATION_TYPE_REQUIRED",
+        "组织类型不能为空",
+        "组织类型是必填字段",
+        400
       );
     }
 
     if (!request.createdBy || !request.createdBy.trim()) {
-      throw new BusinessRuleViolationException(
-        "创建者标识符不能为空",
+      throw new ValidationException(
         "CREATED_BY_REQUIRED",
+        "创建者标识符不能为空",
+        "创建者标识符是必填字段",
+        400
       );
     }
   }
@@ -190,9 +204,9 @@ export class CreateOrganizationUseCase extends BaseCommandUseCase<
     );
 
     if (existingOrganization) {
-      throw new BusinessRuleViolationException(
-        `组织名称 "${name}" 在同一租户下已存在`,
-        "ORGANIZATION_NAME_DUPLICATE",
+      throw new ResourceAlreadyExistsException(
+        "组织",
+        name
       );
     }
   }

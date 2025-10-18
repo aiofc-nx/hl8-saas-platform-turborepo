@@ -38,6 +38,12 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IUserRepository } from "../../../domain/repositories/user.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException 
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 删除用户请求
@@ -142,13 +148,28 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
    */
   private validateRequest(request: DeleteUserRequest): void {
     if (!request.userId) {
-      throw new Error("用户ID不能为空");
+      throw new ValidationException(
+        "USER_ID_REQUIRED",
+        "用户ID不能为空",
+        "用户ID是必填字段",
+        400
+      );
     }
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
     if (!request.deletedBy) {
-      throw new Error("删除者不能为空");
+      throw new ValidationException(
+        "DELETED_BY_REQUIRED",
+        "删除者不能为空",
+        "删除者是必填字段",
+        400
+      );
     }
   }
 
@@ -162,10 +183,13 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
   private async validateUserExists(userId: EntityId, tenantId: TenantId): Promise<void> {
     const userAggregate = await this.userRepository.findById(userId);
     if (!userAggregate) {
-      throw new Error("用户不存在");
+      throw new ResourceNotFoundException("用户", userId.toString());
     }
     if (!userAggregate.tenantId.equals(tenantId)) {
-      throw new Error("用户不属于指定租户");
+      throw new BusinessRuleViolationException(
+        "用户不属于指定租户",
+        { userId: userId.toString(), tenantId: tenantId.toString() }
+      );
     }
   }
 
@@ -184,7 +208,10 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
     const isAdmin = context.user?.role === "ADMIN";
     
     if (!isAdmin) {
-      throw new Error("只有管理员可以删除用户");
+      throw new UnauthorizedOperationException(
+        "删除用户",
+        context.user?.id.toString()
+      );
     }
   }
 
@@ -197,19 +224,25 @@ export class DeleteUserUseCase extends BaseCommandUseCase<
   private async validateUserCanBeDeleted(request: DeleteUserRequest): Promise<void> {
     const userAggregate = await this.userRepository.findById(request.userId);
     if (!userAggregate) {
-      throw new Error("用户不存在");
+      throw new ResourceNotFoundException("用户", request.userId.toString());
     }
 
     const user = userAggregate.getUser();
     
     // 检查是否为系统管理员
     if (user.role === "SYSTEM_ADMIN") {
-      throw new Error("不能删除系统管理员");
+      throw new BusinessRuleViolationException(
+        "不能删除系统管理员",
+        { userId: request.userId.toString(), userRole: user.role }
+      );
     }
     
     // 检查用户状态
     if (user.status === "DELETED") {
-      throw new Error("用户已被删除");
+      throw new BusinessRuleViolationException(
+        "用户已被删除",
+        { userId: request.userId.toString(), userStatus: user.status }
+      );
     }
   }
 }
