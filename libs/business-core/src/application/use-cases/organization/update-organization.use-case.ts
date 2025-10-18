@@ -39,6 +39,13 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException,
+  ResourceAlreadyExistsException
+} from "../../../common/exceptions/business.exceptions.js";
 import type { OrganizationType } from "../../../domain/value-objects/types/organization-type.vo.js";
 
 /**
@@ -150,13 +157,28 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
    */
   private validateRequest(request: UpdateOrganizationRequest): void {
     if (!request.organizationId) {
-      throw new Error("组织ID不能为空");
+      throw new ValidationException(
+        "ORGANIZATION_ID_REQUIRED",
+        "组织ID不能为空",
+        "组织ID是必填字段",
+        400
+      );
     }
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
     if (!request.updatedBy) {
-      throw new Error("更新者不能为空");
+      throw new ValidationException(
+        "UPDATED_BY_REQUIRED",
+        "更新者不能为空",
+        "更新者是必填字段",
+        400
+      );
     }
   }
 
@@ -170,10 +192,13 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
   private async validateOrganizationExists(organizationId: EntityId, tenantId: TenantId): Promise<void> {
     const organizationAggregate = await this.organizationRepository.findById(organizationId);
     if (!organizationAggregate) {
-      throw new Error("组织不存在");
+      throw new ResourceNotFoundException("组织", organizationId.toString());
     }
     if (!organizationAggregate.tenantId.equals(tenantId)) {
-      throw new Error("组织不属于指定租户");
+      throw new BusinessRuleViolationException(
+        "组织不属于指定租户",
+        { organizationId: organizationId.toString(), tenantId: tenantId.toString() }
+      );
     }
   }
 
@@ -193,7 +218,10 @@ export class UpdateOrganizationUseCase extends BaseCommandUseCase<
     const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
     
     if (!isOrganizationAdmin && !isTenantAdmin) {
-      throw new Error("没有权限更新组织信息");
+      throw new UnauthorizedOperationException(
+        "更新组织信息",
+        context.user?.id.toString()
+      );
     }
   }
 

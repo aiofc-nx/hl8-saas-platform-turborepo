@@ -35,6 +35,12 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 获取组织请求
@@ -152,10 +158,20 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
    */
   private validateRequest(request: GetOrganizationRequest): void {
     if (!request.organizationId) {
-      throw new Error("组织ID不能为空");
+      throw new ValidationException(
+        "ORGANIZATION_ID_REQUIRED",
+        "组织ID不能为空",
+        "组织ID是必填字段",
+        400
+      );
     }
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
   }
 
@@ -169,10 +185,13 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
   private async validateOrganizationExists(organizationId: EntityId, tenantId: TenantId): Promise<void> {
     const organizationAggregate = await this.organizationRepository.findById(organizationId);
     if (!organizationAggregate) {
-      throw new Error("组织不存在");
+      throw new ResourceNotFoundException("组织", organizationId.toString());
     }
     if (!organizationAggregate.tenantId.equals(tenantId)) {
-      throw new Error("组织不属于指定租户");
+      throw new BusinessRuleViolationException(
+        "组织不属于指定租户",
+        { organizationId: organizationId.toString(), tenantId: tenantId.toString() }
+      );
     }
   }
 
@@ -192,7 +211,10 @@ export class GetOrganizationUseCase extends BaseQueryUseCase<
     const isAdmin = context.user?.role === "ADMIN" || context.user?.role === "TENANT_ADMIN";
     
     if (!isOrganizationMember && !isAdmin) {
-      throw new Error("没有权限查看组织信息");
+      throw new UnauthorizedOperationException(
+        "查看组织信息",
+        context.user?.id.toString()
+      );
     }
   }
 

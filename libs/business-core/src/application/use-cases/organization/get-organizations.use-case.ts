@@ -37,6 +37,12 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IOrganizationRepository } from "../../../domain/repositories/organization.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 组织查询选项
@@ -190,13 +196,28 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
    */
   private validateRequest(request: GetOrganizationsRequest): void {
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
     if (request.page && request.page < 1) {
-      throw new Error("页码必须大于0");
+      throw new ValidationException(
+        "INVALID_PAGE",
+        "页码必须大于0",
+        "页码必须大于0",
+        400
+      );
     }
     if (request.limit && (request.limit < 1 || request.limit > 100)) {
-      throw new Error("每页数量必须在1-100之间");
+      throw new ValidationException(
+        "INVALID_LIMIT",
+        "每页数量必须在1-100之间",
+        "每页数量必须在1-100之间",
+        400
+      );
     }
   }
 
@@ -215,7 +236,10 @@ export class GetOrganizationsUseCase extends BaseQueryUseCase<
     const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
     
     if (!isTenantAdmin) {
-      throw new Error("只有租户管理员可以查看组织列表");
+      throw new UnauthorizedOperationException(
+        "查看组织列表",
+        context.user?.id.toString()
+      );
     }
   }
 

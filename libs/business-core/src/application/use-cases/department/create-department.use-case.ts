@@ -14,7 +14,13 @@ import { DepartmentLevel } from "../../domain/value-objects/types/department-lev
 import type { IDepartmentRepository } from "../../domain/repositories/department.repository.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { BusinessRuleViolationException } from "../../domain/exceptions/base/base-domain-exception.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException,
+  ResourceAlreadyExistsException
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 创建部门请求接口
@@ -148,30 +154,38 @@ export class CreateDepartmentUseCase extends BaseCommandUseCase<
    */
   private validateRequest(request: CreateDepartmentRequest): void {
     if (!request.name || !request.name.trim()) {
-      throw new BusinessRuleViolationException(
-        "部门名称不能为空",
+      throw new ValidationException(
         "DEPARTMENT_NAME_REQUIRED",
+        "部门名称不能为空",
+        "部门名称是必填字段",
+        400
       );
     }
 
     if (request.name.trim().length > 100) {
-      throw new BusinessRuleViolationException(
-        "部门名称长度不能超过100字符",
+      throw new ValidationException(
         "DEPARTMENT_NAME_TOO_LONG",
+        "部门名称长度不能超过100字符",
+        "部门名称长度不能超过100字符",
+        400
       );
     }
 
     if (!request.level) {
-      throw new BusinessRuleViolationException(
-        "部门层级不能为空",
+      throw new ValidationException(
         "DEPARTMENT_LEVEL_REQUIRED",
+        "部门层级不能为空",
+        "部门层级是必填字段",
+        400
       );
     }
 
     if (!request.createdBy || !request.createdBy.trim()) {
-      throw new BusinessRuleViolationException(
-        "创建者标识符不能为空",
+      throw new ValidationException(
         "CREATED_BY_REQUIRED",
+        "创建者标识符不能为空",
+        "创建者标识符是必填字段",
+        400
       );
     }
   }
@@ -196,9 +210,9 @@ export class CreateDepartmentUseCase extends BaseCommandUseCase<
     );
 
     if (existingDepartment) {
-      throw new BusinessRuleViolationException(
-        `部门名称 "${name}" 在同一租户下已存在`,
-        "DEPARTMENT_NAME_DUPLICATE",
+      throw new ResourceAlreadyExistsException(
+        "部门",
+        name
       );
     }
   }
