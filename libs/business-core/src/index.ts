@@ -184,7 +184,8 @@ export {
 } from "./common/enums/user/index.js";
 
 // 通用类型导出
-export * from "./domain/types/common/index.js";
+export * from "./common/types/common/index.js";
+export * from "./common/types/application/index.js";
 
 // 通用接口层基类导出
 export * from "./interface/base/index.js";

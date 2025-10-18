@@ -5,19 +5,9 @@
  * @since 1.0.0
  */
 
-/**
- * 装饰器目标类型
- * 表示可以被装饰器装饰的类或对象
- */
-export type DecoratorTarget = Record<string, unknown>;
-
-/**
- * 类构造函数类型
- */
-export type ClassConstructor = new (...args: unknown[]) => unknown;
-
-/**
- * 方法装饰器目标类型
- * 兼容TypeScript原生MethodDecorator的object类型
- */
-export type MethodDecoratorTarget = object;
+// 导入通用装饰器类型
+export type {
+  DecoratorTarget,
+  ClassConstructor,
+  MethodDecoratorTarget,
+} from "../../../../common/types/application/decorator.types.js";

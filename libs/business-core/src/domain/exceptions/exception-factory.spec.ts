@@ -5,7 +5,7 @@ import {
   DomainStateException,
   DomainPermissionException,
 } from "./base/base-domain-exception.js";
-import { ErrorCodes } from "../constants/index.js";
+import { ErrorCodes } from "../../common/constants/index.js";
 
 describe("ExceptionFactory", () => {
   let exceptionFactory: ExceptionFactory;

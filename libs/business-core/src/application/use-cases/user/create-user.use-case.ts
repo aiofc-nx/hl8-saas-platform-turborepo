@@ -15,7 +15,7 @@ import { UserRole } from "../../domain/value-objects/types/user-role.vo.js";
 import type { IUserRepository } from "../../domain/repositories/user.repository.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
-import { BusinessRuleViolationException } from "../../domain/exceptions/base/base-domain-exception.js";
+import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 创建用户请求接口

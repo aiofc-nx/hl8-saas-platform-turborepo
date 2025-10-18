@@ -43,7 +43,7 @@
  */
 
 import { BaseValueObject } from "../base-value-object.js";
-import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 密码策略属性接口

@@ -42,7 +42,7 @@
  */
 import { BaseValueObject } from "../base-value-object.js";
 import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
-import { ErrorCodes } from "../../constants/index.js";
+import { ErrorCodes } from "../../../common/constants/index.js";
 import {
   TenantType as TenantTypeEnum,
   TenantTypeUtils,

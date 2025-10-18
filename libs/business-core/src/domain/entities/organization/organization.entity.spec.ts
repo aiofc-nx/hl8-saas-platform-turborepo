@@ -12,8 +12,7 @@ import { OrganizationType } from "../../value-objects/types/organization-type.vo
 import {
   BusinessRuleViolationException,
   DomainStateException,
-  DomainValidationException,
-} from "../../exceptions/base/base-domain-exception.js";
+} from "../../../common/exceptions/business.exceptions.js";
 
 describe("Organization Entity", () => {
   let validEntityId: EntityId;

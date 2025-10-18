@@ -10,7 +10,7 @@ import { EntityId, TenantId } from "@hl8/isolation-model";
 import { User } from "./user.entity.js";
 import { UserStatus } from "../../value-objects/types/user-status.vo.js";
 import { UserRole } from "../../value-objects/types/user-role.vo.js";
-import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
+import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 
 describe("User Entity", () => {
   let validEntityId: EntityId;

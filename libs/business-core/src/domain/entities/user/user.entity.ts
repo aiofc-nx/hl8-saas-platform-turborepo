@@ -10,7 +10,7 @@ import { EntityId } from "@hl8/isolation-model";
 import { BaseEntity } from "../base/base-entity.js";
 import { UserStatus } from "../../value-objects/types/user-status.vo.js";
 import { UserRole } from "../../value-objects/types/user-role.vo.js";
-import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
 

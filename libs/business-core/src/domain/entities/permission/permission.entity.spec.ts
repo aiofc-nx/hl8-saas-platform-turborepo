@@ -14,7 +14,7 @@ import {
   BusinessRuleViolationException,
   DomainStateException,
   DomainValidationException,
-} from "../../exceptions/base/base-domain-exception.js";
+} from "../../../common/exceptions/business.exceptions.js";
 
 describe("Permission Entity", () => {
   let validEntityId: EntityId;

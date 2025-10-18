@@ -7,7 +7,10 @@
 
 import { ApplicationException } from "./application.exception.js";
 import type { BaseDomainException } from "../../domain/exceptions/base/base-domain-exception.js";
-import { DomainExceptionType } from "../../domain/exceptions/base/base-domain-exception.js";
+import {
+  DomainExceptionType,
+  DomainStateException,
+} from "../../domain/exceptions/base/base-domain-exception.js";
 
 /**
  * 领域异常转换器
@@ -180,3 +183,6 @@ export class ResourceStateException extends ApplicationException {
     );
   }
 }
+
+// 导出领域异常类
+export { DomainStateException };

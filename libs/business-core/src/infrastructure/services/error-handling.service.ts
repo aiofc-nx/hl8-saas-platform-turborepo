@@ -32,7 +32,7 @@ import {
   ENTITY_ERROR_CODES,
   USE_CASE_ERROR_CODES,
   TENANT_ERROR_CODES,
-} from "../../constants.js";
+} from "../../common/constants/constants.js";
 
 /**
  * 错误严重程度枚举

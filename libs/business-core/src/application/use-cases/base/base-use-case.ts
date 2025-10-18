@@ -74,7 +74,7 @@ import {
 import {
   USE_CASE_ERROR_CODES,
   DEFAULT_ENVIRONMENT,
-} from "../../../constants.js";
+} from "../../../common/constants/constants.js";
 import type { IsolationContext } from "@hl8/isolation-model";
 import { ValidationException, UnauthorizedOperationException } from "../../../common/exceptions/business.exceptions.js";
 

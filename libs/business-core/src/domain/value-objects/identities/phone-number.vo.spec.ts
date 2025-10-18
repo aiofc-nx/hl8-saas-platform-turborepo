@@ -1,5 +1,4 @@
 import { PhoneNumber } from "./phone-number.vo.js";
-import { BusinessRuleViolationException } from "../../exceptions/base/base-domain-exception.js";
 
 describe("PhoneNumber", () => {
   describe("创建电话号码", () => {

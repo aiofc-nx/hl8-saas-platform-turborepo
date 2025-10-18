@@ -17,7 +17,7 @@ import {
   BusinessRuleViolationException,
   DomainValidationException,
   DomainStateException,
-} from "../../../domain/exceptions/base/base-domain-exception.js";
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 组织仓储适配器

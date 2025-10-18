@@ -20,7 +20,7 @@ import {
   ResourceNotFoundException,
   DomainExceptionConverter,
 } from "../../../common/exceptions/business.exceptions.js";
-import { BaseDomainException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import { BaseDomainException } from "../../../common/exceptions/business.exceptions.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 
 /**

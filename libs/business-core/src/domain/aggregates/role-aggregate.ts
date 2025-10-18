@@ -17,7 +17,7 @@ import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../entities/base/audit-info.js";
 import { ExceptionFactory } from "../exceptions/exception-factory.js";
 import { BusinessRuleViolationException } from "../exceptions/base/base-domain-exception.js";
-import { ErrorCodes } from "../constants/index.js";
+import { ErrorCodes } from "../../common/constants/index.js";
 /**
  * 角色聚合根
  *

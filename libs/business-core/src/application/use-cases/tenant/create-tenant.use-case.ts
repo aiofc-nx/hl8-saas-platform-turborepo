@@ -5,7 +5,7 @@ import type { ITenantRepository } from "../../../domain/repositories/tenant.repo
 import { BaseCommandUseCase } from "../base/base-command-use-case.js";
 import { UseCase } from "../decorators/use-case.decorator.js";
 import type { IUseCaseContext } from "../base/use-case.interface.js";
-import { BusinessRuleViolationException } from "../../../domain/exceptions/base/base-domain-exception.js";
+import { BusinessRuleViolationException } from "../../../common/exceptions/business.exceptions.js";
 import { DomainExceptionConverter } from "../../../common/exceptions/business.exceptions.js";
 import type { FastifyLoggerService } from "@hl8/nestjs-fastify";
 

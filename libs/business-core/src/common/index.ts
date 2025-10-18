@@ -31,6 +31,16 @@ export * from "./decorators/index.js";
 // 通用异常类 - 跨层使用的业务异常
 export * from "./exceptions/index.js";
 
+// 通用类型导出
+export * from "./types/common/index.js";
+export * from "./types/application/index.js";
+
+// 通用枚举导出
+export * from "./enums/index.js";
+
+// 通用常量导出
+export * from "./constants/index.js";
+
 // 测试工具 - 已删除，使用标准 Jest 和 NestJS 测试工具
 
 // 通用工具函数 - 已删除，使用标准工具库

@@ -13,7 +13,7 @@ import {
   BusinessRuleViolationException,
   DomainStateException,
   DomainValidationException,
-} from "../../exceptions/base/base-domain-exception.js";
+} from "../../../common/exceptions/business.exceptions.js";
 
 describe("Department Entity", () => {
   let validEntityId: EntityId;

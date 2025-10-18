@@ -75,9 +75,9 @@ import { IEntity } from "./entity.interface.js";
 import {
   BusinessRuleViolationException,
   DomainStateException,
-} from "../../../domain/exceptions/base/base-domain-exception.js";
+} from "../../../common/exceptions/business.exceptions.js";
 import type { IPureLogger } from "@hl8/pure-logger";
-import { ENTITY_OPERATIONS } from "../../../constants.js";
+import { ENTITY_OPERATIONS } from "../../../common/constants/constants.js";
 import { TenantId } from "@hl8/isolation-model";
 
 export abstract class BaseEntity implements IEntity {

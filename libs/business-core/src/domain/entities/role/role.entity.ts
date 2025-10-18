@@ -14,7 +14,7 @@ import { PermissionAction } from "../../value-objects/types/permission-action.vo
 import {
   BusinessRuleViolationException,
   DomainStateException,
-} from "../../../domain/exceptions/base/base-domain-exception.js";
+} from "../../../common/exceptions/business.exceptions.js";
 import type { IPureLogger } from "@hl8/pure-logger";
 import type { IPartialAuditInfo } from "../base/audit-info.js";
 
