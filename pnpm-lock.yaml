@@ -193,6 +193,88 @@ importers:
         specifier: ^4.2.0
         version: 4.2.0
 
+  libs/business-core:
+    dependencies:
+      '@hl8/caching':
+        specifier: workspace:*
+        version: link:../caching
+      '@hl8/config':
+        specifier: workspace:*
+        version: link:../config
+      '@hl8/database':
+        specifier: workspace:*
+        version: link:../database
+      '@hl8/exceptions':
+        specifier: workspace:*
+        version: link:../exceptions
+      '@hl8/isolation-model':
+        specifier: workspace:*
+        version: link:../isolation-model
+      '@hl8/messaging':
+        specifier: workspace:*
+        version: link:../messaging
+      '@hl8/nestjs-fastify':
+        specifier: workspace:*
+        version: link:../nestjs-fastify
+      '@hl8/nestjs-isolation':
+        specifier: workspace:*
+        version: link:../nestjs-isolation
+      '@hl8/pure-logger':
+        specifier: workspace:*
+        version: link:../pure-logger
+      '@nestjs/common':
+        specifier: ^11.1.6
+        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core':
+        specifier: ^11.1.6
+        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/jwt':
+        specifier: ^11.0.0
+        version: 11.0.1(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
+      class-validator:
+        specifier: ^0.14.2
+        version: 0.14.2
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
+      rxjs:
+        specifier: ^7.8.2
+        version: 7.8.2
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+      uuid:
+        specifier: ^11.0.3
+        version: 11.1.0
+    devDependencies:
+      '@nestjs/testing':
+        specifier: ^11.1.6
+        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(@nestjs/platform-express@11.1.6)
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/jest':
+        specifier: ^30.0.0
+        version: 30.0.0
+      '@types/node':
+        specifier: ^22.16.0
+        version: 22.18.10
+      jest:
+        specifier: ^30.2.0
+        version: 30.2.0(@types/node@22.18.10)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@22.18.10)(typescript@5.8.3))
+      ts-jest:
+        specifier: ^29.4.5
+        version: 29.4.5(@babel/core@7.28.4)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.28.4))(jest-util@30.2.0)(jest@30.2.0(@types/node@22.18.10))(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   libs/caching:
     dependencies:
       '@hl8/isolation-model':
@@ -419,88 +501,6 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
 
-  libs/hybrid-archi:
-    dependencies:
-      '@hl8/caching':
-        specifier: workspace:*
-        version: link:../caching
-      '@hl8/config':
-        specifier: workspace:*
-        version: link:../config
-      '@hl8/database':
-        specifier: workspace:*
-        version: link:../database
-      '@hl8/exceptions':
-        specifier: workspace:*
-        version: link:../exceptions
-      '@hl8/isolation-model':
-        specifier: workspace:*
-        version: link:../isolation-model
-      '@hl8/messaging':
-        specifier: workspace:*
-        version: link:../messaging
-      '@hl8/nestjs-fastify':
-        specifier: workspace:*
-        version: link:../nestjs-fastify
-      '@hl8/nestjs-isolation':
-        specifier: workspace:*
-        version: link:../nestjs-isolation
-      '@hl8/pure-logger':
-        specifier: workspace:*
-        version: link:../pure-logger
-      '@nestjs/common':
-        specifier: ^11.1.6
-        version: 11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/core':
-        specifier: ^11.1.6
-        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.6)(reflect-metadata@0.2.2)(rxjs@7.8.2)
-      '@nestjs/jwt':
-        specifier: ^11.0.0
-        version: 11.0.1(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))
-      class-transformer:
-        specifier: ^0.5.1
-        version: 0.5.1
-      class-validator:
-        specifier: ^0.14.2
-        version: 0.14.2
-      reflect-metadata:
-        specifier: ^0.2.2
-        version: 0.2.2
-      rxjs:
-        specifier: ^7.8.2
-        version: 7.8.2
-      tslib:
-        specifier: ^2.3.0
-        version: 2.8.1
-      uuid:
-        specifier: ^11.0.3
-        version: 11.1.0
-    devDependencies:
-      '@nestjs/testing':
-        specifier: ^11.1.6
-        version: 11.1.6(@nestjs/common@11.1.6(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.6)(@nestjs/platform-express@11.1.6)
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
-      '@types/jest':
-        specifier: ^30.0.0
-        version: 30.0.0
-      '@types/node':
-        specifier: ^22.16.0
-        version: 22.18.10
-      jest:
-        specifier: ^30.2.0
-        version: 30.2.0(@types/node@22.18.10)(ts-node@10.9.2(@swc/core@1.13.5)(@types/node@22.18.10)(typescript@5.8.3))
-      ts-jest:
-        specifier: ^29.4.5
-        version: 29.4.5(@babel/core@7.28.4)(@jest/transform@30.2.0)(@jest/types@30.2.0)(babel-jest@30.2.0(@babel/core@7.28.4))(jest-util@30.2.0)(jest@30.2.0(@types/node@22.18.10))(typescript@5.9.3)
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-
   libs/isolation-model:
     devDependencies:
       '@repo/eslint-config':
@@ -643,8 +643,8 @@ importers:
         specifier: ^5.4.2
         version: 5.8.1
       pino:
-        specifier: ^9.6.0
-        version: 9.13.1
+        specifier: ^10.0.0
+        version: 10.1.0
       pino-pretty:
         specifier: ^13.0.0
         version: 13.1.2
@@ -761,6 +761,9 @@ importers:
       '@casl/ability':
         specifier: ^6.0.0
         version: 6.7.3
+      '@hl8/business-core':
+        specifier: workspace:*
+        version: link:../business-core
       '@hl8/caching':
         specifier: workspace:*
         version: link:../caching
@@ -770,9 +773,6 @@ importers:
       '@hl8/exceptions':
         specifier: workspace:*
         version: link:../exceptions
-      '@hl8/hybrid-archi':
-        specifier: workspace:*
-        version: link:../hybrid-archi
       '@hl8/isolation-model':
         specifier: workspace:*
         version: link:../isolation-model
@@ -2169,6 +2169,9 @@ packages:
 
   '@paralleldrive/cuid2@2.2.2':
     resolution: {integrity: sha512-ZOBkgDwEdoYVlSeRbYYXs0S9MejQofiVYoTbKzy/6GQa39/q5tQU2IX46+shYnUkpEl3wc+J6wRlar7r2EK2xA==}
+
+  '@pinojs/redact@0.4.0':
+    resolution: {integrity: sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -5886,6 +5889,10 @@ packages:
   pino-std-serializers@7.0.0:
     resolution: {integrity: sha512-e906FRY0+tV27iq4juKzSYPbUj2do2X2JX4EzSca1631EB2QJQUqGbDuERal7LCtOpxl6x3+nvo9NPZcmjkiFA==}
 
+  pino@10.1.0:
+    resolution: {integrity: sha512-0zZC2ygfdqvqK8zJIr1e+wT1T/L+LF6qvqvbzEQ6tiMAoTqEVK9a1K3YRu8HEUvGEvNqZyPJTtb2sNIoTkB83w==}
+    hasBin: true
+
   pino@9.13.1:
     resolution: {integrity: sha512-Szuj+ViDTjKPQYiKumGmEn3frdl+ZPSdosHyt9SnUevFosOkMY2b7ipxlEctNKPmMD/VibeBI+ZcZCJK+4DPuw==}
     hasBin: true
@@ -8788,6 +8795,8 @@ snapshots:
   '@paralleldrive/cuid2@2.2.2':
     dependencies:
       '@noble/hashes': 1.8.0
+
+  '@pinojs/redact@0.4.0': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -13166,6 +13175,20 @@ snapshots:
       strip-json-comments: 5.0.3
 
   pino-std-serializers@7.0.0: {}
+
+  pino@10.1.0:
+    dependencies:
+      '@pinojs/redact': 0.4.0
+      atomic-sleep: 1.0.0
+      on-exit-leak-free: 2.1.2
+      pino-abstract-transport: 2.0.0
+      pino-std-serializers: 7.0.0
+      process-warning: 5.0.0
+      quick-format-unescaped: 4.0.4
+      real-require: 0.2.0
+      safe-stable-stringify: 2.5.0
+      sonic-boom: 4.2.0
+      thread-stream: 3.1.0
 
   pino@9.13.1:
     dependencies:
