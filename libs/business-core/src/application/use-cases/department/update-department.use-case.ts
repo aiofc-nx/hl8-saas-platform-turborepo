@@ -39,6 +39,13 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException,
+  ResourceAlreadyExistsException
+} from "../../../common/exceptions/business.exceptions.js";
 import type { DepartmentLevel } from "../../../domain/value-objects/types/department-level.vo.js";
 
 /**
@@ -156,13 +163,28 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
    */
   private validateRequest(request: UpdateDepartmentRequest): void {
     if (!request.departmentId) {
-      throw new Error("部门ID不能为空");
+      throw new ValidationException(
+        "DEPARTMENT_ID_REQUIRED",
+        "部门ID不能为空",
+        "部门ID是必填字段",
+        400
+      );
     }
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
     if (!request.updatedBy) {
-      throw new Error("更新者不能为空");
+      throw new ValidationException(
+        "UPDATED_BY_REQUIRED",
+        "更新者不能为空",
+        "更新者是必填字段",
+        400
+      );
     }
   }
 
@@ -176,10 +198,13 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
   private async validateDepartmentExists(departmentId: EntityId, tenantId: TenantId): Promise<void> {
     const departmentAggregate = await this.departmentRepository.findById(departmentId);
     if (!departmentAggregate) {
-      throw new Error("部门不存在");
+      throw new ResourceNotFoundException("部门", departmentId.toString());
     }
     if (!departmentAggregate.tenantId.equals(tenantId)) {
-      throw new Error("部门不属于指定租户");
+      throw new BusinessRuleViolationException(
+        "部门不属于指定租户",
+        { departmentId: departmentId.toString(), tenantId: tenantId.toString() }
+      );
     }
   }
 
@@ -199,7 +224,10 @@ export class UpdateDepartmentUseCase extends BaseCommandUseCase<
     const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
     
     if (!isDepartmentAdmin && !isTenantAdmin) {
-      throw new Error("没有权限更新部门信息");
+      throw new UnauthorizedOperationException(
+        "更新部门信息",
+        context.user?.id.toString()
+      );
     }
   }
 

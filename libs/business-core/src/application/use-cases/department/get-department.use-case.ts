@@ -35,6 +35,12 @@ import { BaseQueryUseCase } from "../base/base-query-use-case.js";
 import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import type { ICacheService } from "../../ports/cache-service.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 获取部门请求
@@ -155,10 +161,20 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
    */
   private validateRequest(request: GetDepartmentRequest): void {
     if (!request.departmentId) {
-      throw new Error("部门ID不能为空");
+      throw new ValidationException(
+        "DEPARTMENT_ID_REQUIRED",
+        "部门ID不能为空",
+        "部门ID是必填字段",
+        400
+      );
     }
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
   }
 
@@ -172,10 +188,13 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
   private async validateDepartmentExists(departmentId: EntityId, tenantId: TenantId): Promise<void> {
     const departmentAggregate = await this.departmentRepository.findById(departmentId);
     if (!departmentAggregate) {
-      throw new Error("部门不存在");
+      throw new ResourceNotFoundException("部门", departmentId.toString());
     }
     if (!departmentAggregate.tenantId.equals(tenantId)) {
-      throw new Error("部门不属于指定租户");
+      throw new BusinessRuleViolationException(
+        "部门不属于指定租户",
+        { departmentId: departmentId.toString(), tenantId: tenantId.toString() }
+      );
     }
   }
 
@@ -195,7 +214,10 @@ export class GetDepartmentUseCase extends BaseQueryUseCase<
     const isAdmin = context.user?.role === "ADMIN" || context.user?.role === "TENANT_ADMIN";
     
     if (!isDepartmentMember && !isAdmin) {
-      throw new Error("没有权限查看部门信息");
+      throw new UnauthorizedOperationException(
+        "查看部门信息",
+        context.user?.id.toString()
+      );
     }
   }
 

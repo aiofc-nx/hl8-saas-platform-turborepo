@@ -38,6 +38,12 @@ import type { IUseCaseContext } from "../use-case.interface.js";
 import type { IDepartmentRepository } from "../../../domain/repositories/department.repository.js";
 import type { IEventBus } from "../../ports/event-bus.interface.js";
 import type { ITransactionManager } from "../../ports/transaction-manager.interface.js";
+import { 
+  ValidationException, 
+  ResourceNotFoundException, 
+  UnauthorizedOperationException,
+  BusinessRuleViolationException
+} from "../../../common/exceptions/business.exceptions.js";
 
 /**
  * 删除部门请求
@@ -142,13 +148,28 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
    */
   private validateRequest(request: DeleteDepartmentRequest): void {
     if (!request.departmentId) {
-      throw new Error("部门ID不能为空");
+      throw new ValidationException(
+        "DEPARTMENT_ID_REQUIRED",
+        "部门ID不能为空",
+        "部门ID是必填字段",
+        400
+      );
     }
     if (!request.tenantId) {
-      throw new Error("租户ID不能为空");
+      throw new ValidationException(
+        "TENANT_ID_REQUIRED",
+        "租户ID不能为空",
+        "租户ID是必填字段",
+        400
+      );
     }
     if (!request.deletedBy) {
-      throw new Error("删除者不能为空");
+      throw new ValidationException(
+        "DELETED_BY_REQUIRED",
+        "删除者不能为空",
+        "删除者是必填字段",
+        400
+      );
     }
   }
 
@@ -162,10 +183,13 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
   private async validateDepartmentExists(departmentId: EntityId, tenantId: TenantId): Promise<void> {
     const departmentAggregate = await this.departmentRepository.findById(departmentId);
     if (!departmentAggregate) {
-      throw new Error("部门不存在");
+      throw new ResourceNotFoundException("部门", departmentId.toString());
     }
     if (!departmentAggregate.tenantId.equals(tenantId)) {
-      throw new Error("部门不属于指定租户");
+      throw new BusinessRuleViolationException(
+        "部门不属于指定租户",
+        { departmentId: departmentId.toString(), tenantId: tenantId.toString() }
+      );
     }
   }
 
@@ -184,7 +208,10 @@ export class DeleteDepartmentUseCase extends BaseCommandUseCase<
     const isTenantAdmin = context.user?.role === "TENANT_ADMIN";
     
     if (!isTenantAdmin) {
-      throw new Error("只有租户管理员可以删除部门");
+      throw new UnauthorizedOperationException(
+        "删除部门",
+        context.user?.id.toString()
+      );
     }
   }
 
